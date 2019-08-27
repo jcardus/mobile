@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       // eslint-disable-next-line no-undef
-      viewer: new Stimulsoft.Viewer.StiViewer(null, 'StiViewer', false),
+      viewer: null,
       // eslint-disable-next-line no-undef
       report: new Stimulsoft.Report.StiReport(),
       selectedDevices: [],
@@ -99,6 +99,13 @@ export default {
       'gIy7wmoeMxTwlAhW1OTLuQHhe/HXRynTYeI86Alu1tXYrIYgy+57ndnwCC+W5c+wV3wAaXk98U15lnO8w7OnGJB279' +
       'YlQSQVxkdOCuiqsDrn6JZtSixHIweBOEzhhkF0ZSD5Gsdwmd3YJ9GGSBdTSNJHQ+PAXxbH5cl+cTCOdj+SvVLYCPR8' +
       'STT4NtuXavDCjgiKzyJ6YS2hJf+UgP4Lx5K0'
+
+    // eslint-disable-next-line no-undef
+    const options = new Stimulsoft.Viewer.StiViewerOptions()
+    // eslint-disable-next-line no-undef
+    options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Touch
+    // eslint-disable-next-line no-undef
+    this.viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
     if (this.devices.count === 0) {
       traccar.devices(function(data) {
         vm.$data.devices = data
