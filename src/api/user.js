@@ -1,24 +1,38 @@
 import request from '@/utils/request'
+import VueCookies from 'vue-cookies'
 
 export function login(data) {
+  const body = 'email=' + encodeURIComponent(data.username) + '&password=' + encodeURIComponent(data.password)
   return request({
-    url: '/user/login',
+    url: '/api/session',
     method: 'post',
-    data
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data: body
   })
 }
 
 export function getInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+  return new Promise(function(resolve) {
+    resolve({
+      code: 200, data: {
+        roles: ['admin'],
+        introduction: 'I am a super administrator',
+        avatar: 'https://ui-avatars.com/api/?name=John+Doe',
+        name: 'Super Admin'
+      }
+    })
   })
 }
 
 export function logout() {
+  const cookie = VueCookies.get('user-info')
   return request({
-    url: '/user/logout',
-    method: 'post'
-  })
+    url: '/api/session',
+    method: 'delete',
+    auth: { username: cookie.email, password: cookie.password },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }})
 }
