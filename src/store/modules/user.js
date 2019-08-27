@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import VueCookies from 'vue-cookies'
 
 const state = {
   token: getToken(),
@@ -34,9 +35,12 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        const data = response.data
+        data.password = password
+        VueCookies.set('user-info', response.data)
+        commit('' +
+          'SET_TOKEN', data.phone)
+        setToken(data.phone)
         resolve()
       }).catch(error => {
         reject(error)
@@ -74,15 +78,19 @@ const actions = {
 
   // user logout
   logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
         resetRouter()
         resolve()
-      }).catch(error => {
-        reject(error)
+      }).catch(() => {
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        removeToken()
+        resetRouter()
+        resolve()
       })
     })
   },
