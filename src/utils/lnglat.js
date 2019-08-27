@@ -7,7 +7,7 @@ import * as helpers from '@turf/helpers'
 import { vm } from '../main'
 
 export function findFeatureByDeviceId(deviceId) {
-  return vm.$data.positionsSource.features.find(e => {
+  return vm.$static.positionsSource.features.find(e => {
     return e.properties.deviceId === deviceId
   })
 }
@@ -101,7 +101,7 @@ export function addLayers(map) {
   if (!map.getSource(sourceid)) {
     map.addSource(sourceid, {
       'type': 'geojson',
-      'data': vm.$data.positionsSource,
+      'data': vm.$static.positionsSource,
       'cluster': true,
       clusterMaxZoom: 14, // Max zoom to cluster points on
       clusterRadius: 50
