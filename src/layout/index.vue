@@ -97,4 +97,5 @@ export default {
   .mobile .fixed-header {
     width: 100%;
   }
+
 </style>

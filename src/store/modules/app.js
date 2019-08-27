@@ -7,6 +7,7 @@ const state = {
   },
   device: 'desktop',
   size: Cookies.get('size') || 'medium'
+
 }
 
 const mutations = {
@@ -30,6 +31,24 @@ const mutations = {
   SET_SIZE: (state, size) => {
     state.size = size
     Cookies.set('size', size)
+  },
+  SOCKET_ONOPEN(state) {
+    state.socket.isConnected = true
+  },
+  SOCKET_ONCLOSE(state) {
+    state.socket.isConnected = false
+  },
+  SOCKET_ONERROR() {
+  },
+  // default handler called for all methods
+  SOCKET_ONMESSAGE(state, message) {
+    state.socket.message = message
+  },
+  // mutations for reconnect methods
+  SOCKET_RECONNECT() {
+  },
+  SOCKET_RECONNECT_ERROR(state) {
+    state.socket.reconnectError = true
   }
 }
 

@@ -66,39 +66,55 @@ export const constantRoutes = [
   },
   {
     path: '/',
+    redirect: '/map',
     component: Layout,
-    redirect: '/dashboard',
+    hidden: false,
+    meta: { title: 'Map', icon: 'map' },
     children: [
       {
-        path: 'dashboard',
+        path: 'map',
+        component: () => import('@/views/map/VueMap'),
+        name: 'Map',
+        meta: { title: 'Map', icon: 'map', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/dashboard',
+    redirect: '/dashboard/main',
+    component: Layout,
+    children: [
+      {
+        path: 'main',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: 'Dashboard', icon: 'dashboard' }
       }
     ]
   },
   {
     path: '/reports',
-    redirect: 'noRedirect',
+    redirect: '/reports/trips',
     component: Layout,
     hidden: false,
     name: 'Reports',
-    meta: { title: 'Reports', icon: 'documentation', affix: true },
+    meta: { title: 'Reports', icon: 'documentation' },
     children: [
       {
-        path: 'reports/trips',
+        path: 'trips',
         component: () => import('@/views/reports/index'),
         name: 'TripReport',
         meta: { title: 'Trip Report', icon: 'documentation', noCache: true }
       },
       {
-        path: 'reports/route',
+        path: 'route',
         component: () => import('@/views/reports/index'),
         name: 'Route Report',
         meta: { title: 'Route Report', icon: 'documentation', noCache: true }
       }
     ]
   },
+
   {
     path: '/profile',
     component: Layout,
