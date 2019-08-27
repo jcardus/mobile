@@ -24,7 +24,6 @@
         </div>
       </el-col>
     </el-row>
-
     <div id="viewer" />
   </div>
 </template>
@@ -33,6 +32,7 @@
 import ElDragSelect from '@/components/DragSelect'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
+import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'Index',
@@ -75,7 +75,8 @@ export default {
     }
   },
   computed: {
-    devices: function() { return vm.$data.devices }
+    devices: function() { return vm.$data.devices },
+    isMobile: function() { return lnglat.isMobile() }
   },
   watch: {
     dateRange: function() {
@@ -103,7 +104,7 @@ export default {
     // eslint-disable-next-line no-undef
     const options = new Stimulsoft.Viewer.StiViewerOptions()
     // eslint-disable-next-line no-undef
-    options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Touch
+    options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Auto
     // eslint-disable-next-line no-undef
     this.viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
     if (this.devices.count === 0) {
