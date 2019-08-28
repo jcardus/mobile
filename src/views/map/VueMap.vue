@@ -13,7 +13,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-
 import { MglMap } from 'vue-mapbox'
 import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
@@ -438,10 +437,8 @@ export default {
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
             feature.properties.address = position.address
-            // if (!self.map.isMoving() && !self.map.isZooming() && (new Date().getTime() - self.lastReact.getTime())>2000) {
             self.$log.debug('refresh map...')
-            if (vm.$static.map.getSource('positions')) { self.map.getSource('positions').setData(self.positionsSource) }
-            // }
+            if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
           }
         }
       })
