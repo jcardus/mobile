@@ -50,7 +50,8 @@ export default {
       destination: [],
       animating: true,
       popUps: [],
-      mapStyle: this.$root.$data.mapStyle
+      mapStyle: this.$root.$data.mapStyle,
+      unsubscribe: null
     }
   },
   computed: {
@@ -64,6 +65,7 @@ export default {
     map() { return vm.$static.map }
   },
   beforeDestroy() {
+    this.unsubscribeEvents()
     traccar.stopReceiving()
   },
   methods: {
@@ -240,6 +242,9 @@ export default {
       this.showHideDevices(this.$static.map.getPitch() === 0)
       this.truck.visible = (this.$static.map.getPitch() !== 0)
     },
+    unsubscribeEvents: function() {
+      this.unsubscribe()
+    },
     subscribeEvents: function() {
       const self = this
       this.$static.map.on('moveend', () => {
@@ -251,7 +256,7 @@ export default {
       serverBus.$on('deviceSelected', (device) => {
         self.deviceSelected(device)
       })
-      this.$root.$store.subscribe((mutation, state) => {
+      this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
         if (state.socket.message.positions) {
           self.updateMarkers(self.map)
         }
@@ -292,9 +297,6 @@ export default {
       })
       this.$static.map.on('click', 'clusters', function(e) {
         onClickTouch(e)
-      })
-      this.$static.map.once('idle', function() {
-        // self.stopLoader()
       })
     },
     truckFollowPath: function(coordinates, destination, distance) {
@@ -472,10 +474,16 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  html, body {
+    height: 100% !important;
+  }
   .app-container {
-    height:calc(100vh - 84px);
     padding:0;
     width: 100%;
+    bottom: 0 !important;
+  }
+  .app-main {
+    display: flex;
   }
 </style>
