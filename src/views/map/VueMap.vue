@@ -1,11 +1,9 @@
 <template>
-  <div class="app-container">
-    <MglMap
-      container="map"
-      :access-token="accessToken"
-      :map-style="mapStyle"
-      @load="onMapLoaded"
-    />
+  <div
+    id="map-app-container"
+    class="app-container"
+  >
+    <div id="map" />
   </div>
 </template>
 
@@ -13,7 +11,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-import { MglMap } from 'vue-mapbox'
 import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
@@ -32,10 +29,10 @@ import bbox from '@turf/bbox'
 import bearing from '@turf/bearing'
 import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
+import vhCheck from 'vh-check'
 
 export default {
   name: 'VueMap',
-  components: { MglMap },
   static() {
     return {
       map: vm.$static.map
@@ -51,7 +48,8 @@ export default {
       animating: true,
       popUps: [],
       mapStyle: this.$root.$data.mapStyle,
-      unsubscribe: null
+      unsubscribe: null,
+      parentHeight: 0
     }
   },
   computed: {
@@ -68,7 +66,28 @@ export default {
     this.unsubscribeEvents()
     traccar.stopReceiving()
   },
+  mounted() {
+    this.parentHeight = this.$parent.$el.clientHeight
+    mapboxgl.accessToken = this.accessToken
+    this.$log.debug('on map loaded')
+    this.$root.$static.map = new mapboxgl.Map({
+      container: 'map',
+      style: this.$root.$data.mapStyle
+    })
+    vhCheck()
+    this.map.on('load', this.onMapLoad)
+  },
   methods: {
+    onMapLoad: function() {
+      this.setZoomAndCenter()
+      this.addControls()
+      this.addLayers()
+      this.addImages()
+      this.subscribeEvents()
+      this.addVehicleList()
+      traccar.startReceiving()
+      this.map.resize()
+    },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
@@ -129,17 +148,6 @@ export default {
     },
     refreshMap() {
       this.$static.map.getSource('positions').setData(this.positionsSource)
-    },
-    onMapLoaded(event) {
-      this.$log.debug('on map loaded')
-      this.$root.$static.map = event.map
-      this.setZoomAndCenter()
-      this.addControls()
-      this.addLayers()
-      this.addImages()
-      this.subscribeEvents()
-      this.addVehicleList()
-      traccar.startReceiving()
     },
     setZoomAndCenter() {
       try {
@@ -242,61 +250,58 @@ export default {
       this.showHideDevices(this.$static.map.getPitch() === 0)
       this.truck.visible = (this.$static.map.getPitch() !== 0)
     },
-    unsubscribeEvents: function() {
-      this.unsubscribe()
+    onEnterUnclustered: function() {
+      this.map.getCanvas().style.cursor = 'pointer'
+    },
+    onLeaveUnclustered: function() {
+      this.map.getCanvas().style.cursor = ''
     },
     subscribeEvents: function() {
       const self = this
-      this.$static.map.on('moveend', () => {
-        self.onMoveEnd()
-      })
-      this.$static.map.on('pitch', () => {
-        self.onPitch()
-      })
-      serverBus.$on('deviceSelected', (device) => {
-        self.deviceSelected(device)
-      })
+      this.$static.map.on('moveend', this.onMoveEnd)
+      this.$static.map.on('pitch', this.onPitch)
+      this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
+      this.$static.map.on('click', 'clusters', this.onClickTouch)
+      this.$static.map.on('mouseenter', 'unclustered-point', this.onEnterUnclustered)
+      this.$static.map.on('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
+      serverBus.$on('deviceSelected', this.deviceSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
         if (state.socket.message.positions) {
           self.updateMarkers(self.map)
         }
       })
-      function onClickTouchUnclustered(e) {
-        const feature = e.features[0]
-        const device = self.devices.find(d => d.id === feature.properties.deviceId)
-        if (device) {
-          self.deviceSelected(device)
-          serverBus.$emit('deviceSelectedOnMap', device)
-        }
+    },
+    unsubscribeEvents: function() {
+      if (this.unsubscribe) { this.unsubscribe() }
+      serverBus.$off('deviceSelected', this.deviceSelected)
+      this.$static.map.off('moveend', this.onMoveEnd)
+      this.$static.map.off('pitch', this.onPitch)
+      this.$static.map.off('click', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.off('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
+      this.$static.map.off('click', 'clusters', this.onClickTouch)
+      this.$static.map.off('mouseenter', 'unclustered-point', this.onEnterUnclustered)
+      this.$static.map.off('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
+    },
+    onClickTouchUnclustered: function(e) {
+      const feature = e.features[0]
+      const device = this.devices.find(d => d.id === feature.properties.deviceId)
+      if (device) {
+        this.deviceSelected(device)
+        serverBus.$emit('deviceSelectedOnMap', device)
       }
-      this.$static.map.on('click', 'unclustered-point', function(e) {
-        onClickTouchUnclustered(e)
-      })
-      this.$static.map.on('touchstart', 'unclustered-point', function(e) {
-        onClickTouchUnclustered(e)
-      })
-      this.$static.map.on('mouseenter', 'unclustered-point', function() {
-        self.map.getCanvas().style.cursor = 'pointer'
-      })
-      this.$static.map.on('mouseleave', 'unclustered-point', function() {
-        self.map.getCanvas().style.cursor = ''
-      })
-      function onClickTouch(e) {
-        const features = self.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
-        const clusterId = features[0].properties.cluster_id
-        self.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
-          if (err) { return }
-          self.map.easeTo({
-            center: features[0].geometry.coordinates,
-            zoom: zoom
-          })
+    },
+    onClickTouch: function(e) {
+      const features = self.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
+      const clusterId = features[0].properties.cluster_id
+      this.$static.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
+        if (err) { return }
+        vm.$static.map.easeTo({
+          center: features[0].geometry.coordinates,
+          zoom: zoom
         })
-      }
-      this.$static.map.on('touchstart', 'clusters', function(e) {
-        onClickTouch(e)
-      })
-      this.$static.map.on('click', 'clusters', function(e) {
-        onClickTouch(e)
       })
     },
     truckFollowPath: function(coordinates, destination, distance) {
@@ -314,7 +319,7 @@ export default {
 
       this.origin = destination
       this.animating = true
-      this.__animate()
+      this._animate()
     },
     animate: function(position, feature) {
       const origin = feature.geometry.coordinates
@@ -382,10 +387,10 @@ export default {
         _animate(counter)
       }
     },
-    __animate: function() {
+    _animate: function() {
       if (this.animating) {
         this.$static.map.triggerRepaint()
-        requestAnimationFrame(this.__animate)
+        requestAnimationFrame(this._animate)
       }
     },
     updateMarkers: function() {
@@ -479,11 +484,16 @@ export default {
     height: 100% !important;
   }
   .app-container {
+    bottom: 0 !important;
     padding:0;
     width: 100%;
-    bottom: 0 !important;
+    height: calc(100vh - 84px);
+    height: calc(100vh - var(--vh-offset, 0px) - 84px);
   }
-  .app-main {
-    display: flex;
+
+  #map {
+    width: 100%;
+    height: 100%;
   }
+
 </style>
