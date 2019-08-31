@@ -67,6 +67,7 @@ export default {
     traccar.stopReceiving()
   },
   mounted() {
+    if (this.devices.length === 0) { traccar.devices() }
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
@@ -78,6 +79,10 @@ export default {
     this.map.on('load', this.onMapLoad)
   },
   methods: {
+    mapResize: function() {
+      this.$log.debug('resizing map...')
+      this.map.resize()
+    },
     onMapLoad: function() {
       this.setZoomAndCenter()
       this.addControls()
@@ -268,10 +273,18 @@ export default {
       this.$static.map.on('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
       serverBus.$on('deviceSelected', this.deviceSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
-        if (state.socket.message.positions) {
-          self.updateMarkers(self.map)
+        this.$log.debug(mutation)
+        switch (mutation.type) {
+          case 'app/TOGGLE_SIDEBAR':
+            setTimeout(function() { self.mapResize() }, 1500)
+            break
+          case 'SOCKET_ONMESSAGE':
+            if (state.socket.message.positions) {
+              self.updateMarkers(self.map)
+            }
         }
       })
+      window.addEventListener('resize', this.mapResize)
     },
     unsubscribeEvents: function() {
       if (this.unsubscribe) { this.unsubscribe() }
@@ -284,6 +297,7 @@ export default {
       this.$static.map.off('click', 'clusters', this.onClickTouch)
       this.$static.map.off('mouseenter', 'unclustered-point', this.onEnterUnclustered)
       this.$static.map.off('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
+      window.removeEventListener('resize', this.mapResize)
     },
     onClickTouchUnclustered: function(e) {
       const feature = e.features[0]
@@ -294,7 +308,7 @@ export default {
       }
     },
     onClickTouch: function(e) {
-      const features = self.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
+      const features = vm.$static.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
       const clusterId = features[0].properties.cluster_id
       this.$static.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
         if (err) { return }
@@ -480,9 +494,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  html, body {
-    height: 100% !important;
-  }
+
   .app-container {
     bottom: 0 !important;
     padding:0;

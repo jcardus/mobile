@@ -136,7 +136,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          Vue.$log.debug('dispatch user login')
+          Vue.$log.debug('dispatch user login ', this.loginForm)
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
               Vue.$log.debug('pushing...', this.redirect || '/', this.otherQuery)

@@ -9,18 +9,14 @@
           <i class="fa fa-2x black fa-angle-down header-icon" :class="{rotate:show}" />
         </a>
       </div>
-      <transition
-        name="accordion"
-        @before-enter="beforeEnter"
-        @enter="enter"
-        @before-leave="beforeLeave"
-        @leave="leave"
-      >
+      <transition>
         <div v-show="show" class="dd-body">
           <div class="dd-body-inner">
-            <input v-model="filterKey" class="input" type="text" placeholder="Search...">
+            <label>
+              <input v-model="filterKey" class="input" type="text" placeholder="Search...">
+            </label>
             <div>
-              <table class="table is-striped">
+              <table class="table">
                 <thead>
                   <tr>
                     <th />
@@ -36,9 +32,9 @@
                   </tr>
                 </thead>
               </table>
-              <div class="table-body" body-scroll-lock-ignore>
-                <table class="table is-striped" body-scroll-lock-ignore>
-                  <tbody body-scroll-lock-ignore>
+              <div class="table-body">
+                <table id="mainTable" class="table is-striped">
+                  <tbody>
                     <tr
                       v-for="entry in filteredVehicles"
                       :key="entry.id"
@@ -176,10 +172,10 @@ export default {
       el.style.height = '0'
     },
     enter: function(el) {
-      el.style.height = el.scrollHeight + 'px'
+      el.style.height = '100px'
     },
     beforeLeave: function(el) {
-      el.style.height = el.scrollHeight + 'px'
+      el.style.height = /* el.scrollHeight + */'100px'
     },
     leave: function(el) {
       el.style.height = '0'
@@ -197,7 +193,6 @@ export default {
 <style lang="scss" scoped>
     @import "~bulma/sass/utilities/initial-variables";
     $primary: lightblue;
-
     @import '~bulma/bulma.sass';
 
     .vehicleList {
@@ -250,21 +245,20 @@ export default {
     }
 
     .dd-body {
-
         background-color: #fff;
-
         border-top: 0;
         transition: 100ms ease-out;
-        height:100%;
         max-width: calc(100vw - 20px);
     }
 
     .dd-body-inner {
         padding: 0;
+
     }
 
     table {
         margin: 0px !important;
+        width: 100%;
     }
 
     tr {
@@ -287,9 +281,10 @@ export default {
     }
 
     .table-body {
-        overflow: auto;
-        max-height: calc(75vh - 150px);
-        transition: 1000ms ease-out;
+      display: block;
+      transition: 1000ms ease-out;
+      overflow: scroll;
+      max-height: calc(100vh - 310px)
     }
 
     @media screen and (max-width: 768px) {
@@ -298,7 +293,6 @@ export default {
             width: calc(100vw - 20px);
         }
     }
-
     .input {
         height: 26px;
         width: calc(100% - 35px);

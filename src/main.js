@@ -14,7 +14,6 @@ import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import VueTimeago from 'vue-timeago'
-import { traccar } from './api/traccar-api'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const options = {
@@ -83,12 +82,5 @@ export const vm = new Vue({
   },
   router,
   store,
-  mounted() {
-    if (this.devices.count === 0) {
-      traccar.devices(function(data) {
-        vm.$data.devices = data
-      })
-    }
-  },
   render: h => h(App)
 })

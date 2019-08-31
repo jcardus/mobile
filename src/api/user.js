@@ -31,7 +31,7 @@ export function logout() {
   return request({
     url: '/api/session',
     method: 'delete',
-    auth: { username: cookie.email, password: cookie.password },
+    auth: { username: cookie ? cookie.email : '', password: cookie ? cookie.password : '' },
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }})

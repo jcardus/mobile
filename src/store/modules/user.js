@@ -2,6 +2,8 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import VueCookies from 'vue-cookies'
+import Vue from 'vue'
+import { traccar } from '@/api/traccar-api'
 
 const state = {
   token: getToken(),
@@ -37,10 +39,10 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const data = response.data
         data.password = password
+        Vue.$log.debug(response.data)
         VueCookies.set('user-info', response.data)
-        commit('' +
-          'SET_TOKEN', data.phone)
-        setToken(data.phone)
+        setToken(new Date().getTime())
+        traccar.devices()
         resolve()
       }).catch(error => {
         reject(error)
@@ -80,6 +82,7 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve) => {
       logout(state.token).then(() => {
+        VueCookies.remove('user-info')
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()

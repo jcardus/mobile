@@ -7,15 +7,16 @@ const baseUrl = 'https://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
 const positions = baseUrl + 'reports/route'
 const trips = baseUrl + 'reports/trips'
-const cookie = VueCookies.get('user-info')
+var cookie = VueCookies.get('user-info')
 
 export const traccar = {
   startReceiving: function() {
     vm.$connect()
   },
   devices: function(onFulfill) {
+    cookie = VueCookies.get('user-info')
     axios.get(devices, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(response.data))
+      .then(response => { vm.$data.devices = response.data })
       .catch(reason => {
         Vue.$log.error(reason)
       })
