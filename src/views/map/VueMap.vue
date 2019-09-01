@@ -27,6 +27,7 @@ import * as lnglat from '../../utils/lnglat'
 import along from '@turf/along'
 import bbox from '@turf/bbox'
 import bearing from '@turf/bearing'
+// import area from '@turf/area'
 import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
 import vhCheck from 'vh-check'
@@ -237,7 +238,7 @@ export default {
         trackUserLocation: true
       }), 'bottom-right')
       map.addControl(new RulerControl(), 'bottom-right')
-      map.addControl(new MapboxDraw({
+      this.$static.draw = new MapboxDraw({
         displayControlsDefault: false,
         controls: {
           point: true,
@@ -245,7 +246,8 @@ export default {
           polygon: true,
           trash: true
         }
-      }), 'bottom-right')
+      })
+      map.addControl(this.$static.draw, 'bottom-right')
       map.addControl(new MapboxStyleSwitcherControl(), 'bottom-right')
       map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
@@ -280,6 +282,9 @@ export default {
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('mouseenter', 'unclustered-point', this.onEnterUnclustered)
       this.$static.map.on('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
+      this.$static.map.on('draw.create', this.drawCreate)
+      this.$static.map.on('draw.delete', this.drawDelete)
+      this.$static.map.on('draw.update', this.drawUpdate)
       serverBus.$on('deviceSelected', this.deviceSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
         this.$log.debug(mutation)
@@ -497,6 +502,36 @@ export default {
         (lngLatBounds.getWest() < position.longitude && position.longitude < lngLatBounds.getEast()) &&
                     (lngLatBounds.getSouth() < position.latitude && position.latitude < lngLatBounds.getNorth())
       )
+    },
+    geofenceCreated: function() {
+      this.$message({
+        type: 'success',
+        message: 'Geofence created sucessfully!'
+      })
+    },
+    drawCreate(e) {
+      const data = this.$static.draw.getAll()
+      if (data.features.length > 0) {
+        // const a = area(data)
+        // const rounded_area = Math.round(a * 100) / 100
+        this.$prompt('Please enter the name of this geofence...', 'New geofence', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel'
+        }).then(({ value }) => {
+          traccar.newGeofence(value, 'description', data, this.geoFenceCreated)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Input canceled'
+          })
+        })
+      } else {
+        if (e.type !== 'draw.delete') alert('Use the draw tools to draw a polygon!')
+      }
+    },
+    drawDelete() {
+    },
+    drawUpdate() {
     }
   }
 }
