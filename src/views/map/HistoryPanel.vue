@@ -49,6 +49,7 @@ export default {
     return {
       currentPos: 0,
       minPos: 0,
+      maxPos: 0,
       formatter: v => `${utils.formatDate(v)}`
     }
   },
@@ -58,7 +59,6 @@ export default {
       return []
     },
     show: function() { return vm.$data.historyMode },
-    maxPos: function() { return this.positions.length - 1 },
     minDate: {
       get() {
         return this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD')
@@ -87,8 +87,9 @@ export default {
   mounted() {
     const self = this
     serverBus.$on('routeFetched', function() {
-      this.$log.debug('routeFetched, maxPos=', self.maxPos)
-      self.currentPos = self.maxPos
+      this.$log.debug('routeFetched, maxPos=', vm.$data.currentDevice.positions.length - 1)
+      self.maxPos = vm.$data.currentDevice.positions.length - 1
+      self.currentPos = vm.$data.currentDevice.positions.length - 1
     })
   }
 }
