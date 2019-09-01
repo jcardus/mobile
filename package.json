@@ -53,6 +53,7 @@
     "@turf/bearing": "latest",
     "@turf/helpers": "latest",
     "@turf/length": "latest",
+    "@turf/area": "latest",
     "amazon-quicksight-embedding-sdk": "latest",
     "axios": "0.18.1",
     "bulma": "latest",

@@ -36,7 +36,8 @@ export default {
   name: 'VueMap',
   static() {
     return {
-      map: vm.$static.map
+      map: vm.$static.map,
+      draw: null
     }
   },
   data() {
