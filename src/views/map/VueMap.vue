@@ -60,7 +60,16 @@ export default {
     devices() {
       return this.$root.$data.devices
     },
-    map() { return vm.$static.map }
+    map() { return vm.$static.map },
+    selected: {
+      get: function() {
+        return vm.$data.currentDevice
+      },
+      set: function(value) {
+        this.$log.debug('currentDevice, ', value)
+        vm.$data.currentDevice = value
+      }
+    }
   },
   beforeDestroy() {
     this.unsubscribeEvents()

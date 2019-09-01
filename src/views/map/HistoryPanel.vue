@@ -54,18 +54,18 @@ export default {
   },
   computed: {
     positions: function() {
-      this.$log.debug('return ', vm.$data.currentDevice.positions.length, ' positions')
-      return vm.$data.currentDevice.positions
+      if (vm.$data.currentDevice) { return vm.$data.currentDevice.positions }
+      return []
     },
     show: function() { return vm.$data.historyMode },
-    currentDate: function() { return this.$moment(this.current, 'x').toDate() },
-    maxPos: () => vm.$data.currentDevice.positions.length - 1,
+    maxPos: function() { return this.positions.length - 1 },
     minDate: {
       get() {
-        return vm.$data.routeMinDate.format('YYYY-MM-DD')
+        return this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD')
       },
       set(newVal) {
         vm.$data.routeMinDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
+        serverBus.$emit('minDateChanged')
       }
     },
     maxDate: {
@@ -74,19 +74,22 @@ export default {
       },
       set(newVal) {
         vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
+        serverBus.$emit('maxDateChanged')
       }
     }
   },
   watch: {
-    min: function() {
-      serverBus.$emit('minDateChanged', this.min)
-    },
-    max: function() {
-      serverBus.$emit('maxDateChanged', this.max)
-    },
     currentPos: function() {
+      this.$log.debug('emit posChanged, ', this.currentPos)
       serverBus.$emit('posChanged', this.currentPos)
     }
+  },
+  mounted() {
+    const self = this
+    serverBus.$on('routeFetched', function() {
+      this.$log.debug('routeFetched, maxPos=', self.maxPos)
+      self.currentPos = self.maxPos
+    })
   }
 }
 </script>
@@ -107,16 +110,12 @@ export default {
         padding-inline-start: 0;
         border-width: 1px;
         border-style: solid;
-        border-color: lightgray ;
-        //color: #3498db;
-        //font-weight: bold;
-        //font-size: large;
+        border-color: lightgray;
         padding: 0;
     }
     table {
         padding: 0 !important;
         border-width: 0 !important;
-        border:0 !important;
         width: 355px;
     }
     #minDate

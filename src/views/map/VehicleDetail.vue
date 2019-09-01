@@ -59,6 +59,9 @@ export default {
     }
   },
   computed: {
+    map() {
+      return vm.$static.map
+    },
     minDate() {
       return vm.$data.routeMinDate
     },
@@ -104,22 +107,22 @@ export default {
     serverBus.$on('posChanged', function(newDate) {
       self.onPosChanged(newDate)
     })
-    serverBus.$on('minDateChanged', function(newDate) {
-      self.onMinDateChanged(newDate)
+    serverBus.$on('minDateChanged', function() {
+      self.onDatesChanged()
     })
-    serverBus.$on('maxDateChanged', function(newDate) {
-      self.onMaxDateChanged(newDate)
+    serverBus.$on('maxDateChanged', function() {
+      self.onDatesChanged()
     })
   },
   methods: {
-    onMinDateChanged() {
-      this.getRoute()
+    onDatesChanged() {
+      this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
     },
     onPosChanged(newPos) {
       const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
       const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
       const currentPosition = this.positions[newPos]
-      const newDate = utils.getDate(currentPosition.deviceTime)
+      const newDate = utils.getDate(currentPosition.fixTime)
 
       if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
         const nextStart = this.$moment(this.trips[this.currentTrip + 1][0].deviceTime).toDate()
@@ -129,7 +132,7 @@ export default {
           this.drawTrip()
         }
       } else if (this.currentTrip > 0 && newDate < tripStart) {
-        const previousEnd = this.$moment(this.trips[this.currentTrip - 1].slice(-1)[0].deviceTime).toDate()
+        const previousEnd = this.$moment(this.trips[this.currentTrip - 1].slice(-1)[0].fixTime).toDate()
         if (newDate <= previousEnd) {
           this.removeLayers()
           this.currentTrip--
@@ -154,6 +157,10 @@ export default {
       this.i = 0
       if (this.startMaker) { this.startMaker.remove() }
       if (this.endMarker) { this.endMarker.remove() }
+      if (vm.$static.map.getLayer(this.allTripsSource)) {
+        this.map.removeLayer(this.allTripsSource)
+        this.map.removeSource(this.allTripsSource)
+      }
     },
     showRoutesClick: function() {
       this.showRoutes = !this.showRoutes
@@ -163,8 +170,10 @@ export default {
       } else {
         vm.$data.historyMode = false
         this.removeLayers()
-        vm.$static.map.removeLayer(this.allTripsSource)
-        vm.$static.map.removeSource(this.allTripsSource)
+        if (vm.$static.map.getLayer(this.allTripsSource)) {
+          vm.$static.map.removeLayer(this.allTripsSource)
+          vm.$static.map.removeSource(this.allTripsSource)
+        }
       }
     },
     routeMatchClick: function() {
@@ -208,6 +217,7 @@ export default {
     },
     onPositions: function(positions) {
       this.positions = positions
+      this.removeLayers()
       vm.$data.historyMode = true
       this.drawAll(positions)
       Vue.$log.debug('got ', this.positions.length, ' positions')
@@ -220,6 +230,7 @@ export default {
       })
       this.currentTrip = this.trips.length - 1
       this.drawTrip()
+      serverBus.$emit('routeFetched')
     },
     drawStartEnd: function() {
       const positions = this.trips[this.currentTrip]
