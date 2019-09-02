@@ -80,7 +80,6 @@ export default {
   },
   watch: {
     currentPos: function() {
-      this.$log.debug('emit posChanged, ', this.currentPos)
       serverBus.$emit('posChanged', this.currentPos)
     }
   },

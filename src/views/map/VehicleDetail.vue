@@ -121,7 +121,7 @@ export default {
     onPosChanged(newPos) {
       const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
       const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
-      const currentPosition = this.positions[newPos]
+      const currentPosition = vm.$data.currentDevice.positions[newPos]
       const newDate = utils.getDate(currentPosition.fixTime)
 
       if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
@@ -238,26 +238,23 @@ export default {
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]
       let el = document.createElement('div')
       el.className = 'marker'
-      let hour = this.$moment(positions[0].deviceTime).format('HH:mm')
+      let hour = this.$moment(positions[0].fixTime).format('HH:mm')
       Vue.$log.debug('adding start position on ', positions[0].deviceTime, hour)
       el.innerHTML = '<span><b>' + hour + '</b></span>'
       this.startMaker = new mapboxgl.Marker(el)
         .setLngLat(start)
       // .addTo(vm.$static.map);
-
-      el = document.createElement('div')
-      el.className = 'marker finish'
-      hour = this.$moment(positions[positions.length - 1].deviceTime).format('HH:mm')
-      Vue.$log.debug('adding end position on ', positions[positions.length - 1].deviceTime, hour)
-      el.innerHTML = '<span><b>' + hour + '</b></span>'
-      this.endMarker = new mapboxgl.Marker(el)
-        .setLngLat(end)
-      // .addTo(vm.$static.map);
-      /* if (lnglat.getDistance(start, end)<0.01)
-                    spiderifier.spiderfy(start, [this.startMaker, this.endMarker]);
-                else*/
       this.startMaker.addTo(vm.$static.map)
-      this.endMarker.addTo(vm.$static.map)
+      if (positions[positions.length - 1].attributes.ignition === false) {
+        el = document.createElement('div')
+        el.className = 'marker finish'
+        hour = this.$moment(positions[positions.length - 1].fixTime).format('HH:mm')
+        Vue.$log.debug('adding end position on ', positions[positions.length - 1].deviceTime, hour)
+        el.innerHTML = '<span><b>' + hour + '</b></span>'
+        this.endMarker = new mapboxgl.Marker(el)
+          .setLngLat(end)
+        this.endMarker.addTo(vm.$static.map)
+      }
     },
     drawAll: function(positions) {
       const bounds = lnglat.getBounds(positions.map(p => [p.longitude, p.latitude]))

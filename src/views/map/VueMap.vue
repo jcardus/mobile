@@ -459,9 +459,9 @@ export default {
           vm.$static.map.getSource('positions').setData(self.positionsSource)
         } else {
           if (!device) return
-          device.ignition = position.attributes.ignition
-          device.motion = position.attributes.motion
-          device.speed = position.speed
+          feature.properties.ignition = device.ignition = position.attributes.ignition
+          feature.properties.motion = device.motion = position.attributes.motion
+          feature.properties.speed = device.speed = position.speed
           device.address = position.address
           device.lastUpdate = position.fixTime
 
