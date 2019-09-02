@@ -207,19 +207,17 @@ export function addLayers(map) {
       type: 'symbol',
       source: sourceid,
       filter: ['!', ['has', 'point_count']],
-
-      'layout': {
-        'icon-image': ['case', ['==', ['get', 'ignition'], false], 'car-red',
-          ['case', ['==', ['get', 'motion'], false], 'car-red',
-            ['case', ['<', ['get', 'speed'], 2], 'car-yellow',
-              'car-green'
-            ]
-          ]],
+      layout: {
+        'icon-image':
+          ['case',
+            ['==', ['get', 'ignition'], false], 'car-red',
+            ['==', ['get', 'motion'], false], 'car-yellow',
+            ['<', ['get', 'speed'], 2], 'car-yellow',
+            'car-green'
+          ],
         'icon-rotate': ['get', 'course'],
         'icon-allow-overlap': true,
         'text-allow-overlap': true
-      // "text-field": ['get', 'text'],
-      // "text-offset": [0, -1.8]
       }
     })
   } else { Vue.$log.warn('layer unclustered-point already exists...') }
