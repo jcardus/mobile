@@ -111,8 +111,8 @@ function convertWktToGeojson(response) {
     const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
     const coord_list = str.split(',')
     for (const i in coord_list) {
-      const coord = coord_list[i].split(' ')
-      geojson.geometry.coordinates[0].push([parseFloat(coord[0]), parseFloat(coord[1])])
+      const coord = coord_list[i].trim().split(' ')
+      geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
     }
     result.push(geojson)
   })
