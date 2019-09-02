@@ -39,7 +39,7 @@ export const settings = {
   showVehicleList: true,
   matchRoutes: true,
   showSlider: true,
-  truck3d: false
+  truck3d: true
 }
 
 Vue.use(require('vue-moment'))

@@ -52,7 +52,7 @@ export const traccar = {
   newGeofence: function(name, description, area, onFulfill) {
     const body = {
       name: name,
-      description: 'todo',
+      description: '',
       // POLYGON((-33.63463083134137 -71.39602661132812, -33.138701124637024 -70.72448730468751, -33.478417648673414 -70.01312255859375, -33.92399018008704 -70.7244873046875, -33.63463083134137 -71.39602661132812))
       area: 'POLYGON((' + area.features[0].geometry.coordinates[0].map(e => e[0] + ' ' + e[1]).join(',') + '))'
     }
@@ -62,6 +62,16 @@ export const traccar = {
       .catch(reason => {
         Vue.$log.error(reason)
       })
+  },
+  geofences: function() {
+    return new Promise((resolve, reject) => {
+      axios.get(geofences, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

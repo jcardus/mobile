@@ -519,7 +519,7 @@ export default {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel'
         }).then(({ value }) => {
-          traccar.newGeofence(value, 'description', data, this.geoFenceCreated)
+          traccar.newGeofence(value, 'description', data, this.geofenceCreated)
         }).catch(() => {
           this.$message({
             type: 'info',

@@ -5,6 +5,7 @@ import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm } from '../main'
+import { traccar } from '../api/traccar-api'
 
 export function findFeatureByDeviceId(deviceId) {
   return vm.$static.positionsSource.features.find(e => {
@@ -93,6 +94,41 @@ export function matchRoute(coordinates, radius, onSuccess) {
   const query = 'https://api.mapbox.com/matching/v5/mapbox/driving/' + coordinates.join(';') + '?geometries=geojson&radiuses=' + radiuses + '&access_token=' + mapboxgl.accessToken
   axios.get(query)
     .then(onSuccess)
+}
+function convertWktToGeojson(response) {
+  const result = []
+  Vue.$log.debug('converting ', response.data.length, ' features')
+  response.data.forEach(function(item, index) {
+    const wkt = item.area
+    const geojson = {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[]]
+      },
+      properties: { title: item.name }
+    }
+    const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
+    const coord_list = str.split(',')
+    for (const i in coord_list) {
+      const coord = coord_list[i].split(' ')
+      geojson.geometry.coordinates[0].push([parseFloat(coord[0]), parseFloat(coord[1])])
+    }
+    result.push(geojson)
+  })
+  return result
+}
+
+function getGeofences(response) {
+  const result = {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': convertWktToGeojson(response)
+    }
+  }
+  Vue.$log.debug(result)
+  return result
 }
 
 export function addLayers(map) {
@@ -187,5 +223,27 @@ export function addLayers(map) {
       }
     })
   } else { Vue.$log.warn('layer unclustered-point already exists...') }
+  if (!map.getLayer('geofences')) {
+    traccar.geofences().then(response => {
+      map.addSource('geofences', getGeofences(response))
+      map.addLayer({
+        id: 'geofences',
+        type: 'fill',
+        source: 'geofences',
+        paint: {
+          'fill-color': '#B42222',
+          'fill-opacity': 0.4
+        }
+      })
+      map.addLayer({
+        id: 'geofences-labels',
+        type: 'symbol',
+        source: 'geofences',
+        layout: {
+          'text-field': '{title}'
+        }
+      })
+    })
+  }
 }
 
