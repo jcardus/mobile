@@ -48,7 +48,6 @@
     "core-js": "^2.6.5",
     "element-ui": "2.7.0",
     "fuse.js": "3.4.4",
-    "js-cookie": "^2.2.1",
     "jsonlint": "1.6.3",
     "mapbox-gl": "1.2.1",
     "mapbox-gl-controls": "latest",
