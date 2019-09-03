@@ -53,7 +53,7 @@
 <script>
 
 import Vue from 'vue'
-import { i18n } from '../../main'
+import { i18n } from 'vue-i18n'
 
 export default {
   name: 'Login',

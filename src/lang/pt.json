@@ -1,6 +1,6 @@
 {
-    "login_password": "Palavra-Chave",
-    "login_remember_me": "Lembra-se de mim",
+    "login_password": "Palavra-chave",
+    "login_remember_me": "Lembrar",
     "login_button": "Entrar",
-    "login_password_warn": "A Palavra-Chave não pode ter menos de 6 digitos"
+    "login_password_warn": "A Palavra-chave não pode ter menos de 6 dígitos"
 }
