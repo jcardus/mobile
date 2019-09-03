@@ -14,8 +14,10 @@ import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import VueTimeago from 'vue-timeago'
+import VueI18n from 'vue-i18n'
 
 const isProduction = process.env.NODE_ENV === 'production'
+const defaultLang = 'en'
 const options = {
   isEnabled: true,
   logLevel: isProduction ? 'error' : 'debug',
@@ -26,7 +28,7 @@ const options = {
   showConsoleColors: true
 }
 Vue.use(VueLogger, options)
-Vue.config.lang = 'en'
+Vue.config.lang = defaultLang
 import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(Element, { locale: locale,
   size: Cookies.get('size') || 'medium' // set element-ui default size
@@ -59,6 +61,46 @@ Vue.use(VueTimeago, {
   name: 'Timeago'
 })
 
+Vue.use(VueI18n)
+
+export const i18n = new VueI18n({
+  fallbackLocale: defaultLang
+})
+
+const loadedLanguages = []
+
+function setI18nLanguage(lang) {
+  i18n.locale = lang
+  return lang
+}
+
+export function loadLanguageAsync(lang) {
+  // If the same language
+  if (i18n.locale === lang) {
+    return Promise.resolve(setI18nLanguage(lang))
+  }
+
+  // If the language was already loaded
+  if (loadedLanguages.includes(lang)) {
+    return Promise.resolve(setI18nLanguage(lang))
+  }
+
+  // If the language hasn't been loaded yet
+  return import(`@/lang/${lang}.json`).then(
+    messages => {
+      i18n.setLocaleMessage(lang, messages.default)
+      loadedLanguages.push(lang)
+      return setI18nLanguage(lang)
+    }
+  )
+}
+
+// Load fallback language
+loadLanguageAsync(defaultLang)
+
+// Set current language
+loadLanguageAsync('pt')
+
 export const vm = new Vue({
   el: '#app',
   static() {
@@ -80,6 +122,7 @@ export const vm = new Vue({
       currentDevice: null
     }
   },
+  i18n,
   router,
   store,
   render: h => h(App)

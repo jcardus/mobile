@@ -1,0 +1,7 @@
+{
+  "login_user": "Email",
+  "login_password": "Password",
+  "login_remember_me": "Remember me",
+  "login_button": "Login",
+  "login_password_warn": "The password can not be less than 6 digits"
+}

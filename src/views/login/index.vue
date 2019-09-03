@@ -13,7 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          :placeholder="$t('login_user')"
           name="username"
           type="text"
           tabindex="1"
@@ -31,7 +31,7 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            placeholder="Password"
+            :placeholder="$t('login_password')"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -45,7 +45,7 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login_button') }}</el-button>
     </el-form>
   </div>
 </template>
@@ -53,6 +53,7 @@
 <script>
 
 import Vue from 'vue'
+import { i18n } from '../../main'
 
 export default {
   name: 'Login',
@@ -62,7 +63,7 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error(i18n.t('login_password_warn')))
       } else {
         callback()
       }
