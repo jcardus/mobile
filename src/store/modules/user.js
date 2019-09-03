@@ -1,8 +1,6 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import VueCookies from 'vue-cookies'
-import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
 
 const state = {
@@ -32,16 +30,13 @@ const mutations = {
 }
 
 const actions = {
-  // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const data = response.data
         data.password = password
-        Vue.$log.debug(response.data)
-        VueCookies.set('user-info', response.data)
-        setToken(new Date().getTime())
+        setToken(response.data)
         traccar.devices()
         resolve()
       }).catch(error => {
@@ -50,7 +45,6 @@ const actions = {
     })
   },
 
-  // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
@@ -82,17 +76,14 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve) => {
       logout(state.token).then(() => {
-        VueCookies.remove('user-info')
-        commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
-        removeToken()
         resetRouter()
+        removeToken()
         resolve()
       }).catch(() => {
-        commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
-        removeToken()
         resetRouter()
+        removeToken()
         resolve()
       })
     })

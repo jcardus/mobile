@@ -1,12 +1,12 @@
-import Cookies from 'js-cookie'
+import VueCookies from 'js-cookie'
 
 const state = {
   sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+    opened: VueCookies.get('sidebarStatus') ? !!+VueCookies.get('sidebarStatus') : true,
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: VueCookies.get('size') || 'medium'
 
 }
 
@@ -15,13 +15,13 @@ const mutations = {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
     if (state.sidebar.opened) {
-      Cookies.set('sidebarStatus', 1)
+      VueCookies.set('sidebarStatus', 1)
     } else {
-      Cookies.set('sidebarStatus', 0)
+      VueCookies.set('sidebarStatus', 0)
     }
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set('sidebarStatus', 0)
+    VueCookies.set('sidebarStatus', 0)
     state.sidebar.opened = false
     state.sidebar.withoutAnimation = withoutAnimation
   },
@@ -30,7 +30,7 @@ const mutations = {
   },
   SET_SIZE: (state, size) => {
     state.size = size
-    Cookies.set('size', size)
+    VueCookies.set('size', size)
   },
   SOCKET_ONOPEN(state) {
     state.socket.isConnected = true

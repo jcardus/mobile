@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import VueCookies from 'vue-cookies'
 import axios from 'axios'
 import { vm } from '../main.js'
+import VueCookies from 'vue-cookies'
+
 const serverHost = 'dev.pinme.io'
 const baseUrl = 'https://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
@@ -74,4 +75,3 @@ export const traccar = {
     })
   }
 }
-
