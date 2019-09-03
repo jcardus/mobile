@@ -53,7 +53,6 @@
 <script>
 
 import Vue from 'vue'
-import { i18n } from 'vue-i18n'
 
 export default {
   name: 'Login',
@@ -63,7 +62,7 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error(i18n.t('login_password_warn')))
+        callback(new Error(this.t('login_password_warn')))
       } else {
         callback()
       }
