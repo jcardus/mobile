@@ -1,4 +1,6 @@
 {
   "login_password": "Contraseña",
-  "login_button": "Iniciar"
+  "login_remember_me": "Recuerdame",
+  "login_button": "Iniciar",
+  "map": "Mapa"
 }

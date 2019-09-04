@@ -27,10 +27,10 @@ import * as lnglat from '../../utils/lnglat'
 import along from '@turf/along'
 import bbox from '@turf/bbox'
 import bearing from '@turf/bearing'
-// import area from '@turf/area'
 import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
 import vhCheck from 'vh-check'
+import { i18n } from '../../main'
 
 export default {
   name: 'VueMap',
@@ -183,8 +183,8 @@ export default {
       if (settings.showVehicleList) {
         this.$static.map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
         const VD = Vue.extend(VehicleList)
-        const vm = new VD({})
-        vm.$mount('#vehicle-list-div')
+        const _vm = new VD({ i18n })
+        _vm.$mount('#vehicle-list-div')
       }
       if (settings.showSlider) {
         this.$static.map.addControl(new MapboxCustomControl('slider-div'), 'top-left')

@@ -26,7 +26,7 @@
                       nowrap
                       @click="sortBy(key)"
                     >
-                      {{ key | formatHeaders | capitalize }}
+                      {{ key | formatHeaders | t | capitalize }}
                       <span v-if="key===sortKey" class="fa" :class="sortColumns[key] > 0 ? 'fa-arrow-up' : 'fa-arrow-down'" />
                     </th>
                   </tr>
@@ -64,7 +64,6 @@
 import { serverBus, vm } from '../../main'
 
 export default {
-  i18n: vm.$i18n,
   filters: {
     formatColor: function(value) {
       if (value.speed > 1) { return 'color:darkgreen' }
@@ -81,7 +80,7 @@ export default {
       return value.charAt(0).toUpperCase() + value.slice(1)
     },
     formatHeaders: function(value) {
-      if (value) { return vm.$t('vehicle_list_column_' + value) }
+      if (value) { return 'vehicle_list_column_' + value }
       return value
     }
   },
@@ -116,7 +115,7 @@ export default {
   },
   computed: {
     devices: { get: function() { return vm.$data.devices }, set: function(value) { vm.$data.devices = value } },
-    vehicle_list_title: { get: function() { return vm.$i18n.t('vehicle_list_title') } },
+    vehicle_list_title: { get: function() { return this.$t('vehicle_list_title') } },
     positions() {
       return vm.$data.positions
     },

@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import Element from 'element-ui'
 import './styles/element-variables.scss'
@@ -15,6 +14,8 @@ import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import VueTimeago from 'vue-timeago'
 import VueI18n from 'vue-i18n'
+import VueI18nFilter from 'vue-i18n-filter'
+import VueCookies from 'vue-cookies'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
@@ -31,11 +32,10 @@ Vue.use(VueLogger, options)
 Vue.config.lang = defaultLang
 import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(Element, { locale: locale,
-  size: Cookies.get('size') || 'medium' // set element-ui default size
+  size: VueCookies.get('size') || 'medium' // set element-ui default size
 })
 
 export const serverBus = new Vue()
-
 export const settings = {
   animateMarkers: true,
   showVehicleList: true,
@@ -62,6 +62,7 @@ Vue.use(VueTimeago, {
 })
 
 Vue.use(VueI18n)
+Vue.use(VueI18nFilter)
 
 export const i18n = new VueI18n({
   fallbackLocale: defaultLang
