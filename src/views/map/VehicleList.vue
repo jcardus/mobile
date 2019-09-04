@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header" :open="false" :class="{opened:show}" @click="toggle">
         <p class="card-header-title">
-          Vehicles
+          {{ $t('vehicle_list_title') }}
         </p>
         <a class="card-header-icon">
           <i class="fa fa-2x black fa-angle-down header-icon" :class="{rotate:show}" />
@@ -13,7 +13,7 @@
         <div v-show="show" class="dd-body">
           <div class="dd-body-inner">
             <label>
-              <input v-model="filterKey" class="input" type="text" placeholder="Search...">
+              <input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicle_list_search')">
             </label>
             <div>
               <table class="table">
@@ -44,7 +44,7 @@
                       <td><i class="fas fa-truck" :style="entry | formatColor" /></td>
                       <td v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'">
                         <span :class="key==='lastUpdate'?'tag is-success':''">
-                          <timeago v-if="key==='lastUpdate'" :datetime="entry[key]" :auto-update="60" />
+                          <timeago v-if="key==='lastUpdate'" :datetime="entry[key]" :auto-update="60" locale="pt-PT" />
                           <div v-else>{{ entry[key] | formatNumber }}</div>
                         </span>
                       </td>
@@ -64,6 +64,7 @@
 import { serverBus, vm } from '../../main'
 
 export default {
+  i18n: vm.$i18n,
   filters: {
     formatColor: function(value) {
       if (value.speed > 1) { return 'color:darkgreen' }
@@ -80,8 +81,7 @@ export default {
       return value.charAt(0).toUpperCase() + value.slice(1)
     },
     formatHeaders: function(value) {
-      if (value && value === 'lastUpdate') { return 'Last update' }
-      if (value && value === 'speed') { return 'Km/h' }
+      if (value) { return vm.$t('vehicle_list_column_' + value) }
       return value
     }
   },
@@ -116,6 +116,7 @@ export default {
   },
   computed: {
     devices: { get: function() { return vm.$data.devices }, set: function(value) { vm.$data.devices = value } },
+    vehicle_list_title: { get: function() { return vm.$i18n.t('vehicle_list_title') } },
     positions() {
       return vm.$data.positions
     },
