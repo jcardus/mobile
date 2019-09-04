@@ -44,7 +44,7 @@
                       <td><i class="fas fa-truck" :style="entry | formatColor" /></td>
                       <td v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'">
                         <span :class="key==='lastUpdate'?'tag is-success':''">
-                          <timeago v-if="key==='lastUpdate'" :datetime="entry[key]" :auto-update="60" locale="pt-PT" />
+                          <timeago v-if="key==='lastUpdate'" :datetime="entry[key]" :auto-update="60" :locale="$i18n.locale" />
                           <div v-else>{{ entry[key] | formatNumber }}</div>
                         </span>
                       </td>
@@ -115,7 +115,6 @@ export default {
   },
   computed: {
     devices: { get: function() { return vm.$data.devices }, set: function(value) { vm.$data.devices = value } },
-    vehicle_list_title: { get: function() { return this.$t('vehicle_list_title') } },
     positions() {
       return vm.$data.positions
     },

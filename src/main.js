@@ -58,7 +58,12 @@ Vue.use(VueStatic, {
 })
 
 Vue.use(VueTimeago, {
-  name: 'Timeago'
+  name: 'Timeago',
+  locale: 'en', // Default locale
+  locales: {
+    'pt': require('date-fns/locale/pt'),
+    'es': require('date-fns/locale/es')
+  }
 })
 
 Vue.use(VueI18n)
