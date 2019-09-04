@@ -4,6 +4,7 @@
 
       <div class="title-container">
         <h3 class="title">Fleetrack</h3>
+        <lang-select class="set-language" />
       </div>
 
       <el-form-item prop="username">
@@ -53,9 +54,11 @@
 <script>
 
 import Vue from 'vue'
+import LangSelect from '@/components/LangSelect'
 
 export default {
   name: 'Login',
+  components: { LangSelect },
   data() {
     const validateUsername = (rule, value, callback) => {
       callback()
@@ -261,6 +264,15 @@ $light_gray:#eee;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
+    }
+
+    .set-language {
+      color: #fff;
+      position: absolute;
+      top: 3px;
+      font-size: 18px;
+      right: 0px;
+      cursor: pointer;
     }
   }
 

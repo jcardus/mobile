@@ -101,11 +101,20 @@ export function loadLanguageAsync(lang) {
   )
 }
 
+export function getLanguage() {
+  const chooseLanguage = VueCookies.get('language')
+  if (chooseLanguage) {
+    return chooseLanguage
+  }
+
+  return 'en'
+}
+
 // Load fallback language
 loadLanguageAsync(defaultLang)
 
 // Set current language
-loadLanguageAsync('pt')
+loadLanguageAsync(getLanguage())
 
 export const vm = new Vue({
   el: '#app',
