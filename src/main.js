@@ -13,7 +13,7 @@ import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import VueTimeago from 'vue-timeago'
-import VueI18n from 'vue-i18n'
+import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 
@@ -30,9 +30,10 @@ const options = {
 }
 Vue.use(VueLogger, options)
 Vue.config.lang = defaultLang
-import locale from 'element-ui/lib/locale/lang/en'
-Vue.use(Element, { locale: locale,
-  size: VueCookies.get('size') || 'medium' // set element-ui default size
+
+Vue.use(Element, {
+  size: VueCookies.get('size') || 'medium', // set element-ui default size
+  i18n: (key, value) => i18n.t(key, value)
 })
 
 export const serverBus = new Vue()
@@ -62,59 +63,12 @@ Vue.use(VueTimeago, {
   locale: 'en', // Default locale
   locales: {
     'pt': require('date-fns/locale/pt'),
-    'es': require('date-fns/locale/es')
+    'es': require('date-fns/locale/es'),
+    'fr': require('date-fns/locale/fr')
   }
 })
 
-Vue.use(VueI18n)
 Vue.use(VueI18nFilter)
-
-export const i18n = new VueI18n({
-  fallbackLocale: defaultLang
-})
-
-const loadedLanguages = []
-
-function setI18nLanguage(lang) {
-  i18n.locale = lang
-  return lang
-}
-
-export function loadLanguageAsync(lang) {
-  // If the same language
-  if (i18n.locale === lang) {
-    return Promise.resolve(setI18nLanguage(lang))
-  }
-
-  // If the language was already loaded
-  if (loadedLanguages.includes(lang)) {
-    return Promise.resolve(setI18nLanguage(lang))
-  }
-
-  // If the language hasn't been loaded yet
-  return import(`@/lang/${lang}.json`).then(
-    messages => {
-      i18n.setLocaleMessage(lang, messages.default)
-      loadedLanguages.push(lang)
-      return setI18nLanguage(lang)
-    }
-  )
-}
-
-export function getLanguage() {
-  const chooseLanguage = VueCookies.get('language')
-  if (chooseLanguage) {
-    return chooseLanguage
-  }
-
-  return 'en'
-}
-
-// Load fallback language
-loadLanguageAsync(defaultLang)
-
-// Set current language
-loadLanguageAsync(getLanguage())
 
 export const vm = new Vue({
   el: '#app',
@@ -137,8 +91,8 @@ export const vm = new Vue({
       currentDevice: null
     }
   },
-  i18n,
   router,
   store,
+  i18n,
   render: h => h(App)
 })

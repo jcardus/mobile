@@ -13,16 +13,16 @@
     <table>
       <tr><td>
             <i id="showRoutes" class="fas fa-2x" :class="showRoutes?'fa-toggle-on':'fa-toggle-off'" style="color:dodgerblue" @click="showRoutesClick" /></td>
-        <td><label for="showRoutes">Show route</label></td></tr>
+        <td><label for="showRoutes">{{ $t('vehicleDetail.show_route') }}</label></td></tr>
       <tr><td>
             <i id="routeMatch" class="fas fa-2x" :class="routeMatch?'fa-toggle-on':'fa-toggle-off'" style="color:dodgerblue" @click="routeMatchClick" /></td>
-        <td><label for="routeMatch">Route match</label></td></tr>
+        <td><label for="routeMatch">{{ $t('vehicleDetail.route_match') }}</label></td></tr>
     </table>
     <div>
       {{ feature.properties.address }}
       <br>
       {{ Math.round(device.speed) }} km/h,
-      <timeago :datetime="device.lastUpdate" :auto-update="60" />.
+      <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)" />.
       <br>
     </div>
   </div>

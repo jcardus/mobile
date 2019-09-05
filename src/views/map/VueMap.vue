@@ -30,7 +30,7 @@ import bearing from '@turf/bearing'
 import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
 import vhCheck from 'vh-check'
-import { i18n } from '../../main'
+import i18n from '../../lang'
 
 export default {
   name: 'VueMap',
@@ -140,6 +140,7 @@ export default {
           .addTo(this.$static.map)
         const VD = Vue.extend(VehicleDetail)
         const vm = new VD({
+          i18n: i18n,
           data: {
             device: device,
             feature: feature
@@ -183,13 +184,13 @@ export default {
       if (settings.showVehicleList) {
         this.$static.map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
         const VD = Vue.extend(VehicleList)
-        const _vm = new VD({ i18n })
+        const _vm = new VD({ i18n: i18n })
         _vm.$mount('#vehicle-list-div')
       }
       if (settings.showSlider) {
         this.$static.map.addControl(new MapboxCustomControl('slider-div'), 'top-left')
         const VD = Vue.extend(HistoryPanel)
-        const vm = new VD({})
+        const vm = new VD({ i18n: i18n })
         vm.$mount('#slider-div')
       }
     },

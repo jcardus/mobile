@@ -70,13 +70,13 @@ export const constantRoutes = [
     redirect: '/map',
     component: Layout,
     hidden: false,
-    meta: { title: 'Map', icon: 'map' },
+    meta: { title: 'map', icon: 'map' },
     children: [
       {
         path: 'map',
         component: () => import('@/views/map/VueMap'),
         name: 'Map',
-        meta: { title: 'Map', icon: 'map', affix: true }
+        meta: { title: 'map', icon: 'map', affix: true }
       }
     ]
   },
@@ -89,7 +89,7 @@ export const constantRoutes = [
         path: 'main',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard' }
+        meta: { title: 'dashboard', icon: 'dashboard' }
       }
     ]
   },
@@ -99,19 +99,19 @@ export const constantRoutes = [
     component: Layout,
     hidden: false,
     name: 'Reports',
-    meta: { title: 'Reports', icon: 'documentation' },
+    meta: { title: 'reports', icon: 'documentation' },
     children: [
       {
         path: 'trips',
         component: () => import('@/views/reports/index'),
         name: 'TripReport',
-        meta: { title: 'Trip Report', icon: 'documentation', noCache: true }
+        meta: { title: 'trip_report_title', icon: 'documentation', noCache: true }
       },
       {
         path: 'route',
         component: () => import('@/views/reports/index'),
         name: 'Route Report',
-        meta: { title: 'Route Report', icon: 'documentation', noCache: true }
+        meta: { title: 'route_report_title', icon: 'documentation', noCache: true }
       }
     ]
   },

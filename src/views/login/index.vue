@@ -14,7 +14,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          :placeholder="$t('login_user')"
+          :placeholder="$t('login.login_user')"
           name="username"
           type="text"
           tabindex="1"
@@ -32,7 +32,7 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            :placeholder="$t('login_password')"
+            :placeholder="$t('login.login_password')"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -46,7 +46,7 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login_button') }}</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
     </el-form>
   </div>
 </template>
@@ -65,7 +65,7 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error(this.$t('login_password_warn')))
+        callback(new Error(this.$t('login.login_password_warn')))
       } else {
         callback()
       }

@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header" :open="false" :class="{opened:show}" @click="toggle">
         <p class="card-header-title">
-          {{ $t('vehicle_list_title') }}
+          {{ $t('vehicleList.title') }}
         </p>
         <a class="card-header-icon">
           <i class="fa fa-2x black fa-angle-down header-icon" :class="{rotate:show}" />
@@ -13,7 +13,7 @@
         <div v-show="show" class="dd-body">
           <div class="dd-body-inner">
             <label>
-              <input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicle_list_search')">
+              <input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')">
             </label>
             <div>
               <table class="table">
@@ -44,7 +44,7 @@
                       <td><i class="fas fa-truck" :style="entry | formatColor" /></td>
                       <td v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'">
                         <span :class="key==='lastUpdate'?'tag is-success':''">
-                          <timeago v-if="key==='lastUpdate'" :datetime="entry[key]" :auto-update="60" :locale="$i18n.locale" />
+                          <timeago v-if="key==='lastUpdate'" :datetime="entry[key]" :auto-update="60" :locale="$i18n.locale.substring(0,2)" />
                           <div v-else>{{ entry[key] | formatNumber }}</div>
                         </span>
                       </td>
@@ -80,7 +80,7 @@ export default {
       return value.charAt(0).toUpperCase() + value.slice(1)
     },
     formatHeaders: function(value) {
-      if (value) { return 'vehicle_list_column_' + value }
+      if (value) { return 'vehicleList.column_' + value }
       return value
     }
   },
