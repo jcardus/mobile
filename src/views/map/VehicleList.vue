@@ -21,7 +21,7 @@
                   <tr>
                     <th />
                     <th
-                      v-for="key in columns"
+                      v-for="key in headerColumns"
                       :key="key"
                       nowrap
                       @click="sortBy(key)"
@@ -42,11 +42,14 @@
                       @click="vehicleSelected(entry)"
                     >
                       <td><i class="fas fa-truck" :style="entry | formatColor" /></td>
-                      <td v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'">
-                        <span :class="key==='lastUpdate'?'tag is-success':''">
-                          <timeago v-if="key==='lastUpdate'" :datetime="entry[key]" :auto-update="60" :locale="$i18n.locale.substring(0,2)" />
-                          <div v-else>{{ entry[key] | formatNumber }}</div>
-                        </span>
+                      <td>
+                        <div> <!-- v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'"-->
+                          <span class="text-overflow">{{ entry.name | formatNumber }}</span>
+                          <span class="text-overflow">{{ entry.speed | formatNumber }} km/h</span>
+                          <span class="tag is-info">
+                            <timeago :datetime="entry.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)" />
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -66,8 +69,8 @@ import { serverBus, vm } from '../../main'
 export default {
   filters: {
     formatColor: function(value) {
-      if (value.speed > 1) { return 'color:darkgreen' }
-      if (value.ignition) { return 'color:darkyellow' }
+      if (value.speed > 2) { return 'color:darkgreen' }
+      if (value.ignition) { return 'color:gold' }
       return 'color:darkred'
     },
     formatNumber: function(value) {
@@ -100,7 +103,8 @@ export default {
   },
   data() {
     return {
-      columns: ['name', 'speed', 'lastUpdate'],
+      columns: ['name', 'speed', 'lastUpdate', 'ignition'],
+      headerColumns: ['name', 'speed'],
       animating: false,
       data: [],
       selected: -1,
@@ -192,7 +196,8 @@ export default {
         position: absolute;
         top: 0;
         left: 0;
-        width: 355px;
+        min-width: 200px;
+        max-width: 355px;
         font-size: 15px;
     }
 
@@ -245,23 +250,7 @@ export default {
     }
 
     .dd-body-inner {
-        padding: 0;
-
-    }
-
-    table {
-        margin: 0px !important;
-        width: 100%;
-    }
-
-    tr {
-        padding-bottom: 0 !important;
-        padding-top: 0 !important;
-    }
-
-    td {
-        padding-left: 7px !important;
-        padding-right: 0 !important;
+        padding: 5px;
 
     }
 
@@ -277,7 +266,7 @@ export default {
       display: block;
       transition: 1000ms ease-out;
       overflow: scroll;
-      max-height: calc(100vh - 310px)
+      max-height: calc(100vh - 410px)
     }
 
     @media screen and (max-width: 768px) {
@@ -291,5 +280,17 @@ export default {
         width: calc(100% - 35px);
         font-size: inherit;
         margin: 8px;
+    }
+    .table {
+      width: 100%;
+      padding: 0;
+      margin: 0 !important;
+    }
+
+    .text-overflow {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 </style>
