@@ -47,6 +47,7 @@ export default {
     }
   },
   created() {
+    const self = this
     this.$root.$store.subscribe((mutation, state) => {
       if (mutation.type === 'SOCKET_ONMESSAGE') {
         if (state.socket.message.events) {
@@ -54,7 +55,7 @@ export default {
           for (let i = 0; i < events.length; i++) {
             const event = events[i]
             this.$notify({
-              title: this.$t(event.type),
+              title: self.$t('layout.' + event.type),
               message: this.$root.device(event.deviceId).name,
               type: 'info',
               duration: 0
