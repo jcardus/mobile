@@ -167,14 +167,8 @@ export default {
     toggle: function() {
       this.show = !this.show
     },
-    beforeEnter: function(el) {
-      el.style.height = '0'
-    },
     enter: function(el) {
       el.style.height = '100px'
-    },
-    beforeLeave: function(el) {
-      el.style.height = /* el.scrollHeight + */'100px'
     },
     leave: function(el) {
       el.style.height = '0'

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+
 import { vm } from '../main.js'
 import VueCookies from 'vue-cookies'
 

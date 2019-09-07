@@ -115,7 +115,22 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/settings',
+    redirect: '/settings/geofences',
+    component: Layout,
+    hidden: false,
+    name: 'Settings',
+    meta: { title: 'Settings', icon: 'settings' },
+    children: [
+      {
+        path: 'geofences',
+        component: () => import('@/views/settings/Geofences'),
+        name: 'Geofences',
+        meta: { title: 'Geofences', icon: 'settings', noCache: true }
+      }
+    ]
+  },
   {
     path: '/profile',
     component: Layout,

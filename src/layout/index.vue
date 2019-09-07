@@ -16,7 +16,6 @@
 import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
-import Vue from 'vue'
 
 export default {
   name: 'Layout',
@@ -35,6 +34,9 @@ export default {
       needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader
     }),
+    devices() {
+      return this.$root.$data.devices
+    },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
@@ -44,8 +46,23 @@ export default {
       }
     }
   },
-  mounted() {
-    Vue.$log.debug('layout mounted')
+  created() {
+    this.$root.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'SOCKET_ONMESSAGE') {
+        if (state.socket.message.events) {
+          const events = state.socket.message.events
+          for (let i = 0; i < events.length; i++) {
+            const event = events[i]
+            this.$notify({
+              title: this.$t(event.type),
+              message: this.$root.device(event.deviceId).name,
+              type: 'info',
+              duration: 0
+            })
+          }
+        }
+      }
+    })
   },
   methods: {
     handleClickOutside() {

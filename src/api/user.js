@@ -18,9 +18,9 @@ export function getInfo(token) {
     resolve({
       code: 200, data: {
         roles: ['admin'],
-        introduction: 'I am a super administrator',
-        avatar: 'https://ui-avatars.com/api/?name=John+Doe',
-        name: 'Super Admin'
+        introduction: '',
+        avatar: 'https://ui-avatars.com/api/?name=' + token.name,
+        name: ''
       }
     })
   })

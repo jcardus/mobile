@@ -91,6 +91,11 @@ export const vm = new Vue({
       currentDevice: null
     }
   },
+  methods: {
+    device(deviceId) {
+      return this.devices.find(e => e.id === deviceId)
+    }
+  },
   router,
   store,
   i18n,
