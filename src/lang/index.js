@@ -35,12 +35,21 @@ const messages = {
     ...elementEsLocale
   }
 }
+
+export function setLanguage(lang) {
+  if (lang) {
+    const key = lang.replace('-', '')
+    i18n.locale = key
+    Cookies.set('language', key)
+  }
+}
+
 export function getLanguage() {
   const chooseLanguage = Cookies.get('language')
   if (chooseLanguage) return chooseLanguage
 
   // if has not choose language
-  const language = (navigator.language || navigator.browserLanguage).toLowerCase()
+  const language = (navigator.language || navigator.browserLanguage).toLowerCase().replace('-', '')
   const locales = Object.keys(messages)
   for (const locale of locales) {
     if (language.indexOf(locale) > -1) {

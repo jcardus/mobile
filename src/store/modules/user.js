@@ -2,6 +2,7 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import { traccar } from '@/api/traccar-api'
+import { setLanguage } from '@/lang/index'
 
 const state = {
   token: getToken(),
@@ -37,6 +38,7 @@ const actions = {
         const data = response.data
         data.password = password
         setToken(response.data)
+        setLanguage(data.attributes.lang)
         traccar.devices()
         resolve()
       }).catch(error => {
