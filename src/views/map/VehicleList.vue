@@ -266,7 +266,7 @@ export default {
       display: block;
       transition: 1000ms ease-out;
       overflow: scroll;
-      max-height: calc(100vh - 410px)
+      max-height: calc(100vh - 335px)
     }
 
     @media screen and (max-width: 768px) {
