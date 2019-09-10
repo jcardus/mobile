@@ -12,7 +12,7 @@ export class MapboxStyleSwitcherControl {
     const defaultPosition = 'top-right'
     return defaultPosition
   }
-  onAdd(map) {
+  onAdd() {
     this.controlContainer = document.createElement('div')
     this.controlContainer.classList.add('mapboxgl-ctrl')
     this.controlContainer.classList.add('mapboxgl-ctrl-group')
@@ -60,7 +60,7 @@ export class MapboxStyleSwitcherControl {
     this.controlContainer.appendChild(mapStyleContainer)
     return this.controlContainer
   }
-  onRemove() {
+  static onRemove() {
     return
   }
 }

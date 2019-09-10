@@ -10,6 +10,7 @@ export default {
     login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   layout: {
-    deviceOnline: 'Dispositivo en línea'
+    deviceOnline: 'Dispositivo en línea',
+    deviceMoving: 'Dispositivo en movimiento'
   }
 }
