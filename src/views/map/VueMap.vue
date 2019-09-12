@@ -14,7 +14,6 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import { MapboxStyleSwitcherControl } from './mapbox/mapbox-styles'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import VehicleList from './VehicleList'
 import { serverBus, settings, vm } from '../../main'
@@ -31,6 +30,7 @@ import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
 import vhCheck from 'vh-check'
 import i18n from '../../lang'
+import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 
 export default {
   name: 'VueMap',
@@ -100,7 +100,6 @@ export default {
       this.addLayers()
       this.addImages()
       this.subscribeEvents()
-      this.addVehicleList()
       traccar.startReceiving()
       this.map.resize()
     },
@@ -180,20 +179,6 @@ export default {
         this.$log.debug('no cookie...')
       }
     },
-    addVehicleList: function() {
-      if (settings.showVehicleList) {
-        this.$static.map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
-        const VD = Vue.extend(VehicleList)
-        const _vm = new VD({ i18n: i18n })
-        _vm.$mount('#vehicle-list-div')
-      }
-      if (settings.showSlider) {
-        this.$static.map.addControl(new MapboxCustomControl('slider-div'), 'top-left')
-        const VD = Vue.extend(HistoryPanel)
-        const vm = new VD({ i18n: i18n })
-        vm.$mount('#slider-div')
-      }
-    },
     stopLoader: function() {
       utils.stopLoader()
     },
@@ -250,12 +235,28 @@ export default {
         }
       })
       map.addControl(this.$static.draw, 'bottom-right')
-      map.addControl(new MapboxStyleSwitcherControl(), 'bottom-right')
+      // map.addControl(new MapboxStyleSwitcherControl(), 'bottom-right')
       map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
         map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
       }
+      if (settings.showVehicleList) {
+        map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
+        const VD = Vue.extend(VehicleList)
+        const _vm = new VD({ i18n: i18n })
+        _vm.$mount('#vehicle-list-div')
+      }
+      if (settings.showSlider) {
+        map.addControl(new MapboxCustomControl('slider-div'), 'top-left')
+        const VD = Vue.extend(HistoryPanel)
+        const vm = new VD({ i18n: i18n })
+        vm.$mount('#slider-div')
+      }
+      map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
+      const VD = Vue.extend(StyleSwitcherControl)
+      const _vm = new VD({ i18n: i18n })
+      _vm.$mount('#style-switcher-div')
     },
     onMoveEnd: function() {
       this.$log.debug('moveend storing cookie...')
