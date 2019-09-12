@@ -235,7 +235,10 @@ export default {
         }
       })
       map.addControl(this.$static.draw, 'bottom-right')
-      // map.addControl(new MapboxStyleSwitcherControl(), 'bottom-right')
+      map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
+      const VD = Vue.extend(StyleSwitcherControl)
+      const _vm = new VD({ i18n: i18n })
+      _vm.$mount('#style-switcher-div')
       map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
@@ -253,10 +256,6 @@ export default {
         const vm = new VD({ i18n: i18n })
         vm.$mount('#slider-div')
       }
-      map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
-      const VD = Vue.extend(StyleSwitcherControl)
-      const _vm = new VD({ i18n: i18n })
-      _vm.$mount('#style-switcher-div')
     },
     onMoveEnd: function() {
       this.$log.debug('moveend storing cookie...')

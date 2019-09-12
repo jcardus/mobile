@@ -11,6 +11,15 @@ export default {
   },
   layout: {
     deviceOnline: 'Dispositivo en línea',
-    deviceMoving: 'Dispositivo en movimiento'
+    deviceMoving: 'Dispositivo en movimiento',
+    deviceStopped: 'Dispositivo parado',
+    ignitionOff: 'Ignición off'
+  },
+  vehicleList: {
+    title: 'Vehículos',
+    search: 'Buscar...',
+    column_name: 'Nombre',
+    column_speed: 'Km/h',
+    column_lastUpdate: 'Ultima actualización'
   }
 }

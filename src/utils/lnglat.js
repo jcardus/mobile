@@ -13,31 +13,18 @@ export function findFeatureByDeviceId(deviceId) {
   })
 }
 
+function addImage(path, name) {
+  vm.$static.map.loadImage(path, function(error, image) {
+    if (!error) { vm.$static.map.addImage(name, image) }
+  })
+}
 export function addImages(map) {
-  map.loadImage('img/40/car-green.png', function(error, image) {
-    if (error) throw error
-    map.addImage('car-green', image)
-  })
-  map.loadImage('img/40/car-yellow.png', function(error, image) {
-    if (error) throw error
-    map.addImage('car-yellow', image)
-  })
-  map.loadImage('img/40/car-red.png', function(error, image) {
-    if (error) throw error
-    map.addImage('car-red', image)
-  })
-  map.loadImage('img/m1.png', function(error, image) {
-    if (error) throw error
-    map.addImage('m1', image)
-  })
-  map.loadImage('img/m2.png', function(error, image) {
-    if (error) throw error
-    map.addImage('m2', image)
-  })
-  map.loadImage('img/m3.png', function(error, image) {
-    if (error) throw error
-    map.addImage('m3', image)
-  })
+  addImage(map, 'img/40/car-green.png', 'car-green')
+  addImage(map, 'img/40/car-yellow.png', 'car-yellow')
+  addImage(map, 'img/40/car-red.png', 'car-red')
+  addImage(map, 'img/m1.png', 'm1')
+  addImage(map, 'img/m2.png', 'm2')
+  addImage(map, 'img/m3.png', 'm3')
 }
 export function getBounds(coordinates) {
   const line = helpers.lineString(coordinates)
@@ -223,24 +210,26 @@ export function addLayers(map) {
   } else { Vue.$log.warn('layer unclustered-point already exists...') }
   if (!map.getLayer('geofences')) {
     traccar.geofences().then(response => {
-      map.addSource('geofences', getGeofences(response))
-      map.addLayer({
-        id: 'geofences',
-        type: 'fill',
-        source: 'geofences',
-        paint: {
-          'fill-color': '#B42222',
-          'fill-opacity': 0.4
-        }
-      })
-      map.addLayer({
-        id: 'geofences-labels',
-        type: 'symbol',
-        source: 'geofences',
-        layout: {
-          'text-field': '{title}'
-        }
-      })
+      if (!map.getSource('geofences')) { map.addSource('geofences', getGeofences(response)) }
+      if (!map.getLayer('geofences')) {
+        map.addLayer({
+          id: 'geofences',
+          type: 'fill',
+          source: 'geofences',
+          paint: {
+            'fill-color': '#B42222',
+            'fill-opacity': 0.4
+          }
+        })
+        map.addLayer({
+          id: 'geofences-labels',
+          type: 'symbol',
+          source: 'geofences',
+          layout: {
+            'text-field': '{title}'
+          }
+        })
+      }
     })
   }
 }
