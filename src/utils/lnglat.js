@@ -197,10 +197,9 @@ export function addLayers(map) {
       layout: {
         'icon-image':
           ['case',
-            ['==', ['get', 'ignition'], false], 'car-red',
-            ['==', ['get', 'motion'], false], 'car-yellow',
-            ['<', ['get', 'speed'], 2], 'car-yellow',
-            'car-green'
+            ['>', ['get', 'speed'], 2], 'car-green',
+            ['==', ['get', 'ignition'], true], 'car-yellow',
+            'car-red'
           ],
         'icon-rotate': ['get', 'course'],
         'icon-allow-overlap': true,
