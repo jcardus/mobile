@@ -28,6 +28,7 @@ export default {
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
+      map: state => state.map,
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
       showSettings: state => state.settings.showSettings,
@@ -58,7 +59,7 @@ export default {
               title: self.$t('layout.' + event.type),
               message: this.$root.device(event.deviceId).name,
               type: 'info',
-              duration: 0
+              duration: 5000
             })
           }
         }

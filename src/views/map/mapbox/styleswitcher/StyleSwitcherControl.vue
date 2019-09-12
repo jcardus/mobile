@@ -10,6 +10,8 @@
       >
         {{ style.title }}
       </button>
+      <button :class="geofencesVisible?'active':''" @click="toggleGeofences">Geofences
+      </button>
     </div>
   </div>
 </template>
@@ -35,6 +37,10 @@ export default {
       ]
     }
   },
+  computed: {
+    map: function() { return vm.$static.map },
+    geofencesVisible: function() { return vm.$store.state.map.showGeofences }
+  },
   mounted: function() {
     document.addEventListener('click', event => {
       if (this.$refs.controlContainer.contains(event.target)) {
@@ -44,6 +50,13 @@ export default {
     })
   },
   methods: {
+    toggleGeofences: function() {
+      vm.$store.dispatch('map/toggleGeofences')
+      this.map.setLayoutProperty('geofences', 'visibility',
+        this.geofencesVisible ? 'visible' : 'none')
+      this.map.setLayoutProperty('geofences-labels', 'visibility',
+        this.geofencesVisible ? 'visible' : 'none')
+    },
     btnClick: function() {
       this.btnVisible = false
       this.containerVisible = true
@@ -54,6 +67,7 @@ export default {
         lnglat.addLayers(vm.$static.map)
         lnglat.addImages(vm.$static.map)
       })
+      this.selected = title
       this.containerVisible = false
       this.btnVisible = true
       const elms = this.$refs.controlContainer.getElementsByClassName('active')

@@ -25,8 +25,7 @@ const store = new Vuex.Store({
       isConnected: false,
       message: '',
       reconnectError: false
-    },
-    map: null
+    }
   },
   mutations: {
     SOCKET_ONOPEN(state) {

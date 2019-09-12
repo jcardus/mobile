@@ -213,6 +213,7 @@ export function addLayers(map) {
       if (!map.getSource('geofences')) { map.addSource('geofences', getGeofences(response)) }
       if (!map.getLayer('geofences')) {
         map.addLayer({
+          visibility: vm.$store.showGeofences,
           id: 'geofences',
           type: 'fill',
           source: 'geofences',
@@ -222,6 +223,7 @@ export function addLayers(map) {
           }
         })
         map.addLayer({
+          visibility: vm.$store.showGeofences,
           id: 'geofences-labels',
           type: 'symbol',
           source: 'geofences',
