@@ -19,12 +19,12 @@ function addImage(path, name) {
   })
 }
 export function addImages(map) {
-  addImage(map, 'img/40/car-green.png', 'car-green')
-  addImage(map, 'img/40/car-yellow.png', 'car-yellow')
-  addImage(map, 'img/40/car-red.png', 'car-red')
-  addImage(map, 'img/m1.png', 'm1')
-  addImage(map, 'img/m2.png', 'm2')
-  addImage(map, 'img/m3.png', 'm3')
+  addImage('img/40/car-green.png', 'car-green')
+  addImage('img/40/car-yellow.png', 'car-yellow')
+  addImage('img/40/car-red.png', 'car-red')
+  addImage('img/m1.png', 'm1')
+  addImage('img/m2.png', 'm2')
+  addImage('img/m3.png', 'm3')
 }
 export function getBounds(coordinates) {
   const line = helpers.lineString(coordinates)
@@ -213,7 +213,7 @@ export function addLayers(map) {
       if (!map.getSource('geofences')) { map.addSource('geofences', getGeofences(response)) }
       if (!map.getLayer('geofences')) {
         map.addLayer({
-          visibility: vm.$store.showGeofences,
+          visibility: vm.$store.state.showGeofences,
           id: 'geofences',
           type: 'fill',
           source: 'geofences',
@@ -223,7 +223,7 @@ export function addLayers(map) {
           }
         })
         map.addLayer({
-          visibility: vm.$store.showGeofences,
+          visibility: vm.$store.state.showGeofences,
           id: 'geofences-labels',
           type: 'symbol',
           source: 'geofences',
