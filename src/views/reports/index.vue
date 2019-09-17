@@ -81,13 +81,13 @@ export default {
   watch: {
     dateRange: function() {
       if (this.selectedDevices.length > 0) {
-        traccar.trips(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
+        traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
       }
     },
     selectedDevices: function(newValue) {
       this.$log.debug(newValue)
       if (this.dateRange.length > 0) {
-        traccar.trips(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
+        traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
       }
     }
   },
@@ -119,7 +119,7 @@ export default {
     loadData: function(trips) {
       // eslint-disable-next-line no-undef
       this.report = new Stimulsoft.Report.StiReport()
-      this.report.loadFile('/reports/Trips.mrt')
+      this.report.loadFile('/reports/report_trip.mrt')
       this.report.regData('root', 'root', trips)
       this.viewer.report = this.report
     }
