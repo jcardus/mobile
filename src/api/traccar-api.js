@@ -38,6 +38,31 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
+  report_position: function(devices, from, to, onFulfill) {
+    from = from.toISOString().replace('T', ' ').substring(0, 19)
+    to = to.toISOString().replace('T', ' ').substring(0, 19)
+
+    const body = {
+      username: cookie.email,
+      password: cookie.password,
+      report: 'location',
+      selected_devices: devices,
+      date_from: from,
+      date_to: to
+    }
+    axios.post('https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports',
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
   startReceiving: function() {
     vm.$connect()
   },

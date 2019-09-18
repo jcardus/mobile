@@ -106,6 +106,7 @@ export default {
 
     // eslint-disable-next-line no-undef
     const options = new Stimulsoft.Viewer.StiViewerOptions()
+
     // eslint-disable-next-line no-undef
     options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Auto
 
@@ -147,7 +148,7 @@ export default {
       if (this.selectedDevices.length > 0) {
         if (this.dateRange.length > 0) {
           this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
-          traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.generateReport)
+          traccar.report_position(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.generateReport)
         } else {
           alert('No date period selected')
         }
@@ -155,11 +156,11 @@ export default {
         alert('No vehicles selected')
       }
     },
-    generateReport: function(trips) {
+    generateReport: function(data) {
       // eslint-disable-next-line no-undef
       this.report = new Stimulsoft.Report.StiReport()
-      this.report.loadFile('/reports/report_trip.mrt')
-      this.report.regData('root', 'root', trips)
+      this.report.loadFile('/reports/report_location.mrt')
+      this.report.regData('root', 'root', data)
       this.viewer.report = this.report
     }
   }

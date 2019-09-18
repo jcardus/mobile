@@ -3,8 +3,8 @@ export default {
     map: 'Mapa',
     dashboard: 'Central de Controlo',
     reports: 'Relatórios',
-    trip_report_title: 'Relatório de Viagens',
-    route_report_title: 'Relatório de Rota'
+    report_trip_title: 'Relatório de viagens',
+    report_location_title: 'Relatório de posições'
   },
   vehicleList: {
     title: 'Veículos',

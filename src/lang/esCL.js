@@ -1,8 +1,8 @@
 export default {
   router: {
     map: 'Mapa',
-    trip_report_title: 'Trip Report',
-    route_report_title: 'Route Report'
+    report_trip_title: 'Informe de viajes',
+    report_location_title: 'Informe de posiciones'
   },
   login: {
     login_password: 'Contraseña',
