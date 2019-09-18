@@ -81,12 +81,14 @@ export default {
   watch: {
     dateRange: function() {
       if (this.selectedDevices.length > 0) {
+        this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
         traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
       }
     },
     selectedDevices: function(newValue) {
       this.$log.debug(newValue)
       if (this.dateRange.length > 0) {
+        this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
         traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
       }
     }
