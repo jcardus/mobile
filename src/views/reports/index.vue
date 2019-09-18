@@ -4,7 +4,12 @@
       <el-col :span="14">
         <div class="grid-content">
           <el-tooltip content="Select vehicles" placement="bottom">
-            <el-drag-select v-model="selectedDevices" style="width: 100%; height: 35px" multiple placeholder="">
+            <el-drag-select
+              v-model="selectedDevices"
+              style="width: 100%; height: 35px"
+              multiple
+              placeholder="Vehicles"
+            >
               <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
             </el-drag-select>
           </el-tooltip>
@@ -103,6 +108,30 @@ export default {
     const options = new Stimulsoft.Viewer.StiViewerOptions()
     // eslint-disable-next-line no-undef
     options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Auto
+
+    options.appearance.showPageShadow = true
+    options.appearance.showTooltips = false
+
+    options.toolbar.showAboutButton = false
+    options.toolbar.showOpenButton = false
+    options.toolbar.showNextPageButton = false
+    options.toolbar.showPreviousPageButton = false
+    options.toolbar.showLastPageButton = false
+    options.toolbar.showFirstPageButton = false
+    options.toolbar.showCurrentPageControl = false
+    options.toolbar.showBookmarksButton = false
+    options.toolbar.showParametersButton = false
+    options.toolbar.showResourcesButton = false
+    options.toolbar.showViewModeButton = false
+    options.toolbar.showButtonCaptions = false
+
+    // eslint-disable-next-line no-undef
+    options.toolbar.viewMode = Stimulsoft.Viewer.StiWebViewMode.Continuous
+    // eslint-disable-next-line no-undef
+    options.toolbar.showMenuMode = Stimulsoft.Viewer.StiShowMenuMode.Click
+    // eslint-disable-next-line no-undef
+    options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Direct
+
     // eslint-disable-next-line no-undef
     this.viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
     if (this.devices.count === 0) {
@@ -151,4 +180,9 @@ export default {
   .bg-purple {
     background: #d3dce6;
   }
+
+  #viewer {
+    padding-top: 15px;
+  }
+
 </style>
