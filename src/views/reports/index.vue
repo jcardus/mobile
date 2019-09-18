@@ -1,26 +1,37 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col :span="16">
+      <el-col :span="14">
         <div class="grid-content">
-          <el-drag-select v-model="selectedDevices" style="width: 100%; height: 35px" multiple placeholder="">
-            <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-          </el-drag-select>
+          <el-tooltip content="Select vehicles" placement="bottom">
+            <el-drag-select v-model="selectedDevices" style="width: 100%; height: 35px" multiple placeholder="">
+              <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
+            </el-drag-select>
+          </el-tooltip>
         </div>
       </el-col>
       <el-col :span="8">
         <div class="grid-content">
-          <el-date-picker
-            v-model="dateRange"
-            style="width: 100%"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="-"
-            start-placeholder="Start date"
-            end-placeholder="End date"
-            :picker-options="pickerOptions"
-          />
+          <el-tooltip content="Select period" placement="bottom">
+            <el-date-picker
+              v-model="dateRange"
+              style="width: 100%"
+              type="daterange"
+              align="right"
+              unlink-panels
+              range-separator="-"
+              start-placeholder="Start date"
+              end-placeholder="End date"
+              :picker-options="pickerOptions"
+            />
+          </el-tooltip>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div class="grid-content">
+          <el-tooltip content="Generate report" placement="bottom">
+            <el-button type="primary" icon="el-icon-caret-right" @click="submitReport" />
+          </el-tooltip>
         </div>
       </el-col>
     </el-row>
@@ -78,21 +89,6 @@ export default {
     devices: function() { return vm.$data.devices },
     isMobile: function() { return lnglat.isMobile() }
   },
-  watch: {
-    dateRange: function() {
-      if (this.selectedDevices.length > 0) {
-        this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
-        traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
-      }
-    },
-    selectedDevices: function(newValue) {
-      this.$log.debug(newValue)
-      if (this.dateRange.length > 0) {
-        this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
-        traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.loadData)
-      }
-    }
-  },
   mounted() {
     // eslint-disable-next-line no-undef
     Stimulsoft.Base.StiLicense.key = '6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHkZYSgEPVMFImkD/7Y5Z9JkpEv1HtFmmLrNoeiu66YaCoYDdC' +
@@ -118,7 +114,19 @@ export default {
     this.viewer.renderHtml('viewer')
   },
   methods: {
-    loadData: function(trips) {
+    submitReport() {
+      if (this.selectedDevices.length > 0) {
+        if (this.dateRange.length > 0) {
+          this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
+          traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.generateReport)
+        } else {
+          alert('No date period selected')
+        }
+      } else {
+        alert('No vehicles selected')
+      }
+    },
+    generateReport: function(trips) {
       // eslint-disable-next-line no-undef
       this.report = new Stimulsoft.Report.StiReport()
       this.report.loadFile('/reports/report_trip.mrt')
