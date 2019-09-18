@@ -27,5 +27,14 @@ export default {
     login_password: 'Password',
     login_button: 'Login',
     login_password_warn: 'The password can not be less than 6 digits'
+  },
+  profile: {
+    user_account: 'Account',
+    user_name: 'Name',
+    user_email: 'Email',
+    user_language: 'Language',
+    user_timezone: 'Timezone',
+    user_update_button: 'Update',
+    user_updated: 'User information has been updated successfully.'
   }
 }

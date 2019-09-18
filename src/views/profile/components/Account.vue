@@ -1,33 +1,38 @@
 <template>
   <el-card style="margin-bottom:20px;">
     <div slot="header" class="clearfix">
-      <span>Account <span v-if="user.isAdmin">(Administrator)</span> </span>
+      <span>{{ $t('profile.user_account') }} <span v-if="user.isAdmin">(Administrator)</span> </span>
     </div>
     <el-form>
-      <el-form-item label="Name:">
+      <el-form-item :label="$t('profile.user_name')">
         <el-input v-model.trim="user.name" />
       </el-form-item>
-      <el-form-item label="Email:">
+      <el-form-item :label="$t('profile.user_email')">
         <el-input v-model.trim="user.email" />
       </el-form-item>
-      <el-form-item label="Timezone">
+      <el-form-item :label="$t('profile.user_timezone')">
         <el-select v-model="selectedTimezone">
           <el-option v-for="timezone in timezones" :key="timezone.value" :value="timezone.value" :label="timezone.text" />
         </el-select>
       </el-form-item>
-      <el-form-item label="Language">
+      <el-form-item :label="$t('profile.user_language')">
         <el-select v-model="selectedLang">
           <el-option v-for="lang in languages" :key="lang.value" :value="lang.value" :label="lang.text" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submit">Update</el-button>
+        <el-button type="primary" @click="submit">{{ $t('profile.user_update_button') }}</el-button>
       </el-form-item>
     </el-form>
   </el-card>
 </template>
 
 <script>
+import { traccar } from '../../../api/traccar-api'
+import { mapGetters } from 'vuex'
+import { setToken } from '@/utils/auth' // get token from cookie
+import { setLanguage } from '../../../lang'
+
 export default {
   props: {
     user: {
@@ -42,6 +47,11 @@ export default {
         }
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
   },
   data() {
     return {
@@ -64,16 +74,19 @@ export default {
   },
   methods: {
     submit() {
-      /*
-                this.user.name
-                this.user.email
-                this.selectedLang
-                this.selectedTimezone*/
-      // TODO Call update user
-      // TODO globalizar
+      var newUser = this.token
+      newUser.name = this.user.name
+      newUser.email = this.user.email
+      newUser.attributes.lang = this.selectedLang
+      newUser.attributes.timezone = this.selectedTimezone
 
+      traccar.updateUser(this.token.id, newUser, this.userUpdated)
+    },
+    userUpdated: function(user) {
+      setToken(user)
+      setLanguage(user.attributes.lang)
       this.$message({
-        message: 'User information has been updated successfully',
+        message: this.$t('profile.user_updated'),
         type: 'success',
         duration: 5 * 1000
       })

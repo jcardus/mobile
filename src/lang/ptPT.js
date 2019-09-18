@@ -29,5 +29,14 @@ export default {
   },
   layout: {
     deviceOnline: 'Dispositivo online'
+  },
+  profile: {
+    user_account: 'Utilizador',
+    user_name: 'Nome',
+    user_email: 'Email',
+    user_language: 'Idioma',
+    user_timezone: 'Timezone',
+    user_update_button: 'Gravar',
+    user_updated: 'Informação do utilizador foi actualizada.'
   }
 }

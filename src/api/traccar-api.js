@@ -10,6 +10,7 @@ const devices = baseUrl + 'devices'
 const positions = baseUrl + 'reports/route'
 const trips = baseUrl + 'reports/trips'
 const geofences = baseUrl + 'geofences'
+const users = baseUrl + 'users'
 var cookie = VueCookies.get('user-info')
 
 export const traccar = {
@@ -30,6 +31,14 @@ export const traccar = {
       return true
     }
     return false
+  },
+  updateUser: function(userid, user, onFulfill) {
+    axios.put(users + '/' + userid, user,
+      { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(user))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
   },
   route: function(deviceid, from, to, onFulfill) {
     axios.get(positions + '?deviceId=' + deviceid + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
