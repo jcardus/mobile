@@ -3,8 +3,8 @@ export default {
     map: 'Map',
     dashboard: 'Dashboard',
     reports: 'Reports',
-    trip_report_title: 'Trip Report',
-    route_report_title: 'Route Report'
+    report_trip_title: 'Trip Report',
+    report_location_title: 'Location Report'
   },
   vehicleList: {
     title: 'Vehicle',

@@ -95,23 +95,23 @@ export const constantRoutes = [
   },
   {
     path: '/reports',
-    redirect: '/reports/trips',
+    redirect: '/reports',
     component: Layout,
     hidden: false,
     name: 'Reports',
     meta: { title: 'reports', icon: 'documentation' },
     children: [
       {
-        path: 'trips',
-        component: () => import('@/views/reports/index'),
+        path: 'report_trip',
+        component: () => import('@/views/reports/report_trip'),
         name: 'TripReport',
-        meta: { title: 'trip_report_title', icon: 'documentation', noCache: true }
+        meta: { title: 'report_trip_title', icon: 'documentation', noCache: true }
       },
       {
-        path: 'route',
-        component: () => import('@/views/reports/index'),
+        path: 'report_location',
+        component: () => import('@/views/reports/report_location'),
         name: 'Route Report',
-        meta: { title: 'route_report_title', icon: 'documentation', noCache: true }
+        meta: { title: 'report_location_title', icon: 'documentation', noCache: true }
       }
     ]
   },
