@@ -212,22 +212,22 @@ export function addLayers(map) {
       if (!map.getSource('geofences')) { map.addSource('geofences', getGeofences(response)) }
       if (!map.getLayer('geofences')) {
         map.addLayer({
-          visibility: vm.$store.state.showGeofences,
           id: 'geofences',
           type: 'fill',
           source: 'geofences',
           paint: {
             'fill-color': '#B42222',
             'fill-opacity': 0.4
-          }
+          },
+          'layout': { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' }
         })
         map.addLayer({
-          visibility: vm.$store.state.showGeofences,
           id: 'geofences-labels',
           type: 'symbol',
           source: 'geofences',
           layout: {
-            'text-field': '{title}'
+            'text-field': '{title}',
+            visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
           }
         })
       }

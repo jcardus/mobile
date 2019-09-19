@@ -20,6 +20,7 @@
 
 import { vm } from '../../../../main'
 import * as lnglat from '../../../../utils/lnglat'
+import serverBus from '@/main'
 
 export default {
   name: 'StyleSwitcherControl',
@@ -74,6 +75,7 @@ export default {
       while (elms[0]) {
         elms[0].classList.remove('active')
       }
+      serverBus.$emit('minDateChanged')
     }
   }
 }

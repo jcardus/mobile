@@ -1,17 +1,13 @@
 import VueCookies from 'vue-cookies'
 
 const state = {
-  showGeofences: VueCookies.get('showGeofences') ? !!+VueCookies.get('showGeofences') : true
+  showGeofences: VueCookies.get('showGeofences') === '1'
 }
 
 const mutations = {
   TOGGLE_GEOFENCES: state => {
     state.showGeofences = !state.showGeofences
-    if (state.showGeofences) {
-      VueCookies.set('showGeofences', 1)
-    } else {
-      VueCookies.set('showGeofences', 0)
-    }
+    VueCookies.set('showGeofences', state.showGeofences ? '1' : '0')
   }
 }
 

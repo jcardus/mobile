@@ -48,11 +48,6 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters([
-      'token'
-    ])
-  },
   data() {
     return {
       selectedLang: this.user.language,
@@ -71,6 +66,11 @@ export default {
         { value: 'America/Sao_Paulo', text: 'America/São Paulo' }
       ]
     }
+  },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
   },
   methods: {
     submit() {
