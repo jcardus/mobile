@@ -176,7 +176,7 @@
               <Border>None;Black;3;Solid;False;4;Black</Border>
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>0,1.6,2.2,0.4</ClientRectangle>
+              <ClientRectangle>0,2,2.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10,Bold</Font>
               <Guid>dfbbea473a0a4ec8b4888f7dcb118113</Guid>
@@ -193,7 +193,7 @@
             <Text3 Ref="13" type="Text" isKey="true">
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>2.2,2,13.6,0.4</ClientRectangle>
+              <ClientRectangle>2.2,2.4,13.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>9853bcee558d4513ae876e3c6095774c</Guid>
@@ -225,7 +225,7 @@
               <Border>None;Black;3;Solid;False;4;Black</Border>
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>2.2,1.6,13.6,0.4</ClientRectangle>
+              <ClientRectangle>2.2,2,13.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>51866e2cf78d40518bb86a526e9474f5</Guid>
@@ -242,7 +242,7 @@
             <Text29 Ref="16" type="Text" isKey="true">
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>0,2,2.2,0.4</ClientRectangle>
+              <ClientRectangle>0,2.4,2.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10,Bold</Font>
               <Guid>3c98801193534bf0bbc43996910d2b07</Guid>
@@ -273,7 +273,7 @@
               <Border>None;Black;3;Solid;False;4;Black</Border>
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>15.8,1.6,4.6,0.4</ClientRectangle>
+              <ClientRectangle>15.8,2,4.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10,Bold</Font>
               <Guid>702394751f04430e9477d8d457d251f2</Guid>
@@ -290,7 +290,7 @@
             <Text39 Ref="19" type="Text" isKey="true">
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>15.8,2,4.6,0.4</ClientRectangle>
+              <ClientRectangle>15.8,2.4,4.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10,Bold</Font>
               <Guid>43cbf7821f6a4190baef03dd16a98988</Guid>
@@ -308,7 +308,7 @@
               <Border>None;Black;3;Solid;False;4;Black</Border>
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>20.4,1.6,7.2,0.4</ClientRectangle>
+              <ClientRectangle>20.4,2,7.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>a222b738670f45a0952f1fcdf26fdacd</Guid>
@@ -325,7 +325,7 @@
             <Text31 Ref="21" type="Text" isKey="true">
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>20.4,2,7.2,0.4</ClientRectangle>
+              <ClientRectangle>20.4,2.4,7.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>e869fa184a8746c9af65311e612c86d7</Guid>
@@ -1063,10 +1063,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>9/17/2019 7:38:12 PM</ReportChanged>
+  <ReportChanged>9/19/2019 11:39:22 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_trip.mrt</ReportFile>
-  <ReportGuid>43d03eadd75b4f46977e02bad91e6ed6</ReportGuid>
+  <ReportGuid>aac1f46f1b104b4c8c2e3a3d0900deee</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.3.4.0</ReportVersion>
