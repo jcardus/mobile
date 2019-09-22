@@ -3,12 +3,18 @@
     <div slot="header" class="clearfix">
       <span>{{ $t('profile.user_account') }} <span v-if="user.isAdmin">(Administrator)</span> </span>
     </div>
-    <el-form>
-      <el-form-item :label="$t('profile.user_name')">
-        <el-input v-model.trim="user.name" />
+    <el-form ref="user" :model="user" :rules="rules" label-width="120px">
+      <el-form-item :label="$t('profile.user_name')" prop="name">
+        <el-input v-model="user.name" />
       </el-form-item>
-      <el-form-item :label="$t('profile.user_email')">
-        <el-input v-model.trim="user.email" />
+      <el-form-item :label="$t('profile.user_email')" prop="email">
+        <el-input v-model="user.email" />
+      </el-form-item>
+      <el-form-item :label="$t('profile.user_password')" prop="password">
+        <el-input ref="password" v-model="user.password" name="password" type="password" />
+      </el-form-item>
+      <el-form-item :label="$t('profile.user_phone')">
+        <el-input v-model="user.phone" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_timezone')">
         <el-select v-model="selectedTimezone">
@@ -41,6 +47,8 @@ export default {
         return {
           name: '',
           email: '',
+          password: '',
+          phone: '',
           isAdmin: '',
           timezone: '',
           language: ''
@@ -64,7 +72,18 @@ export default {
         { value: 'America/Santiago', text: 'America/Santiago' },
         { value: 'Africa/Luanda', text: 'Africa/Luanda' },
         { value: 'America/Sao_Paulo', text: 'America/São Paulo' }
-      ]
+      ],
+      rules: {
+        name: [
+          { required: true, message: this.$t('profile.user_name_required'), trigger: 'blur' }
+        ],
+        email: [
+          { type: 'email', required: true, message: this.$t('profile.user_email_required'), trigger: 'blur' }
+        ],
+        password: [
+          { required: true, min: 6, message: this.$t('profile.user_password_lengh'), trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -74,13 +93,19 @@ export default {
   },
   methods: {
     submit() {
-      var newUser = this.token
-      newUser.name = this.user.name
-      newUser.email = this.user.email
-      newUser.attributes.lang = this.selectedLang
-      newUser.attributes.timezone = this.selectedTimezone
+      this.$refs.user.validate(valid => {
+        if (valid) {
+          var newUser = this.token
+          newUser.name = this.user.name
+          newUser.email = this.user.email
+          newUser.password = this.user.password
+          newUser.phone = this.user.phone
+          newUser.attributes.lang = this.selectedLang
+          newUser.attributes.timezone = this.selectedTimezone
 
-      traccar.updateUser(this.token.id, newUser, this.userUpdated)
+          traccar.updateUser(this.token.id, newUser, this.userUpdated)
+        }
+      })
     },
     userUpdated: function(user) {
       setToken(user)
@@ -94,63 +119,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .box-center {
-    margin: 0 auto;
-    display: inline;
-  }
-
-  .text-muted {
-    color: #777;
-  }
-
-  .user-profile {
-    .user-name {
-      font-weight: bold;
-    }
-
-    .box-center {
-      padding-top: 10px;
-    }
-
-    .user-role {
-      padding-top: 10px;
-      font-weight: 400;
-      font-size: 14px;
-    }
-
-    .box-social {
-      padding-top: 30px;
-
-      .el-table {
-        border-top: 1px solid #dfe6ec;
-      }
-    }
-
-    .user-follow {
-      padding-top: 20px;
-    }
-  }
-
-  .user-bio {
-    margin-top: 20px;
-    color: #606266;
-
-    span {
-      padding-left: 4px;
-    }
-
-    .user-bio-section {
-      font-size: 14px;
-      padding: 15px 0;
-
-      .user-bio-section-header {
-        border-bottom: 1px solid #dfe6ec;
-        padding-bottom: 10px;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-    }
-  }
-</style>
