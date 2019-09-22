@@ -52,10 +52,9 @@ const store = new Vuex.Store({
 })
 
 export default store
+const hostName = window.location.hostname === 'localhost' ? 'dev.pinme.io' : 'dev.' + window.location.hostname
 
-const wsEndpoint = process.env.NODE_ENV === 'development' ? 'dev.pinme.io' : 'ws.' + window.location.hostname
-
-Vue.use(VueNativeSock, 'wss://' + wsEndpoint + '/api/socket', {
+Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
   store: store,
   format: 'json',
   reconnection: true,

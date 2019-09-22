@@ -2,9 +2,11 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import Vue from 'vue'
 
+const serverHost = process.env.NODE_ENV === 'development' ? 'dev.pinme.io' : 'dev.' + window.location.hostname
+
 // create an axios instance
 const service = axios.create({
-  baseURL: 'https://dev.pinme.io',
+  baseURL: 'https://' + serverHost,
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
