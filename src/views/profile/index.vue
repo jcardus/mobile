@@ -36,7 +36,9 @@ export default {
       this.user = {
         name: this.token.name,
         email: this.token.email,
+        password: this.token.password,
         isAdmin: this.token.administrator,
+        phone: this.token.phone,
         timezone: this.token.attributes.timezone,
         language: this.token.attributes.lang
       }
