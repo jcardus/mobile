@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Fleetrack</h3>
+        <img class="logo" :src="logoImage">
         <lang-select class="set-language" />
       </div>
 
@@ -71,6 +71,7 @@ export default {
       }
     }
     return {
+      logoImage: '',
       loginForm: {
         username: '',
         password: ''
@@ -98,6 +99,17 @@ export default {
       },
       immediate: true
     }
+  },
+  created() {
+    switch (window.location.hostname) {
+      case 'wuizy.co.ao':
+        this.logoImage = '/img/logo2.png'
+        break
+      default:
+        this.logoImage = '/img/logo1.png'
+        break
+    }
+    // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -255,12 +267,11 @@ $light_gray:#eee;
   .title-container {
     position: relative;
 
-    .title {
-      font-size: 26px;
-      color: $light_gray;
+    .logo {
       margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .set-language {

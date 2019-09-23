@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Fleetrack',
+  title: '',
 
   /**
    * @type {boolean} true | false
