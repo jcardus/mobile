@@ -28,6 +28,7 @@ router.beforeEach(async(to, from, next) => {
       const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
       // dynamically add accessible routes
       router.addRoutes(accessRoutes)
+      next({ ...to, replace: true })
     }
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
