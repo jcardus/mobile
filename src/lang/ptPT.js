@@ -34,9 +34,14 @@ export default {
     user_account: 'Utilizador',
     user_name: 'Nome',
     user_email: 'Email',
+    user_password: 'Palavra-chave',
+    user_phone: 'Telefone',
     user_language: 'Idioma',
-    user_timezone: 'Timezone',
+    user_timezone: 'Fuso horário',
     user_update_button: 'Gravar',
-    user_updated: 'Informação do utilizador foi actualizada.'
+    user_updated: 'Informação do utilizador foi actualizada.',
+    user_name_required: 'O campo nome é obrigatório',
+    user_email_required: 'Por favor indique um e-mail válido',
+    user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   }
 }

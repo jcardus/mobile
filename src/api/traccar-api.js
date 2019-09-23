@@ -4,7 +4,7 @@ import axios from 'axios'
 import { vm } from '../main.js'
 import VueCookies from 'vue-cookies'
 
-const serverHost = 'dev.pinme.io'
+const serverHost = process.env.NODE_ENV === 'development' ? 'dev.pinme.io' : 'dev.' + window.location.hostname
 const baseUrl = 'https://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
 const positions = baseUrl + 'reports/route'
