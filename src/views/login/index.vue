@@ -142,6 +142,7 @@ export default {
           Vue.$log.debug('dispatch user login ', this.loginForm)
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
+              this.$store.dispatch('user/getInfo')
               Vue.$log.debug('pushing...', this.redirect || '/', this.otherQuery)
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false

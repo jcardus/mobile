@@ -25,7 +25,8 @@ export default {
   login: {
     login_password: 'Palavra-chave',
     login_button: 'Entrar',
-    login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos'
+    login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos',
+    login_user: 'Utilizador'
   },
   layout: {
     deviceOnline: 'Dispositivo online'
