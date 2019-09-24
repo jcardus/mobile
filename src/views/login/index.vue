@@ -71,7 +71,6 @@ export default {
       }
     }
     return {
-      logoImage: '',
       loginForm: {
         username: '',
         password: ''
@@ -88,6 +87,12 @@ export default {
       otherQuery: {}
     }
   },
+  computed: {
+    logoImage: function() {
+      if (window.location.hostname === 'wuizy.co.ao') { return '/img/logo2.png' }
+      return '/img/logo1.png'
+    }
+  },
   watch: {
     $route: {
       handler: function(route) {
@@ -99,17 +104,6 @@ export default {
       },
       immediate: true
     }
-  },
-  created() {
-    switch (window.location.hostname) {
-      case 'wuizy.co.ao':
-        this.logoImage = '/img/logo2.png'
-        break
-      default:
-        this.logoImage = '/img/logo1.png'
-        break
-    }
-    // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -177,6 +171,7 @@ export default {
 
   }
 }
+
 </script>
 
 <style lang="scss">
