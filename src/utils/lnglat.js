@@ -203,7 +203,12 @@ export function addLayers(map) {
           ],
         'icon-rotate': ['get', 'course'],
         'icon-allow-overlap': true,
-        'text-allow-overlap': true
+        'text-allow-overlap': true,
+        'icon-size': { stops: [
+          [5, 0.4],
+          [10, 0.7],
+          [15, 1]
+        ] }
       }
     })
   } else { Vue.$log.warn('layer unclustered-point already exists...') }
