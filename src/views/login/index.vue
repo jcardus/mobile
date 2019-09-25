@@ -55,6 +55,7 @@
 
 import Vue from 'vue'
 import LangSelect from '@/components/LangSelect'
+import * as partner from '@/utils/partner'
 
 export default {
   name: 'Login',
@@ -89,8 +90,7 @@ export default {
   },
   computed: {
     logoImage: function() {
-      if (window.location.hostname === 'wuizy.co.ao') { return '/img/logo2.png' }
-      return '/img/logo1.png'
+      return partner.getLogo()
     }
   },
   watch: {
@@ -111,9 +111,6 @@ export default {
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
-  },
-  destroyed() {
-    // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
     checkCapslock({ shiftKey, key } = {}) {
@@ -267,6 +264,7 @@ $light_gray:#eee;
       display: block;
       margin-left: auto;
       margin-right: auto;
+      max-width: 300px;
     }
 
     .set-language {
