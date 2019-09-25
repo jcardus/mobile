@@ -35,9 +35,9 @@
 
 <script>
 import { traccar } from '../../../api/traccar-api'
-import { mapGetters } from 'vuex'
-import { setToken } from '@/utils/auth' // get token from cookie
+import { setToken, getToken } from '@/utils/auth' // get token from cookie
 import { setLanguage } from '../../../lang'
+var token = getToken()
 
 export default {
   props: {
@@ -86,16 +86,11 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters([
-      'token'
-    ])
-  },
   methods: {
     submit() {
       this.$refs.user.validate(valid => {
         if (valid) {
-          var newUser = this.token
+          var newUser = token
           newUser.name = this.user.name
           newUser.email = this.user.email
           newUser.password = this.user.password
@@ -103,7 +98,7 @@ export default {
           newUser.attributes.lang = this.selectedLang
           newUser.attributes.timezone = this.selectedTimezone
 
-          traccar.updateUser(this.token.id, newUser, this.userUpdated)
+          traccar.updateUser(token.id, newUser, this.userUpdated)
         }
       })
     },

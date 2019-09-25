@@ -12,8 +12,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import Account from './components/Account'
+import { getToken } from '@/utils/auth' // get token from cookie
+var token = getToken()
 
 export default {
   name: 'Profile',
@@ -23,24 +24,19 @@ export default {
       user: {}
     }
   },
-  computed: {
-    ...mapGetters([
-      'token'
-    ])
-  },
   created() {
     this.getUser()
   },
   methods: {
     getUser() {
       this.user = {
-        name: this.token.name,
-        email: this.token.email,
-        password: this.token.password,
-        isAdmin: this.token.administrator,
-        phone: this.token.phone,
-        timezone: this.token.attributes.timezone,
-        language: this.token.attributes.lang
+        name: token.name,
+        email: token.email,
+        password: token.password,
+        isAdmin: token.administrator,
+        phone: token.phone,
+        timezone: token.attributes.timezone,
+        language: token.attributes.lang
       }
     }
   }
