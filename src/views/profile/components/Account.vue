@@ -11,7 +11,17 @@
         <el-input v-model="user.email" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_password')" prop="password">
-        <el-input ref="password" v-model="user.password" name="password" type="password" />
+        <el-input
+          ref="password"
+          :key="passwordType"
+          v-model="user.password"
+          name="password"
+          :type="passwordType"
+        />
+        <span class="show-pwd" @click="showPwd">
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+        </span>
+
       </el-form-item>
       <el-form-item :label="$t('profile.user_phone')">
         <el-input v-model="user.phone" />
@@ -83,7 +93,8 @@ export default {
         password: [
           { required: true, min: 6, message: this.$t('profile.user_password_lengh'), trigger: 'blur' }
         ]
-      }
+      },
+      passwordType: 'password'
     }
   },
   methods: {
@@ -102,6 +113,16 @@ export default {
         }
       })
     },
+    showPwd() {
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
+      } else {
+        this.passwordType = 'password'
+      }
+      this.$nextTick(() => {
+        this.$refs.password.focus()
+      })
+    },
     userUpdated: function(user) {
       setToken(user)
       setLanguage(user.attributes.lang)
@@ -114,3 +135,18 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  $dark_gray:#889aa4;
+
+  .show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 1px;
+  font-size: 16px;
+  color: $dark_gray;
+  cursor: pointer;
+  user-select: none;
+  }
+
+</style>

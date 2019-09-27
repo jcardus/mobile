@@ -2,12 +2,6 @@
   <div>
     <div v-show="!isMobile" id="mly" class="mly" />
     <h1>
-      <span v-if="device.ignition||device.motion" style="color:darkgreen">
-        <i class="fas fa-key" />
-      </span>
-      <span v-else style="color:darkred">
-        <i class="fas fa-key" />
-      </span>
       {{ device.name }}
     </h1>
     <table>
