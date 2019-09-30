@@ -205,9 +205,15 @@ export function addLayers(map) {
         'icon-allow-overlap': true,
         'text-allow-overlap': true,
         'icon-size': { stops: [
-          [5, 0.4],
-          [10, 0.7],
-          [15, 1]
+          [11, 0.1],
+          [12, 0.2],
+          [13, 0.3],
+          [14, 0.4],
+          [15, 0.5],
+          [16, 0.6],
+          [17, 0.7],
+          [19, 0.8],
+          [22, 1]
         ] }
       }
     })
