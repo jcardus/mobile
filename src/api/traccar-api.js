@@ -12,68 +12,21 @@ const trips = baseUrl + 'reports/trips'
 const geofences = baseUrl + 'geofences'
 const users = baseUrl + 'users'
 var cookie = VueCookies.get('user-info')
-
-function get_token(length) {
-  var token = ''
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (var i = 0; i < length; i++) {
-    token += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return token
-}
+const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
 
 export const traccar = {
-  report_trip: function(devices, from, to, onFulfill) {
-    from = from.toISOString().replace('T', ' ').substring(0, 19)
-    to = to.toISOString().replace('T', ' ').substring(0, 19)
-
-    const body = {
-      username: cookie.email,
-      password: cookie.password,
-      report: 'trip',
-      report_id: get_token(40),
-      selected_devices: devices,
-      date_from: from,
-      date_to: to
-    }
-    axios.post('https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports',
+  trigger_report: function(body, report_id, ok, nok) {
+    axios.post(s3_report_lambda_url,
       body,
       {
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        timeout: 29000 // Maximum timeour for the Lambda API Gateway
       }
     )
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
-  },
-  report_position: function(devices, from, to, onFulfill) {
-    from = from.toISOString().replace('T', ' ').substring(0, 19)
-    to = to.toISOString().replace('T', ' ').substring(0, 19)
-
-    const body = {
-      username: cookie.email,
-      password: cookie.password,
-      report: 'location',
-      report_id: get_token(40),
-      selected_devices: devices,
-      date_from: from,
-      date_to: to
-    }
-    axios.post('https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports',
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+      .then(response => ok(report_id))
+      .catch(reason => nok(report_id, reason))
   },
   startReceiving: function() {
     vm.$connect()

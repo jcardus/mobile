@@ -40,7 +40,8 @@
         </div>
       </el-col>
     </el-row>
-    <div id="viewer" />
+    <div id="viewer" style="display: none" />
+    <div id="loader" style="display: none" />
   </div>
 </template>
 
@@ -49,6 +50,20 @@ import ElDragSelect from '@/components/DragSelect'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
+import VueCookies from 'vue-cookies'
+
+var cookie = VueCookies.get('user-info')
+
+const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
+
+function generate_token(length) {
+  var token = ''
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  for (var i = 0; i < length; i++) {
+    token += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return token
+}
 
 export default {
   name: 'Index',
@@ -151,7 +166,23 @@ export default {
       if (this.selectedDevices.length > 0) {
         if (this.dateRange.length > 0) {
           this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
-          traccar.report_trip(this.selectedDevices, this.dateRange[0], this.dateRange[1], this.generateReport)
+          this.$log.debug('Triggering report generation')
+          document.getElementById('viewer').style.display = 'none'
+          document.getElementById('loader').style.display = 'block'
+
+          var report_id = generate_token(40)
+
+          const body = {
+            username: cookie.email,
+            password: cookie.password,
+            report: 'trip',
+            report_id: report_id,
+            selected_devices: this.selectedDevices,
+            date_from: this.dateRange[0].toISOString().replace('T', ' ').substring(0, 19),
+            date_to: this.dateRange[1].toISOString().replace('T', ' ').substring(0, 19)
+          }
+
+          traccar.trigger_report(body, report_id, this.renderReport, this.errorHandler)
         } else {
           alert('No date period selected')
         }
@@ -159,12 +190,47 @@ export default {
         alert('No vehicles selected')
       }
     },
-    generateReport: function(data) {
+    renderReport: function(report_id) {
+      this.$log.debug('Creating report')
+
       // eslint-disable-next-line no-undef
       this.report = new Stimulsoft.Report.StiReport()
+
+      this.$log.debug('Loading template')
       this.report.loadFile('/reports/report_trip.mrt')
-      this.report.dictionary.databases.getByIndex(0).pathData = data
+
+      this.$log.debug('Loading data from remote JSON')
+      this.report.dictionary.databases.getByIndex(0).pathData = s3_report_base_url + '/' + report_id
+
+      this.$log.debug('Rendering Report')
       this.viewer.report = this.report
+      document.getElementById('loader').style.display = 'none'
+      document.getElementById('viewer').style.display = 'block'
+    },
+    errorHandler: function(report_id, reason) {
+      this.$log.debug('Report triggering failed - ' + reason)
+      setTimeout(this.check_if_online, 2000, report_id)
+    },
+    check_if_online: function(report_id) {
+      var url = s3_report_base_url + '/' + report_id
+
+      this.$log.debug('Trying again ' + url)
+
+      var http = new XMLHttpRequest()
+      http.open('HEAD', url)
+      const self = this
+      http.onreadystatechange = function() {
+        if (this.readyState === this.DONE) {
+          if (http.status === 200) {
+            self.$log.debug('Online now! :)')
+            self.renderReport(report_id, null)
+          } else {
+            self.$log.debug('Still offline... :(')
+            setTimeout(self.check_if_online, 2000, report_id)
+          }
+        }
+      }
+      http.send()
     }
   }
 }
@@ -189,4 +255,30 @@ export default {
     padding-top: 15px;
   }
 
+  #loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #1890ff;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+  }
+
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
