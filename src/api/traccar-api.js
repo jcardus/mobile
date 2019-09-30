@@ -13,6 +13,15 @@ const geofences = baseUrl + 'geofences'
 const users = baseUrl + 'users'
 var cookie = VueCookies.get('user-info')
 
+function get_token(length) {
+  var token = ''
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  for (var i = 0; i < length; i++) {
+    token += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return token
+}
+
 export const traccar = {
   report_trip: function(devices, from, to, onFulfill) {
     from = from.toISOString().replace('T', ' ').substring(0, 19)
@@ -22,6 +31,7 @@ export const traccar = {
       username: cookie.email,
       password: cookie.password,
       report: 'trip',
+      report_id: get_token(40),
       selected_devices: devices,
       date_from: from,
       date_to: to
@@ -47,6 +57,7 @@ export const traccar = {
       username: cookie.email,
       password: cookie.password,
       report: 'location',
+      report_id: get_token(40),
       selected_devices: devices,
       date_from: from,
       date_to: to

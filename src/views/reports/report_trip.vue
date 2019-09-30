@@ -108,10 +108,13 @@ export default {
     const options = new Stimulsoft.Viewer.StiViewerOptions()
 
     // eslint-disable-next-line no-undef
-    options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Auto
+    options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Touch
 
     options.appearance.showPageShadow = true
     options.appearance.showTooltips = false
+
+    options.appearance.allowTouchZoom = true
+    // options.appearance.scrollbarsMode = true
 
     options.toolbar.showAboutButton = false
     options.toolbar.showOpenButton = false
@@ -160,7 +163,7 @@ export default {
       // eslint-disable-next-line no-undef
       this.report = new Stimulsoft.Report.StiReport()
       this.report.loadFile('/reports/report_trip.mrt')
-      this.report.regData('root', 'root', data)
+      this.report.dictionary.databases.getByIndex(0).pathData = data
       this.viewer.report = this.report
     }
   }

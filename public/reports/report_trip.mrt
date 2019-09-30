@@ -3,26 +3,26 @@
   <Dictionary Ref="1" type="Dictionary" isKey="true">
     <BusinessObjects isList="true" count="0" />
     <Databases isList="true" count="1">
-      <data Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
-        <Alias>data</Alias>
+      <_x0039_1TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
+        <Alias>91TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G</Alias>
         <Key />
-        <Name>data</Name>
-        <PathData>C:\xampp\htdocs\traccar-reports\data.json</PathData>
-      </data>
+        <Name>91TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G</Name>
+        <PathData>C:\xampp\htdocs\traccar-reports\91TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G.json</PathData>
+      </_x0039_1TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G>
     </Databases>
     <DataSources isList="true" count="4">
       <root Ref="3" type="DataTableSource" isKey="true">
         <Alias>root</Alias>
         <Columns isList="true" count="4">
-          <value>header,System.String</value>
           <value>request_date,System.String</value>
+          <value>header,System.String</value>
           <value>strings,System.String</value>
           <value>trips,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>3582e0e4bf7b4084a9b63cb90b858d2c</Key>
+        <Key>ad5a48014ef34d939a7605fd531f0890</Key>
         <Name>root</Name>
-        <NameInSource>data.root</NameInSource>
+        <NameInSource>91TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G.root</NameInSource>
       </root>
       <root_header Ref="4" type="DataTableSource" isKey="true">
         <Alias>root_header</Alias>
@@ -33,37 +33,37 @@
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>088b78e2308646c6a72c66c6829d0fb1</Key>
+        <Key>4969dec6f81d47b9b7ac3f01e04155d7</Key>
         <Name>root_header</Name>
-        <NameInSource>data.root_header</NameInSource>
+        <NameInSource>91TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G.root_header</NameInSource>
       </root_header>
       <root_strings Ref="5" type="DataTableSource" isKey="true">
         <Alias>root_strings</Alias>
         <Columns isList="true" count="19">
-          <value>activity_start,System.String</value>
-          <value>date,System.String</value>
-          <value>destination,System.String</value>
-          <value>distance,System.String</value>
-          <value>driver,System.String</value>
-          <value>driving,System.String</value>
-          <value>duration,System.String</value>
-          <value>end,System.String</value>
-          <value>idle,System.String</value>
-          <value>period,System.String</value>
           <value>report_title,System.String</value>
+          <value>vehicle,System.String</value>
+          <value>period,System.String</value>
+          <value>activity_start,System.String</value>
           <value>speed_allowed,System.String</value>
+          <value>date,System.String</value>
+          <value>start,System.String</value>
+          <value>end,System.String</value>
+          <value>destination,System.String</value>
+          <value>duration,System.String</value>
+          <value>driving,System.String</value>
+          <value>idle,System.String</value>
+          <value>stop,System.String</value>
+          <value>distance,System.String</value>
           <value>speed_avg,System.String</value>
           <value>speed_max,System.String</value>
           <value>speed_time,System.String</value>
-          <value>start,System.String</value>
-          <value>stop,System.String</value>
-          <value>vehicle,System.String</value>
+          <value>driver,System.String</value>
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>88d5fb57ab6342fe9ef0c6bab59863ea</Key>
+        <Key>10e9882b228f4563bc98cd463f4f4c4d</Key>
         <Name>root_strings</Name>
-        <NameInSource>data.root_strings</NameInSource>
+        <NameInSource>91TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G.root_strings</NameInSource>
       </root_strings>
       <root_trips Ref="6" type="DataTableSource" isKey="true">
         <Alias>root_trips</Alias>
@@ -71,40 +71,40 @@
           <value>device_id,System.Decimal</value>
           <value>device_name,System.String</value>
           <value>device_speedlimit,System.Decimal</value>
-          <value>trip_avg_speed,System.Decimal</value>
-          <value>trip_distance,System.Decimal</value>
-          <value>trip_driver_uniqueid,System.String</value>
-          <value>trip_driving_time,System.String</value>
-          <value>trip_duration,System.String</value>
-          <value>trip_end_address,System.String</value>
-          <value>trip_end_fixtime,System.String</value>
-          <value>trip_end_latitude,System.Decimal</value>
-          <value>trip_end_link,System.String</value>
-          <value>trip_end_longitude,System.Decimal</value>
-          <value>trip_idle_time,System.String</value>
-          <value>trip_incremental_avg_speed,System.Decimal</value>
-          <value>trip_incremental_distance,System.Decimal</value>
-          <value>trip_incremental_driving_time,System.String</value>
-          <value>trip_incremental_duration,System.String</value>
-          <value>trip_incremental_idle_time,System.String</value>
-          <value>trip_incremental_max_speed,System.Decimal</value>
-          <value>trip_incremental_speeding_counter,System.Decimal</value>
-          <value>trip_incremental_speeding_time,System.String</value>
-          <value>trip_incremental_stop_time,System.String</value>
-          <value>trip_max_speed,System.Decimal</value>
-          <value>trip_speeding_counter,System.Decimal</value>
-          <value>trip_speeding_time,System.String</value>
-          <value>trip_start_address,System.String</value>
           <value>trip_start_fixtime,System.String</value>
           <value>trip_start_latitude,System.Decimal</value>
-          <value>trip_start_link,System.String</value>
           <value>trip_start_longitude,System.Decimal</value>
+          <value>trip_start_address,System.String</value>
+          <value>trip_end_fixtime,System.String</value>
+          <value>trip_end_latitude,System.Decimal</value>
+          <value>trip_end_longitude,System.Decimal</value>
+          <value>trip_end_address,System.String</value>
+          <value>trip_distance,System.Decimal</value>
+          <value>trip_duration,System.String</value>
+          <value>trip_driving_time,System.String</value>
+          <value>trip_idle_time,System.String</value>
+          <value>trip_max_speed,System.Decimal</value>
+          <value>trip_avg_speed,System.Decimal</value>
+          <value>trip_driver_uniqueid,System.String</value>
+          <value>trip_speeding_counter,System.Decimal</value>
+          <value>trip_speeding_time,System.String</value>
           <value>trip_stop_time,System.String</value>
+          <value>trip_start_link,System.String</value>
+          <value>trip_end_link,System.String</value>
+          <value>trip_incremental_distance,System.Decimal</value>
+          <value>trip_incremental_duration,System.String</value>
+          <value>trip_incremental_driving_time,System.String</value>
+          <value>trip_incremental_idle_time,System.String</value>
+          <value>trip_incremental_stop_time,System.String</value>
+          <value>trip_incremental_max_speed,System.Decimal</value>
+          <value>trip_incremental_avg_speed,System.Decimal</value>
+          <value>trip_incremental_speeding_counter,System.Decimal</value>
+          <value>trip_incremental_speeding_time,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>60bd203a3d4b4921966ca1d05119bd91</Key>
+        <Key>4b2e9e6669d44d33924bb32f0acd034f</Key>
         <Name>root_trips</Name>
-        <NameInSource>data.root_trips</NameInSource>
+        <NameInSource>91TEGueyQSJonsWQLl44HSFIK5J2EMp5mjVmzr3G.root_trips</NameInSource>
       </root_trips>
     </DataSources>
     <Relations isList="true" count="0" />
@@ -193,7 +193,7 @@
             <Text3 Ref="13" type="Text" isKey="true">
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>2.2,2.4,13.6,0.4</ClientRectangle>
+              <ClientRectangle>2.2,2.4,12.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>9853bcee558d4513ae876e3c6095774c</Guid>
@@ -225,7 +225,7 @@
               <Border>None;Black;3;Solid;False;4;Black</Border>
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>2.2,2,13.6,0.4</ClientRectangle>
+              <ClientRectangle>2.2,2,12.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>51866e2cf78d40518bb86a526e9474f5</Guid>
@@ -273,7 +273,7 @@
               <Border>None;Black;3;Solid;False;4;Black</Border>
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>15.8,2,4.6,0.4</ClientRectangle>
+              <ClientRectangle>14.4,2,4.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10,Bold</Font>
               <Guid>702394751f04430e9477d8d457d251f2</Guid>
@@ -290,7 +290,7 @@
             <Text39 Ref="19" type="Text" isKey="true">
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>15.8,2.4,4.6,0.4</ClientRectangle>
+              <ClientRectangle>14.4,2.4,4.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10,Bold</Font>
               <Guid>43cbf7821f6a4190baef03dd16a98988</Guid>
@@ -308,7 +308,7 @@
               <Border>None;Black;3;Solid;False;4;Black</Border>
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>20.4,2,7.2,0.4</ClientRectangle>
+              <ClientRectangle>19,2,8.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>a222b738670f45a0952f1fcdf26fdacd</Guid>
@@ -325,7 +325,7 @@
             <Text31 Ref="21" type="Text" isKey="true">
               <Brush>[255:213:170]</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>20.4,2.4,7.2,0.4</ClientRectangle>
+              <ClientRectangle>19,2.4,8.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Leelawadee UI,10</Font>
               <Guid>e869fa184a8746c9af65311e612c86d7</Guid>
@@ -336,7 +336,6 @@
               <Parent isRef="11" />
               <Text>{root_trips.trip_start_address}</Text>
               <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
             </Text31>
@@ -1063,10 +1062,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>9/19/2019 11:39:22 PM</ReportChanged>
+  <ReportChanged>9/30/2019 11:15:50 AM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_trip.mrt</ReportFile>
-  <ReportGuid>aac1f46f1b104b4c8c2e3a3d0900deee</ReportGuid>
+  <ReportGuid>13207f12408c46c4b3130011a3684e1c</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.3.4.0</ReportVersion>

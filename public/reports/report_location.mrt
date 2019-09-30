@@ -5,7 +5,6 @@
     <Databases isList="true" count="1">
       <data_report_location Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
         <Alias>data_report_location</Alias>
-        <Key />
         <Name>data_report_location</Name>
         <PathData>C:\xampp\htdocs\traccar-reports\data_report_location.json</PathData>
       </data_report_location>
@@ -20,7 +19,7 @@
           <value>strings,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>a544d98cd74b4099a799dd0ca6f440db</Key>
+        <Key>17b9b860277d4274bf78ab32c0cbdc1d</Key>
         <Name>root</Name>
         <NameInSource>data_report_location.root</NameInSource>
       </root>
@@ -33,7 +32,7 @@
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>9591c6b7536b41ccb14a3fbdb9411c66</Key>
+        <Key>7b98a672fdd64742ae7d06727ca0a9ec</Key>
         <Name>root_header</Name>
         <NameInSource>data_report_location.root_header</NameInSource>
       </root_header>
@@ -58,7 +57,7 @@
           <value>valid,System.Decimal</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>e599d924a8f94b3782a7d875972d6594</Key>
+        <Key>54146c1e448c4968a8a2e9f7e71862cf</Key>
         <Name>root_positions</Name>
         <NameInSource>data_report_location.root_positions</NameInSource>
       </root_positions>
@@ -79,7 +78,7 @@
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>f9821387b9ef44638037e0dc96a3eb64</Key>
+        <Key>cf3e2fe952ff496e881df81df4fc0f11</Key>
         <Name>root_strings</Name>
         <NameInSource>data_report_location.root_strings</NameInSource>
       </root_strings>
@@ -457,10 +456,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>9/19/2019 11:40:44 PM</ReportChanged>
+  <ReportChanged>9/30/2019 10:40:37 AM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_location.mrt</ReportFile>
-  <ReportGuid>8aeeb5f7896c4da9b88ddabedca9165a</ReportGuid>
+  <ReportGuid>2ad74ad256594fa7a29fdaaca448e1d3</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.3.4.0</ReportVersion>
