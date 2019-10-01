@@ -3,6 +3,7 @@
     id="map-app-container"
     class="app-container"
   >
+    <vehicle-table id="vehicleList" />
     <div id="map" />
   </div>
 </template>
@@ -15,7 +16,6 @@ import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
-import VehicleList from './VehicleList'
 import { serverBus, settings, vm } from '../../main'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -31,9 +31,11 @@ import * as utils from '../../utils/utils'
 import vhCheck from 'vh-check'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
+import VehicleTable from './VehicleTable'
 
 export default {
   name: 'VueMap',
+  components: { VehicleTable },
   static() {
     return {
       map: vm.$static.map,
@@ -244,12 +246,7 @@ export default {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
         map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
       }
-      if (settings.showVehicleList) {
-        map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
-        const VD = Vue.extend(VehicleList)
-        const _vm = new VD({ i18n: i18n })
-        _vm.$mount('#vehicle-list-div')
-      }
+
       if (settings.showSlider) {
         map.addControl(new MapboxCustomControl('slider-div'), 'top-left')
         const VD = Vue.extend(HistoryPanel)
@@ -548,10 +545,16 @@ export default {
     height: calc(100vh - 84px);
     height: calc(100vh - var(--vh-offset, 0px) - 84px);
   }
-
-  #map {
-    width: 100%;
+  #vehicleList {
+    width:300px;
     height: 100%;
+  }
+  #map {
+    width: calc(100% - 300px);
+    height: 100%;
+    left:300px;
+    top:0;
+    position:absolute;
   }
 
 </style>

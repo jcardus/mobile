@@ -49,7 +49,7 @@
     "element-ui": "2.7.0",
     "fuse.js": "3.4.4",
     "jsonlint": "1.6.3",
-    "mapbox-gl": "1.2.1",
+    "mapbox-gl": "latest",
     "mapbox-gl-controls": "latest",
     "mapillary-js": "^2.18.0",
     "normalize.css": "7.0.0",
