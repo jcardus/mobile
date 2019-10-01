@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col :span="14">
+      <el-col :span="17">
         <div class="grid-content">
           <el-tooltip content="Select vehicles" placement="bottom">
             <el-drag-select
@@ -15,16 +15,17 @@
           </el-tooltip>
         </div>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="5">
         <div class="grid-content">
           <el-tooltip content="Select period" placement="bottom">
             <el-date-picker
               v-model="dateRange"
               style="width: 100%"
-              type="datetimerange"
+              type="daterange"
               align="right"
               unlink-panels
               range-separator="-"
+              format="dd-MM-yyyy"
               start-placeholder="Start date"
               end-placeholder="End date"
               :picker-options="pickerOptions"
