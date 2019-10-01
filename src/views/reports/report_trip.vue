@@ -21,13 +21,14 @@
             <el-date-picker
               v-model="dateRange"
               style="width: 100%"
-              type="daterange"
+              type="datetimerange"
               align="right"
               unlink-panels
               range-separator="-"
               start-placeholder="Start date"
               end-placeholder="End date"
               :picker-options="pickerOptions"
+              :default-time="['00:00:00', '23:59:59']"
             />
           </el-tooltip>
         </div>
@@ -35,7 +36,7 @@
       <el-col :span="2">
         <div class="grid-content">
           <el-tooltip content="Generate report" placement="bottom">
-            <el-button type="primary" icon="el-icon-caret-right" @click="submitReport" />
+            <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
           </el-tooltip>
         </div>
       </el-col>
@@ -77,6 +78,34 @@ export default {
       selectedDevices: [],
       pickerOptions: {
         shortcuts: [{
+          text: 'Today',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            end.setHours(23)
+            end.setMinutes(59)
+            end.setSeconds(59)
+            start.setHours(0)
+            start.setMinutes(0)
+            start.setSeconds(0)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: 'Yesterday',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            end.setTime(start.getTime() - 3600 * 1000 * 24)
+            start.setTime(start.getTime() - 3600 * 1000 * 24)
+            end.setHours(23)
+            end.setMinutes(59)
+            end.setSeconds(59)
+            start.setHours(0)
+            start.setMinutes(0)
+            start.setSeconds(0)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
           text: 'Last week',
           onClick(picker) {
             const end = new Date()
@@ -100,7 +129,8 @@ export default {
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
             picker.$emit('pick', [start, end])
           }
-        }]
+        }],
+        firstDayOfWeek: 1
       },
       dateRange: []
     }
@@ -165,7 +195,6 @@ export default {
     submitReport() {
       if (this.selectedDevices.length > 0) {
         if (this.dateRange.length > 0) {
-          this.dateRange[1].setSeconds(this.dateRange[1].getSeconds() + 60 * 60 * 24 - 1)
           this.$log.debug('Triggering report generation')
           document.getElementById('viewer').style.display = 'none'
           document.getElementById('loader').style.display = 'block'
