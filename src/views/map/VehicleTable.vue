@@ -8,7 +8,7 @@
         <table class="table">
           <thead>
             <tr>
-              <th />
+              <th></th>
               <th
                 v-for="key in headerColumns"
                 :key="key"
@@ -20,7 +20,8 @@
                   v-if="key===sortKey"
                   class="fa"
                   :class="sortColumns[key] > 0 ? 'fa-arrow-up' : 'fa-arrow-down'"
-                />
+                >
+                </span>
               </th>
             </tr>
           </thead>
@@ -34,7 +35,7 @@
                 :class="entry.id===selected?'is-selected':''"
                 @click="vehicleSelected(entry)"
               >
-                <td :style="entry | formatColor"><span /></td>
+                <td :style="entry | formatColor"></td>
                 <td>
                   <div> <!-- v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'"-->
                     <span class="text-overflow">{{ entry.name | formatNumber }}</span>
@@ -44,7 +45,7 @@
                         :datetime="entry.lastUpdate"
                         :auto-update="60"
                         :locale="$i18n.locale.substring(0,2)"
-                      />
+                      ></timeago>
                     </span>
                   </div>
                 </td>
@@ -83,6 +84,12 @@ export default {
     formatHeaders: function(value) {
       if (value) { return 'vehicleList.column_' + value }
       return value
+    }
+  },
+  props: {
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -141,6 +148,9 @@ export default {
     })
   },
   methods: {
+    toggle() {
+      this.show = !this.show
+    },
     findFeatureByDeviceId(deviceId) {
       return this.positionsSource.features.find(function(e) {
         return e.properties.deviceId === deviceId

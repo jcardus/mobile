@@ -4,7 +4,7 @@
     class="app-container"
   >
     <vehicle-table id="vehiclesDiv" />
-    <div id="map" />
+    <div id="map"></div>
   </div>
 </template>
 
@@ -213,7 +213,7 @@ export default {
             window.tb.add(self.truck)
           })
         },
-        render: function(gl, matrix) {
+        render: function() {
           window.tb.update()
         }
       })
@@ -549,7 +549,6 @@ export default {
     bottom: 0 !important;
     padding:0;
     width: 100%;
-    height: calc(100vh - 84px);
     height: calc(100vh - var(--vh-offset, 0px) - 84px);
   }
   #map {
@@ -560,10 +559,6 @@ export default {
   #vehiclesDiv {
     width: 300px;
     float: left;
-  }
-
-  .grid-content {
-    height: 100%;
   }
 
   @media screen and (max-width: 768px) {
