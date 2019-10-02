@@ -15,7 +15,7 @@
                 nowrap
                 @click="sortBy(key)"
               >
-                {{ key | formatHeaders | t | capitalize }}
+                {{ key | formatHeaders | translate | capitalize }}
                 <span
                   v-if="key===sortKey"
                   class="fa"
@@ -59,9 +59,13 @@
 <script>
 
 import { serverBus, vm } from '../../main'
+
 export default {
   name: 'VehicleTable',
   filters: {
+    translate(value) {
+      return vm.$t(value)
+    },
     formatColor: function(value) {
       if (value.speed > 2) { return 'color:darkgreen' }
       if (value.ignition) { return 'color:gold' }
@@ -137,9 +141,6 @@ export default {
     })
   },
   methods: {
-    toggle: function() {
-      this.show = !this.show
-    },
     findFeatureByDeviceId(deviceId) {
       return this.positionsSource.features.find(function(e) {
         return e.properties.deviceId === deviceId
@@ -192,6 +193,9 @@ export default {
     }
 
     @media screen and (max-width: 768px) {
+      .table-body {
+        max-height: calc(100vh - 270px)
+      }
     }
 
     .input {

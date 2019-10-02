@@ -3,7 +3,7 @@
     id="map-app-container"
     class="app-container"
   >
-    <vehicle-table id="vehicleList" />
+    <vehicle-table id="vehiclesDiv" />
     <div id="map" />
   </div>
 </template>
@@ -32,6 +32,7 @@ import vhCheck from 'vh-check'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTable from './VehicleTable'
+import VehicleList from './VehicleList'
 
 export default {
   name: 'VueMap',
@@ -57,6 +58,7 @@ export default {
     }
   },
   computed: {
+    isMobile() { return lnglat.isMobile() },
     positionsSource() { return this.$root.$static.positionsSource },
     positions() {
       return this.$root.$store.state.socket.message.positions
@@ -245,13 +247,18 @@ export default {
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
         map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
+      } else {
+        map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
+        const VD = Vue.extend(VehicleList)
+        const _vm = new VD({ i18n: i18n })
+        _vm.$mount('#vehicle-list-div')
       }
 
       if (settings.showSlider) {
         map.addControl(new MapboxCustomControl('slider-div'), 'top-left')
         const VD = Vue.extend(HistoryPanel)
-        const vm = new VD({ i18n: i18n })
-        vm.$mount('#slider-div')
+        const _vm = new VD({ i18n: i18n })
+        _vm.$mount('#slider-div')
       }
     },
     onMoveEnd: function() {
@@ -545,16 +552,27 @@ export default {
     height: calc(100vh - 84px);
     height: calc(100vh - var(--vh-offset, 0px) - 84px);
   }
-  #vehicleList {
-    width:300px;
+  #map {
+    height: 100%;
+    margin-left: 300px;
+  }
+
+  #vehiclesDiv {
+    width: 300px;
+    float: left;
+  }
+
+  .grid-content {
     height: 100%;
   }
-  #map {
-    width: calc(100% - 300px);
-    height: 100%;
-    left:300px;
-    top:0;
-    position:absolute;
+
+  @media screen and (max-width: 768px) {
+    #map {
+      margin-left:0;
+    }
+    #vehiclesDiv {
+      width: 0;
+    }
   }
 
 </style>

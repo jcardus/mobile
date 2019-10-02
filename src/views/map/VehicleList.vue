@@ -1,5 +1,5 @@
 <template>
-  <div id="vehicleList" ref="vehicleList" class="vehicleList mapboxgl-ctrl">
+  <div v-show="isMobile" id="vehicleList" ref="vehicleList" class="vehicleList mapboxgl-ctrl">
     <div class="card">
       <div class="card-header" :open="false" :class="{opened:show}" @click="toggle">
         <p class="card-header-title">
@@ -10,7 +10,7 @@
         </a>
       </div>
       <transition>
-        <vehicle-table />
+        <vehicle-table v-if="show" />
       </transition>
     </div>
   </div>
@@ -18,10 +18,15 @@
 
 <script>
 import VehicleTable from './VehicleTable'
+import * as lnglat from '../../utils/lnglat'
 
 export default {
   components: { VehicleTable },
   props: {
+    show: {
+      type: Boolean,
+      default: false
+    },
     open: {
       type: Boolean,
       default: true
@@ -36,9 +41,15 @@ export default {
     }
   },
   computed: {
-
+    isMobile() {
+      return lnglat.isMobile()
+    }
   },
   methods: {
+
+    toggle() {
+      this.show = !this.show
+    },
     enter: function(el) {
       el.style.height = '100px'
     },
@@ -74,9 +85,6 @@ export default {
     .card-header-title {
         border: 0;
         margin-bottom: 0 !important;
-    }
-    .card-header {
-        //  border: 1px solid lightblue;
     }
 
     .card-header.opened {
@@ -114,7 +122,6 @@ export default {
 
     @media screen and (max-width: 768px) {
         .vehicleList {
-            z-index: 3;
             width: calc(100vw - 20px);
         }
     }

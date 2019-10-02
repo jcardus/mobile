@@ -13,5 +13,5 @@ export function getLogo() {
 export function getTitle() {
   if (window.location.hostname === 'wuizy.co.ao') { return 'WuizyGo' }
   if (window.location.hostname === 'web.fleetrack.cl') { return 'Fleetrack' }
-  return 'WuizyGo'
+  return 'Pinme'
 }

@@ -45,7 +45,8 @@ export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
 export function isMobile() {
-  return screen.width < 768
+  Vue.$log.debug('ismobile: ', vm.$store.state.device)
+  return vm.$store.state.app.device === 'mobile'
 }
 export function sameLngLat(c1, c2) {
   const route = {
