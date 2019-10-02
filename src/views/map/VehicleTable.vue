@@ -34,7 +34,7 @@
                 :class="entry.id===selected?'is-selected':''"
                 @click="vehicleSelected(entry)"
               >
-                <td><i class="fas fa-truck" :style="entry | formatColor" /></td>
+                <td :style="entry | formatColor"><span /></td>
                 <td>
                   <div> <!-- v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'"-->
                     <span class="text-overflow">{{ entry.name | formatNumber }}</span>
@@ -67,9 +67,9 @@ export default {
       return vm.$t(value)
     },
     formatColor: function(value) {
-      if (value.speed > 2) { return 'color:darkgreen' }
-      if (value.ignition) { return 'color:gold' }
-      return 'color:darkred'
+      if (value.speed > 2) { return 'background-color:#55ff55' }
+      if (value.ignition) { return 'background-color:#ffff55' }
+      return 'background-color:#ff5555'
     },
     formatNumber: function(value) {
       if (isNaN(value)) { return value }
@@ -178,6 +178,7 @@ export default {
     }
 
     th {
+        font-size: 14px;
         cursor: pointer;
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -185,10 +186,15 @@ export default {
         user-select: none;
     }
 
+    .table td {
+        padding: 3px 4px;
+    }
+
     .table-body {
+        font-size: 14px;
         display: block;
         transition: 1000ms ease-out;
-        overflow: scroll;
+        overflow-y: scroll;
         max-height: calc(100vh - 170px)
     }
 
@@ -200,9 +206,9 @@ export default {
 
     .input {
         height: 26px;
-        width: calc(100% - 35px);
-        font-size: inherit;
-        margin: 8px;
+        width: calc(100% - 5px);
+        font-size: 14px;
+        margin: 3px;
     }
 
     .table {
@@ -216,5 +222,25 @@ export default {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+    }
+
+    //Custom scrollbar
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+      border-radius: 10px;
     }
 </style>
