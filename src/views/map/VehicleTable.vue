@@ -39,7 +39,7 @@
                   <div> <!-- v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'"-->
                     <span class="text-overflow">{{ entry.name | formatNumber }}</span>
                     <span class="text-overflow">{{ entry.speed | formatNumber }} km/h</span>
-                    <span class="tag is-info">
+                    <span class="tag is-info" style="height: 1.5em;">
                       <timeago
                         :datetime="entry.lastUpdate"
                         :auto-update="60"
@@ -141,6 +141,9 @@ export default {
     })
   },
   methods: {
+    toggle: function() {
+      this.show = !this.show
+    },
     findFeatureByDeviceId(deviceId) {
       return this.positionsSource.features.find(function(e) {
         return e.properties.deviceId === deviceId
@@ -226,21 +229,21 @@ export default {
 
     //Custom scrollbar
     ::-webkit-scrollbar {
-      width: 10px;
+      width: 7px;
     }
 
     ::-webkit-scrollbar-track {
       background: #f1f1f1;
-      border-radius: 10px;
+      border-radius: 7px;
     }
 
     ::-webkit-scrollbar-thumb {
       background: #888;
-      border-radius: 10px;
+      border-radius: 7px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
       background: #555;
-      border-radius: 10px;
+      border-radius: 7px;
     }
 </style>
