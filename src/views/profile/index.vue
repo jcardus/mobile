@@ -14,7 +14,6 @@
 <script>
 import Account from './components/Account'
 import { getToken } from '@/utils/auth' // get token from cookie
-var token = getToken()
 
 export default {
   name: 'Profile',
@@ -29,6 +28,7 @@ export default {
   },
   methods: {
     getUser() {
+      var token = getToken()
       this.user = {
         name: token.name,
         email: token.email,
