@@ -6,7 +6,7 @@
           {{ $t('vehicleList.title') }}
         </p>
         <a class="card-header-icon">
-          <i class="fa fa-2x black fa-angle-down header-icon" :class="{rotate:show}" />
+          <i class="fa fa-2x black fa-angle-down header-icon" :class="{rotate:show}"></i>
         </a>
       </div>
       <transition>
@@ -61,9 +61,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import "~bulma/sass/utilities/initial-variables";
-    $primary: lightblue;
-    @import '~bulma/bulma.sass';
 
     .vehicleList {
         position: absolute;

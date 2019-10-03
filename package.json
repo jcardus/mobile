@@ -44,7 +44,6 @@
     "@turf/length": "latest",
     "amazon-quicksight-embedding-sdk": "latest",
     "axios": "0.18.1",
-    "bulma": "latest",
     "core-js": "^2.6.5",
     "element-ui": "2.7.0",
     "fuse.js": "3.4.4",

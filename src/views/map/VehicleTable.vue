@@ -171,9 +171,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  @import "~bulma/sass/utilities/initial-variables";
-  $primary: lightblue;
-  @import '~bulma/bulma.sass';
 
     .dd-body {
         background-color: #fff;
