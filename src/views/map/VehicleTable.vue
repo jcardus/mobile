@@ -1,5 +1,5 @@
 <template>
-  <div class="dd-body">
+  <div v-show="show" class="dd-body">
     <div class="dd-body-inner">
       <label>
         <input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')">
@@ -60,6 +60,8 @@
 <script>
 
 import { serverBus, vm } from '../../main'
+// import * as lnglat from '../../utils/lnglat'
+import Vue from 'vue'
 
 export default {
   name: 'VehicleTable',
@@ -86,14 +88,10 @@ export default {
       return value
     }
   },
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    }
-  },
+
   data() {
     return {
+      show: true,
       columns: ['name', 'speed', 'lastUpdate', 'ignition'],
       headerColumns: ['name', 'speed'],
       animating: false,
@@ -148,7 +146,7 @@ export default {
     })
   },
   methods: {
-    toggle() {
+    toggle: function() {
       this.show = !this.show
     },
     findFeatureByDeviceId(deviceId) {
@@ -161,9 +159,9 @@ export default {
       this.sortColumns[key] = this.sortColumns[key] * -1
     },
     vehicleSelected: function(device) {
-      this.toggle()
       if (device) {
         this.selected = device.id
+        Vue.$log.debug('device=', device)
         serverBus.$emit('deviceSelected', device)
       }
     }

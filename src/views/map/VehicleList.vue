@@ -19,6 +19,7 @@
 <script>
 import VehicleTable from './VehicleTable'
 import * as lnglat from '../../utils/lnglat'
+import { serverBus } from '../../main'
 
 export default {
   components: { VehicleTable },
@@ -45,8 +46,13 @@ export default {
       return lnglat.isMobile()
     }
   },
+  created() {
+    serverBus.$on('deviceSelected', this.deviceSelected)
+  },
   methods: {
-
+    deviceSelect() {
+      if (this.isMobile) { this.toggle() }
+    },
     toggle() {
       this.show = !this.show
     },

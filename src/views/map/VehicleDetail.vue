@@ -60,7 +60,7 @@ export default {
       return vm.$data.routeMaxDate
     },
     isMobile() {
-      return screen.width < 768
+      return lnglat.isMobile()
     },
     routeSource: function() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i
