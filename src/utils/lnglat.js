@@ -18,7 +18,7 @@ function addImage(path, name) {
     if (!error) { vm.$static.map.addImage(name, image) }
   })
 }
-export function addImages(map) {
+export function addImages() {
   addImage('img/40/car-green.png', 'car-green')
   addImage('img/40/car-yellow.png', 'car-yellow')
   addImage('img/40/car-red.png', 'car-red')
@@ -86,7 +86,7 @@ export function matchRoute(coordinates, radius, onSuccess) {
 function convertWktToGeojson(response) {
   const result = []
   Vue.$log.debug('converting ', response.data.length, ' features')
-  response.data.forEach(function(item, index) {
+  response.data.forEach(function(item) {
     const wkt = item.area
     const geojson = {
       type: 'Feature',
@@ -206,15 +206,15 @@ export function addLayers(map) {
         'icon-allow-overlap': true,
         'text-allow-overlap': true,
         'icon-size': { stops: [
-          [10, 0.2],
-          [11, 0.3],
-          [12, 0.4],
-          [13, 0.5],
-          [14, 0.6],
-          [15, 0.7],
-          [16, 0.8],
-          [17, 0.9],
-          [18, 1]
+          [11, 0.2],
+          [12, 0.3],
+          [13, 0.4],
+          [14, 0.5],
+          [15, 0.6],
+          [16, 0.7],
+          [17, 0.8],
+          [18, 0.9],
+          [22, 1]
         ] }
       }
     })
