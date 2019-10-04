@@ -47,6 +47,12 @@
                         :locale="$i18n.locale.substring(0,2)"
                       ></timeago>
                     </span>
+                    <el-tooltip content="Immobilize" placement="bottom">
+                      <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)" />
+                    </el-tooltip>
+                    <el-tooltip content="De-Immobilize" placement="bottom">
+                      <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)" />
+                    </el-tooltip>
                   </div>
                 </td>
               </tr>
@@ -62,6 +68,9 @@
 import { serverBus, vm } from '../../main'
 // import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
+import { traccar } from '../../api/traccar-api'
+import VueCookies from 'vue-cookies'
+var cookie = VueCookies.get('user-info')
 
 export default {
   name: 'VehicleTable',
@@ -164,6 +173,39 @@ export default {
         Vue.$log.debug('device=', device)
         serverBus.$emit('deviceSelected', device)
       }
+    },
+    commandImmobilize: function(device, value) {
+      Vue.$log.debug('Immobilization ' + value + ' for device ' + device.id)
+      var message
+      if (value) {
+        message = 'Send immobilization command?'
+      } else {
+        message = 'Send de-immobilization command?'
+      }
+      if (confirm(message)) {
+        traccar.api_helper(
+          {
+            'username': cookie.email,
+            'password': cookie.password,
+            'command': 'immobilization',
+            'deviceid': device.id,
+            'value': value
+          },
+          this.commandImmobilizeOk,
+          this.commandImmobilizeNok)
+      }
+    },
+    commandImmobilizeOk: function(response) {
+      Vue.$log.debug('Immobilization result' + response.data)
+      if (response.data.success) {
+        alert('OK: ' + response.data.details)
+      } else {
+        alert('NOK: ' + response.data.details)
+      }
+    },
+    commandImmobilizeNok: function(reason) {
+      Vue.$log.debug('Immobilization error: ' + reason)
+      alert('Error: ' + reason)
     }
   }
 }
@@ -232,6 +274,7 @@ export default {
     //Custom scrollbar
     ::-webkit-scrollbar {
       width: 7px;
+      height: 7px;
     }
 
     ::-webkit-scrollbar-track {
