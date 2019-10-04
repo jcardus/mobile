@@ -88,7 +88,7 @@ export default {
     serverBus.$on('routeFetched', function() {
       this.$log.debug('routeFetched, maxPos=', vm.$data.currentDevice.positions.length - 1)
       self.maxPos = vm.$data.currentDevice.positions.length - 1
-      self.currentPos = vm.$data.currentDevice.positions.length - 1
+      // self.currentPos = self.maxPos
     })
   }
 }

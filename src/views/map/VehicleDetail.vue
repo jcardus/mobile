@@ -179,17 +179,21 @@ export default {
       const trips = this.trips
       positions.forEach(function(position) {
         if (!startPos) {
-          if (!position.attributes.ignition) { return }
+          if (!position.attributes.ignition || (position.attributes.power && position.attributes.power < 13)) { return }
           trips.push(locations)
           locations.push(position)
           startPos = true
           return
         }
-        if (position.attributes.ignition || position.speed > 0) {
-          locations.push(position)
+        locations.push(position)
+        if (position.attributes.power && position.attributes.power < 13) {
+          locations = []
+          startPos = false
           return
         }
-        locations.push(position)
+        if (position.attributes.ignition || position.speed > 0) {
+          return
+        }
         locations = []
         startPos = false
       })
@@ -211,7 +215,8 @@ export default {
       this.removeLayers()
       vm.$data.historyMode = true
       this.drawAll(positions)
-      Vue.$log.debug('got ', this.positions.length, ' positions')
+      Vue.$log.debug('got ', this.positions.length, ' positions, last one:')
+      Vue.$log.debug(this.positions[this.positions.length - 1])
       this.getRouteTrips(this.positions)
       Vue.$log.debug('transformed into ', this.trips.length, ' trips')
       this.filterTrips()
