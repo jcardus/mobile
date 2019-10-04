@@ -47,10 +47,10 @@
                         :locale="$i18n.locale.substring(0,2)"
                       ></timeago>
                     </span>
-                    <el-tooltip content="Immobilize" placement="bottom">
+                    <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
                       <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)" />
                     </el-tooltip>
-                    <el-tooltip content="De-Immobilize" placement="bottom">
+                    <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
                       <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)" />
                     </el-tooltip>
                   </div>
@@ -178,9 +178,9 @@ export default {
       Vue.$log.debug('Immobilization ' + value + ' for device ' + device.id)
       var message
       if (value) {
-        message = 'Send immobilization command?'
+        message = this.$t('vehicleTable.send_immobilization')
       } else {
-        message = 'Send de-immobilization command?'
+        message = this.$t('vehicleTable.send_de_immobilization')
       }
       if (confirm(message)) {
         traccar.api_helper(
