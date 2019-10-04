@@ -13,8 +13,22 @@ const geofences = baseUrl + 'geofences'
 const users = baseUrl + 'users'
 var cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
+const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaws.com/default/api_helper'
 
 export const traccar = {
+  api_helper: function(options, ok, nok) {
+    axios.post(
+      api_helper_lambda_url,
+      options,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        timeout: 5000
+      })
+      .then(response => ok(response))
+      .catch(reason => nok(reason))
+  },
   trigger_report: function(body, report_id, ok, nok) {
     axios.post(s3_report_lambda_url,
       body,
