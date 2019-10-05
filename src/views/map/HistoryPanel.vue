@@ -17,7 +17,6 @@
           >
         </div>
       </td></tr><tr><td>
-
         <vue-slider
           v-model="currentPos"
           style="vertical-align:middle;width: 100%;
@@ -25,9 +24,8 @@
           :min="minPos"
           :max="maxPos"
           :tooltip-formatter="formatter"
-          :tooltip-placement="'bottom'"
+          :tooltip-placement="'top'"
         />
-
       </td></tr></table>
     </div>
   </div>
@@ -55,7 +53,7 @@ export default {
   },
   computed: {
     positions: function() {
-      if (vm.$data.currentDevice) { return vm.$data.currentDevice.positions }
+      if (vm.$data.positions) { return vm.$data.positions }
       return []
     },
     show: function() { return vm.$data.historyMode },
@@ -83,27 +81,29 @@ export default {
       serverBus.$emit('posChanged', this.currentPos)
     }
   },
+  beforeDestroy() {
+    serverBus.$off('routeFetched', this.updateMinMax)
+  },
   mounted() {
-    const self = this
-    serverBus.$on('routeFetched', function() {
-      this.$log.debug('routeFetched, maxPos=', vm.$data.currentDevice.positions.length - 1)
-      self.maxPos = vm.$data.currentDevice.positions.length - 1
-      // self.currentPos = self.maxPos
-    })
+    serverBus.$on('routeFetched', this.updateMinMax)
+  },
+  methods: {
+    updateMinMax() {
+      this.$log.debug('routeFetched, maxPos=', this.positions.length - 1)
+      this.maxPos = this.positions.length - 1
+      this.currentPos = this.maxPos
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
     .mapboxgl-ctrl {
-        top: 50px;
         z-index: -1;
     }
-
     .panel {
-        width: 355px;
+        width: calc(100vw - 420px);
         font-size: 15px;
-
     }
     input {
         padding-inline-start: 0;
@@ -115,7 +115,7 @@ export default {
     table {
         padding: 0 !important;
         border-width: 0 !important;
-        width: 355px;
+        width: 100%;
     }
     #minDate
     {
@@ -127,5 +127,10 @@ export default {
     }
     .card {
         background-color: rgba(255,255,255,0.8);
+    }
+    @media screen and (max-width: 768px) {
+      .panel {
+        width: calc(100vw - 60px);
+      }
     }
 </style>

@@ -94,16 +94,9 @@ export default {
       )
       mly.moveCloseTo(this.feature.geometry.coordinates[1], this.feature.geometry.coordinates[0])
     }
-    const self = this
-    serverBus.$on('posChanged', function(newDate) {
-      self.onPosChanged(newDate)
-    })
-    serverBus.$on('minDateChanged', function() {
-      self.onDatesChanged()
-    })
-    serverBus.$on('maxDateChanged', function() {
-      self.onDatesChanged()
-    })
+    serverBus.$on('posChanged', this.onPosChanged)
+    serverBus.$on('minDateChanged', this.onDatesChanged)
+    serverBus.$on('maxDateChanged', this.onDatesChanged)
   },
   methods: {
     onDatesChanged() {
@@ -168,9 +161,6 @@ export default {
           vm.$static.map.removeSource(this.allTripsSource)
         }
       }
-    },
-    routeMatchClick: function() {
-      this.routeMatch = !this.routeMatch
     },
     getRoute: function(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)
