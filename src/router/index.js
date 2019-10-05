@@ -61,35 +61,29 @@ export const constantRoutes = [
   },
   {
     path: '/401',
-    component: () => import('@/views/error-page/4' +
-    '01'),
+    component: () => import('@/views/error-page/401'),
     hidden: true
   },
   {
     path: '/',
     redirect: '/map',
-    component: Layout,
     hidden: false,
-    meta: { title: 'map', icon: 'map' },
+    component: Layout,
     children: [
       {
         path: 'map',
         component: () => import('@/views/map/VueMap'),
-        name: 'Map',
-        meta: { title: 'map', icon: 'map', affix: true }
-      }
-    ]
+        meta: { title: 'Map', icon: 'map' }
+      }]
   },
   {
     path: '/dashboard',
-    redirect: '/dashboard/main',
     component: Layout,
     children: [
       {
         path: 'main',
         component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard' }
+        meta: { title: 'Dashboard', icon: 'dashboard' }
       }
     ]
   },
@@ -112,22 +106,6 @@ export const constantRoutes = [
         component: () => import('@/views/reports/report_location'),
         name: 'Route Report',
         meta: { title: 'report_location_title', icon: 'documentation', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/settings',
-    redirect: '/settings/geofences',
-    component: Layout,
-    hidden: false,
-    name: 'Settings',
-    meta: { title: 'Settings', icon: 'settings' },
-    children: [
-      {
-        path: 'geofences',
-        component: () => import('@/views/settings/Geofences'),
-        name: 'Geofences',
-        meta: { title: 'Geofences', icon: 'settings', noCache: true }
       }
     ]
   },

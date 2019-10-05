@@ -1,19 +1,19 @@
 <template>
   <div>
-    <div v-show="!isMobile" id="mly" class="mly" />
+    <div v-show="!isMobile" id="mly" class="mly"></div>
     <h1>
       {{ device.name }}
     </h1>
     <table>
       <tr><td>
-            <i id="showRoutes" class="fas fa-2x" :class="showRoutes?'fa-toggle-on':'fa-toggle-off'" style="color:dodgerblue" @click="showRoutesClick" /></td>
+            <i id="showRoutes" class="fas fa-2x" :class="showRoutes?'fa-toggle-on':'fa-toggle-off'" style="color:dodgerblue" @click="showRoutesClick"></i></td>
         <td><label for="showRoutes">{{ $t('vehicleDetail.show_route') }}</label></td></tr>
     </table>
     <div>
       {{ feature.properties.address }}
       <br>
       {{ Math.round(device.speed) }} km/h,
-      <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)" />.
+      <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
       <br>
     </div>
   </div>
@@ -171,6 +171,7 @@ export default {
       this.routeMatch = !this.routeMatch
     },
     getRoute: function(from, to) {
+      Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions)
     },
     getRouteTrips: function(positions) {
@@ -179,7 +180,9 @@ export default {
       const trips = this.trips
       positions.forEach(function(position) {
         if (!startPos) {
-          if (!position.attributes.ignition || (position.attributes.power && position.attributes.power < 13)) { return }
+          if (!position.attributes.ignition || (position.attributes.power && position.attributes.power < 13)) {
+            return
+          }
           trips.push(locations)
           locations.push(position)
           startPos = true
@@ -211,12 +214,15 @@ export default {
       this.iterate()
     },
     onPositions: function(positions) {
-      this.positions = positions
+      Vue.$log.debug('got ', positions.length, ' positions')
       this.removeLayers()
       vm.$data.historyMode = true
-      this.drawAll(positions)
+      this.positions = positions
+      this.drawAll(this.positions)
       Vue.$log.debug('got ', this.positions.length, ' positions, last one:')
       Vue.$log.debug(this.positions[this.positions.length - 1])
+      Vue.$log.debug('got ', this.positions.length, ' positions, first one:')
+      Vue.$log.debug(this.positions[0])
       this.getRouteTrips(this.positions)
       Vue.$log.debug('transformed into ', this.trips.length, ' trips')
       this.filterTrips()

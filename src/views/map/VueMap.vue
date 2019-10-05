@@ -246,7 +246,7 @@ export default {
       map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
-        map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
+        map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'top-left')
       } else {
         map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
         const VD = Vue.extend(VehicleList)
@@ -255,7 +255,7 @@ export default {
       }
 
       if (settings.showSlider) {
-        map.addControl(new MapboxCustomControl('slider-div'), 'top-left')
+        map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
         const VD = Vue.extend(HistoryPanel)
         const _vm = new VD({ i18n: i18n })
         _vm.$mount('#slider-div')

@@ -50,7 +50,7 @@ export default {
     serverBus.$on('deviceSelected', this.deviceSelected)
   },
   methods: {
-    deviceSelect() {
+    deviceSelected() {
       if (this.isMobile) { this.toggle() }
     },
     toggle() {

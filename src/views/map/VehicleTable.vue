@@ -37,7 +37,7 @@
               >
                 <td :style="entry | formatColor"></td>
                 <td>
-                  <div> <!-- v-for="key in columns" :key="key" :nowrap="key!=='lastUpdate'"-->
+                  <div>
                     <span class="text-overflow">{{ entry.name | formatNumber }}</span>
                     <span class="text-overflow">{{ entry.speed | formatNumber }} km/h</span>
                     <span class="tag is-info" style="height: 1.5em;">
@@ -48,10 +48,10 @@
                       ></timeago>
                     </span>
                     <el-tooltip content="Immobilize" placement="bottom">
-                      <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)" />
+                      <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)"></i>
                     </el-tooltip>
                     <el-tooltip content="De-Immobilize" placement="bottom">
-                      <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)" />
+                      <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)"></i>
                     </el-tooltip>
                   </div>
                 </td>
@@ -66,11 +66,10 @@
 <script>
 
 import { serverBus, vm } from '../../main'
-// import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '../../api/traccar-api'
 import VueCookies from 'vue-cookies'
-var cookie = VueCookies.get('user-info')
+const cookie = VueCookies.get('user-info')
 
 export default {
   name: 'VehicleTable',

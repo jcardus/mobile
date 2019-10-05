@@ -39,13 +39,13 @@ export const traccar = {
         timeout: 29000 // Maximum timeour for the Lambda API Gateway
       }
     )
-      .then(response => ok(report_id))
+      .then(report_id)
       .catch(reason => nok(report_id, reason))
   },
   startReceiving: function() {
     vm.$connect()
   },
-  devices: function(onFulfill) {
+  devices: function() {
     cookie = VueCookies.get('user-info')
     axios.get(devices, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => { vm.$data.devices = response.data })
@@ -63,13 +63,13 @@ export const traccar = {
   updateUser: function(userid, user, onFulfill) {
     axios.put(users + '/' + userid, user,
       { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(user))
+      .then(() => onFulfill(user))
       .catch(reason => {
         Vue.$log.error(reason)
       })
   },
-  route: function(deviceid, from, to, onFulfill) {
-    axios.get(positions + '?deviceId=' + deviceid + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+  route: function(deviceId, from, to, onFulfill) {
+    axios.get(positions + '?deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)

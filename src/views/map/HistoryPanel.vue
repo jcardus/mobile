@@ -3,13 +3,13 @@
     <div class="panel">
       <table><tr><td>
         <div style="text-align: center">
-          <input
+          <label for="minDate"></label><input
             id="minDate"
             v-model="minDate"
             type="date"
             style="float:left; width: 145px; background-color: rgba(1,1,1,0)"
           >
-          <input
+          <label for="maxDate"></label><input
             id="maxDate"
             v-model="maxDate"
             type="date"
@@ -70,7 +70,7 @@ export default {
     },
     maxDate: {
       get() {
-        return utils.getDate(this.positions.slice(-1)[0]).format('YYYY-MM-DD')
+        return this.$moment(vm.$data.routeMaxDate).format('YYYY-MM-DD')
       },
       set(newVal) {
         vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
@@ -95,7 +95,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import '~bulma/bulma.sass';
     .mapboxgl-ctrl {
         top: 50px;
         z-index: -1;
@@ -129,5 +128,4 @@ export default {
     .card {
         background-color: rgba(255,255,255,0.8);
     }
-
 </style>
