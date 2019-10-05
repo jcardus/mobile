@@ -47,10 +47,10 @@
                         :locale="$i18n.locale.substring(0,2)"
                       ></timeago>
                     </span>
-                    <el-tooltip content="Immobilize" placement="bottom">
+                    <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
                       <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)"></i>
                     </el-tooltip>
-                    <el-tooltip content="De-Immobilize" placement="bottom">
+                    <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
                       <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)"></i>
                     </el-tooltip>
                   </div>

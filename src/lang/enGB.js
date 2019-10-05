@@ -13,6 +13,12 @@ export default {
     column_speed: 'Km/h',
     column_lastUpdate: 'Last update'
   },
+  vehicleTable: {
+    immobilize: 'Immobilize',
+    de_immobilize: 'De-Immobilize',
+    send_immobilization: 'Send immobilization command?',
+    send_de_immobilization: 'Send de-immobilization command?'
+  },
   vehicleDetail: {
     show_route: 'Show route',
     route_match: 'Route match'
