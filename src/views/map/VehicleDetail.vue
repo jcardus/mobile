@@ -70,10 +70,10 @@ export default {
     },
     positions: {
       get() {
-        return vm.$data.currentDevice.positions
+        return vm.$data.positions
       },
       set(value) {
-        vm.$data.currentDevice.positions = value
+        vm.$data.positions = value
       }
     }
   },
@@ -112,20 +112,20 @@ export default {
     onPosChanged(newPos) {
       const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
       const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
-      const currentPosition = vm.$data.currentDevice.positions[newPos]
+      const currentPosition = this.positions[newPos]
       const newDate = utils.getDate(currentPosition.fixTime)
 
       if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
         const nextStart = this.$moment(this.trips[this.currentTrip + 1][0].deviceTime).toDate()
         if (nextStart <= newDate) {
-          this.removeLayers()
+          this.removeLayers(true)
           this.currentTrip++
           this.drawTrip()
         }
       } else if (this.currentTrip > 0 && newDate < tripStart) {
         const previousEnd = this.$moment(this.trips[this.currentTrip - 1].slice(-1)[0].fixTime).toDate()
         if (newDate <= previousEnd) {
-          this.removeLayers()
+          this.removeLayers(true)
           this.currentTrip--
           this.drawTrip()
         }
@@ -136,7 +136,7 @@ export default {
       this.feature.properties.address = currentPosition.address
       vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
     },
-    removeLayers: function() {
+    removeLayers: function(keepMain) {
       for (this.i = 0; this.i < 10000; this.i += 99) {
         if (vm.$static.map.getLayer(this.routeSource)) {
           Vue.$log.debug('removing ', this.routeSource)
@@ -148,9 +148,11 @@ export default {
       this.i = 0
       if (this.startMaker) { this.startMaker.remove() }
       if (this.endMarker) { this.endMarker.remove() }
-      if (vm.$static.map.getLayer(this.allTripsSource)) {
-        this.map.removeLayer(this.allTripsSource)
-        this.map.removeSource(this.allTripsSource)
+      if (!keepMain) {
+        if (vm.$static.map.getLayer(this.allTripsSource)) {
+          this.map.removeLayer(this.allTripsSource)
+          this.map.removeSource(this.allTripsSource)
+        }
       }
     },
     showRoutesClick: function() {
@@ -175,6 +177,7 @@ export default {
       traccar.route(this.device.id, from, to, this.onPositions)
     },
     getRouteTrips: function(positions) {
+      this.trips = []
       let locations = []
       let startPos = false
       const trips = this.trips
@@ -197,6 +200,7 @@ export default {
         if (position.attributes.ignition || position.speed > 0) {
           return
         }
+        Vue.$log.debug('this line should not appear very often...')
         locations = []
         startPos = false
       })
@@ -214,15 +218,11 @@ export default {
       this.iterate()
     },
     onPositions: function(positions) {
-      Vue.$log.debug('got ', positions.length, ' positions')
+      Vue.$log.debug('got ', this.positions.length, ' positions')
+      this.positions = positions
       this.removeLayers()
       vm.$data.historyMode = true
-      this.positions = positions
       this.drawAll(this.positions)
-      Vue.$log.debug('got ', this.positions.length, ' positions, last one:')
-      Vue.$log.debug(this.positions[this.positions.length - 1])
-      Vue.$log.debug('got ', this.positions.length, ' positions, first one:')
-      Vue.$log.debug(this.positions[0])
       this.getRouteTrips(this.positions)
       Vue.$log.debug('transformed into ', this.trips.length, ' trips')
       this.filterTrips()
@@ -245,9 +245,9 @@ export default {
       el.innerHTML = '<span><b>' + hour + '</b></span>'
       this.startMaker = new mapboxgl.Marker(el)
         .setLngLat(start)
-      // .addTo(vm.$static.map);
       this.startMaker.addTo(vm.$static.map)
-      if (positions[positions.length - 1].attributes.ignition === false) {
+      const lastPos = positions[positions.length - 1]
+      if (lastPos.attributes.ignition === false || (lastPos.attributes.power && lastPos.attributes.power < 13)) {
         el = document.createElement('div')
         el.className = 'marker finish'
         hour = this.$moment(positions[positions.length - 1].fixTime).format('HH:mm')
@@ -341,6 +341,10 @@ export default {
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
     createAllTripsLayer: function(routeGeoJSON) {
+      if (vm.$static.map.getLayer(this.allTripsSource)) {
+        this.map.removeLayer(this.allTripsSource)
+        this.map.removeSource(this.allTripsSource)
+      }
       Vue.$log.debug('adding source ', this.allTripsSource)
       vm.$static.map.addSource(this.allTripsSource, {
         type: 'geojson',
