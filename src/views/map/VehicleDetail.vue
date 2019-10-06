@@ -39,17 +39,21 @@ export default {
   },
   data: function() {
     return {
-      showRoutes: false,
       routeMatch: false,
       device: null,
       feature: null,
       i: 0,
       trips: [],
       currentTrip: 0,
-      sliderVisible: false
+      sliderVisible: false,
+      showRoutes: false
     }
   },
   computed: {
+    historyMode: {
+      get() { return vm.$data.historyMode },
+      set(value) { vm.$data.historyMode = value }
+    },
     map() {
       return vm.$static.map
     },
@@ -62,10 +66,13 @@ export default {
     isMobile() {
       return lnglat.isMobile()
     },
-    routeSource: function() {
+    vehicleRouteIconSource() {
+      return 'routeIconSource-' + this.device.id
+    },
+    routeSource() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i
     },
-    allTripsSource: function() {
+    allTripsSource() {
       return 'allTrips-' + this.device.id
     },
     positions: {
@@ -76,6 +83,13 @@ export default {
         vm.$data.positions = value
       }
     }
+  },
+  beforeDestroy() {
+    Vue.$log.debug('destroying...')
+    serverBus.$off('posChanged', this.onPosChanged)
+    serverBus.$off('minDateChanged', this.onDatesChanged)
+    serverBus.$off('maxDateChanged', this.onDatesChanged)
+    serverBus.$off('deviceSelected', this.deviceSelected)
   },
   mounted: function() {
     // odd width popups are blurry on Chrome, this enforces even widths
@@ -94,15 +108,23 @@ export default {
       )
       mly.moveCloseTo(this.feature.geometry.coordinates[1], this.feature.geometry.coordinates[0])
     }
+    Vue.$log.debug('subscribing events')
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('minDateChanged', this.onDatesChanged)
     serverBus.$on('maxDateChanged', this.onDatesChanged)
+    serverBus.$on('deviceSelected', this.deviceSelected)
+    serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
   methods: {
     onDatesChanged() {
-      this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
+      if (this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
+        this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
+      }
     },
     onPosChanged(newPos) {
+      if (!this.device) return
+      if (this.device.id !== vm.$data.currentDevice.id) return
+      Vue.$log.debug('changing device position, deviceId: ', this.device.deviceId)
       const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
       const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
       const currentPosition = this.positions[newPos]
@@ -127,7 +149,9 @@ export default {
       this.feature.properties.course = currentPosition.course
       this.feature.geometry.coordinates = [currentPosition.longitude, currentPosition.latitude]
       this.feature.properties.address = currentPosition.address
-      vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+      if (vm.$static.map.getSource(this.vehicleRouteIconSource)) {
+        vm.$static.map.getSource(this.vehicleRouteIconSource).setData(vm.$static.positionsSource)
+      }
     },
     removeLayers: function(keepMain) {
       for (this.i = 0; this.i < 10000; this.i += 99) {
@@ -142,7 +166,7 @@ export default {
       if (this.startMaker) { this.startMaker.remove() }
       if (this.endMarker) { this.endMarker.remove() }
       if (!keepMain) {
-        if (vm.$static.map.getLayer(this.allTripsSource)) {
+        if (this.map.getLayer(this.allTripsSource)) {
           this.map.removeLayer(this.allTripsSource)
           this.map.removeSource(this.allTripsSource)
         }
@@ -156,10 +180,6 @@ export default {
       } else {
         vm.$data.historyMode = false
         this.removeLayers()
-        if (vm.$static.map.getLayer(this.allTripsSource)) {
-          vm.$static.map.removeLayer(this.allTripsSource)
-          vm.$static.map.removeSource(this.allTripsSource)
-        }
       }
     },
     getRoute: function(from, to) {
@@ -223,6 +243,7 @@ export default {
       this.currentTrip = this.trips.length - 1
       this.drawTrip()
       serverBus.$emit('routeFetched')
+      lnglat.refreshMap()
     },
     drawStartEnd: function() {
       const positions = this.trips[this.currentTrip]
@@ -368,6 +389,17 @@ export default {
       }
       const routeGeoJSON = this.getGeoJSON(r.data.matchings[0].geometry)
       this.drawIteration(routeGeoJSON)
+    },
+    deviceSelected(device) {
+      Vue.$log.debug('device selected ', device.id)
+      if (this.device && this.device.id !== device.id) {
+        Vue.$log.debug('removing layers on deviceid, ', this.device.id)
+        this.removeLayers()
+        this.showRoutes = false
+      } else {
+        this.historyMode = this.showRoutes
+        Vue.$log.debug('not removing layers on deviceid, ', this.device.id)
+      }
     }
   }
 }
@@ -384,13 +416,10 @@ export default {
         cursor: pointer;
         color: darkblue;
     }
-
     .start {
         background-image: url(../assets/marker-start.png);
     }
-
     .marker {width:0; height:0;}
-
     .marker  span {
         display:flex;
         justify-content:center;
@@ -407,10 +436,8 @@ export default {
         transform-origin:0 0;
         transform: rotateZ(-135deg);
     }
-
     .finish span {
         background: #991907;
     }
-
     .marker b {transform: rotateZ(135deg)}
 </style>

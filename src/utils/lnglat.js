@@ -128,7 +128,7 @@ export function addLayers(map) {
       'data': vm.$static.positionsSource,
       'cluster': true,
       clusterMaxZoom: 14, // Max zoom to cluster points on
-      clusterRadius: 50
+      clusterRadius: 8
     })
   } else { Vue.$log.warn(sourceid, ' already exists...') }
   /* this.map.addLayer({

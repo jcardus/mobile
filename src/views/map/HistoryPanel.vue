@@ -29,7 +29,6 @@
       </td></tr></table>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -48,7 +47,8 @@ export default {
       currentPos: 0,
       minPos: 0,
       maxPos: 0,
-      formatter: v => `${utils.formatDate(v)}`
+      formatter: v => `${utils.formatDate(v)}`,
+      deviceId: 0
     }
   },
   computed: {
@@ -83,15 +83,19 @@ export default {
   },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)
+    serverBus.$off('deviceSelected', this.deviceSelected)
   },
   mounted() {
     serverBus.$on('routeFetched', this.updateMinMax)
+    serverBus.$on('deviceSelected', this.deviceSelected)
   },
   methods: {
     updateMinMax() {
       this.$log.debug('routeFetched, maxPos=', this.positions.length - 1)
       this.maxPos = this.positions.length - 1
       this.currentPos = this.maxPos
+    },
+    deviceSelected(device) {
     }
   }
 }
@@ -102,7 +106,8 @@ export default {
         z-index: -1;
     }
     .panel {
-        width: calc(100vw - 420px);
+      min-width: 300px;
+        width: calc(100vw - 600px);
         font-size: 15px;
     }
     input {

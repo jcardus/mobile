@@ -549,7 +549,7 @@ export default {
     bottom: 0 !important;
     padding:0;
     width: 100%;
-    height: calc(100vh - var(--vh-offset, 0px) - 84px);
+    height: calc(100vh - var(--vh-offset, 0px) - 50px);
   }
   #map {
     height: 100%;
