@@ -5,9 +5,8 @@ export function getDate(dateString) {
   return Vue.moment(dateString)
 }
 export function formatDate(v) {
-  const fixTime = vm.$data.currentDevice.positions[v] ? vm.$data.currentDevice.positions[v].fixTime : new Date()
-  const result = getDate(fixTime).format('DD HH:mm:ss')
-  return result
+  const fixTime = vm.$data.positions[v] ? vm.$data.positions[v].fixTime : new Date()
+  return getDate(fixTime).format('DD HH:mm:ss')
 }
 
 export function stopLoader() {
