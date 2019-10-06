@@ -217,12 +217,9 @@ export default {
         transition: 100ms ease-out;
         max-width: calc(100vw - 20px);
     }
-
     .dd-body-inner {
         padding: 5px;
-
     }
-
     th {
         font-size: 14px;
         cursor: pointer;
@@ -231,22 +228,20 @@ export default {
         -ms-user-select: none;
         user-select: none;
     }
-
     .table td {
         padding: 3px 4px;
     }
-
     .table-body {
         font-size: 14px;
         display: block;
         transition: 1000ms ease-out;
         overflow-y: scroll;
-        max-height: calc(100vh - 170px)
+        max-height: calc(100vh - 115px)
     }
 
     @media screen and (max-width: 768px) {
       .table-body {
-        max-height: calc(100vh - 270px)
+        max-height: calc(100vh - 200px)
       }
     }
 
@@ -256,7 +251,6 @@ export default {
         font-size: 14px;
         margin: 3px;
     }
-
     .table {
         width: 100%;
         padding: 0;
@@ -269,23 +263,18 @@ export default {
         white-space: nowrap;
         text-overflow: ellipsis;
     }
-
-    //Custom scrollbar
     ::-webkit-scrollbar {
       width: 7px;
       height: 7px;
     }
-
     ::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 7px;
     }
-
     ::-webkit-scrollbar-thumb {
       background: #888;
       border-radius: 7px;
     }
-
     ::-webkit-scrollbar-thumb:hover {
       background: #555;
       border-radius: 7px;

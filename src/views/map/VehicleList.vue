@@ -15,7 +15,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import VehicleTable from './VehicleTable'
 import * as lnglat from '../../utils/lnglat'
@@ -67,7 +66,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
     .vehicleList {
         position: absolute;
         top: 0;
@@ -76,7 +74,6 @@ export default {
         max-width: 355px;
         font-size: 15px;
     }
-
     th.active {
         color: #fff;
     }
@@ -105,7 +102,6 @@ export default {
         top: 0;
         left: 0;
     }
-
     .header-icon {
         position: absolute;
         top: 5px;
@@ -114,7 +110,6 @@ export default {
         transition-duration: 0.3s;
         color:black;
     }
-
     th {
         cursor: pointer;
         -webkit-user-select: none;
@@ -122,11 +117,9 @@ export default {
         -ms-user-select: none;
         user-select: none;
     }
-
     @media screen and (max-width: 768px) {
         .vehicleList {
             width: calc(100vw - 20px);
         }
     }
-
 </style>
