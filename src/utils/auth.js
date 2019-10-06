@@ -1,14 +1,14 @@
 import VueCookies from 'vue-cookies'
-const TokenKey = 'user-info'
+const tokenKey = 'user-info'
 
 export function getToken() {
-  return VueCookies.get(TokenKey)
+  return VueCookies.get(tokenKey)
 }
 
 export function setToken(token) {
-  return VueCookies.set(TokenKey, token)
+  return VueCookies.set(tokenKey, token)
 }
 
 export function removeToken() {
-  return VueCookies.remove(TokenKey)
+  VueCookies.remove(tokenKey)
 }

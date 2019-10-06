@@ -39,7 +39,7 @@ export default {
   },
   data: function() {
     return {
-      routeMatch: false,
+      routeMatch: true,
       device: null,
       feature: null,
       i: 0,
@@ -193,7 +193,7 @@ export default {
       const trips = this.trips
       positions.forEach(function(position) {
         if (!startPos) {
-          if (!position.attributes.ignition || (position.attributes.power && position.attributes.power < 13)) {
+          if ((!position.attributes.ignition && !position.attributes.motion) || (position.attributes.power > 0 && position.attributes.power < 13)) {
             return
           }
           trips.push(locations)
@@ -202,15 +202,14 @@ export default {
           return
         }
         locations.push(position)
-        if (position.attributes.power && position.attributes.power < 13) {
+        if (position.attributes.power > 0 && position.attributes.power < 13) {
           locations = []
           startPos = false
           return
         }
-        if (position.attributes.ignition || position.speed > 0) {
+        if (position.attributes.ignition || position.speed > 0 || position.attributes.ignition) {
           return
         }
-        Vue.$log.debug('this line should not appear very often...')
         locations = []
         startPos = false
       })
@@ -390,6 +389,8 @@ export default {
       }
       const routeGeoJSON = this.getGeoJSON(r.data.matchings[0].geometry)
       this.drawIteration(routeGeoJSON)
+      lnglat.removeLayers(this.map)
+      lnglat.addLayers(this.map)
     },
     deviceSelected(device) {
       Vue.$log.debug('device selected ', device.id)

@@ -127,7 +127,6 @@ function getGeofences(response) {
 }
 
 export function addLayers(map) {
-  Vue.$log.debug('adding layers...')
   const sourceid = 'positions'
   if (!map.getSource(sourceid)) {
     map.addSource(sourceid, {
@@ -251,7 +250,8 @@ export function addLayers(map) {
   }
 }
 
-export function removeLayers(map) {
+export function removeLayers() {
+  const map = vm.$static.map
   Vue.$log.debug('remove layers...')
   if (map.getLayer('clusters')) { map.removeLayer('clusters') }
   if (map.getLayer('cluster-count')) { map.removeLayer('cluster-count') }
@@ -261,4 +261,3 @@ export function removeLayers(map) {
   if (map.getSource('positions')) { map.removeSource('positions') }
   if (map.getSource('geofences')) { map.removeSource('geofences') }
 }
-

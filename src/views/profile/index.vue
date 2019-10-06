@@ -2,7 +2,6 @@
   <div class="app-container">
     <div v-if="user">
       <el-row :gutter="20">
-
         <el-col :span="12" :xs="24">
           <account :user="user" />
         </el-col>
@@ -28,7 +27,7 @@ export default {
   },
   methods: {
     getUser() {
-      var token = getToken()
+      const token = getToken()
       this.user = {
         name: token.name,
         email: token.email,

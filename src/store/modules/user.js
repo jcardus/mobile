@@ -3,6 +3,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import { traccar } from '@/api/traccar-api'
 import { setLanguage } from '@/lang/index'
+import { vm } from '@/main'
 
 const state = {
   token: getToken(),
@@ -61,6 +62,7 @@ const actions = {
         commit('SET_ROLES', [])
         resetRouter()
         removeToken()
+        vm.reset()
         resolve()
       }).catch(() => {
         commit('SET_ROLES', [])

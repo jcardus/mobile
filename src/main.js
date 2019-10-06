@@ -97,6 +97,10 @@ export const vm = new Vue({
   methods: {
     device(deviceId) {
       return this.devices.find(e => e.id === deviceId)
+    },
+    reset() {
+      Vue.$log.debug('reseting data...')
+      this.$static.positionsSource.features = []
     }
   },
   router,
