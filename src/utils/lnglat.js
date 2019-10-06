@@ -18,6 +18,7 @@ function addImage(path, name) {
     if (!error) { vm.$static.map.addImage(name, image) }
   })
 }
+
 export function addImages() {
   addImage('img/40/car-green.png', 'car-green')
   addImage('img/40/car-yellow.png', 'car-yellow')
@@ -26,10 +27,12 @@ export function addImages() {
   addImage('img/m2.png', 'm2')
   addImage('img/m3.png', 'm3')
 }
+
 export function getBounds(coordinates) {
   const line = helpers.lineString(coordinates)
   return bbox(line)
 }
+
 export function getDistance(origin, destination) {
   const route = {
     type: 'Feature',
@@ -44,10 +47,12 @@ export function getDistance(origin, destination) {
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
+
 export function isMobile() {
   Vue.$log.debug('ismobile: ', vm.$store.state.app.device)
   return vm.$store.state.app.device === 'mobile'
 }
+
 export function sameLngLat(c1, c2) {
   const route = {
     type: 'Feature',
@@ -60,6 +65,7 @@ export function sameLngLat(c1, c2) {
   Vue.$log.debug('len=', len)
   return len < 0.001
 }
+
 export class MapboxCustomControl {
   constructor(id) {
     this.id = id
@@ -83,6 +89,7 @@ export function matchRoute(coordinates, radius, onSuccess) {
   axios.get(query)
     .then(onSuccess)
 }
+
 function convertWktToGeojson(response) {
   const result = []
   Vue.$log.debug('converting ', response.data.length, ' features')
@@ -158,7 +165,6 @@ export function addLayers(map) {
       'id': 'clusters',
       'source': sourceid,
       'type': 'symbol',
-
       layout: {
         'icon-image':
                     [
@@ -186,7 +192,6 @@ export function addLayers(map) {
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 12
       }
-
     })
   } else { Vue.$log.warn('layer cluster-count already exists...') }
   if (!map.getLayer('unclustered-point')) {
@@ -244,5 +249,16 @@ export function addLayers(map) {
       }
     })
   }
+}
+
+export function removeLayers(map) {
+  Vue.$log.debug('remove layers...')
+  if (map.getLayer('clusters')) { map.removeLayer('clusters') }
+  if (map.getLayer('cluster-count')) { map.removeLayer('cluster-count') }
+  if (map.getLayer('unclustered-point')) { map.removeLayer('unclustered-point') }
+  if (map.getLayer('geofences')) { map.removeLayer('geofences') }
+  if (map.getLayer('geofences-labels')) { map.removeLayer('geofences-labels') }
+  if (map.getSource('positions')) { map.removeSource('positions') }
+  if (map.getSource('geofences')) { map.removeSource('geofences') }
 }
 

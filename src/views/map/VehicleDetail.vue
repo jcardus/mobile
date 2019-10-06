@@ -149,8 +149,8 @@ export default {
       this.feature.properties.course = currentPosition.course
       this.feature.geometry.coordinates = [currentPosition.longitude, currentPosition.latitude]
       this.feature.properties.address = currentPosition.address
-      if (vm.$static.map.getSource(this.vehicleRouteIconSource)) {
-        vm.$static.map.getSource(this.vehicleRouteIconSource).setData(vm.$static.positionsSource)
+      if (vm.$static.map.getSource('positions')) {
+        vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
       }
     },
     removeLayers: function(keepMain) {
@@ -226,6 +226,8 @@ export default {
     drawTrip: function() {
       this.drawStartEnd()
       this.iterate()
+      lnglat.removeLayers(this.map)
+      lnglat.addLayers(this.map)
     },
     onPositions: function(positions) {
       Vue.$log.debug('got ', this.positions.length, ' positions')
@@ -243,7 +245,6 @@ export default {
       this.currentTrip = this.trips.length - 1
       this.drawTrip()
       serverBus.$emit('routeFetched')
-      lnglat.refreshMap()
     },
     drawStartEnd: function() {
       const positions = this.trips[this.currentTrip]

@@ -83,19 +83,15 @@ export default {
   },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)
-    serverBus.$off('deviceSelected', this.deviceSelected)
   },
   mounted() {
     serverBus.$on('routeFetched', this.updateMinMax)
-    serverBus.$on('deviceSelected', this.deviceSelected)
   },
   methods: {
     updateMinMax() {
       this.$log.debug('routeFetched, maxPos=', this.positions.length - 1)
       this.maxPos = this.positions.length - 1
       this.currentPos = this.maxPos
-    },
-    deviceSelected(device) {
     }
   }
 }

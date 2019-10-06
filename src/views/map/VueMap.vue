@@ -278,7 +278,7 @@ export default {
     onLeaveUnclustered: function() {
       this.map.getCanvas().style.cursor = ''
     },
-    subscribeEvents: function() {
+    subscribeEvents() {
       const self = this
       this.$static.map.on('moveend', this.onMoveEnd)
       this.$static.map.on('pitch', this.onPitch)
@@ -306,9 +306,7 @@ export default {
       })
       window.addEventListener('resize', this.mapResize)
     },
-    unsubscribeEvents: function() {
-      if (this.unsubscribe) { this.unsubscribe() }
-      serverBus.$off('deviceSelected', this.deviceSelected)
+    unsubscribeEvents() {
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
       this.$static.map.off('click', 'unclustered-point', this.onClickTouchUnclustered)
@@ -317,6 +315,11 @@ export default {
       this.$static.map.off('click', 'clusters', this.onClickTouch)
       this.$static.map.off('mouseenter', 'unclustered-point', this.onEnterUnclustered)
       this.$static.map.off('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
+      this.$static.map.off('draw.create', this.drawCreate)
+      this.$static.map.off('draw.delete', this.drawDelete)
+      this.$static.map.off('draw.update', this.drawUpdate)
+      serverBus.$off('deviceSelected', this.deviceSelected)
+      if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
     onClickTouchUnclustered: function(e) {

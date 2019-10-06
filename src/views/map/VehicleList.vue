@@ -77,26 +77,21 @@ export default {
     th.active {
         color: #fff;
     }
-
     .card {
         background-color: rgba(255,255,255,0.8);
     }
-
     .card-header-title {
         border: 0;
         margin-bottom: 0 !important;
     }
-
     .card-header.opened {
         border-bottom: 0;
     }
-
     .card-header .header-icon.rotate {
         transform: rotate(180deg);
         transition-duration: 0.3s;
         color: black;
     }
-
     .vehicle-table {
         position: relative;
         top: 0;
