@@ -515,7 +515,7 @@ export default {
     geofenceCreated: function() {
       this.$message({
         type: 'success',
-        message: 'Geofence created sucessfully!'
+        message: this.$t('map.geofence_created')
       })
     },
     drawCreate(e) {
@@ -523,15 +523,15 @@ export default {
       if (data.features.length > 0) {
         // const a = area(data)
         // const rounded_area = Math.round(a * 100) / 100
-        this.$prompt('Please enter the name of this geofence...', 'New geofence', {
-          confirmButtonText: 'OK',
-          cancelButtonText: 'Cancel'
+        this.$prompt(this.$t('map.geofence_create_name'), this.$t('map.geofence_create_title'), {
+          confirmButtonText: this.$t('map.geofence_create_confirm'),
+          cancelButtonText: this.$t('map.geofence_create_cancel')
         }).then(({ value }) => {
           traccar.newGeofence(value, 'description', data, this.geofenceCreated)
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: 'Input canceled'
+            message: this.$t('map.geofence_create_canceled')
           })
         })
       } else {
