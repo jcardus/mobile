@@ -73,7 +73,7 @@ export const constantRoutes = [
       {
         path: 'map',
         component: () => import('@/views/map/VueMap'),
-        meta: { title: 'Map', icon: 'map' }
+        meta: { title: 'Map', icon: 'far fa-map' }
       }]
   },
   {
@@ -81,47 +81,51 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'main',
+        path: 'index',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: 'Dashboard', icon: 'dashboard' }
+        meta: { title: 'Dashboard', icon: 'fa fa-dashboard' }
       }
     ]
   },
   {
     path: '/reports',
-    redirect: '/reports',
     component: Layout,
     hidden: false,
     name: 'Reports',
-    meta: { title: 'reports', icon: 'documentation' },
+    meta: { title: 'Reports', icon: 'far fa-sticky-note' },
     children: [
       {
         path: 'report_trip',
         component: () => import('@/views/reports/report_trip'),
         name: 'TripReport',
-        meta: { title: 'report_trip_title', icon: 'documentation', noCache: true }
+        meta: { title: 'Trip Report', icon: 'documentation' }
       },
       {
         path: 'report_location',
         component: () => import('@/views/reports/report_location'),
         name: 'Route Report',
-        meta: { title: 'report_location_title', icon: 'documentation', noCache: true }
+        meta: { title: 'Route Report', icon: 'documentation', noCache: true }
       }
     ]
   },
   {
     path: '/settings',
-    redirect: '/settings/geofences',
     component: Layout,
     hidden: false,
     name: 'Settings',
-    meta: { title: 'Settings', icon: 'settings' },
+    meta: { title: 'Settings', icon: 'cog', noCache: true },
     children: [
+      {
+        path: '',
+        component: () => import('@/views/settings/Geofences'),
+        name: 'Geofences',
+        meta: { title: 'Geofences', icon: 'example' }
+      },
       {
         path: 'geofences',
         component: () => import('@/views/settings/Geofences'),
         name: 'Geofences',
-        meta: { title: 'Geofences', icon: 'example', noCache: true }
+        meta: { title: 'Geofences', icon: 'example' }
       }
     ]
   },

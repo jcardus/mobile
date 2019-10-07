@@ -43,7 +43,6 @@ export const serverBus = new Vue()
 export const settings = {
   animateMarkers: true,
   showVehicleList: true,
-  matchRoutes: true,
   showSlider: true,
   truck3d: true
 }

@@ -26,7 +26,7 @@ import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import * as helpers from '@turf/helpers'
-import { serverBus, settings, vm } from '../../main'
+import { serverBus, vm } from '../../main'
 import mapboxgl from 'mapbox-gl'
 import * as utils from '../../utils/utils'
 
@@ -216,6 +216,7 @@ export default {
     },
     filterTrips() {
       const result = []
+      if (this.trips.length < 2) { return }
       this.trips.forEach(function(trip) {
         if (trip.length > 3) { result.push(trip) }
       })
@@ -228,8 +229,8 @@ export default {
       lnglat.addLayers(this.map)
     },
     onPositions: function(positions) {
-      Vue.$log.debug('got ', this.positions.length, ' positions')
       this.positions = positions
+      Vue.$log.debug('got ', this.positions.length, ' positions')
       this.removeLayers()
       vm.$data.historyMode = true
       this.drawAll(this.positions)
@@ -284,10 +285,12 @@ export default {
       }
     },
     drawRoute(positions) {
-      if (settings.matchRoutes && this.routeMatch) { lnglat.matchRoute(positions, positions.map(() => [25]), this.onRouteMatch) } else {
+      if (!vm.$store.state.settings.matchRoutes) {
         const lineString = { type: 'LineString', coordinates: positions }
         const routeGeoJSON = this.getGeoJSON(lineString)
         this.drawIteration(routeGeoJSON)
+      } else {
+        lnglat.matchRoute(positions, positions.map(() => [25]), this.onRouteMatch)
       }
     },
     getGeoJSON: function(coords) {

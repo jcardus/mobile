@@ -8,6 +8,7 @@
         :data="filteredVehicles"
         stripe
         :cell-style="cellStyle"
+        height="calc(100vh - 100px)"
         @current-change="vehicleSelected"
       >
         <el-table-column
@@ -19,7 +20,7 @@
         <el-table-column
           prop="name"
           label="Name"
-          sortable
+          sortable=""
         >
           <template slot-scope="scope">
             {{ scope.row.name }}<br />
@@ -122,10 +123,6 @@ export default {
     const self = this
     serverBus.$on('deviceSelectedOnMap', (device) => {
       self.selected = device.id
-    })
-
-    this.columns.forEach(function(key) {
-      self.sortColumns[key] = 1
     })
   },
   methods: {
