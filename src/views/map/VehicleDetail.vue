@@ -145,7 +145,6 @@ export default {
           this.drawTrip()
         }
       }
-
       this.feature.properties.course = currentPosition.course
       this.feature.geometry.coordinates = [currentPosition.longitude, currentPosition.latitude]
       this.feature.properties.address = currentPosition.address

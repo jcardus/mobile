@@ -1,65 +1,43 @@
 <template>
   <div v-show="show" class="dd-body">
     <div class="dd-body-inner">
-      <label>
-        <input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')">
-      </label>
-      <div>
-        <table class="table">
-          <thead>
-            <tr>
-              <th></th>
-              <th
-                v-for="key in headerColumns"
-                :key="key"
-                nowrap
-                @click="sortBy(key)"
-              >
-                {{ key | formatHeaders | translate | capitalize }}
-                <span
-                  v-if="key===sortKey"
-                  class="fa"
-                  :class="sortColumns[key] > 0 ? 'fa-arrow-up' : 'fa-arrow-down'"
-                >
-                </span>
-              </th>
-            </tr>
-          </thead>
-        </table>
-        <div class="table-body">
-          <table id="mainTable" class="table is-striped">
-            <tbody>
-              <tr
-                v-for="entry in filteredVehicles"
-                :key="entry.id"
-                :class="entry.id===selected?'is-selected':''"
-                @click="vehicleSelected(entry)"
-              >
-                <td :style="entry | formatColor"></td>
-                <td>
-                  <div>
-                    <span class="text-overflow">{{ entry.name | formatNumber }}</span>
-                    <span class="text-overflow">{{ entry.speed | formatNumber }} km/h</span>
-                    <span class="tag is-info" style="height: 1.5em;">
-                      <timeago
-                        :datetime="entry.lastUpdate"
-                        :auto-update="60"
-                        :locale="$i18n.locale.substring(0,2)"
-                      ></timeago>
-                    </span>
-                    <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
-                      <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)"></i>
-                    </el-tooltip>
-                    <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
-                      <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)"></i>
-                    </el-tooltip>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
+      <el-table
+        id="mainTable"
+        highlight-current-row
+        :data="filteredVehicles"
+        stripe
+        :cell-style="cellStyle"
+        @current-change="vehicleSelected"
+      >
+        <el-table-column
+          prop=""
+          label=""
+          width="10"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="Name"
+          sortable
+        >
+          <template slot-scope="scope">
+            {{ scope.row.name }}<br />
+            {{ scope.row.speed | formatNumber }} km/h<br />
+            <timeago
+              :datetime="scope.row.lastUpdate"
+              :auto-update="60"
+              :locale="$i18n.locale.substring(0,2)"
+            ></timeago>
+            <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
+              <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)"></i>
+            </el-tooltip>
+            <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
+              <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)"></i>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
@@ -96,12 +74,9 @@ export default {
       return value
     }
   },
-
   data() {
     return {
       show: true,
-      columns: ['name', 'speed', 'lastUpdate', 'ignition'],
-      headerColumns: ['name', 'speed'],
       animating: false,
       data: [],
       selected: -1,
@@ -154,6 +129,22 @@ export default {
     })
   },
   methods: {
+    cellStyle(row) {
+      if (row.columnIndex === 0) {
+        if (row.row.speed > 2) {
+          return 'background-color:#55ff55'
+        }
+        if (row.row.ignition) {
+          return 'background-color:#ffff55'
+        }
+        return 'background-color:#ff5555'
+      }
+      return ''
+    },
+    formatNumber: function(row, column, value) {
+      if (isNaN(value)) { return value }
+      return Math.round(value)
+    },
     toggle: function() {
       this.show = !this.show
     },
@@ -210,73 +201,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
     .dd-body {
-        background-color: #fff;
-        border-top: 0;
         transition: 100ms ease-out;
         max-width: calc(100vw - 20px);
     }
     .dd-body-inner {
         padding: 5px;
-    }
-    th {
-        font-size: 14px;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-    .table td {
-        padding: 3px 4px;
-    }
-    .table-body {
-        font-size: 14px;
-        display: block;
-        transition: 1000ms ease-out;
-        overflow-y: scroll;
-        max-height: calc(100vh - 115px)
-    }
-
-    @media screen and (max-width: 768px) {
-      .table-body {
-        max-height: calc(100vh - 200px)
-      }
-    }
-
-    .input {
-        height: 26px;
-        width: calc(100% - 5px);
-        font-size: 14px;
-        margin: 3px;
-    }
-    .table {
-        width: 100%;
-        padding: 0;
-        margin: 0 !important;
-    }
-
-    .text-overflow {
-        display: block;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-    ::-webkit-scrollbar {
-      width: 7px;
-      height: 7px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 7px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 7px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #555;
-      border-radius: 7px;
     }
 </style>
