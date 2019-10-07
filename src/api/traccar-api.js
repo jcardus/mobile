@@ -10,6 +10,7 @@ const devices = baseUrl + 'devices'
 const positions = baseUrl + 'reports/route'
 const trips = baseUrl + 'reports/trips'
 const geofences = baseUrl + 'geofences'
+const events = baseUrl + 'reports/events'
 const users = baseUrl + 'users'
 var cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
@@ -28,6 +29,24 @@ export const traccar = {
       })
       .then(response => ok(response))
       .catch(reason => nok(reason))
+  },
+  report_events: function(userId, from, to, deviceIds, types, onFulfill) {
+    var devices = '?'
+    for (var deviceId in deviceIds) {
+      devices = devices + 'deviceId=' + deviceIds[deviceId] + '&'
+    }
+
+    var notificationTypes = ''
+    for (var type in types) {
+      notificationTypes = notificationTypes + 'type=' + types[type] + '&'
+    }
+
+    axios.get(events + devices + notificationTypes + 'from=' + from + '&to=' + to,
+      { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
   },
   trigger_report: function(body, report_id, ok, nok) {
     axios.post(s3_report_lambda_url,
@@ -97,6 +116,13 @@ export const traccar = {
     }
     Vue.$log.debug(area)
     axios.post(geofences, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  deleteGeofence: function(geofenceId, onFulfill) {
+    axios.delete(geofences + '/' + geofenceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)

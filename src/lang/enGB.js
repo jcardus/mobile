@@ -47,5 +47,10 @@ export default {
     user_name_required: 'Name field is required',
     user_email_required: 'Please input a valid email',
     user_password_lengh: 'The password can not be less than 6 digits'
+  },
+  geofence: {
+    geofence_name: 'Name',
+    geofence_delete: 'Delete',
+    geofence_deleted: 'Geofence has been deleted'
   }
 }

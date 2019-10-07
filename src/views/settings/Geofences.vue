@@ -1,5 +1,20 @@
 <template>
-  <el-table />
+  <el-table :data="geofences">
+    <el-table-column
+      :label="$t('geofence.geofence_name')"
+      prop="name"
+    >
+    </el-table-column>
+    <el-table-column label="" width="180">
+      <template slot-scope="scope">
+        <el-button
+          size="small"
+          type="danger"
+          @click="handleDelete(scope.row.id)"
+        >{{ $t('geofence.geofence_delete') }}</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script>
@@ -13,11 +28,26 @@ export default {
     }
   },
   created() {
-    const self = this
-    traccar.geofences()
-      .then(response => {
-        self.geofences = response.data
+    this.loadGeofences()
+  },
+  methods: {
+    loadGeofences() {
+      traccar.geofences()
+        .then(response => {
+          this.geofences = response.data
+        })
+    },
+    handleDelete(id) {
+      traccar.deleteGeofence(id, this.geofenceDeleted)
+    },
+    geofenceDeleted() {
+      this.loadGeofences()
+      this.$message({
+        message: this.$t('geofence.geofence_deleted'),
+        type: 'success',
+        duration: 5 * 1000
       })
+    }
   }
 }
 </script>

@@ -50,5 +50,10 @@ export default {
     user_name_required: 'O campo nome é obrigatório',
     user_email_required: 'Por favor indique um e-mail válido',
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
+  },
+  geofence: {
+    geofence_name: 'Nome',
+    geofence_delete: 'Apagar',
+    geofence_deleted: 'A Geofence foi apagada'
   }
 }
