@@ -6,6 +6,14 @@ export default {
     report_trip_title: 'Trip Report',
     report_location_title: 'Location Report'
   },
+  map: {
+    geofence_create_title: 'New geofence',
+    geofence_create_name: 'Please enter the name of this geofence...',
+    geofence_create_confirm: 'OK',
+    geofence_create_cancel: 'Cancel',
+    geofence_created: 'Geofence created sucessfully!',
+    geofence_create_canceled: 'Input canceled'
+  },
   vehicleList: {
     title: 'Vehicle',
     search: 'Search...',
@@ -47,5 +55,17 @@ export default {
     user_name_required: 'Name field is required',
     user_email_required: 'Please input a valid email',
     user_password_lengh: 'The password can not be less than 6 digits'
+  },
+  geofence: {
+    geofence_name: 'Name',
+    geofence_edit: 'Edit',
+    geofence_delete: 'Delete',
+    geofence_deleted: 'Geofence has been deleted',
+    geofence_edit_title: 'Edit Geofence',
+    geofence_edit_name: 'Please enter the name of this geofence...',
+    geofence_edit_confirm: 'Confirm',
+    geofence_edit_cancel: 'Cancel',
+    geofence_edit_canceled: 'Edit canceled',
+    geofence_edited: 'Geofence edited sucessfully!'
   }
 }

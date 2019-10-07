@@ -6,6 +6,14 @@ export default {
     report_trip_title: 'Relatório de viagens',
     report_location_title: 'Relatório de posições'
   },
+  map: {
+    geofence_create_title: 'Nova Geofence',
+    geofence_create_name: 'Por favor indique o nome da geofence...',
+    geofence_create_confirm: 'Confirmar',
+    geofence_create_cancel: 'Cancelar',
+    geofence_created: 'Geofence criada com sucesso!',
+    geofence_create_canceled: 'Criação de geofence cancelada!'
+  },
   vehicleList: {
     title: 'Veículos',
     search: 'Pesquisar...',
@@ -50,5 +58,17 @@ export default {
     user_name_required: 'O campo nome é obrigatório',
     user_email_required: 'Por favor indique um e-mail válido',
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
+  },
+  geofence: {
+    geofence_name: 'Nome',
+    geofence_edit: 'Editar',
+    geofence_delete: 'Apagar',
+    geofence_deleted: 'A Geofence foi apagada',
+    geofence_edit_title: 'Editar Geofence',
+    geofence_edit_name: 'Por favor indique o nome da geofence...',
+    geofence_edit_confirm: 'Confirmar',
+    geofence_edit_cancel: 'Cancelar',
+    geofence_edit_canceled: 'Edição cancelada',
+    geofence_edited: 'Geofence editada com sucesso!'
   }
 }
