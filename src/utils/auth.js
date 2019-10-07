@@ -6,7 +6,7 @@ export function getToken() {
 }
 
 export function setToken(token) {
-  return VueCookies.set(tokenKey, token)
+  return VueCookies.set(tokenKey, token, 60 * 60 * 24)
 }
 
 export function removeToken() {
