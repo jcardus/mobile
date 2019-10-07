@@ -1,18 +1,36 @@
 <template>
   <div class="app-container">
-
-    <el-row :gutter="20">
-      <el-col :span="12" :xs="24">
-        asdasdasd
-      </el-col>
-    </el-row>
-
+    <el-card>
+      <div slot="header" class="clearfix">
+        <span>Settings</span>
+      </div>
+      <el-switch
+        v-model="matchRoutes"
+        active-text="Match routes"
+        inactive-text=""
+      >
+      </el-switch>
+    </el-card>
+    <geofences></geofences>
   </div>
 </template>
 
 <script>
+import Geofences from './Geofences'
 export default {
-  name: 'Settings'
+  name: 'Settings',
+  components: { Geofences },
+  computed: {
+    matchRoutes: {
+      get() { return this.$store.state.settings.matchRoutes },
+      set(value) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'matchRoutes',
+          value: value
+        })
+      }
+    }
+  }
 }
 </script>
 

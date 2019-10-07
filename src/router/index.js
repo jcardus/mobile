@@ -98,34 +98,25 @@ export const constantRoutes = [
         path: 'report_trip',
         component: () => import('@/views/reports/report_trip'),
         name: 'TripReport',
-        meta: { title: 'Trip Report', icon: 'documentation' }
+        meta: { title: 'Trip Report' }
       },
       {
         path: 'report_location',
         component: () => import('@/views/reports/report_location'),
         name: 'Route Report',
-        meta: { title: 'Route Report', icon: 'documentation', noCache: true }
+        meta: { title: 'Route Report' }
       }
     ]
   },
   {
     path: '/settings',
     component: Layout,
-    hidden: false,
-    name: 'Settings',
-    meta: { title: 'Settings', icon: 'cog', noCache: true },
     children: [
       {
         path: '',
-        component: () => import('@/views/settings/Geofences'),
-        name: 'Geofences',
-        meta: { title: 'Geofences', icon: 'example' }
-      },
-      {
-        path: 'geofences',
-        component: () => import('@/views/settings/Geofences'),
-        name: 'Geofences',
-        meta: { title: 'Geofences', icon: 'example' }
+        component: () => import('@/views/settings'),
+        name: 'Settings',
+        meta: { title: 'Settings', icon: 'fas fa-cog' }
       }
     ]
   },

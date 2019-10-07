@@ -1,20 +1,28 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
+import VueCookies from 'vue-cookies'
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const { tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
   theme: variables.theme,
-  showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  sidebarLogo: sidebarLogo,
+  matchRoutes: VueCookies.get('settings.matchRoutes') ? !!+VueCookies.get('settings.matchRoutes') : true
 }
 
 const mutations = {
   CHANGE_SETTING: (state, { key, value }) => {
     if (state.hasOwnProperty(key)) {
       state[key] = value
+      if (key === 'matchRoutes') {
+        if (value) {
+          VueCookies.set('settings.' + key, 1)
+        } else {
+          VueCookies.set('settings.' + key, 0)
+        }
+      }
     }
   }
 }

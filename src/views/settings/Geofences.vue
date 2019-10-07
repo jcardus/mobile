@@ -1,24 +1,31 @@
 <template>
-  <el-table :data="geofences">
-    <el-table-column
-      :label="$t('geofence.geofence_name')"
-      prop="name"
-    >
-    </el-table-column>
-    <el-table-column label="" width="180">
-      <template slot-scope="scope">
-        <el-button
-          size="small"
-          @click="handleEdit(scope.row)"
-        >{{ $t('geofence.geofence_edit') }}</el-button>
-        <el-button
-          size="small"
-          type="danger"
-          @click="handleDelete(scope.row.id)"
-        >{{ $t('geofence.geofence_delete') }}</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+  <div>
+    <el-card>
+      <div slot="header" class="clearfix">
+        <span>Geofences</span>
+      </div>
+      <el-table :data="geofences">
+        <el-table-column
+          :label="$t('geofence.geofence_name')"
+          prop="name"
+        >
+        </el-table-column>
+        <el-table-column label="" width="180">
+          <template slot-scope="scope">
+            <el-button
+              size="small"
+              @click="handleEdit(scope.row)"
+            >{{ $t('geofence.geofence_edit') }}</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.row.id)"
+            >{{ $t('geofence.geofence_delete') }}</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+  </div>
 </template>
 
 <script>
