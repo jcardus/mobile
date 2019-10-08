@@ -23,7 +23,7 @@
           sortable=""
         >
           <template slot-scope="scope">
-            {{ scope.row.name }}<br />
+            <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
             {{ scope.row.speed | formatNumber }} km/h<br />
             <timeago
               :datetime="scope.row.lastUpdate"
@@ -131,14 +131,14 @@ export default {
     cellStyle(row) {
       if (row.columnIndex === 0) {
         if (row.row.speed > 2) {
-          return 'background-color:#55ff55'
+          return 'padding: 0; background-color:#55ff55'
         }
         if (row.row.ignition) {
-          return 'background-color:#ffff55'
+          return 'padding: 0; background-color:#ffff55'
         }
-        return 'background-color:#ff5555'
+        return 'padding: 0; background-color:#ff5555'
       }
-      return ''
+      return 'padding: 0'
     },
     formatNumber: function(row, column, value) {
       if (isNaN(value)) { return value }
