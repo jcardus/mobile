@@ -19,7 +19,7 @@
             <el-button
               size="small"
               type="danger"
-              @click="handleDelete(scope.row.id)"
+              @click="handleDelete(scope.row)"
             >{{ $t('geofence.geofence_delete') }}</el-button>
           </template>
         </el-table-column>
@@ -65,8 +65,14 @@ export default {
         })
       })
     },
-    handleDelete(id) {
-      traccar.deleteGeofence(id, this.geofenceDeleted)
+    handleDelete(row) {
+      this.$confirm(this.$t('geofence.geofence_delete_info') + row.name, this.$t('geofence.geofence_delete_title'), {
+        confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
+        cancelButtonText: this.$t('geofence.geofence_edit_cancel')
+      }).then(() => {
+        traccar.deleteGeofence(row.id, this.geofenceDeleted)
+      }).catch(() => {
+      })
     },
     geofenceEdited: function() {
       this.$message({
