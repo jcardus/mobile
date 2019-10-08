@@ -4,7 +4,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'SvgIcon',
   props: {
@@ -34,10 +33,12 @@ export default {
 
 <style scoped>
 .svg-icon {
-  margin-left: 16px !important;
-  margin-right: 16px !important;
+  width: 1em;
+  height: 1em;
+  //margin-left: 16px !important;
+  //margin-right: 16px !important;
   fill: currentColor;
   //overflow: hidden;
+  vertical-align: -0.2em;
 }
-
 </style>

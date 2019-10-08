@@ -1,7 +1,7 @@
 <template>
   <div class="drawer-container">
     <div>
-      <h3 class="drawer-title">Page style setting</h3>
+      <h3 class="drawer-title"></h3>
 
       <div class="drawer-item">
         <span>Open Tags-View</span>

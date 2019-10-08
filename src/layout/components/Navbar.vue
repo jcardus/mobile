@@ -46,6 +46,7 @@ export default {
     Screenfull,
     Search
   },
+
   computed: {
     ...mapGetters([
       'sidebar',

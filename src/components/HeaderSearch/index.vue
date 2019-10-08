@@ -1,6 +1,6 @@
 <template>
   <div :class="{'show':show}" class="header-search">
-    <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
+    <svg-icon class-name="search-icon" icon-class="fas fa-search " @click.stop="click" />
     <el-select
       ref="headerSearchSelect"
       v-model="search"
@@ -10,6 +10,7 @@
       remote
       placeholder="Search"
       class="header-search-select"
+      value=""
       @change="change"
     >
       <el-option v-for="item in options" :key="item.path" :value="item" :label="item.title.join(' > ')" />
@@ -141,8 +142,6 @@ export default {
 
 <style lang="scss" scoped>
 .header-search {
-  font-size: 0 !important;
-
   .search-icon {
     cursor: pointer;
     font-size: 18px;
@@ -150,7 +149,7 @@ export default {
   }
 
   .header-search-select {
-    font-size: 18px;
+    //font-size: 18px;
     transition: width 0.2s;
     width: 0;
     overflow: hidden;
