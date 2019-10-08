@@ -58,7 +58,7 @@ export const traccar = {
         timeout: 29000 // Maximum timeour for the Lambda API Gateway
       }
     )
-      .then(report_id)
+      .then(response => ok(report_id))
       .catch(reason => nok(report_id, reason))
   },
   startReceiving: function() {

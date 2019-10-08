@@ -61,6 +61,8 @@ export default {
     geofence_edit: 'Edit',
     geofence_delete: 'Delete',
     geofence_deleted: 'Geofence has been deleted',
+    geofence_delete_info: 'Do you want to delete geofence ',
+    geofence_delete_title: 'Delete Geofence',
     geofence_edit_title: 'Edit Geofence',
     geofence_edit_name: 'Please enter the name of this geofence...',
     geofence_edit_confirm: 'Confirm',

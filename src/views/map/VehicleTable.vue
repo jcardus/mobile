@@ -30,12 +30,14 @@
               :auto-update="60"
               :locale="$i18n.locale.substring(0,2)"
             ></timeago>
-            <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
-              <i class="far fa-stop-circle command" @click="commandImmobilize(entry, true)"></i>
-            </el-tooltip>
-            <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
-              <i class="far fa-play-circle command" @click="commandImmobilize(entry, false)"></i>
-            </el-tooltip>
+            <div v-if="scope.row.attributes.has_immobilization" id="traffic-signal" style="float: right;">
+              <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
+                <span id="red-light" class="traffic-light" @click="commandImmobilize(scope.row.id, true)"></span>
+              </el-tooltip>
+              <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
+                <span id="green-light" class="traffic-light" @click="commandImmobilize(scope.row.id, false)"></span>
+              </el-tooltip>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -162,7 +164,7 @@ export default {
       }
     },
     commandImmobilize: function(device, value) {
-      Vue.$log.debug('Immobilization ' + value + ' for device ' + device.id)
+      Vue.$log.debug('Immobilization ' + value + ' for device ' + device)
       var message
       if (value) {
         message = 'Send immobilization command?'
@@ -175,7 +177,7 @@ export default {
             'username': cookie.email,
             'password': cookie.password,
             'command': 'immobilization',
-            'deviceid': device.id,
+            'deviceid': device,
             'value': value
           },
           this.commandImmobilizeOk,
@@ -198,11 +200,60 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    .dd-body {
-        transition: 100ms ease-out;
-        max-width: calc(100vw - 20px);
-    }
-    .dd-body-inner {
-        padding: 5px;
-    }
+  .dd-body {
+      transition: 100ms ease-out;
+      max-width: calc(100vw - 20px);
+  }
+  .dd-body-inner {
+      padding: 5px;
+  }
+
+  /* Traffic light */
+  #traffic-signal {
+      background-color: #000000;
+      width: 30px;
+      height: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+  }
+  .traffic-light {
+      position: relative;
+      left: 2px;
+      top: -4px;
+      height: 10px;
+      width: 10px;
+      border-radius: 100%;
+      display: inline-block;
+  }
+  #red-light {
+      background-color: #880000;
+  }
+  #red-light:hover {
+      background-color: #FF0000;
+  }
+  #green-light {
+      background-color: #008800;
+  }
+  #green-light:hover {
+      background-color: #00FF00;
+  }
+</style>
+
+<style>
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 7px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 7px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 7px;
+  }
 </style>

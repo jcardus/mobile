@@ -137,7 +137,18 @@ export default {
     }
   },
   computed: {
-    devices: function() { return vm.$data.devices },
+    devices: function() {
+      const sortKey = 'name'
+      let devices = vm.$data.devices
+      if (sortKey) {
+        devices = devices.slice().sort(function(a, b) {
+          a = a[sortKey]
+          b = b[sortKey]
+          return (a === b ? 0 : a > b ? 1 : -1)
+        })
+      }
+      return devices
+    },
     isMobile: function() { return lnglat.isMobile() }
   },
   mounted() {
