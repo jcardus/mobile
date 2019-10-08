@@ -237,8 +237,10 @@ export default {
   #green-light:hover {
       background-color: #00FF00;
   }
+</style>
 
-  //Custom scrollbar
+<style>
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 7px;
   }
