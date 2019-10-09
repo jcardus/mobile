@@ -232,13 +232,13 @@ export default {
       display: inline-block;
   }
   #red-light-off {
-      background-color: #770000;
+      background-color: #660000;
   }
   #red-light-off:hover {
       background-color: #FF0000;
   }
   #green-light-off {
-      background-color: #007700;
+      background-color: #005500;
   }
   #green-light-off:hover {
       background-color: #00FF00;
