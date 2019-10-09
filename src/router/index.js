@@ -73,7 +73,7 @@ export const constantRoutes = [
       {
         path: 'map',
         component: () => import('@/views/map/VueMap'),
-        meta: { title: 'Map', icon: 'far fa-map' }
+        meta: { title: 'map', icon: 'far fa-map' }
       }]
   },
   {
@@ -83,7 +83,7 @@ export const constantRoutes = [
       {
         path: 'index',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: 'Dashboard', icon: 'fa fa-dashboard' }
+        meta: { title: 'dashboard', icon: 'fa fa-dashboard' }
       }
     ]
   },
@@ -92,19 +92,19 @@ export const constantRoutes = [
     component: Layout,
     hidden: false,
     name: 'Reports',
-    meta: { title: 'Reports', icon: 'far fa-sticky-note' },
+    meta: { title: 'reports', icon: 'far fa-sticky-note' },
     children: [
       {
         path: 'report_trip',
         component: () => import('@/views/reports/report_trip'),
         name: 'TripReport',
-        meta: { title: 'Trip Report' }
+        meta: { title: 'report_trip_title' }
       },
       {
         path: 'report_location',
         component: () => import('@/views/reports/report_location'),
         name: 'Route Report',
-        meta: { title: 'Route Report' }
+        meta: { title: 'report_location_title' }
       }
     ]
   },
@@ -113,10 +113,10 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: '',
+        path: 'settings',
         component: () => import('@/views/settings'),
         name: 'Settings',
-        meta: { title: 'Settings', icon: 'fas fa-cog' }
+        meta: { title: 'settings', icon: 'fas fa-cog' }
       }
     ]
   },

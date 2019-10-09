@@ -4,7 +4,8 @@ export default {
     dashboard: 'Central de Controlo',
     reports: 'Relatórios',
     report_trip_title: 'Relatório de viagens',
-    report_location_title: 'Relatório de posições'
+    report_location_title: 'Relatório de posições',
+    settings: 'Configurações'
   },
   map: {
     geofence_create_title: 'Nova Geofence',
@@ -23,17 +24,16 @@ export default {
   },
   vehicleTable: {
     immobilize: 'Imobilizar',
-    de_immobilize: 'Mobilizar',
+    de_immobilize: 'Remobilizar',
     send_immobilization: 'Enviar comando de imobilização?',
-    send_de_immobilization: 'Enviar comando de mobilização?'
+    send_de_immobilization: 'Enviar comando de remobilização?'
   },
   vehicleDetail: {
-    show_route: 'Mostrar rota',
-    route_match: 'Rota na estrada'
+    show_route: 'Mostrar rota'
   },
   navbar: {
     profile: 'Perfil',
-    dashboard: 'Central de Controlo',
+    settings: 'Configurações',
     logout: 'Sair'
   },
   login: {
@@ -58,6 +58,10 @@ export default {
     user_name_required: 'O campo nome é obrigatório',
     user_email_required: 'Por favor indique um e-mail válido',
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
+  },
+  settings: {
+    title: 'Configurações',
+    route_match: 'Rota na estrada'
   },
   geofence: {
     geofence_name: 'Nome',

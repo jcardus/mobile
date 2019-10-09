@@ -2,11 +2,11 @@
   <div class="app-container">
     <el-card>
       <div slot="header" class="clearfix">
-        <span>Settings</span>
+        <span>{{ $t('settings.title') }}</span>
       </div>
       <el-switch
         v-model="matchRoutes"
-        active-text="Match routes"
+        :active-text="$t('settings.route_match')"
         inactive-text=""
       >
       </el-switch>

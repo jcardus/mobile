@@ -4,7 +4,8 @@ export default {
     dashboard: 'Dashboard',
     reports: 'Reports',
     report_trip_title: 'Trip Report',
-    report_location_title: 'Location Report'
+    report_location_title: 'Location Report',
+    settings: 'Settings'
   },
   map: {
     geofence_create_title: 'New geofence',
@@ -28,12 +29,11 @@ export default {
     send_de_immobilization: 'Send de-immobilization command?'
   },
   vehicleDetail: {
-    show_route: 'Show route',
-    route_match: 'Route match'
+    show_route: 'Show route'
   },
   navbar: {
     profile: 'Profile',
-    dashboard: 'Dashboard',
+    settings: 'Settings',
     logout: 'Log Out'
   },
   login: {
@@ -55,6 +55,10 @@ export default {
     user_name_required: 'Name field is required',
     user_email_required: 'Please input a valid email',
     user_password_lengh: 'The password can not be less than 6 digits'
+  },
+  settings: {
+    title: 'Settings',
+    route_match: 'Route match'
   },
   geofence: {
     geofence_name: 'Name',
