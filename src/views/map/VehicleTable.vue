@@ -31,12 +31,18 @@
               :locale="$i18n.locale.substring(0,2)"
             ></timeago>
             <div v-if="scope.row.attributes.has_immobilization" id="traffic-signal" style="float: right;">
-              <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
-                <span id="red-light" class="traffic-light" @click="commandImmobilize(scope.row.id, true)"></span>
-              </el-tooltip>
-              <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
-                <span id="green-light" class="traffic-light" @click="commandImmobilize(scope.row.id, false)"></span>
-              </el-tooltip>
+              <span v-if="scope.row.immobilization_active">
+                <span id="red-light-on" class="traffic-light"></span>
+                <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
+                  <span id="green-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, false)"></span>
+                </el-tooltip>
+              </span>
+              <span v-else>
+                <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
+                  <span id="red-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, true)"></span>
+                </el-tooltip>
+                <span id="green-light-on" class="traffic-light"></span>
+              </span>
             </div>
           </template>
         </el-table-column>
@@ -225,17 +231,25 @@ export default {
       border-radius: 100%;
       display: inline-block;
   }
-  #red-light {
-      background-color: #880000;
+  #red-light-off {
+      background-color: #770000;
   }
-  #red-light:hover {
+  #red-light-off:hover {
       background-color: #FF0000;
   }
-  #green-light {
-      background-color: #008800;
+  #green-light-off {
+      background-color: #007700;
   }
-  #green-light:hover {
+  #green-light-off:hover {
       background-color: #00FF00;
+  }
+  #red-light-on {
+      background-color: #FF0000;
+      cursor: auto;
+  }
+  #green-light-on {
+      background-color: #00FF00;
+      cursor: auto;
   }
 </style>
 

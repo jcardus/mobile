@@ -446,6 +446,7 @@ export default {
             return
           }
           device.speed = position.speed
+          device.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
           feature = {
             type: 'Feature',
             properties: {
@@ -453,6 +454,7 @@ export default {
               text: device.name,
               deviceId: position.deviceId,
               speed: position.speed,
+              immobilization_active: position.attributes.out1 || position.attributes.isImmobilizationOn,
               ignition: position.attributes.ignition,
               motion: position.attributes.motion,
               description: "<div id='vue-vehicle-popup'></div>"
