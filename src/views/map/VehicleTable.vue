@@ -177,7 +177,8 @@ export default {
       } else {
         message = 'Send de-immobilization command?'
       }
-      if (confirm(message)) {
+      const self = this
+      this.$confirm(message).then(() => {
         traccar.api_helper(
           {
             'username': cookie.email,
@@ -186,21 +187,21 @@ export default {
             'deviceid': device,
             'value': value
           },
-          this.commandImmobilizeOk,
-          this.commandImmobilizeNok)
-      }
+          self.commandImmobilizeOk,
+          self.commandImmobilizeNok)
+      })
     },
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result' + response.data)
       if (response.data.success) {
-        alert('OK: ' + response.data.details)
+        this.$message('OK: ' + response.data.details)
       } else {
-        alert('NOK: ' + response.data.details)
+        this.$message('NOK: ' + response.data.details)
       }
     },
     commandImmobilizeNok: function(reason) {
       Vue.$log.debug('Immobilization error: ' + reason)
-      alert('Error: ' + reason)
+      this.$alert('Error: ' + reason)
     }
   }
 }
