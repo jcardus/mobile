@@ -7,12 +7,12 @@ import VueCookies from 'vue-cookies'
 const serverHost = process.env.NODE_ENV === 'development' ? 'dev.pinme.io' : 'dev.' + window.location.hostname
 const baseUrl = 'https://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
-const positions = baseUrl + 'reports/route'
+const route = baseUrl + 'reports/route'
+const positions = baseUrl + 'positions'
 const trips = baseUrl + 'reports/trips'
-const geofences = baseUrl + 'geofences'
-const events = baseUrl + 'reports/events'
+const geoFences = baseUrl + 'geofences'
 const users = baseUrl + 'users'
-var cookie = VueCookies.get('user-info')
+let cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
 const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaws.com/default/api_helper'
 
@@ -30,24 +30,6 @@ export const traccar = {
       .then(response => ok(response))
       .catch(reason => nok(reason))
   },
-  report_events: function(userId, from, to, deviceIds, types, onFulfill) {
-    var devices = '?'
-    for (var deviceId in deviceIds) {
-      devices = devices + 'deviceId=' + deviceIds[deviceId] + '&'
-    }
-
-    var notificationTypes = ''
-    for (var type in types) {
-      notificationTypes = notificationTypes + 'type=' + types[type] + '&'
-    }
-
-    axios.get(events + devices + notificationTypes + 'from=' + from + '&to=' + to,
-      { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
-  },
   trigger_report: function(body, report_id, ok, nok) {
     axios.post(s3_report_lambda_url,
       body,
@@ -58,26 +40,19 @@ export const traccar = {
         timeout: 29000 // Maximum timeour for the Lambda API Gateway
       }
     )
-      .then(response => ok(report_id))
+      .then(() => ok(report_id))
       .catch(reason => nok(report_id, reason))
   },
   startReceiving: function() {
     vm.$connect()
   },
-  devices: function() {
+  devices: function(onFulfill) {
     cookie = VueCookies.get('user-info')
     axios.get(devices, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => { vm.$data.devices = response.data })
+      .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
       })
-  },
-  loggedIn: function() {
-    if (cookie) {
-      traccar.login(cookie.email, cookie.password)
-      return true
-    }
-    return false
   },
   updateUser: function(userid, user, onFulfill) {
     axios.put(users + '/' + userid, user,
@@ -88,7 +63,14 @@ export const traccar = {
       })
   },
   route: function(deviceId, from, to, onFulfill) {
-    axios.get(positions + '?deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.get(route + '?deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  positions: function(onFulfill) {
+    axios.get(positions, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -115,21 +97,21 @@ export const traccar = {
       area: area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
     }
     Vue.$log.debug(area)
-    axios.post(geofences, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.post(geoFences, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
       })
   },
   editGeofence: function(geofenceId, geofence, onFulfill) {
-    axios.put(geofences + '/' + geofenceId, geofence, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.put(geoFences + '/' + geofenceId, geofence, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
       })
   },
   deleteGeofence: function(geofenceId, onFulfill) {
-    axios.delete(geofences + '/' + geofenceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.delete(geoFences + '/' + geofenceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -137,7 +119,7 @@ export const traccar = {
   },
   geofences: function() {
     return new Promise((resolve, reject) => {
-      axios.get(geofences, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      axios.get(geoFences, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
         .then(response => {
           resolve(response)
         }).catch(error => {

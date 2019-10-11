@@ -1,6 +1,6 @@
 <template>
   <div>
-    <svg-icon :class="isFullscreen?'fas fa-compress':'fas fa-expand'" @click="click" />
+    <svg-icon :icon-class="isFullscreen?'fas fa-compress':'fas fa-expand'" @click="click" />
   </div>
 </template>
 

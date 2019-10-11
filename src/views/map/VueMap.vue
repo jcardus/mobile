@@ -82,7 +82,7 @@ export default {
     traccar.stopReceiving()
   },
   mounted() {
-    if (this.devices.length === 0) { traccar.devices() }
+    if (this.devices.length === 0) { traccar.devices(this.onDevices) }
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
@@ -94,6 +94,10 @@ export default {
     this.map.on('load', this.onMapLoad)
   },
   methods: {
+    onDevices: function(devices) {
+      vm.$data.devices = devices
+      traccar.positions(this.processPositions)
+    },
     mapResize: function() {
       this.$log.debug('resizing map...')
       this.map.resize()
@@ -436,8 +440,11 @@ export default {
         return
       }
       this.$log.debug('received ', this.positions.length, ' positions')
+      this.processPositions(this.positions)
+    },
+    processPositions: function(positions) {
       const self = this
-      this.positions.forEach(function(position) {
+      positions.forEach(function(position) {
         let feature = self.findFeatureByDeviceId(position.deviceId)
         const device = self.devices.find(e => e.id === position.deviceId)
         if (!feature) {
@@ -466,7 +473,7 @@ export default {
           }
           self.positionsSource.features.push(feature)
           self.$log.debug('updating map source')
-          vm.$static.map.getSource('positions').setData(self.positionsSource)
+          if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
         } else {
           if (!device) return
           feature.properties.ignition = device.ignition = position.attributes.ignition

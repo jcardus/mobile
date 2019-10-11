@@ -19,7 +19,7 @@
         </el-table-column>
         <el-table-column
           prop="name"
-          label="Name"
+          label="Vehicles"
           sortable=""
         >
           <template slot-scope="scope">
@@ -134,17 +134,18 @@ export default {
     })
   },
   methods: {
+    getBgColor: function(device) {
+      if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Gray' }
+      if (device.speed > 2) { return '#63EA4F' }
+      if (device.ignition) { return '#FFA241' } else { Vue.$log.debug(device.name, ': ', device) }
+      return '#FF584C'
+    },
     cellStyle(row) {
+      let result = 'padding: 0; '
       if (row.columnIndex === 0) {
-        if (row.row.speed > 2) {
-          return 'padding: 0; background-color:#55ff55'
-        }
-        if (row.row.ignition) {
-          return 'padding: 0; background-color:#ffff55'
-        }
-        return 'padding: 0; background-color:#ff5555'
+        result += 'background-color: ' + this.getBgColor(row.row)
       }
-      return 'padding: 0'
+      return result
     },
     formatNumber: function(row, column, value) {
       if (isNaN(value)) { return value }
