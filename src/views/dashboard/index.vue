@@ -77,7 +77,6 @@ export default {
     parameters: function() {
       return {
         deviceIds: this.$root.$data.devices.map(e => e.id),
-        Vehicles: this.$root.$data.devices.map(e => e.name),
         from: this.$moment().subtract(1, 'month').startOf('day'),
         to: this.$moment().subtract(1, 'day').endOf('day')
       }

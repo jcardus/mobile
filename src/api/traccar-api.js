@@ -93,8 +93,7 @@ export const traccar = {
     const body = {
       name: name,
       description: '',
-      // POLYGON((-33.63463083134137 -71.39602661132812, -33.138701124637024 -70.72448730468751, -33.478417648673414 -70.01312255859375, -33.92399018008704 -70.7244873046875, -33.63463083134137 -71.39602661132812))
-      area: area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
+      area: area
     }
     Vue.$log.debug(area)
     axios.post(geoFences, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})

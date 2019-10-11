@@ -269,8 +269,7 @@ export default {
       this.$log.debug('moveend storing cookie...')
       const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
       VueCookies.set('mapPos', center)
-      const pitch = this.$static.map.getPitch()
-      this.$log.debug('bearing ', pitch)
+      this.$static.map.getPitch()
     },
     onPitch: function() {
       this.showHideDevices(this.$static.map.getPitch() === 0)
@@ -483,7 +482,7 @@ export default {
           device.lastUpdate = position.fixTime
 
           if (settings.animateMarkers && self.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
-            self.$log.info('animating ', feature.properties.text)
+            self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature)
           } else {
             self.$log.debug('device ', feature.properties.text, ' off bounds')
@@ -530,14 +529,14 @@ export default {
     drawCreate(e) {
       const data = this.$static.draw.getAll()
       if (data.features.length > 0) {
-        // const a = area(data)
-        // const rounded_area = Math.round(a * 100) / 100
+        this.$log.debug('creating ', data)
         this.$prompt(this.$t('map.geofence_create_name'), this.$t('map.geofence_create_title'), {
           confirmButtonText: this.$t('map.geofence_create_confirm'),
           cancelButtonText: this.$t('map.geofence_create_cancel')
         }).then(({ value }) => {
-          traccar.newGeofence(value, 'description', data, this.geofenceCreated)
-        }).catch(() => {
+          traccar.newGeofence(value, 'description', lnglat.getArea(data), this.geofenceCreated)
+        }).catch((e) => {
+          Vue.$log.error(e)
           this.$message({
             type: 'info',
             message: this.$t('map.geofence_create_canceled')

@@ -37,7 +37,9 @@ const actions = {
         data.password = password
         setToken(response.data)
         setLanguage(data.attributes.lang)
-        traccar.devices()
+        traccar.devices(function(devices) {
+          vm.$data.devices = devices
+        })
         resolve()
       }).catch(error => {
         reject(error)

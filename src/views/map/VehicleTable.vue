@@ -64,11 +64,6 @@ export default {
     translate(value) {
       return vm.$t(value)
     },
-    formatColor: function(value) {
-      if (value.speed > 2) { return 'background-color:#55ff55' }
-      if (value.ignition) { return 'background-color:#ffff55' }
-      return 'background-color:#ff5555'
-    },
     formatNumber: function(value) {
       if (isNaN(value)) { return value }
       return Math.round(value)

@@ -10,8 +10,8 @@
       >
         {{ style.title }}
       </button>
-      <button :class="geofencesVisible?'active':''" @click="toggleGeofences">Geofences
-      </button>
+      <button :class="geofencesVisible?'active':''" @click="toggleGeofences">Geofences</button>
+      <button :class="poisVisible?'active':''" @click="togglePOIs">POIs</button>
     </div>
   </div>
 </template>
@@ -40,7 +40,8 @@ export default {
   },
   computed: {
     map: function() { return vm.$static.map },
-    geofencesVisible: function() { return vm.$store.state.map.showGeofences }
+    geofencesVisible: function() { return vm.$store.state.map.showGeofences },
+    poisVisible() { return vm.$store.state.map.showPOIs }
   },
   mounted: function() {
     document.addEventListener('click', event => {
@@ -57,6 +58,13 @@ export default {
         this.geofencesVisible ? 'visible' : 'none')
       this.map.setLayoutProperty('geofences-labels', 'visibility',
         this.geofencesVisible ? 'visible' : 'none')
+    },
+    togglePOIs: function() {
+      vm.$store.dispatch('map/togglePOIs')
+      this.map.setLayoutProperty('pois', 'visibility',
+        this.poisVisible ? 'visible' : 'none')
+      this.map.setLayoutProperty('pois-labels', 'visibility',
+        this.poisVisible ? 'visible' : 'none')
     },
     btnClick: function() {
       this.btnVisible = false

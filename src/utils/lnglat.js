@@ -19,6 +19,14 @@ function addImage(path, name) {
   })
 }
 
+export function getArea(area) {
+  if (Array.isArray(area.features[0].geometry.coordinates[0].length)) {
+    // POLYGON((-33.63463083134137 -71.39602661132812, -33.138701124637024 -70.72448730468751, -33.478417648673414 -70.01312255859375, -33.92399018008704 -70.7244873046875, -33.63463083134137 -71.39602661132812))
+    return area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
+  }
+  // trying POI
+  return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 10)'
+}
 export function addImages() {
   addImage('img/40/car-green.png', 'car-green')
   addImage('img/40/car-yellow.png', 'car-yellow')
@@ -95,20 +103,36 @@ function convertWktToGeojson(response) {
   Vue.$log.debug('converting ', response.data.length, ' features')
   response.data.forEach(function(item) {
     const wkt = item.area
-    const geojson = {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[]]
-      },
-      properties: { title: item.name }
+    let geojson
+    if (item.area.startsWith('POLYGON')) {
+      geojson = {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[]]
+        },
+        properties: { title: item.name }
+      }
+      const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
+      const coord_list = str.split(',')
+      for (const i in coord_list) {
+        const coord = coord_list[i].trim().split(' ')
+        geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
+      }
+    } else if (item.area.startsWith('CIRCLE')) {
+      geojson = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: []
+        },
+        properties: { title: item.name }
+      }
+      const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))
+      const coord = str.trim().split(' ')
+      geojson.geometry.coordinates = [parseFloat(coord[1]), parseFloat(coord[0])]
     }
-    const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
-    const coord_list = str.split(',')
-    for (const i in coord_list) {
-      const coord = coord_list[i].trim().split(' ')
-      geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
-    }
+    Vue.$log.debug('adding... ', geojson)
     result.push(geojson)
   })
   return result
@@ -234,7 +258,8 @@ export function addLayers(map) {
             'fill-color': '#B42222',
             'fill-opacity': 0.4
           },
-          'layout': { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' }
+          layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
+          filter: ['==', '$type', 'Polygon']
         })
         map.addLayer({
           id: 'geofences-labels',
@@ -243,7 +268,34 @@ export function addLayers(map) {
           layout: {
             'text-field': '{title}',
             visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-          }
+          },
+          filter: ['==', '$type', 'Polygon']
+        })
+        map.addLayer({
+          id: 'pois',
+          type: 'circle',
+          source: 'geofences',
+          paint: {
+            'circle-radius': 5,
+            'circle-color': '#B42222'
+          },
+          layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
+          filter: ['==', '$type', 'Point']
+        })
+
+        map.addLayer({
+          id: 'pois-labels',
+          type: 'symbol',
+          source: 'geofences',
+          layout: {
+            'text-field': '{title}',
+            visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
+            'text-size': 12,
+            'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
+            'text-justify': 'auto',
+            'text-radial-offset': 0.8
+          },
+          filter: ['==', '$type', 'Point']
         })
       }
     })
