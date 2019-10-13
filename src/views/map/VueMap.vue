@@ -126,6 +126,8 @@ export default {
         }
       }
     },
+    areaSelected: function(area) {
+    },
     addImages: function() {
       const map = this.$static.map
       lnglat.addImages(map)
@@ -295,6 +297,7 @@ export default {
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
       serverBus.$on('deviceSelected', this.deviceSelected)
+      serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
         this.$log.debug(mutation)
         switch (mutation.type) {
@@ -322,6 +325,7 @@ export default {
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
       serverBus.$off('deviceSelected', this.deviceSelected)
+      serverBus.$off('areaSelected', this.areaSelected)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },

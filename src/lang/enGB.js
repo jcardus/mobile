@@ -72,6 +72,12 @@ export default {
     geofence_edit_confirm: 'Confirm',
     geofence_edit_cancel: 'Cancel',
     geofence_edit_canceled: 'Edit canceled',
-    geofence_edited: 'Geofence edited sucessfully!'
+    geofence_edited: 'Geofence edited sucessfully!',
+    poi_delete_info: 'Do you want to delete POI ',
+    poi_delete_title: 'Delete POI',
+    poi_edited: 'POI edited sucessfully!',
+    poi_deleted: 'POI has been deleted',
+    poi_edit_title: 'Edit POI',
+    poi_edit_name: 'Please enter the name of this POI...'
   }
 }
