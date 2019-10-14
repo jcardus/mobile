@@ -1,34 +1,86 @@
 <template>
   <div v-show="show" class="dd-body">
     <div class="dd-body-inner">
-      <el-input v-if="showSearch" v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
+      <el-input v-if="!isMobile" v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
+      <el-table
+        v-if="isMobile"
+        id="vehicleTable"
+        highlight-current-row
+        :data="filteredVehicles"
+        stripe
+        :cell-style="cellStyle"
+        height="calc(100vh - 100px)"
+        :show-header="false"
+        @current-change="vehicleSelected"
+      >
+        <el-table-column
+          prop=""
+          label=""
+          width="10"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="name"
+        >
+          <template slot-scope="scope">
+            <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
+            {{ scope.row.speed | formatNumber }} km/h<br />
+            <timeago
+              :datetime="scope.row.lastUpdate"
+              :auto-update="60"
+              :locale="$i18n.locale.substring(0,2)"
+            ></timeago>
+            <div v-if="scope.row.attributes.has_immobilization" id="traffic-signal" style="float: right;">
+              <span v-if="scope.row.immobilization_active">
+                <span id="red-light-on" class="traffic-light"></span>
+                <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
+                  <span id="green-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, false)"></span>
+                </el-tooltip>
+              </span>
+              <span v-else>
+                <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
+                  <span id="red-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, true)"></span>
+                </el-tooltip>
+                <span id="green-light-on" class="traffic-light"></span>
+              </span>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
       <el-tabs
+        v-if="!isMobile"
         active-tab-color="#9b59b6"
         active-text-color="white"
       >
         <el-tab-pane>
-          <div class="label-tab">
-            <span slot="label">
+          <span slot="label">
+            <div class="label-tab">
               <i class="fas fa-car-side"></i>
-            </span>
-          </div>
+            </div>
+          </span>
           <el-table
+            v-show="!isMobile"
             id="vehicleTable"
             highlight-current-row
             :data="filteredVehicles"
             stripe
             :cell-style="cellStyle"
-            height="calc(100vh - 100px)"
+            :show-header="false"
+            height="calc(100vh - 154px)"
             @current-change="vehicleSelected"
           >
             <el-table-column
               prop=""
               label=""
               width="10"
+              heigth="10"
             >
             </el-table-column>
             <el-table-column
               prop="name"
+              label="Vehicles"
+              sortable=""
+              heigth="1"
             >
               <template slot-scope="scope">
                 <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
@@ -57,17 +109,17 @@
           </el-table>
         </el-tab-pane>
         <el-tab-pane>
-
-          <div class="label-tab">
-            <span slot="label">
+          <span slot="label">
+            <div class="label-tab">
               <i class="fas fa-map-marker-alt"></i>
-            </span>
-          </div>
-
+            </div>
+          </span>
           <el-table
             id="poiTable"
             highlight-current-row
             :data="pois"
+            :show-header="false"
+            height="calc(100vh - 154px)"
             @current-change="poiSelected"
           >
             <el-table-column
@@ -91,57 +143,17 @@
           </el-table>
         </el-tab-pane>
         <el-tab-pane>
-          <div class="label-tab">
-            <span slot="label">
+          <span slot="label">
+            <div class="label-tab">
               <i class="fas fa-draw-polygon"></i>
-              <el-input v-if="showSearch" v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
-              <el-table
-                id="mainTable"
-                highlight-current-row
-                :data="filteredVehicles"
-                stripe
-                :cell-style="cellStyle"
-                height="calc(100vh - 100px)"
-                @current-change="vehicleSelected"
-              >
-                <el-table-column
-                  prop=""
-                  label=""
-                  width="10"
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="name"
-                  label="Vehicles"
-                  sortable=""
-                >
-                  <template slot-scope="scope">
-                    <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
-                    {{ scope.row.speed | formatNumber }} km/h<br />
-                    <timeago
-                      :datetime="scope.row.lastUpdate"
-                      :auto-update="60"
-                      :locale="$i18n.locale.substring(0,2)"
-                    ></timeago>
-                    <div v-if="scope.row.attributes.has_immobilization" id="traffic-signal" style="float: right;">
-                      <span v-if="scope.row.immobilization_active">
-                        <span id="red-light-on" class="traffic-light"></span>
-                        <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
-                          <span id="green-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, false)"></span>
-                        </el-tooltip>
-                      </span>
-                      <span v-else>
-                        <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
-                          <span id="red-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, true)"></span>
-                        </el-tooltip>
-                        <span id="green-light-on" class="traffic-light"></span>
-                      </span>
-                    </div>
-                  </template></el-table-column></el-table></span></div>
+            </div>
+          </span>
           <el-table
             id="geofenceTable"
             highlight-current-row
             :data="geofences"
+            :show-header="false"
+            height="calc(100vh - 154px)"
             @current-change="geofenceSelected"
           >
             <el-table-column
@@ -171,6 +183,7 @@
 <script>
 
 import { serverBus, vm } from '../../main'
+import * as lnglat from '@/utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '../../api/traccar-api'
 import VueCookies from 'vue-cookies'
@@ -213,6 +226,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return lnglat.isMobile()
+    },
     devices: { get: function() { return vm.$data.devices }, set: function(value) { vm.$data.devices = value } },
     positions() {
       return vm.$data.positions
