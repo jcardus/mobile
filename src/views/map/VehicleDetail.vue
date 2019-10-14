@@ -29,6 +29,7 @@ import * as helpers from '@turf/helpers'
 import { serverBus, vm } from '../../main'
 import mapboxgl from 'mapbox-gl'
 import * as utils from '../../utils/utils'
+import bbox from '@turf/bbox'
 
 export default {
   name: 'VehicleDetail',
@@ -292,6 +293,11 @@ export default {
       } else {
         lnglat.matchRoute(positions, positions.map(() => [25]), this.onRouteMatch)
       }
+      const box = bbox(positions)
+      const bounds = [[box[0], box[1]], [box[2], box[3]]]
+      if (!this.contains(this.map.getBounds(), { longitude: box[0], latitude: box[1] }) ||
+        !this.contains(this.map.getBounds(), { longitude: box[2], latitude: box[3] })
+      ) { this.map.fitBounds(bounds, { maxZoom: this.$static.map.getZoom() }) }
     },
     getGeoJSON: function(coords) {
       return helpers.featureCollection([helpers.feature(coords)])

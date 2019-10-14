@@ -309,6 +309,9 @@ export function removeLayers() {
   if (map.getLayer('unclustered-point')) { map.removeLayer('unclustered-point') }
   if (map.getLayer('geofences')) { map.removeLayer('geofences') }
   if (map.getLayer('geofences-labels')) { map.removeLayer('geofences-labels') }
+  if (map.getLayer('pois')) { map.removeLayer('pois') }
+  if (map.getLayer('pois-labels')) { map.removeLayer('pois-labels') }
+
   if (map.getSource('positions')) { map.removeSource('positions') }
   if (map.getSource('geofences')) { map.removeSource('geofences') }
 }
