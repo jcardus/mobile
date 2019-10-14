@@ -32,7 +32,6 @@ import vhCheck from 'vh-check'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTable from './VehicleTable'
-import VehicleList from './VehicleList'
 
 export default {
   name: 'VueMap',
@@ -253,11 +252,6 @@ export default {
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
         map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'top-left')
-      } else {
-        map.addControl(new MapboxCustomControl('vehicle-list-div'), 'top-left')
-        const VD = Vue.extend(VehicleList)
-        const _vm = new VD({ i18n: i18n })
-        _vm.$mount('#vehicle-list-div')
       }
 
       if (settings.showSlider) {

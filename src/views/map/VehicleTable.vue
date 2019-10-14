@@ -1,18 +1,17 @@
 <template>
   <div v-show="show" class="dd-body">
     <div class="dd-body-inner">
-      <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
+      <el-input v-if="showSearch" v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs
         active-tab-color="#9b59b6"
         active-text-color="white"
       >
         <el-tab-pane>
-          <span slot="label">
-            <div class="label-tab">
-              <i class="fas fa-car-side" />
-            </div>
-            <!--<i class="el-icon-date"/> Route-->
-          </span>
+          <div class="label-tab">
+            <span slot="label">
+              <i class="fas fa-car-side"></i>
+            </span>
+          </div>
           <el-table
             id="vehicleTable"
             highlight-current-row
@@ -58,11 +57,13 @@
           </el-table>
         </el-tab-pane>
         <el-tab-pane>
-          <span slot="label">
-            <div class="label-tab">
+
+          <div class="label-tab">
+            <span slot="label">
               <i class="fas fa-map-marker-alt"></i>
-            </div>
-          </span>
+            </span>
+          </div>
+
           <el-table
             id="poiTable"
             highlight-current-row
@@ -90,11 +91,53 @@
           </el-table>
         </el-tab-pane>
         <el-tab-pane>
-          <span slot="label">
-            <div class="label-tab">
-              <i class="fas fa-draw-polygon" />
-            </div>
-          </span>
+          <div class="label-tab">
+            <span slot="label">
+              <i class="fas fa-draw-polygon"></i>
+              <el-input v-if="showSearch" v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
+              <el-table
+                id="mainTable"
+                highlight-current-row
+                :data="filteredVehicles"
+                stripe
+                :cell-style="cellStyle"
+                height="calc(100vh - 100px)"
+                @current-change="vehicleSelected"
+              >
+                <el-table-column
+                  prop=""
+                  label=""
+                  width="10"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="name"
+                  label="Vehicles"
+                  sortable=""
+                >
+                  <template slot-scope="scope">
+                    <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
+                    {{ scope.row.speed | formatNumber }} km/h<br />
+                    <timeago
+                      :datetime="scope.row.lastUpdate"
+                      :auto-update="60"
+                      :locale="$i18n.locale.substring(0,2)"
+                    ></timeago>
+                    <div v-if="scope.row.attributes.has_immobilization" id="traffic-signal" style="float: right;">
+                      <span v-if="scope.row.immobilization_active">
+                        <span id="red-light-on" class="traffic-light"></span>
+                        <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
+                          <span id="green-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, false)"></span>
+                        </el-tooltip>
+                      </span>
+                      <span v-else>
+                        <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
+                          <span id="red-light-off" class="traffic-light" @click="commandImmobilize(scope.row.id, true)"></span>
+                        </el-tooltip>
+                        <span id="green-light-on" class="traffic-light"></span>
+                      </span>
+                    </div>
+                  </template></el-table-column></el-table></span></div>
           <el-table
             id="geofenceTable"
             highlight-current-row
@@ -403,9 +446,6 @@ export default {
 </style>
 
 <style>
-  .el-table__header-wrapper {
-    display: none;
-  }
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 7px;

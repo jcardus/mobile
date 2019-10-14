@@ -1,24 +1,20 @@
 <template>
-  <div v-show="isMobile" id="vehicleList" ref="vehicleList" class="vehicleList mapboxgl-ctrl">
-    <div class="card">
-      <div class="card-header" :open="false" :class="{opened:show}" @click="toggle">
-        <p class="card-header-title">
-          {{ $t('vehicleList.title') }}
-        </p>
-        <a class="card-header-icon">
-          <i class="fa fa-2x black fa-angle-down header-icon" :class="{rotate:show}"></i>
-        </a>
-      </div>
-      <transition>
-        <vehicle-table v-if="show" />
-      </transition>
-    </div>
-  </div>
+  <el-dropdown>
+    <span class="el-dropdown-link">
+      Vehicles<i class="el-icon-arrow-down el-icon--right"></i>
+    </span>
+    <el-dropdown-menu slot="dropdown">
+      <el-dropdown-item>
+        <vehicle-table></vehicle-table>
+      </el-dropdown-item>
+    </el-dropdown-menu>
+  </el-dropdown>
 </template>
 <script>
-import VehicleTable from './VehicleTable'
+
 import * as lnglat from '../../utils/lnglat'
 import { serverBus } from '../../main'
+import VehicleTable from './VehicleTable'
 
 export default {
   components: { VehicleTable },
@@ -66,6 +62,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .el-popper {
+    max-height: calc(100vh - 88px) !important;
+    padding: 0;
+  }
+  .el-dropdown-menu__item {
+    padding: 0;
+    max-height: calc(100vh - 50px) !important;
+  }
+
+  .el-dropdown-menu {
+    width: 50%;
+    height: 100%;
+  }
     .vehicleList {
         position: absolute;
         top: 0;
