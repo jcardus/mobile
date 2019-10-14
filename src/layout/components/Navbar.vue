@@ -1,8 +1,9 @@
 <template>
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb v-if="device!=='mobile'" id="breadcrumb-container" class="breadcrumb-container" />
     <div class="right-menu">
+      <vehicle-list v-if="device==='mobile'" class="right-menu-item"></vehicle-list>
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -37,9 +38,11 @@ import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
+import VehicleList from '../../views/map/VehicleList'
 
 export default {
   components: {
+    VehicleList,
     Breadcrumb,
     Hamburger,
     ErrorLog,
@@ -67,12 +70,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.navbar {
-  height: 50px;
-  overflow: hidden;
-  position: relative;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+    .el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+
+  .navbar {
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
     line-height: 46px;
