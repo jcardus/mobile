@@ -20,12 +20,11 @@ function addImage(path, name) {
 }
 
 export function getArea(area) {
-  if (Array.isArray(area.features[0].geometry.coordinates[0].length)) {
-    // POLYGON((-33.63463083134137 -71.39602661132812, -33.138701124637024 -70.72448730468751, -33.478417648673414 -70.01312255859375, -33.92399018008704 -70.7244873046875, -33.63463083134137 -71.39602661132812))
+  if (area.features[0].geometry.type.toUpperCase() === 'POINT') {
+    return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 10)'
+  } else {
     return area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
   }
-  // trying POI
-  return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 10)'
 }
 export function addImages() {
   addImage('img/40/car-green.png', 'car-green')
