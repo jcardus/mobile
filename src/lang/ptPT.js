@@ -31,6 +31,13 @@ export default {
   vehicleDetail: {
     show_route: 'Mostrar rota'
   },
+  dashboard: {
+    startdate: 'Data de Início',
+    enddate: 'Data de Fim',
+    period_lastweek: 'Última semana',
+    period_lastmonth: 'Último mês',
+    period_last3month: 'Últimos 3 meses'
+  },
   navbar: {
     profile: 'Perfil',
     settings: 'Configurações',
