@@ -29,7 +29,6 @@ import * as helpers from '@turf/helpers'
 import { serverBus, vm } from '../../main'
 import mapboxgl from 'mapbox-gl'
 import * as utils from '../../utils/utils'
-import bbox from '@turf/bbox'
 
 export default {
   name: 'VehicleDetail',
@@ -246,12 +245,21 @@ export default {
       this.drawTrip()
       serverBus.$emit('routeFetched')
     },
+    distance(p, q) {
+      const dx = p.x - q.x
+      const dy = p.y - q.y
+      return Math.sqrt(dx * dx + dy * dy)
+    },
     drawStartEnd: function() {
       const positions = this.trips[this.currentTrip]
       const start = [positions[0].longitude, positions[0].latitude]
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]
+      const sCoord = this.map.project(start)
+      const eCoord = this.map.project(end)
+      const d = this.distance(sCoord, eCoord)
       let el = document.createElement('div')
-      el.className = 'marker rotl'
+      el.className = 'marker ' + (d > 10 ? '' : 'rotl')
+      Vue.$log.debug('screen distance is ', d)
       let hour = this.$moment(positions[0].fixTime).format('HH:mm')
       Vue.$log.debug('adding start position on ', positions[0].deviceTime, hour)
       el.innerHTML = '<span><b>' + hour + '</b></span>'
@@ -261,7 +269,7 @@ export default {
       const lastPos = positions[positions.length - 1]
       if (lastPos.attributes.ignition === false || (lastPos.attributes.power && lastPos.attributes.power < 13)) {
         el = document.createElement('div')
-        el.className = 'marker finish rotr'
+        el.className = 'marker finish ' + (d > 10 ? '' : 'rotr')
         hour = this.$moment(positions[positions.length - 1].fixTime).format('HH:mm')
         Vue.$log.debug('adding end position on ', positions[positions.length - 1].deviceTime, hour)
         el.innerHTML = '<span><b>' + hour + '</b></span>'
@@ -286,18 +294,13 @@ export default {
       }
     },
     drawRoute(positions) {
+      const lineString = { type: 'LineString', coordinates: positions }
       if (!vm.$store.state.settings.matchRoutes) {
-        const lineString = { type: 'LineString', coordinates: positions }
         const routeGeoJSON = this.getGeoJSON(lineString)
         this.drawIteration(routeGeoJSON)
       } else {
         lnglat.matchRoute(positions, positions.map(() => [25]), this.onRouteMatch)
       }
-      const box = bbox(positions)
-      const bounds = [[box[0], box[1]], [box[2], box[3]]]
-      if (!this.contains(this.map.getBounds(), { longitude: box[0], latitude: box[1] }) ||
-        !this.contains(this.map.getBounds(), { longitude: box[2], latitude: box[3] })
-      ) { this.map.fitBounds(bounds, { maxZoom: this.$static.map.getZoom() }) }
     },
     getGeoJSON: function(coords) {
       return helpers.featureCollection([helpers.feature(coords)])
