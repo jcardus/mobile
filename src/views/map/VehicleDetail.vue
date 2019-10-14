@@ -251,7 +251,7 @@ export default {
       const start = [positions[0].longitude, positions[0].latitude]
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]
       let el = document.createElement('div')
-      el.className = 'marker'
+      el.className = 'marker rotl'
       let hour = this.$moment(positions[0].fixTime).format('HH:mm')
       Vue.$log.debug('adding start position on ', positions[0].deviceTime, hour)
       el.innerHTML = '<span><b>' + hour + '</b></span>'
@@ -261,7 +261,7 @@ export default {
       const lastPos = positions[positions.length - 1]
       if (lastPos.attributes.ignition === false || (lastPos.attributes.power && lastPos.attributes.power < 13)) {
         el = document.createElement('div')
-        el.className = 'marker finish'
+        el.className = 'marker finish rotr'
         hour = this.$moment(positions[positions.length - 1].fixTime).format('HH:mm')
         Vue.$log.debug('adding end position on ', positions[positions.length - 1].deviceTime, hour)
         el.innerHTML = '<span><b>' + hour + '</b></span>'
@@ -450,4 +450,6 @@ export default {
         background: #991907;
     }
     .marker b {transform: rotateZ(135deg)}
+    .rotl span {transform: rotateZ(180deg)}
+    .rotr span {transform: rotateZ(-90deg)}
 </style>
