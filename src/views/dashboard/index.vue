@@ -17,8 +17,8 @@
             align="right"
             unlink-panels
             range-separator="-"
-            start-placeholder="Start date"
-            end-placeholder="End date"
+            :start-placeholder="$t('dashboard.startdate')"
+            :end-placeholder="$t('dashboard.enddate')"
             :picker-options="pickerOptions"
           />
         </div>
@@ -44,7 +44,7 @@ export default {
       selectedDevices: [],
       pickerOptions: {
         shortcuts: [{
-          text: 'Last week',
+          text: this.$t('dashboard.period_lastweek'),
           onClick(picker) {
             const end = new Date()
             const start = new Date()
@@ -52,7 +52,7 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }, {
-          text: 'Last month',
+          text: this.$t('dashboard.period_lastmonth'),
           onClick(picker) {
             const end = new Date()
             const start = new Date()
@@ -60,7 +60,7 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }, {
-          text: 'Last 3 months',
+          text: this.$t('dashboard.period_last3month'),
           onClick(picker) {
             const end = new Date()
             const start = new Date()
@@ -141,7 +141,9 @@ export default {
     width: 100%;
     top: 50px;
   }
-
+  .el-picker-panel__sidebar {
+    width: 130px
+  }
   iframe {
     border-width: 0 !important;
   }

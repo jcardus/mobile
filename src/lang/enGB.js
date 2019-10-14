@@ -31,6 +31,13 @@ export default {
   vehicleDetail: {
     show_route: 'Show route'
   },
+  dashboard: {
+    startdate: 'Start date',
+    enddate: 'End Date',
+    period_lastweek: 'Last week',
+    period_lastmonth: 'Last month',
+    period_last3month: 'Last 3 months'
+  },
   navbar: {
     profile: 'Profile',
     settings: 'Settings',
