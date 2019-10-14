@@ -15,7 +15,7 @@ export function findFeatureByDeviceId(deviceId) {
 
 function addImage(path, name) {
   vm.$static.map.loadImage(path, function(error, image) {
-    if (!error) { vm.$static.map.addImage(name, image) }
+    if (!error && !vm.$static.map.hasImage(name)) { vm.$static.map.addImage(name, image) }
   })
 }
 
