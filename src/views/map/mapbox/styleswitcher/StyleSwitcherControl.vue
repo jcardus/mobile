@@ -1,6 +1,6 @@
 <template>
   <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
-    <button v-show="btnVisible" class="mapboxgl-ctrl-icon mapboxgl-style-switcher" @click="btnClick" />
+    <button v-show="btnVisible" class="mapboxgl-ctrl-icon mapboxgl-style-switcher" @click="btnClick"></button>
     <div v-show="containerVisible" ref="controlContainer" class="mapboxgl-style-list">
       <button
         v-for="style in styles"
@@ -18,9 +18,8 @@
 
 <script>
 
-import { vm } from '../../../../main'
+import { vm, serverBus } from '../../../../main'
 import * as lnglat from '../../../../utils/lnglat'
-import serverBus from '@/main'
 
 export default {
   name: 'StyleSwitcherControl',
