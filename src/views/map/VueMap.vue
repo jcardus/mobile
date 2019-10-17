@@ -567,7 +567,9 @@ export default {
 
   #vehiclesDiv {
     width: 300px;
-    float: left;
+    position: absolute;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    z-index: 1000;
   }
 
   @media screen and (max-width: 768px) {

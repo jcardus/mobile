@@ -48,7 +48,7 @@
         </el-table-column>
       </el-table>
       <el-tabs
-        v-if="!isMobile"
+        v-else
         active-tab-color="#9b59b6"
         active-text-color="white"
       >
@@ -66,7 +66,7 @@
             stripe
             :cell-style="cellStyle"
             :show-header="false"
-            height="calc(100vh - 154px)"
+            height="calc(100vh - 150px)"
             @current-change="vehicleSelected"
           >
             <el-table-column
@@ -119,7 +119,7 @@
             highlight-current-row
             :data="pois"
             :show-header="false"
-            height="calc(100vh - 154px)"
+            height="calc(100vh - 150px)"
             @current-change="poiSelected"
           >
             <el-table-column
@@ -153,7 +153,7 @@
             highlight-current-row
             :data="geofences"
             :show-header="false"
-            height="calc(100vh - 154px)"
+            height="calc(100vh - 150px)"
             @current-change="geofenceSelected"
           >
             <el-table-column
