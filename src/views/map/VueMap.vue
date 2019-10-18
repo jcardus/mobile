@@ -251,7 +251,7 @@ export default {
       map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
-        map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'top-left')
+        map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
       }
 
       if (settings.showSlider) {
@@ -567,7 +567,9 @@ export default {
 
   #vehiclesDiv {
     width: 300px;
-    float: left;
+    position: absolute;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    z-index: 1000;
   }
 
   @media screen and (max-width: 768px) {

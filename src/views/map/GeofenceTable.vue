@@ -4,7 +4,7 @@
     highlight-current-row
     :data="geofences"
     :show-header="false"
-    height="calc(100vh - 154px)"
+    height="calc(100vh - 150px)"
     @current-change="geofenceSelected"
   >
     <el-table-column
