@@ -518,26 +518,27 @@ export default {
                     (lngLatBounds.getSouth() < position.latitude && position.latitude < lngLatBounds.getNorth())
       )
     },
-    geofenceCreated: function() {
+    featureCreated: function(type) {
       this.$message({
         type: 'success',
-        message: this.$t('map.geofence_created')
+        message: this.$t('map.' + type + '_created')
       })
     },
     drawCreate(e) {
       const data = this.$static.draw.getAll()
       if (data.features.length > 0) {
+        const type = this.getType(lnglat.getArea(data))
         this.$log.debug('creating ', data)
-        this.$prompt(this.$t('map.geofence_create_name'), this.$t('map.geofence_create_title'), {
-          confirmButtonText: this.$t('map.geofence_create_confirm'),
-          cancelButtonText: this.$t('map.geofence_create_cancel')
+        this.$prompt(this.$t('map.' + type + '_create_name'), this.$t('map.' + type + '_create_title'), {
+          confirmButtonText: this.$t('map.create_confirm'),
+          cancelButtonText: this.$t('map.create_cancel')
         }).then(({ value }) => {
-          traccar.newGeofence(value, 'description', lnglat.getArea(data), this.geofenceCreated)
+          traccar.newGeofence(value, 'description', lnglat.getArea(data), this.featureCreated(type))
         }).catch((e) => {
           Vue.$log.error(e)
           this.$message({
             type: 'info',
-            message: this.$t('map.geofence_create_canceled')
+            message: this.$t('map.' + type + '_create_canceled')
           })
         })
       } else {
@@ -547,6 +548,9 @@ export default {
     drawDelete() {
     },
     drawUpdate() {
+    },
+    getType(area) {
+      if (area.startsWith('POLYGON')) { return 'geofence' } else { return 'poi' }
     }
   }
 }

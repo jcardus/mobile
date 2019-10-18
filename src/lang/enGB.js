@@ -10,10 +10,15 @@ export default {
   map: {
     geofence_create_title: 'New geofence',
     geofence_create_name: 'Please enter the name of this geofence...',
-    geofence_create_confirm: 'OK',
-    geofence_create_cancel: 'Cancel',
     geofence_created: 'Geofence created sucessfully!',
-    geofence_create_canceled: 'Input canceled'
+    geofence_create_canceled: 'Input canceled',
+    poi_create_title: 'New POI',
+    poi_create_name: 'Please enter the name of this POI...',
+    poi_created: 'POI created sucessfully!',
+    poi_create_canceled: 'Input canceled',
+    create_confirm: 'OK',
+    create_cancel: 'Cancel'
+
   },
   vehicleList: {
     title: 'Vehicle',

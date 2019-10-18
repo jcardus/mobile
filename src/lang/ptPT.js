@@ -10,10 +10,14 @@ export default {
   map: {
     geofence_create_title: 'Nova Geofence',
     geofence_create_name: 'Por favor indique o nome da geofence...',
-    geofence_create_confirm: 'Confirmar',
-    geofence_create_cancel: 'Cancelar',
     geofence_created: 'Geofence criada com sucesso!',
-    geofence_create_canceled: 'Criação de geofence cancelada!'
+    geofence_create_canceled: 'Criação de geofence cancelada!',
+    poi_create_title: 'Novo POI',
+    poi_create_name: 'Por favor indique o nome do POI...',
+    poi_created: 'POI criado com sucesso!',
+    poi_create_canceled: 'Criação do POI cancelada!',
+    create_confirm: 'Confirmar',
+    create_cancel: 'Cancelar'
   },
   vehicleList: {
     title: 'Veículos',
