@@ -4,7 +4,7 @@
       <el-input v-if="!isMobile" v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-table
         v-if="isMobile"
-        id="vehicleTable"
+        id="vehicleTableMobile"
         highlight-current-row
         :data="filteredVehicles"
         stripe
@@ -114,33 +114,7 @@
               <i class="fas fa-map-marker-alt"></i>
             </div>
           </span>
-          <el-table
-            id="poiTable"
-            highlight-current-row
-            :data="pois"
-            :show-header="false"
-            height="calc(100vh - 154px)"
-            @current-change="poiSelected"
-          >
-            <el-table-column
-              prop="name"
-            >
-            </el-table-column>
-            <el-table-column label="" width="130">
-              <template slot-scope="scope">
-
-                <el-button
-                  size="small"
-                  @click="handleEdit(scope.row)"
-                ><i class="fas fa-edit"></i></el-button>
-                <el-button
-                  size="small"
-                  type="danger"
-                  @click="handleDelete(scope.row)"
-                ><i class="fas fa-trash-alt"></i></el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <p-o-i-table></p-o-i-table>
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">
@@ -148,33 +122,7 @@
               <i class="fas fa-draw-polygon"></i>
             </div>
           </span>
-          <el-table
-            id="geofenceTable"
-            highlight-current-row
-            :data="geofences"
-            :show-header="false"
-            height="calc(100vh - 154px)"
-            @current-change="geofenceSelected"
-          >
-            <el-table-column
-              prop="name"
-            >
-            </el-table-column>
-            <el-table-column label="" width="130">
-              <template slot-scope="scope">
-
-                <el-button
-                  size="small"
-                  @click="handleEdit(scope.row)"
-                ><i class="fas fa-edit"></i></el-button>
-                <el-button
-                  size="small"
-                  type="danger"
-                  @click="handleDelete(scope.row)"
-                ><i class="fas fa-trash-alt"></i></el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <geofence-table></geofence-table>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -187,10 +135,13 @@ import * as lnglat from '@/utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '../../api/traccar-api'
 import VueCookies from 'vue-cookies'
+import GeofenceTable from './GeofenceTable'
+import POITable from './POITable'
 const cookie = VueCookies.get('user-info')
 
 export default {
   name: 'VehicleTable',
+  components: { GeofenceTable, POITable },
   filters: {
     translate(value) {
       return vm.$t(value)
@@ -220,9 +171,7 @@ export default {
       lastUpdate: new Date(),
       sortColumns: {},
       filterKey: '',
-      sortKey: '',
-      geofences: null,
-      pois: null
+      sortKey: ''
     }
   },
   computed: {
@@ -264,9 +213,6 @@ export default {
       self.selected = device.id
     })
   },
-  created() {
-    this.loadGeofences()
-  },
   methods: {
     getBgColor: function(device) {
       if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Gray' }
@@ -304,25 +250,13 @@ export default {
         serverBus.$emit('deviceSelected', device)
       }
     },
-    poiSelected: function(poi) {
-      if (poi) {
-        Vue.$log.debug('poi=', poi)
-        serverBus.$emit('areaSelected', poi.area)
-      }
-    },
-    geofenceSelected: function(geofence) {
-      if (geofence) {
-        Vue.$log.debug('geofenceSelected=', geofence)
-        serverBus.$emit('areaSelected', geofence.area)
-      }
-    },
     commandImmobilize: function(device, value) {
       Vue.$log.debug('Immobilization ' + value + ' for device ' + device)
       var message
       if (value) {
-        message = 'Send immobilization command?'
+        message = this.$t('vehicleTable.send_immobilization')
       } else {
-        message = 'Send de-immobilization command?'
+        message = this.$t('vehicleTable.send_de_immobilization')
       }
       const self = this
       this.$confirm(message).then(() => {
@@ -349,58 +283,6 @@ export default {
     commandImmobilizeNok: function(reason) {
       Vue.$log.debug('Immobilization error: ' + reason)
       this.$alert('Error: ' + reason)
-    },
-    loadGeofences() {
-      traccar.geofences()
-        .then(response => {
-          this.geofences = response.data.filter(g => g.area.startsWith('POLYGON'))
-          this.pois = response.data.filter(g => g.area.startsWith('CIRCLE'))
-        })
-    },
-    handleEdit(row) {
-      const type = this.getType(row)
-      this.$prompt(this.$t('geofence.' + type + '_edit_name'), this.$t('geofence.' + type + '_edit_title'), {
-        confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
-        cancelButtonText: this.$t('geofence.geofence_edit_cancel'),
-        inputValue: row.name
-      }).then(({ value }) => {
-        var geofence = row
-        geofence.name = value
-        traccar.editGeofence(row.id, geofence, this.geofenceEdited(this.getType(row)))
-        row.name = value
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: this.$t('geofence.' + type + '_edit_canceled')
-        })
-      })
-    },
-    handleDelete(row) {
-      const type = this.getType(row)
-      this.$confirm(this.$t('geofence.' + type + '_delete_info') + row.name, this.$t('geofence.' + type + '_delete_title'), {
-        confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
-        cancelButtonText: this.$t('geofence.geofence_edit_cancel')
-      }).then(() => {
-        traccar.deleteGeofence(row.id, this.geofenceDeleted(this.getType(row)))
-      }).catch(() => {
-      })
-    },
-    geofenceEdited: function(type) {
-      this.$message({
-        type: 'success',
-        message: this.$t('geofence.' + type + '_edited')
-      })
-    },
-    geofenceDeleted(type) {
-      this.loadGeofences()
-      this.$message({
-        message: this.$t('geofence.' + type + '_deleted'),
-        type: 'success',
-        duration: 5 * 1000
-      })
-    },
-    getType(row) {
-      if (row.area.startsWith('POLYGON')) { return 'geofence' } else { return 'poi' }
     }
   }
 }
