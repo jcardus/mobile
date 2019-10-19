@@ -53,7 +53,7 @@ export default {
     poiSelected: function(poi) {
       if (poi) {
         Vue.$log.debug('poi=', poi)
-        serverBus.$emit('areaSelected', poi.area)
+        serverBus.$emit('areaSelected', poi)
       }
     },
     handleEdit(row) {

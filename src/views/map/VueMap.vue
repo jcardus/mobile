@@ -66,6 +66,7 @@ export default {
       return this.$root.$data.devices
     },
     map() { return vm.$static.map },
+    geofencesSource() { return this.$root.$static.geofenceSource },
     selected: {
       get: function() {
         return vm.$data.currentDevice
@@ -125,7 +126,11 @@ export default {
         }
       }
     },
-    areaSelected: function(area) {
+    areaSelected: function(object) {
+      const feature = lnglat.findFeatureById(object.id)
+      if (feature) {
+        this.flyToFeature(feature)
+      }
     },
     addImages: function() {
       const map = this.$static.map
@@ -158,7 +163,7 @@ export default {
       }
       this.truck.setCoords(coordinates)
     },
-    flyToDevice: function(feature) {
+    flyToDevice: function(feature, device) {
       if (feature) {
         this.$static.map.flyTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
@@ -169,6 +174,25 @@ export default {
         this.$static.map.once('moveend', function() {
           self.showPopup(feature, self.selected)
         })
+      }
+    },
+    flyToFeature: function(feature) {
+      if (feature) {
+        if (feature.geometry.type === 'Point') {
+          this.$static.map.flyTo({
+            center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
+            zoom: 13
+          }
+          )
+        } else {
+          const result = []
+          feature.geometry.coordinates[0].forEach(function(item) {
+            result.push({ lng: item[0], lat: item[1] })
+          })
+          this.$static.map.fitBounds(result, {
+            padding: 40
+          })
+        }
       }
     },
     refreshMap() {

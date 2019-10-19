@@ -53,7 +53,7 @@ export default {
     geofenceSelected: function(geofence) {
       if (geofence) {
         Vue.$log.debug('geofenceSelected=', geofence)
-        serverBus.$emit('areaSelected', geofence.area)
+        serverBus.$emit('areaSelected', geofence)
       }
     },
     handleEdit(row) {
