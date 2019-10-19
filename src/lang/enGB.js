@@ -36,6 +36,12 @@ export default {
   vehicleDetail: {
     show_route: 'Show route'
   },
+  geofenceTable: {
+    showGeofences: 'Show Geofences'
+  },
+  poiTable: {
+    showPOIs: 'Show POIs'
+  },
   dashboard: {
     startdate: 'Start date',
     enddate: 'End Date',

@@ -35,6 +35,12 @@ export default {
   vehicleDetail: {
     show_route: 'Mostrar rota'
   },
+  geofenceTable: {
+    showGeofences: 'Ver Cercas Eletrônicas'
+  },
+  poiTable: {
+    showPOIs: 'Ver POIs'
+  },
   dashboard: {
     startdate: 'Data de Início',
     enddate: 'Data de Fim',
