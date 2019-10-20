@@ -8,9 +8,11 @@ const serverHost = process.env.NODE_ENV === 'development' ? 'dev.pinme.io' : 'de
 const baseUrl = 'https://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
 const route = baseUrl + 'reports/route'
+const events = baseUrl + 'reports/events'
 const positions = baseUrl + 'positions'
 const trips = baseUrl + 'reports/trips'
 const geoFences = baseUrl + 'geofences'
+const alerts = baseUrl + 'notifications'
 const users = baseUrl + 'users'
 let cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
@@ -42,6 +44,14 @@ export const traccar = {
     )
       .then(() => ok(report_id))
       .catch(reason => nok(report_id, reason))
+  },
+  report_events: function(userId, from, to, groupIds, onFulfill) {
+    axios.get(events + '?groupId=' + groupIds + '&from=' + from + '&to=' + to,
+      { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
   },
   startReceiving: function() {
     vm.$connect()
@@ -116,9 +126,16 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  geofences: function() {
+  geofences: function(onFulfill) {
     return new Promise((resolve, reject) => {
       axios.get(geoFences, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+        .then(response => onFulfill(response.data))
+        .catch(error => { reject(error) })
+    })
+  },
+  alerts: function() {
+    return new Promise((resolve, reject) => {
+      axios.get(alerts, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
         .then(response => {
           resolve(response)
         }).catch(error => {

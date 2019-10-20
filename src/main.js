@@ -90,6 +90,8 @@ export const vm = new Vue({
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
       positions: [],
+      geofences: [],
+      alerts: [],
       historyMode: false,
       currentDevice: null
     }
