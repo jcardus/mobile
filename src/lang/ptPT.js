@@ -9,11 +9,15 @@ export default {
   },
   map: {
     geofence_create_title: 'Nova Geofence',
-    geofence_create_name: 'Por favor indique o nome da geofence...',
-    geofence_create_confirm: 'Confirmar',
-    geofence_create_cancel: 'Cancelar',
+    geofence_create_name: 'Por favor indique o nome da baliza...',
     geofence_created: 'Geofence criada com sucesso!',
-    geofence_create_canceled: 'Criação de geofence cancelada!'
+    geofence_create_canceled: 'Criação de baliza cancelada!',
+    poi_create_title: 'Novo POI',
+    poi_create_name: 'Por favor indique o nome do POI...',
+    poi_created: 'POI criado com sucesso!',
+    poi_create_canceled: 'Criação do POI cancelada!',
+    create_confirm: 'Confirmar',
+    create_cancel: 'Cancelar'
   },
   vehicleList: {
     title: 'Veículos',
@@ -30,6 +34,12 @@ export default {
   },
   vehicleDetail: {
     show_route: 'Mostrar rota'
+  },
+  geofenceTable: {
+    showGeofences: 'Ver Balizas'
+  },
+  poiTable: {
+    showPOIs: 'Ver POIs'
   },
   dashboard: {
     startdate: 'Data de Início',
@@ -74,15 +84,15 @@ export default {
     geofence_name: 'Nome',
     geofence_edit: 'Editar',
     geofence_delete: 'Apagar',
-    geofence_deleted: 'A Geofence foi apagada',
-    geofence_delete_info: 'Pretende apagar a geofence ',
-    geofence_delete_title: 'Apagar Geofence',
-    geofence_edit_title: 'Editar Geofence',
-    geofence_edit_name: 'Por favor indique o nome da geofence...',
+    geofence_deleted: 'A Baliza foi apagada',
+    geofence_delete_info: 'Pretende apagar a baliza ',
+    geofence_delete_title: 'Apagar Baliza',
+    geofence_edit_title: 'Editar Baliza',
+    geofence_edit_name: 'Por favor indique o nome da baliza...',
     geofence_edit_confirm: 'Confirmar',
     geofence_edit_cancel: 'Cancelar',
     geofence_edit_canceled: 'Edição cancelada',
-    geofence_edited: 'Geofence editada com sucesso!',
+    geofence_edited: 'Baliza editada com sucesso!',
     poi_delete_info: 'Pretende apagar o POI ',
     poi_delete_title: 'Apagar POI',
     poi_edited: 'POI editada com sucesso!',

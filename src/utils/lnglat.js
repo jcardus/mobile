@@ -13,6 +13,12 @@ export function findFeatureByDeviceId(deviceId) {
   })
 }
 
+export function findFeatureById(id) {
+  return vm.$static.geofenceSource.data.features.find(e => {
+    return e.properties.id === id
+  })
+}
+
 function addImage(path, name) {
   vm.$static.map.loadImage(path, function(error, image) {
     if (!error && !vm.$static.map.hasImage(name)) { vm.$static.map.addImage(name, image) }
@@ -90,7 +96,10 @@ function convertWktToGeojson(response) {
           type: 'Polygon',
           coordinates: [[]]
         },
-        properties: { title: item.name }
+        properties: {
+          id: item.id,
+          title: item.name
+        }
       }
       const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
       const coord_list = str.split(',')
@@ -105,7 +114,10 @@ function convertWktToGeojson(response) {
           type: 'Point',
           coordinates: []
         },
-        properties: { title: item.name }
+        properties: {
+          id: item.id,
+          title: item.name
+        }
       }
       const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))
       const coord = str.trim().split(' ')
@@ -228,7 +240,8 @@ export function addLayers(map) {
   } else { Vue.$log.warn('layer unclustered-point already exists...') }
   if (!map.getLayer('geofences')) {
     traccar.geofences().then(response => {
-      if (!map.getSource('geofences')) { map.addSource('geofences', getGeofences(response)) }
+      vm.$static.geofenceSource = getGeofences(response)
+      if (!map.getSource('geofences')) { map.addSource('geofences', vm.$static.geofenceSource) }
       if (!map.getLayer('geofences')) {
         map.addLayer({
           id: 'geofences',

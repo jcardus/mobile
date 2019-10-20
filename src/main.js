@@ -76,6 +76,10 @@ export const vm = new Vue({
       positionsSource: {
         'type': 'FeatureCollection',
         'features': []
+      },
+      geofenceSource: {
+        'type': 'FeatureCollection',
+        'features': []
       }
     }
   },
