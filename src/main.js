@@ -16,7 +16,6 @@ import VueTimeago from 'vue-timeago'
 import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
-
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
 const options = {
@@ -30,7 +29,6 @@ const options = {
 }
 Vue.use(VueLogger, options)
 Vue.config.lang = defaultLang
-
 Vue.use(Element, {
   size: VueCookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
@@ -41,12 +39,12 @@ export const settings = {
   animateMarkers: true,
   showVehicleList: true,
   showSlider: true,
-  truck3d: true
+  truck3d: false,
+  show3dBuildings: false
 }
 
 Vue.use(require('vue-moment'))
 
-// register global utility filter
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })

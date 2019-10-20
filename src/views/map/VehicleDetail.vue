@@ -127,7 +127,6 @@ export default {
     onPosChanged(newPos) {
       if (!this.device) return
       if (this.device.id !== vm.$data.currentDevice.id) return
-      Vue.$log.debug('changing device position, deviceId: ', this.device.deviceId)
       const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
       const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
       const currentPosition = this.positions[newPos]
@@ -153,6 +152,11 @@ export default {
       this.feature.properties.address = currentPosition.address
       if (vm.$static.map.getSource('positions')) {
         vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+      }
+      if (!lnglat.contains(this.map.getBounds(), currentPosition)) {
+        this.$static.map.flyTo({
+          center: { lng: this.feature.geometry.coordinates[0], lat: this.feature.geometry.coordinates[1] }
+        })
       }
     },
     removeLayers: function(keepMain) {
@@ -236,7 +240,6 @@ export default {
         this.positions = positions
         Vue.$log.debug('got ', this.positions.length, ' positions')
         this.removeLayers()
-        vm.$data.historyMode = true
         this.drawAll(this.positions)
         this.getRouteTrips(this.positions)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
@@ -248,6 +251,7 @@ export default {
         this.currentTrip = this.trips.length - 1
         this.drawTrip()
       }
+      vm.$data.historyMode = true
       serverBus.$emit('routeFetched')
       this.loadingRoutes = false
     },

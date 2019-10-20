@@ -99,7 +99,6 @@ export default {
       traccar.positions(this.processPositions)
     },
     mapResize: function() {
-      this.$log.debug('resizing map...')
       this.map.resize()
     },
     onMapLoad: function() {
@@ -119,7 +118,7 @@ export default {
       if (device.id) {
         const feature = this.findFeatureByDeviceId(device.id)
         if (feature) {
-          if (!this.contains(this.$static.map.getBounds(), {
+          if (!lnglat.contains(this.$static.map.getBounds(), {
             latitude: feature.geometry.coordinates[1],
             longitude: feature.geometry.coordinates[0]
           }) || this.$static.map.getZoom() < 10) { this.flyToDevice(feature, device) } else { this.showPopup(feature, device) }
@@ -163,7 +162,7 @@ export default {
       }
       this.truck.setCoords(coordinates)
     },
-    flyToDevice: function(feature, device) {
+    flyToDevice: function(feature) {
       if (feature) {
         this.$static.map.flyTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
@@ -317,10 +316,9 @@ export default {
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
-        this.$log.debug(mutation)
         switch (mutation.type) {
           case 'app/TOGGLE_SIDEBAR':
-            setTimeout(function() { self.mapResize() }, 1500)
+            setTimeout(function() { self.mapResize() }, 1000)
             break
           case 'SOCKET_ONMESSAGE':
             if (state.socket.message.positions) {
@@ -371,14 +369,12 @@ export default {
         path: coordinates,
         duration: distance * 10000
       }
-      // start the truck animation with above options, and remove the line when animation ends
       this.truck.followPath(
         options,
         function() {
           self.animating = false
         }
       )
-
       this.origin = destination
       this.animating = true
       this._animate()
@@ -386,7 +382,6 @@ export default {
     animate: function(position, feature) {
       const origin = feature.geometry.coordinates
       const destination = [position.longitude, position.latitude]
-
       if (JSON.stringify(origin) === JSON.stringify(destination)) {
         return
       }
@@ -407,8 +402,8 @@ export default {
       if (this.selected && this.selected.id === feature.properties.deviceId) {
         const box = bbox(route)
         const bounds = [[box[0], box[1]], [box[2], box[3]]]
-        if (!this.contains(this.$static.map.getBounds(), { longitude: box[0], latitude: box[1] }) ||
-                        !this.contains(this.$static.map.getBounds(), { longitude: box[2], latitude: box[3] })
+        if (!lnglat.contains(this.$static.map.getBounds(), { longitude: box[0], latitude: box[1] }) ||
+                        !lnglat.contains(this.$static.map.getBounds(), { longitude: box[2], latitude: box[3] })
         ) { this.$static.map.fitBounds(bounds, { maxZoom: this.$static.map.getZoom() }) }
       }
 
@@ -503,7 +498,7 @@ export default {
           device.address = position.address
           device.lastUpdate = position.fixTime
 
-          if (settings.animateMarkers && self.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
+          if (settings.animateMarkers && lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature)
           } else {
@@ -535,12 +530,6 @@ export default {
       } else {
         self.animateMatched(route, feature, position)
       }
-    },
-    contains(lngLatBounds, position) {
-      return (
-        (lngLatBounds.getWest() < position.longitude && position.longitude < lngLatBounds.getEast()) &&
-                    (lngLatBounds.getSouth() < position.latitude && position.latitude < lngLatBounds.getNorth())
-      )
     },
     featureCreated: function(type) {
       this.$message({
