@@ -27,6 +27,17 @@ export function getArea(area) {
   }
 }
 export function addImages() {
+  function addImageWithColor(i, color) {
+    const path = 'img/truck/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
+    const name = 'car-' + color + i
+    Vue.$log.debug('adding ', path, ', name: ', name)
+    addImage(path, name)
+  }
+  for (let i = 0; i < 100; i++) {
+    addImageWithColor(i, 'red')
+    addImageWithColor(i, 'green')
+    addImageWithColor(i, 'yellow')
+  }
   addImage('img/40/car-green.png', 'car-green')
   addImage('img/40/car-yellow.png', 'car-yellow')
   addImage('img/40/car-red.png', 'car-red')
@@ -34,45 +45,16 @@ export function addImages() {
   addImage('img/m2.png', 'm2')
   addImage('img/m3.png', 'm3')
 }
-
 export function getBounds(coordinates) {
   const line = helpers.lineString(coordinates)
   return bbox(line)
 }
-
-export function getDistance(origin, destination) {
-  const route = {
-    type: 'Feature',
-    geometry: {
-      type: 'LineString',
-      coordinates: [origin, destination]
-    }
-  }
-  return lineDistance(route)
-}
-
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
-
 export function isMobile() {
-  Vue.$log.debug('ismobile: ', vm.$store.state.app.device)
   return vm.$store.state.app.device === 'mobile'
 }
-
-export function sameLngLat(c1, c2) {
-  const route = {
-    type: 'Feature',
-    geometry: {
-      type: 'LineString',
-      coordinates: [[c1.lng, c1.lat], [c2.lng, c2.lat]]
-    }
-  }
-  const len = length(route, { units: 'kilometers' })
-  Vue.$log.debug('len=', len)
-  return len < 0.001
-}
-
 export class MapboxCustomControl {
   constructor(id) {
     this.id = id
@@ -89,14 +71,12 @@ export class MapboxCustomControl {
     this.map = undefined
   }
 }
-
 export function matchRoute(coordinates, radius, onSuccess) {
   const radiuses = radius.join(';')
   const query = 'https://api.mapbox.com/matching/v5/mapbox/driving/' + coordinates.join(';') + '?geometries=geojson&radiuses=' + radiuses + '&access_token=' + mapboxgl.accessToken
   axios.get(query)
     .then(onSuccess)
 }
-
 function convertWktToGeojson(response) {
   const result = []
   Vue.$log.debug('converting ', response.data.length, ' features')
@@ -136,7 +116,6 @@ function convertWktToGeojson(response) {
   })
   return result
 }
-
 function getGeofences(response) {
   const result = {
     'type': 'geojson',
@@ -148,7 +127,6 @@ function getGeofences(response) {
   Vue.$log.debug(result)
   return result
 }
-
 export function addLayers(map) {
   const sourceid = 'positions'
   if (!map.getSource(sourceid)) {
@@ -223,24 +201,27 @@ export function addLayers(map) {
       source: sourceid,
       filter: ['!', ['has', 'point_count']],
       layout: {
-        'icon-image':
-          ['case',
-            ['>', ['get', 'speed'], 2], 'car-green',
-            ['==', ['get', 'ignition'], true], 'car-yellow',
-            'car-red'
-          ],
-        'icon-rotate': ['get', 'course'],
+        'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
+         ['case',
+           ['>', ['get', 'speed'], 2], ['concat', 'car-green', ['*', ['floor', ['/', ['get', 'course'], 3.6]], 1]],
+           ['==', ['get', 'ignition'], true], ['concat', 'car-yellow', ['*', ['floor', ['/', ['get', 'course'], 3.6]], 1]],
+           ['concat', 'car-red', ['*', ['floor', ['/', ['get', 'course'], 3.6]], 1]]
+         ],
+        // 'icon-rotate': ['%', ['get', 'course'], 45],
         'icon-allow-overlap': true,
         'text-allow-overlap': true,
         'icon-size': { stops: [
-          [12, 0.2],
-          [13, 0.3],
-          [14, 0.4],
-          [15, 0.5],
-          [16, 0.6],
-          [17, 0.7],
-          [18, 0.8],
-          [22, 0.9]
+          [12, 0.1],
+          [13, 0.2],
+          [14, 0.3],
+          [15, 0.4],
+          [16, 0.5],
+          [17, 0.6],
+          [18, 0.7],
+          [19, 0.7],
+          [20, 0.8],
+          [21, 0.9],
+          [22, 1]
         ] }
       }
     })
@@ -300,7 +281,6 @@ export function addLayers(map) {
     })
   }
 }
-
 export function removeLayers() {
   const map = vm.$static.map
   Vue.$log.debug('remove layers...')
