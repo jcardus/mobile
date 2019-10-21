@@ -19,7 +19,6 @@
       </el-table-column>
       <el-table-column label="" width="130">
         <template slot-scope="scope">
-
           <el-button
             size="small"
             @click="handleEdit(scope.row)"
@@ -118,7 +117,4 @@ export default {
 </script>
 
 <style>
-  .el-switch {
-    margin-bottom: 10px;
-  }
 </style>

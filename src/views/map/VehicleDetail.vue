@@ -4,11 +4,13 @@
     <h1>
       {{ device.name }}
     </h1>
-    <table>
-      <tr><td>
-            <i id="showRoutes" class="fas fa-2x" :class="showRoutes?'fa-toggle-on':'fa-toggle-off'" style="color:dodgerblue" @click="showRoutesClick"></i></td>
-        <td><label for="showRoutes">{{ $t('vehicleDetail.show_route') }}</label></td></tr>
-    </table>
+    <el-switch
+      v-model="showRoutes"
+      v-loading="loadingRoutes"
+      :active-text="$t('vehicleDetail.show_route')"
+      @change="showRoutesClick"
+    >
+    </el-switch>
     <div>
       {{ feature.properties.address }}
       <br>
@@ -46,7 +48,8 @@ export default {
       trips: [],
       currentTrip: 0,
       sliderVisible: false,
-      showRoutes: false
+      showRoutes: false,
+      loadingRoutes: false
     }
   },
   computed: {
@@ -124,7 +127,6 @@ export default {
     onPosChanged(newPos) {
       if (!this.device) return
       if (this.device.id !== vm.$data.currentDevice.id) return
-      Vue.$log.debug('changing device position, deviceId: ', this.device.deviceId)
       const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
       const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
       const currentPosition = this.positions[newPos]
@@ -151,6 +153,11 @@ export default {
       if (vm.$static.map.getSource('positions')) {
         vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
       }
+      if (!lnglat.contains(this.map.getBounds(), currentPosition)) {
+        this.$static.map.flyTo({
+          center: { lng: this.feature.geometry.coordinates[0], lat: this.feature.geometry.coordinates[1] }
+        })
+      }
     },
     removeLayers: function(keepMain) {
       for (this.i = 0; this.i < 10000; this.i += 99) {
@@ -172,8 +179,8 @@ export default {
       }
     },
     showRoutesClick: function() {
-      this.showRoutes = !this.showRoutes
       if (this.showRoutes) {
+        this.loadingRoutes = true
         this.getRoute(this.minDate, this.maxDate)
         vm.$data.currentDevice = this.device
       } else {
@@ -229,21 +236,24 @@ export default {
       lnglat.addLayers(this.map)
     },
     onPositions: function(positions) {
-      this.positions = positions
-      Vue.$log.debug('got ', this.positions.length, ' positions')
-      this.removeLayers()
+      if (positions && positions.length > 1) {
+        this.positions = positions
+        Vue.$log.debug('got ', this.positions.length, ' positions')
+        this.removeLayers()
+        this.drawAll(this.positions)
+        this.getRouteTrips(this.positions)
+        Vue.$log.debug('transformed into ', this.trips.length, ' trips')
+        this.filterTrips()
+        Vue.$log.debug('after filter got ', this.trips.length, ' trips')
+        this.trips.forEach(function(trip) {
+          Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime)
+        })
+        this.currentTrip = this.trips.length - 1
+        this.drawTrip()
+      }
       vm.$data.historyMode = true
-      this.drawAll(this.positions)
-      this.getRouteTrips(this.positions)
-      Vue.$log.debug('transformed into ', this.trips.length, ' trips')
-      this.filterTrips()
-      Vue.$log.debug('after filter got ', this.trips.length, ' trips')
-      this.trips.forEach(function(trip) {
-        Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime)
-      })
-      this.currentTrip = this.trips.length - 1
-      this.drawTrip()
       serverBus.$emit('routeFetched')
+      this.loadingRoutes = false
     },
     distance(p, q) {
       const dx = p.x - q.x
@@ -279,11 +289,13 @@ export default {
       }
     },
     drawAll: function(positions) {
-      const bounds = lnglat.getBounds(positions.map(p => [p.longitude, p.latitude]))
-      vm.$static.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
-      const lineString = { type: 'LineString', coordinates: positions.map(p => [p.longitude, p.latitude]) }
-      const routeGeoJSON = this.getGeoJSON(lineString)
-      this.createAllTripsLayer(routeGeoJSON)
+      if (positions && positions.length > 0) {
+        const bounds = lnglat.getBounds(positions.map(p => [p.longitude, p.latitude]))
+        vm.$static.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
+        const lineString = { type: 'LineString', coordinates: positions.map(p => [p.longitude, p.latitude]) }
+        const routeGeoJSON = this.getGeoJSON(lineString)
+        this.createAllTripsLayer(routeGeoJSON)
+      }
     },
     iterate: function() {
       const positions = this.trips[this.currentTrip]

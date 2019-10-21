@@ -4,7 +4,7 @@ import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
-import { vm } from '../main'
+import { vm, settings } from '../main'
 import { traccar } from '../api/traccar-api'
 
 export function findFeatureByDeviceId(deviceId) {
@@ -12,19 +12,16 @@ export function findFeatureByDeviceId(deviceId) {
     return e.properties.deviceId === deviceId
   })
 }
-
 export function findFeatureById(id) {
   return vm.$static.geofenceSource.data.features.find(e => {
     return e.properties.id === id
   })
 }
-
 function addImage(path, name) {
   vm.$static.map.loadImage(path, function(error, image) {
     if (!error && !vm.$static.map.hasImage(name)) { vm.$static.map.addImage(name, image) }
   })
 }
-
 export function getArea(area) {
   if (area.features[0].geometry.type.toUpperCase() === 'POINT') {
     return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 10)'
@@ -34,12 +31,12 @@ export function getArea(area) {
 }
 export function addImages() {
   function addImageWithColor(i, color) {
-    const path = 'img/truck/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
+    const path = 'img/car/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
     const name = 'car-' + color + i
     Vue.$log.debug('adding ', path, ', name: ', name)
     addImage(path, name)
   }
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i <= 100; i++) {
     addImageWithColor(i, 'red')
     addImageWithColor(i, 'green')
     addImageWithColor(i, 'yellow')
@@ -150,28 +147,30 @@ export function addLayers(map) {
       clusterRadius: 8
     })
   } else { Vue.$log.warn(sourceid, ' already exists...') }
-  /* this.map.addLayer({
-        'id': '3d-buildings',
-        'source': 'composite',
-        'source-layer': 'building',
-        'filter': ['==', 'extrude', 'true'],
-        'type': 'fill-extrusion',
-        'minzoom': 15,
-        'paint': {
-            'fill-extrusion-color': '#aaa',
-            'fill-extrusion-height': [
-                "interpolate", ["linear"], ["zoom"],
-                15, 0,
-                15.05, ["get", "height"]
-            ],
-            'fill-extrusion-base': [
-                "interpolate", ["linear"], ["zoom"],
-                15, 0,
-                15.05, ["get", "min_height"]
-            ],
-            'fill-extrusion-opacity': .6
-        }
-    });*/
+  if (settings.show3dBuildings) {
+    this.map.addLayer({
+      'id': '3d-buildings',
+      'source': 'composite',
+      'source-layer': 'building',
+      'filter': ['==', 'extrude', 'true'],
+      'type': 'fill-extrusion',
+      'minzoom': 15,
+      'paint': {
+        'fill-extrusion-color': '#aaa',
+        'fill-extrusion-height': [
+          'interpolate', ['linear'], ['zoom'],
+          15, 0,
+          15.05, ['get', 'height']
+        ],
+        'fill-extrusion-base': [
+          'interpolate', ['linear'], ['zoom'],
+          15, 0,
+          15.05, ['get', 'min_height']
+        ],
+        'fill-extrusion-opacity': 0.6
+      }
+    })
+  }
   if (!map.getLayer('clusters')) {
     map.addLayer({
       'id': 'clusters',
@@ -215,25 +214,26 @@ export function addLayers(map) {
       layout: {
         'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
          ['case',
-           ['>', ['get', 'speed'], 2], ['concat', 'car-green', ['*', ['floor', ['/', ['get', 'course'], 3.6]], 1]],
-           ['==', ['get', 'ignition'], true], ['concat', 'car-yellow', ['*', ['floor', ['/', ['get', 'course'], 3.6]], 1]],
-           ['concat', 'car-red', ['*', ['floor', ['/', ['get', 'course'], 3.6]], 1]]
+           ['>', ['get', 'speed'], 2],
+           ['concat', 'car-green', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 3.6]], 100]],
+           ['==', ['get', 'ignition'], true],
+           ['concat', 'car-yellow', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 3.6]], 100]],
+           ['concat', 'car-red', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 3.6]], 100]]
          ],
         // 'icon-rotate': ['%', ['get', 'course'], 45],
         'icon-allow-overlap': true,
         'text-allow-overlap': true,
         'icon-size': { stops: [
-          [12, 0.1],
-          [13, 0.2],
-          [14, 0.3],
-          [15, 0.4],
-          [16, 0.5],
-          [17, 0.6],
-          [18, 0.7],
-          [19, 0.7],
-          [20, 0.8],
-          [21, 0.9],
-          [22, 1]
+          [1, 0.1],
+          [14, 0.1],
+          [15, 0.2],
+          [16, 0.3],
+          [17, 0.4],
+          [18, 0.5],
+          [19, 0.6],
+          [20, 0.7],
+          [21, 0.8],
+          [22, 0.9]
         ] }
       }
     })
@@ -307,4 +307,10 @@ export function removeLayers() {
 
   if (map.getSource('positions')) { map.removeSource('positions') }
   if (map.getSource('geofences')) { map.removeSource('geofences') }
+}
+export function contains(lngLatBounds, position) {
+  return (
+    (lngLatBounds.getWest() < position.longitude && position.longitude < lngLatBounds.getEast()) &&
+    (lngLatBounds.getSouth() < position.latitude && position.latitude < lngLatBounds.getNorth())
+  )
 }
