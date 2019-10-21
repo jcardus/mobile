@@ -31,12 +31,12 @@ export function getArea(area) {
 }
 export function addImages() {
   function addImageWithColor(i, color) {
-    const path = 'img/car/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
+    const path = 'img/pickup/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
     const name = 'car-' + color + i
     Vue.$log.debug('adding ', path, ', name: ', name)
     addImage(path, name)
   }
-  for (let i = 0; i <= 100; i++) {
+  for (let i = 0; i < 50; i++) {
     addImageWithColor(i, 'red')
     addImageWithColor(i, 'green')
     addImageWithColor(i, 'yellow')
@@ -215,12 +215,12 @@ export function addLayers(map) {
         'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
          ['case',
            ['>', ['get', 'speed'], 2],
-           ['concat', 'car-green', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 3.6]], 100]],
+           ['concat', 'car-green', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 7.2]], 50]],
            ['==', ['get', 'ignition'], true],
-           ['concat', 'car-yellow', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 3.6]], 100]],
-           ['concat', 'car-red', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 3.6]], 100]]
+           ['concat', 'car-yellow', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 7.2]], 50]],
+           ['concat', 'car-red', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 7.2]], 50]]
          ],
-        // 'icon-rotate': ['%', ['get', 'course'], 45],
+        'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
         'icon-allow-overlap': true,
         'text-allow-overlap': true,
         'icon-size': { stops: [
