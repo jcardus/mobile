@@ -31,14 +31,14 @@ export function getArea(area) {
 }
 export function addImages() {
   function addImageWithColor(i, color) {
-    const path = 'img/pickup/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
+    const path = 'img/3d/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
     const name = 'car-' + color + i
     Vue.$log.debug('adding ', path, ', name: ', name)
     addImage(path, name)
   }
   for (let i = 0; i < 50; i++) {
-    addImageWithColor(i, 'red')
     addImageWithColor(i, 'green')
+    addImageWithColor(i, 'red')
     addImageWithColor(i, 'yellow')
   }
   addImage('img/40/car-green.png', 'car-green')
@@ -215,25 +215,25 @@ export function addLayers(map) {
         'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
          ['case',
            ['>', ['get', 'speed'], 2],
-           ['concat', 'car-green', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 7.2]], 50]],
+           ['concat', 'car-green', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
            ['==', ['get', 'ignition'], true],
-           ['concat', 'car-yellow', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 7.2]], 50]],
-           ['concat', 'car-red', ['%', ['floor', ['/', ['-', 360, ['get', 'course']], 7.2]], 50]]
+           ['concat', 'car-yellow', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
+           ['concat', 'car-red', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]]
          ],
         'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
         'icon-allow-overlap': true,
         'text-allow-overlap': true,
         'icon-size': { stops: [
           [1, 0.1],
-          [14, 0.1],
-          [15, 0.2],
-          [16, 0.3],
-          [17, 0.4],
-          [18, 0.5],
-          [19, 0.6],
-          [20, 0.7],
-          [21, 0.8],
-          [22, 0.9]
+          [14, 0.2],
+          [15, 0.3],
+          [16, 0.4],
+          [17, 0.5],
+          [18, 0.6],
+          [19, 0.7],
+          [20, 0.8],
+          [21, 0.9],
+          [22, 1]
         ] }
       }
     })
@@ -275,7 +275,6 @@ export function addLayers(map) {
           layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
           filter: ['==', '$type', 'Point']
         })
-
         map.addLayer({
           id: 'pois-labels',
           type: 'symbol',
