@@ -43,26 +43,19 @@ export default {
   name: 'POITable',
   data() {
     return {
-      pois: null
     }
   },
   computed: {
     map: function() { return vm.$static.map },
+    pois: function() {
+      return vm.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
+    },
     showPOIsLayer: {
       get() { return !!vm.$store.state.map.showPOIs },
       set() { this.togglePOIs() }
     }
   },
-  created() {
-    this.loadGeofences()
-  },
   methods: {
-    loadGeofences() {
-      traccar.geofences()
-        .then(response => {
-          this.pois = response.data.filter(g => g.area.startsWith('CIRCLE'))
-        })
-    },
     poiSelected: function(poi) {
       if (poi && this.showPOIsLayer) {
         Vue.$log.debug('poi=', poi)

@@ -40,6 +40,9 @@ const actions = {
         traccar.devices(function(devices) {
           vm.$data.devices = devices
         })
+        traccar.geofences(function(geofences) {
+          vm.$data.geofences = geofences
+        })
         resolve()
       }).catch(error => {
         reject(error)

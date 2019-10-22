@@ -44,25 +44,24 @@ export default {
   name: 'GeofenceTable',
   data() {
     return {
-      geofences: null
     }
   },
   computed: {
     map: function() { return vm.$static.map },
+    geofences: function() {
+      return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON'))
+    },
     showGeofenceLayer: {
       get() { return !!vm.$store.state.map.showGeofences },
       set() { this.toggleGeofences() }
     }
   },
-  created() {
-    this.loadGeofences()
+  mounted() {
+    if (this.geofences.length === 0) { traccar.geofences(this.loadGeofences) }
   },
   methods: {
-    loadGeofences() {
-      traccar.geofences()
-        .then(response => {
-          this.geofences = response.data.filter(g => g.area.startsWith('POLYGON'))
-        })
+    loadGeofences: function(geofences) {
+      vm.$data.geofences = geofences
     },
     geofenceSelected: function(geofence) {
       if (geofence && this.showGeofenceLayer) {
