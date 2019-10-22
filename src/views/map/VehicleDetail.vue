@@ -127,6 +127,7 @@ export default {
     onPosChanged(newPos) {
       if (!this.device) return
       if (this.device.id !== vm.$data.currentDevice.id) return
+      if (!this.trips[this.currentTrip]) return
       const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
       const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
       const currentPosition = this.positions[newPos]
@@ -318,7 +319,7 @@ export default {
       return helpers.featureCollection([helpers.feature(coords)])
     },
     createLayers: function(routeGeoJSON) {
-      Vue.$log.debug('adding source ', this.routeSource)
+      if (vm.$static.map.getSource(this.routeSource)) return
       vm.$static.map.addSource(this.routeSource, {
         type: 'geojson',
         data: routeGeoJSON
