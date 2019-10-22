@@ -89,7 +89,8 @@ export const vm = new Vue({
       devices: [],
       positions: [],
       historyMode: false,
-      currentDevice: null
+      currentDevice: null,
+      isPlaying: false
     }
   },
   methods: {

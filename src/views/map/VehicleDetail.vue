@@ -31,6 +31,7 @@ import * as helpers from '@turf/helpers'
 import { serverBus, vm } from '../../main'
 import mapboxgl from 'mapbox-gl'
 import * as utils from '../../utils/utils'
+import * as animation from '../../utils/animation'
 
 export default {
   name: 'VehicleDetail',
@@ -69,8 +70,8 @@ export default {
     isMobile() {
       return lnglat.isMobile()
     },
-    vehicleRouteIconSource() {
-      return 'routeIconSource-' + this.device.id
+    isPlaying() {
+      return vm.$data.isPlaying
     },
     routeSource() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i
@@ -148,11 +149,15 @@ export default {
           this.drawTrip()
         }
       }
-      this.feature.properties.course = currentPosition.course
-      this.feature.geometry.coordinates = [currentPosition.longitude, currentPosition.latitude]
-      this.feature.properties.address = currentPosition.address
-      if (vm.$static.map.getSource('positions')) {
-        vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+      if (this.isPlaying) {
+        animation.animate(this.feature, currentPosition)
+      } else {
+        this.feature.properties.course = currentPosition.course
+        this.feature.geometry.coordinates = [currentPosition.longitude, currentPosition.latitude]
+        this.feature.properties.address = currentPosition.address
+        if (vm.$static.map.getSource('positions')) {
+          vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+        }
       }
       if (!lnglat.contains(this.map.getBounds(), currentPosition)) {
         this.$static.map.flyTo({
@@ -423,7 +428,6 @@ export default {
         this.removeLayers()
         this.showRoutes = false
       } else {
-        this.historyMode = this.showRoutes
         Vue.$log.debug('not removing layers on deviceid, ', this.device.id)
       }
     }

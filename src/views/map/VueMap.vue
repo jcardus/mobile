@@ -15,7 +15,7 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
+// import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { serverBus, settings, vm } from '../../main'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -274,7 +274,7 @@ export default {
       map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
-        map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
+        // map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
       }
 
       if (settings.showSlider) {

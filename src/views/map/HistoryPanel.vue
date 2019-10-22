@@ -1,32 +1,38 @@
 <template>
   <div v-if="show" class="mapboxgl-ctrl card">
     <div class="panel">
-      <table><tr><td>
-        <div style="text-align: center">
-          <label for="minDate"></label><input
-            id="minDate"
-            v-model="minDate"
-            type="date"
-            style="float:left; width: 145px; background-color: rgba(1,1,1,0)"
-          >
-          <label for="maxDate"></label><input
-            id="maxDate"
-            v-model="maxDate"
-            type="date"
-            style="float:right; width: 145px; background-color: rgba(1,1,1,0)"
-          >
-        </div>
-      </td></tr><tr><td>
-        <vue-slider
-          v-model="currentPos"
-          style="vertical-align:middle;width: 100%;
+      <table>
+        <tr><td colspan="2">
+          <vue-slider
+            v-model="currentPos"
+            style="vertical-align:middle;width: 100%;
                                 font-weight:bold;"
-          :min="minPos"
-          :max="maxPos"
-          :tooltip-formatter="formatter"
-          :tooltip-placement="'top'"
-        />
-      </td></tr></table>
+            :min="minPos"
+            :max="maxPos"
+            :tooltip-formatter="formatter"
+            :tooltip-placement="'top'"
+            :tooltip="'always'"
+          />
+        </td></tr>
+        <tr><td>
+              <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
+            </td>
+          <td>
+            <div style="text-align: center">
+              <label for="minDate"></label><input
+                id="minDate"
+                v-model="minDate"
+                type="date"
+                style="float:left; width: 145px; background-color: rgba(1,1,1,0)"
+              >
+              <label for="maxDate"></label><input
+                id="maxDate"
+                v-model="maxDate"
+                type="date"
+                style="float:right; width: 145px; background-color: rgba(1,1,1,0)"
+              >
+            </div>
+          </td></tr></table>
     </div>
   </div>
 </template>
@@ -52,6 +58,10 @@ export default {
     }
   },
   computed: {
+    isPlaying: {
+      get() { return vm.$data.isPlaying },
+      set(value) { vm.$data.isPlaying = value }
+    },
     positions: function() {
       if (vm.$data.positions) { return vm.$data.positions }
       return []
@@ -83,15 +93,30 @@ export default {
   },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)
+    serverBus.$off('routeMatchFinished', this.playNext)
   },
   mounted() {
     serverBus.$on('routeFetched', this.updateMinMax)
+    serverBus.$on('routeMatchFinished', this.playNext)
   },
   methods: {
+    click() {
+      this.isPlaying = !this.isPlaying
+      if (this.isPlaying) {
+        this.playNext()
+      }
+    },
     updateMinMax() {
       this.$log.debug('routeFetched, maxPos=', this.positions.length - 1)
       this.maxPos = this.positions.length - 1
       this.currentPos = this.maxPos
+    },
+    playNext() {
+      if (this.isPlaying) {
+        if (this.currentPos >= this.maxPos) { this.isPlaying = false } else {
+          this.currentPos++
+        }
+      }
     }
   }
 }

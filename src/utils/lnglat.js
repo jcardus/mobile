@@ -313,3 +313,6 @@ export function contains(lngLatBounds, position) {
     (lngLatBounds.getSouth() < position.latitude && position.latitude < lngLatBounds.getNorth())
   )
 }
+export function refreshMap() {
+  vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+}
