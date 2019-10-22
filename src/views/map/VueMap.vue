@@ -181,15 +181,10 @@ export default {
           this.$static.map.flyTo({
             center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
             zoom: 13
-          }
-          )
-        } else {
-          const result = []
-          feature.geometry.coordinates[0].forEach(function(item) {
-            result.push({ lng: item[0], lat: item[1] })
           })
-          this.$static.map.fitBounds(result, {
-            padding: 40
+        } else {
+          this.$static.map.fitBounds(lnglat.getBounds(feature.geometry.coordinates[0]), {
+            padding: 50
           })
         }
       }
