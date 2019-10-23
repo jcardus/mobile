@@ -13,6 +13,7 @@ const positions = baseUrl + 'positions'
 const trips = baseUrl + 'reports/trips'
 const geoFences = baseUrl + 'geofences'
 const alerts = baseUrl + 'notifications'
+const permissions = baseUrl + 'permissions'
 const users = baseUrl + 'users'
 let cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
@@ -133,14 +134,47 @@ export const traccar = {
         .catch(error => { reject(error) })
     })
   },
-  alerts: function() {
+  alertsByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
-      axios.get(alerts, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
+      axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+        .then(response => onFulfill(response.data))
+        .catch(error => {
           reject(error)
         })
     })
+  },
+  alerts: function(onFulfill) {
+    return new Promise((resolve, reject) => {
+      axios.get(alerts, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+        .then(response => onFulfill(response.data))
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  newAlert: function(alert, onFulfill) {
+    Vue.$log.debug(alert)
+    axios.post(alerts, alert, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  deleteAlert: function(alertId, onFulfill) {
+    return new Promise((resolve, reject) => {
+      axios.delete(alerts + '/' + alertId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+        .then(response => onFulfill())
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  addPermission: function(permission, onFulfill) {
+    Vue.$log.debug(permission)
+    axios.post(permissions, permission, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
   }
 }

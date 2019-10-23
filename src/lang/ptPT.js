@@ -78,7 +78,21 @@ export default {
   },
   settings: {
     title: 'Configurações',
-    route_match: 'Rota na estrada'
+    route_match: 'Rota na estrada',
+    alerts: 'Alertas',
+    alerts_type: 'Tipo',
+    alerts_notificators: 'Vias',
+    alert_ignitionOff: 'Ignição Desligada',
+    alert_ignitionOn: 'Ignição Ligada',
+    alert_geofenceEnter: 'Entrada em Baliza',
+    alert_geofenceExit: 'Saída de Baliza',
+    alert_deviceOverspeed: 'Excesso de Velocidade',
+    alert_deleted: 'O Alerta foi apagado.',
+    alert_delete_info: 'Pretende apagar o alerta de ',
+    alert_delete_title: 'Apagar Alerta',
+    alert_edit_confirm: 'Confirmar',
+    alert_edit_cancel: 'Cancelar',
+    alert_created: 'Alerta criado com sucesso!'
   },
   geofence: {
     geofence_name: 'Nome',

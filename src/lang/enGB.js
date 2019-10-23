@@ -76,7 +76,21 @@ export default {
   },
   settings: {
     title: 'Settings',
-    route_match: 'Route match'
+    route_match: 'Route match',
+    alerts: 'Alerts',
+    alerts_type: 'Type',
+    alerts_notificators: 'Notificators',
+    alert_ignitionOff: 'Ignition Off',
+    alert_ignitionOn: 'Ignition On',
+    alert_geofenceEnter: 'Geofence Enter',
+    alert_geofenceExit: 'Geofence Exit',
+    alert_deviceOverspeed: 'Device Overspeed',
+    alert_deleted: 'Alert has been deleted',
+    alert_delete_info: 'Do you want to delete the alert ',
+    alert_delete_title: 'Delete Alert',
+    alert_edit_confirm: 'Confirm',
+    alert_edit_cancel: 'Cancel',
+    alert_created: 'Alert created sucessfully!'
   },
   geofence: {
     geofence_name: 'Name',

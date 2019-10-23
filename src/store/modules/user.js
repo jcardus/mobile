@@ -43,6 +43,26 @@ const actions = {
         traccar.geofences(function(geofences) {
           vm.$data.geofences = geofences
         })
+        traccar.alerts(function(alerts) {
+          const result = []
+          alerts.forEach(a => {
+            const alert_data = {
+              notification: a,
+              devices: []
+            }
+            result.push(alert_data)
+          })
+          vm.$data.alerts = result
+        })
+        vm.$data.devices.forEach(d => {
+          traccar.alertsByDevice(d.id, function(alerts) {
+            alerts.forEach(a => {
+              vm.$data.alerts
+                .find(a_data => a_data.notification.id === a.id)
+                .devices.push(d)
+            })
+          })
+        })
         resolve()
       }).catch(error => {
         reject(error)

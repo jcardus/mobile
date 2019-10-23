@@ -11,15 +11,15 @@
       >
       </el-switch>
     </el-card>
-    <geofences></geofences>
+    <alerts></alerts>
   </div>
 </template>
 
 <script>
-import Geofences from './Geofences'
+import Alerts from './alerts/Alerts'
 export default {
   name: 'Settings',
-  components: { Geofences },
+  components: { Alerts },
   computed: {
     matchRoutes: {
       get() { return this.$store.state.settings.matchRoutes },
@@ -35,5 +35,7 @@ export default {
 </script>
 
 <style scoped>
-
+.el-card {
+  margin-bottom: 10px;
+}
 </style>
