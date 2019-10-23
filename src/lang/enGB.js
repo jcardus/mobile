@@ -5,6 +5,7 @@ export default {
     reports: 'Reports',
     report_trip_title: 'Trip Report',
     report_location_title: 'Location Report',
+    report_zone_crossing: 'Zone Report',
     settings: 'Settings'
   },
   map: {

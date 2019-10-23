@@ -2,7 +2,8 @@ export default {
   router: {
     map: 'Mapa',
     report_trip_title: 'Informe de viajes',
-    report_location_title: 'Informe de posiciones'
+    report_location_title: 'Informe de posiciones',
+    report_zone_crossing: 'Informe de zonas'
   },
   vehicleList: {
     title: 'Vehículos',
