@@ -42,6 +42,7 @@ import { serverBus, vm } from '../../main'
 import * as utils from '../../utils/utils'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
+import Vue from 'vue'
 
 export default {
   name: 'HistoryPanel',
@@ -88,6 +89,7 @@ export default {
   },
   watch: {
     currentPos: function() {
+      Vue.$log.debug('curPos changed to: ', this.currentPos)
       serverBus.$emit('posChanged', this.currentPos)
     }
   },
@@ -103,17 +105,20 @@ export default {
     click() {
       this.isPlaying = !this.isPlaying
       if (this.isPlaying) {
+        serverBus.$emit('routePlay')
         this.playNext()
       }
     },
     updateMinMax() {
-      this.$log.debug('routeFetched, maxPos=', this.positions.length - 1)
       this.maxPos = this.positions.length - 1
       this.currentPos = this.maxPos
     },
     playNext() {
       if (this.isPlaying) {
-        if (this.currentPos >= this.maxPos) { this.isPlaying = false } else {
+        if (this.currentPos >= this.maxPos) {
+          Vue.$log.debug('stopping play... curPos/maxPos: ', this.currentPos, this.maxPos)
+          this.isPlaying = false
+        } else {
           this.currentPos++
         }
       }

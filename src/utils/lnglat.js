@@ -136,6 +136,116 @@ function getGeofences(geofences) {
   Vue.$log.debug(result)
   return result
 }
+
+function fetchGeofences(map) {
+  traccar.geofences(function(geofences) {
+    vm.$static.geofenceSource = getGeofences(geofences)
+    if (!map.getSource('geofences')) {
+      map.addSource('geofences', vm.$static.geofenceSource)
+    }
+    if (!map.getLayer('geofences')) {
+      map.addLayer({
+        id: 'geofences',
+        type: 'fill',
+        source: 'geofences',
+        paint: {
+          'fill-color': '#B42222',
+          'fill-opacity': 0.4
+        },
+        layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
+        filter: ['==', '$type', 'Polygon']
+      })
+      map.addLayer({
+        id: 'geofences-labels',
+        type: 'symbol',
+        source: 'geofences',
+        layout: {
+          'text-field': '{title}',
+          visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+        },
+        filter: ['==', '$type', 'Polygon']
+      })
+      map.addLayer({
+        id: 'pois',
+        type: 'circle',
+        source: 'geofences',
+        paint: {
+          'circle-radius': 5,
+          'circle-color': '#B42222'
+        },
+        layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
+        filter: ['==', '$type', 'Point']
+      })
+      map.addLayer({
+        id: 'pois-labels',
+        type: 'symbol',
+        source: 'geofences',
+        layout: {
+          'text-field': '{title}',
+          visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
+          'text-size': 12,
+          'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
+          'text-justify': 'auto',
+          'text-radial-offset': 0.8
+        },
+        filter: ['==', '$type', 'Point']
+      })
+    }
+  })
+  if (!map.getSource('geofences')) {
+    map.addSource('geofences', vm.$static.geofenceSource)
+  }
+  if (!map.getLayer('geofences')) {
+    map.addLayer({
+      id: 'geofences',
+      type: 'fill',
+      source: 'geofences',
+      paint: {
+        'fill-color': '#B42222',
+        'fill-opacity': 0.4
+      },
+      layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
+      filter: ['==', '$type', 'Polygon']
+    })
+    map.addLayer({
+      id: 'geofences-labels',
+      type: 'symbol',
+      source: 'geofences',
+      layout: {
+        'text-field': '{title}',
+        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      },
+      filter: ['==', '$type', 'Polygon']
+    })
+    map.addLayer({
+      id: 'pois',
+      type: 'circle',
+      source: 'geofences',
+      paint: {
+        'circle-radius': 5,
+        'circle-color': '#B42222'
+      },
+      layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
+      filter: ['==', '$type', 'Point']
+    })
+
+    map.addLayer({
+      id: 'pois-labels',
+      type: 'symbol',
+      source: 'geofences',
+      layout: {
+        'text-field': '{title}',
+        visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
+        'text-size': 12,
+        'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
+        'text-justify': 'auto',
+        'text-radial-offset': 0.8
+      },
+      filter: ['==', '$type', 'Point']
+    })
+  }
+}
+
 export function addLayers(map) {
   const sourceid = 'positions'
   if (!map.getSource(sourceid)) {
@@ -238,109 +348,8 @@ export function addLayers(map) {
       }
     })
   } else { Vue.$log.warn('layer unclustered-point already exists...') }
-  if (!map.getLayer('geofences')) {
-    traccar.geofences(function(geofences) {
-      vm.$static.geofenceSource = getGeofences(geofences)
-      if (!map.getSource('geofences')) { map.addSource('geofences', vm.$static.geofenceSource) }
-      if (!map.getLayer('geofences')) {
-        map.addLayer({
-          id: 'geofences',
-          type: 'fill',
-          source: 'geofences',
-          paint: {
-            'fill-color': '#B42222',
-            'fill-opacity': 0.4
-          },
-          layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
-          filter: ['==', '$type', 'Polygon']
-        })
-        map.addLayer({
-          id: 'geofences-labels',
-          type: 'symbol',
-          source: 'geofences',
-          layout: {
-            'text-field': '{title}',
-            visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-          },
-          filter: ['==', '$type', 'Polygon']
-        })
-        map.addLayer({
-          id: 'pois',
-          type: 'circle',
-          source: 'geofences',
-          paint: {
-            'circle-radius': 5,
-            'circle-color': '#B42222'
-          },
-          layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
-          filter: ['==', '$type', 'Point']
-        })
-        map.addLayer({
-          id: 'pois-labels',
-          type: 'symbol',
-          source: 'geofences',
-          layout: {
-            'text-field': '{title}',
-            visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
-            'text-size': 12,
-            'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
-            'text-justify': 'auto',
-            'text-radial-offset': 0.8
-          },
-          filter: ['==', '$type', 'Point']
-        })
-      }
-    })
-    if (!map.getSource('geofences')) { map.addSource('geofences', vm.$static.geofenceSource) }
-    if (!map.getLayer('geofences')) {
-      map.addLayer({
-        id: 'geofences',
-        type: 'fill',
-        source: 'geofences',
-        paint: {
-          'fill-color': '#B42222',
-          'fill-opacity': 0.4
-        },
-        layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
-        filter: ['==', '$type', 'Polygon']
-      })
-      map.addLayer({
-        id: 'geofences-labels',
-        type: 'symbol',
-        source: 'geofences',
-        layout: {
-          'text-field': '{title}',
-          visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-        },
-        filter: ['==', '$type', 'Polygon']
-      })
-      map.addLayer({
-        id: 'pois',
-        type: 'circle',
-        source: 'geofences',
-        paint: {
-          'circle-radius': 5,
-          'circle-color': '#B42222'
-        },
-        layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
-        filter: ['==', '$type', 'Point']
-      })
-
-      map.addLayer({
-        id: 'pois-labels',
-        type: 'symbol',
-        source: 'geofences',
-        layout: {
-          'text-field': '{title}',
-          visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
-          'text-size': 12,
-          'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
-          'text-justify': 'auto',
-          'text-radial-offset': 0.8
-        },
-        filter: ['==', '$type', 'Point']
-      })
-    }
+  if (!map.getLayer('geofences') && settings.lazyLoad) {
+    fetchGeofences(map)
   }
 }
 export function removeLayers() {

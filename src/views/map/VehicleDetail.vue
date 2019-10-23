@@ -94,6 +94,8 @@ export default {
     serverBus.$off('minDateChanged', this.onDatesChanged)
     serverBus.$off('maxDateChanged', this.onDatesChanged)
     serverBus.$off('deviceSelected', this.deviceSelected)
+    serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
+    serverBus.$off('routePlay', this.removeLayers)
   },
   mounted: function() {
     // odd width popups are blurry on Chrome, this enforces even widths
@@ -118,6 +120,7 @@ export default {
     serverBus.$on('maxDateChanged', this.onDatesChanged)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
+    serverBus.$on('routePlay', this.removeLayers)
   },
   methods: {
     onDatesChanged() {
@@ -128,30 +131,39 @@ export default {
     onPosChanged(newPos) {
       if (!this.device) return
       if (this.device.id !== vm.$data.currentDevice.id) return
-      if (!this.trips[this.currentTrip]) return
-      const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
-      const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
-      const currentPosition = this.positions[newPos]
-      const newDate = utils.getDate(currentPosition.fixTime)
-
-      if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
-        const nextStart = this.$moment(this.trips[this.currentTrip + 1][0].deviceTime).toDate()
-        if (nextStart <= newDate) {
-          this.removeLayers(true)
-          this.currentTrip++
-          this.drawTrip()
-        }
-      } else if (this.currentTrip > 0 && newDate < tripStart) {
-        const previousEnd = this.$moment(this.trips[this.currentTrip - 1].slice(-1)[0].fixTime).toDate()
-        if (newDate <= previousEnd) {
-          this.removeLayers(true)
-          this.currentTrip--
-          this.drawTrip()
-        }
+      if (!this.trips[this.currentTrip]) {
+        Vue.$log.debug('no current trip...')
+        return
       }
+      const currentPosition = this.positions[newPos]
       if (this.isPlaying) {
-        animation.animate(this.feature, currentPosition)
+        Vue.$log.debug('animating ', this.device)
+        const origin = this.feature.geometry.coordinates
+        const destination = [currentPosition.longitude, currentPosition.latitude]
+        if (JSON.stringify(origin) !== JSON.stringify(destination)) {
+          animation.animate(this.feature, currentPosition)
+        } else { serverBus.$emit('routeMatchFinished') }
       } else {
+        const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
+        const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
+
+        const newDate = utils.getDate(currentPosition.fixTime)
+
+        if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
+          const nextStart = this.$moment(this.trips[this.currentTrip + 1][0].deviceTime).toDate()
+          if (nextStart <= newDate) {
+            this.removeLayers(true)
+            this.currentTrip++
+            this.drawTrip()
+          }
+        } else if (this.currentTrip > 0 && newDate < tripStart) {
+          const previousEnd = this.$moment(this.trips[this.currentTrip - 1].slice(-1)[0].fixTime).toDate()
+          if (newDate <= previousEnd) {
+            this.removeLayers(true)
+            this.currentTrip--
+            this.drawTrip()
+          }
+        }
         this.feature.properties.course = currentPosition.course
         this.feature.geometry.coordinates = [currentPosition.longitude, currentPosition.latitude]
         this.feature.properties.address = currentPosition.address

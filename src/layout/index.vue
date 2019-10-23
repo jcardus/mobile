@@ -17,6 +17,7 @@ import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 import vhCheck from 'vh-check'
+import { vm } from '@/main'
 
 export default {
   name: 'Layout',
@@ -27,6 +28,11 @@ export default {
     TagsView
   },
   mixins: [ResizeMixin],
+  data() {
+    return {
+      unsubscribe: null
+    }
+  },
   computed: {
     ...mapState({
       map: state => state.map,
@@ -48,16 +54,18 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    if (this.unsubscribe) this.unsubscribe()
+  },
   created() {
-    const self = this
-    this.$root.$store.subscribe((mutation, state) => {
+    this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
       if (mutation.type === 'SOCKET_ONMESSAGE') {
         if (state.socket.message.events) {
           const events = state.socket.message.events
           for (let i = 0; i < events.length; i++) {
             const event = events[i]
             this.$notify({
-              title: self.$t('layout.' + event.type),
+              title: vm.$t('layout.' + event.type),
               message: this.$root.device(event.deviceId).name,
               type: 'info',
               duration: 5000
