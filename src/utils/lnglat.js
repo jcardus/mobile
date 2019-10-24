@@ -5,7 +5,6 @@ import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm, settings } from '../main'
-import { traccar } from '../api/traccar-api'
 
 export function findFeatureByDeviceId(deviceId) {
   return vm.$static.positionsSource.features.find(e => {
@@ -13,7 +12,7 @@ export function findFeatureByDeviceId(deviceId) {
   })
 }
 export function findFeatureById(id) {
-  return vm.$static.geofenceSource.data.features.find(e => {
+  return vm.$static.geofencesSource.features.find(e => {
     return e.properties.id === id
   })
 }
@@ -96,119 +95,13 @@ export function matchRoute(coordinates, radius, onSuccess, onError) {
     .then(onSuccess)
     .catch(onError)
 }
-function convertWktToGeojson(response) {
-  const result = []
-  Vue.$log.debug('converting ', response.length, ' features')
-  response.forEach(function(item) {
-    const wkt = item.area
-    let geojson
-    if (item.area.startsWith('POLYGON')) {
-      geojson = {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [[]]
-        },
-        properties: {
-          id: item.id,
-          title: item.name
-        }
-      }
-      const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
-      const coord_list = str.split(',')
-      for (const i in coord_list) {
-        const coord = coord_list[i].trim().split(' ')
-        geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
-      }
-    } else if (item.area.startsWith('CIRCLE')) {
-      geojson = {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: []
-        },
-        properties: {
-          id: item.id,
-          title: item.name
-        }
-      }
-      const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))
-      const coord = str.trim().split(' ')
-      geojson.geometry.coordinates = [parseFloat(coord[1]), parseFloat(coord[0])]
-    }
-    Vue.$log.debug('adding... ', geojson)
-    result.push(geojson)
-  })
-  return result
-}
-function getGeofences(geofences) {
-  const result = {
-    'type': 'geojson',
-    'data': {
-      'type': 'FeatureCollection',
-      'features': convertWktToGeojson(geofences)
-    }
-  }
-  Vue.$log.debug(result)
-  return result
-}
+
 function fetchGeofences(map) {
-  traccar.geofences(function(geofences) {
-    vm.$static.geofenceSource = getGeofences(geofences)
-    if (!map.getSource('geofences')) {
-      map.addSource('geofences', vm.$static.geofenceSource)
-    }
-    if (!map.getLayer('geofences')) {
-      map.addLayer({
-        id: 'geofences',
-        type: 'fill',
-        source: 'geofences',
-        paint: {
-          'fill-color': '#B42222',
-          'fill-opacity': 0.4
-        },
-        layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
-        filter: ['==', '$type', 'Polygon']
-      })
-      map.addLayer({
-        id: 'geofences-labels',
-        type: 'symbol',
-        source: 'geofences',
-        layout: {
-          'text-field': '{title}',
-          visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-        },
-        filter: ['==', '$type', 'Polygon']
-      })
-      map.addLayer({
-        id: 'pois',
-        type: 'circle',
-        source: 'geofences',
-        paint: {
-          'circle-radius': 5,
-          'circle-color': '#B42222'
-        },
-        layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
-        filter: ['==', '$type', 'Point']
-      })
-      map.addLayer({
-        id: 'pois-labels',
-        type: 'symbol',
-        source: 'geofences',
-        layout: {
-          'text-field': '{title}',
-          visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
-          'text-size': 12,
-          'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
-          'text-justify': 'auto',
-          'text-radial-offset': 0.8
-        },
-        filter: ['==', '$type', 'Point']
-      })
-    }
-  })
   if (!map.getSource('geofences')) {
-    map.addSource('geofences', vm.$static.geofenceSource)
+    map.addSource('geofences', {
+      'type': 'geojson',
+      'data': vm.$static.geofencesSource
+    })
   }
   if (!map.getLayer('geofences')) {
     map.addLayer({
@@ -243,7 +136,6 @@ function fetchGeofences(map) {
       layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
       filter: ['==', '$type', 'Point']
     })
-
     map.addLayer({
       id: 'pois-labels',
       type: 'symbol',
@@ -260,6 +152,7 @@ function fetchGeofences(map) {
     })
   }
 }
+
 export function addLayers(map) {
   const sourceid = 'positions'
   if (!map.getSource(sourceid)) {
@@ -361,8 +254,10 @@ export function addLayers(map) {
         ] }
       }
     })
-  } else { Vue.$log.warn('layer unclustered-point already exists...') }
-  if (!map.getLayer('geofences') && settings.lazyLoad) {
+  } else {
+    Vue.$log.warn('layer unclustered-point already exists...')
+  }
+  if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
 }
@@ -388,4 +283,5 @@ export function contains(lngLatBounds, position) {
 }
 export function refreshMap() {
   vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+  vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
 }

@@ -5,6 +5,7 @@ export default {
     reports: 'Relatórios',
     report_trip_title: 'Relatório de viagens',
     report_location_title: 'Relatório de posições',
+    report_zone_crossing: 'Relatório de zonas',
     settings: 'Configurações'
   },
   map: {

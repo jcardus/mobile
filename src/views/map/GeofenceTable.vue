@@ -39,6 +39,7 @@
 import { serverBus, vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import Vue from 'vue'
+import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'GeofenceTable',
@@ -51,6 +52,7 @@ export default {
     geofences: function() {
       return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON'))
     },
+    geofencesSource() { return this.$root.$static.geofencesSource },
     showGeofenceLayer: {
       get() { return !!vm.$store.state.map.showGeofences },
       set() { this.toggleGeofences() }
@@ -98,8 +100,9 @@ export default {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
         cancelButtonText: this.$t('geofence.geofence_edit_cancel')
       }).then(() => {
-        traccar.deleteGeofence(row.id, this.geofenceDeleted())
+        traccar.deleteGeofence(row, this.geofenceDeleted)
       }).catch(() => {
+        Vue.$log.error('Error deleting geofence', row)
       })
     },
     geofenceEdited: function() {
@@ -108,8 +111,10 @@ export default {
         message: this.$t('geofence.geofence_edited')
       })
     },
-    geofenceDeleted() {
-      this.loadGeofences()
+    geofenceDeleted(item) {
+      vm.$data.geofences.remove(item)
+      this.geofencesSource.features.remove(lnglat.findFeatureById(item.id))
+      lnglat.refreshMap()
       this.$message({
         message: this.$t('geofence.geofence_deleted'),
         type: 'success',

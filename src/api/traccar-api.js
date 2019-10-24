@@ -120,9 +120,9 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  deleteGeofence: function(geofenceId, onFulfill) {
-    axios.delete(geoFences + '/' + geofenceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(response.data))
+  deleteGeofence: function(geofence, onFulfill) {
+    axios.delete(geoFences + '/' + geofence.id, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(geofence))
       .catch(reason => {
         Vue.$log.error(reason)
       })
