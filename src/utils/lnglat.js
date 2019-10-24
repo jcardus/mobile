@@ -19,7 +19,12 @@ export function findFeatureById(id) {
 }
 function addImage(path, name) {
   vm.$static.map.loadImage(path, function(error, image) {
-    if (!error && !vm.$static.map.hasImage(name)) { vm.$static.map.addImage(name, image) }
+    if (!error && !vm.$static.map.hasImage(name)) {
+      Vue.$log.debug('loading ', path)
+      vm.$static.map.addImage(name, image)
+    } else {
+      Vue.$log.debug(error, ' adding image ', name)
+    }
   })
 }
 export function getArea(area) {
@@ -29,18 +34,19 @@ export function getArea(area) {
     return area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
   }
 }
+export function addImageWithColor(i, color) {
+  const path = 'img/3d/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
+  const name = 'car-' + color + '-' + i
+  Vue.$log.debug('adding ', path, ', name: ', name)
+  addImage(path, name)
+}
 export function addImages() {
-  function addImageWithColor(i, color) {
-    const path = 'img/3d/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
-    const name = 'car-' + color + i
-    Vue.$log.debug('adding ', path, ', name: ', name)
-    addImage(path, name)
-  }
+  /*
   for (let i = 0; i < 50; i++) {
     addImageWithColor(i, 'green')
     addImageWithColor(i, 'red')
     addImageWithColor(i, 'yellow')
-  }
+  } */
   addImage('img/40/car-green.png', 'car-green')
   addImage('img/40/car-yellow.png', 'car-yellow')
   addImage('img/40/car-red.png', 'car-red')
@@ -54,6 +60,15 @@ export function getBounds(coordinates) {
 }
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
+}
+export function distance(origin, destination) {
+  return lineDistance({
+    type: 'Feature',
+    geometry: {
+      type: 'LineString',
+      coordinates: [[origin.longitude, origin.latitude], [destination.longitude, destination.latitude]]
+    }
+  })
 }
 export function isMobile() {
   return vm.$store.state.app.device === 'mobile'
@@ -74,11 +89,12 @@ export class MapboxCustomControl {
     this.map = undefined
   }
 }
-export function matchRoute(coordinates, radius, onSuccess) {
+export function matchRoute(coordinates, radius, onSuccess, onError) {
   const radiuses = radius.join(';')
   const query = 'https://api.mapbox.com/matching/v5/mapbox/driving/' + coordinates.join(';') + '?geometries=geojson&radiuses=' + radiuses + '&access_token=' + mapboxgl.accessToken
   axios.get(query)
     .then(onSuccess)
+    .catch(onError)
 }
 function convertWktToGeojson(response) {
   const result = []
@@ -136,7 +152,6 @@ function getGeofences(geofences) {
   Vue.$log.debug(result)
   return result
 }
-
 function fetchGeofences(map) {
   traccar.geofences(function(geofences) {
     vm.$static.geofenceSource = getGeofences(geofences)
@@ -245,7 +260,6 @@ function fetchGeofences(map) {
     })
   }
 }
-
 export function addLayers(map) {
   const sourceid = 'positions'
   if (!map.getSource(sourceid)) {
@@ -253,8 +267,8 @@ export function addLayers(map) {
       'type': 'geojson',
       'data': vm.$static.positionsSource,
       'cluster': true,
-      clusterMaxZoom: 14, // Max zoom to cluster points on
-      clusterRadius: 8
+      // clusterMaxZoom: 14, // Max zoom to cluster points on
+      clusterRadius: 9
     })
   } else { Vue.$log.warn(sourceid, ' already exists...') }
   if (settings.show3dBuildings) {
@@ -325,10 +339,10 @@ export function addLayers(map) {
         'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
          ['case',
            ['>', ['get', 'speed'], 2],
-           ['concat', 'car-green', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
+           ['concat', 'car-green-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
            ['==', ['get', 'ignition'], true],
-           ['concat', 'car-yellow', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-           ['concat', 'car-red', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]]
+           ['concat', 'car-yellow-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
+           ['concat', 'car-red-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]]
          ],
         'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
         'icon-allow-overlap': true,

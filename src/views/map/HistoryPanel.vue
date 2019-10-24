@@ -43,6 +43,7 @@ import * as utils from '../../utils/utils'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
 import Vue from 'vue'
+import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'HistoryPanel',
@@ -51,6 +52,7 @@ export default {
   },
   data: function() {
     return {
+      oldPos: 0,
       currentPos: 0,
       minPos: 0,
       maxPos: 0,
@@ -89,7 +91,19 @@ export default {
   },
   watch: {
     currentPos: function() {
-      Vue.$log.debug('curPos changed to: ', this.currentPos)
+      Vue.$log.debug('curPos changed from to ', this.currentPos)
+      if (this.isPlaying) {
+        let i = this.currentPos
+        while (i < this.positions.length - 1 && i > 0 &&
+            lnglat.distance(this.positions[i - 1], this.positions[i]) < 0.001 &&
+            lnglat.distance(this.positions[i], this.positions[i + 1]) < 0.001) {
+          i++
+          Vue.$log.debug('fast forwarding...')
+        }
+        if (i > this.currentPos) {
+          this.currentPos = i
+        }
+      }
       serverBus.$emit('posChanged', this.currentPos)
     }
   },
@@ -102,11 +116,13 @@ export default {
     serverBus.$on('routeMatchFinished', this.playNext)
   },
   methods: {
-    click() {
+    click: function() {
       this.isPlaying = !this.isPlaying
       if (this.isPlaying) {
         serverBus.$emit('routePlay')
         this.playNext()
+      } else {
+        serverBus.$emit('routePlayStopped')
       }
     },
     updateMinMax() {
@@ -135,6 +151,7 @@ export default {
       min-width: 300px;
         width: calc(100vw - 600px);
         font-size: 15px;
+      padding-left: 10px;
     }
     input {
         padding-inline-start: 0;
@@ -164,4 +181,5 @@ export default {
         width: calc(100vw - 60px);
       }
     }
+
 </style>

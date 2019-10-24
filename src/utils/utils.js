@@ -6,7 +6,12 @@ export function getDate(dateString) {
 }
 export function formatDate(v) {
   const fixTime = vm.$data.positions[v] ? vm.$data.positions[v].fixTime : new Date()
-  return getDate(fixTime).format('DD HH:mm:ss')
+  const speed = vm.$data.positions[v] ? vm.$data.positions[v].speed : ''
+  let result = getDate(fixTime).format('DD HH:mm:ss')
+  if (speed && speed > 0) {
+    result += (' ' + ~~(speed * 1.852) + 'km/h')
+  }
+  return result
 }
 
 export function stopLoader() {

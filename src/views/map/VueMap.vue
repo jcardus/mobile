@@ -308,6 +308,7 @@ export default {
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
+      this.$static.map.on('styleimagemissing', this.missingImage)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
@@ -335,10 +336,17 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
+      this.$static.map.off('styleimagemissing', this.missingImage)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
+    },
+    missingImage(e) {
+      this.$log.debug(e.id)
+      if (e.id.startsWith('car')) {
+        lnglat.addImageWithColor(parseInt(e.id.split('-')[2]), e.id.split('-')[1])
+      }
     },
     onClickTouchUnclustered: function(e) {
       const feature = e.features[0]

@@ -96,6 +96,7 @@ export default {
     serverBus.$off('deviceSelected', this.deviceSelected)
     serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$off('routePlay', this.removeLayers)
+    serverBus.$off('routePlayStopped', this.routePlayStopped)
   },
   mounted: function() {
     // odd width popups are blurry on Chrome, this enforces even widths
@@ -121,6 +122,7 @@ export default {
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$on('routePlay', this.removeLayers)
+    serverBus.$off('routePlayStopped', this.routePlayStopped)
   },
   methods: {
     onDatesChanged() {
@@ -128,22 +130,43 @@ export default {
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
       }
     },
+    routePlayStopped() {
+      if (this.feature) {
+        this.feature.animating = false
+      }
+    },
     onPosChanged(newPos) {
       if (!this.device) return
       if (this.device.id !== vm.$data.currentDevice.id) return
-      if (!this.trips[this.currentTrip]) {
-        Vue.$log.debug('no current trip...')
-        return
-      }
+
+      Vue.$log.debug('newPos:', newPos)
       const currentPosition = this.positions[newPos]
+      const origin = newPos > 0 ? [this.positions[newPos - 1].longitude, this.positions[newPos - 1].latitude] : this.feature.geometry.coordinates
+      const destination = [currentPosition.longitude, currentPosition.latitude]
+
       if (this.isPlaying) {
-        Vue.$log.debug('animating ', this.device)
-        const origin = this.feature.geometry.coordinates
-        const destination = [currentPosition.longitude, currentPosition.latitude]
-        if (JSON.stringify(origin) !== JSON.stringify(destination)) {
-          animation.animate(this.feature, currentPosition)
-        } else { serverBus.$emit('routeMatchFinished') }
+        if (newPos < this.positions.length - 1) {
+          const nextOrigin = [currentPosition.longitude, currentPosition.latitude]
+          const nextDestination = [this.positions[newPos + 1].longitude, this.positions[newPos + 1].latitude]
+          animation.cacheMatch({
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: [nextOrigin, nextDestination]
+            }
+          })
+        }
+
+        if (JSON.stringify(origin) === JSON.stringify(destination)) {
+          serverBus.$emit('routeMatchFinished')
+        } else {
+          animation.animate(this.feature, origin, destination)
+        }
       } else {
+        if (!this.trips[this.currentTrip]) {
+          Vue.$log.debug('no current trip...')
+          return
+        }
         const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
         const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
 
