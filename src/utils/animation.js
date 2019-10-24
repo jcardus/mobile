@@ -98,7 +98,8 @@ export function animateMatched(route, feature) {
   let startRotation = 0
   let endRotation = 0
   angles.SCALE = 360
-  const step = 5
+  const step = consts.rotateStep
+  let isPanning = false
 
   function _animateRotation() {
     const dir = angles.shortestDirection(endRotation, startRotation)
@@ -120,9 +121,11 @@ export function animateMatched(route, feature) {
     if (coordinates) {
       feature.geometry.coordinates = coordinates
       if (!lnglat.contains(vm.$static.map.getBounds(), { longitude: coordinates[0], latitude: coordinates[1] })) {
-        vm.$static.map.flyTo({
-          center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }
-        })
+        isPanning = true
+        vm.$static.map.panTo(
+          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }
+        )
+        vm.$static.map.once('moveend', function() { isPanning = false })
       }
       const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
       const p2 = feature.route[counter === feature.route.length - 1 ? counter : counter + 1]
@@ -130,7 +133,7 @@ export function animateMatched(route, feature) {
         if (Math.abs(feature.properties.course - angles.normalize(bearing(p1, p2))) > 0.1) {
           startRotation = feature.properties.course
           endRotation = angles.normalize(bearing(p1, p2))
-          _animateRotation()
+          if (!isPanning) { _animateRotation() }
         }
       }
       lnglat.refreshMap()
