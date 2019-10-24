@@ -214,11 +214,19 @@ export default {
 
     // eslint-disable-next-line no-undef
     this.viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
+
     if (this.devices.count === 0) {
       traccar.devices(function(data) {
         vm.$data.devices = data
       })
     }
+
+    if (this.geofences.count === 0) {
+      traccar.geofences(function(data) {
+        vm.$data.geofences = data
+      })
+    }
+
     this.viewer.report = this.report
     this.viewer.renderHtml('viewer')
   },
