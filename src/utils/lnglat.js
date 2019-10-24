@@ -160,7 +160,7 @@ export function addLayers(map) {
       'type': 'geojson',
       'data': vm.$static.positionsSource,
       'cluster': true,
-      // clusterMaxZoom: 14, // Max zoom to cluster points on
+      clusterMaxZoom: 16, // Max zoom to cluster points on
       clusterRadius: 9
     })
   } else { Vue.$log.warn(sourceid, ' already exists...') }

@@ -44,6 +44,7 @@ import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
+import * as consts from '../../utils/consts'
 
 export default {
   name: 'HistoryPanel',
@@ -120,7 +121,6 @@ export default {
       this.isPlaying = !this.isPlaying
       if (this.isPlaying) {
         serverBus.$emit('routePlay')
-        this.playNext()
       } else {
         serverBus.$emit('routePlayStopped')
       }
@@ -135,7 +135,7 @@ export default {
           Vue.$log.debug('stopping play... curPos/maxPos: ', this.currentPos, this.maxPos)
           this.isPlaying = false
         } else {
-          this.currentPos++
+          this.currentPos += consts.skipRoutePositions
         }
       }
     }

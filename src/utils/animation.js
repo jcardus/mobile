@@ -4,7 +4,22 @@ import bearing from '@turf/bearing'
 import { serverBus, vm } from '../main'
 import Vue from 'vue'
 import * as angles from 'angles'
+import * as consts from './consts'
+
+export function rotate360(feature) {
+  let i = 0
+  function _rotate360() {
+    if (++i <= 360) {
+      feature.properties.course = angles.normalize(feature.properties.course + 1)
+      lnglat.refreshMap()
+      requestAnimationFrame(_rotate360)
+    }
+  }
+  _rotate360()
+}
+
 const directionsCache = {}
+const minDistanceRouteMatch = 0.005
 
 export function animate(feature, origin, destination) {
   const route = {
@@ -21,11 +36,11 @@ export function cacheMatch(route) {
   const orig = route.geometry.coordinates[0]
   const dest = route.geometry.coordinates[1]
 
-  if (lineDistance <= 0.04) {
+  if (lineDistance < minDistanceRouteMatch) {
     Vue.$log.debug('ignoring match, distance: ', lineDistance)
     return
   }
-  lnglat.matchRoute(route.geometry.coordinates, [25, 25], function(r) {
+  lnglat.matchRoute(route.geometry.coordinates, [30, 30], function(r) {
     if (r.data.matchings && r.data.matchings.length > 0) {
       const matched = r.data.matchings[0].geometry
       if (matched && matched.coordinates.length > 1) {
@@ -43,23 +58,13 @@ function getHashCode(orig, dest) {
     Math.floor(dest[1] * multi)
 }
 export function getMatch(route, feature) {
-  const featureDistance = lnglat.distance(feature.geometry.coordinates, route.geometry.coordinates[0])
-  if (featureDistance > 0.005) {
-    const snapRoute = { type: 'Feature',
-      geometry: {
-        type: 'LineString',
-        coordinates: [feature.geometry.coordinates, route.geometry.coordinates[0]]
-      }}
-    animateMatched(snapRoute, feature)
-  }
-
   const lineDistance = lnglat.lineDistance(route)
   const orig = route.geometry.coordinates[0]
   const dest = route.geometry.coordinates[1]
-  if (lineDistance > 0.04) {
+  if (lineDistance > minDistanceRouteMatch) {
     if (!directionsCache[getHashCode(orig, dest)]) {
       Vue.$log.debug('no match from cache: ', getHashCode(orig, dest))
-      lnglat.matchRoute(route.geometry.coordinates, [25, 25], function(r) {
+      lnglat.matchRoute(route.geometry.coordinates, [30, 30], function(r) {
         if (r.data.matchings && r.data.matchings.length > 0) {
           const matched = r.data.matchings[0].geometry
           if (matched && matched.coordinates.length > 1) {
@@ -84,7 +89,8 @@ export function animateMatched(route, feature) {
   const lineDistance = lnglat.lineDistance(route)
   let counter = 0
   const arc = []
-  for (let i = 0; i < lineDistance; i += 0.003) {
+  const speed = (24 - vm.$static.map.getZoom()) * (22 / vm.$static.map.getZoom()) * consts.routePlaySpeed
+  for (let i = 0; i < lineDistance; i += speed) {
     const segment = along(route, i, { units: 'kilometers' })
     arc.push(segment.geometry.coordinates)
   }
@@ -113,6 +119,11 @@ export function animateMatched(route, feature) {
     const coordinates = feature.route[counter]
     if (coordinates) {
       feature.geometry.coordinates = coordinates
+      if (!lnglat.contains(vm.$static.map.getBounds(), { longitude: coordinates[0], latitude: coordinates[1] })) {
+        vm.$static.map.flyTo({
+          center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }
+        })
+      }
       const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
       const p2 = feature.route[counter === feature.route.length - 1 ? counter : counter + 1]
       if (p1 && p2) {

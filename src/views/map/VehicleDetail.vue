@@ -32,6 +32,7 @@ import { serverBus, vm } from '../../main'
 import mapboxgl from 'mapbox-gl'
 import * as utils from '../../utils/utils'
 import * as animation from '../../utils/animation'
+import * as consts from '../../utils/consts'
 
 export default {
   name: 'VehicleDetail',
@@ -95,7 +96,7 @@ export default {
     serverBus.$off('maxDateChanged', this.onDatesChanged)
     serverBus.$off('deviceSelected', this.deviceSelected)
     serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
-    serverBus.$off('routePlay', this.removeLayers)
+    serverBus.$off('routePlay', this.routePlay)
     serverBus.$off('routePlayStopped', this.routePlayStopped)
   },
   mounted: function() {
@@ -121,8 +122,8 @@ export default {
     serverBus.$on('maxDateChanged', this.onDatesChanged)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
-    serverBus.$on('routePlay', this.removeLayers)
-    serverBus.$off('routePlayStopped', this.routePlayStopped)
+    serverBus.$on('routePlay', this.routePlay)
+    serverBus.$on('routePlayStopped', this.routePlayStopped)
   },
   methods: {
     onDatesChanged() {
@@ -130,24 +131,35 @@ export default {
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
       }
     },
+    routePlay() {
+      this.removeLayers(true)
+      serverBus.$emit('routeMatchFinished')
+    },
     routePlayStopped() {
       if (this.feature) {
         this.feature.animating = false
       }
     },
     onPosChanged(newPos) {
+      const skipRoutePositions = consts.skipRoutePositions
       if (!this.device) return
       if (this.device.id !== vm.$data.currentDevice.id) return
 
       Vue.$log.debug('newPos:', newPos)
       const currentPosition = this.positions[newPos]
-      const origin = newPos > 0 ? [this.positions[newPos - 1].longitude, this.positions[newPos - 1].latitude] : this.feature.geometry.coordinates
+      const origin = newPos > 2 ? [this.positions[newPos - skipRoutePositions].longitude, this.positions[newPos - skipRoutePositions].latitude] : this.feature.geometry.coordinates
       const destination = [currentPosition.longitude, currentPosition.latitude]
+
+      if (!lnglat.contains(this.map.getBounds(), currentPosition)) {
+        this.$static.map.flyTo({
+          center: { lng: this.feature.geometry.coordinates[0], lat: this.feature.geometry.coordinates[1] }
+        })
+      }
 
       if (this.isPlaying) {
         if (newPos < this.positions.length - 1) {
           const nextOrigin = [currentPosition.longitude, currentPosition.latitude]
-          const nextDestination = [this.positions[newPos + 1].longitude, this.positions[newPos + 1].latitude]
+          const nextDestination = [this.positions[newPos + consts.skipRoutePositions].longitude, this.positions[newPos + consts.skipRoutePositions].latitude]
           animation.cacheMatch({
             type: 'Feature',
             geometry: {
@@ -169,7 +181,6 @@ export default {
         }
         const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
         const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
-
         const newDate = utils.getDate(currentPosition.fixTime)
 
         if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
@@ -194,11 +205,6 @@ export default {
           vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
         }
       }
-      if (!lnglat.contains(this.map.getBounds(), currentPosition)) {
-        this.$static.map.flyTo({
-          center: { lng: this.feature.geometry.coordinates[0], lat: this.feature.geometry.coordinates[1] }
-        })
-      }
     },
     removeLayers: function(keepMain) {
       for (this.i = 0; this.i < 10000; this.i += 99) {
@@ -221,6 +227,7 @@ export default {
     },
     showRoutesClick: function() {
       if (this.showRoutes) {
+        animation.rotate360(this.feature)
         this.loadingRoutes = true
         this.getRoute(this.minDate, this.maxDate)
         vm.$data.currentDevice = this.device
