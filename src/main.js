@@ -75,7 +75,7 @@ export const vm = new Vue({
         'type': 'FeatureCollection',
         'features': []
       },
-      geofenceSource: {
+      geofencesSource: {
         'type': 'FeatureCollection',
         'features': []
       }
@@ -103,6 +103,7 @@ export const vm = new Vue({
     reset() {
       Vue.$log.debug('reseting data...')
       this.$static.positionsSource.features = []
+      this.$static.geofencesSource.features = []
     }
   },
   router,

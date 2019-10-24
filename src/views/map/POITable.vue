@@ -38,6 +38,7 @@
 import { serverBus, vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import Vue from 'vue'
+import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'POITable',
@@ -50,6 +51,7 @@ export default {
     pois: function() {
       return vm.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
     },
+    geofencesSource() { return this.$root.$static.geofencesSource },
     showPOIsLayer: {
       get() { return !!vm.$store.state.map.showPOIs },
       set() { this.togglePOIs() }
@@ -91,7 +93,7 @@ export default {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
         cancelButtonText: this.$t('geofence.geofence_edit_cancel')
       }).then(() => {
-        traccar.deleteGeofence(row.id, this.geofenceDeleted())
+        traccar.deleteGeofence(row, this.geofenceDeleted)
       }).catch(() => {
       })
     },
@@ -101,8 +103,10 @@ export default {
         message: this.$t('geofence.poi_edited')
       })
     },
-    geofenceDeleted() {
-      this.loadGeofences()
+    geofenceDeleted(item) {
+      vm.$data.geofences.remove(item)
+      this.geofencesSource.features.remove(lnglat.findFeatureById(item.id))
+      lnglat.refreshMap()
       this.$message({
         message: this.$t('geofence.poi_deleted'),
         type: 'success',

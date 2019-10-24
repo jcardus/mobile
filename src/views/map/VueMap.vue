@@ -59,14 +59,17 @@ export default {
   computed: {
     isMobile() { return lnglat.isMobile() },
     positionsSource() { return this.$root.$static.positionsSource },
+    geofencesSource() { return this.$root.$static.geofencesSource },
     positions() {
       return this.$root.$store.state.socket.message.positions
     },
     devices() {
       return this.$root.$data.devices
     },
+    geofences() {
+      return this.$root.$data.geofences
+    },
     map() { return vm.$static.map },
-    geofencesSource() { return this.$root.$static.geofenceSource },
     selected: {
       get: function() {
         return vm.$data.currentDevice
@@ -83,6 +86,7 @@ export default {
   },
   mounted() {
     if (this.devices.length === 0) { traccar.devices(this.onDevices) }
+    traccar.geofences(this.onGeofences)
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
@@ -97,6 +101,10 @@ export default {
     onDevices: function(devices) {
       vm.$data.devices = devices
       traccar.positions(this.processPositions)
+    },
+    onGeofences: function(geofences) {
+      vm.$data.geofences = geofences
+      this.geofencesSource.features = this.processGeofences(geofences)
     },
     mapResize: function() {
       this.map.resize()
@@ -526,7 +534,63 @@ export default {
         self.animateMatched(route, feature, position)
       }
     },
-    featureCreated: function(type) {
+    processGeofences: function(geofences) {
+      const self = this
+      const result = []
+      Vue.$log.debug('converting ', geofences.length, ' features')
+      geofences.forEach(function(item) {
+        const geojson = self.getFeatureGeojson(item)
+        Vue.$log.debug('adding... ', geojson)
+        result.push(geojson)
+      })
+      return result
+    },
+    getFeatureGeojson: function(item) {
+      const wkt = item.area
+      let geojson
+      if (item.area.startsWith('POLYGON')) {
+        geojson = {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[]]
+          },
+          properties: {
+            id: item.id,
+            title: item.name
+          }
+        }
+        const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
+        const coord_list = str.split(',')
+        for (const i in coord_list) {
+          const coord = coord_list[i].trim().split(' ')
+          geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
+        }
+      } else if (item.area.startsWith('CIRCLE')) {
+        geojson = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: []
+          },
+          properties: {
+            id: item.id,
+            title: item.name
+          }
+        }
+        const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))
+        const coord = str.trim().split(' ')
+        geojson.geometry.coordinates = [parseFloat(coord[1]), parseFloat(coord[0])]
+      }
+      return geojson
+    },
+    featureCreated: function(feature) {
+      vm.$data.geofences.push(feature)
+      this.$static.draw.deleteAll()
+      const featureGeojson = this.getFeatureGeojson(feature)
+      this.geofencesSource.features.push(featureGeojson)
+      lnglat.refreshMap()
+      const type = this.getType(lnglat.getArea(feature.area))
       this.$message({
         type: 'success',
         message: this.$t('map.' + type + '_created')
@@ -541,7 +605,7 @@ export default {
           confirmButtonText: this.$t('map.create_confirm'),
           cancelButtonText: this.$t('map.create_cancel')
         }).then(({ value }) => {
-          traccar.newGeofence(value, 'description', lnglat.getArea(data), this.featureCreated(type))
+          traccar.newGeofence(value, 'description', lnglat.getArea(data), this.featureCreated)
         }).catch((e) => {
           Vue.$log.error(e)
           this.$message({
