@@ -28,7 +28,7 @@ function addImage(path, name) {
 }
 export function getArea(area) {
   if (area.features[0].geometry.type.toUpperCase() === 'POINT') {
-    return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 10)'
+    return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 100)'
   } else {
     return area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
   }
