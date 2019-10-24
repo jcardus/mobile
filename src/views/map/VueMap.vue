@@ -288,10 +288,11 @@ export default {
       }
     },
     onMoveEnd: function() {
-      this.$log.debug('moveend storing cookie...')
-      const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
-      VueCookies.set('mapPos', center)
-      this.$static.map.getPitch()
+      if (!vm.$data.isPlaying) {
+        this.$log.debug('moveend storing cookie...')
+        const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
+        VueCookies.set('mapPos', center)
+      }
     },
     onPitch: function() {
       this.showHideDevices(this.$static.map.getPitch() === 0)

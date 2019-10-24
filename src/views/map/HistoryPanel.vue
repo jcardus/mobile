@@ -135,7 +135,11 @@ export default {
           Vue.$log.debug('stopping play... curPos/maxPos: ', this.currentPos, this.maxPos)
           this.isPlaying = false
         } else {
-          this.currentPos += consts.skipRoutePositions
+          if (this.currentPos + consts.skipRoutePositions < this.positions.length) {
+            this.currentPos += consts.skipRoutePositions
+          } else if (this.currentPos < this.positions.length - 1) {
+            this.currentPos = this.positions.length - 1
+          }
         }
       }
     }

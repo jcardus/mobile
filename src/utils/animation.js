@@ -9,8 +9,8 @@ import * as consts from './consts'
 export function rotate360(feature) {
   let i = 0
   function _rotate360() {
-    if (++i <= 360) {
-      feature.properties.course = angles.normalize(feature.properties.course + 1)
+    if (++i <= 360 * 4) {
+      feature.properties.course = angles.normalize(feature.properties.course + 0.5)
       lnglat.refreshMap()
       requestAnimationFrame(_rotate360)
     }
@@ -18,8 +18,9 @@ export function rotate360(feature) {
   _rotate360()
 }
 
-const directionsCache = {}
-const minDistanceRouteMatch = 0.005
+const minDistanceRouteMatch = 0.001
+let nextKey = ''
+let nextMatch = []
 
 export function animate(feature, origin, destination) {
   const route = {
@@ -44,8 +45,9 @@ export function cacheMatch(route) {
     if (r.data.matchings && r.data.matchings.length > 0) {
       const matched = r.data.matchings[0].geometry
       if (matched && matched.coordinates.length > 1) {
-        directionsCache[getHashCode(orig, dest)] = matched.coordinates
-        Vue.$log.debug('setting cache ', getHashCode(orig, dest), matched.coordinates, directionsCache[getHashCode(orig, dest)])
+        nextKey = getHashCode(orig, dest)
+        nextMatch = matched.coordinates
+        Vue.$log.debug('setting cache ', getHashCode(orig, dest), matched.coordinates)
       }
     }
   })
@@ -62,7 +64,7 @@ export function getMatch(route, feature) {
   const orig = route.geometry.coordinates[0]
   const dest = route.geometry.coordinates[1]
   if (lineDistance > minDistanceRouteMatch) {
-    if (!directionsCache[getHashCode(orig, dest)]) {
+    if (nextKey !== getHashCode(orig, dest)) {
       Vue.$log.debug('no match from cache: ', getHashCode(orig, dest))
       lnglat.matchRoute(route.geometry.coordinates, [30, 30], function(r) {
         if (r.data.matchings && r.data.matchings.length > 0) {
@@ -78,7 +80,7 @@ export function getMatch(route, feature) {
       })
     } else {
       Vue.$log.debug('got match from cache')
-      route.geometry.coordinates = directionsCache[getHashCode(orig, dest)]
+      route.geometry.coordinates = nextMatch
       animateMatched(route, feature)
     }
   } else {
@@ -123,7 +125,8 @@ export function animateMatched(route, feature) {
       if (!lnglat.contains(vm.$static.map.getBounds(), { longitude: coordinates[0], latitude: coordinates[1] })) {
         isPanning = true
         vm.$static.map.panTo(
-          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }
+          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
+          false
         )
         vm.$static.map.once('moveend', function() { isPanning = false })
       }
@@ -154,10 +157,10 @@ export function animateMatched(route, feature) {
 
   if (!feature.animating && feature.route.length > 0) {
     feature.animating = true
-    Vue.$log.debug('animating ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters')
+    Vue.$log.debug('animating ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions')
     _animate()
   } else {
-    Vue.$log.debug('not animating ', feature.animating, feature.route)
+    Vue.$log.debug('animating ', feature.animating, feature.route)
     serverBus.$emit('routeMatchFinished')
   }
 }

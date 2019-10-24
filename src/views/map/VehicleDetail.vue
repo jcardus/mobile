@@ -147,7 +147,7 @@ export default {
 
       Vue.$log.debug('newPos:', newPos)
       const currentPosition = this.positions[newPos]
-      const origin = newPos > 2 ? [this.positions[newPos - skipRoutePositions].longitude, this.positions[newPos - skipRoutePositions].latitude] : this.feature.geometry.coordinates
+      const origin = newPos >= skipRoutePositions ? [this.positions[newPos - skipRoutePositions].longitude, this.positions[newPos - skipRoutePositions].latitude] : this.feature.geometry.coordinates
       const destination = [currentPosition.longitude, currentPosition.latitude]
 
       if (!lnglat.contains(this.map.getBounds(), currentPosition)) {
@@ -157,7 +157,7 @@ export default {
       }
 
       if (this.isPlaying) {
-        if (newPos < this.positions.length - 1) {
+        if (newPos < this.positions.length - consts.skipRoutePositions) {
           const nextOrigin = [currentPosition.longitude, currentPosition.latitude]
           const nextDestination = [this.positions[newPos + consts.skipRoutePositions].longitude, this.positions[newPos + consts.skipRoutePositions].latitude]
           animation.cacheMatch({
@@ -227,11 +227,13 @@ export default {
     },
     showRoutesClick: function() {
       if (this.showRoutes) {
+        traccar.stopReceiving()
         animation.rotate360(this.feature)
         this.loadingRoutes = true
         this.getRoute(this.minDate, this.maxDate)
         vm.$data.currentDevice = this.device
       } else {
+        traccar.startReceiving()
         vm.$data.historyMode = false
         this.removeLayers()
       }
