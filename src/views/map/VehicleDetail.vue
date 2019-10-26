@@ -142,37 +142,27 @@ export default {
     },
     onPosChanged(newPos) {
       const skipRoutePositions = consts.skipRoutePositions
-      if (!this.device) return
-      if (this.device.id !== vm.$data.currentDevice.id) return
-
-      Vue.$log.debug('newPos:', newPos)
-      const currentPosition = this.positions[newPos]
-      const origin = newPos >= skipRoutePositions ? [this.positions[newPos - skipRoutePositions].longitude, this.positions[newPos - skipRoutePositions].latitude] : this.feature.geometry.coordinates
-      const destination = [currentPosition.longitude, currentPosition.latitude]
-
-      if (!lnglat.contains(this.map.getBounds(), currentPosition)) {
-        this.$static.map.flyTo({
-          center: { lng: this.feature.geometry.coordinates[0], lat: this.feature.geometry.coordinates[1] }
-        })
+      if (!this.device) {
+        Vue.$log.debug('ignoring onPosChanged, no device...')
+        return
       }
+      if (this.device.id !== vm.$data.currentDevice.id) {
+        Vue.$log.debug('ignoring onPosChanged, different device selected...')
+        return
+      }
+      const origin = newPos >= skipRoutePositions ? newPos - skipRoutePositions : 0
 
       if (this.isPlaying) {
-        if (newPos < this.positions.length - consts.skipRoutePositions) {
-          const nextOrigin = [currentPosition.longitude, currentPosition.latitude]
-          const nextDestination = [this.positions[newPos + consts.skipRoutePositions].longitude, this.positions[newPos + consts.skipRoutePositions].latitude]
-          animation.cacheMatch({
-            type: 'Feature',
-            geometry: {
-              type: 'LineString',
-              coordinates: [nextOrigin, nextDestination]
-            }
-          })
+        if (newPos < this.positions.length - skipRoutePositions) {
+          animation.cacheMatch(
+            this.positions.slice(newPos, newPos + skipRoutePositions + 1)
+              .map(x => [x.longitude, x.latitude]))
         }
-
-        if (JSON.stringify(origin) === JSON.stringify(destination)) {
+        if (JSON.stringify(this.positions[origin]) === JSON.stringify(this.positions[newPos])) {
+          Vue.$log.debug('routeMatchFinished origin equals destination')
           serverBus.$emit('routeMatchFinished')
         } else {
-          animation.animate(this.feature, origin, destination)
+          animation.animate(this.feature, this.positions.slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
         }
       } else {
         if (!this.trips[this.currentTrip]) {
@@ -181,7 +171,7 @@ export default {
         }
         const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
         const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
-        const newDate = utils.getDate(currentPosition.fixTime)
+        const newDate = utils.getDate(this.positions[newPos].fixTime)
 
         if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
           const nextStart = this.$moment(this.trips[this.currentTrip + 1][0].deviceTime).toDate()
@@ -198,9 +188,9 @@ export default {
             this.drawTrip()
           }
         }
-        this.feature.properties.course = currentPosition.course
-        this.feature.geometry.coordinates = [currentPosition.longitude, currentPosition.latitude]
-        this.feature.properties.address = currentPosition.address
+        this.feature.properties.course = this.positions[newPos].course
+        this.feature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
+        this.feature.properties.address = this.positions[newPos].address
         if (vm.$static.map.getSource('positions')) {
           vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
         }
@@ -227,8 +217,8 @@ export default {
     },
     showRoutesClick: function() {
       if (this.showRoutes) {
+        this.oldFeature =
         traccar.stopReceiving()
-        animation.rotate360(this.feature)
         this.loadingRoutes = true
         this.getRoute(this.minDate, this.maxDate)
         vm.$data.currentDevice = this.device
@@ -249,7 +239,8 @@ export default {
       const trips = this.trips
       positions.forEach(function(position) {
         if (!startPos) {
-          if ((!position.attributes.ignition && !position.attributes.motion) || (position.attributes.power > 0 && position.attributes.power < 13)) {
+          if ((!position.attributes.ignition && !position.attributes.motion) ||
+            (position.attributes.power > 0 && position.attributes.power < 13)) {
             return
           }
           trips.push(locations)
@@ -258,14 +249,16 @@ export default {
           return
         }
         locations.push(position)
-        if (position.attributes.power > 0 && position.attributes.power < 13) {
+        if (position.attributes.power > 0 && position.attributes.power < 12.9) {
+          Vue.$log.debug('stopping trip on low power: ', position)
           locations = []
           startPos = false
           return
         }
-        if (position.attributes.ignition || position.speed > 0 || position.attributes.ignition) {
+        if (position.attributes.ignition || position.speed > 0) {
           return
         }
+        Vue.$log.debug('stopping trip because on default ', position)
         locations = []
         startPos = false
       })
@@ -296,7 +289,7 @@ export default {
         this.filterTrips()
         Vue.$log.debug('after filter got ', this.trips.length, ' trips')
         this.trips.forEach(function(trip) {
-          Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime)
+          Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime, trip.slice(-1)[0])
         })
         this.currentTrip = this.trips.length - 1
         this.drawTrip()

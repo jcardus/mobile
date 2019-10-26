@@ -102,6 +102,7 @@ export default {
           Vue.$log.debug('fast forwarding...')
         }
         if (i > this.currentPos) {
+          Vue.$log.debug('setting currentPos to ', i)
           this.currentPos = i
         }
       }
