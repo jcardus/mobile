@@ -27,7 +27,6 @@ import { Viewer } from 'mapillary-js'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
-import * as helpers from '@turf/helpers'
 import { serverBus, vm } from '../../main'
 import mapboxgl from 'mapbox-gl'
 import * as utils from '../../utils/utils'
@@ -141,7 +140,7 @@ export default {
       }
     },
     onPosChanged(newPos) {
-      const skipRoutePositions = consts.skipRoutePositions
+      const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {
         Vue.$log.debug('ignoring onPosChanged, no device...')
         return
@@ -153,9 +152,19 @@ export default {
       const origin = newPos >= skipRoutePositions ? newPos - skipRoutePositions : 0
 
       if (this.isPlaying) {
-        if (newPos < this.positions.length - skipRoutePositions) {
+        let i = newPos - consts.routeSlotLength
+        let dist = 0
+        do {
+          i += consts.routeSlotLength
+          const lineString = {
+            type: 'LineString',
+            coordinates: this.positions.slice(i, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
+          }
+          dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
+        } while (i < this.positions.length - consts.routeSlotLength && i > consts.routeSlotLength && dist < 0.001)
+        if (i < this.positions.length - skipRoutePositions) {
           animation.cacheMatch(
-            this.positions.slice(newPos, newPos + skipRoutePositions + 1)
+            this.positions.slice(i, i + skipRoutePositions + 1)
               .map(x => [x.longitude, x.latitude]))
         }
         if (JSON.stringify(this.positions[origin]) === JSON.stringify(this.positions[newPos])) {
@@ -217,7 +226,6 @@ export default {
     },
     showRoutesClick: function() {
       if (this.showRoutes) {
-        this.oldFeature =
         traccar.stopReceiving()
         this.loadingRoutes = true
         this.getRoute(this.minDate, this.maxDate)
@@ -358,7 +366,7 @@ export default {
       }
     },
     getGeoJSON: function(coords) {
-      return helpers.featureCollection([helpers.feature(coords)])
+      return lnglat.getGeoJSON(coords)
     },
     createLayers: function(routeGeoJSON) {
       if (vm.$static.map.getSource(this.routeSource)) return

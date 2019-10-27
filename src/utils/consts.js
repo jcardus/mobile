@@ -1,3 +1,3 @@
-export const rotateStep = 1
-export const skipRoutePositions = 4
-export const routePlaySpeed = 0.00017
+export const rotateStep = 2
+export const routeSlotLength = 4
+export const routePlaySpeed = 0.0003

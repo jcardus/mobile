@@ -6,6 +6,10 @@ import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm, settings } from '../main'
 
+export function getGeoJSON(coords) {
+  return helpers.featureCollection([helpers.feature(coords)])
+}
+
 export function findFeatureByDeviceId(deviceId) {
   return vm.$static.positionsSource.features.find(e => {
     return e.properties.deviceId === deviceId
@@ -60,15 +64,7 @@ export function getBounds(coordinates) {
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
-export function distance(origin, destination) {
-  return lineDistance({
-    type: 'Feature',
-    geometry: {
-      type: 'LineString',
-      coordinates: [[origin.longitude, origin.latitude], [destination.longitude, destination.latitude]]
-    }
-  })
-}
+
 export function isMobile() {
   return vm.$store.state.app.device === 'mobile'
 }

@@ -92,17 +92,22 @@ export default {
   },
   watch: {
     currentPos: function() {
-      Vue.$log.debug('curPos changed from to ', this.currentPos)
+      Vue.$log.debug('curPos changed to ', this.currentPos)
       if (this.isPlaying) {
-        let i = this.currentPos
-        while (i < this.positions.length - 1 && i > 0 &&
-            lnglat.distance(this.positions[i - 1], this.positions[i]) < 0.001 &&
-            lnglat.distance(this.positions[i], this.positions[i + 1]) < 0.001) {
-          i++
-          Vue.$log.debug('fast forwarding...')
-        }
+        let i = this.currentPos - consts.routeSlotLength
+        let dist = 0
+        do {
+          i += consts.routeSlotLength
+          const lineString = {
+            type: 'LineString',
+            coordinates: this.positions.slice(i, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
+          }
+          dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
+        } while (i < this.positions.length - consts.routeSlotLength &&
+                i > consts.routeSlotLength &&
+                dist < 0.001)
         if (i > this.currentPos) {
-          Vue.$log.debug('setting currentPos to ', i)
+          Vue.$log.debug('fast forwarding to ', i)
           this.currentPos = i
         }
       }
@@ -136,8 +141,8 @@ export default {
           Vue.$log.debug('stopping play... curPos/maxPos: ', this.currentPos, this.maxPos)
           this.isPlaying = false
         } else {
-          if (this.currentPos + consts.skipRoutePositions < this.positions.length) {
-            this.currentPos += consts.skipRoutePositions
+          if (this.currentPos + consts.routeSlotLength < this.positions.length) {
+            this.currentPos += consts.routeSlotLength
           } else if (this.currentPos < this.positions.length - 1) {
             this.currentPos = this.positions.length - 1
           }
