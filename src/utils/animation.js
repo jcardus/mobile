@@ -117,7 +117,7 @@ export function animateMatched(route, feature) {
       // Vue.$log.debug('dir start end cur dif', dir, startRotation, endRotation, feature.properties.course, angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation))
       if (angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
         feature.properties.course = angles.normalize(feature.properties.course + dir * step)
-        if (!isPanning) { requestAnimationFrame(_animateRotation) } else { setTimeout(_animateRotation, 100) }
+        requestAnimationFrame(_animateRotation)
         return
       }
     }
@@ -154,7 +154,7 @@ export function animateMatched(route, feature) {
     if (counter < feature.route.length) {
       counter = counter + 1
       if (vm.$data.isPlaying) {
-        if (!isPanning) { requestAnimationFrame(_animate) } else { setTimeout(_animate, 100) }
+        if (!isPanning) { requestAnimationFrame(_animate) } else { setTimeout(_animate, 30) }
       } else {
         feature.animating = false
       }
