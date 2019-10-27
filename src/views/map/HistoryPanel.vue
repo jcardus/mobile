@@ -1,13 +1,14 @@
 <template>
   <div v-if="show" class="mapboxgl-ctrl panel">
+    <apexchart type="area" height="200" :options="options" :series="series"></apexchart>
     <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
     <el-slider
       v-model="currentPos"
       v-loading="loadingRoutes"
-      show-tooltip="true"
-      :min="minPos"
-      :max="maxPos"
       :format-tooltip="formatter"
+      :max="maxPos"
+      :min="minPos"
+      show-tooltip
     />
   </div>
 </template>
@@ -21,7 +22,7 @@ import * as consts from '../../utils/consts'
 
 export default {
   name: 'HistoryPanel',
-  data: function() {
+  data() {
     return {
       oldPos: 0,
       currentPos: 0,
@@ -29,7 +30,27 @@ export default {
       maxPos: 0,
       formatter: v => `${utils.formatDate(v)}`,
       deviceId: 0,
-      dates: []
+      dates: [],
+      series: [{
+        data: []
+      }],
+      options: {
+        chart: {
+          id: 'vuechart-example'
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        yaxis: {
+          decimalsInFloat: 1
+        },
+        xaxis: {
+          categories: []
+        }
+      }
     }
   },
   computed: {
@@ -96,6 +117,14 @@ export default {
     serverBus.$on('routeMatchFinished', this.playNext)
   },
   methods: {
+    fillGraphData() {
+      const categories = this.positions.map(x => x.fixTime)
+      const series = this.positions.map(x => x.speed)
+      Vue.$log.debug('categories: ', categories)
+      Vue.$log.debug('series: ', series)
+      this.options.xaxis.categories = categories
+      this.series = [{ name: 'Speed', data: series }]
+    },
     click: function() {
       this.isPlaying = !this.isPlaying
       if (this.isPlaying) {
@@ -107,6 +136,7 @@ export default {
     updateMinMax() {
       this.maxPos = this.positions.length - 1
       this.currentPos = this.maxPos
+      this.fillGraphData()
     },
     playNext() {
       if (this.isPlaying) {

@@ -16,6 +16,8 @@ import VueTimeago from 'vue-timeago'
 import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
+import VueApexCharts from 'vue-apexcharts'
+
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
 const options = {
@@ -27,6 +29,8 @@ const options = {
   separator: '|',
   showConsoleColors: true
 }
+
+Vue.component('apexchart', VueApexCharts)
 Vue.use(VueLogger, options)
 Vue.config.lang = defaultLang
 Vue.use(Element, {
