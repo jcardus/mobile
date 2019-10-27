@@ -32,6 +32,8 @@ import vhCheck from 'vh-check'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTable from './VehicleTable'
+import DateRange from './DateRange'
+import CurrentPositionData from './CurrentPositionData'
 
 export default {
   name: 'VueMap',
@@ -50,13 +52,20 @@ export default {
       origin: [-9.267959, 38.720023],
       destination: [],
       animating: true,
-      popUps: [],
       mapStyle: this.$root.$data.mapStyle,
       unsubscribe: null,
       parentHeight: 0
     }
   },
   computed: {
+    popUps: {
+      get: function() {
+        return vm.$data.popUps
+      },
+      set: function(value) {
+        vm.$data.popUps = value
+      }
+    },
     isMobile() { return lnglat.isMobile() },
     positionsSource() { return this.$root.$static.positionsSource },
     geofencesSource() { return this.$root.$static.geofencesSource },
@@ -274,18 +283,25 @@ export default {
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
-      map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
         // map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
       }
-
       if (settings.showSlider) {
         map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
-        const VD = Vue.extend(HistoryPanel)
-        const _vm = new VD({ i18n: i18n })
+        let VD = Vue.extend(HistoryPanel)
+        let _vm = new VD({ i18n: i18n })
         _vm.$mount('#slider-div')
+        map.addControl(new MapboxCustomControl('date-range-div'), 'top-left')
+        VD = Vue.extend(DateRange)
+        _vm = new VD({ i18n: i18n })
+        _vm.$mount('#date-range-div')
+        map.addControl(new MapboxCustomControl('currentPos-div'), 'top-right')
+        VD = Vue.extend(CurrentPositionData)
+        _vm = new VD({ i18n: i18n })
+        _vm.$mount('#currentPos-div')
       }
+      map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
     },
     onMoveEnd: function() {
       if (!vm.$data.isPlaying) {

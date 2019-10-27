@@ -1,46 +1,20 @@
 <template>
-  <div v-if="show" class="mapboxgl-ctrl card">
-    <div class="panel">
-      <table>
-        <tr><td colspan="2">
-          <vue-slider
-            v-model="currentPos"
-            style="vertical-align:middle;width: 100%;
-                                font-weight:bold;"
-            :min="minPos"
-            :max="maxPos"
-            :tooltip-formatter="formatter"
-            :tooltip-placement="'top'"
-            :tooltip="'always'"
-          />
-        </td></tr>
-        <tr><td>
-              <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
-            </td>
-          <td>
-            <div style="text-align: center">
-              <label for="minDate"></label><input
-                id="minDate"
-                v-model="minDate"
-                type="date"
-                style="float:left; width: 145px; background-color: rgba(1,1,1,0)"
-              >
-              <label for="maxDate"></label><input
-                id="maxDate"
-                v-model="maxDate"
-                type="date"
-                style="float:right; width: 145px; background-color: rgba(1,1,1,0)"
-              >
-            </div>
-          </td></tr></table>
-    </div>
+  <div v-if="show" class="mapboxgl-ctrl panel">
+    <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
+    <el-slider
+      v-model="currentPos"
+      v-loading="loadingRoutes"
+      show-tooltip="true"
+      :min="minPos"
+      :max="maxPos"
+      :format-tooltip="formatter"
+    />
   </div>
 </template>
 
 <script>
 import { serverBus, vm } from '../../main'
 import * as utils from '../../utils/utils'
-import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
@@ -48,9 +22,6 @@ import * as consts from '../../utils/consts'
 
 export default {
   name: 'HistoryPanel',
-  components: {
-    VueSlider
-  },
   data: function() {
     return {
       oldPos: 0,
@@ -58,10 +29,15 @@ export default {
       minPos: 0,
       maxPos: 0,
       formatter: v => `${utils.formatDate(v)}`,
-      deviceId: 0
+      deviceId: 0,
+      dates: []
     }
   },
   computed: {
+    loadingRoutes: {
+      get() { return vm.$data.loadingRoutes },
+      set(value) { vm.$data.loadingRoutes = value }
+    },
     isPlaying: {
       get() { return vm.$data.isPlaying },
       set(value) { vm.$data.isPlaying = value }
@@ -77,7 +53,6 @@ export default {
       },
       set(newVal) {
         vm.$data.routeMinDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
-        serverBus.$emit('minDateChanged')
       }
     },
     maxDate: {
@@ -86,7 +61,6 @@ export default {
       },
       set(newVal) {
         vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
-        serverBus.$emit('maxDateChanged')
       }
     }
   },
@@ -137,10 +111,7 @@ export default {
     },
     playNext() {
       if (this.isPlaying) {
-        if (this.currentPos >= this.maxPos) {
-          Vue.$log.debug('stopping play... curPos/maxPos: ', this.currentPos, this.maxPos)
-          this.isPlaying = false
-        } else {
+        if (this.currentPos < this.maxPos) {
           if (this.currentPos + consts.routeSlotLength < this.positions.length) {
             this.currentPos += consts.routeSlotLength
           } else if (this.currentPos < this.positions.length - 1) {
@@ -163,26 +134,7 @@ export default {
         font-size: 15px;
       padding-left: 10px;
     }
-    input {
-        padding-inline-start: 0;
-        border-width: 1px;
-        border-style: solid;
-        border-color: lightgray;
-        padding: 0;
-    }
-    table {
-        padding: 0 !important;
-        border-width: 0 !important;
-        width: 100%;
-    }
-    #minDate
-    {
-        float:left;
-    }
-    #maxDate
-    {
-        float:right;
-    }
+
     .card {
         background-color: rgba(255,255,255,0.8);
     }

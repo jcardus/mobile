@@ -83,12 +83,14 @@ export const vm = new Vue({
   },
   data: function() {
     return {
+      loadingRoutes: false,
       routeMinDate: Vue.moment().startOf('day').toDate(),
       routeMaxDate: new Date(),
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
       positions: [],
       geofences: [],
+      popUps: [],
       alerts: [],
       historyMode: false,
       currentDevice: null,

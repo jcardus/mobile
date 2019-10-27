@@ -106,10 +106,11 @@ export function animateMatched(route, feature) {
   angles.SCALE = 360
   const step = consts.rotateStep
   let isPanning = false
-
-  drawTempLayer(route)
-  lnglat.removeLayers()
-  lnglat.addLayers(vm.$static.map)
+  if (process.env.NODE_ENV !== 'production') {
+    drawTempLayer(route)
+    lnglat.removeLayers()
+    lnglat.addLayers(vm.$static.map)
+  }
 
   function _animateRotation() {
     const dir = angles.shortestDirection(endRotation, startRotation)
