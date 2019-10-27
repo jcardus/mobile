@@ -497,6 +497,8 @@ export default {
           immobilization_active: position.attributes.out1 || position.attributes.isImmobilizationOn,
           ignition: position.attributes.ignition,
           motion: position.attributes.motion,
+          fixTime: position.fixTime,
+          fixDays: this.$moment().diff(this.$moment(device.lastUpdate), 'days'),
           description: '<div id=\'vue-vehicle-popup\'></div>'
         },
         geometry: {
