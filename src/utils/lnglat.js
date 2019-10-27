@@ -9,7 +9,6 @@ import { vm, settings } from '../main'
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }
-
 export function findFeatureByDeviceId(deviceId) {
   return vm.$static.positionsSource.features.find(e => {
     return e.properties.deviceId === deviceId
@@ -44,12 +43,6 @@ export function addImageWithColor(i, color) {
   addImage(path, name)
 }
 export function addImages() {
-  /*
-  for (let i = 0; i < 50; i++) {
-    addImageWithColor(i, 'green')
-    addImageWithColor(i, 'red')
-    addImageWithColor(i, 'yellow')
-  } */
   addImage('img/40/car-green.png', 'car-green')
   addImage('img/40/car-yellow.png', 'car-yellow')
   addImage('img/40/car-red.png', 'car-red')
@@ -64,7 +57,6 @@ export function getBounds(coordinates) {
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
-
 export function isMobile() {
   return vm.$store.state.app.device === 'mobile'
 }
@@ -91,7 +83,6 @@ export function matchRoute(coordinates, radius, onSuccess, onError) {
     .then(onSuccess)
     .catch(onError)
 }
-
 function fetchGeofences(map) {
   if (!map.getSource('geofences')) {
     map.addSource('geofences', {
@@ -148,7 +139,6 @@ function fetchGeofences(map) {
     })
   }
 }
-
 export function addLayers(map) {
   const sourceid = 'positions'
   if (!map.getSource(sourceid)) {
@@ -227,6 +217,8 @@ export function addLayers(map) {
       layout: {
         'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
          ['case',
+           ['>', ['get', 'fixDays'], 5],
+           ['concat', 'car-gray-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
            ['>', ['get', 'speed'], 2],
            ['concat', 'car-green-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
            ['==', ['get', 'ignition'], true],
@@ -267,7 +259,6 @@ export function removeLayers() {
   if (map.getLayer('geofences-labels')) { map.removeLayer('geofences-labels') }
   if (map.getLayer('pois')) { map.removeLayer('pois') }
   if (map.getLayer('pois-labels')) { map.removeLayer('pois-labels') }
-
   if (map.getSource('positions')) { map.removeSource('positions') }
   if (map.getSource('geofences')) { map.removeSource('geofences') }
 }
