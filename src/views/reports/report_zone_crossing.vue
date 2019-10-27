@@ -4,28 +4,30 @@
       <el-col :span="9">
         <div class="grid-content">
           <el-tooltip content="Select vehicles" placement="bottom">
-            <el-drag-select
+            <el-select
               v-model="selectedDevices"
               style="width: 100%; height: 35px"
               multiple
               placeholder="Vehicles"
+              value=""
             >
               <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-            </el-drag-select>
+            </el-select>
           </el-tooltip>
         </div>
       </el-col>
       <el-col :span="8">
         <div class="grid-content">
           <el-tooltip content="Select geofences" placement="bottom">
-            <el-drag-select
+            <el-select
               v-model="selectedGeofences"
               style="width: 100%; height: 35px"
               multiple
               placeholder="Geofences"
+              value=""
             >
               <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-            </el-drag-select>
+            </el-select>
           </el-tooltip>
         </div>
       </el-col>
@@ -56,13 +58,12 @@
         </div>
       </el-col>
     </el-row>
-    <div id="viewer" style="display: none" />
-    <div id="loader" style="display: none" />
+    <div id="viewer" style="display: none"></div>
+    <div id="loader" style="display: none"></div>
   </div>
 </template>
 
 <script>
-import ElDragSelect from '@/components/DragSelect'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
@@ -83,7 +84,6 @@ function generate_token(length) {
 
 export default {
   name: 'Index',
-  components: { ElDragSelect },
   data() {
     return {
       // eslint-disable-next-line no-undef
@@ -165,8 +165,7 @@ export default {
       return devices
     },
     geofences: function() {
-      const geofences = vm.$data.geofences
-      return geofences
+      return vm.$data.geofences
     },
     isMobile: function() { return lnglat.isMobile() }
   },
@@ -306,18 +305,9 @@ export default {
 </script>
 
 <style scoped>
-  .el-input__inner {
-    padding: 1px !important;
-    width: 390px;
-  }
-
   .grid-content {
-    border-radius: 0px;
+    border-radius: 0;
     min-height: 36px;
-  }
-
-  .bg-purple {
-    background: #d3dce6;
   }
 
   #viewer {
@@ -329,8 +319,6 @@ export default {
     left: 50%;
     top: 50%;
     z-index: 1;
-    width: 150px;
-    height: 150px;
     margin: -75px 0 0 -75px;
     border: 16px solid #f3f3f3;
     border-radius: 50%;

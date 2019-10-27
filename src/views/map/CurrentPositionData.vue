@@ -126,4 +126,5 @@ export default {
       width:calc(49vw);
     }
   }
+
 </style>

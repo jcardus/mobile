@@ -8,7 +8,7 @@
             <el-form>
               <el-form-item label="Tipo:">
                 <el-tooltip content="Select alert type" placement="bottom">
-                  <el-select v-model="selectedType" @change="handleAlertTypeChange">
+                  <el-select v-model="selectedType" value="" @change="handleAlertTypeChange">
                     <el-option v-for="alertType in alertTypes" :key="alertType.value" :value="alertType.value" :label="alertType.text" />
                   </el-select>
                 </el-tooltip>
@@ -18,27 +18,29 @@
                   <el-checkbox key="always" label="Todos os Veículos"></el-checkbox>
                 </el-checkbox-group>
                 <el-tooltip content="Select vehicles" placement="bottom">
-                  <el-drag-select
+                  <el-select
                     v-model="selectedDevices"
-                    :disabled="allVehicles.length == 1"
+                    :disabled="allVehicles.length === 1"
                     style="width: 100%; height: 35px"
                     multiple="true"
                     placeholder="Vehicles"
+                    value=""
                   >
                     <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-drag-select>
+                  </el-select>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="Geofences:" :style="showGeofenceSelector">
                 <el-tooltip content="Select Geofences" placement="bottom">
-                  <el-drag-select
+                  <el-select
                     v-model="selectedGeofences"
                     style="width: 100%; height: 35px"
                     multiple="true"
                     placeholder="Geofences"
+                    value=""
                   >
                     <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-drag-select>
+                  </el-select>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="Vias:">
@@ -151,11 +153,9 @@
 <script>
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
-import ElDragSelect from '@/components/DragSelect'
 
 export default {
   name: 'Alerts',
-  components: { ElDragSelect },
   data() {
     return {
       isOpen: false,
@@ -218,13 +218,13 @@ export default {
         })
       })
     },
-    alertTypeRenderer(row, column, cellValue, index) {
+    alertTypeRenderer(row, column, cellValue) {
       return this.$t('settings.alert_' + cellValue)
     },
-    alertSpeedRenderer(row, column, cellValue, index) {
+    alertSpeedRenderer(row, column, cellValue) {
       return Math.round(cellValue * 1.85200) + ' Km/h'
     },
-    devicesRenderer(row, column, cellValue, index) {
+    devicesRenderer(row, column, cellValue) {
       if (row.notification.always) {
         return 'Todos'
       } else {
@@ -317,7 +317,7 @@ export default {
   }
   .modal {
     width: 500px;
-    margin: 0px auto;
+    margin: 0 auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 2px;
@@ -325,20 +325,7 @@ export default {
     transition: all 0.2s ease-in;
     font-family: Helvetica, Arial, sans-serif;
   }
-  .fadeIn-enter {
-    opacity: 0;
-  }
-
-  .fadeIn-leave-active {
-    opacity: 0;
-    transition: all 0.2s step-end;
-  }
-
   .fadeIn-enter .modal,
-  .fadeIn-leave-active.modal {
-    transform: scale(1.1);
-  }
-
   .overlay {
     position: fixed;
     top: 0;

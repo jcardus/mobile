@@ -15,7 +15,6 @@
 <script>
 import { serverBus, vm } from '../../main'
 import * as utils from '../../utils/utils'
-import 'vue-slider-component/theme/default.css'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
