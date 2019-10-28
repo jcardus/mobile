@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" class="mapboxgl-ctrl panel">
-    <apexchart type="area" height="200" :options="options" :series="series"></apexchart>
-    <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
+    <speed-chart :labels="labels" :chart-data="chartData" />
+
     <el-slider
       v-model="currentPos"
       v-loading="loadingRoutes"
@@ -10,6 +10,7 @@
       :min="minPos"
       show-tooltip
     />
+    <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
   </div>
 </template>
 
@@ -19,9 +20,11 @@ import * as utils from '../../utils/utils'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
+import SpeedChart from './SpeedChart'
 
 export default {
   name: 'HistoryPanel',
+  components: { SpeedChart },
   data() {
     return {
       oldPos: 0,
@@ -31,26 +34,8 @@ export default {
       formatter: v => `${utils.formatDate(v)}`,
       deviceId: 0,
       dates: [],
-      series: [{
-        data: []
-      }],
-      options: {
-        chart: {
-          id: 'vuechart-example'
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        yaxis: {
-          decimalsInFloat: 1
-        },
-        xaxis: {
-          categories: []
-        }
-      }
+      labels: [],
+      chartData: []
     }
   },
   computed: {
@@ -118,12 +103,15 @@ export default {
   },
   methods: {
     fillGraphData() {
-      const categories = this.positions.map(x => x.fixTime)
+      // const categories = this.positions.map(x => this.$moment(x.fixTime).format('YYYY-MM-DDThh:mm:ss'))
+      const categories = this.positions.map(x => this.$moment(x.fixTime).toDate())
+      // const categories = this.positions.map(x => x.fixTime).toDate())
+      // const categories = this.positions.map(x => x.fixTime)
       const series = this.positions.map(x => x.speed)
       Vue.$log.debug('categories: ', categories)
       Vue.$log.debug('series: ', series)
-      this.options.xaxis.categories = categories
-      this.series = [{ name: 'Speed', data: series }]
+      this.labels = categories
+      this.chartData = series
     },
     click: function() {
       this.isPlaying = !this.isPlaying
@@ -163,7 +151,6 @@ export default {
         font-size: 15px;
       padding-left: 10px;
     }
-
     .card {
         background-color: rgba(255,255,255,0.8);
     }
