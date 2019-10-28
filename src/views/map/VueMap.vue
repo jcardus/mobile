@@ -105,6 +105,7 @@ export default {
     })
     vhCheck()
     this.map.on('load', this.onMapLoad)
+    this.subscribeEvents()
   },
   methods: {
     onDevices: function(devices) {
@@ -123,7 +124,6 @@ export default {
       this.addControls()
       this.addLayers()
       this.addImages()
-      this.subscribeEvents()
       traccar.startReceiving()
       this.map.resize()
     },

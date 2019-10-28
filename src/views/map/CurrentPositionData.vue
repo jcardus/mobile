@@ -118,12 +118,12 @@ export default {
     font-size: 16px;
     color: #5a5e66;
     width:calc(30vw);
-    max-width: 350px;
+    max-width: 300px;
   }
 
   @media screen and (max-width: 768px) {
     .currentPos {
-      width:calc(49vw);
+      width:calc(48vw);
     }
   }
 
