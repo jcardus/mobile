@@ -27,6 +27,7 @@
               unlink-panels
               range-separator="-"
               format="dd-MM-yyyy"
+              value-format="yyyy-MM-dd HH:mm:ss"
               start-placeholder="Start date"
               end-placeholder="End date"
               :picker-options="pickerOptions"
@@ -218,8 +219,8 @@ export default {
             report: 'trip',
             report_id: report_id,
             selected_devices: this.selectedDevices,
-            date_from: this.dateRange[0].toISOString().replace('T', ' ').substring(0, 19),
-            date_to: this.dateRange[1].toISOString().replace('T', ' ').substring(0, 19)
+            date_from: this.dateRange[0],
+            date_to: this.dateRange[1]
           }
 
           traccar.trigger_report(body, report_id, this.renderReport, this.errorHandler)
