@@ -217,7 +217,7 @@ export default {
     getBgColor: function(device) {
       if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Gray' }
       if (device.speed > 2) { return '#63EA4F' }
-      if (device.ignition) { return '#FFA241' }
+      if (device.ignition) { return '#d4c404' }
       return '#FF584C'
     },
     cellStyle(row) {
