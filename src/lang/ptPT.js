@@ -93,7 +93,21 @@ export default {
     alert_delete_title: 'Apagar Alerta',
     alert_edit_confirm: 'Confirmar',
     alert_edit_cancel: 'Cancelar',
-    alert_created: 'Alerta criado com sucesso!'
+    alert_created: 'Alerta criado com sucesso!',
+    alert_updated: 'Alerta actualizado com sucesso!',
+    alert_add: 'Adicionar Alerta',
+    alert_edit: 'Editar Alerta',
+    alert_form_type: 'Tipo:',
+    alert_form_type_placeholder: 'Seleccionar o tipo de alerta',
+    alert_form_vehicles: 'Veículos:',
+    alert_form_geofences: 'Balizas:',
+    alert_form_all_vehicles: 'Todos os veículos',
+    alert_form_vehicles_placeholder: 'Seleccionar veículos',
+    alert_form_notificator_web: 'Web',
+    alert_form_notificator_email: 'E-mail',
+    alert_form_notificator_sms: 'SMS',
+    alert_form_confirm: 'Gravar',
+    alert_form_cancel: 'Cancelar'
   },
   geofence: {
     geofence_name: 'Nome',
