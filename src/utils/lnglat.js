@@ -35,11 +35,14 @@ export function startImageDownload() {
     loadingImages = true
     if (!vm.$static.map.hasImage(img.name)) {
       vm.$static.map.loadImage(img.path, function(error, image) {
-        if (error) throw error
-        Vue.$log.debug('adding image to map ', img.name, ' ', image)
-        vm.$static.map.addImage(img.name, image)
-        Vue.$log.debug('done image to map, refreshing map', img.name, ' ', image)
-        refreshMap()
+        if (error) {
+          Vue.$log.error('error adding image to the map', error, ' ', img.name, ' ', image)
+        } else {
+          Vue.$log.debug('adding image to map ', img.name, ' ', image)
+          vm.$static.map.addImage(img.name, image)
+          Vue.$log.debug('done image to map, refreshing map', img.name, ' ', image)
+          refreshMap()
+        }
         startImageDownload()
       })
     } else {
@@ -286,8 +289,12 @@ export function contains(lngLatBounds, position) {
   )
 }
 export function refreshMap() {
-  vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
-  vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
+  if (vm.$static.map.getSource('positions')) {
+    vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+  }
+  if (vm.$static.map.getSource('geofences')) {
+    vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
+  }
 }
 export function hideLayer(layer, hide) {
   const visibility = hide ? 'none' : 'visible'
