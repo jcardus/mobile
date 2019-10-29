@@ -9,10 +9,32 @@ import * as consts from './consts'
 const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
+const routePlayLayer = 'routePlayLayer'
+const routePlayLayerSource = {
+  type: 'FeatureCollection', features: []
+}
 
 angles.SCALE = 360
 
-export function rotate360() {
+function refreshRoutePlayLayer() {
+  vm.$static.map.getSource(routePlayLayer).setData(routePlayLayerSource)
+}
+
+export function hideRouteLayer(hide) {
+  lnglat.hideLayer(routePlayLayer, hide)
+}
+
+export function initFeatureForPlaying(feature) {
+  routePlayLayerSource.features[0] = feature
+  if (!vm.$static.map.getLayer(routePlayLayer)) {
+    vm.$static.map.addSource(routePlayLayer, {
+      type: 'geojson',
+      data: routePlayLayerSource
+    })
+    lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
+  } else {
+    refreshRoutePlayLayer()
+  }
   for (let i = 0; i < 50; i++) {
     lnglat.addImageWithColor(i, 'green')
   }
@@ -72,14 +94,12 @@ export function animateRoute(route, feature) {
   }
 }
 function drawTempLayer(routeGeoJSON) {
-  const tempID = 'tempLayer'
-  if (vm.$static.map.getLayer(tempID)) {
+  /* if (vm.$static.map.getLayer(tempID)) {
     Vue.$log.debug('setting source ', tempID, ' to ', routeGeoJSON)
     /* vm.$static.map.getSource(tempID).setData({
       type: 'geojson',
       data: routeGeoJSON
-    }) */
-    Vue.$log.debug('done setting source ', tempID, ' to ', routeGeoJSON)
+    })
   } else {
     Vue.$log.debug('adding source ', tempID)
     vm.$static.map.addSource(tempID, {
@@ -102,7 +122,7 @@ function drawTempLayer(routeGeoJSON) {
     })
     lnglat.removeLayers()
     lnglat.addLayers(vm.$static.map)
-  }
+  } */
 }
 export function animateMatched(route, feature) {
   const lineDistance = lnglat.lineDistance(route)
@@ -134,8 +154,6 @@ export function animateMatched(route, feature) {
       }
     }
     feature.properties.course = endRotation
-    // counter = counter + 1
-    // _animate()
   }
   function _animate() {
     const coordinates = feature.route[counter]
@@ -162,7 +180,7 @@ export function animateMatched(route, feature) {
           _animateRotation()
         }
       }
-      lnglat.refreshMap()
+      refreshRoutePlayLayer()
     }
     if (counter < feature.route.length) {
       counter = counter + 1
@@ -172,7 +190,7 @@ export function animateMatched(route, feature) {
         feature.animating = false
       }
     } else {
-      lnglat.refreshMap()
+      refreshRoutePlayLayer()
       feature.animating = false
       Vue.$log.debug('finished animating ', feature.route.length, ' coords')
       serverBus.$emit('routeMatchFinished')

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="!isMobile" id="mly" class="mly"></div>
+    <div v-show="showMapilary" id="mly" class="mly"></div>
     <h1>
       {{ device.name }}
     </h1>
@@ -38,7 +38,9 @@ export default {
   static() {
     return {
       startMarker: null,
-      endMarker: null }
+      endMarker: null,
+      mly: null
+    }
   },
   data: function() {
     return {
@@ -52,6 +54,9 @@ export default {
     }
   },
   computed: {
+    showMapilary() {
+      return !this.isMobile && !this.isPlaying
+    },
     showRoutes: {
       get() { return this.historyMode },
       set(value) { this.historyMode = value }
@@ -107,7 +112,7 @@ export default {
     }
   },
   beforeDestroy() {
-    Vue.$log.debug('destroying...')
+    Vue.$log.debug('destroying VehicleDetail...')
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('minDateChanged', this.onDatesChanged)
     serverBus.$off('maxDateChanged', this.onDatesChanged)
@@ -121,17 +126,28 @@ export default {
     if (Math.ceil(this.$el.clientWidth) % 2) {
       this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
     }
-    if (!this.isMobile) {
-      const mly = new Viewer(
-        'mly',
-        'NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj',
-        null, {
-          component: {
-            cover: false
+    if (this.isMobile || this.isPlaying) {
+      this.mly = null
+    } else {
+      if (!this.mly) {
+        this.mly = new Viewer(
+          'mly',
+          'NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj',
+          null, {
+            component: {
+              cover: false,
+              direction: false,
+              imagePlane: false,
+              keyboard: false,
+              mouse: false,
+              sequence: false,
+              image: true,
+              navigation: true
+            }
           }
-        }
-      )
-      mly.moveCloseTo(this.feature.geometry.coordinates[1], this.feature.geometry.coordinates[0])
+        )
+      }
+      this.mly.moveCloseTo(this.feature.geometry.coordinates[1], this.feature.geometry.coordinates[0])
     }
     Vue.$log.debug('subscribing events')
     serverBus.$on('posChanged', this.onPosChanged)

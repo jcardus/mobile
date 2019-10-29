@@ -153,17 +153,54 @@ function fetchGeofences(map) {
     })
   }
 }
+export function addVehiclesLayer(layer, source) {
+  vm.$static.map.addLayer({
+    id: layer,
+    type: 'symbol',
+    source: source,
+    filter: ['!', ['has', 'point_count']],
+    layout: {
+      'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
+        ['case',
+          ['>', ['get', 'fixDays'], 5],
+          ['concat', 'car-gray-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
+          ['>', ['get', 'speed'], 2],
+          ['concat', 'car-green-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
+          ['==', ['get', 'ignition'], true],
+          ['concat', 'car-yellow-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
+          ['concat', 'car-red-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]]
+        ],
+      'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
+      'icon-allow-overlap': true,
+      'text-allow-overlap': true,
+      'icon-size': {
+        stops: [
+          [1, 0.1],
+          [14, 0.2],
+          [15, 0.3],
+          [16, 0.4],
+          [17, 0.5],
+          [18, 0.6],
+          [19, 0.7],
+          [20, 0.8],
+          [21, 0.9]
+        ]
+      }
+    }
+  })
+}
+
 export function addLayers(map) {
-  const sourceid = 'positions'
-  if (!map.getSource(sourceid)) {
-    map.addSource(sourceid, {
+  const source = 'positions'
+  if (!map.getSource(source)) {
+    map.addSource(source, {
       'type': 'geojson',
       'data': vm.$static.positionsSource,
       'cluster': true,
       clusterMaxZoom: 16, // Max zoom to cluster points on
       clusterRadius: 9
     })
-  } else { Vue.$log.warn(sourceid, ' already exists...') }
+  } else { Vue.$log.warn(source, ' already exists...') }
   if (settings.show3dBuildings) {
     this.map.addLayer({
       'id': '3d-buildings',
@@ -191,7 +228,7 @@ export function addLayers(map) {
   if (!map.getLayer('clusters')) {
     map.addLayer({
       'id': 'clusters',
-      'source': sourceid,
+      'source': source,
       'type': 'symbol',
       layout: {
         'icon-image':
@@ -212,7 +249,7 @@ export function addLayers(map) {
   if (!map.getLayer('cluster-count')) {
     map.addLayer({
       'id': 'cluster-count',
-      'source': sourceid,
+      'source': source,
       'type': 'symbol',
       filter: ['has', 'point_count'],
       layout: {
@@ -223,38 +260,7 @@ export function addLayers(map) {
     })
   } else { Vue.$log.warn('layer cluster-count already exists...') }
   if (!map.getLayer('unclustered-point')) {
-    map.addLayer({
-      id: 'unclustered-point',
-      type: 'symbol',
-      source: sourceid,
-      filter: ['!', ['has', 'point_count']],
-      layout: {
-        'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
-         ['case',
-           ['>', ['get', 'fixDays'], 5],
-           ['concat', 'car-gray-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-           ['>', ['get', 'speed'], 2],
-           ['concat', 'car-green-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-           ['==', ['get', 'ignition'], true],
-           ['concat', 'car-yellow-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-           ['concat', 'car-red-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]]
-         ],
-        'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
-        'icon-allow-overlap': true,
-        'text-allow-overlap': true,
-        'icon-size': { stops: [
-          [1, 0.1],
-          [14, 0.2],
-          [15, 0.3],
-          [16, 0.4],
-          [17, 0.5],
-          [18, 0.6],
-          [19, 0.7],
-          [20, 0.8],
-          [21, 0.9]
-        ] }
-      }
-    })
+    addVehiclesLayer('unclustered-point', source)
   } else {
     Vue.$log.warn('layer unclustered-point already exists...')
   }
@@ -284,4 +290,18 @@ export function contains(lngLatBounds, position) {
 export function refreshMap() {
   vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
   vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
+}
+export function hideLayer(layer, hide) {
+  const visibility = hide ? 'none' : 'visible'
+  if (vm.$static.map.getLayer(layer)) {
+    vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
+  }
+}
+export function hideLayers(hide) {
+  if (settings.show3dBuildings) {
+    hideLayer('3d-buildings', hide)
+  }
+  hideLayer('clusters', hide)
+  hideLayer('cluster-count', hide)
+  hideLayer('unclustered-point', hide)
 }

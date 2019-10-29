@@ -143,8 +143,10 @@ export default {
     },
     click: function() {
       this.isPlaying = !this.isPlaying
+      lnglat.hideLayers(this.isPlaying)
+      animation.hideRouteLayer(!this.isPlaying)
       if (this.isPlaying) {
-        animation.rotate360(lnglat.findFeatureByDeviceId(this.device.id))
+        animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
         if (this.sliderPos === this.maxPos) {
           this.currentPos = 0
         }

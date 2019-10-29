@@ -41,14 +41,14 @@ export default {
   static() {
     return {
       map: vm.$static.map,
-      draw: null
+      draw: null,
+      truck: null
     }
   },
   data() {
     return {
       accessToken: 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ',
       center: [],
-      truck: null,
       origin: [-9.267959, 38.720023],
       destination: [],
       animating: true,
@@ -227,32 +227,34 @@ export default {
     },
     addLayers: function() {
       const self = this
-      this.$static.map.addLayer({
-        id: 'custom_layer',
-        type: 'custom',
-        renderingMode: '3d',
-        onAdd: function(map, mbxContext) {
-          // eslint-disable-next-line no-undef
-          window.tb = new Threebox(
-            map,
-            mbxContext,
-            { defaultLights: true }
-          )
-          const options = {
-            obj: 'img/Truck.obj',
-            mtl: 'img/Truck.mtl',
-            scale: 10
+      if (settings.truck3d) {
+        this.$static.map.addLayer({
+          id: 'custom_layer',
+          type: 'custom',
+          renderingMode: '3d',
+          onAdd: function(map, mbxContext) {
+            // eslint-disable-next-line no-undef
+            window.tb = new Threebox(
+              map,
+              mbxContext,
+              { defaultLights: true }
+            )
+            const options = {
+              obj: 'img/Truck.obj',
+              mtl: 'img/Truck.mtl',
+              scale: 10
+            }
+            window.tb.loadObj(options, function(model) {
+              self.truck = model.setCoords(self.origin)
+              self.truck.visible = false
+              window.tb.add(self.truck)
+            })
+          },
+          render: function() {
+            window.tb.update()
           }
-          window.tb.loadObj(options, function(model) {
-            self.truck = model.setCoords(self.origin)
-            self.truck.visible = false
-            window.tb.add(self.truck)
-          })
-        },
-        render: function() {
-          window.tb.update()
-        }
-      })
+        })
+      }
       lnglat.addLayers(this.$static.map)
     },
     addControls: function() {
