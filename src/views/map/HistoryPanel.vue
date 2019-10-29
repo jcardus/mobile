@@ -136,8 +136,8 @@ export default {
       // const categories = this.positions.map(x => x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime)
       const series = this.positions.map(x => x.speed)
-      Vue.$log.debug('categories: ', categories)
-      Vue.$log.debug('series: ', series)
+      // Vue.$log.debug('categories: ', categories)
+      // Vue.$log.debug('series: ', series)
       this.labels = categories
       this.chartData = series
     },
@@ -146,7 +146,7 @@ export default {
       if (this.isPlaying) {
         animation.rotate360(lnglat.findFeatureByDeviceId(this.device.id))
         if (this.sliderPos === this.maxPos) {
-          this.sliderPos = this.minPos
+          this.currentPos = 0
         }
         serverBus.$emit('routePlay')
       } else {
@@ -154,16 +154,18 @@ export default {
       }
     },
     updateMinMax() {
-      this.minPos = this.$moment(this.positions[0].fixTime).unix()
-      this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
-      this.sliderPos = this.maxPos
-      this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
-      const self = this
-      this.positions.forEach(function(item, index) {
-        item.index = index
-        self.indexArray[Vue.moment(item.fixTime).unix()] = item
-      })
-      this.fillGraphData()
+      if (this.positions.length > 0) {
+        this.minPos = this.$moment(this.positions[0].fixTime).unix()
+        this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
+        this.sliderPos = this.maxPos
+        this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
+        const self = this
+        this.positions.forEach(function(item, index) {
+          item.index = index
+          self.indexArray[Vue.moment(item.fixTime).unix()] = item
+        })
+        this.fillGraphData()
+      }
     },
     playNext() {
       if (this.isPlaying) {

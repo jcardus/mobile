@@ -6,6 +6,7 @@
 
 <script>
 import { Chart } from 'chart.js'
+import Vue from 'vue'
 export default {
   name: 'SpeedChart',
   props: {
@@ -34,72 +35,75 @@ export default {
     }
   },
   mounted() {
+    Vue.$log.debug('created')
     const ctx = document.getElementById('speedChart').getContext('2d')
     const color = Chart.helpers.color
-    this.chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: this.labels,
-        datasets: [{
-          backgroundColor: color('green').alpha(0.5).rgbString(),
-          borderColor: color('green').alpha(1).rgbString(),
-          fill: true,
-          data: this.chartData
-        }]
-      },
-      options: {
-        elements: {
-          point: {
-            radius: 0
-          }
-        },
-        legend: {
-          display: false
-        },
-        aspectRatio: 9,
-        tooltips: {
-          backgroundColor: 'rgba(52, 152, 219, 0.8)',
-          callbacks: {
-            label: function(tooltipItem, data) {
-              let label = data.datasets[tooltipItem.datasetIndex].label || ''
-
-              if (label) {
-                label += ': '
-              }
-              label += Math.round(tooltipItem.yLabel)
-              return label
-            }
-          }
-        },
-        scales: {
-          xAxes: [{
-            display: false,
-            gridLines: {
-              display: false
-            },
-            type: 'time',
-            time: {
-              // parser: timeFormat,
-              round: 'second',
-              tooltipFormat: 'll HH:mm:ss'
-            },
-            scaleLabel: {
-              display: true,
-              labelString: 'Date'
-            }
-          }],
-          yAxes: [{
-            ticks: {
-              precision: 1
-            },
-            display: false,
-            gridLines: {
-              display: false
-            }
+    if (!this.chart) {
+      this.chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: this.labels,
+          datasets: [{
+            backgroundColor: color('green').alpha(0.5).rgbString(),
+            borderColor: color('green').alpha(1).rgbString(),
+            fill: true,
+            data: this.chartData
           }]
+        },
+        options: {
+          elements: {
+            point: {
+              radius: 0
+            }
+          },
+          legend: {
+            display: false
+          },
+          aspectRatio: 9,
+          tooltips: {
+            backgroundColor: 'rgba(52, 152, 219, 0.8)',
+            callbacks: {
+              label: function(tooltipItem, data) {
+                let label = data.datasets[tooltipItem.datasetIndex].label || ''
+
+                if (label) {
+                  label += ': '
+                }
+                label += Math.round(tooltipItem.yLabel)
+                return label
+              }
+            }
+          },
+          scales: {
+            xAxes: [{
+              display: false,
+              gridLines: {
+                display: false
+              },
+              type: 'time',
+              time: {
+              // parser: timeFormat,
+                round: 'second',
+                tooltipFormat: 'll HH:mm:ss'
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Date'
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                precision: 1
+              },
+              display: false,
+              gridLines: {
+                display: false
+              }
+            }]
+          }
         }
-      }
-    })
+      })
+    }
   }
 }
 </script>

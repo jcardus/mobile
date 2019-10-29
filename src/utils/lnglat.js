@@ -51,7 +51,6 @@ function startImageDownload() {
     refreshMap()
   }
 }
-
 export function getArea(area) {
   if (area.features[0].geometry.type.toUpperCase() === 'POINT') {
     return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 100)'

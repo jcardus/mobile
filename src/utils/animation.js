@@ -12,12 +12,11 @@ let nextMatch = []
 
 angles.SCALE = 360
 
-export function rotate360(feature) {
+export function rotate360() {
   for (let i = 0; i < 50; i++) {
     lnglat.addImageWithColor(i, 'green')
   }
 }
-
 export function animate(feature, coordinates) {
   const route = {
     type: 'Feature',
@@ -72,32 +71,38 @@ export function animateRoute(route, feature) {
     animateMatched(route, feature)
   }
 }
-
 function drawTempLayer(routeGeoJSON) {
   const tempID = 'tempLayer'
   if (vm.$static.map.getLayer(tempID)) {
-    vm.$static.map.removeLayer(tempID)
-    vm.$static.map.removeSource(tempID)
+    Vue.$log.debug('setting source ', tempID, ' to ', routeGeoJSON)
+    /* vm.$static.map.getSource(tempID).setData({
+      type: 'geojson',
+      data: routeGeoJSON
+    }) */
+    Vue.$log.debug('done setting source ', tempID, ' to ', routeGeoJSON)
+  } else {
+    Vue.$log.debug('adding source ', tempID)
+    vm.$static.map.addSource(tempID, {
+      type: 'geojson',
+      data: routeGeoJSON
+    })
+    Vue.$log.debug('adding layer', tempID)
+    vm.$static.map.addLayer({
+      id: tempID,
+      type: 'line',
+      source: tempID,
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': 'black',
+        'line-width': 2
+      }
+    })
+    lnglat.removeLayers()
+    lnglat.addLayers(vm.$static.map)
   }
-  Vue.$log.debug('adding source ', tempID)
-  vm.$static.map.addSource(tempID, {
-    type: 'geojson',
-    data: routeGeoJSON
-  })
-  Vue.$log.debug('adding layer', tempID)
-  vm.$static.map.addLayer({
-    id: tempID,
-    type: 'line',
-    source: tempID,
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round'
-    },
-    paint: {
-      'line-color': 'black',
-      'line-width': 2
-    }
-  })
 }
 export function animateMatched(route, feature) {
   const lineDistance = lnglat.lineDistance(route)
@@ -116,8 +121,6 @@ export function animateMatched(route, feature) {
   let isPanning = false
   if (process.env.NODE_ENV !== 'production') {
     drawTempLayer(route)
-    lnglat.removeLayers()
-    lnglat.addLayers(vm.$static.map)
   }
 
   function _animateRotation() {

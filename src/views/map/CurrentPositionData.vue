@@ -2,6 +2,7 @@
   <div v-show="show" class="mapboxgl-ctrl">
     <el-card
       v-loading="loadingRoutes"
+      :body-style="{ padding: '10px' }"
       class="box-card currentPos"
       shadow="always"
     >
@@ -116,12 +117,20 @@ export default {
 </script>
 
 <style scoped>
+  h2 {
+    margin-top: 10px;
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
   .currentPos {
-    font-size: 16px;
+    font-size: 14px;
     color: #5a5e66;
     width:calc(30vw);
-    max-width: 280px;
+    max-width: 250px;
     background-color: rgba(255, 255, 255, 0.9);
+    padding: 0 !important;
   }
 
   @media screen and (max-width: 768px) {
