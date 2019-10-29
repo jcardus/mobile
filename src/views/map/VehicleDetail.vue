@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="showMapilary" id="mly" class="mly"></div>
+    <img v-show="showMapilary" id="mly" class="mly" :src="imageUrl" alt="">
     <h1>
       {{ device.name }}
     </h1>
@@ -23,7 +23,7 @@
 <script>
 
 import 'mapillary-js/dist/mapillary.min.css'
-import { Viewer } from 'mapillary-js'
+import axios from 'axios'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
@@ -50,7 +50,8 @@ export default {
       i: 0,
       trips: [],
       currentTrip: 0,
-      sliderVisible: false
+      sliderVisible: false,
+      imageUrl: ''
     }
   },
   computed: {
@@ -126,28 +127,17 @@ export default {
     if (Math.ceil(this.$el.clientWidth) % 2) {
       this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
     }
-    if (this.isMobile || this.isPlaying) {
-      this.mly = null
-    } else {
-      if (!this.mly) {
-        this.mly = new Viewer(
-          'mly',
-          'NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj',
-          null, {
-            component: {
-              cover: false,
-              direction: false,
-              imagePlane: false,
-              keyboard: false,
-              mouse: false,
-              sequence: false,
-              image: true,
-              navigation: true
-            }
-          }
-        )
-      }
-      this.mly.moveCloseTo(this.feature.geometry.coordinates[1], this.feature.geometry.coordinates[0])
+    const self = this
+    if (!this.isMobile) {
+      axios.get('https://a.mapillary.com/v3/images/?closeto=' + self.feature.geometry.coordinates[0] + ',' +
+        self.feature.geometry.coordinates[1] + '&radius=100&per_page=1&client_id=NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj')
+        .then((response) => {
+          Vue.$log.debug(response)
+          self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
+        })
+        .catch(reason => {
+          Vue.$log.error(reason)
+        })
     }
     Vue.$log.debug('subscribing events')
     serverBus.$on('posChanged', this.onPosChanged)
@@ -170,7 +160,7 @@ export default {
     },
     routePlayStopped() {
       if (this.feature) {
-        this.feature.animating = false
+        // this.feature.animating = false
       }
     },
     onPosChanged(newPos) {

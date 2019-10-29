@@ -51,7 +51,6 @@
     "jsonlint": "1.6.3",
     "mapbox-gl": "latest",
     "mapbox-gl-controls": "latest",
-    "mapillary-js": "^2.18.0",
     "normalize.css": "7.0.0",
     "screenfull": "4.2.0",
     "vh-check": "latest",

@@ -6,6 +6,13 @@ import Vue from 'vue'
 import * as angles from 'angles'
 import * as consts from './consts'
 
+export function updateOldFeature(feature) {
+  if (routePlayLayerSource.features[0]) {
+    feature.geometry = routePlayLayerSource.features[0].geometry
+    feature.properties.course = routePlayLayerSource.features[0].properties.course
+  }
+}
+
 const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []

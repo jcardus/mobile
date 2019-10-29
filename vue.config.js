@@ -50,6 +50,16 @@ module.exports = {
     }
   },
   chainWebpack(config) {
+    config.plugin('copy').tap(() => [[
+      {
+        from: resolve('/public/img/3d'),
+        to: resolve('/dist'),
+        toType: 'dir',
+        ignore: ['*.png']
+      }
+    ]]
+    )
+
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
 

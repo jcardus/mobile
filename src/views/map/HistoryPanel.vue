@@ -143,17 +143,16 @@ export default {
     },
     click: function() {
       this.isPlaying = !this.isPlaying
-      lnglat.hideLayers(this.isPlaying)
-      animation.hideRouteLayer(!this.isPlaying)
       if (this.isPlaying) {
         animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
         if (this.sliderPos === this.maxPos) {
           this.currentPos = 0
         }
         serverBus.$emit('routePlay')
-      } else {
-        serverBus.$emit('routePlayStopped')
       }
+      lnglat.hideLayers(this.isPlaying)
+      animation.hideRouteLayer(!this.isPlaying)
+      lnglat.refreshMap()
     },
     updateMinMax() {
       if (this.positions.length > 0) {

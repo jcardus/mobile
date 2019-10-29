@@ -173,7 +173,7 @@ export default {
         })
         vm.$mount('#vue-vehicle-popup')
       }
-      this.truck.setCoords(coordinates)
+      if (settings.truck3d) { this.truck.setCoords(coordinates) }
     },
     flyToDevice: function(feature) {
       if (feature) {
