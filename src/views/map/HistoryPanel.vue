@@ -1,14 +1,17 @@
 <template>
   <div v-if="show" class="mapboxgl-ctrl panel">
     <speed-chart :labels="labels" :chart-data="chartData" />
-
-    <el-slider
-      v-model="currentPos"
+    <vue-slider
+      v-model="sliderPos"
       v-loading="loadingRoutes"
-      :format-tooltip="formatter"
+      :tooltip-formatter="formatter"
       :max="maxPos"
       :min="minPos"
-      show-tooltip
+      :tooltip="'always'"
+      :tooltip-placement="'top'"
+      :marks="marks"
+      :included="true"
+      :hide-label="true"
     />
     <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
   </div>
@@ -16,29 +19,36 @@
 
 <script>
 import { serverBus, vm } from '../../main'
-import * as utils from '../../utils/utils'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
 import SpeedChart from './SpeedChart'
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
+import * as animation from '../../utils/animation'
 
 export default {
   name: 'HistoryPanel',
-  components: { SpeedChart },
+  components: { SpeedChart, VueSlider },
   data() {
     return {
       oldPos: 0,
+      sliderPos: 0,
       currentPos: 0,
       minPos: 0,
       maxPos: 0,
-      formatter: v => `${utils.formatDate(v)}`,
-      deviceId: 0,
+      formatter: v => `${this.formatDate(v)}`,
       dates: [],
       labels: [],
-      chartData: []
+      chartData: [],
+      indexArray: {},
+      marks: []
     }
   },
   computed: {
+    device() {
+      return vm.$data.currentDevice
+    },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
@@ -70,6 +80,13 @@ export default {
     }
   },
   watch: {
+    sliderPos() {
+      Vue.$log.debug('slider changed to ', this.sliderPos)
+      const pos = this.indexArray[this.sliderPos]
+      if (pos && pos.index > 0) {
+        this.currentPos = pos.index
+      } else { Vue.$log.debug('no coordinate at pos ', this.sliderPos) }
+    },
     currentPos: function() {
       Vue.$log.debug('curPos changed to ', this.currentPos)
       if (this.isPlaying) {
@@ -87,7 +104,7 @@ export default {
                 dist < 0.001)
         if (i > this.currentPos) {
           Vue.$log.debug('fast forwarding to ', i)
-          this.currentPos = i
+          this.sliderPos = Vue.moment(this.positions[i].fixTime).unix()
         }
       }
       serverBus.$emit('posChanged', this.currentPos)
@@ -102,6 +119,17 @@ export default {
     serverBus.$on('routeMatchFinished', this.playNext)
   },
   methods: {
+    formatDate(v) {
+      let result = Vue.moment.unix(v).format('YYYY-MM-DD HH:mm:ss')
+      if (this.indexArray[v]) {
+        v = this.indexArray[v].index
+        const speed = vm.$data.positions[v] ? vm.$data.positions[v].speed : ''
+        if (speed && speed > 0) {
+          result += (' ' + ~~(speed * 1.852) + 'km/h')
+        }
+      }
+      return result
+    },
     fillGraphData() {
       // const categories = this.positions.map(x => this.$moment(x.fixTime).format('YYYY-MM-DDThh:mm:ss'))
       const categories = this.positions.map(x => this.$moment(x.fixTime).toDate())
@@ -116,14 +144,25 @@ export default {
     click: function() {
       this.isPlaying = !this.isPlaying
       if (this.isPlaying) {
+        animation.rotate360(lnglat.findFeatureByDeviceId(this.device.id))
+        if (this.sliderPos === this.maxPos) {
+          this.sliderPos = this.minPos
+        }
         serverBus.$emit('routePlay')
       } else {
         serverBus.$emit('routePlayStopped')
       }
     },
     updateMinMax() {
-      this.maxPos = this.positions.length - 1
-      this.currentPos = this.maxPos
+      this.minPos = this.$moment(this.positions[0].fixTime).unix()
+      this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
+      this.sliderPos = this.maxPos
+      this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
+      const self = this
+      this.positions.forEach(function(item, index) {
+        item.index = index
+        self.indexArray[Vue.moment(item.fixTime).unix()] = item
+      })
       this.fillGraphData()
     },
     playNext() {
@@ -134,6 +173,7 @@ export default {
           } else if (this.currentPos < this.positions.length - 1) {
             this.currentPos = this.positions.length - 1
           }
+          this.sliderPos = Vue.moment(this.positions[this.currentPos].fixTime).unix()
         }
       }
     }
@@ -147,16 +187,15 @@ export default {
     }
     .panel {
       min-width: 300px;
-        width: calc(100vw - 600px);
+        width: calc(100vw - 420px);
         font-size: 15px;
       padding-left: 10px;
+      background-color: rgba(255,255,255,0);
     }
-    .card {
-        background-color: rgba(255,255,255,0.8);
-    }
+
     @media screen and (max-width: 768px) {
       .panel {
-        width: calc(100vw - 60px);
+        width: calc(100vw - 65px);
       }
     }
 

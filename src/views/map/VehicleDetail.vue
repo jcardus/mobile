@@ -199,6 +199,11 @@ export default {
           Vue.$log.debug('no current trip...')
           return
         }
+        if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
+          vm.$static.map.panTo(
+            { lng: this.positions[newPos].longitude, lat: this.positions[newPos].latitude }
+          )
+        }
         const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
         const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
         const newDate = utils.getDate(this.positions[newPos].fixTime)

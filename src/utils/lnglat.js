@@ -6,6 +6,9 @@ import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm, settings } from '../main'
 
+const imageDownloadQueue = []
+let loadingImages = false
+
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }
@@ -19,16 +22,36 @@ export function findFeatureById(id) {
     return e.properties.id === id
   })
 }
-function addImage(path, name) {
-  vm.$static.map.loadImage(path, function(error, image) {
-    if (!error && !vm.$static.map.hasImage(name)) {
-      Vue.$log.debug('loading ', path)
-      vm.$static.map.addImage(name, image)
-    } else {
-      Vue.$log.debug(error, ' adding image ', name)
-    }
-  })
+export function addImage(path, name) {
+  Vue.$log.debug('addImage ', path, ' ', name, ' to queue')
+  imageDownloadQueue.push({ path: path, name: name })
+  if (!loadingImages) {
+    startImageDownload()
+  }
 }
+function startImageDownload() {
+  const img = imageDownloadQueue.pop()
+  if (img) {
+    loadingImages = true
+    if (!vm.$static.map.hasImage(img.name)) {
+      vm.$static.map.loadImage(img.path, function(error, image) {
+        if (error) throw error
+        Vue.$log.debug('adding image to map ', img.name, ' ', image)
+        vm.$static.map.addImage(img.name, image)
+        Vue.$log.debug('done image to map ', img.name, ' ', image)
+        startImageDownload()
+      })
+    } else {
+      Vue.$log.debug('loadimage called but already exists, skipping... ', img.name)
+      startImageDownload()
+    }
+  } else {
+    loadingImages = false
+    Vue.$log.debug('refreshing map...')
+    refreshMap()
+  }
+}
+
 export function getArea(area) {
   if (area.features[0].geometry.type.toUpperCase() === 'POINT') {
     return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 100)'
@@ -41,14 +64,6 @@ export function addImageWithColor(i, color) {
   const name = 'car-' + color + '-' + i
   Vue.$log.debug('adding ', path, ', name: ', name)
   addImage(path, name)
-}
-export function addImages() {
-  addImage('img/40/car-green.png', 'car-green')
-  addImage('img/40/car-yellow.png', 'car-yellow')
-  addImage('img/40/car-red.png', 'car-red')
-  addImage('img/m1.png', 'm1')
-  addImage('img/m2.png', 'm2')
-  addImage('img/m3.png', 'm3')
 }
 export function getBounds(coordinates) {
   const line = helpers.lineString(coordinates)

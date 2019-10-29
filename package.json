@@ -69,7 +69,8 @@
     "body-scroll-lock": "latest",
     "angles": "latest",
     "chart.js": "latest",
-    "nprogress": "latest"
+    "nprogress": "latest",
+    "vue-slider-component": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

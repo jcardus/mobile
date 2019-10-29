@@ -54,7 +54,8 @@ export default {
       animating: true,
       mapStyle: this.$root.$data.mapStyle,
       unsubscribe: null,
-      parentHeight: 0
+      parentHeight: 0,
+      imageDownloadQueue: []
     }
   },
   computed: {
@@ -123,7 +124,6 @@ export default {
       this.setZoomAndCenter()
       this.addControls()
       this.addLayers()
-      this.addImages()
       traccar.startReceiving()
       this.map.resize()
     },
@@ -147,10 +147,6 @@ export default {
       if (feature) {
         this.flyToFeature(feature)
       }
-    },
-    addImages: function() {
-      const map = this.$static.map
-      lnglat.addImages(map)
     },
     showPopup: function(feature, device) {
       const coordinates = feature.geometry.coordinates.slice()
@@ -368,9 +364,12 @@ export default {
       window.removeEventListener('resize', this.mapResize)
     },
     missingImage(e) {
-      this.$log.debug(e.id)
+      this.$log.debug('missing image with name: ', e.id)
       if (e.id.startsWith('car')) {
         lnglat.addImageWithColor(parseInt(e.id.split('-')[2]), e.id.split('-')[1])
+      }
+      if (e.id.startsWith('m')) {
+        lnglat.addImage('img/' + e.id + '.png', e.id)
       }
     },
     onClickTouchUnclustered: function(e) {

@@ -10,6 +10,14 @@ const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
 
+angles.SCALE = 360
+
+export function rotate360(feature) {
+  for (let i = 0; i < 50; i++) {
+    lnglat.addImageWithColor(i, 'green')
+  }
+}
+
 export function animate(feature, coordinates) {
   const route = {
     type: 'Feature',
@@ -40,7 +48,7 @@ export function cacheMatch(coordinates) {
       if (matched && matched.coordinates.length > 1) {
         nextKey = getHashCode(route)
         nextMatch = matched.coordinates
-        Vue.$log.debug('setting cache ', getHashCode(route), ', ', matched.length, ' coords')
+        Vue.$log.debug('setting cache ', getHashCode(route), ', ', matched.coordinates.length, ' coords')
       }
     }
   })
@@ -103,7 +111,7 @@ export function animateMatched(route, feature) {
   feature.route = arc
   let startRotation = 0
   let endRotation = 0
-  angles.SCALE = 360
+
   const step = consts.rotateStep
   let isPanning = false
   if (process.env.NODE_ENV !== 'production') {
@@ -129,6 +137,7 @@ export function animateMatched(route, feature) {
   function _animate() {
     const coordinates = feature.route[counter]
     if (coordinates) {
+      feature.properties.speed = 10 // just to become  green...
       feature.geometry.coordinates = coordinates
       if (!lnglat.contains(vm.$static.map.getBounds(), { longitude: coordinates[0], latitude: coordinates[1] })) {
         isPanning = true

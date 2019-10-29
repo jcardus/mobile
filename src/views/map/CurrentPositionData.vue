@@ -5,9 +5,9 @@
       class="box-card currentPos"
       shadow="always"
     >
-      <h1>
+      <h2>
         {{ name }}
-      </h1>
+      </h2>
       <el-switch
         v-model="showRoutes"
         v-loading="loadingRoutes"
@@ -60,7 +60,9 @@ export default {
       return vm.$data.historyMode
     },
     formattedDate: function() {
-      return utils.formatDate(this.currentPos)
+      if (this.positions && this.positions.length > 0) {
+        return Vue.moment(this.positions[this.currentPos].fixTime).format('YYYY-MM-DD HH:mm:ss')
+      } else { return '' }
     },
     formatAddress: function() {
       return utils.formatAddress(this.currentPos)
@@ -118,16 +120,13 @@ export default {
     font-size: 16px;
     color: #5a5e66;
     width:calc(30vw);
-    max-width: 300px;
+    max-width: 280px;
+    background-color: rgba(255, 255, 255, 0.9);
   }
 
   @media screen and (max-width: 768px) {
     .currentPos {
       width:calc(48vw);
     }
-  }
-
-  .mapboxgl-ctrl {
-    background-color: rgba(255,255,255,0.8);
   }
 </style>

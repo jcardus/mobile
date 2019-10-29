@@ -41,19 +41,24 @@ export default {
       data: {
         labels: this.labels,
         datasets: [{
-          backgroundColor: color('orange').alpha(0.5).rgbString(),
-          borderColor: 'orange  ',
+          backgroundColor: color('green').alpha(0.5).rgbString(),
+          borderColor: color('green').alpha(1).rgbString(),
           fill: true,
           data: this.chartData
         }]
       },
       options: {
+        elements: {
+          point: {
+            radius: 0
+          }
+        },
         legend: {
           display: false
         },
-        aspectRatio: 5,
+        aspectRatio: 9,
         tooltips: {
-          backgroundColor: color('orange').alpha(0.5).rgbString(),
+          backgroundColor: 'rgba(52, 152, 219, 0.8)',
           callbacks: {
             label: function(tooltipItem, data) {
               let label = data.datasets[tooltipItem.datasetIndex].label || ''

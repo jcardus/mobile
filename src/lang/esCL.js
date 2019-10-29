@@ -1,9 +1,23 @@
 export default {
-  router: {
+  navbar: {
+    profile: 'Perfil',
+    settings: 'Ajustes',
+    logout: 'Salir'
+  },
+  poiTable: {
+    showPOIs: 'Mostar PDIs'
+  },
+  geofenceTable: {
+    showGeofences: 'Mostrat Geocercas'
+  },
+  route: {
     map: 'Mapa',
     report_trip_title: 'Informe de viajes',
     report_location_title: 'Informe de posiciones',
     report_zone_crossing: 'Informe de zonas'
+  },
+  vehicleDetail: {
+    show_route: 'Mostrar ruta'
   },
   vehicleList: {
     title: 'Vehículos',
