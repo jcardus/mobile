@@ -48,12 +48,18 @@ export default {
       i: 0,
       trips: [],
       currentTrip: 0,
-      sliderVisible: false,
-      showRoutes: false,
-      loadingRoutes: false
+      sliderVisible: false
     }
   },
   computed: {
+    showRoutes: {
+      get() { return this.historyMode },
+      set(value) { this.historyMode = value }
+    },
+    loadingRoutes: {
+      get() { return vm.$data.loadingRoutes },
+      set(value) { vm.$data.loadingRoutes = value }
+    },
     historyMode: {
       get() { return vm.$data.historyMode },
       set(value) { vm.$data.historyMode = value }
@@ -70,8 +76,13 @@ export default {
     isMobile() {
       return lnglat.isMobile()
     },
-    isPlaying() {
-      return vm.$data.isPlaying
+    isPlaying: {
+      get() {
+        return vm.$data.isPlaying
+      },
+      set(value) {
+        vm.$data.isPlaying = value
+      }
     },
     routeSource() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i
@@ -85,6 +96,13 @@ export default {
       },
       set(value) {
         vm.$data.positions = value
+      }
+    }
+  },
+  watch: {
+    showRoutes() {
+      if (!this.showRoutes) {
+        this.removeLayers()
       }
     }
   },
@@ -172,6 +190,9 @@ export default {
           serverBus.$emit('routeMatchFinished')
         } else {
           animation.animate(this.feature, this.positions.slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
+        }
+        if (newPos === this.positions.length - 1) {
+          this.isPlaying = false
         }
       } else {
         if (!this.trips[this.currentTrip]) {

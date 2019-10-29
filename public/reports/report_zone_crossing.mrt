@@ -5,6 +5,7 @@
     <Databases isList="true" count="1">
       <data Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
         <Alias>data</Alias>
+        <Key />
         <Name>data</Name>
         <PathData>C:\xampp\htdocs\traccar-reports\DT6Ce7ShJLJFxCWy9ytGNcaeqrE521IavVHydoDr.json</PathData>
       </data>
@@ -286,6 +287,7 @@
         <DataBand1 Ref="21" type="DataBand" isKey="true">
           <Border>Bottom;Black;1;Solid;False;4;Black</Border>
           <Brush>Transparent</Brush>
+          <BusinessObjectGuid isNull="true" />
           <ClientRectangle>0,5.8,19,0.6</ClientRectangle>
           <Components isList="true" count="2">
             <Text1 Ref="22" type="Text" isKey="true">
@@ -302,15 +304,12 @@
               <Parent isRef="21" />
               <Text>{root_positions.crossing_event}</Text>
               <TextBrush>Black</TextBrush>
-              <TextFormat Ref="23" type="TimeFormat" isKey="true">
-                <StringFormat>HH:mm:ss</StringFormat>
-              </TextFormat>
               <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
             </Text1>
-            <DataTextroot2 Ref="24" type="Text" isKey="true">
+            <DataTextroot2 Ref="23" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>0.2,0,3.2,0.4</ClientRectangle>
@@ -365,10 +364,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>10/24/2019 12:23:33 AM</ReportChanged>
+  <ReportChanged>10/28/2019 3:06:12 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_zone_crossing.mrt</ReportFile>
-  <ReportGuid>cb06549ca53e4a92aefcab59a4ce946a</ReportGuid>
+  <ReportGuid>06dc44c417f34706b9320ce73035d02c</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.3.4.0</ReportVersion>
@@ -397,7 +396,7 @@ namespace Reports
 </Script>
   <ScriptLanguage>CSharp</ScriptLanguage>
   <Styles isList="true" count="2">
-    <Style1 Ref="25" type="Stimulsoft.Report.StiStyle" isKey="true">
+    <Style1 Ref="24" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>[200:226:253]</Brush>
       <Conditions isList="true" count="0" />
       <Font>Arial,8</Font>
@@ -405,7 +404,7 @@ namespace Reports
       <NegativeTextBrush>Red</NegativeTextBrush>
       <TextBrush>Black</TextBrush>
     </Style1>
-    <Style2 Ref="26" type="Stimulsoft.Report.StiStyle" isKey="true">
+    <Style2 Ref="25" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>Transparent</Brush>
       <Conditions isList="true" count="0" />
       <Font>Arial,8</Font>

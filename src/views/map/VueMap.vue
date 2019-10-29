@@ -32,6 +32,8 @@ import vhCheck from 'vh-check'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTable from './VehicleTable'
+import DateRange from './DateRange'
+import CurrentPositionData from './CurrentPositionData'
 
 export default {
   name: 'VueMap',
@@ -50,13 +52,20 @@ export default {
       origin: [-9.267959, 38.720023],
       destination: [],
       animating: true,
-      popUps: [],
       mapStyle: this.$root.$data.mapStyle,
       unsubscribe: null,
       parentHeight: 0
     }
   },
   computed: {
+    popUps: {
+      get: function() {
+        return vm.$data.popUps
+      },
+      set: function(value) {
+        vm.$data.popUps = value
+      }
+    },
     isMobile() { return lnglat.isMobile() },
     positionsSource() { return this.$root.$static.positionsSource },
     geofencesSource() { return this.$root.$static.geofencesSource },
@@ -96,6 +105,7 @@ export default {
     })
     vhCheck()
     this.map.on('load', this.onMapLoad)
+    this.subscribeEvents()
   },
   methods: {
     onDevices: function(devices) {
@@ -114,7 +124,6 @@ export default {
       this.addControls()
       this.addLayers()
       this.addImages()
-      this.subscribeEvents()
       traccar.startReceiving()
       this.map.resize()
     },
@@ -274,18 +283,25 @@ export default {
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
-      map.addControl(new mapboxgl.FullscreenControl())
       if (!lnglat.isMobile()) {
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
         // map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
       }
-
       if (settings.showSlider) {
         map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
-        const VD = Vue.extend(HistoryPanel)
-        const _vm = new VD({ i18n: i18n })
+        let VD = Vue.extend(HistoryPanel)
+        let _vm = new VD({ i18n: i18n })
         _vm.$mount('#slider-div')
+        map.addControl(new MapboxCustomControl('date-range-div'), 'top-left')
+        VD = Vue.extend(DateRange)
+        _vm = new VD({ i18n: i18n })
+        _vm.$mount('#date-range-div')
+        map.addControl(new MapboxCustomControl('currentPos-div'), 'top-right')
+        VD = Vue.extend(CurrentPositionData)
+        _vm = new VD({ i18n: i18n })
+        _vm.$mount('#currentPos-div')
       }
+      map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
     },
     onMoveEnd: function() {
       if (!vm.$data.isPlaying) {
@@ -470,6 +486,37 @@ export default {
       this.$log.debug('received ', this.positions.length, ' positions')
       this.processPositions(this.positions)
     },
+    positionToFeature: function(position, device) {
+      return {
+        type: 'Feature',
+        properties: {
+          course: position.course,
+          text: device.name,
+          deviceId: position.deviceId,
+          speed: position.speed,
+          immobilization_active: position.attributes.out1 || position.attributes.isImmobilizationOn,
+          ignition: position.attributes.ignition,
+          motion: position.attributes.motion,
+          fixTime: position.fixTime,
+          fixDays: this.$moment().diff(this.$moment(device.lastUpdate), 'days'),
+          description: '<div id=\'vue-vehicle-popup\'></div>'
+        },
+        geometry: {
+          'type': 'Point',
+          'coordinates': [position.longitude, position.latitude]
+        }
+      }
+    },
+    updateFeature: function(feature, device, position) {
+      feature.properties.ignition = device.ignition = position.attributes.ignition
+      feature.properties.motion = device.motion = position.attributes.motion
+      feature.properties.speed = device.speed = position.speed
+      feature.properties.address = position.address
+      feature.properties.fixTime = position.fixTime
+      feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
+      device.address = position.address
+      device.lastUpdate = position.fixTime
+    },
     processPositions: function(positions) {
       const self = this
       positions.forEach(function(position) {
@@ -482,34 +529,13 @@ export default {
           }
           device.speed = position.speed
           device.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
-          feature = {
-            type: 'Feature',
-            properties: {
-              course: position.course,
-              text: device.name,
-              deviceId: position.deviceId,
-              speed: position.speed,
-              immobilization_active: position.attributes.out1 || position.attributes.isImmobilizationOn,
-              ignition: position.attributes.ignition,
-              motion: position.attributes.motion,
-              description: "<div id='vue-vehicle-popup'></div>"
-            },
-            geometry: {
-              'type': 'Point',
-              'coordinates': [position.longitude, position.latitude]
-            }
-          }
+          feature = self.positionToFeature(position, device)
           self.positionsSource.features.push(feature)
           self.$log.debug('updating map source')
           if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
         } else {
           if (!device) return
-          feature.properties.ignition = device.ignition = position.attributes.ignition
-          feature.properties.motion = device.motion = position.attributes.motion
-          feature.properties.speed = device.speed = position.speed
-          device.address = position.address
-          device.lastUpdate = position.fixTime
-
+          self.updateFeature(feature, device, position)
           if (settings.animateMarkers && lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature)
@@ -517,7 +543,6 @@ export default {
             self.$log.debug('device ', feature.properties.text, ' off bounds')
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
-            feature.properties.address = position.address
             self.$log.debug('refresh map...')
             if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
           }

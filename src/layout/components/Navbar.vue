@@ -2,8 +2,10 @@
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <breadcrumb v-if="device!=='mobile'" id="breadcrumb-container" class="breadcrumb-container" />
+    <div class="left-menu">
+      <vehicle-list v-if="device==='mobile'" class="left-menu-item"></vehicle-list>
+    </div>
     <div class="right-menu">
-      <vehicle-list v-if="device==='mobile'" class="right-menu-item"></vehicle-list>
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
         <error-log class="errLog-container right-menu-item hover-effect" />
@@ -104,6 +106,58 @@ export default {
     display: inline-block;
     vertical-align: top;
   }
+
+    .left-menu {
+      float: left;
+      height: 100%;
+      line-height: 50px;
+
+      &:focus {
+        outline: none;
+      }
+
+      .left-menu-item {
+        display: inline-block;
+        padding: 0 8px;
+        height: 100%;
+        font-size: 18px;
+        color: #5a5e66;
+        vertical-align: text-bottom;
+
+        &.hover-effect {
+          cursor: pointer;
+          transition: background .3s;
+
+          &:hover {
+            background: rgba(0, 0, 0, .025)
+          }
+        }
+      }
+
+      .avatar-container {
+        margin-right: 30px;
+
+        .avatar-wrapper {
+          margin-top: 5px;
+          position: relative;
+
+          .user-avatar {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+          }
+
+          .el-icon-caret-bottom {
+            cursor: pointer;
+            position: absolute;
+            right: -20px;
+            top: 25px;
+            font-size: 12px;
+          }
+        }
+      }
+    }
 
   .right-menu {
     float: right;

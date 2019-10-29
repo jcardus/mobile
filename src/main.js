@@ -16,6 +16,7 @@ import VueTimeago from 'vue-timeago'
 import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
+
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
 const options = {
@@ -27,6 +28,7 @@ const options = {
   separator: '|',
   showConsoleColors: true
 }
+
 Vue.use(VueLogger, options)
 Vue.config.lang = defaultLang
 Vue.use(Element, {
@@ -83,12 +85,14 @@ export const vm = new Vue({
   },
   data: function() {
     return {
+      loadingRoutes: false,
       routeMinDate: Vue.moment().startOf('day').toDate(),
       routeMaxDate: new Date(),
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
       positions: [],
       geofences: [],
+      popUps: [],
       alerts: [],
       historyMode: false,
       currentDevice: null,

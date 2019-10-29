@@ -8,7 +8,7 @@
             <h2 v-else>{{ $t('settings.alert_edit') }}</h2>
             <el-form>
               <el-form-item :label="$t('settings.alert_form_type')">
-                <el-select v-model="selectedType" :placeholder="$t('settings.alert_form_type_placeholder')" :disabled="isNewAlert === false">
+                <el-select v-model="selectedType" value="" :placeholder="$t('settings.alert_form_type_placeholder')" :disabled="isNewAlert === false">
                   <el-option v-for="alertType in alertTypes" :key="alertType.value" :value="alertType.value" :label="alertType.text" />
                 </el-select>
               </el-form-item>
@@ -16,15 +16,16 @@
                 <el-checkbox-group v-model="allVehicles" @change="handleAllVehiclesSelect">
                   <el-checkbox key="always" label="always">{{ $t('settings.alert_form_all_vehicles') }}</el-checkbox>
                 </el-checkbox-group>
-                <el-drag-select
+                <el-select
                   v-model="selectedDevices"
                   :disabled="allVehicles.length == 1"
                   style="width: 100%; height: 35px"
                   multiple="true"
                   :placeholder="$t('settings.alert_form_vehicles_placeholder')"
+                  value=""
                 >
                   <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-                </el-drag-select>
+                </el-select>
               </el-form-item>
               <el-form-item label="Vias:">
                 <el-checkbox-group v-model="notificatorsGroup">
@@ -56,14 +57,15 @@
             <h2 v-else>{{ $t('settings.alert_form_all_vehicles') }}</h2>
             <el-form>
               <el-form-item :label="$t('settings.alert_form_geofences')">
-                <el-drag-select
+                <el-select
                   v-model="selectedGeofences"
                   style="width: 100%; height: 35px"
                   multiple="true"
                   placeholder="Geofences"
+                  value=""
                 >
                   <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-                </el-drag-select>
+                </el-select>
               </el-form-item>
             </el-form>
             <el-button
@@ -208,11 +210,9 @@
 <script>
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
-import ElDragSelect from '@/components/DragSelect'
 
 export default {
   name: 'Alerts',
-  components: { ElDragSelect },
   data() {
     return {
       isOpenAlertForm: false,
@@ -283,13 +283,13 @@ export default {
         })
       })
     },
-    alertTypeRenderer(row, column, cellValue, index) {
+    alertTypeRenderer(row, column, cellValue) {
       return this.$t('settings.alert_' + cellValue)
     },
-    alertSpeedRenderer(row, column, cellValue, index) {
+    alertSpeedRenderer(row, column, cellValue) {
       return Math.round(cellValue * 1.85200) + ' Km/h'
     },
-    devicesRenderer(row, column, cellValue, index) {
+    devicesRenderer(row, column, cellValue) {
       if (row.notification.always) {
         return 'Todos'
       } else {
@@ -486,7 +486,7 @@ export default {
   }
   .modal {
     width: 500px;
-    margin: 0px auto;
+    margin: 0 auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 2px;
@@ -494,20 +494,7 @@ export default {
     transition: all 0.2s ease-in;
     font-family: Helvetica, Arial, sans-serif;
   }
-  .fadeIn-enter {
-    opacity: 0;
-  }
-
-  .fadeIn-leave-active {
-    opacity: 0;
-    transition: all 0.2s step-end;
-  }
-
   .fadeIn-enter .modal,
-  .fadeIn-leave-active.modal {
-    transform: scale(1.1);
-  }
-
   .overlay {
     position: fixed;
     top: 0;

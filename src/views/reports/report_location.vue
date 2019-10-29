@@ -4,14 +4,15 @@
       <el-col :span="17">
         <div class="grid-content">
           <el-tooltip content="Select vehicles" placement="bottom">
-            <el-drag-select
+            <el-select
               v-model="selectedDevices"
               style="width: 100%; height: 35px"
               multiple
               placeholder="Vehicles"
+              value=""
             >
               <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-            </el-drag-select>
+            </el-select>
           </el-tooltip>
         </div>
       </el-col>
@@ -26,6 +27,7 @@
               unlink-panels
               range-separator="-"
               format="dd-MM-yyyy"
+              value-format="yyyy-MM-dd HH:mm:ss"
               start-placeholder="Start date"
               end-placeholder="End date"
               :picker-options="pickerOptions"
@@ -42,13 +44,12 @@
         </div>
       </el-col>
     </el-row>
-    <div id="viewer" style="display: none" />
-    <div id="loader" style="display: none" />
+    <div id="viewer" style="display: none"></div>
+    <div id="loader" style="display: none"></div>
   </div>
 </template>
 
 <script>
-import ElDragSelect from '@/components/DragSelect'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
@@ -69,7 +70,6 @@ function generate_token(length) {
 
 export default {
   name: 'Index',
-  components: { ElDragSelect },
   data() {
     return {
       // eslint-disable-next-line no-undef
@@ -219,8 +219,8 @@ export default {
             report: 'location',
             report_id: report_id,
             selected_devices: this.selectedDevices,
-            date_from: this.dateRange[0].toISOString().replace('T', ' ').substring(0, 19),
-            date_to: this.dateRange[1].toISOString().replace('T', ' ').substring(0, 19)
+            date_from: this.dateRange[0],
+            date_to: this.dateRange[1]
           }
 
           traccar.trigger_report(body, report_id, this.renderReport, this.errorHandler)
@@ -278,18 +278,9 @@ export default {
 </script>
 
 <style scoped>
-  .el-input__inner {
-    padding: 1px !important;
-    width: 390px;
-  }
-
   .grid-content {
-    border-radius: 0px;
+    border-radius: 0;
     min-height: 36px;
-  }
-
-  .bg-purple {
-    background: #d3dce6;
   }
 
   #viewer {
@@ -301,8 +292,6 @@ export default {
     left: 50%;
     top: 50%;
     z-index: 1;
-    width: 150px;
-    height: 150px;
     margin: -75px 0 0 -75px;
     border: 16px solid #f3f3f3;
     border-radius: 50%;

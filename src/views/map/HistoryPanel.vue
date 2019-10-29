@@ -1,67 +1,48 @@
 <template>
-  <div v-if="show" class="mapboxgl-ctrl card">
-    <div class="panel">
-      <table>
-        <tr><td colspan="2">
-          <vue-slider
-            v-model="currentPos"
-            style="vertical-align:middle;width: 100%;
-                                font-weight:bold;"
-            :min="minPos"
-            :max="maxPos"
-            :tooltip-formatter="formatter"
-            :tooltip-placement="'top'"
-            :tooltip="'always'"
-          />
-        </td></tr>
-        <tr><td>
-              <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
-            </td>
-          <td>
-            <div style="text-align: center">
-              <label for="minDate"></label><input
-                id="minDate"
-                v-model="minDate"
-                type="date"
-                style="float:left; width: 145px; background-color: rgba(1,1,1,0)"
-              >
-              <label for="maxDate"></label><input
-                id="maxDate"
-                v-model="maxDate"
-                type="date"
-                style="float:right; width: 145px; background-color: rgba(1,1,1,0)"
-              >
-            </div>
-          </td></tr></table>
-    </div>
+  <div v-if="show" class="mapboxgl-ctrl panel">
+    <speed-chart :labels="labels" :chart-data="chartData" />
+
+    <el-slider
+      v-model="currentPos"
+      v-loading="loadingRoutes"
+      :format-tooltip="formatter"
+      :max="maxPos"
+      :min="minPos"
+      show-tooltip
+    />
+    <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
   </div>
 </template>
 
 <script>
 import { serverBus, vm } from '../../main'
 import * as utils from '../../utils/utils'
-import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/default.css'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
+import SpeedChart from './SpeedChart'
 
 export default {
   name: 'HistoryPanel',
-  components: {
-    VueSlider
-  },
-  data: function() {
+  components: { SpeedChart },
+  data() {
     return {
       oldPos: 0,
       currentPos: 0,
       minPos: 0,
       maxPos: 0,
       formatter: v => `${utils.formatDate(v)}`,
-      deviceId: 0
+      deviceId: 0,
+      dates: [],
+      labels: [],
+      chartData: []
     }
   },
   computed: {
+    loadingRoutes: {
+      get() { return vm.$data.loadingRoutes },
+      set(value) { vm.$data.loadingRoutes = value }
+    },
     isPlaying: {
       get() { return vm.$data.isPlaying },
       set(value) { vm.$data.isPlaying = value }
@@ -77,7 +58,6 @@ export default {
       },
       set(newVal) {
         vm.$data.routeMinDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
-        serverBus.$emit('minDateChanged')
       }
     },
     maxDate: {
@@ -86,7 +66,6 @@ export default {
       },
       set(newVal) {
         vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
-        serverBus.$emit('maxDateChanged')
       }
     }
   },
@@ -123,6 +102,17 @@ export default {
     serverBus.$on('routeMatchFinished', this.playNext)
   },
   methods: {
+    fillGraphData() {
+      // const categories = this.positions.map(x => this.$moment(x.fixTime).format('YYYY-MM-DDThh:mm:ss'))
+      const categories = this.positions.map(x => this.$moment(x.fixTime).toDate())
+      // const categories = this.positions.map(x => x.fixTime).toDate())
+      // const categories = this.positions.map(x => x.fixTime)
+      const series = this.positions.map(x => x.speed)
+      Vue.$log.debug('categories: ', categories)
+      Vue.$log.debug('series: ', series)
+      this.labels = categories
+      this.chartData = series
+    },
     click: function() {
       this.isPlaying = !this.isPlaying
       if (this.isPlaying) {
@@ -134,13 +124,11 @@ export default {
     updateMinMax() {
       this.maxPos = this.positions.length - 1
       this.currentPos = this.maxPos
+      this.fillGraphData()
     },
     playNext() {
       if (this.isPlaying) {
-        if (this.currentPos >= this.maxPos) {
-          Vue.$log.debug('stopping play... curPos/maxPos: ', this.currentPos, this.maxPos)
-          this.isPlaying = false
-        } else {
+        if (this.currentPos < this.maxPos) {
           if (this.currentPos + consts.routeSlotLength < this.positions.length) {
             this.currentPos += consts.routeSlotLength
           } else if (this.currentPos < this.positions.length - 1) {
@@ -162,26 +150,6 @@ export default {
         width: calc(100vw - 600px);
         font-size: 15px;
       padding-left: 10px;
-    }
-    input {
-        padding-inline-start: 0;
-        border-width: 1px;
-        border-style: solid;
-        border-color: lightgray;
-        padding: 0;
-    }
-    table {
-        padding: 0 !important;
-        border-width: 0 !important;
-        width: 100%;
-    }
-    #minDate
-    {
-        float:left;
-    }
-    #maxDate
-    {
-        float:right;
     }
     .card {
         background-color: rgba(255,255,255,0.8);

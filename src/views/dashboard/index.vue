@@ -3,9 +3,9 @@
     <el-row :gutter="20">
       <el-col :span="16">
         <div class="grid-content">
-          <el-drag-select v-model="selectedDevices" style="width: 100%; height: 35px" multiple placeholder="">
+          <el-select v-model="selectedDevices" style="width: 100%; height: 35px" multiple placeholder="" value="">
             <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-          </el-drag-select>
+          </el-select>
         </div>
       </el-col>
       <el-col :span="8">
@@ -24,19 +24,17 @@
         </div>
       </el-col>
     </el-row>
-    <div id="dashboardContainer" class="dashboard" />
+    <div id="dashboardContainer" class="dashboard"></div>
   </div>
 </template>
 
 <script>
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { vm } from '../../main'
-import ElDragSelect from '@/components/DragSelect'
 import { traccar } from '../../api/traccar-api'
 
 export default {
   name: 'Dashboard',
-  components: { ElDragSelect },
   data: function() {
     return {
       from: this.$moment().subtract(1, 'month').startOf('day'),
@@ -140,9 +138,6 @@ export default {
     height: 100%;
     width: 100%;
     top: 50px;
-  }
-  .el-picker-panel__sidebar {
-    width: 130px
   }
   iframe {
     border-width: 0 !important;
