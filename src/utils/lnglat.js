@@ -29,7 +29,7 @@ export function addImage(path, name) {
     startImageDownload()
   }
 }
-function startImageDownload() {
+export function startImageDownload() {
   const img = imageDownloadQueue.pop()
   if (img) {
     loadingImages = true
@@ -38,7 +38,8 @@ function startImageDownload() {
         if (error) throw error
         Vue.$log.debug('adding image to map ', img.name, ' ', image)
         vm.$static.map.addImage(img.name, image)
-        Vue.$log.debug('done image to map ', img.name, ' ', image)
+        Vue.$log.debug('done image to map, refreshing map', img.name, ' ', image)
+        refreshMap()
         startImageDownload()
       })
     } else {
@@ -47,8 +48,6 @@ function startImageDownload() {
     }
   } else {
     loadingImages = false
-    Vue.$log.debug('refreshing map...')
-    refreshMap()
   }
 }
 export function getArea(area) {
@@ -189,7 +188,6 @@ export function addVehiclesLayer(layer, source) {
     }
   })
 }
-
 export function addLayers(map) {
   const source = 'positions'
   if (!map.getSource(source)) {

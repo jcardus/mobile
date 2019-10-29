@@ -6,13 +6,6 @@ import Vue from 'vue'
 import * as angles from 'angles'
 import * as consts from './consts'
 
-export function updateOldFeature(feature) {
-  if (routePlayLayerSource.features[0]) {
-    feature.geometry = routePlayLayerSource.features[0].geometry
-    feature.properties.course = routePlayLayerSource.features[0].properties.course
-  }
-}
-
 const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
@@ -40,11 +33,14 @@ export function initFeatureForPlaying(feature) {
     })
     lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
   } else {
+    vm.$static.map.removeLayer(routePlayLayer)
+    lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
     refreshRoutePlayLayer()
   }
   for (let i = 0; i < 50; i++) {
     lnglat.addImageWithColor(i, 'green')
   }
+  lnglat.startImageDownload()
 }
 export function animate(feature, coordinates) {
   const route = {

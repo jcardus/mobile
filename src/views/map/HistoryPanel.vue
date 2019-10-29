@@ -80,6 +80,18 @@ export default {
     }
   },
   watch: {
+    isPlaying() {
+      if (this.isPlaying) {
+        animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
+        if (this.sliderPos === this.maxPos) {
+          this.currentPos = 0
+        }
+        serverBus.$emit('routePlay')
+      }
+      lnglat.hideLayers(this.isPlaying)
+      animation.hideRouteLayer(!this.isPlaying)
+      lnglat.refreshMap()
+    },
     sliderPos() {
       Vue.$log.debug('slider changed to ', this.sliderPos)
       const pos = this.indexArray[this.sliderPos]
@@ -104,6 +116,7 @@ export default {
                 dist < 0.001)
         if (i > this.currentPos) {
           Vue.$log.debug('fast forwarding to ', i)
+          this.currentPos = i
           this.sliderPos = Vue.moment(this.positions[i].fixTime).unix()
         }
       }
@@ -143,16 +156,6 @@ export default {
     },
     click: function() {
       this.isPlaying = !this.isPlaying
-      if (this.isPlaying) {
-        animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
-        if (this.sliderPos === this.maxPos) {
-          this.currentPos = 0
-        }
-        serverBus.$emit('routePlay')
-      }
-      lnglat.hideLayers(this.isPlaying)
-      animation.hideRouteLayer(!this.isPlaying)
-      lnglat.refreshMap()
     },
     updateMinMax() {
       if (this.positions.length > 0) {
