@@ -20,7 +20,7 @@
                   v-model="selectedDevices"
                   :disabled="allVehicles.length == 1"
                   style="width: 100%; height: 35px"
-                  multiple="true"
+                  multiple
                   :placeholder="$t('settings.alert_form_vehicles_placeholder')"
                   value=""
                 >
@@ -60,7 +60,7 @@
                 <el-select
                   v-model="selectedGeofences"
                   style="width: 100%; height: 35px"
-                  multiple="true"
+                  multiple
                   placeholder="Geofences"
                   value=""
                 >
