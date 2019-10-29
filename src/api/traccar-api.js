@@ -134,6 +134,13 @@ export const traccar = {
         .catch(error => { reject(error) })
     })
   },
+  geofencesByDevice: function(deviceId, onFulfill) {
+    return new Promise((resolve, reject) => {
+      axios.get(geoFences + '?deviceId=' + deviceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+        .then(response => onFulfill(response.data))
+        .catch(error => { reject(error) })
+    })
+  },
   alertsByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
       axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
@@ -160,6 +167,14 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
+  updateAlert: function(alertId, alert, onFulfill) {
+    Vue.$log.debug(alert)
+    axios.put(alerts + '/' + alertId, alert, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
   deleteAlert: function(alertId, onFulfill) {
     return new Promise((resolve, reject) => {
       axios.delete(alerts + '/' + alertId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
@@ -172,6 +187,17 @@ export const traccar = {
   addPermission: function(permission, onFulfill) {
     Vue.$log.debug(permission)
     axios.post(permissions, permission, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => {
+        Vue.$log.debug(response.data)
+        onFulfill(response.data)
+      })
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  deletePermission: function(permission, onFulfill) {
+    Vue.$log.debug(permission)
+    axios.delete(permissions, { data: permission, withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)

@@ -1,66 +1,83 @@
 <template>
   <div>
     <transition name="modal">
-      <div v-if="isOpen">
+      <div v-if="isOpenAlertForm">
         <div class="overlay">
           <div class="modal">
-            <h2>Adicionar Alerta</h2>
+            <h2 v-if="isNewAlert">{{ $t('settings.alert_add') }}</h2>
+            <h2 v-else>{{ $t('settings.alert_edit') }}</h2>
             <el-form>
-              <el-form-item label="Tipo:">
-                <el-tooltip content="Select alert type" placement="bottom">
-                  <el-select v-model="selectedType" @change="handleAlertTypeChange">
-                    <el-option v-for="alertType in alertTypes" :key="alertType.value" :value="alertType.value" :label="alertType.text" />
-                  </el-select>
-                </el-tooltip>
+              <el-form-item :label="$t('settings.alert_form_type')">
+                <el-select v-model="selectedType" :placeholder="$t('settings.alert_form_type_placeholder')" :disabled="isNewAlert === false">
+                  <el-option v-for="alertType in alertTypes" :key="alertType.value" :value="alertType.value" :label="alertType.text" />
+                </el-select>
               </el-form-item>
-              <el-form-item label="Veículos:">
+              <el-form-item :label="$t('settings.alert_form_vehicles')">
                 <el-checkbox-group v-model="allVehicles" @change="handleAllVehiclesSelect">
-                  <el-checkbox key="always" label="Todos os Veículos"></el-checkbox>
+                  <el-checkbox key="always" label="always">{{ $t('settings.alert_form_all_vehicles') }}</el-checkbox>
                 </el-checkbox-group>
-                <el-tooltip content="Select vehicles" placement="bottom">
-                  <el-drag-select
-                    v-model="selectedDevices"
-                    :disabled="allVehicles.length == 1"
-                    style="width: 100%; height: 35px"
-                    multiple="true"
-                    placeholder="Vehicles"
-                  >
-                    <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-drag-select>
-                </el-tooltip>
-              </el-form-item>
-              <el-form-item label="Geofences:" :style="showGeofenceSelector">
-                <el-tooltip content="Select Geofences" placement="bottom">
-                  <el-drag-select
-                    v-model="selectedGeofences"
-                    style="width: 100%; height: 35px"
-                    multiple="true"
-                    placeholder="Geofences"
-                  >
-                    <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-                  </el-drag-select>
-                </el-tooltip>
+                <el-drag-select
+                  v-model="selectedDevices"
+                  :disabled="allVehicles.length == 1"
+                  style="width: 100%; height: 35px"
+                  multiple="true"
+                  :placeholder="$t('settings.alert_form_vehicles_placeholder')"
+                >
+                  <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
+                </el-drag-select>
               </el-form-item>
               <el-form-item label="Vias:">
                 <el-checkbox-group v-model="notificatorsGroup">
-                  <el-checkbox-button label="web">WEB</el-checkbox-button>
-                  <el-checkbox-button label="mail">E-mail</el-checkbox-button>
-                  <el-checkbox-button label="sms">SMS</el-checkbox-button>
+                  <el-checkbox-button label="web">{{ $t('settings.alert_form_notificator_web') }}</el-checkbox-button>
+                  <el-checkbox-button label="mail">{{ $t('settings.alert_form_notificator_email') }}</el-checkbox-button>
+                  <el-checkbox-button label="sms">{{ $t('settings.alert_form_notificator_sms') }}</el-checkbox-button>
                 </el-checkbox-group>
               </el-form-item>
             </el-form>
             <el-button
               type="info"
-              class="alertAddButton"
+              class="alertFormButton"
               size="small"
-              @click="isOpen = false"
-            >Cancelar</el-button>
+              @click="handleCancelAlertForm"
+            >{{ $t('settings.alert_form_cancel') }}</el-button>
             <el-button
               type="success"
-              class="alertAddButton"
+              class="alertFormButton"
               size="small"
-              @click="handleSubmitAddAlert"
-            >Guardar</el-button>
+              @click="handleSubmitAlertForm"
+            >{{ $t('settings.alert_form_confirm') }}</el-button>
+          </div>
+        </div>
+      </div>
+      <div v-if="isOpenGeofencesForm">
+        <div class="overlay">
+          <div class="modal">
+            <h2 v-if="selectedDevice">{{ selectedDevice.name }}</h2>
+            <h2 v-else>{{ $t('settings.alert_form_all_vehicles') }}</h2>
+            <el-form>
+              <el-form-item :label="$t('settings.alert_form_geofences')">
+                <el-drag-select
+                  v-model="selectedGeofences"
+                  style="width: 100%; height: 35px"
+                  multiple="true"
+                  placeholder="Geofences"
+                >
+                  <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
+                </el-drag-select>
+              </el-form-item>
+            </el-form>
+            <el-button
+              type="info"
+              class="alertFormButton"
+              size="small"
+              @click="handleCancelGeofenceForm"
+            >{{ $t('settings.alert_form_cancel') }}</el-button>
+            <el-button
+              type="success"
+              class="alertFormButton"
+              size="small"
+              @click="handleSubmitGeofenceForm"
+            >{{ $t('settings.alert_form_confirm') }}</el-button>
           </div>
         </div>
       </div>
@@ -70,7 +87,7 @@
         <span>{{ $t('settings.alerts') }}</span>
         <el-tooltip content="Adicionar Alerta" placement="top">
           <el-button
-            class="alertAddButton"
+            class="alertFormButton"
             size="small"
             @click="handleAddAlert"
           ><i class="fas fa-bell"></i></el-button>
@@ -85,26 +102,58 @@
               :show-header="false"
             >
               <el-table-column
-                prop="name"
+                v-if="isInorOutGeofence(props.row)"
+                prop="geofences"
+                sortable=""
+                width="50"
+              >
+                <template slot-scope="scope">
+                  <el-tooltip content="Veículo sem balizas associadas" placement="top">
+                    <i v-if="scope.row.geofences.length === 0" class="fas fa-exclamation-triangle"></i></el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column
+                v-if="isDeviceOverspeed(props.row)"
+                prop="data.attributes.speedLimit"
+                sortable=""
+                width="50"
+              >
+                <template slot-scope="scope">
+                  <el-tooltip content="Veículo sem velocidade máxima definida" placement="top">
+                    <i v-if="scope.row.data.attributes.speedLimit === 0" class="fas fa-exclamation-triangle"></i></el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="data.name"
                 label="Vehicles"
                 sortable=""
-                heigth="1"
               >
               </el-table-column>
               <el-table-column
                 v-if="isDeviceOverspeed(props.row)"
-                prop="attributes.speedLimit"
+                prop="data.attributes.speedLimit"
                 :formatter="alertSpeedRenderer"
                 sortable=""
-                heigth="1"
               >
               </el-table-column>
               <el-table-column
                 v-if="isInorOutGeofence(props.row)"
-                prop="geofenceIds"
+                prop="geofences"
                 sortable=""
-                heigth="1"
+                :formatter="alertGeofencesRenderer"
               >
+              </el-table-column>
+              <el-table-column v-if="isInorOutGeofence(props.row)" label="">
+                <template slot-scope="scope">
+                  <el-tooltip content="Associar Balizas" placement="top">
+                    <el-button
+                      size="small"
+                      class="alertFormButton"
+                      type="primary"
+                      @click="handleAssociateGeofences(false, scope.row)"
+                    ><i class="fas fa-draw-polygon"></i></el-button>
+                  </el-tooltip>
+                </template>
               </el-table-column>
             </el-table>
           </template>
@@ -141,6 +190,14 @@
                 @click="handleDelete(scope.row)"
               ><i class="fas fa-trash-alt"></i></el-button>
             </el-tooltip>
+            <el-tooltip content="Associar Balizas" placement="top">
+              <el-button
+                v-if="isInorOutGeofence(scope.row)"
+                size="small"
+                type="primary"
+                @click="handleAssociateGeofences(true, scope.row)"
+              ><i class="fas fa-draw-polygon"></i></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -158,13 +215,16 @@ export default {
   components: { ElDragSelect },
   data() {
     return {
-      isOpen: false,
+      isOpenAlertForm: false,
+      isOpenGeofencesForm: false,
+      isNewAlert: true,
+      selectedAlert: null,
       selectedType: null,
       notificatorsGroup: [],
       allVehicles: [],
       selectedDevices: [],
+      selectedDevice: null,
       selectedGeofences: [],
-      showGeofenceSelector: 'display:none',
       alertTypes: [
         { value: 'geofenceExit', text: this.$t('settings.alert_geofenceExit') },
         { value: 'geofenceEnter', text: this.$t('settings.alert_geofenceEnter') },
@@ -179,7 +239,7 @@ export default {
       return vm.$data.alerts
     },
     devices: function() {
-      return vm.$data.devices
+      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     geofences: function() {
       return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON'))
@@ -199,7 +259,7 @@ export default {
     },
     loadAlerts: function(alerts) {
       const result = []
-      alerts.forEach(a => {
+      alerts.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
         const alarm_data = {
           notification: a,
           devices: []
@@ -208,12 +268,17 @@ export default {
       })
       vm.$data.alerts = result
 
-      vm.$data.devices.forEach(d => {
+      this.devices.forEach(d => {
         traccar.alertsByDevice(d.id, function(alerts) {
           alerts.forEach(a => {
-            vm.$data.alerts
-              .find(a_data => a_data.notification.id === a.id)
-              .devices.push(d)
+            const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
+            if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+              traccar.geofencesByDevice(d.id, function(geofences) {
+                alert.devices.push({ data: d, geofences: geofences })
+              })
+            } else {
+              alert.devices.push({ data: d })
+            }
           })
         })
       })
@@ -231,33 +296,106 @@ export default {
         return cellValue.length
       }
     },
+    alertGeofencesRenderer(row, column, cellValue, index) {
+      this.$log.debug(row)
+      let description = cellValue.length + ' Geofences'
+      if (cellValue.length > 0) {
+        cellValue.forEach(g => {
+          description = description + ' [' + g.name + '] '
+        })
+      }
+      return description
+    },
     toogleExpand(row) {
       const $table = this.$refs.table
       $table.toggleRowExpansion(row)
     },
     handleAddAlert() {
-      this.isOpen = !this.isOpen
+      this.isNewAlert = true
+      this.isOpenAlertForm = !this.isOpenAlertForm
     },
-    handleSubmitAddAlert() {
-      const newAlert = {
-        type: this.selectedType,
-        always: this.allVehicles.length === 1,
-        notificators: this.notificatorsGroup.toString()
+    handleAssociateGeofences(allDevices, row) {
+      if (allDevices === false) {
+        row.geofences.forEach(g => this.selectedGeofences.push(g.id))
+        this.selectedDevice = row.data
+      } else {
+        this.selectedAlert = row
       }
-      traccar.newAlert(newAlert, this.alertCreated)
-      this.isOpen = false
+
+      this.isOpenGeofencesForm = true
+    },
+    handleCancelGeofenceForm() {
+      this.isOpenGeofencesForm = false
+      this.clearFormData()
+    },
+    handleSubmitGeofenceForm() {
+      this.isOpenGeofencesForm = false
+      const device = this.selectedDevice
+      const self = this
+      if (device) {
+        this.associateGeofences(device)
+      } else {
+        this.selectedAlert.devices.forEach(d => self.associateGeofences(d.data))
+      }
+    },
+    associateGeofences(device) {
+      const self = this
+      // Disconnect current device <-> geofence
+      traccar.geofencesByDevice(device.id, function(geofences) {
+        geofences.forEach(geofence => {
+          const permission = {
+            deviceId: device.id,
+            geofenceId: geofence.id
+          }
+          traccar.deletePermission(permission, function() { })
+        })
+
+        self.selectedGeofences.forEach(g => {
+          const permission = {
+            deviceId: device.id,
+            geofenceId: g
+          }
+          traccar.addPermission(permission, function() { })
+        })
+
+        traccar.alerts(self.loadAlerts)
+        self.clearFormData()
+      })
+    },
+    handleCancelAlertForm() {
+      this.isOpenAlertForm = false
+      this.clearFormData()
+    },
+    handleSubmitAlertForm() {
+      this.$log.debug(this.allVehicles)
+      if (this.isNewAlert) {
+        const newAlert = {
+          type: this.selectedType,
+          always: this.allVehicles.length === 1,
+          notificators: this.notificatorsGroup.toString()
+        }
+        traccar.newAlert(newAlert, this.alertCreated)
+      } else {
+        const alert = this.selectedAlert.notification
+        alert.always = this.allVehicles.length === 1
+        alert.notificators = this.notificatorsGroup.toString()
+
+        traccar.updateAlert(alert.id, alert, this.updatedCreated)
+      }
+      this.isOpenAlertForm = false
     },
     clearFormData() {
+      this.selectedAlert = null
       this.selectedType = null
       this.notificatorsGroup = []
       this.allVehicles = []
       this.selectedDevices = []
+      this.selectedDevice = null
       this.selectedGeofences = []
-      this.showGeofenceSelector = 'display:none'
     },
     alertCreated: function(newAlert) {
       if (newAlert.always === false) {
-        // Connect vehicles
+        // Connect device <-> notification
         this.selectedDevices.forEach(v => {
           const permission = {
             deviceId: v,
@@ -274,19 +412,50 @@ export default {
       this.clearFormData()
       traccar.alerts(this.loadAlerts)
     },
+    updatedCreated: function(updatedAlert) {
+      if (updatedAlert.always === false) {
+        this.selectedAlert.devices.forEach(v => {
+          const permission = {
+            deviceId: v.data.id,
+            notificationId: updatedAlert.id
+          }
+          traccar.deletePermission(permission, function() { })
+        })
+
+        // Connect device <-> notification
+        this.selectedDevices.forEach(v => {
+          const permission = {
+            deviceId: v,
+            notificationId: updatedAlert.id
+          }
+          traccar.addPermission(permission, function() { })
+        })
+      }
+      this.$message({
+        type: 'success',
+        message: this.$t('settings.alert_updated')
+      })
+      this.clearFormData()
+      traccar.alerts(this.loadAlerts)
+    },
     handleEdit(row) {
-      // this.isOpen = !this.isOpen
+      this.isNewAlert = false
+      this.selectedAlert = row
+      this.selectedType = row.notification.type
+      if (row.notification.always) {
+        this.allVehicles.push('always')
+      }
+      const notificators = row.notification.notificators.split(',')
+      notificators.forEach(n => this.notificatorsGroup.push(n))
+      row.devices.forEach(d => this.selectedDevices.push(d.data.id))
+
+      this.selectedGeofences = []
+
+      this.isOpenAlertForm = !this.isOpenAlertForm
     },
     handleAllVehiclesSelect() {
       if (this.allVehicles.length === 1) {
         this.selectedDevices.clear()
-      }
-    },
-    handleAlertTypeChange() {
-      if (this.selectedType === 'geofenceExit' || this.selectedType === 'geofenceEnter') {
-        this.showGeofenceSelector = ''
-      } else {
-        this.showGeofenceSelector = 'display:none'
       }
     },
     handleDelete(row) {
@@ -311,7 +480,7 @@ export default {
 </script>
 
 <style scoped>
-  .alertAddButton {
+  .alertFormButton {
     float: right;
     margin: 10px;
   }
