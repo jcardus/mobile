@@ -38,7 +38,8 @@ export function startImageDownload() {
     if (!vm.$static.map.hasImage(img.name)) {
       vm.$static.map.loadImage(img.path, function(error, image) {
         if (error) {
-          Vue.$log.error('error adding image to the map', error, ' ', img.name, ' ', image)
+          Vue.$log.error('error adding image to the map', error, ' ', img.name, ' ')
+          throw error
         } else {
           Vue.$log.debug('adding image to map ', img.name, ' ', image)
           vm.$static.map.addImage(img.name, image)
@@ -63,7 +64,7 @@ export function getArea(area) {
   }
 }
 export function addImageWithColor(i, color) {
-  const path = 'img/3d/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
+  const path = 'https://d2alv66jwtleln.cloudfront.net/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
   const name = 'car-' + color + '-' + i
   Vue.$log.debug('adding ', path, ', name: ', name)
   addImage(path, name)
@@ -164,7 +165,7 @@ const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'
 const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2]]
 
 // objects for caching and keeping track of HTML marker objects (for performance)
-let markers = {}
+const markers = {}
 let markersOnScreen = {}
 function createDonutChart(props) {
   const offsets = []
@@ -179,8 +180,7 @@ function createDonutChart(props) {
   const r0 = Math.round(r * 0.75)
   const w = r * 2
 
-  let html = '<svg width="' + w + '" height="' + w + '" viewbox="0 0 ' + w + ' ' + w +
-    '" text-anchor="middle" style="font: ' + fontSize + 'px sans-serif">'
+  let html = `<svg width="${w}" height="${w}" viewBox="0 0 ${w} ${w}" text-anchor="middle" style="font: ${fontSize}px sans-serif">`
 
   for (let i = 0; i < counts.length; i++) {
     html += donutSegment(offsets[i] / total, (offsets[i] + counts[i]) / total, r, r0, colors[i])
@@ -230,9 +230,16 @@ export function updateMarkers() {
 
     if (!markersOnScreen[id]) { marker.addTo(vm.$static.map) }
   }
-  // for every marker we've added previously, remove those that are no longer visible
-  for (const id in markersOnScreen) {
-    if (!newMarkers[id]) { markersOnScreen[id].remove() }
+  for (
+    // for every marker we've added previously, remove those that are no longer visible
+    const id in markersOnScreen) {
+    if (newMarkers.hasOwnProperty(id)) {
+      continue
+    }
+    if (markersOnScreen.hasOwnProperty(id)) {
+      const remove = markersOnScreen[id]
+      remove.remove()
+    }
   }
   markersOnScreen = newMarkers
 }
@@ -332,10 +339,6 @@ export function removeLayers() {
   if (map.getLayer('pois-labels')) { map.removeLayer('pois-labels') }
   if (map.getSource('positions')) { map.removeSource('positions') }
   if (map.getSource('geofences')) { map.removeSource('geofences') }
-  markers = {}
-  for (const id in markersOnScreen) {
-    markersOnScreen[id].remove()
-  }
 }
 export function contains(lngLatBounds, position) {
   return (
