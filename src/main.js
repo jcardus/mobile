@@ -17,6 +17,9 @@ import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 import * as lnglat from './utils/lnglat'
+import Amplify, * as AmplifyModules from 'aws-amplify'
+import { AmplifyPlugin } from 'aws-amplify-vue'
+import awsconfig from './aws-exports'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
@@ -45,6 +48,10 @@ export const settings = {
   truck3d: false,
   show3dBuildings: false
 }
+
+Amplify.configure(awsconfig)
+
+Vue.use(AmplifyPlugin, AmplifyModules)
 
 Vue.use(require('vue-moment'))
 

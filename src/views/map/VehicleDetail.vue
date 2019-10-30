@@ -22,7 +22,6 @@
 </template>
 <script>
 
-import 'mapillary-js/dist/mapillary.min.css'
 import axios from 'axios'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'

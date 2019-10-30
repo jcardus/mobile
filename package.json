@@ -3,7 +3,7 @@
   "version": "4.2.1",
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build:prod": "vue-cli-service build",
+    "build": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "lint": "eslint --ext .js,.vue src",
@@ -69,7 +69,9 @@
     "angles": "latest",
     "chart.js": "latest",
     "nprogress": "latest",
-    "vue-slider-component": "latest"
+    "vue-slider-component": "latest",
+    "aws-amplify": "latest",
+    "aws-amplify-vue": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
