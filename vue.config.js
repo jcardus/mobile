@@ -52,8 +52,8 @@ module.exports = {
   chainWebpack(config) {
     config.plugin('copy').tap(() => [[
       {
-        from: resolve('/public/img/3d'),
-        to: resolve('/dist'),
+        from: resolve('./public/img/3d'),
+        to: resolve('./dist'),
         toType: 'dir',
         ignore: ['*.png']
       }
