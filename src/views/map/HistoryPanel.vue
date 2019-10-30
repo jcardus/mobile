@@ -86,11 +86,11 @@ export default {
         if (this.sliderPos === this.maxPos) {
           this.currentPos = 0
         }
-        serverBus.$emit('routePlay')
       }
       lnglat.hideLayers(this.isPlaying)
       animation.hideRouteLayer(!this.isPlaying)
       lnglat.refreshMap()
+      serverBus.$emit('routePlay')
     },
     sliderPos() {
       Vue.$log.debug('slider changed to ', this.sliderPos)
@@ -173,7 +173,7 @@ export default {
     },
     playNext() {
       if (this.isPlaying) {
-        if (this.currentPos < this.maxPos) {
+        if (this.sliderPos <= this.maxPos) {
           if (this.currentPos + consts.routeSlotLength < this.positions.length) {
             this.currentPos += consts.routeSlotLength
           } else if (this.currentPos < this.positions.length - 1) {

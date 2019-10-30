@@ -306,6 +306,7 @@ export default {
         this.$log.debug('moveend storing cookie... isPlaying: ', vm.$data.isPlaying)
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
+        lnglat.updateMarkers()
       }
     },
     onPitch: function() {
@@ -320,8 +321,9 @@ export default {
     },
     subscribeEvents() {
       const self = this
+      this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
-      this.$static.map.on('pitch', this.onPitch)
+      // this.$static.map.on('pitch', this.onPitch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
@@ -332,6 +334,7 @@ export default {
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('styleimagemissing', this.missingImage)
+      this.$static.map.on('data', this.onData)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
@@ -348,6 +351,7 @@ export default {
       window.addEventListener('resize', this.mapResize)
     },
     unsubscribeEvents() {
+      this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
       this.$static.map.off('click', 'unclustered-point', this.onClickTouchUnclustered)
@@ -360,6 +364,7 @@ export default {
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('styleimagemissing', this.missingImage)
+      this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       if (this.unsubscribe) { this.unsubscribe() }
@@ -373,6 +378,10 @@ export default {
       if (e.id.startsWith('m')) {
         lnglat.addImage('img/' + e.id + '.png', e.id)
       }
+    },
+    onData(e) {
+      if (e.sourceId !== lnglat.source || !e.isSourceLoaded) return
+      lnglat.updateMarkers()
     },
     onClickTouchUnclustered: function(e) {
       const feature = e.features[0]
@@ -658,6 +667,9 @@ export default {
     },
     getType(area) {
       if (area.startsWith('POLYGON')) { return 'geofence' } else { return 'poi' }
+    },
+    onMove() {
+      lnglat.updateMarkers()
     }
   }
 }

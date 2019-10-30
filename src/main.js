@@ -16,6 +16,7 @@ import VueTimeago from 'vue-timeago'
 import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
+import * as lnglat from './utils/lnglat'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
@@ -72,7 +73,8 @@ Vue.use(VueI18nFilter)
 export const vm = new Vue({
   el: '#app',
   static() {
-    return { map: null,
+    return {
+      map: null,
       positionsSource: {
         'type': 'FeatureCollection',
         'features': []
@@ -105,9 +107,14 @@ export const vm = new Vue({
       return this.devices.find(e => e.id === deviceId)
     },
     reset() {
-      Vue.$log.debug('reseting data...')
+      this.$log.debug('disconnect socket')
+      this.$disconnect()
+      this.$log.debug('remove layers')
+      lnglat.removeLayers()
+      this.$log.debug('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
+      this.$log.debug('done.')
     }
   },
   router,

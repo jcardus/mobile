@@ -218,7 +218,7 @@ export default {
       if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Gray' }
       if (device.speed > 2) { return '#63EA4F' }
       if (device.ignition) { return '#d4c404' }
-      return '#FF584C'
+      return '#D50303'
     },
     cellStyle(row) {
       let result = 'padding: 0; '

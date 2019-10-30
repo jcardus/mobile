@@ -8,6 +8,8 @@ import { vm, settings } from '../main'
 
 const imageDownloadQueue = []
 let loadingImages = false
+const colors = ['#606060', '#08C803', '#D4C404', '#D50303']
+export const source = 'positions'
 
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
@@ -155,20 +157,100 @@ function fetchGeofences(map) {
     })
   }
 }
+
+const gray = ['>', ['get', 'fixDays'], 5]
+const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
+const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
+const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2]]
+
+// objects for caching and keeping track of HTML marker objects (for performance)
+let markers = {}
+let markersOnScreen = {}
+function createDonutChart(props) {
+  const offsets = []
+  const counts = [props.gray, props.green, props.yellow, props.red]
+  let total = 0
+  for (let i = 0; i < counts.length; i++) {
+    offsets.push(total)
+    total += counts[i]
+  }
+  const fontSize = total >= 30 ? 20 : total >= 15 ? 18 : total >= 10 ? 16 : 14
+  const r = total >= 30 ? 32 : total >= 15 ? 28 : total >= 10 ? 22 : 16
+  const r0 = Math.round(r * 0.75)
+  const w = r * 2
+
+  let html = '<svg width="' + w + '" height="' + w + '" viewbox="0 0 ' + w + ' ' + w +
+    '" text-anchor="middle" style="font: ' + fontSize + 'px sans-serif">'
+
+  for (let i = 0; i < counts.length; i++) {
+    html += donutSegment(offsets[i] / total, (offsets[i] + counts[i]) / total, r, r0, colors[i])
+  }
+  html += '<circle cx="' + r + '" cy="' + r + '" r="' + r0 +
+    '" fill="#f5f5f5" /><text dominant-baseline="central" transform="translate(' +
+    r + ', ' + r + ')">' + total.toLocaleString() + '</text></svg>'
+
+  const el = document.createElement('div')
+  el.innerHTML = html
+  return el.firstChild
+}
+function donutSegment(start, end, r, r0, color) {
+  if (end - start === 1) end -= 0.00001
+  const a0 = 2 * Math.PI * (start - 0.25)
+  const a1 = 2 * Math.PI * (end - 0.25)
+  const x0 = Math.cos(a0)
+  const y0 = Math.sin(a0)
+  const x1 = Math.cos(a1)
+  const y1 = Math.sin(a1)
+  const largeArc = end - start > 0.5 ? 1 : 0
+
+  return ['<path d="M', r + r0 * x0, r + r0 * y0, 'L', r + r * x0, r + r * y0,
+    'A', r, r, 0, largeArc, 1, r + r * x1, r + r * y1,
+    'L', r + r0 * x1, r + r0 * y1, 'A',
+    r0, r0, 0, largeArc, 0, r + r0 * x0, r + r0 * y0,
+    '" fill="' + color + '" />'].join(' ')
+}
+export function updateMarkers() {
+  const newMarkers = {}
+  const features = vm.$static.map.querySourceFeatures(source)
+
+  // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+  // and add it to the map if it's not there already
+  for (let i = 0; i < features.length; i++) {
+    const coords = features[i].geometry.coordinates
+    const props = features[i].properties
+    if (!props.cluster) continue
+    const id = props.cluster_id
+
+    let marker = markers[id]
+    if (!marker) {
+      const el = createDonutChart(props)
+      marker = markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
+    }
+    newMarkers[id] = marker
+
+    if (!markersOnScreen[id]) { marker.addTo(vm.$static.map) }
+  }
+  // for every marker we've added previously, remove those that are no longer visible
+  for (const id in markersOnScreen) {
+    if (!newMarkers[id]) { markersOnScreen[id].remove() }
+  }
+  markersOnScreen = newMarkers
+}
+
 export function addVehiclesLayer(layer, source) {
   vm.$static.map.addLayer({
     id: layer,
     type: 'symbol',
     source: source,
-    filter: ['!', ['has', 'point_count']],
+    filter: ['!=', 'cluster', true],
     layout: {
       'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
         ['case',
-          ['>', ['get', 'fixDays'], 5],
+          gray,
           ['concat', 'car-gray-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-          ['>', ['get', 'speed'], 2],
+          green,
           ['concat', 'car-green-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-          ['==', ['get', 'ignition'], true],
+          yellow,
           ['concat', 'car-yellow-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
           ['concat', 'car-red-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]]
         ],
@@ -192,14 +274,19 @@ export function addVehiclesLayer(layer, source) {
   })
 }
 export function addLayers(map) {
-  const source = 'positions'
   if (!map.getSource(source)) {
     map.addSource(source, {
-      'type': 'geojson',
-      'data': vm.$static.positionsSource,
-      'cluster': true,
+      type: 'geojson',
+      data: vm.$static.positionsSource,
+      cluster: true,
       clusterMaxZoom: 16, // Max zoom to cluster points on
-      clusterRadius: 9
+      clusterRadius: 9,
+      clusterProperties: { // keep separate counts for each magnitude category in a cluster
+        'gray': ['+', ['case', gray, 1, 0]],
+        'green': ['+', ['case', green, 1, 0]],
+        'yellow': ['+', ['case', yellow, 1, 0]],
+        'red': ['+', ['case', red, 1, 0]]
+      }
     })
   } else { Vue.$log.warn(source, ' already exists...') }
   if (settings.show3dBuildings) {
@@ -226,40 +313,6 @@ export function addLayers(map) {
       }
     })
   }
-  if (!map.getLayer('clusters')) {
-    map.addLayer({
-      'id': 'clusters',
-      'source': source,
-      'type': 'symbol',
-      layout: {
-        'icon-image':
-                    [
-                      'step',
-                      ['get', 'point_count'],
-                      'm1',
-                      5,
-                      'm2',
-                      20,
-                      'm3'
-                    ],
-        'icon-allow-overlap': true
-      },
-      filter: ['has', 'point_count']
-    })
-  } else { Vue.$log.warn('layer clusters already exists...') }
-  if (!map.getLayer('cluster-count')) {
-    map.addLayer({
-      'id': 'cluster-count',
-      'source': source,
-      'type': 'symbol',
-      filter: ['has', 'point_count'],
-      layout: {
-        'text-field': '{point_count_abbreviated}',
-        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-        'text-size': 12
-      }
-    })
-  } else { Vue.$log.warn('layer cluster-count already exists...') }
   if (!map.getLayer('unclustered-point')) {
     addVehiclesLayer('unclustered-point', source)
   } else {
@@ -272,8 +325,6 @@ export function addLayers(map) {
 export function removeLayers() {
   const map = vm.$static.map
   Vue.$log.debug('remove layers...')
-  if (map.getLayer('clusters')) { map.removeLayer('clusters') }
-  if (map.getLayer('cluster-count')) { map.removeLayer('cluster-count') }
   if (map.getLayer('unclustered-point')) { map.removeLayer('unclustered-point') }
   if (map.getLayer('geofences')) { map.removeLayer('geofences') }
   if (map.getLayer('geofences-labels')) { map.removeLayer('geofences-labels') }
@@ -281,6 +332,10 @@ export function removeLayers() {
   if (map.getLayer('pois-labels')) { map.removeLayer('pois-labels') }
   if (map.getSource('positions')) { map.removeSource('positions') }
   if (map.getSource('geofences')) { map.removeSource('geofences') }
+  markers = {}
+  for (const id in markersOnScreen) {
+    markersOnScreen[id].remove()
+  }
 }
 export function contains(lngLatBounds, position) {
   return (
@@ -306,7 +361,5 @@ export function hideLayers(hide) {
   if (settings.show3dBuildings) {
     hideLayer('3d-buildings', hide)
   }
-  hideLayer('clusters', hide)
-  hideLayer('cluster-count', hide)
   hideLayer('unclustered-point', hide)
 }

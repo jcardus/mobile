@@ -84,6 +84,7 @@ const actions = {
         commit('SET_ROLES', [])
         resetRouter()
         removeToken()
+        traccar.stopReceiving()
         vm.reset()
         resolve()
       }).catch(() => {
