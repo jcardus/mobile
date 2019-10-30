@@ -164,8 +164,6 @@ const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
 const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
 const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2]]
 
-// objects for caching and keeping track of HTML marker objects (for performance)
-const markers = {}
 let markersOnScreen = {}
 function createDonutChart(props) {
   const offsets = []
@@ -221,10 +219,10 @@ export function updateMarkers() {
     if (!props.cluster) continue
     const id = props.cluster_id
 
-    let marker = markers[id]
+    let marker = vm.$static.markers[id]
     if (!marker) {
       const el = createDonutChart(props)
-      marker = markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
+      marker = vm.$static.markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
     }
     newMarkers[id] = marker
 
@@ -233,6 +231,7 @@ export function updateMarkers() {
   for (
     // for every marker we've added previously, remove those that are no longer visible
     const id in markersOnScreen) {
+    // noinspection JSUnfilteredForInLoop
     if (newMarkers.hasOwnProperty(id)) {
       continue
     }

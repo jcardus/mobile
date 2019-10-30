@@ -16,7 +16,6 @@ import VueTimeago from 'vue-timeago'
 import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
-import * as lnglat from './utils/lnglat'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
@@ -74,6 +73,7 @@ export const vm = new Vue({
   el: '#app',
   static() {
     return {
+      markers: {},
       map: null,
       positionsSource: {
         'type': 'FeatureCollection',
@@ -109,8 +109,10 @@ export const vm = new Vue({
     reset() {
       this.$log.debug('disconnect socket')
       this.$disconnect()
-      this.$log.debug('remove layers')
-      lnglat.removeLayers()
+      for (const i in this.$static.markers) {
+        // noinspection JSUnfilteredForInLoop
+        delete this.$static.markers[i]
+      }
       this.$log.debug('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
