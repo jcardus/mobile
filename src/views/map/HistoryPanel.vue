@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="mapboxgl-ctrl panel">
+  <div v-if="show" class="mapboxgl-ctrl panel" :style="width">
     <speed-chart :labels="labels" :chart-data="chartData" />
     <vue-slider
       v-model="sliderPos"
@@ -42,7 +42,8 @@ export default {
       labels: [],
       chartData: [],
       indexArray: {},
-      marks: []
+      marks: [],
+      width: 'width:0px'
     }
   },
   computed: {
@@ -123,15 +124,31 @@ export default {
       serverBus.$emit('posChanged', this.currentPos)
     }
   },
+  created() {
+    const self = this
+    window.addEventListener('resize', this.resizeDiv)
+    this.unsubscribe = vm.$store.subscribe((mutation) => {
+      if (mutation.type === 'app/TOGGLE_SIDEBAR') {
+        setTimeout(function() { self.resizeDiv() }, 1000)
+      }
+    })
+  },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)
     serverBus.$off('routeMatchFinished', this.playNext)
+    window.removeEventListener('resize', this.resizeDiv)
+    if (this.unsubscribe) { this.unsubscribe() }
   },
   mounted() {
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
+    this.resizeDiv()
   },
   methods: {
+    resizeDiv() {
+      Vue.$log.debug('resizeDiv')
+      this.width = 'z-index=10000; width:' + (document.getElementById('map').clientWidth - 128) + 'px'
+    },
     formatDate(v) {
       let result = Vue.moment.unix(v).format('YYYY-MM-DD HH:mm:ss')
       if (this.indexArray[v]) {
@@ -188,21 +205,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .mapboxgl-ctrl {
-        z-index: -1;
-    }
+
     .panel {
-      min-width: 300px;
-        width: calc(100vw - 420px);
-        font-size: 15px;
+
+      font-size: 15px;
       padding-left: 10px;
       background-color: rgba(255,255,255,0);
     }
-
-    @media screen and (max-width: 768px) {
-      .panel {
-        width: calc(100vw - 65px);
-      }
-    }
-
 </style>
