@@ -293,6 +293,7 @@ export default {
   }
   .dd-body-inner {
       padding: 5px;
+    -webkit-overflow-scrolling: touch
   }
   .label-tab {
     width: 50px;

@@ -53,7 +53,7 @@
     "mapbox-gl-controls": "latest",
     "normalize.css": "7.0.0",
     "screenfull": "4.2.0",
-    "vh-check": "latest",
+
     "vue": "2.6.10",
     "vue-cookies": "latest",
     "vue-i18n": "^8.14.0",
@@ -65,7 +65,6 @@
     "vue-timeago": "latest",
     "vuejs-logger": "^1.5.3",
     "vuex": "3.1.0",
-    "body-scroll-lock": "latest",
     "angles": "latest",
     "chart.js": "latest",
     "nprogress": "latest",

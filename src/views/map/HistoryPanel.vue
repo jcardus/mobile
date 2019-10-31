@@ -13,9 +13,9 @@
       :included="true"
       :hide-label="true"
     />
-    <svg-icon icon-class="fas fa-step-backward" @click="clickBackward" />
-    <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
-    <svg-icon icon-class="fas fa-step-forward" @click="clickForward" />
+    <svg-icon icon-class="fas fa-step-backward fa-2x" @click="clickBackward" />
+    <svg-icon :icon-class="isPlaying?'fas fa-stop fa-2x':'fas fa-play fa-2x'" @click="click" />
+    <svg-icon icon-class="fas fa-step-forward fa-2x" @click="clickForward" />
   </div>
 </template>
 

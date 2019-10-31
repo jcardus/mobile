@@ -126,6 +126,10 @@ export default {
       this.addLayers()
       traccar.startReceiving()
       this.map.resize()
+      if (this.isMobile) {
+        this.map.dragRotate.disable()
+        this.map.touchZoomRotate.disableRotation()
+      }
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
