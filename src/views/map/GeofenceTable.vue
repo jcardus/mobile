@@ -2,7 +2,7 @@
   <div>
     <el-switch
       v-model="showGeofenceLayer"
-      :active-text="$t('geofenceTable.showGeofences')"
+      :active-text="$t('geofence.showGeofences')"
       inactive-text=""
     ></el-switch>
     <el-table
