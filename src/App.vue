@@ -10,6 +10,7 @@ export default {
   name: 'App',
   mounted() {
     document.getElementById('favicon').href = partner.getFavIcon()
+    document.getElementById('apple-touch-icon').href = partner.getFavIcon()
   }
 }
 </script>
