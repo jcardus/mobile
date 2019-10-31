@@ -546,6 +546,7 @@ export default {
           if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
         } else {
           if (!device) return
+          device.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers && lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
             self.$log.debug('animating ', feature.properties.text)
