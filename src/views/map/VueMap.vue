@@ -4,7 +4,7 @@
     class="app-container"
   >
     <vehicle-table id="vehiclesDiv" />
-    <div id="map"></div>
+    <div id="map" ref="map"></div>
   </div>
 </template>
 
@@ -340,7 +340,7 @@ export default {
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'app/TOGGLE_SIDEBAR':
-            setTimeout(function() { self.mapResize() }, 1000)
+            setTimeout(function() { self.mapResize() }, 500)
             break
           case 'SOCKET_ONMESSAGE':
             if (state.socket.message.positions) {
@@ -524,6 +524,7 @@ export default {
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
       feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
+      feature.properties.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
       device.address = position.address
       device.lastUpdate = position.fixTime
     },
