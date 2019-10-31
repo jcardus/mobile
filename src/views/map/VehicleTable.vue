@@ -137,7 +137,6 @@ import { traccar } from '../../api/traccar-api'
 import VueCookies from 'vue-cookies'
 import GeofenceTable from './GeofenceTable'
 import POITable from './POITable'
-const cookie = VueCookies.get('user-info')
 
 export default {
   name: 'VehicleTable',
@@ -262,8 +261,8 @@ export default {
       this.$confirm(message).then(() => {
         traccar.api_helper(
           {
-            'username': cookie.email,
-            'password': cookie.password,
+            'username': VueCookies.get('user-info').email,
+            'password': VueCookies.get('user-info').password,
             'command': 'immobilization',
             'deviceid': device,
             'value': value
