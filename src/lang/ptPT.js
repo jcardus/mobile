@@ -36,9 +36,6 @@ export default {
   vehicleDetail: {
     show_route: 'Mostrar rota'
   },
-  geofenceTable: {
-    showGeofences: 'Ver Balizas'
-  },
   poiTable: {
     showPOIs: 'Ver POIs'
   },
@@ -60,13 +57,10 @@ export default {
     login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos',
     login_user: 'Utilizador'
   },
-  layout: {
-    deviceOnline: 'Dispositivo online'
-  },
   profile: {
     user_account: 'Utilizador',
     user_name: 'Nome',
-    user_email: 'Email',
+    user_email: 'E-mail',
     user_password: 'Palavra-chave',
     user_phone: 'Telefone',
     user_language: 'Idioma',
@@ -97,6 +91,10 @@ export default {
     alert_updated: 'Alerta actualizado com sucesso!',
     alert_add: 'Adicionar Alerta',
     alert_edit: 'Editar Alerta',
+    alert_delete: 'Apagar Alerta',
+    alert_overspeed_warning: 'Veículo sem velocidade máxima definida',
+    alert_geofences_warning: 'Veículo sem balizas associadas',
+    alert_associate_geofences: 'Associar Balizas',
     alert_form_type: 'Tipo:',
     alert_form_type_placeholder: 'Seleccionar o tipo de alerta',
     alert_form_vehicles: 'Veículos:',
@@ -107,13 +105,15 @@ export default {
     alert_form_notificator_email: 'E-mail',
     alert_form_notificator_sms: 'SMS',
     alert_form_confirm: 'Gravar',
-    alert_form_cancel: 'Cancelar'
+    alert_form_cancel: 'Cancelar',
+    alert_form_geofences_placeholder: 'Seleccionar balizas'
   },
   geofence: {
+    showGeofences: 'Ver Balizas',
     geofence_name: 'Nome',
     geofence_edit: 'Editar',
     geofence_delete: 'Apagar',
-    geofence_deleted: 'A Baliza foi apagada',
+    geofence_deleted: 'A baliza foi apagada',
     geofence_delete_info: 'Pretende apagar a baliza ',
     geofence_delete_title: 'Apagar Baliza',
     geofence_edit_title: 'Editar Baliza',
@@ -128,5 +128,15 @@ export default {
     poi_deleted: 'POI  foi apagada',
     poi_edit_title: 'Editar POI',
     poi_edit_name: 'Por favor indique o nome do POI...'
+  },
+  report: {
+    select_vehicles: 'Seleccionar veículos',
+    select_vehicles_placeholder: 'Veículos',
+    select_geofences: 'Seleccionar balizas',
+    select_geofences_placeholder: 'Balizas',
+    select_period: 'Seleccionar período',
+    date_start: 'Data de início',
+    date_end: 'Data de fim',
+    generate_report: 'Gerar relatório'
   }
 }

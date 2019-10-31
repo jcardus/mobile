@@ -37,9 +37,6 @@ export default {
   vehicleDetail: {
     show_route: 'Show route'
   },
-  geofenceTable: {
-    showGeofences: 'Show Geofences'
-  },
   poiTable: {
     showPOIs: 'Show POIs'
   },
@@ -64,7 +61,7 @@ export default {
   profile: {
     user_account: 'Account',
     user_name: 'Name',
-    user_email: 'Email',
+    user_email: 'E-mail',
     user_password: 'Password',
     user_phone: 'Phone',
     user_language: 'Language',
@@ -95,6 +92,10 @@ export default {
     alert_updated: 'Alert updated sucessfully!',
     alert_add: 'Add Alert',
     alert_edit: 'Edit Alert',
+    alert_delete: 'Delete Alert',
+    alert_overspeed_warning: 'Vehicle without defined top speed',
+    alert_geofences_warning: 'Vehicle without associated geofences',
+    alert_associate_geofences: 'Associate Geofences',
     alert_form_type: 'Type:',
     alert_form_type_placeholder: 'Select alert type',
     alert_form_vehicles: 'Vehicles:',
@@ -105,9 +106,11 @@ export default {
     alert_form_notificator_email: 'E-mail',
     alert_form_notificator_sms: 'SMS',
     alert_form_confirm: 'Save',
-    alert_form_cancel: 'Cancel'
+    alert_form_cancel: 'Cancel',
+    alert_form_geofences_placeholder: 'Select geofences'
   },
   geofence: {
+    showGeofences: 'Show Geofences',
     geofence_name: 'Name',
     geofence_edit: 'Edit',
     geofence_delete: 'Delete',
@@ -126,5 +129,15 @@ export default {
     poi_deleted: 'POI has been deleted',
     poi_edit_title: 'Edit POI',
     poi_edit_name: 'Please enter the name of this POI...'
+  },
+  report: {
+    select_vehicles: 'Select vehicles',
+    select_vehicles_placeholder: 'Vehicles',
+    select_geofences: 'Select geofences',
+    select_geofences_placeholder: 'Geofences',
+    select_period: 'Select period',
+    date_start: 'Start date',
+    date_end: 'End date',
+    generate_report: 'Generate report'
   }
 }

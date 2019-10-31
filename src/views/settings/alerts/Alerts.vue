@@ -8,9 +8,10 @@
             <h2 v-else>{{ $t('settings.alert_edit') }}</h2>
             <el-form>
               <el-form-item :label="$t('settings.alert_form_type')">
-                <el-select v-model="selectedType" value="" :placeholder="$t('settings.alert_form_type_placeholder')" :disabled="isNewAlert === false">
+                <el-select v-if="isNewAlert" v-model="selectedType" value="" :placeholder="$t('settings.alert_form_type_placeholder')">
                   <el-option v-for="alertType in alertTypes" :key="alertType.value" :value="alertType.value" :label="alertType.text" />
                 </el-select>
+                <span v-else class="alertTypeTitle">{{ $t('settings.alert_'+selectedType) }}</span>
               </el-form-item>
               <el-form-item :label="$t('settings.alert_form_vehicles')">
                 <el-checkbox-group v-model="allVehicles" @change="handleAllVehiclesSelect">
@@ -61,7 +62,7 @@
                   v-model="selectedGeofences"
                   style="width: 100%; height: 35px"
                   multiple
-                  placeholder="Geofences"
+                  :placeholder="$t('settings.alert_form_geofences_placeholder')"
                   value=""
                 >
                   <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
@@ -110,7 +111,7 @@
                 width="50"
               >
                 <template slot-scope="scope">
-                  <el-tooltip content="Veículo sem balizas associadas" placement="top">
+                  <el-tooltip :content="$t('settings.alert_geofences_warning')" placement="top">
                     <i v-if="scope.row.geofences.length === 0" class="fas fa-exclamation-triangle"></i></el-tooltip>
                 </template>
               </el-table-column>
@@ -121,7 +122,7 @@
                 width="50"
               >
                 <template slot-scope="scope">
-                  <el-tooltip content="Veículo sem velocidade máxima definida" placement="top">
+                  <el-tooltip :content="$t('settings.alert_overspeed_warning')" placement="top">
                     <i v-if="scope.row.data.attributes.speedLimit === 0" class="fas fa-exclamation-triangle"></i></el-tooltip>
                 </template>
               </el-table-column>
@@ -147,7 +148,7 @@
               </el-table-column>
               <el-table-column v-if="isInorOutGeofence(props.row)" label="">
                 <template slot-scope="scope">
-                  <el-tooltip content="Associar Balizas" placement="top">
+                  <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
                     <el-button
                       size="small"
                       class="alertFormButton"
@@ -179,20 +180,20 @@
         </el-table-column>
         <el-table-column label="">
           <template slot-scope="scope">
-            <el-tooltip content="Editar Alerta" placement="top">
+            <el-tooltip :content="$t('settings.alert_edit')" placement="top">
               <el-button
                 size="small"
                 @click="handleEdit(scope.row)"
               ><i class="fas fa-edit"></i></el-button>
             </el-tooltip>
-            <el-tooltip content="Apagar Alerta" placement="top">
+            <el-tooltip :content="$t('settings.alert_delete')" placement="top">
               <el-button
                 size="small"
                 type="danger"
                 @click="handleDelete(scope.row)"
               ><i class="fas fa-trash-alt"></i></el-button>
             </el-tooltip>
-            <el-tooltip content="Associar Balizas" placement="top">
+            <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
               <el-button
                 v-if="isInorOutGeofence(scope.row)"
                 size="small"
@@ -272,15 +273,31 @@ export default {
         traccar.alertsByDevice(d.id, function(alerts) {
           alerts.forEach(a => {
             const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
-            if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-              traccar.geofencesByDevice(d.id, function(geofences) {
-                alert.devices.push({ data: d, geofences: geofences })
-              })
-            } else {
-              alert.devices.push({ data: d })
+            if (a.always === false) {
+              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                traccar.geofencesByDevice(d.id, function(geofences) {
+                  alert.devices.push({ data: d, geofences: geofences })
+                })
+              } else {
+                alert.devices.push({ data: d })
+              }
             }
           })
         })
+      })
+
+      vm.$data.alerts.forEach(a => {
+        if (a.notification.always === true) {
+          this.devices.forEach(d => {
+            if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+              traccar.geofencesByDevice(d.id, function(geofences) {
+                a.devices.push({ data: d, geofences: geofences })
+              })
+            } else {
+              a.devices.push({ data: d })
+            }
+          })
+        }
       })
     },
     alertTypeRenderer(row, column, cellValue) {
@@ -298,7 +315,7 @@ export default {
     },
     alertGeofencesRenderer(row, column, cellValue, index) {
       this.$log.debug(row)
-      let description = cellValue.length + ' Geofences'
+      let description = cellValue.length + ' ' + this.$t('settings.alert_form_geofences')
       if (cellValue.length > 0) {
         cellValue.forEach(g => {
           description = description + ' [' + g.name + '] '
@@ -507,5 +524,9 @@ export default {
     background: #00000094;
     z-index: 999;
     transition: opacity 0.2s ease;
+  }
+
+  .alertTypeTitle{
+    font-size: 16px;
   }
 </style>
