@@ -261,6 +261,7 @@ export default {
         this.loadingRoutes = true
         this.getRoute(this.minDate, this.maxDate)
         vm.$data.currentDevice = this.device
+        lnglat.initImages()
       } else {
         traccar.startReceiving()
         vm.$data.historyMode = false

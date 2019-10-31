@@ -19,11 +19,9 @@ angles.SCALE = 360
 function refreshRoutePlayLayer() {
   vm.$static.map.getSource(routePlayLayer).setData(routePlayLayerSource)
 }
-
 export function hideRouteLayer(hide) {
   lnglat.hideLayer(routePlayLayer, hide)
 }
-
 export function initFeatureForPlaying(feature) {
   routePlayLayerSource.features[0] = feature
   if (!vm.$static.map.getLayer(routePlayLayer)) {
@@ -37,10 +35,6 @@ export function initFeatureForPlaying(feature) {
     lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
     refreshRoutePlayLayer()
   }
-  for (let i = 0; i < 50; i++) {
-    lnglat.addImageWithColor(i, 'green')
-  }
-  lnglat.startImageDownload()
 }
 export function animate(feature, coordinates) {
   const route = {

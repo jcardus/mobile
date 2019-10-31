@@ -375,9 +375,6 @@ export default {
       if (e.id.startsWith('car')) {
         lnglat.addImageWithColor(parseInt(e.id.split('-')[2]), e.id.split('-')[1])
       }
-      if (e.id.startsWith('m')) {
-        lnglat.addImage('img/' + e.id + '.png', e.id)
-      }
     },
     onData(e) {
       if (e.sourceId !== lnglat.source || !e.isSourceLoaded) return

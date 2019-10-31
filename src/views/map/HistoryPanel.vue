@@ -13,7 +13,9 @@
       :included="true"
       :hide-label="true"
     />
+    <svg-icon icon-class="fas fa-step-backward" @click="clickBackward" />
     <svg-icon :icon-class="isPlaying?'fas fa-stop':'fas fa-play'" @click="click" />
+    <svg-icon icon-class="fas fa-step-forward" @click="clickForward" />
   </div>
 </template>
 
@@ -174,6 +176,16 @@ export default {
     click: function() {
       this.isPlaying = !this.isPlaying
     },
+    clickForward: function() {
+      if (this.sliderPos < this.maxPos) {
+        this.sliderPos = Vue.moment(this.positions[this.currentPos + 1].fixTime).unix()
+      }
+    },
+    clickBackward: function() {
+      if (this.sliderPos > this.minPos) {
+        this.sliderPos = Vue.moment(this.positions[this.currentPos - 1].fixTime).unix()
+      }
+    },
     updateMinMax() {
       if (this.positions.length > 0) {
         this.minPos = this.$moment(this.positions[0].fixTime).unix()
@@ -205,9 +217,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
     .panel {
-
       font-size: 15px;
       padding-left: 10px;
       background-color: rgba(255,255,255,0);

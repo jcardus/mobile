@@ -6,10 +6,20 @@ import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm, settings } from '../main'
 
-const imageDownloadQueue = []
-let loadingImages = false
+export function initImages() {
+  for (let i = 0; i < 50; i++) {
+    addImageWithColor(i, 'green')
+  }
+}
+
+let markersOnScreen = {}
+
 const colors = ['#606060', '#08C803', '#D4C404', '#D50303']
 export const source = 'positions'
+const gray = ['>', ['get', 'fixDays'], 5]
+const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
+const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
+const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2]]
 
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
@@ -26,34 +36,20 @@ export function findFeatureById(id) {
 }
 export function addImage(path, name) {
   Vue.$log.debug('addImage ', path, ' ', name, ' to queue')
-  imageDownloadQueue.push({ path: path, name: name })
-  if (!loadingImages) {
-    startImageDownload()
-  }
-}
-export function startImageDownload() {
-  const img = imageDownloadQueue.pop()
-  if (img) {
-    loadingImages = true
-    if (!vm.$static.map.hasImage(img.name)) {
-      vm.$static.map.loadImage(img.path, function(error, image) {
-        if (error) {
-          Vue.$log.error('error adding image to the map', error, ' ', img.name, ' ')
-          throw error
-        } else {
-          Vue.$log.debug('adding image to map ', img.name, ' ', image)
-          vm.$static.map.addImage(img.name, image)
-          Vue.$log.debug('done image to map, refreshing map', img.name, ' ', image)
-          refreshMap()
-        }
-        startImageDownload()
-      })
-    } else {
-      Vue.$log.debug('loadimage called but already exists, skipping... ', img.name)
-      startImageDownload()
-    }
+  if (!vm.$static.map.hasImage(name)) {
+    vm.$static.map.loadImage(path, function(error, image) {
+      if (error) {
+        Vue.$log.error('error adding image to the map', error, ' ', name, ' ')
+        throw error
+      } else {
+        Vue.$log.debug('adding image to map ', name, ' ', image)
+        vm.$static.map.addImage(name, image)
+        Vue.$log.debug('done image to map, refreshing map', name, ' ', image)
+        refreshMap()
+      }
+    })
   } else {
-    loadingImages = false
+    Vue.$log.debug('skipping image ', name)
   }
 }
 export function getArea(area) {
@@ -158,13 +154,6 @@ function fetchGeofences(map) {
     })
   }
 }
-
-const gray = ['>', ['get', 'fixDays'], 5]
-const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
-const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
-const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2]]
-
-let markersOnScreen = {}
 function createDonutChart(props) {
   const offsets = []
   const counts = [props.gray, props.green, props.yellow, props.red]
@@ -242,7 +231,6 @@ export function updateMarkers() {
   }
   markersOnScreen = newMarkers
 }
-
 export function addVehiclesLayer(layer, source) {
   vm.$static.map.addLayer({
     id: layer,
