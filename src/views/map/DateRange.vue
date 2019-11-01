@@ -10,15 +10,19 @@
       align="right"
     >
     </el-date-picker>
-    <div v-else>
-      <el-row><el-col :span="12">
-        <label>
-          <input v-model="minDate" type="date">
-        </label>
+    <div v-if="isMobile">
+      <el-row type="flex" justify="space-around"><el-col :span="12">
+        <div class="fleft">
+          <label>
+            <input v-model="minDate" type="date">
+          </label>
+        </div>
       </el-col><el-col :span="12">
-        <label>
-          <input v-model="maxDate" type="date">
-        </label>
+        <div class="fright">
+          <label>
+            <input v-model="maxDate" type="date">
+          </label>
+        </div>
       </el-col>
       </el-row>
     </div>
@@ -81,7 +85,7 @@ export default {
   },
   methods: {
     resizeDiv() {
-      this.width = 'width:' + (document.getElementById('map').clientWidth - 10) + 'px'
+      this.width = 'width:' + document.getElementById('map').clientWidth + 'px'
     },
     datesChanged() {
       this.loadingRoutes = true
@@ -92,6 +96,7 @@ export default {
 </script>
 
 <style scoped>
+
   input[type="date"]::-webkit-clear-button {
     display: none;
   }
@@ -126,4 +131,19 @@ export default {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
   }
+
+  .fleft {
+    margin: 10px;
+  }
+  .fright {
+    float:right;
+    margin: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .mapboxgl-ctrl {
+      margin: 0;
+    }
+  }
+
 </style>
