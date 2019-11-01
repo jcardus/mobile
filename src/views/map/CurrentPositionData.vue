@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" class="mapboxgl-ctrl">
+  <div v-show="show" class="mapboxgl-ctrl" :style="width">
     <el-card
       v-loading="loadingRoutes"
       :body-style="{ padding: '10px' }"
@@ -37,7 +37,8 @@ export default {
   name: 'CurrentPositionData',
   data() {
     return {
-      currentPos: 0
+      currentPos: 0,
+      width: 'width:0px'
     }
   },
   computed: {
@@ -87,6 +88,15 @@ export default {
       }
     }
   },
+  created() {
+    const self = this
+    window.addEventListener('resize', this.resizeDiv)
+    this.unsubscribe = vm.$store.subscribe((mutation) => {
+      if (mutation.type === 'app/TOGGLE_SIDEBAR') {
+        setTimeout(function() { self.resizeDiv() }, 1000)
+      }
+    })
+  },
   beforeDestroy() {
     serverBus.$off('posChanged', this.posChanged)
   },
@@ -96,6 +106,10 @@ export default {
     serverBus.$on('posChanged', this.posChanged)
   },
   methods: {
+    resizeDiv() {
+      Vue.$log.debug('resizeDiv')
+      this.width = 'width:' + document.getElementById('map').clientWidth + 'px'
+    },
     showRoutesClick: function() {
       if (this.showRoutes) {
         traccar.stopReceiving()
@@ -125,17 +139,17 @@ export default {
     font-size: 20px;
   }
   .currentPos {
+    width: calc(100vw - 20px);
     font-size: 14px;
     color: #5a5e66;
-    width:calc(30vw);
-    max-width: 250px;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 0 !important;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (min-width: 768px) {
     .currentPos {
-      width:calc(48vw);
+      width:calc(30vw);
+      max-width: 250px;
     }
   }
 </style>

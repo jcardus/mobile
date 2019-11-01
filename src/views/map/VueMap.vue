@@ -292,7 +292,7 @@ export default {
         VD = Vue.extend(DateRange)
         _vm = new VD({ i18n: i18n })
         _vm.$mount('#date-range-div')
-        map.addControl(new MapboxCustomControl('currentPos-div'), 'top-right')
+        map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
         VD = Vue.extend(CurrentPositionData)
         _vm = new VD({ i18n: i18n })
         _vm.$mount('#currentPos-div')

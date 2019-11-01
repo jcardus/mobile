@@ -104,13 +104,6 @@ export default {
       }
     }
   },
-  watch: {
-    showRoutes() {
-      if (!this.showRoutes) {
-        this.removeLayers()
-      }
-    }
-  },
   beforeDestroy() {
     Vue.$log.debug('destroying VehicleDetail...')
     serverBus.$off('posChanged', this.onPosChanged)
@@ -258,15 +251,18 @@ export default {
     showRoutesClick: function() {
       if (this.showRoutes) {
         traccar.stopReceiving()
-        this.loadingRoutes = true
+        animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
         this.getRoute(this.minDate, this.maxDate)
-        vm.$data.currentDevice = this.device
         lnglat.initImages()
       } else {
         traccar.startReceiving()
-        vm.$data.historyMode = false
         this.removeLayers()
       }
+      this.loadingRoutes = this.showRoutes
+      vm.$data.historyMode = this.showRoutes
+      vm.$data.currentDevice = this.device
+      lnglat.hideLayers(this.showRoutes)
+      animation.hideRouteLayer(!this.showRoutes)
     },
     getRoute: function(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)

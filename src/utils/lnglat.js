@@ -25,6 +25,7 @@ export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }
 export function findFeatureByDeviceId(deviceId) {
+  Vue.$log.debug('iterating ', vm.$static.positionsSource.features.length, ' features')
   return vm.$static.positionsSource.features.find(e => {
     return e.properties.deviceId === deviceId
   })
@@ -198,6 +199,7 @@ function donutSegment(start, end, r, r0, color) {
     '" fill="' + color + '" />'].join(' ')
 }
 export function updateMarkers() {
+  if (vm.$data.historyMode) return
   const newMarkers = {}
   const features = vm.$static.map.querySourceFeatures(source)
 
@@ -335,6 +337,7 @@ export function addLayers(map) {
 export function removeLayers() {
   const map = vm.$static.map
   Vue.$log.debug('remove layers...')
+  if (map.getLayer('clusters')) { map.removeLayer('clusters') }
   if (map.getLayer('unclustered-point')) { map.removeLayer('unclustered-point') }
   if (map.getLayer('geofences')) { map.removeLayer('geofences') }
   if (map.getLayer('geofences-labels')) { map.removeLayer('geofences-labels') }
@@ -342,6 +345,7 @@ export function removeLayers() {
   if (map.getLayer('pois-labels')) { map.removeLayer('pois-labels') }
   if (map.getSource('positions')) { map.removeSource('positions') }
   if (map.getSource('geofences')) { map.removeSource('geofences') }
+  removeMarkers()
 }
 export function contains(lngLatBounds, position) {
   return (
@@ -360,12 +364,23 @@ export function refreshMap() {
 export function hideLayer(layer, hide) {
   const visibility = hide ? 'none' : 'visible'
   if (vm.$static.map.getLayer(layer)) {
+    Vue.$log.debug('hide ', hide, ' on layer ', layer)
     vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
-  }
+  } else { Vue.$log.debug('didnt find layer ', layer) }
 }
 export function hideLayers(hide) {
   if (settings.show3dBuildings) {
     hideLayer('3d-buildings', hide)
   }
   hideLayer('unclustered-point', hide)
+  if (hide) { removeMarkers() }
+  refreshMap()
+}
+function removeMarkers() {
+  for (const id in markersOnScreen) {
+    if (markersOnScreen.hasOwnProperty(id)) {
+      const remove = markersOnScreen[id]
+      remove.remove()
+    }
+  }
 }

@@ -26,8 +26,10 @@ export default {
   },
   watch: {
     labels() {
-      this.chart.data.labels = this.labels
-      this.chart.update()
+      if (this.chart) {
+        this.chart.data.labels = this.labels
+        this.chart.update()
+      }
     },
     chartData() {
       this.chart.data.datasets[0].data = this.chartData
@@ -36,7 +38,9 @@ export default {
   },
   mounted() {
     Vue.$log.debug('created')
-    const ctx = document.getElementById('speedChart').getContext('2d')
+    const speedChart = document.getElementById('speedChart')
+    if (!speedChart) return
+    const ctx = speedChart.getContext('2d')
     const color = Chart.helpers.color
     if (!this.chart) {
       this.chart = new Chart(ctx, {

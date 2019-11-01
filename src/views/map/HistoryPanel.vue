@@ -13,9 +13,9 @@
       :included="true"
       :hide-label="true"
     />
-    <svg-icon icon-class="fas fa-step-backward fa-2x" @click="clickBackward" />
-    <svg-icon :icon-class="isPlaying?'fas fa-stop fa-2x':'fas fa-play fa-2x'" @click="click" />
-    <svg-icon icon-class="fas fa-step-forward fa-2x" @click="clickForward" />
+    <svg-icon style="color:gray" icon-class="fas fa-step-backward fa-3x" @click="clickBackward" />
+    <svg-icon style="color:gray" :icon-class="isPlaying?'fas fa-stop fa-3x':'fas fa-play fa-3x'" @click="click" />
+    <svg-icon style="color:gray" icon-class="fas fa-step-forward fa-3x" @click="clickForward" />
   </div>
 </template>
 
@@ -27,7 +27,6 @@ import * as consts from '../../utils/consts'
 import SpeedChart from './SpeedChart'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
-import * as animation from '../../utils/animation'
 
 export default {
   name: 'HistoryPanel',
@@ -85,13 +84,10 @@ export default {
   watch: {
     isPlaying() {
       if (this.isPlaying) {
-        animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
         if (this.sliderPos === this.maxPos) {
           this.currentPos = 0
         }
       }
-      lnglat.hideLayers(this.isPlaying)
-      animation.hideRouteLayer(!this.isPlaying)
       lnglat.refreshMap()
       serverBus.$emit('routePlay')
     },
