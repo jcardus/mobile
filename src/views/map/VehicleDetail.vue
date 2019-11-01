@@ -11,13 +11,11 @@
       @change="showRoutesClick"
     >
     </el-switch>
-    <div>
-      {{ feature.properties.address }}
-      <br>
-      {{ Math.round(device.speed) }} km/h,
-      <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
-      <br>
-    </div>
+    {{ feature.properties.address }}
+    <br>
+    {{ Math.round(device.speed) }} km/h,
+    <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
+    <br>
   </div>
 </template>
 <script>
@@ -60,6 +58,10 @@ export default {
     showRoutes: {
       get() { return this.historyMode },
       set(value) { this.historyMode = value }
+    },
+    tripDistance: {
+      get() { return vm.$data.distance },
+      set(value) { vm.$data.distance = value }
     },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },

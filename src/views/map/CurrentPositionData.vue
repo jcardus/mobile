@@ -8,14 +8,18 @@
     >
       <h2>
         {{ name }}
+        <el-switch
+          v-model="showRoutes"
+          v-loading="loadingRoutes"
+          style="float:right"
+          :active-text="$t('vehicleDetail.show_route')"
+          @change="showRoutesClick"
+        >
+        </el-switch>
       </h2>
-      <el-switch
-        v-model="showRoutes"
-        v-loading="loadingRoutes"
-        :active-text="$t('vehicleDetail.show_route')"
-        @change="showRoutesClick"
-      >
-      </el-switch>
+      <div style="float:right">
+        {{ totalDistance }} Kms
+      </div>
       <div>
         {{ formattedDate }}
         <br>
@@ -32,6 +36,7 @@ import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import { traccar } from '../../api/traccar-api'
 import Vue from 'vue'
+import Cookies from 'vue-cookies'
 
 export default {
   name: 'CurrentPositionData',
@@ -42,6 +47,16 @@ export default {
     }
   },
   computed: {
+    tripDistance: {
+      get() { return vm.$data.distance },
+      set(value) { vm.$data.distance = value }
+    },
+    totalDistance: function() {
+      if (this.positions && this.positions.length > 0) {
+        return Math.round(lnglat.arrayDistance(this.positions.map(x => [x.longitude, x.latitude])))
+      }
+      return 0
+    },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
@@ -90,6 +105,8 @@ export default {
   },
   created() {
     const self = this
+    Vue.$log.debug('language: ' + Cookies.get('language').substring(0, 2))
+    this.$moment.locale(Cookies.get('language').substring(0, 2))
     window.addEventListener('resize', this.resizeDiv)
     this.unsubscribe = vm.$store.subscribe((mutation) => {
       if (mutation.type === 'app/TOGGLE_SIDEBAR') {
@@ -101,6 +118,11 @@ export default {
     serverBus.$off('posChanged', this.posChanged)
   },
   mounted() {
+    console.log(this.$moment.locale())
+    this.$moment.locale('fr')
+    console.log(this.$moment.locale())
+    this.$moment.locale('en-gb')
+    console.log(this.$moment.locale())
     Vue.$log.debug('CurrentPositionData mounted', this.device)
 
     serverBus.$on('posChanged', this.posChanged)

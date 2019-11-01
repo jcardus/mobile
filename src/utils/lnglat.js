@@ -70,6 +70,13 @@ export function getBounds(coordinates) {
   const line = helpers.lineString(coordinates)
   return bbox(line)
 }
+export function arrayDistance(coordinates) {
+  const lineString = {
+    type: 'LineString',
+    coordinates: coordinates
+  }
+  return lineDistance(lineString)
+}
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }

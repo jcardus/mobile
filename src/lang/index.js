@@ -41,6 +41,7 @@ export function setLanguage(lang) {
     const key = lang.replace('-', '')
     i18n.locale = key
     Cookies.set('language', key)
+    Vue.$moment.locale(i18n.locale)
   }
 }
 

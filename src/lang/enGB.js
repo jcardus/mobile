@@ -6,7 +6,8 @@ export default {
     report_trip_title: 'Trip Report',
     report_location_title: 'Location Report',
     report_zone_crossing: 'Zone Report',
-    settings: 'Settings'
+    settings: 'Settings',
+    duration: 'Duration'
   },
   map: {
     geofence_create_title: 'New geofence',
@@ -19,7 +20,6 @@ export default {
     poi_create_canceled: 'Input canceled',
     create_confirm: 'OK',
     create_cancel: 'Cancel'
-
   },
   vehicleList: {
     title: 'Vehicle',

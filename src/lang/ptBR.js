@@ -6,7 +6,8 @@ export default {
     report_trip_title: 'Relatório de viagens',
     report_location_title: 'Relatório de posições',
     report_zone_crossing: 'Relatório de zonas',
-    settings: 'Configurações'
+    settings: 'Configurações',
+    duration: 'Duração'
   },
   map: {
     geofence_create_title: 'Nova Cerca Eletrônica',

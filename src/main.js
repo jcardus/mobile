@@ -45,6 +45,9 @@ export const settings = {
 }
 
 Vue.use(require('vue-moment'))
+if (VueCookies.get('language')) {
+  Vue.moment.locale(VueCookies.get('language'))
+}
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -98,7 +101,8 @@ export const vm = new Vue({
       historyMode: false,
       currentDevice: null,
       isPlaying: false,
-      lazyLoad: false
+      lazyLoad: false,
+      distance: 0
     }
   },
   methods: {

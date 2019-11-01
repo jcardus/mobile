@@ -6,7 +6,8 @@ export default {
     report_trip_title: 'Informe de viajes',
     report_location_title: 'Informe de posiciones',
     report_zone_crossing: 'Informe de zonas',
-    settings: 'Configuraciones'
+    settings: 'Configuraciones',
+    duration: 'Duracción'
   },
   map: {
     geofence_create_title: 'Nueva geocerca',
