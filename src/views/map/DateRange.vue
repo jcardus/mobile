@@ -1,22 +1,39 @@
 <template>
-  <div v-if="show" class="mapboxgl-ctrl panel">
+  <div v-if="show" class="mapboxgl-ctrl" :style="width">
     <el-date-picker
+      v-if="!isMobile"
       v-model="dates"
       v-loading="loadingRoutes"
+      unlink-panels="true"
       value-format="yyyy-MM-dd"
       type="daterange"
       align="right"
-      @change="datesChanged"
     >
     </el-date-picker>
+    <div v-else>
+      <el-row><el-col :span="12">
+        <label>
+          <input v-model="minDate" type="date">
+        </label>
+      </el-col><el-col :span="12">
+        <label>
+          <input v-model="maxDate" type="date">
+        </label>
+      </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <script>
 import { vm, serverBus } from '../../main'
+import * as lnglat from '@/utils/lnglat'
 export default {
   name: 'DateRange',
   computed: {
+    isMobile() {
+      return lnglat.isMobile()
+    },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
@@ -48,7 +65,24 @@ export default {
       }
     }
   },
+  watch: {
+    dates() {
+      this.datesChanged()
+    }
+  },
+  created() {
+    window.addEventListener('resize', this.resizeDiv)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.resizeDiv)
+  },
+  mounted() {
+    this.resizeDiv()
+  },
   methods: {
+    resizeDiv() {
+      this.width = 'width:' + (document.getElementById('map').clientWidth - 10) + 'px'
+    },
     datesChanged() {
       this.loadingRoutes = true
       serverBus.$emit('maxDateChanged')
@@ -58,5 +92,38 @@ export default {
 </script>
 
 <style scoped>
+  input[type="date"]::-webkit-clear-button {
+    display: none;
+  }
 
+  /* Removes the spin button */
+  input[type="date"]::-webkit-inner-spin-button {
+    display: none;
+  }
+
+  /* Always display the drop down caret */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    color: #2c3e50;
+  }
+
+  /* A few custom styles for date inputs */
+  input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    color: #95a5a6;
+    font-family: "Helvetica", arial, sans-serif;
+    font-size: 24px;
+    border:1px solid #ecf0f1;
+    background:#ecf0f1;
+    padding:5px;
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+
+  input[type="date"] {
+    color: #95a5a6;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
 </style>

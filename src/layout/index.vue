@@ -16,7 +16,6 @@
 import { AppMain, Navbar, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
-import vhCheck from 'vh-check'
 import { vm } from '@/main'
 
 export default {
@@ -74,9 +73,6 @@ export default {
         }
       }
     })
-  },
-  mounted() {
-    vhCheck()
   },
   methods: {
     handleClickOutside() {

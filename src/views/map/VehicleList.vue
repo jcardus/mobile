@@ -4,7 +4,9 @@
       Vehicles<i class="el-icon-arrow-down el-icon--right"></i>
     </span>
     <el-dropdown-menu slot="dropdown">
-      <vehicle-table></vehicle-table>
+      <el-dropdown-item>
+        <vehicle-table></vehicle-table>
+      </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 </template>
@@ -36,9 +38,10 @@ export default {
   }
   .el-dropdown-menu__item {
     max-height: calc(100vh - 50px) !important;
+    padding: 0;
   }
   .el-dropdown-menu {
-    width: 50%;
+    width: 70%;
     height: 100%;
   }
 </style>

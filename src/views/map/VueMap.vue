@@ -28,7 +28,6 @@ import bbox from '@turf/bbox'
 import bearing from '@turf/bearing'
 import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
-import vhCheck from 'vh-check'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTable from './VehicleTable'
@@ -104,7 +103,6 @@ export default {
       container: 'map',
       style: this.$root.$data.mapStyle
     })
-    vhCheck()
     this.map.on('load', this.onMapLoad)
     this.subscribeEvents()
   },
@@ -142,7 +140,9 @@ export default {
           if (!lnglat.contains(this.$static.map.getBounds(), {
             latitude: feature.geometry.coordinates[1],
             longitude: feature.geometry.coordinates[0]
-          }) || this.$static.map.getZoom() < 10) { this.flyToDevice(feature, device) } else { this.showPopup(feature, device) }
+          }) || this.$static.map.getZoom() < 10) {
+            this.flyToDevice(feature, device)
+          } else { this.showPopup(feature, device) }
         }
       }
     },
@@ -264,31 +264,25 @@ export default {
     addControls: function() {
       const map = this.$static.map
       this.$log.debug('adding mapcontrols...')
-      map.addControl(new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true
-      }), 'bottom-right')
-      map.addControl(new RulerControl(), 'bottom-right')
-      this.$static.draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: {
-          point: true,
-          line_string: true,
-          polygon: true,
-          trash: true
-        }
-      })
-      map.addControl(this.$static.draw, 'bottom-right')
+      if (!this.isMobile) {
+        map.addControl(new RulerControl(), 'bottom-right')
+        this.$static.draw = new MapboxDraw({
+          displayControlsDefault: false,
+          controls: {
+            point: true,
+            line_string: true,
+            polygon: true,
+            trash: true
+          }
+        })
+        map.addControl(this.$static.draw, 'bottom-right')
+        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
+      }
       map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
-      if (!lnglat.isMobile()) {
-        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
-        // map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: this.$static.map }), 'bottom-left')
-      }
+
       if (settings.showSlider) {
         map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
         let VD = Vue.extend(HistoryPanel)
@@ -329,11 +323,7 @@ export default {
       this.$static.map.on('moveend', this.onMoveEnd)
       // this.$static.map.on('pitch', this.onPitch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
-      this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
-      this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
-      this.$static.map.on('mouseenter', 'unclustered-point', this.onEnterUnclustered)
-      this.$static.map.on('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
@@ -359,9 +349,6 @@ export default {
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
       this.$static.map.off('click', 'unclustered-point', this.onClickTouchUnclustered)
-      this.$static.map.off('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
-      this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
-      this.$static.map.off('click', 'clusters', this.onClickTouch)
       this.$static.map.off('mouseenter', 'unclustered-point', this.onEnterUnclustered)
       this.$static.map.off('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
       this.$static.map.off('draw.create', this.drawCreate)
@@ -393,13 +380,14 @@ export default {
       }
     },
     onClickTouch: function(e) {
+      Vue.$log.debug('clickTouch')
       const features = vm.$static.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
       const clusterId = features[0].properties.cluster_id
       this.$static.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
         if (err) { return }
         vm.$static.map.easeTo({
           center: features[0].geometry.coordinates,
-          zoom: zoom
+          zoom: zoom + 1
         })
       })
     },

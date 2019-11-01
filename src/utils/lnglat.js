@@ -177,8 +177,9 @@ function createDonutChart(props) {
     r + ', ' + r + ')">' + total.toLocaleString() + '</text></svg>'
 
   const el = document.createElement('div')
+
   el.innerHTML = html
-  return el.firstChild
+  return el
 }
 function donutSegment(start, end, r, r0, color) {
   if (end - start === 1) end -= 0.00001
@@ -273,8 +274,8 @@ export function addLayers(map) {
       type: 'geojson',
       data: vm.$static.positionsSource,
       cluster: true,
-      clusterMaxZoom: 16, // Max zoom to cluster points on
-      clusterRadius: 9,
+      clusterMaxZoom: 15, // Max zoom to cluster points on
+      clusterRadius: 20,
       clusterProperties: { // keep separate counts for each magnitude category in a cluster
         'gray': ['+', ['case', gray, 1, 0]],
         'green': ['+', ['case', green, 1, 0]],
@@ -312,6 +313,21 @@ export function addLayers(map) {
   } else {
     Vue.$log.warn('layer unclustered-point already exists...')
   }
+  if (!map.getLayer('clusters')) {
+    map.addLayer({
+      'id': 'clusters',
+      'source': source,
+      'type': 'symbol',
+      filter: ['has', 'point_count'],
+      layout: {
+        'icon-allow-overlap': true,
+        'icon-image': 'airfield-15'
+      },
+      paint: {
+        'icon-opacity': 0
+      }
+    })
+  } else { Vue.$log.warn('layer clusters already exists...') }
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }

@@ -53,7 +53,6 @@
     "mapbox-gl-controls": "latest",
     "normalize.css": "7.0.0",
     "screenfull": "4.2.0",
-
     "vue": "2.6.10",
     "vue-cookies": "latest",
     "vue-i18n": "^8.14.0",

@@ -523,9 +523,6 @@ export default {
         cursor: pointer;
         color: darkblue;
     }
-    .start {
-        background-image: url(../assets/marker-start.png);
-    }
     .marker {width:0; height:0;}
     .marker  span {
         display:flex;
