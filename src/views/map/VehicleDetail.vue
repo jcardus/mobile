@@ -148,6 +148,8 @@ export default {
     },
     routePlay() {
       this.removeLayers(true)
+      lnglat.hideLayers(true)
+      animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
       serverBus.$emit('routeMatchFinished')
     },
     routePlayStopped() {
@@ -251,7 +253,6 @@ export default {
     showRoutesClick: function() {
       if (this.showRoutes) {
         traccar.stopReceiving()
-        animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
         this.getRoute(this.minDate, this.maxDate)
         lnglat.initImages()
       } else {
@@ -352,6 +353,12 @@ export default {
       let hour = this.$moment(positions[0].fixTime).format('HH:mm')
       Vue.$log.debug('adding start position on ', positions[0].deviceTime, hour)
       el.innerHTML = '<span><b>' + hour + '</b></span>'
+      if (this.startMaker) {
+        this.startMaker.remove()
+      }
+      if (this.endMarker) {
+        this.endMarker.remove()
+      }
       this.startMaker = new mapboxgl.Marker(el)
         .setLngLat(start)
       this.startMaker.addTo(vm.$static.map)
