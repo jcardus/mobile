@@ -1,7 +1,7 @@
 export default {
   route: {
     map: 'Mapa',
-    dashboard: 'Central de Controlo',
+    dashboard: 'Dashboard',
     reports: 'Informes',
     report_trip_title: 'Informe de viajes',
     report_location_title: 'Informe de posiciones',
@@ -56,7 +56,7 @@ export default {
     login_password: 'Contraseña',
     login_button: 'Iniciar',
     login_password_warn: 'La contraseña no puede tener menos de 6 dígitos',
-    login_user: 'Usuário'
+    login_user: 'Usuario'
   },
   profile: {
     user_account: 'Usuário',
