@@ -138,7 +138,7 @@ export function animateMatched(route, feature) {
   let endRotation = 0
 
   const step = consts.rotateStep
-  let isPanning = false
+
   if (process.env.NODE_ENV !== 'production') {
     drawTempLayer(route)
   }
@@ -161,14 +161,12 @@ export function animateMatched(route, feature) {
       feature.properties.speed = 10 // just to become  green...
       feature.geometry.coordinates = coordinates
       if (!lnglat.contains(vm.$static.map.getBounds(), { longitude: coordinates[0], latitude: coordinates[1] })) {
-        isPanning = true
         vm.$static.map.panTo(
           { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
           false
         )
         vm.$static.map.once('moveend', function() {
           Vue.$log.debug('panning ended')
-          isPanning = false
         })
       }
       const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
@@ -185,7 +183,7 @@ export function animateMatched(route, feature) {
     if (counter < feature.route.length) {
       counter = counter + 1
       if (vm.$data.isPlaying) {
-        if (!isPanning) { requestAnimationFrame(_animate) } else { setTimeout(_animate, 30) }
+        setTimeout(_animate, 30)
       } else {
         feature.animating = false
       }
