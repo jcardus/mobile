@@ -97,6 +97,7 @@ export const vm = new Vue({
       alerts: [],
       historyMode: false,
       currentDevice: null,
+      currentFeature: null,
       isPlaying: false,
       lazyLoad: false,
       distance: 0

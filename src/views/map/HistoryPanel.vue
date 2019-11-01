@@ -88,7 +88,7 @@ export default {
           this.currentPos = 0
         }
       }
-      lnglat.refreshMap()
+      // lnglat.refreshMap()
       serverBus.$emit('routePlay')
     },
     sliderPos() {

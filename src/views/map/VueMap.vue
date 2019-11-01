@@ -143,6 +143,7 @@ export default {
           }) || this.$static.map.getZoom() < 10) {
             this.flyToDevice(feature, device)
           } else { this.showPopup(feature, device) }
+          vm.$data.currentFeature = feature
         }
       }
     },

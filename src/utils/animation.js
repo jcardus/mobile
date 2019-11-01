@@ -10,30 +10,33 @@ const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
 const routePlayLayer = 'routePlayLayer'
-const routePlayLayerSource = {
-  type: 'FeatureCollection', features: []
-}
 
 angles.SCALE = 360
 
-function refreshRoutePlayLayer() {
-  vm.$static.map.getSource(routePlayLayer).setData(routePlayLayerSource)
-}
 export function hideRouteLayer(hide) {
   lnglat.hideLayer(routePlayLayer, hide)
 }
-export function initFeatureForPlaying(feature) {
-  routePlayLayerSource.features[0] = feature
+export function refreshFeature() {
+  const data = {
+    type: 'FeatureCollection', features: [vm.$data.currentFeature]
+  }
   if (!vm.$static.map.getLayer(routePlayLayer)) {
     vm.$static.map.addSource(routePlayLayer, {
       type: 'geojson',
-      data: routePlayLayerSource
+      data: data
     })
     lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
   } else {
+    vm.$static.map.getSource(routePlayLayer).setData(data)
+  }
+}
+
+export function removeAddRouteLayer() {
+  if (vm.$static.map.getLayer(routePlayLayer)) {
     vm.$static.map.removeLayer(routePlayLayer)
     lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
-    refreshRoutePlayLayer()
+  } else {
+    Vue.$log.warn('removeAddRouteLayer called but there is no layer!')
   }
 }
 export function animate(feature, coordinates) {
@@ -177,7 +180,7 @@ export function animateMatched(route, feature) {
           _animateRotation()
         }
       }
-      refreshRoutePlayLayer()
+      refreshFeature()
     }
     if (counter < feature.route.length) {
       counter = counter + 1
@@ -187,7 +190,7 @@ export function animateMatched(route, feature) {
         feature.animating = false
       }
     } else {
-      refreshRoutePlayLayer()
+      refreshFeature()
       feature.animating = false
       Vue.$log.debug('finished animating ', feature.route.length, ' coords')
       serverBus.$emit('routeMatchFinished')

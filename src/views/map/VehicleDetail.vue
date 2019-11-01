@@ -11,6 +11,7 @@
       @change="showRoutesClick"
     >
     </el-switch>
+    <br>
     {{ feature.properties.address }}
     <br>
     {{ Math.round(device.speed) }} km/h,
@@ -151,13 +152,11 @@ export default {
     routePlay() {
       this.removeLayers(true)
       lnglat.hideLayers(true)
-      animation.initFeatureForPlaying(lnglat.findFeatureByDeviceId(this.device.id))
+      animation.refreshFeature()
+      animation.removeAddRouteLayer()
       serverBus.$emit('routeMatchFinished')
     },
     routePlayStopped() {
-      if (this.feature) {
-        // this.feature.animating = false
-      }
     },
     onPosChanged(newPos) {
       const skipRoutePositions = consts.routeSlotLength
@@ -225,12 +224,11 @@ export default {
             this.drawTrip()
           }
         }
+        this.feature.properties.speed = this.positions[newPos].speed
         this.feature.properties.course = this.positions[newPos].course
         this.feature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
         this.feature.properties.address = this.positions[newPos].address
-        if (vm.$static.map.getSource('positions')) {
-          vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
-        }
+        animation.refreshFeature()
       }
     },
     removeLayers: function(keepMain) {
@@ -314,8 +312,8 @@ export default {
     drawTrip: function() {
       this.drawStartEnd()
       this.iterate()
-      lnglat.removeLayers(this.map)
-      lnglat.addLayers(this.map)
+      // lnglat.removeLayers(this.map)
+      // lnglat.addLayers(this.map)
     },
     onPositions: function(positions) {
       if (positions && positions.length > 1) {
@@ -500,8 +498,7 @@ export default {
       }
       const routeGeoJSON = this.getGeoJSON(r.data.matchings[0].geometry)
       this.drawIteration(routeGeoJSON)
-      lnglat.removeLayers(this.map)
-      lnglat.addLayers(this.map)
+      animation.removeAddRouteLayer()
     },
     deviceSelected(device) {
       Vue.$log.debug('device selected ', device.id)

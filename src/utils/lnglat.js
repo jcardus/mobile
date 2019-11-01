@@ -30,6 +30,7 @@ export function findFeatureByDeviceId(deviceId) {
     return e.properties.deviceId === deviceId
   })
 }
+let imageLoading = false
 export function findFeatureById(id) {
   return vm.$static.geofencesSource.features.find(e => {
     return e.properties.id === id
@@ -38,17 +39,25 @@ export function findFeatureById(id) {
 export function addImage(path, name) {
   Vue.$log.debug('addImage ', path, ' ', name, ' to queue')
   if (!vm.$static.map.hasImage(name)) {
-    vm.$static.map.loadImage(path, function(error, image) {
-      if (error) {
-        Vue.$log.error('error adding image to the map', error, ' ', name, ' ')
-        throw error
-      } else {
-        Vue.$log.debug('adding image to map ', name, ' ', image)
-        vm.$static.map.addImage(name, image)
-        Vue.$log.debug('done image to map, refreshing map', name, ' ', image)
-        refreshMap()
-      }
-    })
+    if (!imageLoading) {
+      imageLoading = true
+      vm.$static.map.loadImage(path, function(error, image) {
+        if (error) {
+          Vue.$log.error('error adding image to the map', error, ' ', name, ' ')
+          imageLoading = false
+          throw error
+        } else {
+          Vue.$log.debug('adding image to map ', name, ' ', image)
+          vm.$static.map.addImage(name, image)
+          Vue.$log.debug('done image to map, refreshing map', name, ' ', image)
+          refreshMap()
+          imageLoading = false
+        }
+      })
+    } else {
+      Vue.$log.debug('occupied, trying again in 500 ms, ', name, ' ', path)
+      setTimeout(addImage, 500, path, name)
+    }
   } else {
     Vue.$log.debug('skipping image ', name)
   }
@@ -361,6 +370,7 @@ export function contains(lngLatBounds, position) {
   )
 }
 export function refreshMap() {
+  if (vm.$data.historyMode) return
   if (vm.$static.map.getSource('positions')) {
     vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
   }
