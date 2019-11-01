@@ -45,9 +45,6 @@ export const settings = {
 }
 
 Vue.use(require('vue-moment'))
-if (VueCookies.get('language')) {
-  Vue.moment.locale(VueCookies.get('language'))
-}
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
