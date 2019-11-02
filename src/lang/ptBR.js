@@ -139,5 +139,15 @@ export default {
     date_start: 'Data de início',
     date_end: 'Data de fim',
     generate_report: 'Gerar relatório'
+  },
+  layout: {
+    deviceOnline: 'Dispositivo Online',
+    deviceMoving: 'Veículo em Movimento',
+    deviceStopped: 'Veículo Parado',
+    ignitionOff: 'Ignição Desligada',
+    ignitionOn: 'Ignição Ligada',
+    deviceOverspeed: 'Excesso de Velocidade',
+    geofenceEnter: 'Entrada de Baliza',
+    geofenceExit: 'Saída de Baliza'
   }
 }

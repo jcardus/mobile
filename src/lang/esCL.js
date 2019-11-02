@@ -139,5 +139,15 @@ export default {
     date_start: 'Fecha de inicio',
     date_end: 'Fecha de fin',
     generate_report: 'Generar informe'
+  },
+  layout: {
+    deviceOnline: 'Dispositivo en línea',
+    deviceMoving: 'Dispositivo en movimiento',
+    deviceStopped: 'Dispositivo parado',
+    ignitionOff: 'Motor apagado',
+    ignitionOn: 'Motor encendido',
+    deviceOverspeed: 'Traspassos de velocidad',
+    geofenceEnter: 'Entrada en geocerca',
+    geofenceExit: 'Salida de geocerca'
   }
 }
