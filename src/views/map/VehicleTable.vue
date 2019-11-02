@@ -64,35 +64,39 @@
                 <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="top">
                   <el-button
                     size="small"
-                    style="font-weight: bold ; color: black; min-width: 45px"
+                    class="state-button"
                     @click="handleFilterState(null)"
                   >{{ devices.length }}</el-button>
                 </el-tooltip></el-col><el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="top">
                   <el-button
+                    id="state-moving"
                     size="small"
-                    style="background-color: #63EA4F; font-weight: bold ; color: black; min-width: 45px"
+                    class="state-button"
                     @click="handleFilterState('Moving')"
                   >{{ devicesOn.length }}</el-button>
                 </el-tooltip></el-col><el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="top">
                   <el-button
+                    id="state-idle"
                     size="small"
-                    style="background-color: #d4c404; font-weight: bold ; color: black; min-width: 45px"
+                    class="state-button"
                     @click="handleFilterState('Idle')"
                   >{{ devicesIdle.length }}</el-button>
                 </el-tooltip></el-col><el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="top">
                   <el-button
+                    id="state-stopped"
                     size="small"
-                    style="background-color: #D50303; font-weight: bold ; color: black; min-width: 45px"
+                    class="state-button"
                     @click="handleFilterState('Stopped')"
                   >{{ devicesOff.length }}</el-button>
                 </el-tooltip></el-col><el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="top">
                   <el-button
+                    id="state-disconnected"
                     size="small"
-                    style="background-color: gray; font-weight: bold ; color: black; min-width: 45px"
+                    class="state-button"
                     @click="handleFilterState('Disconnected')"
                   >{{ devicesDisconnected.length }}</el-button>
                 </el-tooltip></el-col>
@@ -406,6 +410,23 @@ export default {
   #green-light-on {
       background-color: #00FF00;
       cursor: auto;
+  }
+  .state-button {
+    font-weight: bold;
+    color: black;
+    min-width: 45px;
+  }
+  #state-moving {
+    background-color: #63EA4F;
+  }
+  #state-idle {
+    background-color: #d4c404;
+  }
+  #state-stopped {
+    background-color: #D50303;
+  }
+  #state-disconnected {
+    background-color: gray;
   }
 </style>
 
