@@ -183,7 +183,7 @@ export function animateMatched(route, feature) {
     if (counter < feature.route.length) {
       counter = counter + 1
       if (vm.$data.isPlaying) {
-        setTimeout(_animate, 30)
+        requestAnimationFrame(_animate)
       } else {
         feature.animating = false
       }
