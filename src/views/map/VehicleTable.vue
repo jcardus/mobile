@@ -58,42 +58,45 @@
               <i class="fas fa-car-side"></i>
             </div>
           </span>
-          <div style="margin-bottom: 15px">
-            <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="top">
-              <el-button
-                size="small"
-                style="font-weight: bold ; color: black"
-                @click="handleFilterState(null)"
-              >{{ devices.length }}</el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="top">
-              <el-button
-                size="small"
-                style="background-color: #63EA4F; font-weight: bold ; color: black"
-                @click="handleFilterState('Moving')"
-              >{{ devicesOn.length }}</el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="top">
-              <el-button
-                size="small"
-                style="background-color: #d4c404; font-weight: bold ; color: black"
-                @click="handleFilterState('Idle')"
-              >{{ devicesIdle.length }}</el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="top">
-              <el-button
-                size="small"
-                style="background-color: #D50303; font-weight: bold ; color: black"
-                @click="handleFilterState('Stopped')"
-              >{{ devicesOff.length }}</el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="top">
-              <el-button
-                size="small"
-                style="background-color: gray; font-weight: bold ; color: black"
-                @click="handleFilterState('Disconnected')"
-              >{{ devicesDisconnected.length }}</el-button>
-            </el-tooltip>
+          <div style="margin-bottom: 15px;">
+            <el-row type="flex" justify="space-around">
+              <el-col :span="4">
+                <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="top">
+                  <el-button
+                    size="small"
+                    style="font-weight: bold ; color: black; min-width: 45px"
+                    @click="handleFilterState(null)"
+                  >{{ devices.length }}</el-button>
+                </el-tooltip></el-col><el-col :span="4">
+                <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="top">
+                  <el-button
+                    size="small"
+                    style="background-color: #63EA4F; font-weight: bold ; color: black; min-width: 45px"
+                    @click="handleFilterState('Moving')"
+                  >{{ devicesOn.length }}</el-button>
+                </el-tooltip></el-col><el-col :span="4">
+                <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="top">
+                  <el-button
+                    size="small"
+                    style="background-color: #d4c404; font-weight: bold ; color: black; min-width: 45px"
+                    @click="handleFilterState('Idle')"
+                  >{{ devicesIdle.length }}</el-button>
+                </el-tooltip></el-col><el-col :span="4">
+                <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="top">
+                  <el-button
+                    size="small"
+                    style="background-color: #D50303; font-weight: bold ; color: black; min-width: 45px"
+                    @click="handleFilterState('Stopped')"
+                  >{{ devicesOff.length }}</el-button>
+                </el-tooltip></el-col><el-col :span="4">
+                <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="top">
+                  <el-button
+                    size="small"
+                    style="background-color: gray; font-weight: bold ; color: black; min-width: 45px"
+                    @click="handleFilterState('Disconnected')"
+                  >{{ devicesDisconnected.length }}</el-button>
+                </el-tooltip></el-col>
+            </el-row>
           </div>
           <el-table
             v-show="!isMobile"
