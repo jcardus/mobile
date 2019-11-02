@@ -123,7 +123,7 @@
               >
                 <template slot-scope="scope">
                   <el-tooltip :content="$t('settings.alert_overspeed_warning')" placement="top">
-                    <i v-if="scope.row.data.attributes.speedLimit === 0" class="fas fa-exclamation-triangle"></i></el-tooltip>
+                    <i v-if="scope.row.data.attributes.speedLimit === 0 || !scope.row.data.attributes.speedLimit" class="fas fa-exclamation-triangle"></i></el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column
@@ -304,7 +304,11 @@ export default {
       return this.$t('settings.alert_' + cellValue)
     },
     alertSpeedRenderer(row, column, cellValue) {
-      return Math.round(cellValue * 1.85200) + ' Km/h'
+      if (cellValue) {
+        return Math.round(cellValue * 1.85200) + ' Km/h'
+      } else {
+        return ''
+      }
     },
     devicesRenderer(row, column, cellValue) {
       if (row.notification.always) {
