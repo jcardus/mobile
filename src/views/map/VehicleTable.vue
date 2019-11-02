@@ -64,6 +64,7 @@
                 <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="top">
                   <el-button
                     size="small"
+                    if="state-all"
                     class="state-button"
                     @click="handleFilterState(null)"
                   >{{ devices.length }}</el-button>
@@ -413,20 +414,28 @@ export default {
   }
   .state-button {
     font-weight: bold;
-    color: black;
+    font-size: 16px;
     min-width: 45px;
   }
+  #state-all {
+    background-color: rgba(White, 0.25);
+    color: Black;
+  }
   #state-moving {
-    background-color: #63EA4F;
+    background-color: rgba(#63EA4F, 0.25);
+    color: #63EA4F;
   }
   #state-idle {
-    background-color: #d4c404;
+    background-color: rgba(#d4c404, 0.2);
+    color: #d4c404;
   }
   #state-stopped {
-    background-color: #D50303;
+    background-color: rgba(#D50303, 0.2);
+    color: #D50303;
   }
   #state-disconnected {
-    background-color: gray;
+    background-color: rgba(gray, 0.2);
+    color: gray;
   }
 </style>
 
