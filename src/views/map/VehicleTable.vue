@@ -58,6 +58,43 @@
               <i class="fas fa-car-side"></i>
             </div>
           </span>
+          <div style="margin-bottom: 15px">
+            <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="top">
+              <el-button
+                size="small"
+                style="font-weight: bold ; color: black"
+                @click="handleFilterState(null)"
+              >{{ devices.length }}</el-button>
+            </el-tooltip>
+            <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="top">
+              <el-button
+                size="small"
+                style="background-color: #63EA4F; font-weight: bold ; color: black"
+                @click="handleFilterState('Moving')"
+              >{{ devicesOn.length }}</el-button>
+            </el-tooltip>
+            <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="top">
+              <el-button
+                size="small"
+                style="background-color: #d4c404; font-weight: bold ; color: black"
+                @click="handleFilterState('Idle')"
+              >{{ devicesIdle.length }}</el-button>
+            </el-tooltip>
+            <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="top">
+              <el-button
+                size="small"
+                style="background-color: #D50303; font-weight: bold ; color: black"
+                @click="handleFilterState('Stopped')"
+              >{{ devicesOff.length }}</el-button>
+            </el-tooltip>
+            <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="top">
+              <el-button
+                size="small"
+                style="background-color: gray; font-weight: bold ; color: black"
+                @click="handleFilterState('Disconnected')"
+              >{{ devicesDisconnected.length }}</el-button>
+            </el-tooltip>
+          </div>
           <el-table
             v-show="!isMobile"
             id="vehicleTable"
@@ -170,6 +207,7 @@ export default {
       lastUpdate: new Date(),
       sortColumns: {},
       filterKey: '',
+      filterState: null,
       sortKey: ''
     }
   },
@@ -178,6 +216,10 @@ export default {
       return lnglat.isMobile()
     },
     devices: { get: function() { return vm.$data.devices }, set: function(value) { vm.$data.devices = value } },
+    devicesDisconnected: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected') },
+    devicesOff: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Stopped') },
+    devicesIdle: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Idle') },
+    devicesOn: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Moving') },
     positions() {
       return vm.$data.positions
     },
@@ -187,8 +229,20 @@ export default {
     filteredVehicles: function() {
       const sortKey = this.sortKey
       const filterKey = this.filterKey && this.filterKey.toLowerCase()
+      const filterState = this.filterState
       const order = this.sortColumns[sortKey] || 1
       let devices = this.devices
+      if (filterState) {
+        if (filterState === 'Moving') {
+          devices = this.devicesOn
+        } else if (filterState === 'Idle') {
+          devices = this.devicesIdle
+        } else if (filterState === 'Stopped') {
+          devices = this.devicesOff
+        } else if (filterState === 'Disconnected') {
+          devices = this.devicesDisconnected
+        }
+      }
       if (filterKey) {
         devices = devices.filter(function(row) {
           return Object.keys(row).some(function(key) {
@@ -214,10 +268,16 @@ export default {
   },
   methods: {
     getBgColor: function(device) {
-      if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Gray' }
-      if (device.speed > 2) { return '#63EA4F' }
-      if (device.ignition) { return '#d4c404' }
+      if (this.getDeviceState(device) === 'Disconnected') { return 'Gray' }
+      if (this.getDeviceState(device) === 'Moving') { return '#63EA4F' }
+      if (this.getDeviceState(device) === 'Idle') { return '#d4c404' }
       return '#D50303'
+    },
+    getDeviceState: function(device) {
+      if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Disconnected' }
+      if (device.speed > 2) { return 'Moving' }
+      if (device.ignition) { return 'Idle' }
+      return 'Stopped'
     },
     cellStyle(row) {
       let result = 'padding: 0; '
@@ -248,6 +308,9 @@ export default {
         Vue.$log.debug('device=', device)
         serverBus.$emit('deviceSelected', device)
       }
+    },
+    handleFilterState: function(state) {
+      this.filterState = state
     },
     commandImmobilize: function(device, value) {
       Vue.$log.debug('Immobilization ' + value + ' for device ' + device)

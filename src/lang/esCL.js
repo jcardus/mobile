@@ -32,7 +32,12 @@ export default {
     immobilize: 'Inmovilizar',
     de_immobilize: 'Movilizar',
     send_immobilization: 'Enviar comando de inmovilización?',
-    send_de_immobilization: 'Enviar comando de movilización?'
+    send_de_immobilization: 'Enviar comando de movilización?',
+    all_vehicles: 'Todos',
+    moving_vehicles: 'En movimiento',
+    idle_vehicles: 'Inactivo',
+    stopped_vehicles: 'Detenido',
+    disconnected_vehicles: 'Desconectado'
   },
   vehicleDetail: {
     show_route: 'Mostrar ruta'
