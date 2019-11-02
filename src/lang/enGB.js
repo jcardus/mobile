@@ -139,5 +139,15 @@ export default {
     date_start: 'Start date',
     date_end: 'End date',
     generate_report: 'Generate report'
+  },
+  layout: {
+    deviceOnline: 'Device Online',
+    deviceMoving: 'Device Moving',
+    deviceStopped: 'Device Stopped',
+    ignitionOff: 'Ignition Off',
+    ignitionOn: 'Ignition On',
+    deviceOverspeed: 'Device Overspeed',
+    geofenceEnter: 'Geofence Enter',
+    geofenceExit: 'Geofence Exit'
   }
 }

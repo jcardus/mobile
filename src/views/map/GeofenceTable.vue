@@ -8,7 +8,7 @@
     <el-table
       id="geofenceTable"
       highlight-current-row
-      :data="geofences"
+      :data="filteredGeofences"
       :show-header="false"
       height="calc(100vh - 150px)"
       @current-change="geofenceSelected"
@@ -43,6 +43,7 @@ import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'GeofenceTable',
+  props: ['filterKey'],
   data() {
     return {
     }
@@ -53,6 +54,18 @@ export default {
       return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON'))
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
+    filteredGeofences: function() {
+      const filterKey = this.filterKey && this.filterKey.toLowerCase()
+      let geofences = this.geofences
+      if (filterKey) {
+        geofences = geofences.filter(function(row) {
+          return Object.keys(row).some(function(key) {
+            return String(row[key]).toLowerCase().indexOf(filterKey) > -1
+          })
+        })
+      }
+      return geofences
+    },
     showGeofenceLayer: {
       get() { return !!vm.$store.state.map.showGeofences },
       set() { this.toggleGeofences() }
