@@ -114,7 +114,7 @@
               <i class="fas fa-map-marker-alt"></i>
             </div>
           </span>
-          <p-o-i-table></p-o-i-table>
+          <p-o-i-table :filter-key="filterKey"></p-o-i-table>
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">
@@ -122,7 +122,7 @@
               <i class="fas fa-draw-polygon"></i>
             </div>
           </span>
-          <geofence-table></geofence-table>
+          <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
       </el-tabs>
     </div>

@@ -8,7 +8,7 @@
     <el-table
       id="poiTable"
       highlight-current-row
-      :data="pois"
+      :data="filteredPOIs"
       :show-header="false"
       height="calc(100vh - 150px)"
       @current-change="poiSelected"
@@ -42,6 +42,7 @@ import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'POITable',
+  props: ['filterKey'],
   data() {
     return {
     }
@@ -52,6 +53,18 @@ export default {
       return vm.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
+    filteredPOIs: function() {
+      const filterKey = this.filterKey && this.filterKey.toLowerCase()
+      let pois = this.pois
+      if (filterKey) {
+        pois = pois.filter(function(row) {
+          return Object.keys(row).some(function(key) {
+            return String(row[key]).toLowerCase().indexOf(filterKey) > -1
+          })
+        })
+      }
+      return pois
+    },
     showPOIsLayer: {
       get() { return !!vm.$store.state.map.showPOIs },
       set() { this.togglePOIs() }
