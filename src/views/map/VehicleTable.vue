@@ -51,6 +51,7 @@
         v-else
         active-tab-color="#9b59b6"
         active-text-color="white"
+        :stretch="true"
       >
         <el-tab-pane>
           <span slot="label">
@@ -367,8 +368,6 @@ export default {
     -webkit-overflow-scrolling: touch
   }
   .label-tab {
-    width: 50px;
-    height: 50px;
     text-align: center;
     font-size: 20px;
   }
