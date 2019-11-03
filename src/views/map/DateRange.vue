@@ -4,7 +4,7 @@
       v-if="!isMobile"
       v-model="dates"
       v-loading="loadingRoutes"
-      unlink-panels="true"
+
       value-format="yyyy-MM-dd"
       type="daterange"
       align="right"

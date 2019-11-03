@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" class="mapboxgl-ctrl" :style="width">
+  <div v-show="show" class="mapboxgl-ctrl" :style="isMobile?width:''">
     <el-card
       v-loading="loadingRoutes"
       :body-style="{ padding: '10px' }"
@@ -46,6 +46,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return lnglat.isMobile()
+    },
     tripDistance: {
       get() { return vm.$data.distance },
       set(value) { vm.$data.distance = value }
@@ -152,17 +155,17 @@ export default {
     font-size: 20px;
   }
   .currentPos {
-    width: calc(100vw - 20px);
+    width: 300px;
     font-size: 14px;
     color: #5a5e66;
     background-color: rgba(255, 255, 255, 0.9);
-    padding: 0 !important;
+
   }
 
-  @media screen and (min-width: 768px) {
+  @media screen and (max-width: 768px) {
     .currentPos {
-      width:calc(30vw);
-      max-width: 250px;
+      width: calc(100vw - 20px);
+      padding: 0 !important;
     }
   }
 </style>
