@@ -136,6 +136,7 @@ export function animateMatched(route, feature) {
   feature.route = arc
   let startRotation = 0
   let endRotation = 0
+  let isPanning = false
 
   const step = consts.rotateStep
 
@@ -149,7 +150,13 @@ export function animateMatched(route, feature) {
       // Vue.$log.debug('dir start end cur dif', dir, startRotation, endRotation, feature.properties.course, angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation))
       if (angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
         feature.properties.course = angles.normalize(feature.properties.course + dir * step)
-        requestAnimationFrame(_animateRotation)
+        refreshFeature()
+        if (isPanning) {
+          setTimeout(_animateRotation, consts.animationFrameTimeout)
+        } else {
+          requestAnimationFrame(_animateRotation)
+        }
+        // setTimeout(requestAnimationFrame, consts.animationFrameTimeout, _animateRotation)
         return
       }
     }
@@ -162,11 +169,12 @@ export function animateMatched(route, feature) {
       feature.geometry.coordinates = coordinates
       if (!lnglat.contains(vm.$static.map.getBounds(), { longitude: coordinates[0], latitude: coordinates[1] })) {
         vm.$static.map.panTo(
-          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
-          false
+          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }
         )
+        isPanning = true
         vm.$static.map.once('moveend', function() {
           Vue.$log.debug('panning ended')
+          isPanning = false
         })
       }
       const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
@@ -183,7 +191,11 @@ export function animateMatched(route, feature) {
     if (counter < feature.route.length) {
       counter = counter + 1
       if (vm.$data.isPlaying) {
-        requestAnimationFrame(_animate)
+        if (isPanning) {
+          setTimeout(_animate, 30)
+        } else {
+          requestAnimationFrame(_animate)
+        }
       } else {
         feature.animating = false
       }

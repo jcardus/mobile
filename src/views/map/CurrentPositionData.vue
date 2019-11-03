@@ -46,6 +46,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return lnglat.isMobile()
+    },
     tripDistance: {
       get() { return vm.$data.distance },
       set(value) { vm.$data.distance = value }
