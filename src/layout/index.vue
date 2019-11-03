@@ -65,7 +65,7 @@ export default {
             const event = events[i]
             this.$notify({
               title: vm.$t('layout.' + event.type),
-              message: this.$root.device(event.deviceId).name,
+              message: this.getMessage(event),
               type: 'info',
               duration: 5000
             })
@@ -77,7 +77,15 @@ export default {
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+    },
+    getMessage(event) {
+      if (event.type === 'deviceOverspeed') {
+        this.$root.device(event.deviceId).name + ' - ' + ~~(event.attributes.speed * 1.852) + ' km/h (Max. ' + ~~(event.attributes.speedLimit * 1.852) + ' km/h)'
+      } else {
+        return this.$root.device(event.deviceId).name
+      }
     }
+
   }
 }
 </script>
