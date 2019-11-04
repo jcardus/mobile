@@ -69,7 +69,8 @@
                     class="state-button"
                     @click="handleFilterState(null)"
                   >{{ devices.length }}</el-button>
-                </el-tooltip></el-col><el-col :span="4">
+                </el-tooltip></el-col>
+              <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="top">
                   <el-button
                     id="state-moving"
@@ -77,7 +78,8 @@
                     class="state-button"
                     @click="handleFilterState('Moving')"
                   >{{ devicesOn.length }}</el-button>
-                </el-tooltip></el-col><el-col :span="4">
+                </el-tooltip></el-col>
+              <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="top">
                   <el-button
                     id="state-idle"
@@ -85,7 +87,8 @@
                     class="state-button"
                     @click="handleFilterState('Idle')"
                   >{{ devicesIdle.length }}</el-button>
-                </el-tooltip></el-col><el-col :span="4">
+                </el-tooltip></el-col>
+              <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="top">
                   <el-button
                     id="state-stopped"
@@ -93,7 +96,8 @@
                     class="state-button"
                     @click="handleFilterState('Stopped')"
                   >{{ devicesOff.length }}</el-button>
-                </el-tooltip></el-col><el-col :span="4">
+                </el-tooltip></el-col>
+              <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="top">
                   <el-button
                     id="state-disconnected"
@@ -102,6 +106,16 @@
                     @click="handleFilterState('Disconnected')"
                   >{{ devicesDisconnected.length }}</el-button>
                 </el-tooltip></el-col>
+              <el-col :span="4">
+                <el-dropdown @command="onCommandOrderBy">
+                  <i class="fas fa-sort-amount-down-alt"></i>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="name">Nome</el-dropdown-item>
+                    <el-dropdown-item command="state">Estado</el-dropdown-item>
+                    <el-dropdown-item command="speed">Velocidade</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-col>
             </el-row>
           </div>
           <el-table
@@ -217,7 +231,8 @@ export default {
       sortColumns: {},
       filterKey: '',
       filterState: null,
-      sortKey: ''
+      sortKey: 'name',
+      order: 1
     }
   },
   computed: {
@@ -236,10 +251,11 @@ export default {
       return vm.$data.map
     },
     filteredVehicles: function() {
+      const self = this
       const sortKey = this.sortKey
       const filterKey = this.filterKey && this.filterKey.toLowerCase()
       const filterState = this.filterState
-      const order = this.sortColumns[sortKey] || 1
+      const order = this.order
       let devices = this.devices
       if (filterState) {
         if (filterState === 'Moving') {
@@ -260,11 +276,19 @@ export default {
         })
       }
       if (sortKey) {
-        devices = devices.slice().sort(function(a, b) {
-          a = a[sortKey]
-          b = b[sortKey]
-          return (a === b ? 0 : a > b ? 1 : -1) * order
-        })
+        if (sortKey === 'state') {
+          devices = devices.slice().sort(function(a, b) {
+            a = self.getDeviceStateOrder(a)
+            b = self.getDeviceStateOrder(b)
+            return (a === b ? 0 : a > b ? 1 : -1) * order
+          })
+        } else {
+          devices = devices.slice().sort(function(a, b) {
+            a = a[sortKey]
+            b = b[sortKey]
+            return (a === b ? 0 : a > b ? 1 : -1) * order
+          })
+        }
       }
       return devices
     }
@@ -276,6 +300,9 @@ export default {
     })
   },
   methods: {
+    onCommandOrderBy(command) {
+      this.sortBy(command)
+    },
     getBgColor: function(device) {
       if (this.getDeviceState(device) === 'Disconnected') { return 'Gray' }
       if (this.getDeviceState(device) === 'Moving') { return '#63EA4F' }
@@ -287,6 +314,13 @@ export default {
       if (device.speed > 2) { return 'Moving' }
       if (device.ignition) { return 'Idle' }
       return 'Stopped'
+    },
+    getDeviceStateOrder: function(device) {
+      const state = this.getDeviceState(device)
+      if (state === 'Moving') return 3
+      if (state === 'Idle') return 2
+      if (state === 'Stopped') return 1
+      if (state === 'Disconnected') return 0
     },
     cellStyle(row) {
       let result = 'padding: 0; '
@@ -309,7 +343,8 @@ export default {
     },
     sortBy: function(key) {
       this.sortKey = key
-      this.sortColumns[key] = this.sortColumns[key] * -1
+      this.sortColumns[key] = (this.sortColumns[key] || 1) * -1
+      this.order = this.sortColumns[key]
     },
     vehicleSelected: function(device) {
       if (device) {
@@ -435,6 +470,12 @@ export default {
   #state-disconnected {
     background-color: rgba(gray, 0.2);
     color: gray;
+  }
+  .el-dropdown {
+    color: #606266;
+    font-size: 18px;
+    left: 25px;
+    top: 10px;
   }
 </style>
 
