@@ -42,7 +42,12 @@ import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'POITable',
-  props: ['filterKey'],
+  props: {
+    filterKey: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
     }

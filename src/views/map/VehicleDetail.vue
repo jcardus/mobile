@@ -128,7 +128,9 @@ export default {
         self.feature.geometry.coordinates[1] + '&radius=500&per_page=1&client_id=NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj')
         .then((response) => {
           Vue.$log.debug(response)
-          self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
+          if (response.data.features[0]) {
+            self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
+          }
         })
         .catch(reason => {
           Vue.$log.error(reason)
@@ -184,13 +186,19 @@ export default {
         if (i < this.positions.length - skipRoutePositions) {
           animation.cacheMatch(
             this.positions.slice(i, i + skipRoutePositions + 1)
-              .map(x => [x.longitude, x.latitude]))
+              .map(x => [x.longitude, x.latitude]),
+            this.positions.slice(i, i + skipRoutePositions + 1)
+              .map(x => this.$moment(x.fixTime).unix())
+          )
         }
         if (JSON.stringify(this.positions[origin]) === JSON.stringify(this.positions[newPos])) {
           Vue.$log.debug('routeMatchFinished origin equals destination')
           serverBus.$emit('routeMatchFinished')
         } else {
-          animation.animate(this.feature, this.positions.slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
+          animation.animate(this.feature,
+            this.positions.slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
+            this.positions.slice(origin, newPos + 1).map(x => Vue.moment(x.fixTime).unix())
+          )
         }
         if (newPos === this.positions.length - 1) {
           this.isPlaying = false
@@ -254,7 +262,6 @@ export default {
       if (this.showRoutes) {
         traccar.stopReceiving()
         this.getRoute(this.minDate, this.maxDate)
-        lnglat.initImages()
       } else {
         traccar.startReceiving()
         this.removeLayers()
@@ -388,16 +395,18 @@ export default {
       if (this.i < positions.length) {
         const j = (this.i + 100) <= (positions.length) ? (this.i + 100) : (positions.length)
         Vue.$log.debug('slicing ', this.i, ' to ', j)
-        this.drawRoute(positions.slice(this.i, j).map(p => [p.longitude, p.latitude]))
+        this.drawRoute(
+          positions.slice(this.i, j).map(p => [p.longitude, p.latitude]),
+          positions.slice(this.i, j).map(p => Vue.moment(p.fixTime).unix()))
       }
     },
-    drawRoute(positions) {
+    drawRoute(positions, timestamps) {
       const lineString = { type: 'LineString', coordinates: positions }
       if (!vm.$store.state.settings.matchRoutes) {
         const routeGeoJSON = this.getGeoJSON(lineString)
         this.drawIteration(routeGeoJSON)
       } else {
-        lnglat.matchRoute(positions, positions.map(() => [25]), this.onRouteMatch)
+        lnglat.matchRoute(positions, positions.map(() => [25]), timestamps, this.onRouteMatch)
       }
     },
     getGeoJSON: function(coords) {

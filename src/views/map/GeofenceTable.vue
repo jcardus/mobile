@@ -43,7 +43,12 @@ import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'GeofenceTable',
-  props: ['filterKey'],
+  props: {
+    filterKey: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
     }
@@ -139,7 +144,5 @@ export default {
 </script>
 
 <style>
-  .el-switch {
-    margin-bottom: 10px;
-  }
+
 </style>

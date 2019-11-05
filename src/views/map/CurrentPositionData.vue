@@ -155,7 +155,7 @@ export default {
     font-size: 20px;
   }
   .currentPos {
-    width: 300px;
+    width: 400px;
     font-size: 14px;
     color: #5a5e66;
     background-color: rgba(255, 255, 255, 0.9);

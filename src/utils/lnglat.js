@@ -5,13 +5,6 @@ import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm, settings } from '../main'
-
-export function initImages() {
-  for (let i = 0; i < 50; i++) {
-    addImageWithColor(i, 'green')
-  }
-}
-
 let markersOnScreen = {}
 
 const colors = ['#606060', '#08C803', '#D4C404', '#D50303']
@@ -20,12 +13,14 @@ const gray = ['>', ['get', 'fixDays'], 5]
 const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
 const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
 const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2]]
+const _colorFormula = ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]
+const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-string', _colorFormula]], ['to-string', _colorFormula]]
 
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }
 export function findFeatureByDeviceId(deviceId) {
-  Vue.$log.debug('iterating ', vm.$static.positionsSource.features.length, ' features')
+  // Vue.$log.debug('iterating ', vm.$static.positionsSource.features.length, ' features')
   return vm.$static.positionsSource.features.find(e => {
     return e.properties.deviceId === deviceId
   })
@@ -108,9 +103,11 @@ export class MapboxCustomControl {
     this.map = undefined
   }
 }
-export function matchRoute(coordinates, radius, onSuccess, onError) {
-  const radiuses = radius.join(';')
-  const query = 'https://api.mapbox.com/matching/v5/mapbox/driving/' + coordinates.join(';') + '?geometries=geojson&radiuses=' + radiuses + '&access_token=' + mapboxgl.accessToken
+export function matchRoute(coordinates, radius, timestamps, onSuccess, onError) {
+  const query = 'https://api.mapbox.com/matching/v5/mapbox/driving/' +
+    coordinates.join(';') + '?geometries=geojson&radiuses=' +
+    radius.join(';') + '&timestamps=' +
+    timestamps.join(';') + '&access_token=' + mapboxgl.accessToken
   axios.get(query)
     .then(onSuccess)
     .catch(onError)
@@ -257,32 +254,25 @@ export function addVehiclesLayer(layer, source) {
     source: source,
     filter: ['!=', 'cluster', true],
     layout: {
-      'icon-image': // 'car-red0', // + (['get', 'course'] / 45),
+      'icon-image': ['concat',
         ['case',
-          gray,
-          ['concat', 'car-gray-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-          green,
-          ['concat', 'car-green-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-          yellow,
-          ['concat', 'car-yellow-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]],
-          ['concat', 'car-red-', ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]]
-        ],
+          gray, 'gray',
+          green, 'green',
+          yellow, 'yellow',
+          'red'
+        ], '00', colorFormula],
       'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
       'icon-allow-overlap': true,
       'text-allow-overlap': true,
       'icon-size': {
         stops: [
-          [1, 0.1],
-          [14, 0.2],
-          [15, 0.3],
-          [16, 0.4],
-          [17, 0.5],
-          [18, 0.6],
-          [19, 0.7],
-          [20, 0.8],
-          [21, 0.9]
+          [1, 0.5],
+          [14, 0.6],
+          [15, 0.8],
+          [16, 1]
         ]
       }
+
     }
   })
 }

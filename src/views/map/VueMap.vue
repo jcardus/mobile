@@ -328,7 +328,7 @@ export default {
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
-      this.$static.map.on('styleimagemissing', this.missingImage)
+      // this.$static.map.on('styleimagemissing', this.missingImage)
       this.$static.map.on('data', this.onData)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
@@ -355,21 +355,22 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
-      this.$static.map.off('styleimagemissing', this.missingImage)
+      // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
-    missingImage(e) {
-      this.$log.debug('missing image with name: ', e.id)
-      if (e.id.startsWith('car')) {
-        lnglat.addImageWithColor(parseInt(e.id.split('-')[2]), e.id.split('-')[1])
-      }
-    },
     onData(e) {
-      if (e.sourceId !== lnglat.source || !e.isSourceLoaded) return
+      if (e.sourceId !== lnglat.source || !e.isSourceLoaded) {
+        if (e.dataType === 'style') {
+          const style = this.map.getStyle()
+          style.sprite = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
+          this.map.setStyle(style)
+        }
+        return
+      }
       lnglat.updateMarkers()
     },
     onClickTouchUnclustered: function(e) {
@@ -407,7 +408,7 @@ export default {
       this.animating = true
       this._animate()
     },
-    animate: function(position, feature) {
+    animate: function(position, feature, timestamps) {
       const origin = feature.geometry.coordinates
       const destination = [position.longitude, position.latitude]
       if (JSON.stringify(origin) === JSON.stringify(destination)) {
@@ -420,7 +421,7 @@ export default {
           coordinates: [origin, destination]
         }
       }
-      this.getMatch(route.geometry.coordinates, [25, 25], route, feature, position)
+      this.getMatch(route.geometry.coordinates, [25, 25], route, timestamps, feature, position)
     },
     animateMatched: function(route, feature) {
       const steps = 200
@@ -532,15 +533,15 @@ export default {
           device.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
           feature = self.positionToFeature(position, device)
           self.positionsSource.features.push(feature)
-          self.$log.debug('updating map source')
           if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
         } else {
           if (!device) return
           device.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
+          const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers && lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
             self.$log.debug('animating ', feature.properties.text)
-            self.animate(position, feature)
+            self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
             self.$log.debug('device ', feature.properties.text, ' off bounds')
             feature.properties.course = position.course
@@ -551,21 +552,22 @@ export default {
         }
       })
     },
-    getMatch: function(coordinates, radius, route, feature, position) {
+    getMatch: function(coordinates, radius, route, timestamps, feature, position) {
       const self = this
       const lineDistance = lnglat.lineDistance(route)
 
       if (lineDistance > 0.03) {
         if (this.popUps[position.deviceId]) { this.popUps[position.deviceId].remove() }
-        lnglat.matchRoute(coordinates, radius, function(r) {
-          if (r.data.matchings && r.data.matchings.length > 0) {
-            const matched = r.data.matchings[0].geometry
-            if (matched && matched.coordinates.length > 1) {
-              route.geometry.coordinates = matched.coordinates
+        lnglat.matchRoute(coordinates, radius, timestamps,
+          function(r) {
+            if (r.data.matchings && r.data.matchings.length > 0) {
+              const matched = r.data.matchings[0].geometry
+              if (matched && matched.coordinates.length > 1) {
+                route.geometry.coordinates = matched.coordinates
+              }
             }
-          }
-          self.animateMatched(route, feature, position)
-        })
+            self.animateMatched(route, feature, position)
+          })
       } else {
         self.animateMatched(route, feature, position)
       }

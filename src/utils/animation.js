@@ -30,7 +30,6 @@ export function refreshFeature() {
     vm.$static.map.getSource(routePlayLayer).setData(data)
   }
 }
-
 export function removeAddRouteLayer() {
   if (vm.$static.map.getLayer(routePlayLayer)) {
     vm.$static.map.removeLayer(routePlayLayer)
@@ -39,7 +38,7 @@ export function removeAddRouteLayer() {
     Vue.$log.warn('removeAddRouteLayer called but there is no layer!')
   }
 }
-export function animate(feature, coordinates) {
+export function animate(feature, coordinates, timestamps) {
   const route = {
     type: 'Feature',
     geometry: {
@@ -47,9 +46,9 @@ export function animate(feature, coordinates) {
       coordinates: coordinates
     }
   }
-  animateRoute(route, feature)
+  animateRoute(route, feature, timestamps)
 }
-export function cacheMatch(coordinates) {
+export function cacheMatch(coordinates, timestamps) {
   const route = {
     type: 'Feature',
     geometry: {
@@ -63,7 +62,7 @@ export function cacheMatch(coordinates) {
     return
   }
   Vue.$log.debug('getting match for ', getHashCode(route))
-  lnglat.matchRoute(route.geometry.coordinates, route.geometry.coordinates.map(function() { return 25 }), function(r) {
+  lnglat.matchRoute(route.geometry.coordinates, route.geometry.coordinates.map(function() { return 25 }), timestamps, function(r) {
     if (r.data.matchings && r.data.matchings.length > 0) {
       const matched = r.data.matchings[0].geometry
       if (matched && matched.coordinates.length > 1) {
@@ -134,33 +133,27 @@ export function animateMatched(route, feature) {
     arc.push(segment.geometry.coordinates)
   }
   feature.route = arc
-  let startRotation = 0
-  let endRotation = 0
   let isPanning = false
 
   const step = consts.rotateStep
+  let endRotation = null
 
   if (process.env.NODE_ENV !== 'production') {
     drawTempLayer(route)
   }
 
   function _animateRotation() {
-    const dir = angles.shortestDirection(endRotation, startRotation)
-    if (dir !== 0) {
-      // Vue.$log.debug('dir start end cur dif', dir, startRotation, endRotation, feature.properties.course, angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation))
-      if (angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
-        feature.properties.course = angles.normalize(feature.properties.course + dir * step)
-        refreshFeature()
-        if (isPanning) {
-          setTimeout(_animateRotation, consts.animationFrameTimeout)
-        } else {
-          requestAnimationFrame(_animateRotation)
+    if (endRotation || endRotation === 0) {
+      const dir = angles.shortestDirection(endRotation, feature.properties.course)
+      if (dir !== 0) {
+        if (angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
+          feature.properties.course = angles.normalize(feature.properties.course + dir * step)
+          return
         }
-        // setTimeout(requestAnimationFrame, consts.animationFrameTimeout, _animateRotation)
-        return
       }
+      feature.properties.course = endRotation
+      endRotation = null
     }
-    feature.properties.course = endRotation
   }
   function _animate() {
     const coordinates = feature.route[counter]
@@ -180,12 +173,9 @@ export function animateMatched(route, feature) {
       const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
       const p2 = feature.route[counter === feature.route.length - 1 ? counter : counter + 1]
       if (p1 && p2) {
-        if (Math.abs(feature.properties.course - angles.normalize(bearing(p1, p2))) > 0.1) {
-          startRotation = feature.properties.course
-          endRotation = angles.normalize(bearing(p1, p2))
-          _animateRotation()
-        }
+        endRotation = angles.normalize(bearing(p1, p2))
       }
+      _animateRotation()
       refreshFeature()
     }
     if (counter < feature.route.length) {
