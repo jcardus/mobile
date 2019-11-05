@@ -93,9 +93,10 @@ export function animateRoute(route, feature) {
   }
 }
 function drawTempLayer(routeGeoJSON) {
-  /* if (vm.$static.map.getLayer(tempID)) {
+  const tempID = 'tempLayer'
+  if (vm.$static.map.getSource(tempID)) {
     Vue.$log.debug('setting source ', tempID, ' to ', routeGeoJSON)
-    /* vm.$static.map.getSource(tempID).setData({
+    vm.$static.map.getSource(tempID).setData({
       type: 'geojson',
       data: routeGeoJSON
     })
@@ -105,23 +106,24 @@ function drawTempLayer(routeGeoJSON) {
       type: 'geojson',
       data: routeGeoJSON
     })
-    Vue.$log.debug('adding layer', tempID)
-    vm.$static.map.addLayer({
-      id: tempID,
-      type: 'line',
-      source: tempID,
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round'
-      },
-      paint: {
-        'line-color': 'black',
-        'line-width': 2
-      }
-    })
-    lnglat.removeLayers()
-    lnglat.addLayers(vm.$static.map)
-  } */
+  }
+  Vue.$log.debug('adding layer', tempID)
+  if (vm.$static.map.getLayer(tempID)) {
+    vm.$static.map.removeLayer(tempID)
+  }
+  vm.$static.map.addLayer({
+    id: tempID,
+    type: 'line',
+    source: tempID,
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    paint: {
+      'line-color': 'black',
+      'line-width': 2
+    }
+  })
 }
 export function animateMatched(route, feature) {
   const lineDistance = lnglat.lineDistance(route)
@@ -144,9 +146,9 @@ export function animateMatched(route, feature) {
   function _animateRotation() {
     const dir = angles.shortestDirection(endRotation, feature.properties.course)
     if (dir !== 0) {
-      if (angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
+      if (angles.distance(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
         feature.properties.course = angles.normalize(feature.properties.course + dir * step)
-        return angles.diff(angles.normalize(feature.properties.course), endRotation)
+        return angles.distance(angles.normalize(feature.properties.course), endRotation)
       }
     }
     feature.properties.course = endRotation
@@ -171,7 +173,6 @@ export function animateMatched(route, feature) {
         endRotation = angles.normalize(bearing(p1, p2))
       }
       if (_animateRotation() > 30) {
-        Vue.$log.debug('animating rotation ')
         setTimeout(_animate, consts.refreshRate)
         refreshFeature()
         return
@@ -188,14 +189,14 @@ export function animateMatched(route, feature) {
     } else {
       refreshFeature()
       feature.animating = false
-      Vue.$log.debug('finished animating ', feature.route.length, ' coords')
+      Vue.$log.debug('finished animating ', feature.route.length, ' coords refreshRate ', consts.refreshRate)
       serverBus.$emit('routeMatchFinished')
     }
   }
 
   if (feature.route.length > 0) {
     feature.animating = true
-    Vue.$log.debug('animating ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions')
+    Vue.$log.debug('animating ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions refreshRate ', consts.refreshRate)
     _animate()
   } else {
     Vue.$log.debug('ignoring ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions')
