@@ -133,27 +133,24 @@ export function animateMatched(route, feature) {
     arc.push(segment.geometry.coordinates)
   }
   feature.route = arc
-  let isPanning = false
 
   const step = consts.rotateStep
-  let endRotation = null
+  let endRotation = 0
 
   if (process.env.NODE_ENV !== 'production') {
     drawTempLayer(route)
   }
 
   function _animateRotation() {
-    if (endRotation || endRotation === 0) {
-      const dir = angles.shortestDirection(endRotation, feature.properties.course)
-      if (dir !== 0) {
-        if (angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
-          feature.properties.course = angles.normalize(feature.properties.course + dir * step)
-          return
-        }
+    const dir = angles.shortestDirection(endRotation, feature.properties.course)
+    if (dir !== 0) {
+      if (angles.diff(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
+        feature.properties.course = angles.normalize(feature.properties.course + dir * step)
+        return angles.diff(angles.normalize(feature.properties.course), endRotation)
       }
-      feature.properties.course = endRotation
-      endRotation = null
     }
+    feature.properties.course = endRotation
+    return 0
   }
   function _animate() {
     const coordinates = feature.route[counter]
@@ -164,10 +161,8 @@ export function animateMatched(route, feature) {
         vm.$static.map.panTo(
           { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }
         )
-        isPanning = true
         vm.$static.map.once('moveend', function() {
           Vue.$log.debug('panning ended')
-          isPanning = false
         })
       }
       const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
@@ -175,17 +170,18 @@ export function animateMatched(route, feature) {
       if (p1 && p2) {
         endRotation = angles.normalize(bearing(p1, p2))
       }
-      _animateRotation()
+      if (_animateRotation() > 30) {
+        Vue.$log.debug('animating rotation ')
+        setTimeout(_animate, 30)
+        refreshFeature()
+        return
+      }
       refreshFeature()
     }
     if (counter < feature.route.length) {
       counter = counter + 1
       if (vm.$data.isPlaying) {
-        if (isPanning) {
-          setTimeout(_animate, 30)
-        } else {
-          requestAnimationFrame(_animate)
-        }
+        setTimeout(_animate, 30)
       } else {
         feature.animating = false
       }
