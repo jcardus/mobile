@@ -25,37 +25,10 @@ export function findFeatureByDeviceId(deviceId) {
     return e.properties.deviceId === deviceId
   })
 }
-let imageLoading = false
 export function findFeatureById(id) {
   return vm.$static.geofencesSource.features.find(e => {
     return e.properties.id === id
   })
-}
-export function addImage(path, name) {
-  Vue.$log.debug('addImage ', path, ' ', name, ' to queue')
-  if (!vm.$static.map.hasImage(name)) {
-    if (!imageLoading) {
-      imageLoading = true
-      vm.$static.map.loadImage(path, function(error, image) {
-        if (error) {
-          Vue.$log.error('error adding image to the map', error, ' ', name, ' ')
-          imageLoading = false
-          throw error
-        } else {
-          Vue.$log.debug('adding image to map ', name, ' ', image)
-          vm.$static.map.addImage(name, image)
-          Vue.$log.debug('done image to map, refreshing map', name, ' ', image)
-          refreshMap()
-          imageLoading = false
-        }
-      })
-    } else {
-      Vue.$log.debug('occupied, trying again in 500 ms, ', name, ' ', path)
-      setTimeout(addImage, 500, path, name)
-    }
-  } else {
-    Vue.$log.debug('skipping image ', name)
-  }
 }
 export function getArea(area) {
   if (area.features[0].geometry.type.toUpperCase() === 'POINT') {
@@ -63,12 +36,6 @@ export function getArea(area) {
   } else {
     return area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
   }
-}
-export function addImageWithColor(i, color) {
-  const path = 'https://d2alv66jwtleln.cloudfront.net/' + color + '/0020.png0' + ('00' + i).slice(-3) + '.png'
-  const name = 'car-' + color + '-' + i
-  Vue.$log.debug('adding ', path, ', name: ', name)
-  addImage(path, name)
 }
 export function getBounds(coordinates) {
   const line = helpers.lineString(coordinates)
@@ -329,7 +296,7 @@ export function addLayers(map) {
       filter: ['has', 'point_count'],
       layout: {
         'icon-allow-overlap': true,
-        'icon-image': 'airfield-15'
+        'icon-image': 'red0000'
       },
       paint: {
         'icon-opacity': 0
@@ -339,19 +306,6 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
-}
-export function removeLayers() {
-  const map = vm.$static.map
-  Vue.$log.debug('remove layers...')
-  if (map.getLayer('clusters')) { map.removeLayer('clusters') }
-  if (map.getLayer('unclustered-point')) { map.removeLayer('unclustered-point') }
-  if (map.getLayer('geofences')) { map.removeLayer('geofences') }
-  if (map.getLayer('geofences-labels')) { map.removeLayer('geofences-labels') }
-  if (map.getLayer('pois')) { map.removeLayer('pois') }
-  if (map.getLayer('pois-labels')) { map.removeLayer('pois-labels') }
-  if (map.getSource('positions')) { map.removeSource('positions') }
-  if (map.getSource('geofences')) { map.removeSource('geofences') }
-  removeMarkers()
 }
 export function contains(lngLatBounds, position) {
   return (
