@@ -32,3 +32,7 @@ amplify/backend/awscloudformation
 build/
 aws-exports.js
 awsconfiguration.json
+/sprite@2x.json
+/sprite@2x.png
+/sprite.png
+/sprite.json
