@@ -68,6 +68,8 @@ export default {
           })
         })
       }
+      pois = pois.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
       return pois
     },
     showPOIsLayer: {
