@@ -172,7 +172,7 @@ export function animateMatched(route, feature) {
       }
       if (_animateRotation() > 30) {
         Vue.$log.debug('animating rotation ')
-        setTimeout(_animate, 30)
+        setTimeout(_animate, consts.refreshRate)
         refreshFeature()
         return
       }
@@ -181,7 +181,7 @@ export function animateMatched(route, feature) {
     if (counter < feature.route.length) {
       counter = counter + 1
       if (vm.$data.isPlaying) {
-        setTimeout(_animate, 30)
+        setTimeout(_animate, consts.refreshRate)
       } else {
         feature.animating = false
       }

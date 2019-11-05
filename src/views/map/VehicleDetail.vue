@@ -8,7 +8,7 @@
       v-model="showRoutes"
       v-loading="loadingRoutes"
       :active-text="$t('vehicleDetail.show_route')"
-      @change="showRoutesClick"
+      @change="showRoutesChanged"
     >
     </el-switch>
     <br>
@@ -116,6 +116,7 @@ export default {
     serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$off('routePlay', this.routePlay)
     serverBus.$off('routePlayStopped', this.routePlayStopped)
+    serverBus.$off('showRoutesChanged', this.showRoutesChanged)
   },
   mounted: function() {
     // odd width popups are blurry on Chrome, this enforces even widths
@@ -144,6 +145,7 @@ export default {
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$on('routePlay', this.routePlay)
     serverBus.$on('routePlayStopped', this.routePlayStopped)
+    serverBus.$on('showRoutesChanged', this.showRoutesChanged)
   },
   methods: {
     onDatesChanged() {
@@ -257,20 +259,6 @@ export default {
           this.map.removeSource(this.allTripsSource)
         }
       }
-    },
-    showRoutesClick: function() {
-      if (this.showRoutes) {
-        traccar.stopReceiving()
-        this.getRoute(this.minDate, this.maxDate)
-      } else {
-        traccar.startReceiving()
-        this.removeLayers()
-      }
-      this.loadingRoutes = this.showRoutes
-      vm.$data.historyMode = this.showRoutes
-      vm.$data.currentDevice = this.device
-      lnglat.hideLayers(this.showRoutes)
-      animation.hideRouteLayer(!this.showRoutes)
     },
     getRoute: function(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)
@@ -518,6 +506,24 @@ export default {
       } else {
         Vue.$log.debug('not removing layers on deviceid, ', this.device.id)
       }
+    },
+    showRoutesChanged() {
+      Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
+      if (this.device && vm.$data.popUps[this.device.deviceId]) {
+        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.deviceId])
+        vm.$data.popUps[this.device.deviceId].remove()
+      }
+      if (this.showRoutes) {
+        traccar.stopReceiving()
+        this.getRoute(this.minDate, this.maxDate)
+      } else {
+        traccar.startReceiving()
+        this.removeLayers()
+      }
+      this.loadingRoutes = this.showRoutes
+      vm.$data.currentDevice = this.device
+      lnglat.hideLayers(this.showRoutes)
+      animation.hideRouteLayer(!this.showRoutes)
     }
   }
 }

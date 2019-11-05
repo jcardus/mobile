@@ -34,7 +34,6 @@
 import { vm, serverBus } from '../../main'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
-import { traccar } from '../../api/traccar-api'
 import Vue from 'vue'
 
 export default {
@@ -95,16 +94,6 @@ export default {
       set(value) { vm.$data.historyMode = value }
     }
   },
-  watch: {
-    showRoutes() {
-      if (this.showRoutes) {
-        if (this.device) {
-          Vue.$log.debug('removing ', vm.$data.popUps[this.device.id])
-          vm.$data.popUps[this.device.id].remove()
-        }
-      }
-    }
-  },
   created() {
     const self = this
     window.addEventListener('resize', this.resizeDiv)
@@ -127,17 +116,7 @@ export default {
       this.width = 'width:' + document.getElementById('map').clientWidth + 'px'
     },
     showRoutesClick: function() {
-      if (this.showRoutes) {
-        traccar.stopReceiving()
-        this.loadingRoutes = true
-        if (this.device) {
-          Vue.$log.debug('removing ', vm.$data.popUps[this.device.deviceId])
-          vm.$data.popUps[this.device.deviceId].remove()
-        }
-      } else {
-        traccar.startReceiving()
-        vm.$data.historyMode = false
-      }
+      serverBus.$emit('showRoutesChanged')
     },
     posChanged(newPos) {
       this.currentPos = newPos
