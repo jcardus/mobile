@@ -78,6 +78,8 @@ export default {
     user_password_lengh: 'The password can not be less than 6 digits'
   },
   settings: {
+    map: 'Map',
+    vehicles: 'Vehicles',
     title: 'Settings',
     route_match: 'Route match',
     alerts: 'Alerts',
@@ -112,7 +114,17 @@ export default {
     alert_form_notificator_sms: 'SMS',
     alert_form_confirm: 'Save',
     alert_form_cancel: 'Cancel',
-    alert_form_geofences_placeholder: 'Select geofences'
+    alert_form_geofences_placeholder: 'Select geofences',
+    vehicle_edit: 'Edit Vehicle',
+    vehicle_name: 'Name',
+    vehicle_model: 'Model',
+    vehicle_speed_limit: 'Speed Limit',
+    vehicle_form_cancel: 'Cancel',
+    vehicle_form_confirm: 'Save',
+    vehicle_form_name: 'Name',
+    vehicle_form_model: 'Model',
+    vehicle_form_speed_limit: 'Speed Limit (Km/h)',
+    vehicle_updated: 'Vehicle updated sucessfully!'
   },
   geofence: {
     showGeofences: 'Show Geofences',

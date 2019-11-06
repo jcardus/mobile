@@ -46,8 +46,13 @@ export const traccar = {
       .then(() => ok(report_id))
       .catch(reason => nok(report_id, reason))
   },
-  report_events: function(userId, from, to, groupIds, onFulfill) {
-    axios.get(events + '?groupId=' + groupIds + '&from=' + from + '&to=' + to,
+  report_events: function(userId, from, to, deviceIds, notificationType, onFulfill) {
+    let devices = ''
+    deviceIds.forEach(d => {
+      devices = devices + 'deviceId=' + d + '&'
+      return devices
+    })
+    axios.get(events + '?' + devices + 'from=' + from + '&to=' + to,
       { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
@@ -60,6 +65,14 @@ export const traccar = {
   devices: function(onFulfill) {
     cookie = VueCookies.get('user-info')
     axios.get(devices, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  updateDevice: function(deviceId, device, onFulfill) {
+    Vue.$log.debug(device)
+    axios.put(devices + '/' + deviceId, device, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)

@@ -503,7 +503,7 @@ export default {
 <style scoped>
   .alertFormButton {
     float: right;
-    margin: 10px;
+    margin-right: 10px;
   }
   .modal {
     width: 500px;

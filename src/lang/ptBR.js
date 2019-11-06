@@ -78,6 +78,8 @@ export default {
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   settings: {
+    map: 'Mapa',
+    vehicles: 'Veículos',
     title: 'Configurações',
     route_match: 'Rota na estrada',
     alerts: 'Alertas',
@@ -112,7 +114,17 @@ export default {
     alert_form_notificator_sms: 'SMS',
     alert_form_confirm: 'Gravar',
     alert_form_cancel: 'Cancelar',
-    alert_form_geofences_placeholder: 'Seleccionar balizas'
+    alert_form_geofences_placeholder: 'Seleccionar balizas',
+    vehicle_edit: 'Editar Veículo',
+    vehicle_name: 'Nome',
+    vehicle_model: 'Modelo',
+    vehicle_speed_limit: 'Limite de Velocidade',
+    vehicle_form_cancel: 'Cancelar',
+    vehicle_form_confirm: 'Guardar',
+    vehicle_form_name: 'Nome',
+    vehicle_form_model: 'Modelo',
+    vehicle_form_speed_limit: 'Limite de Velocidade (Km/h)',
+    vehicle_updated: 'Veículo actualizado com sucesso!'
   },
   geofence: {
     showGeofences: 'Ver Cercas Eletrônicas',
