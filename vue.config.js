@@ -15,6 +15,9 @@ const name = defaultSettings.title || '' // page title
 // port = 9527 npm run dev OR npm run dev --port = 9527
 const port = 8080
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
+
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   /**
@@ -40,6 +43,7 @@ module.exports = {
     }
   },
   configureWebpack: {
+    plugins: [new BundleAnalyzerPlugin()],
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
