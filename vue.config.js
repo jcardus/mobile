@@ -27,7 +27,14 @@ module.exports = {
     msTileColor: '#000000',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
-
+    iconPaths:
+{
+  favicon32: 'img/favicon/pinme64.png',
+  favicon16: 'img/favicon/pinme64.png',
+  appleTouchIcon: 'img/favicon/pinme152.png',
+  maskIcon: 'iimg/favicon/pinme152.png',
+  msTileImage: 'img/favicon/pinme144.png'
+},
     // configure the workbox plugin
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
