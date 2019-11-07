@@ -172,7 +172,7 @@ export function animateMatched(route, feature) {
       if (p1 && p2) {
         endRotation = angles.normalize(bearing(p1, p2))
       }
-      if (_animateRotation() > 30) {
+      if (_animateRotation() > 25) {
         setTimeout(_animate, consts.refreshRate)
         refreshFeature()
         return

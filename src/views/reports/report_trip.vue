@@ -54,6 +54,7 @@ import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
+import * as sutil from './utils/stimulsoft'
 
 var cookie = VueCookies.get('user-info')
 
@@ -75,7 +76,7 @@ export default {
       // eslint-disable-next-line no-undef
       viewer: null,
       // eslint-disable-next-line no-undef
-      report: new Stimulsoft.Report.StiReport(),
+      report: null,
       selectedDevices: [],
       pickerOptions: {
         shortcuts: [{
@@ -152,56 +153,17 @@ export default {
     isMobile: function() { return lnglat.isMobile() }
   },
   mounted() {
-    // eslint-disable-next-line no-undef
-    Stimulsoft.Base.StiLicense.key = '6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHkZYSgEPVMFImkD/7Y5Z9JkpEv1HtFmmLrNoeiu66YaCoYDdC' +
-      'MCtxdHWAHw65t6SWsTyEwke7/XB32/bbpxF0TkTR/yx44eVmIKyLv0LT1Umy8vHTAAtWJOttxKMS6ImhYFBqdE5806' +
-      'uBRfIyVN2AzzQT4xX+79X8X23SWMNuLcRbVE5xpfFF8NfIpQ/sRJRjS362F0fNhrY8YHpr5QnZ57y4AtvE5JyCMR1Q' +
-      'wgAhQS6yieoEeRA+kN7txYpVzTsmPsrIPBD7dPVZlsV9bWsi+o65givp8oGCGzogKKYEpqTzsmYzgQy1Q383e8l+hO' +
-      'gIy7wmoeMxTwlAhW1OTLuQHhe/HXRynTYeI86Alu1tXYrIYgy+57ndnwCC+W5c+wV3wAaXk98U15lnO8w7OnGJB279' +
-      'YlQSQVxkdOCuiqsDrn6JZtSixHIweBOEzhhkF0ZSD5Gsdwmd3YJ9GGSBdTSNJHQ+PAXxbH5cl+cTCOdj+SvVLYCPR8' +
-      'STT4NtuXavDCjgiKzyJ6YS2hJf+UgP4Lx5K0'
-
-    // eslint-disable-next-line no-undef
-    const options = new Stimulsoft.Viewer.StiViewerOptions()
-
-    // eslint-disable-next-line no-undef
-    options.appearance.interfaceType = Stimulsoft.Viewer.StiInterfaceType.Touch
-
-    options.appearance.showPageShadow = true
-    options.appearance.showTooltips = false
-
-    options.appearance.allowTouchZoom = true
-    // options.appearance.scrollbarsMode = true
-
-    options.toolbar.showAboutButton = false
-    options.toolbar.showOpenButton = false
-    options.toolbar.showNextPageButton = false
-    options.toolbar.showPreviousPageButton = false
-    options.toolbar.showLastPageButton = false
-    options.toolbar.showFirstPageButton = false
-    options.toolbar.showCurrentPageControl = false
-    options.toolbar.showBookmarksButton = false
-    options.toolbar.showParametersButton = false
-    options.toolbar.showResourcesButton = false
-    options.toolbar.showViewModeButton = false
-    options.toolbar.showButtonCaptions = false
-
-    // eslint-disable-next-line no-undef
-    options.toolbar.viewMode = Stimulsoft.Viewer.StiWebViewMode.Continuous
-    // eslint-disable-next-line no-undef
-    options.toolbar.showMenuMode = Stimulsoft.Viewer.StiShowMenuMode.Click
-    // eslint-disable-next-line no-undef
-    options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Direct
-
-    // eslint-disable-next-line no-undef
-    this.viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
+    const self = this
+    sutil.load().then((viewer, report) => {
+      self.viewer = viewer
+      self.viewer.report = report
+      self.viewer.renderHtml('viewer')
+    })
     if (this.devices.count === 0) {
       traccar.devices(function(data) {
         vm.$data.devices = data
       })
     }
-    this.viewer.report = this.report
-    this.viewer.renderHtml('viewer')
   },
   methods: {
     submitReport() {
@@ -211,7 +173,7 @@ export default {
           document.getElementById('viewer').style.display = 'none'
           document.getElementById('loader').style.display = 'block'
 
-          var report_id = generate_token(40)
+          const report_id = generate_token(40)
 
           const body = {
             username: cookie.email,
