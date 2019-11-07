@@ -21,6 +21,22 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
+  pwa: {
+    name: 'My App',
+    themeColor: '#4DBA87',
+    msTileColor: '#000000',
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'black',
+
+    // configure the workbox plugin
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      // swSrc is required in InjectManifest mode.
+      swSrc: 'src/service-worker.js'
+      // ...other Workbox options...
+    }
+  },
+
   /**
    * You will need to set publicPath if you plan to deploy your site under a sub path,
    * for example GitHub Pages. If you plan to deploy your site to https://foo.github.io/bar/,
