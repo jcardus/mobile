@@ -78,6 +78,8 @@ export default {
     user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos'
   },
   settings: {
+    map: 'Mapa',
+    vehicles: 'Vehículos',
     title: 'Configuraciones',
     route_match: 'Rota na estrada',
     alerts: 'Alertas',
@@ -112,7 +114,17 @@ export default {
     alert_form_notificator_sms: 'SMS',
     alert_form_confirm: 'Gravar',
     alert_form_cancel: 'Cancelar',
-    alert_form_geofences_placeholder: 'Seleccione geocercas'
+    alert_form_geofences_placeholder: 'Seleccione geocercas',
+    vehicle_edit: 'Editar Vehículo',
+    vehicle_name: 'Nombre',
+    vehicle_model: 'Modelo',
+    vehicle_speed_limit: 'Límite de Velocidad',
+    vehicle_form_cancel: 'Cancelar',
+    vehicle_form_confirm: 'Gravar',
+    vehicle_form_name: 'Nombre',
+    vehicle_form_model: 'Modelo',
+    vehicle_form_speed_limit: 'Límite de Velocidad (Km/h)',
+    vehicle_updated: 'Veículo actualizado com sucesso!'
   },
   geofence: {
     showGeofences: 'Mostrat Geocercas',

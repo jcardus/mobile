@@ -106,16 +106,6 @@
                     @click="handleFilterState('Disconnected')"
                   >{{ devicesDisconnected.length }}</el-button>
                 </el-tooltip></el-col>
-              <el-col :span="4">
-                <el-dropdown @command="onCommandOrderBy">
-                  <i class="fas fa-sort-amount-down-alt"></i>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="name">Nome</el-dropdown-item>
-                    <el-dropdown-item command="state">Estado</el-dropdown-item>
-                    <el-dropdown-item command="speed">Velocidade</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </el-col>
             </el-row>
           </div>
           <el-table
@@ -231,8 +221,7 @@ export default {
       sortColumns: {},
       filterKey: '',
       filterState: null,
-      sortKey: 'name',
-      order: 1
+      sortKey: 'name'
     }
   },
   computed: {
@@ -252,10 +241,8 @@ export default {
     },
     filteredVehicles: function() {
       const self = this
-      const sortKey = this.sortKey
       const filterKey = this.filterKey && this.filterKey.toLowerCase()
       const filterState = this.filterState
-      const order = this.order
       let devices = this.devices
       if (filterState) {
         if (filterState === 'Moving') {
@@ -275,21 +262,12 @@ export default {
           })
         })
       }
-      if (sortKey) {
-        if (sortKey === 'state') {
-          devices = devices.slice().sort(function(a, b) {
-            a = self.getDeviceStateOrder(a)
-            b = self.getDeviceStateOrder(b)
-            return (a === b ? 0 : a > b ? 1 : -1) * order
-          })
-        } else {
-          devices = devices.slice().sort(function(a, b) {
-            a = a[sortKey]
-            b = b[sortKey]
-            return (a === b ? 0 : a > b ? 1 : -1) * order
-          })
-        }
-      }
+      devices = devices.slice().sort(function(a, b) {
+        a = self.getDeviceStateOrder(a) + ' ' + a['name']
+        b = self.getDeviceStateOrder(b) + ' ' + b['name']
+        return (a === b ? 0 : a > b ? 1 : -1)
+      })
+
       return devices
     }
   },
@@ -317,10 +295,10 @@ export default {
     },
     getDeviceStateOrder: function(device) {
       const state = this.getDeviceState(device)
-      if (state === 'Moving') return 3
-      if (state === 'Idle') return 2
-      if (state === 'Stopped') return 1
-      if (state === 'Disconnected') return 0
+      if (state === 'Moving') return 0
+      if (state === 'Idle') return 1
+      if (state === 'Stopped') return 2
+      if (state === 'Disconnected') return 3
     },
     cellStyle(row) {
       let result = 'padding: 0; '
@@ -470,12 +448,6 @@ export default {
   #state-disconnected {
     background-color: rgba(gray, 0.2);
     color: gray;
-  }
-  .el-dropdown {
-    color: #606266;
-    font-size: 18px;
-    left: 25px;
-    top: 10px;
   }
 </style>
 
