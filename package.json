@@ -1,5 +1,5 @@
 {
-  "name": "vue-element-admin",
+  "name": "pinme",
   "version": "4.2.1",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -108,7 +108,7 @@
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-spritesmith": "^6.8.0",
     "webpack-bundle-analyzer": "latest",
-    "@vue/cli-plugin-pwa": "latest"
+      "@vue/cli-plugin-pwa": "latest"
   },
   "engines": {
     "node": ">=8.9",
