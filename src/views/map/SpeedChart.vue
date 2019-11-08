@@ -32,8 +32,10 @@ export default {
       }
     },
     chartData() {
-      this.chart.data.datasets[0].data = this.chartData
-      this.chart.update()
+      if (this.chart.data && this.chart.data.datasets[0]) {
+        this.chart.data.datasets[0].data = this.chartData
+        this.chart.update()
+      }
     }
   },
   mounted() {

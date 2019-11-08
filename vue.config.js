@@ -22,7 +22,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   pwa: {
-    name: 'My App',
+    name: 'Pinme',
     themeColor: '#4DBA87',
     msTileColor: '#000000',
     appleMobileWebAppCapable: 'yes',
@@ -36,10 +36,10 @@ module.exports = {
   msTileImage: 'img/favicon/pinme144.png'
 },
     // configure the workbox plugin
-    workboxPluginMode: 'InjectManifest',
+    workboxPluginMode: 'GenerateSW',
     workboxOptions: {
       // swSrc is required in InjectManifest mode.
-      swSrc: 'src/service-worker.js'
+      // swSrc: 'src/service-worker.js'
       // ...other Workbox options...
     }
   },
