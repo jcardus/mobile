@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!showRoutes">
     <img v-show="showMapilary" id="mly" class="mly" :src="imageUrl" alt="">
     <h1>
       {{ device.name }}
@@ -262,7 +262,7 @@ export default {
     },
     getRoute: function(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)
-      traccar.route(this.device.id, from, to, this.onPositions)
+      traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
     },
     getRouteTrips: function(positions) {
       this.trips = []
@@ -307,10 +307,10 @@ export default {
     drawTrip: function() {
       this.drawStartEnd()
       this.iterate()
-      // lnglat.removeLayers(this.map)
-      // lnglat.addLayers(this.map)
+      animation.removeAddRouteLayer()
     },
     onPositions: function(positions) {
+      positions = positions.filter(utils.filterPositions)
       if (positions && positions.length > 1) {
         this.positions = positions
         Vue.$log.debug('got ', this.positions.length, ' positions')
@@ -509,9 +509,9 @@ export default {
     },
     showRoutesChanged() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
-      if (this.device && vm.$data.popUps[this.device.deviceId]) {
-        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.deviceId])
-        vm.$data.popUps[this.device.deviceId].remove()
+      if (this.device && vm.$data.popUps[this.device.id]) {
+        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
+        vm.$data.popUps[this.device.id].remove()
       }
       if (this.showRoutes) {
         traccar.stopReceiving()
@@ -524,6 +524,9 @@ export default {
       vm.$data.currentDevice = this.device
       lnglat.hideLayers(this.showRoutes)
       animation.hideRouteLayer(!this.showRoutes)
+    },
+    onPositionsError() {
+      this.loadingRoutes = false
     }
   }
 }

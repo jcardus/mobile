@@ -9,7 +9,7 @@ const state = {
   tagsView: tagsView,
   fixedHeader: fixedHeader,
   sidebarLogo: sidebarLogo,
-  matchRoutes: VueCookies.get('settings.matchRoutes') ? !!+VueCookies.get('settings.matchRoutes') : true
+  matchRoutes: VueCookies.get('settings.matchRoutes') ? !!+VueCookies.get('settings.matchRoutes') : false
 }
 
 const mutations = {

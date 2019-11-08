@@ -4,7 +4,6 @@
       v-if="!isMobile"
       v-model="dates"
       v-loading="loadingRoutes"
-
       value-format="yyyy-MM-dd"
       type="daterange"
       align="right"
@@ -133,16 +132,19 @@ export default {
   }
 
   .fleft {
-    margin: 10px;
+    margin-left: 10px;
   }
   .fright {
     float:right;
-    margin: 10px;
+    margin-right: 10px;
   }
 
   @media screen and (max-width: 768px) {
     .mapboxgl-ctrl {
-      margin: 0;
+      margin-top: 5px;
+      margin-left: 0;
+      margin-right: 0;
+
     }
   }
 

@@ -12,10 +12,11 @@
       :marks="marks"
       :included="true"
       :hide-label="true"
+      :dot-size="isMobile ? 40 : 20"
     />
-    <svg-icon style="color:gray" icon-class="fas fa-step-backward fa-3x" @click="clickBackward" />
-    <svg-icon style="color:gray" :icon-class="isPlaying?'fas fa-stop fa-3x':'fas fa-play fa-3x'" @click="click" />
-    <svg-icon style="color:gray" icon-class="fas fa-step-forward fa-3x" @click="clickForward" />
+    <i style="color:black" :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '4x' : '2x')" @click="click"></i>
+    <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'fas fa-backward fa-' + (isMobile ? '4x' : '2x')" @click="clickBackward"></i>
+    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible') + '; color:black'" :class="'fas fa-forward fa-' + (isMobile ? '4x' : '2x')" @click="clickForward"></i>
   </div>
 </template>
 
@@ -48,6 +49,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return lnglat.isMobile()
+    },
     device() {
       return vm.$data.currentDevice
     },
@@ -63,7 +67,7 @@ export default {
       if (vm.$data.positions) { return vm.$data.positions }
       return []
     },
-    show: function() { return vm.$data.historyMode },
+    show() { return vm.$data.historyMode },
     minDate: {
       get() {
         return this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD')
@@ -185,6 +189,7 @@ export default {
     updateMinMax() {
       if (this.positions.length > 0) {
         this.minPos = this.$moment(this.positions[0].fixTime).unix()
+        Vue.$log.debug('setting minPos to ', this.minPos, ', fixTime ', this.positions[0].fixTime)
         this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
         this.sliderPos = this.maxPos
         this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
