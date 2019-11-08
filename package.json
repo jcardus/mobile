@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "4.2.1",
+  "version": "4.2.3",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -108,7 +108,7 @@
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-spritesmith": "^6.8.0",
     "webpack-bundle-analyzer": "latest",
-      "@vue/cli-plugin-pwa": "latest"
+    "sw-precache-webpack-plugin": "latest"
   },
   "engines": {
     "node": ">=8.9",

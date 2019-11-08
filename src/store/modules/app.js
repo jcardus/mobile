@@ -3,7 +3,7 @@ import VueCookies from 'vue-cookies'
 const state = {
   packageVersion: process.env.PACKAGE_VERSION || '0',
   sidebar: {
-    opened: VueCookies.get('sidebarStatus') ? !!+VueCookies.get('sidebarStatus') : true,
+    opened: VueCookies.get('sidebarStatus') ? !!+VueCookies.get('sidebarStatus') : false,
     withoutAnimation: false
   },
   device: 'desktop',

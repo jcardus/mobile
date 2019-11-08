@@ -5,6 +5,7 @@ const fs = require('fs')
 const packageJson = fs.readFileSync('./package.json')
 const version = JSON.parse(packageJson).version || 0
 const webpack = require('webpack')
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -25,28 +26,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
-  pwa: {
-    name: 'Pinme',
-    themeColor: '#4DBA87',
-    msTileColor: '#000000',
-    appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: 'black',
-    iconPaths:
-{
-  favicon32: 'img/favicon/pinme64.png',
-  favicon16: 'img/favicon/pinme64.png',
-  appleTouchIcon: 'img/favicon/pinme152.png',
-  maskIcon: 'iimg/favicon/pinme152.png',
-  msTileImage: 'img/favicon/pinme144.png'
-},
-    // configure the workbox plugin
-    workboxPluginMode: 'GenerateSW',
-    workboxOptions: {
-      // swSrc is required in InjectManifest mode.
-      // swSrc: 'src/service-worker.js'
-      // ...other Workbox options...
-    }
-  },
 
   /**
    * You will need to set publicPath if you plan to deploy your site under a sub path,
@@ -74,7 +53,15 @@ module.exports = {
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
-          PACKAGE_VERSION: '"' + version + '"' }})
+          PACKAGE_VERSION: '"' + version + '"' }}),
+      new SWPrecacheWebpackPlugin({
+        cacheId: 'pinme',
+        filename: 'service-worker-cache.js',
+        staticFileGlobs: ['dist/**/*.{js,css}', '/'],
+        minify: true,
+        stripPrefix: 'dist/',
+        dontCacheBustUrlsMatching: /\.\w{6}\./
+      })
     ],
     // plugins: [new BundleAnalyzerPlugin()],
     // provide the app's title in webpack's name field, so that

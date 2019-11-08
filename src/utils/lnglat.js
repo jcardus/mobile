@@ -143,8 +143,8 @@ function createDonutChart(props) {
     offsets.push(total)
     total += counts[i]
   }
-  const fontSize = total >= 30 ? 20 : total >= 15 ? 18 : total >= 10 ? 16 : 14
-  const r = total >= 30 ? 32 : total >= 15 ? 28 : total >= 10 ? 22 : 16
+  const fontSize = total >= 30 ? 20 : total >= 15 ? 16 : total >= 10 ? 15 : 14
+  const r = total >= 30 ? 22 : total >= 24 ? 20 : total >= 10 ? 18 : 16
   const r0 = Math.round(r * 0.75)
   const w = r * 2
 
@@ -249,7 +249,7 @@ export function addLayers(map) {
       type: 'geojson',
       data: vm.$static.positionsSource,
       cluster: true,
-      clusterMaxZoom: 15, // Max zoom to cluster points on
+      clusterMaxZoom: 10, // Max zoom to cluster points on
       clusterRadius: 20,
       clusterProperties: { // keep separate counts for each magnitude category in a cluster
         'gray': ['+', ['case', gray, 1, 0]],
