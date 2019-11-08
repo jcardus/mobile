@@ -3,12 +3,12 @@
     <el-row :gutter="20">
       <el-col :span="9">
         <div class="grid-content">
-          <el-tooltip content="Select vehicles" placement="bottom">
+          <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
             <el-select
               v-model="selectedDevices"
               style="width: 100%; height: 35px"
               multiple
-              placeholder="Vehicles"
+              :placeholder="$t('report.select_vehicles_placeholder')"
               value=""
             >
               <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
@@ -18,12 +18,12 @@
       </el-col>
       <el-col :span="8">
         <div class="grid-content">
-          <el-tooltip content="Select geofences" placement="bottom">
+          <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
             <el-select
               v-model="selectedGeofences"
               style="width: 100%; height: 35px"
               multiple
-              placeholder="Geofences"
+              :placeholder="$t('report.select_geofences_placeholder')"
               value=""
             >
               <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
@@ -33,7 +33,7 @@
       </el-col>
       <el-col :span="5">
         <div class="grid-content">
-          <el-tooltip content="Select period" placement="bottom">
+          <el-tooltip :content="$t('report.select_period')" placement="bottom">
             <el-date-picker
               v-model="dateRange"
               style="width: 100%"
@@ -43,8 +43,8 @@
               range-separator="-"
               format="dd-MM-yyyy"
               value-format="yyyy-MM-dd HH:mm:ss"
-              start-placeholder="Start date"
-              end-placeholder="End date"
+              :start-placeholder="$t('report.date_start')"
+              :end-placeholder="$t('report.date_end')"
               :picker-options="pickerOptions"
               :default-time="['00:00:00', '23:59:59']"
             />
@@ -53,7 +53,7 @@
       </el-col>
       <el-col :span="2">
         <div class="grid-content">
-          <el-tooltip content="Generate report" placement="bottom">
+          <el-tooltip :content="$t('report.generate_report')" placement="bottom">
             <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
           </el-tooltip>
         </div>
