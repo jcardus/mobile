@@ -29,5 +29,5 @@ export function filterPositions(p) {
   if (p.valid === false) {
     return p.attributes.ignition
   }
-  return !(p.attributes.event >= 200 || p.attributes.event === 30)
+  return true
 }

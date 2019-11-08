@@ -32,7 +32,7 @@ export default {
       }
     },
     chartData() {
-      if (this.chart.data && this.chart.data.datasets[0]) {
+      if (this.chart && this.chart.data && this.chart.data.datasets[0]) {
         this.chart.data.datasets[0].data = this.chartData
         this.chart.update()
       }

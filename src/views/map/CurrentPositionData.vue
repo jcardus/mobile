@@ -62,6 +62,7 @@ export default {
   data() {
     return {
       currentPos: 0,
+      oldPos: 0,
       width: 'width:0px',
       currentTrip: 0,
       trips: [],
@@ -497,10 +498,12 @@ export default {
         Vue.$log.debug('ignoring onPosChanged, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
         return
       }
-      const origin = newPos >= skipRoutePositions ? newPos - skipRoutePositions : 0
+      const origin = this.oldPos
+      Vue.$log.debug('origin: ', origin)
 
       if (this.isPlaying) {
         let i = newPos - consts.routeSlotLength
+        const j = newPos
         let dist = 0
         do {
           i += consts.routeSlotLength
@@ -509,12 +512,12 @@ export default {
             coordinates: this.positions.slice(i, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
           }
           dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
-        } while (i < this.positions.length - consts.routeSlotLength && i > consts.routeSlotLength && dist < 0.001)
+        } while (i < this.positions.length - consts.routeSlotLength && i > consts.routeSlotLength && dist < consts.minDistanceForMatch)
         if (i < this.positions.length - skipRoutePositions) {
           animation.cacheMatch(
-            this.positions.slice(i, i + skipRoutePositions + 1)
+            this.positions.slice(j, i + skipRoutePositions + 1)
               .map(x => [x.longitude, x.latitude]),
-            this.positions.slice(i, i + skipRoutePositions + 1)
+            this.positions.slice(j, i + skipRoutePositions + 1)
               .map(x => this.$moment(x.fixTime).unix())
           )
         }
@@ -564,6 +567,9 @@ export default {
         this.feature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
         this.feature.properties.address = this.positions[newPos].address
         animation.refreshFeature()
+      }
+      if (newPos < this.positions.length - 1) {
+        this.oldPos = newPos
       }
     },
     datesChanged() {
