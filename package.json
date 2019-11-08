@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "4.2.4",
+  "version": "4.2.5",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
