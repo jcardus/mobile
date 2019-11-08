@@ -1,5 +1,6 @@
 <template>
   <div v-show="show" class="mapboxgl-ctrl" :style="isMobile?width:''">
+
     <el-card
       v-loading="loadingRoutes"
       :body-style="{ padding: '10px' }"
@@ -17,6 +18,22 @@
         >
         </el-switch>
       </h2>
+      <div>
+        <el-row type="flex" justify="space-around"><el-col :span="12">
+          <div style="float:left">
+            <label>
+              <input v-model="minDate" type="date">
+            </label>
+          </div>
+        </el-col><el-col :span="12">
+          <div style="float:right">
+            <label>
+              <input v-model="maxDate" type="date">
+            </label>
+          </div>
+        </el-col>
+        </el-row>
+      </div>
       <div style="float:right">
         {{ totalDistance }} Kms
       </div>
@@ -58,6 +75,13 @@ export default {
       }
       return 0
     },
+    dates: {
+      get() { return [this.minDate, this.maxDate] },
+      set(value) {
+        this.minDate = value[0]
+        this.maxDate = value[1]
+      }
+    },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
@@ -92,6 +116,27 @@ export default {
     showRoutes: {
       get() { return vm.$data.historyMode },
       set(value) { vm.$data.historyMode = value }
+    },
+    minDate: {
+      get() {
+        return this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD')
+      },
+      set(newVal) {
+        vm.$data.routeMinDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
+      }
+    },
+    maxDate: {
+      get() {
+        return this.$moment(vm.$data.routeMaxDate).format('YYYY-MM-DD')
+      },
+      set(newVal) {
+        vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
+      }
+    }
+  },
+  watch: {
+    dates() {
+      this.datesChanged()
     }
   },
   created() {
@@ -120,6 +165,10 @@ export default {
     },
     posChanged(newPos) {
       this.currentPos = newPos
+    },
+    datesChanged() {
+      this.loadingRoutes = true
+      serverBus.$emit('maxDateChanged')
     }
   }
 }
@@ -127,10 +176,7 @@ export default {
 
 <style scoped>
   h2 {
-    margin-top: 10px;
-    margin-right: 0;
-    margin-left: 0;
-    margin-bottom: 10px;
+    margin: 10px 0;
     font-size: 20px;
   }
   .currentPos {
@@ -138,13 +184,45 @@ export default {
     font-size: 14px;
     color: #5a5e66;
     background-color: rgba(255, 255, 255, 0.9);
+  }
 
+  input[type="date"]::-webkit-clear-button {
+    display: none;
+    margin: 0;
+  }
+
+  /* Removes the spin button */
+  input[type="date"]::-webkit-inner-spin-button {
+    display: none;
+    margin:0;
+  }
+
+  /* A few custom styles for date inputs */
+  input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    color: #5a5e66;
+    font-family: "Helvetica", arial, sans-serif;
+    font-size: 22px;
+    border-width:1px;
+    border-color: #1da1f2;
+    padding:0;
+    display: inline-block !important;
+    visibility: visible !important;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    background-color: rgba(0,0,0,0);
   }
 
   @media screen and (max-width: 768px) {
     .currentPos {
       width: calc(100vw - 20px);
       padding: 0 !important;
+    }
+    .mapboxgl-ctrl {
+      padding: 0;
+      margin-top: 10px;
     }
   }
 </style>

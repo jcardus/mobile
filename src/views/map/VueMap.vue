@@ -31,7 +31,6 @@ import * as utils from '../../utils/utils'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTable from './VehicleTable'
-import DateRange from './DateRange'
 import CurrentPositionData from './CurrentPositionData'
 
 export default {
@@ -295,10 +294,6 @@ export default {
         let VD = Vue.extend(HistoryPanel)
         let _vm = new VD({ i18n: i18n })
         _vm.$mount('#slider-div')
-        map.addControl(new MapboxCustomControl('date-range-div'), 'top-left')
-        VD = Vue.extend(DateRange)
-        _vm = new VD({ i18n: i18n })
-        _vm.$mount('#date-range-div')
         map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
         VD = Vue.extend(CurrentPositionData)
         _vm = new VD({ i18n: i18n })

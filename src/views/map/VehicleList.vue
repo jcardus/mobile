@@ -33,11 +33,12 @@ export default {
 
 <style lang="scss" scoped>
   .el-popper {
-    max-height: calc(100vh - 88px) !important;
+    max-height: calc(100vh - 80px) !important;
     padding: 0;
+    top: 38px !important;
+    left: 0 !important;
   }
   .el-dropdown-menu__item {
-    max-height: calc(100vh - 50px) !important;
     padding: 0;
   }
   .el-dropdown-menu {

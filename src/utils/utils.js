@@ -25,8 +25,9 @@ export function stopLoader() {
   document.getElementById('loader').style.display = 'none'
 }
 
-export function startLoader() {
-  Vue.$log.debug('stopping loader...')
-  document.getElementById('loader').style.display = 'initial'
+export function filterPositions(p) {
+  if (p.valid === false) {
+    return p.attributes.ignition
+  }
+  return !(p.attributes.event >= 200 || p.attributes.event === 30)
 }
-

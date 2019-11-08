@@ -14,7 +14,6 @@ export default {
     })
 
     document.getElementById('favicon').href = partner.getFavIcon()
-    document.getElementById('apple-touch-icon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
   }
 }
