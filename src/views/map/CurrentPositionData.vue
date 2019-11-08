@@ -500,6 +500,7 @@ export default {
     },
     onPosChanged(newPos) {
       Vue.$log.debug('onPosChanged to ', newPos)
+      this.currentPos = newPos
       const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {
         Vue.$log.debug('ignoring onPosChanged, no device...')
