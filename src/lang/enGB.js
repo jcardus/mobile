@@ -117,6 +117,7 @@ export default {
     alert_form_geofences_placeholder: 'Select geofences',
     vehicle_edit: 'Edit Vehicle',
     vehicle_name: 'Name',
+    vehicle_licenseplate: 'License Plate',
     vehicle_model: 'Model',
     vehicle_speed_limit: 'Speed Limit',
     vehicle_form_cancel: 'Cancel',

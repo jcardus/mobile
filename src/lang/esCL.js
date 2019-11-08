@@ -117,6 +117,7 @@ export default {
     alert_form_geofences_placeholder: 'Seleccione geocercas',
     vehicle_edit: 'Editar Vehículo',
     vehicle_name: 'Nombre',
+    vehicle_licenseplate: 'Placa',
     vehicle_model: 'Modelo',
     vehicle_speed_limit: 'Límite de Velocidad',
     vehicle_form_cancel: 'Cancelar',
