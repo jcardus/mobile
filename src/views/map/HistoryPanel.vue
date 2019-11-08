@@ -38,6 +38,7 @@ export default {
       oldPos: 0,
       sliderPos: 0,
       currentPos: 0,
+      currentPos_: 0,
       minPos: 0,
       maxPos: 0,
       formatter: v => `${this.formatDate(v)}`,
@@ -99,7 +100,7 @@ export default {
     sliderPos() {
       Vue.$log.debug('slider changed to ', this.sliderPos)
       const pos = this.indexArray[this.sliderPos]
-      if (pos && pos.index > 0) {
+      if (pos && pos.index > 0 && !this.isPlaying) {
         this.currentPos = pos.index
       } else { Vue.$log.debug('no coordinate at pos ', this.sliderPos) }
     },
@@ -108,23 +109,24 @@ export default {
       if (this.isPlaying) {
         let i = this.currentPos - consts.routeSlotLength
         let dist = 0
+        const j = this.currentPos - consts.routeSlotLength
         do {
           i += consts.routeSlotLength
           const lineString = {
             type: 'LineString',
-            coordinates: this.positions.slice(i, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
+            coordinates: this.positions.slice(j, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
           }
           dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
         } while (i < this.positions.length - consts.routeSlotLength &&
                 i > consts.routeSlotLength &&
-                dist < 0.001)
+                dist < consts.minDistanceForMatch)
         if (i > this.currentPos) {
           Vue.$log.debug('fast forwarding to ', i)
-          this.currentPos = i
+          this.currentPos_ = i
           this.sliderPos = Vue.moment(this.positions[i].fixTime).unix()
         }
       }
-      serverBus.$emit('posChanged', this.currentPos)
+      serverBus.$emit('posChanged', Math.max(this.currentPos, this.currentPos_))
     }
   },
   created() {
@@ -179,12 +181,12 @@ export default {
     },
     clickForward: function() {
       if (this.sliderPos < this.maxPos) {
-        this.sliderPos = Vue.moment(this.positions[this.currentPos + 1].fixTime).unix()
-      }
+        this.sliderPos = Vue.moment(this.positions[++this.currentPos].fixTime).unix()
+      } else { Vue.$log.debug('ignoring forward sliderPos: ', this.sliderPos) }
     },
     clickBackward: function() {
       if (this.sliderPos > this.minPos) {
-        this.sliderPos = Vue.moment(this.positions[this.currentPos - 1].fixTime).unix()
+        this.sliderPos = Vue.moment(this.positions[--this.currentPos].fixTime).unix()
       }
     },
     updateMinMax() {
@@ -192,7 +194,6 @@ export default {
         this.minPos = this.$moment(this.positions[0].fixTime).unix()
         Vue.$log.debug('setting minPos to ', this.minPos, ', fixTime ', this.positions[0].fixTime)
         this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
-        this.sliderPos = this.maxPos
         this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
         const self = this
         this.positions.forEach(function(item, index) {
@@ -200,17 +201,24 @@ export default {
           self.indexArray[Vue.moment(item.fixTime).unix()] = item
         })
         this.fillGraphData()
+        this.sliderPos = this.maxPos
       }
     },
     playNext() {
       if (this.isPlaying) {
         if (this.sliderPos <= this.maxPos) {
-          if (this.currentPos + consts.routeSlotLength < this.positions.length) {
+          this.currentPos_ = Math.max(this.currentPos_, this.currentPos)
+          if ((this.currentPos_ + consts.routeSlotLength) < this.positions.length) {
             this.currentPos += consts.routeSlotLength
-          } else if (this.currentPos < this.positions.length - 1) {
+            Vue.$log.debug('new currentPos: ', this.currentPos)
+          } else if (this.currentPos < (this.positions.length - 1)) {
             this.currentPos = this.positions.length - 1
+            Vue.$log.debug('new currentPos: ', this.currentPos)
           }
+          Vue.$log.debug('currentPos:', this.currentPos, ', positions length: ', this.positions.length)
           this.sliderPos = Vue.moment(this.positions[this.currentPos].fixTime).unix()
+        } else {
+          this.sliderPos = Vue.moment(this.positions[0].fixTime).unix()
         }
       }
     }

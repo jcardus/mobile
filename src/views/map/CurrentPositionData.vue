@@ -199,9 +199,9 @@ export default {
   },
   methods: {
     onPositions: function(positions) {
-      positions = positions.filter(utils.filterPositions)
+      this.positions = utils.filterPositions(positions)
+      positions = this.positions
       if (positions && positions.length > 1) {
-        this.positions = positions
         Vue.$log.debug('got ', this.positions.length, ' positions')
         this.removeLayers()
         this.drawAll(this.positions)
@@ -287,7 +287,14 @@ export default {
     },
     drawTrip: function() {
       this.drawStartEnd()
-      this.iterate()
+      if (vm.$store.state.settings.matchRoutes) {
+        this.iterate()
+      } else {
+        const coordinates = this.trips[this.currentTrip].map(p => [p.longitude, p.latitude])
+        this.drawRoute(coordinates)
+        const bounds = lnglat.getBounds(coordinates)
+        vm.$static.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
+      }
       animation.removeAddRouteLayer()
     },
     distance(p, q) {
@@ -352,7 +359,7 @@ export default {
       const lineString = { type: 'LineString', coordinates: positions }
       if (!vm.$store.state.settings.matchRoutes) {
         const routeGeoJSON = this.getGeoJSON(lineString)
-        this.drawIteration(routeGeoJSON)
+        this.createLayers(routeGeoJSON)
       } else {
         lnglat.matchRoute(positions, positions.map(() => [25]), timestamps, this.onRouteMatch)
       }
@@ -361,7 +368,10 @@ export default {
       return lnglat.getGeoJSON(coords)
     },
     createLayers: function(routeGeoJSON) {
-      if (vm.$static.map.getSource(this.routeSource)) return
+      if (vm.$static.map.getSource(this.routeSource)) {
+        Vue.$log.warn('ignoring layer ', this.routeSource, ', already exists...')
+        return
+      }
       vm.$static.map.addSource(this.routeSource, {
         type: 'geojson',
         data: routeGeoJSON
@@ -489,6 +499,7 @@ export default {
       animation.hideRouteLayer(!this.showRoutes)
     },
     onPosChanged(newPos) {
+      Vue.$log.debug('onPosChanged to ', newPos)
       const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {
         Vue.$log.debug('ignoring onPosChanged, no device...')
@@ -496,6 +507,10 @@ export default {
       }
       if (this.device.id !== vm.$data.currentDevice.id) {
         Vue.$log.debug('ignoring onPosChanged, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
+        return
+      }
+      if (newPos >= this.positions.length) {
+        Vue.$log.warn('ignoring onPosChanged, newPos out of array: ', newPos)
         return
       }
       const origin = this.oldPos
@@ -509,7 +524,7 @@ export default {
           i += consts.routeSlotLength
           const lineString = {
             type: 'LineString',
-            coordinates: this.positions.slice(i, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
+            coordinates: this.positions.slice(j, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
           }
           dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
         } while (i < this.positions.length - consts.routeSlotLength && i > consts.routeSlotLength && dist < consts.minDistanceForMatch)
@@ -538,30 +553,36 @@ export default {
           Vue.$log.debug('no current trip...')
           return
         }
+
         if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
           vm.$static.map.panTo(
             { lng: this.positions[newPos].longitude, lat: this.positions[newPos].latitude }
           )
         }
-        const tripStart = this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()
-        const tripEnd = this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()
-        const newDate = utils.getDate(this.positions[newPos].fixTime)
 
-        if (this.currentTrip < this.trips.length - 1 && newDate > tripEnd) {
-          const nextStart = this.$moment(this.trips[this.currentTrip + 1][0].deviceTime).toDate()
-          if (nextStart <= newDate) {
-            this.removeLayers(true)
-            this.currentTrip++
-            this.drawTrip()
-          }
-        } else if (this.currentTrip > 0 && newDate < tripStart) {
-          const previousEnd = this.$moment(this.trips[this.currentTrip - 1].slice(-1)[0].fixTime).toDate()
-          if (newDate <= previousEnd) {
-            this.removeLayers(true)
-            this.currentTrip--
-            this.drawTrip()
+        const newDate = utils.getDate(this.positions[newPos].fixTime)
+        const oldTrip = this.currentTrip
+
+        while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()) {
+          this.currentTrip++
+        }
+        while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()) {
+          this.currentTrip--
+        }
+        if (oldTrip !== this.currentTrip) {
+          const t = this.currentTrip
+          this.currentTrip = oldTrip
+          this.removeLayers(true)
+          this.currentTrip = t
+          this.drawTrip()
+
+          if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
+            vm.$static.map.panTo(
+              { lng: this.positions[newPos].longitude, lat: this.positions[newPos].latitude }
+            )
           }
         }
+
         this.feature.properties.speed = this.positions[newPos].speed
         this.feature.properties.course = this.positions[newPos].course
         this.feature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
@@ -569,7 +590,9 @@ export default {
         animation.refreshFeature()
       }
       if (newPos < this.positions.length - 1) {
+        Vue.$log.debug('oldPos: ', this.oldPos)
         this.oldPos = newPos
+        Vue.$log.debug('oldPos: ', this.oldPos)
       }
     },
     datesChanged() {
@@ -578,6 +601,9 @@ export default {
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
         this.loadingRoutes = true
       }
+    },
+    removeTripLayer(oldTrip) {
+
     }
   }
 }

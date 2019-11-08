@@ -92,39 +92,7 @@ export function animateRoute(route, feature) {
     animateMatched(route, feature)
   }
 }
-function drawTempLayer(routeGeoJSON) {
-  const tempID = 'tempLayer'
-  if (vm.$static.map.getSource(tempID)) {
-    Vue.$log.debug('setting source ', tempID, ' to ', routeGeoJSON)
-    vm.$static.map.getSource(tempID).setData({
-      type: 'geojson',
-      data: routeGeoJSON
-    })
-  } else {
-    Vue.$log.debug('adding source ', tempID)
-    vm.$static.map.addSource(tempID, {
-      type: 'geojson',
-      data: routeGeoJSON
-    })
-  }
-  Vue.$log.debug('adding layer', tempID)
-  if (vm.$static.map.getLayer(tempID)) {
-    vm.$static.map.removeLayer(tempID)
-  }
-  vm.$static.map.addLayer({
-    id: tempID,
-    type: 'line',
-    source: tempID,
-    layout: {
-      'line-join': 'round',
-      'line-cap': 'round'
-    },
-    paint: {
-      'line-color': 'black',
-      'line-width': 2
-    }
-  })
-}
+
 export function animateMatched(route, feature) {
   const lineDistance = lnglat.lineDistance(route)
   let counter = 0
@@ -138,10 +106,6 @@ export function animateMatched(route, feature) {
 
   const step = consts.rotateStep
   let endRotation = 0
-
-  if (process.env.NODE_ENV !== 'production') {
-    drawTempLayer(route)
-  }
 
   function _animateRotation() {
     const dir = angles.shortestDirection(endRotation, feature.properties.course)

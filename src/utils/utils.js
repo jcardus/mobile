@@ -25,7 +25,17 @@ export function stopLoader() {
   document.getElementById('loader').style.display = 'none'
 }
 
-export function filterPositions(p) {
+export function filterPositions(positions) {
+  const result = positions.filter(filterPosition)
+  const firstPos = positions.findIndex(position => position.attributes.ignition || position.attributes.motion)
+  if (firstPos > 0) {
+    Vue.$log.debug('slicing positions at ', firstPos)
+    return result.slice(firstPos)
+  }
+  return result
+}
+
+function filterPosition(p) {
   if (p.valid === false) {
     return p.attributes.ignition
   }
