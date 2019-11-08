@@ -490,8 +490,8 @@ export default {
         traccar.stopReceiving()
         this.getRoute(this.minDate, this.maxDate)
       } else {
-        traccar.startReceiving()
         this.removeLayers()
+        traccar.startReceiving()
       }
       this.loadingRoutes = this.showRoutes
       vm.$data.currentDevice = this.device
