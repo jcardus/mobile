@@ -37,6 +37,12 @@
         <el-table-column
           :label="$t('settings.vehicle_name')"
           prop="name"
+          sortable
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('settings.vehicle_licenseplate')"
+          prop="attributes.license_plate"
         >
         </el-table-column>
         <el-table-column
@@ -48,6 +54,7 @@
           :label="$t('settings.vehicle_speed_limit')"
           :formatter="alertSpeedRenderer"
           prop="attributes.speedLimit"
+          sortable
         >
         </el-table-column>
         <el-table-column label="">
