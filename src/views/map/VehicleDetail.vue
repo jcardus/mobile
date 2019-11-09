@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!showRoutes">
+  <div v-show="!showRoutes">
     <img v-show="showMapilary" id="mly" class="mly" :src="imageUrl" alt="">
     <h1>
       {{ device.name }}

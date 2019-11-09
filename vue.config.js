@@ -26,6 +26,28 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
+  pwa: {
+    name: 'Pinme',
+    themeColor: '#4DBA87',
+    msTileColor: '#000000',
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'black',
+    iconPaths:
+      {
+        favicon32: 'img/favicon/pinme64.png',
+        favicon16: 'img/favicon/pinme64.png',
+        appleTouchIcon: 'img/favicon/pinme152.png',
+        maskIcon: 'iimg/favicon/pinme152.png',
+        msTileImage: 'img/favicon/pinme144.png'
+      },
+    // configure the workbox plugin
+    workboxPluginMode: 'GenerateSW',
+    workboxOptions: {
+      // swSrc is required in InjectManifest mode.
+      // swSrc: 'src/service-worker.js'
+      // ...other Workbox options...
+    }
+  },
 
   /**
    * You will need to set publicPath if you plan to deploy your site under a sub path,
