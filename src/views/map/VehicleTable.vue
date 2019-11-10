@@ -328,10 +328,12 @@ export default {
       if (device) {
         this.selected = device.id
         Vue.$log.debug('device=', device)
-        vm.$data.historyMode = false
         vm.$data.isPlaying = false
-        serverBus.$emit('showRoutesChanged')
         serverBus.$emit('deviceSelected', device)
+        if (vm.$data.historyMode) {
+          vm.$data.historyMode = false
+          serverBus.$emit('showRoutesChanged')
+        }
       }
     },
     handleFilterState: function(state) {
