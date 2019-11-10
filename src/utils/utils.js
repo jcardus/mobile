@@ -39,5 +39,8 @@ function filterPosition(p) {
   if (p.valid === false) {
     return p.attributes.ignition
   }
+  if (p.protocol === 'osmand') {
+    return !(p.attributes.event >= 200 || p.attributes.event === 30)
+  }
   return true
 }

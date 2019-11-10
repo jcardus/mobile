@@ -20,7 +20,6 @@ export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }
 export function findFeatureByDeviceId(deviceId) {
-  // Vue.$log.debug('iterating ', vm.$static.positionsSource.features.length, ' features')
   return vm.$static.positionsSource.features.find(e => {
     return e.properties.deviceId === deviceId
   })

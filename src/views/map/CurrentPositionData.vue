@@ -199,13 +199,14 @@ export default {
   },
   methods: {
     onPositions: function(positions) {
-      this.positions = utils.filterPositions(positions)
-      positions = this.positions
+      Vue.$log.debug('positions before filter ', positions)
+      positions = utils.filterPositions(positions)
+      Vue.$log.debug('positions after filter ', positions)
       if (positions && positions.length > 1) {
-        Vue.$log.debug('got ', this.positions.length, ' positions')
+        Vue.$log.debug('got ', positions.length, ' positions')
         this.removeLayers()
-        this.drawAll(this.positions)
-        this.getRouteTrips(this.positions)
+        this.drawAll(positions)
+        this.getRouteTrips(positions)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
         this.filterTrips()
         Vue.$log.debug('after filter got ', this.trips.length, ' trips')
@@ -215,9 +216,9 @@ export default {
         this.currentTrip = this.trips.length - 1
         this.drawTrip()
       }
-      vm.$data.historyMode = true
+      this.positions = positions
+      Vue.$log.debug('emit routeFetched')
       serverBus.$emit('routeFetched')
-      this.loadingRoutes = false
     },
     onPositionsError() {
       this.loadingRoutes = false
@@ -597,7 +598,6 @@ export default {
       }
     },
     datesChanged() {
-      serverBus.$emit('maxDateChanged')
       if (this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
         this.loadingRoutes = true

@@ -14,6 +14,7 @@
       :hide-label="true"
       :dot-size="isMobile ? 40 : 20"
       :disabled="isPlaying"
+      :adsorb="true"
     />
     <i style="color:black" :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '4x' : '2x')" @click="click"></i>
     <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'fas fa-backward fa-' + (isMobile ? '4x' : '2x')" @click="clickBackward"></i>
@@ -39,8 +40,6 @@ export default {
       sliderPos: 0,
       currentPos: 0,
       currentPos_: 0,
-      minPos: 0,
-      maxPos: 0,
       formatter: v => `${this.formatDate(v)}`,
       dates: [],
       labels: [],
@@ -51,6 +50,18 @@ export default {
     }
   },
   computed: {
+    minPos() {
+      if (this.positions && this.positions[0]) {
+        return this.$moment(this.positions[0].fixTime).unix()
+      }
+      return 0
+    },
+    maxPos() {
+      if (this.positions.length > 0) {
+        return this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
+      }
+      return 0
+    },
     isMobile() {
       return lnglat.isMobile()
     },
@@ -137,6 +148,8 @@ export default {
         setTimeout(function() { self.resizeDiv() }, 1000)
       }
     })
+    serverBus.$on('routeFetched', this.updateMinMax)
+    serverBus.$on('routeMatchFinished', this.playNext)
   },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)
@@ -145,8 +158,6 @@ export default {
     if (this.unsubscribe) { this.unsubscribe() }
   },
   mounted() {
-    serverBus.$on('routeFetched', this.updateMinMax)
-    serverBus.$on('routeMatchFinished', this.playNext)
     this.resizeDiv()
   },
   methods: {
@@ -158,7 +169,7 @@ export default {
       let result = Vue.moment.unix(v).format('YYYY-MM-DD HH:mm:ss')
       if (this.indexArray[v]) {
         v = this.indexArray[v].index
-        const speed = vm.$data.positions[v] ? vm.$data.positions[v].speed : ''
+        const speed = this.positions[v] ? this.positions[v].speed : ''
         if (speed && speed > 0) {
           result += (' ' + ~~(speed * 1.852) + 'km/h')
         }
@@ -191,9 +202,6 @@ export default {
     },
     updateMinMax() {
       if (this.positions.length > 0) {
-        this.minPos = this.$moment(this.positions[0].fixTime).unix()
-        Vue.$log.debug('setting minPos to ', this.minPos, ', fixTime ', this.positions[0].fixTime)
-        this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
         this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
         const self = this
         this.positions.forEach(function(item, index) {
@@ -203,6 +211,7 @@ export default {
         this.fillGraphData()
         this.sliderPos = this.maxPos
       }
+      this.loadingRoutes = false
     },
     playNext() {
       if (this.isPlaying) {
