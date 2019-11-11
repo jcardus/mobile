@@ -16,6 +16,7 @@ import i18n from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
+import './registerServiceWorker'
 
 Vue.use(LoadScript)
 

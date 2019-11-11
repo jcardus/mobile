@@ -1,39 +1,19 @@
 {
   "name": "pinme",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "scripts": {
-    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:stage": "vue-cli-service build --mode staging",
-    "preview": "node build/index.js --preview  --report  --mode staging",
-    "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
-    "test:ci": "npm run lint && npm run test:unit",
-    "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
-    "new": "plop",
+    "lint": "eslint --ext .js,.vue src",
+    "build:stage": "vue-cli-service build --mode staging",
     "deploy-prod": "vue-cli-service build && aws s3 sync ./dist s3://web-traccar --acl public-read",
-    "deploy-staging": "vue-cli-service build && aws s3 sync ./dist s3://web-traccar-staging --acl public-read"
+    "deploy-staging": "vue-cli-service build && aws s3 sync ./dist s3://web-traccar-staging --acl public-read",
+    "dev": "vue-cli-service serve",
+    "new": "plop",
+    "preview": "node build/index.js --preview  --report",
+    "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
+    "test:ci": "npm run lint && npm run test:unit"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,vue}": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
-  "keywords": [
-    "vue",
-    "admin",
-    "dashboard",
-    "element-ui",
-    "boilerplate",
-    "admin-template",
-    "management-system"
-  ],
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "latest",
     "@mapbox/mapbox-gl-geocoder": "latest",
@@ -55,8 +35,10 @@
     "mapbox-gl-controls": "latest",
     "normalize.css": "7.0.0",
     "nprogress": "latest",
+    "register-service-worker": "^1.6.2",
     "screenfull": "4.2.0",
     "serve": "^11.2.0",
+    "sw-precache": "latest",
     "vue": "2.6.10",
     "vue-cookies": "latest",
     "vue-i18n": "^8.14.0",
@@ -69,8 +51,7 @@
     "vue-static": "latest",
     "vue-timeago": "latest",
     "vuejs-logger": "^1.5.3",
-    "vuex": "3.1.0",
-    "sw-precache": "latest"
+    "vuex": "3.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -78,6 +59,7 @@
     "@mapbox/mapbox-gl-draw": "^1.1.2",
     "@vue/cli-plugin-babel": "3.5.3",
     "@vue/cli-plugin-eslint": "^3.9.1",
+    "@vue/cli-plugin-pwa": "^4.0.5",
     "@vue/cli-plugin-unit-jest": "3.5.3",
     "@vue/cli-service": "3.5.3",
     "@vue/test-utils": "1.0.0-beta.29",
@@ -90,6 +72,11 @@
     "connect": "3.6.6",
     "eslint": "5.15.3",
     "eslint-plugin-vue": "5.2.2",
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-spritesmith": "^6.8.0",
     "html-webpack-plugin": "3.2.0",
     "husky": "1.3.1",
     "lint-staged": "8.1.5",
@@ -103,22 +90,36 @@
     "serve-static": "^1.13.2",
     "svg-sprite-loader": "4.1.3",
     "svgo": "1.2.0",
+    "sw-precache-webpack-plugin": "latest",
     "vue-template-compiler": "2.6.10",
-    "grunt": "~0.4.5",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-nodeunit": "~0.4.1",
-    "grunt-contrib-uglify": "~0.5.0",
-    "grunt-spritesmith": "^6.8.0",
-    "webpack-bundle-analyzer": "latest",
-    "@vue/cli-plugin-pwa": "latest",
-    "sw-precache-webpack-plugin": "latest"
-  },
-  "engines": {
-    "node": ">=8.9",
-    "npm": ">= 3.0.0"
+    "webpack-bundle-analyzer": "latest"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "engines": {
+    "node": ">=8.9",
+    "npm": ">= 3.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "keywords": [
+    "vue",
+    "admin",
+    "dashboard",
+    "element-ui",
+    "boilerplate",
+    "admin-template",
+    "management-system"
+  ],
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "eslint --fix",
+      "git add"
+    ]
+  }
 }

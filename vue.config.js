@@ -32,7 +32,7 @@ module.exports = {
         favicon32: 'img/favicon/pinme64.png',
         favicon16: 'img/favicon/pinme64.png',
         appleTouchIcon: 'img/favicon/pinme152.png',
-        maskIcon: 'iimg/favicon/pinme152.png',
+        maskIcon: 'img/favicon/pinme152.png',
         msTileImage: 'img/favicon/pinme144.png'
       },
     // configure the workbox plugin
@@ -40,7 +40,6 @@ module.exports = {
     workboxOptions: {
       // swSrc is required in InjectManifest mode.
       swSrc: 'src/service-worker.js'
-      // ...other Workbox options...
     },
     manifestOptions: {
       'icons': [{
@@ -69,7 +68,7 @@ module.exports = {
         'type': 'image/png'
       }],
       'start_url': '/index.html',
-      'display': 'fullscreen',
+      'display': 'standalone',
       'background_color': '#3E4EB8',
       'theme_color': '#2F3BA2'
     }
