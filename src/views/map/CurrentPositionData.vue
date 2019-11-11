@@ -1,6 +1,5 @@
 <template>
   <div v-show="show" class="mapboxgl-ctrl" :style="isMobile?width:''">
-
     <el-card
       v-loading="loadingRoutes"
       :body-style="{ padding: '10px' }"
@@ -18,7 +17,6 @@
         >
         </el-switch>
       </h2>
-
       <el-row>
         <div style="float:left">
           <label>
@@ -31,7 +29,6 @@
             <input v-model="_maxDate" type="date">
           </label>
         </div>
-
       </el-row><el-row>
         <div style="float:right">
           {{ totalDistance }} Kms
@@ -602,9 +599,6 @@ export default {
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
         this.loadingRoutes = true
       }
-    },
-    removeTripLayer(oldTrip) {
-
     }
   }
 }
@@ -639,7 +633,7 @@ export default {
     -webkit-appearance: none;
     color: #5a5e66;
     font-family: "Helvetica", arial, sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     border-width:1px;
     border-color: #1da1f2;
     padding:0;
