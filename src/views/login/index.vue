@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
-        <img class="logo" :src="logoImage">
+        <img class="logo" :src="logoImage" alt="">
         <lang-select class="set-language" />
       </div>
 
@@ -21,7 +21,6 @@
           autocomplete="on"
         />
       </el-form-item>
-
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
           <span class="svg-container">
@@ -45,9 +44,10 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
+      <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
     </el-form>
+
   </div>
 </template>
 
@@ -91,6 +91,9 @@ export default {
   computed: {
     logoImage: function() {
       return partner.getLogo()
+    },
+    version() {
+      return this.$store.state.app.packageVersion
     }
   },
   watch: {
@@ -115,11 +118,7 @@ export default {
   methods: {
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
-        if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
-          this.capsTooltip = true
-        } else {
-          this.capsTooltip = false
-        }
+        this.capsTooltip = shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')
       }
       if (key === 'CapsLock' && this.capsTooltip === true) {
         this.capsTooltip = false
@@ -177,12 +176,6 @@ $bg:#283443;
 $light_gray:#fff;
 $cursor: #fff;
 
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
 /* reset element-ui css */
 .login-container {
   .el-input {
@@ -192,16 +185,16 @@ $cursor: #fff;
 
     input {
       background: transparent;
-      border: 0px;
+      border: 0;
       -webkit-appearance: none;
-      border-radius: 0px;
+      border-radius: 0;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
       height: 47px;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
+        box-shadow: 0 0 0 1000px $bg inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
     }
@@ -260,10 +253,8 @@ $light_gray:#eee;
     position: relative;
 
     .logo {
-      margin: 0px auto 40px auto;
+      margin: 0 auto 40px auto;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
       max-width: 300px;
     }
 
@@ -272,7 +263,7 @@ $light_gray:#eee;
       position: absolute;
       top: 3px;
       font-size: 18px;
-      right: 0px;
+      right: 0;
       cursor: pointer;
     }
   }
