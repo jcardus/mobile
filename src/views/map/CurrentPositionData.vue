@@ -639,7 +639,7 @@ export default {
     -webkit-appearance: none;
     color: #5a5e66;
     font-family: "Helvetica", arial, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     border-width:1px;
     border-color: #1da1f2;
     padding:0;
