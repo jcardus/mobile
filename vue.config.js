@@ -5,7 +5,6 @@ const fs = require('fs')
 const packageJson = fs.readFileSync('./package.json')
 const version = JSON.parse(packageJson).version || 0
 const webpack = require('webpack')
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -19,10 +18,6 @@ const name = defaultSettings.title || '' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 const port = 8080
-/*
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin
- */
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -41,11 +36,42 @@ module.exports = {
         msTileImage: 'img/favicon/pinme144.png'
       },
     // configure the workbox plugin
-    workboxPluginMode: 'GenerateSW',
+    workboxPluginMode: 'InjectManifest',
     workboxOptions: {
       // swSrc is required in InjectManifest mode.
-      // swSrc: 'src/service-worker.js'
+      swSrc: 'src/service-worker.js'
       // ...other Workbox options...
+    },
+    manifestOptions: {
+      'icons': [{
+        'src': '/img/favicon/pinme128.png',
+        'sizes': '128x128',
+        'type': 'image/png'
+      }, {
+        'src': '/img/favicon/pinme144.png',
+        'sizes': '144x144',
+        'type': 'image/png'
+      }, {
+        'src': '/img/favicon/pinme152.png',
+        'sizes': '152x152',
+        'type': 'image/png'
+      }, {
+        'src': '/img/favicon/pinme192.png',
+        'sizes': '192x192',
+        'type': 'image/png'
+      }, {
+        'src': '/img/favicon/pinme256.png',
+        'sizes': '256x256',
+        'type': 'image/png'
+      }, {
+        'src': '/img/favicon/pinme512.png',
+        'sizes': '512x512',
+        'type': 'image/png'
+      }],
+      'start_url': '/index.html',
+      'display': 'fullscreen',
+      'background_color': '#3E4EB8',
+      'theme_color': '#2F3BA2'
     }
   },
 
@@ -75,15 +101,7 @@ module.exports = {
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
-          PACKAGE_VERSION: '"' + version + '"' }}),
-      new SWPrecacheWebpackPlugin({
-        cacheId: 'pinme',
-        filename: 'service-worker-cache.js',
-        staticFileGlobs: ['dist/**/*.{js,css}', '/'],
-        minify: true,
-        stripPrefix: 'dist/',
-        dontCacheBustUrlsMatching: /\.\w{6}\./
-      })
+          PACKAGE_VERSION: '"' + version + '"' }})
     ],
     // plugins: [new BundleAnalyzerPlugin()],
     // provide the app's title in webpack's name field, so that

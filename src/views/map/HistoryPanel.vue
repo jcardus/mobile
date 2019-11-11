@@ -15,6 +15,7 @@
       :dot-size="isMobile ? 40 : 20"
       :disabled="isPlaying"
       :adsorb="true"
+      :use-keyboard="true"
     />
     <i style="color:black" :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '4x' : '2x')" @click="click"></i>
     <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'fas fa-backward fa-' + (isMobile ? '4x' : '2x')" @click="clickBackward"></i>

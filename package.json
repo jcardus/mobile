@@ -1,11 +1,11 @@
 {
   "name": "pinme",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
-    "preview": "node build/index.js --preview",
+    "preview": "node build/index.js --preview  --report  --mode staging",
     "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "test:ci": "npm run lint && npm run test:unit",
@@ -56,19 +56,21 @@
     "normalize.css": "7.0.0",
     "nprogress": "latest",
     "screenfull": "4.2.0",
+    "serve": "^11.2.0",
     "vue": "2.6.10",
     "vue-cookies": "latest",
     "vue-i18n": "^8.14.0",
     "vue-i18n-filter": "latest",
     "vue-moment": "latest",
     "vue-native-websocket": "latest",
+    "vue-plugin-load-script": "latest",
     "vue-router": "3.0.2",
     "vue-slider-component": "latest",
     "vue-static": "latest",
     "vue-timeago": "latest",
     "vuejs-logger": "^1.5.3",
     "vuex": "3.1.0",
-    "vue-plugin-load-script": "latest"
+    "sw-precache": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
