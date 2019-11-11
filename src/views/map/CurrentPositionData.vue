@@ -180,6 +180,10 @@ export default {
         setTimeout(function() { self.resizeDiv() }, 1000)
       }
     })
+    serverBus.$on('posChanged', this.onPosChanged)
+    serverBus.$on('routePlay', this.routePlay)
+    serverBus.$on('routePlayStopped', this.routePlayStopped)
+    serverBus.$on('showRoutesChanged', this.showRoutesClick)
   },
   beforeDestroy() {
     serverBus.$off('posChanged', this.onPosChanged)
@@ -189,10 +193,6 @@ export default {
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData mounted', this.device)
-    serverBus.$on('posChanged', this.onPosChanged)
-    serverBus.$on('routePlay', this.routePlay)
-    serverBus.$on('routePlayStopped', this.routePlayStopped)
-    serverBus.$on('showRoutesChanged', this.showRoutesClick)
   },
   methods: {
     onPositions: function(positions) {
