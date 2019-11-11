@@ -13,35 +13,35 @@
           v-model="showRoutes"
           v-loading="loadingRoutes"
           style="float:right"
-          :active-text="$t('vehicleDetail.show_route')"
+
           @change="showRoutesClick"
         >
         </el-switch>
       </h2>
-      <div>
-        <el-row type="flex" justify="space-around"><el-col :span="12">
-          <div style="float:left">
-            <label>
-              <input v-model="_minDate" type="date">
-            </label>
-          </div>
-        </el-col><el-col :span="12">
-          <div style="float:right">
-            <label>
-              <input v-model="_maxDate" type="date">
-            </label>
-          </div>
-        </el-col>
-        </el-row>
-      </div>
-      <div style="float:right">
-        {{ totalDistance }} Kms
-      </div>
-      <div>
-        {{ formattedDate }}
-        <br>
-        {{ formatAddress }}
-      </div>
+
+      <el-row>
+        <div style="float:left">
+          <label>
+            <input v-model="_minDate" type="date">
+          </label>
+        </div>
+
+        <div style="float:right">
+          <label>
+            <input v-model="_maxDate" type="date">
+          </label>
+        </div>
+
+      </el-row><el-row>
+        <div style="float:right">
+          {{ totalDistance }} Kms
+        </div>
+        <div>
+          {{ formattedDate }}
+          <br>
+          {{ formatAddress }}
+        </div>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -639,7 +639,7 @@ export default {
     -webkit-appearance: none;
     color: #5a5e66;
     font-family: "Helvetica", arial, sans-serif;
-    font-size: 22px;
+    font-size: 16px;
     border-width:1px;
     border-color: #1da1f2;
     padding:0;

@@ -17,9 +17,9 @@
       :adsorb="true"
       :use-keyboard="true"
     />
-    <i style="color:black" :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '4x' : '2x')" @click="click"></i>
-    <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'fas fa-backward fa-' + (isMobile ? '4x' : '2x')" @click="clickBackward"></i>
-    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible') + '; color:black'" :class="'fas fa-forward fa-' + (isMobile ? '4x' : '2x')" @click="clickForward"></i>
+    <i style="color:black" :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '3x' : '2x')" @click="click"></i>
+    <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'fas fa-backward fa-' + (isMobile ? '3x' : '2x')" @click="clickBackward"></i>
+    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible') + '; color:black'" :class="'fas fa-forward fa-' + (isMobile ? '3x' : '2x')" @click="clickForward"></i>
   </div>
 </template>
 

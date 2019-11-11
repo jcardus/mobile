@@ -15,41 +15,9 @@ if (workbox) {
   // eslint-disable-next-line no-undef
   workbox.routing.registerNavigationRoute('/index.html')
 
-  // Setup cache strategy for Google Fonts. They consist of two parts, a static one
-  // coming from fonts.gstatic.com (strategy CacheFirst) and a more ferquently updated on
-  // from fonts.googleapis.com. Hence, split in two registerroutes
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
-    /^https:\/\/fonts\.googleapis\.com/,
-    // eslint-disable-next-line no-undef
-    new workbox.strategies.StaleWhileRevalidate({
-      cacheName: 'google-fonts-stylesheets'
-    })
-  )
-
-  // eslint-disable-next-line no-undef
-  workbox.routing.registerRoute(
-    /^https:\/\/fonts\.gstatic\.com/,
-    // eslint-disable-next-line no-undef
-    new workbox.strategies.CacheFirst({
-      cacheName: 'google-fonts-webfonts',
-      plugins: [
-        // eslint-disable-next-line no-undef
-        new workbox.cacheableResponse.Plugin({
-          statuses: [0, 200]
-        }),
-        // eslint-disable-next-line no-undef
-        new workbox.expiration.Plugin({
-          maxAgeSeconds: 60 * 60 * 24 * 365,
-          maxEntries: 30
-        })
-      ]
-    })
-  )
-
-  // eslint-disable-next-line no-undef
-  workbox.routing.registerRoute(
-    /^https:\/\/stackpath\.bootstrapcdn\.com/,
+    /^https:\/\/kit-free\.fontawesome\.com/,
     // eslint-disable-next-line no-undef
     new workbox.strategies.StaleWhileRevalidate({
       cacheName: 'fontawesome'
