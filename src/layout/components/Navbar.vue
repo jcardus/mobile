@@ -1,14 +1,12 @@
 <template>
   <div class="navbar">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-    <breadcrumb v-if="device!=='mobile'" id="breadcrumb-container" class="breadcrumb-container" />
     <div class="left-menu">
       <vehicle-list v-if="device==='mobile'" class="left-menu-item"></vehicle-list>
     </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
-        <error-log class="errLog-container right-menu-item hover-effect" />
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
       </template>
 
@@ -35,9 +33,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import VehicleList from '../../views/map/VehicleList'
@@ -45,9 +41,7 @@ import VehicleList from '../../views/map/VehicleList'
 export default {
   components: {
     VehicleList,
-    Breadcrumb,
     Hamburger,
-    ErrorLog,
     Screenfull,
     Search
   },

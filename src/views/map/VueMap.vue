@@ -111,10 +111,12 @@ export default {
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
-    this.$root.$static.map = new mapboxgl.Map({
+    const realMap = new mapboxgl.Map({
       container: 'map',
       style: this.$root.$data.mapStyle
     })
+    // eslint-disable-next-line no-undef
+    if (window.TrackJS) { this.$root.$static.map = TrackJS.watchAll(realMap) } else { this.$root.$static.map = realMap }
     this.setZoomAndCenter()
     this.map.on('load', this.onMapLoad)
     this.subscribeEvents()
