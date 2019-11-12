@@ -73,7 +73,6 @@ export default {
       vm.$static.map.setStyle(this.styles.find(e => e.title === title).uri)
       vm.$static.map.on('style.load', function() {
         lnglat.addLayers(vm.$static.map)
-        lnglat.addImages(vm.$static.map)
       })
       this.selected = title
       this.containerVisible = false

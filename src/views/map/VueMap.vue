@@ -36,13 +36,6 @@ import CurrentPositionData from './CurrentPositionData'
 export default {
   name: 'VueMap',
   components: { VehicleTable },
-  static() {
-    return {
-      map: vm.$static.map,
-      draw: null,
-      truck: null
-    }
-  },
   data() {
     return {
       accessToken: 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ',
@@ -96,12 +89,23 @@ export default {
       }
     }
   },
+  created() {
+    this.$log.info('VueMap created')
+  },
+  static() {
+    return {
+      map: vm.$static.map,
+      draw: null,
+      truck: null
+    }
+  },
   beforeDestroy() {
     Vue.$log.warn('VueMap beforeDestroy')
     this.unsubscribeEvents()
     traccar.stopReceiving()
   },
   mounted() {
+    this.$log.info('VueMap mounted')
     if (this.devices.length === 0) { traccar.devices(this.onDevices) }
     traccar.geofences(this.onGeofences)
     this.parentHeight = this.$parent.$el.clientHeight
@@ -111,6 +115,7 @@ export default {
       container: 'map',
       style: this.$root.$data.mapStyle
     })
+    this.setZoomAndCenter()
     this.map.on('load', this.onMapLoad)
     this.subscribeEvents()
   },
@@ -127,7 +132,6 @@ export default {
       this.map.resize()
     },
     onMapLoad: function() {
-      this.setZoomAndCenter()
       this.addControls()
       this.addLayers()
       traccar.startReceiving()
@@ -229,7 +233,7 @@ export default {
         this.origin = center
         this.$static.map.setCenter(center)
       } catch (e) {
-        this.$log.debug('no cookie...')
+        this.$log.warn('no cookie...', e)
       }
     },
     stopLoader: function() {

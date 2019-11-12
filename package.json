@@ -1,13 +1,13 @@
 {
   "name": "pinme",
-  "version": "1.0.17",
+  "version": "1.0.20",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "lint": "eslint --ext .js,.vue src",
     "build:stage": "vue-cli-service build --mode staging",
-    "deploy-prod": "vue-cli-service build && aws s3 sync ./dist s3://web-traccar --acl public-read",
-    "deploy-staging": "vue-cli-service build && aws s3 sync ./dist s3://web-traccar-staging --acl public-read",
+    "deploy-prod": "vue-cli-service build --mode staging && aws s3 sync ./dist s3://web-traccar --acl public-read",
+    "deploy-staging": "vue-cli-service build --mode staging && aws s3 sync ./dist s3://web-traccar-staging --acl public-read",
     "dev": "vue-cli-service serve",
     "new": "plop",
     "preview": "node build/index.js --preview  --report",

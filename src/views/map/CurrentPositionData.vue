@@ -475,8 +475,12 @@ export default {
     routePlayStopped() {
     },
     resizeDiv() {
-      Vue.$log.debug('resizeDiv')
-      this.width = 'width:' + document.getElementById('map').clientWidth + 'px'
+      Vue.$log.debug('currentpositiondata')
+      if (document.getElementById('map')) {
+        this.width = 'width:' + document.getElementById('map').clientWidth + 'px'
+      } else {
+        this.$log.warn('currentposition, no map element...')
+      }
     },
     showRoutesClick: function() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)

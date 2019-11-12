@@ -162,9 +162,13 @@ export default {
     this.resizeDiv()
   },
   methods: {
-    resizeDiv() {
+    resizeDiv: function() {
       Vue.$log.debug('resizeDiv')
-      this.width = 'z-index=10000; width:' + (document.getElementById('map').clientWidth - 128) + 'px'
+      if (document.getElementById('map')) {
+        this.width = 'z-index=10000; width:' + (document.getElementById('map').clientWidth - 128) + 'px'
+      } else {
+        Vue.$log.warn('resizing div but no map on dom...')
+      }
     },
     formatDate(v) {
       let result = Vue.moment.unix(v).format('YYYY-MM-DD HH:mm:ss')
