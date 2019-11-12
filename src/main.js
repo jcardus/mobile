@@ -140,13 +140,13 @@ export const vm = new Vue({
       return this.devices.find(e => e.id === deviceId)
     },
     reset: function() {
-      this.$log.debug('disconnect socket')
+      this.$log.warn('disconnect socket')
       this.$disconnect()
       for (const i in this.$static.markers) {
         // noinspection JSUnfilteredForInLoop
         delete this.$static.markers[i]
       }
-      this.$log.debug('removing sources')
+      this.$log.warn('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
       this.$data.historyMode = false

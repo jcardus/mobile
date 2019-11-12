@@ -78,7 +78,7 @@ export default {
     },
     getMessage(event) {
       if (event.type === 'deviceOverspeed') {
-        this.$root.device(event.deviceId).name + ' - ' + ~~(event.attributes.speed * 1.852) + ' km/h (Max. ' + ~~(event.attributes.speedLimit * 1.852) + ' km/h)'
+        return this.$root.device(event.deviceId).name + ' - ' + ~~(event.attributes.speed * 1.852) + ' km/h (Max. ' + ~~(event.attributes.speedLimit * 1.852) + ' km/h)'
       } else {
         return this.$root.device(event.deviceId).name
       }

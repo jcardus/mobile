@@ -34,6 +34,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const data = response.data
+        // eslint-disable-next-line no-undef
+        window.TrackJS && TrackJS.addMetadata('user', username)
         data.password = password
         setToken(response.data)
         setLanguage(data.attributes.lang)
