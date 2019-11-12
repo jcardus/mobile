@@ -12,6 +12,15 @@
   <noscript>
     <p> We need javascript! </p>
   </noscript>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({
+      token: "f7e379c5f99b4f2d8c890acdbcd8ef4d"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+
   <body>
     <div id="app"></div>
     <!-- built files will be auto injected -->

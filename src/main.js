@@ -113,7 +113,7 @@ export const vm = new Vue({
     device(deviceId) {
       return this.devices.find(e => e.id === deviceId)
     },
-    reset() {
+    reset: function() {
       this.$log.debug('disconnect socket')
       this.$disconnect()
       for (const i in this.$static.markers) {
@@ -123,6 +123,7 @@ export const vm = new Vue({
       this.$log.debug('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
+      this.$data.historyMode = false
       this.$log.debug('done.')
     }
   },
