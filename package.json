@@ -17,8 +17,6 @@
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "latest",
     "@mapbox/mapbox-gl-geocoder": "latest",
-    "@sentry/browser": "latest",
-    "@sentry/integrations": "latest",
     "@turf/along": "latest",
     "@turf/area": "latest",
     "@turf/bbox": "latest",

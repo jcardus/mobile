@@ -17,8 +17,12 @@ import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import './registerServiceWorker'
-import * as Sentry from '@sentry/browser'
-import * as Integrations from '@sentry/integrations'
+
+// eslint-disable-next-line no-undef
+window.TrackJS && TrackJS.install({
+  token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
+  version: store.state.app.packageVersion
+})
 
 Vue.use(LoadScript)
 
@@ -73,12 +77,6 @@ Vue.use(VueTimeago, {
 })
 
 Vue.use(VueI18nFilter)
-Vue.$log.debug('init sentry')
-Sentry.init({
-  dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@sentry.io/1816749',
-  integrations: [new Integrations.Vue({ Vue, attachProps: true })]
-})
-Vue.$log.debug('done init sentry')
 
 export const vm = new Vue({
   el: '#app',
