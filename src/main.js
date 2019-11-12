@@ -17,6 +17,8 @@ import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import './registerServiceWorker'
+import * as Sentry from '@sentry/browser'
+import * as Integrations from '@sentry/integrations'
 
 Vue.use(LoadScript)
 
@@ -71,6 +73,12 @@ Vue.use(VueTimeago, {
 })
 
 Vue.use(VueI18nFilter)
+Vue.$log.debug('init sentry')
+Sentry.init({
+  dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@sentry.io/1816749',
+  integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+})
+Vue.$log.debug('done init sentry')
 
 export const vm = new Vue({
   el: '#app',
