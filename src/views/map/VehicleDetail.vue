@@ -84,11 +84,12 @@ export default {
     serverBus.$off('deviceSelected', this.deviceSelected)
   },
   created() {
-    Vue.$log.debug('subscribing events')
+    Vue.$log.debug('created VehicleDetail, subscribing events')
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
   mounted: function() {
+    Vue.$log.debug('mounted VehicleDetail')
     // odd width popups are blurry on Chrome, this enforces even widths
     if (Math.ceil(this.$el.clientWidth) % 2) {
       this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
@@ -119,6 +120,7 @@ export default {
       }
     },
     showRoutesChanged() {
+      Vue.$log.debug('emit showRoutesChanged')
       serverBus.$emit('showRoutesChanged')
     }
   }

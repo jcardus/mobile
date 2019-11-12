@@ -104,7 +104,9 @@ export const vm = new Vue({
       currentFeature: null,
       isPlaying: false,
       lazyLoad: false,
-      distance: 0
+      distance: 0,
+      vehiclePanel: null,
+      historyPanel: null
     }
   },
   methods: {

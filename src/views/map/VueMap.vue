@@ -57,6 +57,14 @@ export default {
     }
   },
   computed: {
+    historyPanel: {
+      get() { return vm.$data.historyPanel },
+      set(value) { vm.$data.historyPanel = value }
+    },
+    vehiclePanel: {
+      get() { return vm.$data.vehiclePanel },
+      set(value) { vm.$data.vehiclePanel = value }
+    },
     popUps: {
       get: function() {
         return vm.$data.popUps
@@ -89,6 +97,7 @@ export default {
     }
   },
   beforeDestroy() {
+    Vue.$log.warn('VueMap beforeDestroy')
     this.unsubscribeEvents()
     traccar.stopReceiving()
   },
@@ -285,20 +294,29 @@ export default {
         trackUserLocation: true
       }), 'bottom-right')
       map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
-      const VD = Vue.extend(StyleSwitcherControl)
+      let VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
 
-      if (settings.showSlider) {
-        map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
-        let VD = Vue.extend(HistoryPanel)
-        let _vm = new VD({ i18n: i18n })
-        _vm.$mount('#slider-div')
-        map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
-        VD = Vue.extend(CurrentPositionData)
-        _vm = new VD({ i18n: i18n })
-        _vm.$mount('#currentPos-div')
+      // this is very important, these Vue instances are not destroyed when the user logs off...
+      map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
+      if (this.historyPanel !== null) {
+        Vue.$log.warn('destroying old history panel')
+        this.historyPanel.$destroy()
       }
+      VD = Vue.extend(HistoryPanel)
+      this.historyPanel = new VD({ i18n: i18n })
+      this.historyPanel.$mount('#slider-div')
+
+      map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
+      if (this.vehiclePanel !== null) {
+        Vue.$log.warn('destroying old vehicle panel')
+        this.vehiclePanel.$destroy()
+      }
+      VD = Vue.extend(CurrentPositionData)
+      this.vehiclePanel = new VD({ i18n: i18n })
+      this.vehiclePanel.$mount('#currentPos-div')
+
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
     },
     onMoveEnd: function() {

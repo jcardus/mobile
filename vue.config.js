@@ -23,7 +23,7 @@ const port = 8080
 module.exports = {
   pwa: {
     name: 'Pinme',
-    themeColor: '#4DBA87',
+    themeColor: '#2d3a4b',
     msTileColor: '#000000',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
@@ -69,8 +69,8 @@ module.exports = {
       }],
       'start_url': '/index.html',
       'display': 'standalone',
-      'background_color': '#3E4EB8',
-      'theme_color': '#2F3BA2'
+      'background_color': '#2d3a4b',
+      'theme_color': '#2d3a4b'
     }
   },
 
