@@ -240,6 +240,7 @@ export default {
 </script>
 
 <style scoped>
+  @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
   .grid-content {
     border-radius: 0;
     min-height: 36px;
