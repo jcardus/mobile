@@ -135,7 +135,6 @@ export default {
     },
     onMapLoad: function() {
       this.addControls()
-      this.addLayers()
       traccar.startReceiving()
       this.map.resize()
       if (this.isMobile) {
@@ -345,6 +344,7 @@ export default {
     },
     subscribeEvents() {
       const self = this
+      this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
       // this.$static.map.on('pitch', this.onPitch)
@@ -371,6 +371,7 @@ export default {
       window.addEventListener('resize', this.mapResize)
     },
     unsubscribeEvents() {
+      this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
@@ -387,15 +388,21 @@ export default {
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
-    onData(e) {
-      if (e.sourceId !== lnglat.source || !e.isSourceLoaded) {
-        if (e.dataType === 'style') {
-          const style = this.map.getStyle()
-          style.sprite = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
-          this.map.setStyle(style)
-        }
-        return
+    onStyleLoad(e) {
+      const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
+      this.$log.debug('onStyleLoad ', e)
+      const style = this.map.getStyle()
+      this.$log.debug('setting sprite')
+      if (style.sprite !== spriteUrl) {
+        style.sprite = spriteUrl
+        this.map.setStyle(style)
+      } else {
+        this.$log.info('adding layers...')
+        lnglat.addLayers(vm.$static.map)
+        this.$log.info('done adding layers')
       }
+    },
+    onData() {
       lnglat.updateMarkers()
     },
     onClickTouchUnclustered: function(e) {

@@ -18,8 +18,7 @@
 
 <script>
 
-import { vm, serverBus } from '../../../../main'
-import * as lnglat from '../../../../utils/lnglat'
+import { vm } from '../../../../main'
 
 export default {
   name: 'StyleSwitcherControl',
@@ -71,9 +70,6 @@ export default {
     },
     styleClicked: function(title) {
       vm.$static.map.setStyle(this.styles.find(e => e.title === title).uri)
-      vm.$static.map.on('style.load', function() {
-        lnglat.addLayers(vm.$static.map)
-      })
       this.selected = title
       this.containerVisible = false
       this.btnVisible = true
@@ -81,7 +77,6 @@ export default {
       while (elms[0]) {
         elms[0].classList.remove('active')
       }
-      serverBus.$emit('minDateChanged')
     }
   }
 }
