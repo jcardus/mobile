@@ -17,12 +17,13 @@ import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import './registerServiceWorker'
+import { TrackJS } from 'trackjs'
 
-// eslint-disable-next-line no-undef
-window.TrackJS && TrackJS.install({
+TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
   version: store.state.app.packageVersion
 })
+TrackJS.addMetadata('user', store.state.name)
 
 Vue.config.errorHandler = (err, vm, info) => {
   // Log properties passed to the component if there are any
@@ -41,7 +42,7 @@ Vue.config.errorHandler = (err, vm, info) => {
 
   // Track the native JS error
   // eslint-disable-next-line no-undef
-  window.TrackJS && TrackJS.track(err)
+  TrackJS.track(err)
 }
 
 Vue.use(LoadScript)

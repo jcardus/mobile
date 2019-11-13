@@ -15,7 +15,6 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-// import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { serverBus, settings, vm } from '../../main'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -32,6 +31,7 @@ import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTable from './VehicleTable'
 import CurrentPositionData from './CurrentPositionData'
+import { TrackJS } from 'trackjs'
 
 export default {
   name: 'VueMap',
@@ -111,12 +111,10 @@ export default {
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
-    const realMap = new mapboxgl.Map({
+    this.$root.$static.map = TrackJS.watchAll(new mapboxgl.Map({
       container: 'map',
       style: this.$root.$data.mapStyle
-    })
-    // eslint-disable-next-line no-undef
-    if (window.TrackJS) { this.$root.$static.map = TrackJS.watchAll(realMap) } else { this.$root.$static.map = realMap }
+    }))
     this.setZoomAndCenter()
     this.map.on('load', this.onMapLoad)
     this.subscribeEvents()
@@ -392,8 +390,8 @@ export default {
       const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
-      this.$log.debug('setting sprite')
       if (style.sprite !== spriteUrl) {
+        this.$log.debug('setting sprite')
         style.sprite = spriteUrl
         this.map.setStyle(style)
       } else {

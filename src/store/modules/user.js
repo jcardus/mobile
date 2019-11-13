@@ -4,6 +4,7 @@ import router, { resetRouter } from '@/router'
 import { traccar } from '@/api/traccar-api'
 import { setLanguage } from '@/lang/index'
 import { vm } from '@/main'
+import { TrackJS } from 'trackjs'
 
 const state = {
   token: getToken(),
@@ -34,8 +35,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const data = response.data
-        // eslint-disable-next-line no-undef
-        window.TrackJS && TrackJS.addMetadata('user', username)
+        TrackJS.addMetadata('user', username)
         data.password = password
         setToken(response.data)
         setLanguage(data.attributes.lang)
