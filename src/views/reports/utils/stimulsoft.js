@@ -2,6 +2,8 @@ import Vue from 'vue'
 
 const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
 
+export let viewer = null
+
 export function load(template, reportId) {
   return new Promise((resolve) => {
     Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js').then(() => {
@@ -25,7 +27,6 @@ export function load(template, reportId) {
         options.appearance.showTooltips = false
 
         options.appearance.allowTouchZoom = true
-        // options.appearance.scrollbarsMode = true
 
         options.toolbar.showAboutButton = false
         options.toolbar.showOpenButton = false
@@ -46,9 +47,14 @@ export function load(template, reportId) {
         options.toolbar.showMenuMode = Stimulsoft.Viewer.StiShowMenuMode.Click
         // eslint-disable-next-line no-undef
         options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Direct
+        // eslint-disable-next-line no-undef
+
+        options.appearance.allowTouchZoom = true
+        // eslint-disable-next-line no-undef
+        options.toolbar.zoom = Stimulsoft.Viewer.StiZoomMode.PageWidth
 
         // eslint-disable-next-line no-undef
-        const viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
+        viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
         // eslint-disable-next-line no-undef
         const report = new Stimulsoft.Report.StiReport()
         Vue.$log.debug('Loading template')
@@ -58,7 +64,9 @@ export function load(template, reportId) {
         Vue.$log.debug('created report', report)
         Vue.$log.debug('report ', report)
         viewer.report = report
+
         viewer.renderHtml('viewer')
+
         resolve()
       })
     })

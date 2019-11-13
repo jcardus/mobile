@@ -27,7 +27,7 @@
           </el-select>
         </el-tooltip>
       </el-row>
-      <el-row gutter="10">
+      <el-row :gutter="10">
         <el-col :span="20">
           <el-tooltip :content="$t('report.select_period')" placement="bottom">
             <el-date-picker
@@ -238,6 +238,7 @@ export default {
     isMobile() { return lnglat.isMobile() }
   },
   mounted() {
+    window.addEventListener('resize', this.onResize)
     if (this.devices.length === 0) {
       traccar.devices(function(data) {
         vm.$data.devices = data
@@ -250,7 +251,16 @@ export default {
       })
     } else { Vue.$log.debug(this.geofences.length, ' geofences already loaded') }
   },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.onResize)
+  },
   methods: {
+    onResize() {
+      if (sutil.viewer) {
+        this.$log.debug('resizing viewer')
+        sutil.viewer.renderHtml('viewer')
+      }
+    },
     submitReport() {
       if (this.selectedDevices.length > 0) {
         if (this.dateRange.length > 0) {
@@ -314,6 +324,11 @@ export default {
 
 <style  scoped>
   @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
+
+  .app-container {
+    bottom: 0 !important;
+    padding:10px;
+  }
 
   #viewer {
     padding-top: 5px;

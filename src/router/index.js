@@ -92,7 +92,7 @@ export const constantRoutes = [
       },
       {
         path: 'report_location',
-        component: () => import('@/views/reports/LocationReport'),
+        component: () => import('@/views/reports/ReportLocation'),
         name: 'Route Report',
         meta: { title: 'report_location_title' }
       },
