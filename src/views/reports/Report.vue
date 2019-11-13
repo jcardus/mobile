@@ -1,38 +1,34 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :span="selectGeofences ? 9 : 17">
-        <div class="grid-content">
-          <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
-            <el-select
-              v-model="selectedDevices"
-              style="width: 100%; height: 35px"
-              multiple
-              :placeholder="$t('report.select_vehicles_placeholder')"
-              value=""
-            >
-              <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-tooltip>
-        </div>
-      </el-col>
-      <el-col v-if="selectGeofences" :span="8">
-        <div class="grid-content">
-          <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
-            <el-select
-              v-model="selectedGeofences"
-              style="width: 100%; height: 35px"
-              multiple
-              :placeholder="$t('report.select_geofences_placeholder')"
-              value=""
-            >
-              <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-tooltip>
-        </div>
-      </el-col>
-      <el-col :span="5">
-        <div class="grid-content">
+    <div v-if="isMobile">
+      <el-row>
+        <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
+          <el-select
+            v-model="selectedDevices"
+            multiple
+            :placeholder="$t('report.select_vehicles_placeholder')"
+            value=""
+            style="width: 100%"
+          >
+            <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-tooltip>
+      </el-row>
+      <el-row v-if="selectGeofences">
+        <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
+          <el-select
+            v-model="selectedGeofences"
+            style="width: 100%; height: 35px"
+            multiple
+            :placeholder="$t('report.select_geofences_placeholder')"
+            value=""
+          >
+            <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-tooltip>
+      </el-row>
+      <el-row gutter="10">
+        <el-col :span="20">
           <el-tooltip :content="$t('report.select_period')" placement="bottom">
             <el-date-picker
               v-model="dateRange"
@@ -49,16 +45,76 @@
               :default-time="['00:00:00', '23:59:59']"
             />
           </el-tooltip>
-        </div>
-      </el-col>
-      <el-col :span="2">
-        <div class="grid-content">
+        </el-col>
+        <el-col :span="4">
           <el-tooltip :content="$t('report.generate_report')" placement="bottom">
             <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
           </el-tooltip>
-        </div>
-      </el-col>
-    </el-row>
+        </el-col>
+
+      </el-row>
+    </div>
+    <div v-else>
+      <el-row :gutter="10">
+        <el-col :span="selectGeofences ? 7 : 14">
+          <div class="grid-content">
+            <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
+              <el-select
+                v-model="selectedDevices"
+                style="width: 100%; height: 35px"
+                multiple
+                :placeholder="$t('report.select_vehicles_placeholder')"
+                value=""
+              >
+                <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-tooltip>
+          </div>
+        </el-col>
+        <el-col v-if="selectGeofences" :span="7">
+          <div class="grid-content">
+            <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
+              <el-select
+                v-model="selectedGeofences"
+                style="width: 100%; height: 35px"
+                multiple
+                :placeholder="$t('report.select_geofences_placeholder')"
+                value=""
+              >
+                <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-tooltip>
+          </div>
+        </el-col>
+        <el-col :span="7">
+          <div class="grid-content">
+            <el-tooltip :content="$t('report.select_period')" placement="bottom">
+              <el-date-picker
+                v-model="dateRange"
+                style="width: 100%"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="-"
+                format="dd-MM-yyyy"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :start-placeholder="$t('report.date_start')"
+                :end-placeholder="$t('report.date_end')"
+                :picker-options="pickerOptions"
+                :default-time="['00:00:00', '23:59:59']"
+              />
+            </el-tooltip>
+          </div>
+        </el-col>
+        <el-col :span="3">
+          <div class="grid-content">
+            <el-tooltip :content="$t('report.generate_report')" placement="bottom">
+              <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
+            </el-tooltip>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
     <div id="viewer" style="display: none"></div>
     <div id="loader" style="display: none"></div>
   </div>
@@ -256,15 +312,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style  scoped>
   @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
-  .grid-content {
-    border-radius: 0;
-    min-height: 36px;
-  }
 
   #viewer {
-    padding-top: 15px;
+    padding-top: 5px;
   }
 
   #loader {
@@ -290,5 +342,9 @@ export default {
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  .el-row {
+    margin-bottom: 5px;
   }
 </style>
