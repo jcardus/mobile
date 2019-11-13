@@ -2,8 +2,8 @@ import Vue from 'vue'
 
 export function load() {
   return new Promise((resolve) => {
-    Vue.loadScript('stimulsoft/stimulsoft.reports.js').then(() => {
-      Vue.loadScript('stimulsoft/stimulsoft.viewer.js').then(() => {
+    Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js').then(() => {
+      Vue.loadScript('stimulsoft/stimulsoft.viewer.pack.js').then(() => {
       // eslint-disable-next-line no-undef
         Stimulsoft.Base.StiLicense.key = '6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHkZYSgEPVMFImkD/7Y5Z9JkpEv1HtFmmLrNoeiu66YaCoYDdC' +
         'MCtxdHWAHw65t6SWsTyEwke7/XB32/bbpxF0TkTR/yx44eVmIKyLv0LT1Umy8vHTAAtWJOttxKMS6ImhYFBqdE5806' +
