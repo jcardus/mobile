@@ -1,6 +1,8 @@
 import Vue from 'vue'
 
-export function load() {
+const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
+
+export function load(template, reportId) {
   return new Promise((resolve) => {
     Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js').then(() => {
       Vue.loadScript('stimulsoft/stimulsoft.viewer.pack.js').then(() => {
@@ -46,9 +48,18 @@ export function load() {
         options.toolbar.printDestination = Stimulsoft.Viewer.StiPrintDestination.Direct
 
         // eslint-disable-next-line no-undef
-        resolve(new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false),
-          // eslint-disable-next-line no-undef
-          new Stimulsoft.Report.StiReport())
+        const viewer = new Stimulsoft.Viewer.StiViewer(options, 'StiViewer', false)
+        // eslint-disable-next-line no-undef
+        const report = new Stimulsoft.Report.StiReport()
+        Vue.$log.debug('Loading template')
+        report.loadFile(template)
+        Vue.$log.debug('Loading data from remote JSON')
+        report.dictionary.databases.getByIndex(0).pathData = s3_report_base_url + '/' + reportId
+        Vue.$log.debug('created report', report)
+        Vue.$log.debug('report ', report)
+        viewer.report = report
+        viewer.renderHtml('viewer')
+        resolve()
       })
     })
   })

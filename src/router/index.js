@@ -86,19 +86,19 @@ export const constantRoutes = [
     children: [
       {
         path: 'report_trip',
-        component: () => import('@/views/reports/report_trip'),
+        component: () => import('@/views/reports/TripReport'),
         name: 'TripReport',
         meta: { title: 'report_trip_title' }
       },
       {
         path: 'report_location',
-        component: () => import('@/views/reports/report_location'),
+        component: () => import('@/views/reports/LocationReport'),
         name: 'Route Report',
         meta: { title: 'report_location_title' }
       },
       {
         path: 'report_zone_crossing',
-        component: () => import('@/views/reports/report_zone_crossing'),
+        component: () => import('@/views/reports/ZoneReport'),
         name: 'Zone Report',
         meta: { title: 'report_zone_crossing' }
       }

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col :span="17">
+      <el-col :span="selectGeofences ? 9 : 17">
         <div class="grid-content">
           <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
             <el-select
@@ -12,6 +12,21 @@
               value=""
             >
               <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-tooltip>
+        </div>
+      </el-col>
+      <el-col v-if="selectGeofences" :span="8">
+        <div class="grid-content">
+          <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
+            <el-select
+              v-model="selectedGeofences"
+              style="width: 100%; height: 35px"
+              multiple
+              :placeholder="$t('report.select_geofences_placeholder')"
+              value=""
+            >
+              <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-tooltip>
         </div>
@@ -55,28 +70,38 @@ import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
 import * as sutil from './utils/stimulsoft'
-
-var cookie = VueCookies.get('user-info')
+import Vue from 'vue'
+const cookie = VueCookies.get('user-info')
 
 const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
 
 function generate_token(length) {
-  var token = ''
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (var i = 0; i < length; i++) {
+  let token = ''
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  for (let i = 0; i < length; i++) {
     token += characters.charAt(Math.floor(Math.random() * characters.length))
   }
   return token
 }
 
 export default {
-  name: 'Index',
+  name: 'Report',
+  props: {
+    reportType: {
+      type: String,
+      default: ''
+    },
+    reportMrt: {
+      type: String,
+      default: ''
+    },
+    selectGeofences: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      // eslint-disable-next-line no-undef
-      viewer: null,
-      // eslint-disable-next-line no-undef
-      report: null,
       selectedDevices: [],
       pickerOptions: {
         shortcuts: [{
@@ -134,11 +159,12 @@ export default {
         }],
         firstDayOfWeek: 1
       },
-      dateRange: []
+      dateRange: [],
+      selectedGeofences: []
     }
   },
   computed: {
-    devices: function() {
+    devices() {
       const sortKey = 'name'
       let devices = vm.$data.devices
       if (sortKey) {
@@ -150,21 +176,23 @@ export default {
       }
       return devices
     },
-    isMobile: function() { return lnglat.isMobile() }
+    geofences() {
+      return vm.$data.geofences
+    },
+    isMobile() { return lnglat.isMobile() }
   },
   mounted() {
-    const self = this
-    sutil.load().then((viewer, report) => {
-      self.viewer = viewer
-      self.viewer.report = report
-      self.viewer.renderHtml('viewer')
-    })
-
-    if (this.devices.count === 0) {
+    if (this.devices.length === 0) {
       traccar.devices(function(data) {
         vm.$data.devices = data
       })
     }
+    if (this.geofences.length === 0) {
+      Vue.$log.debug('getting geofences')
+      traccar.geofences(function(data) {
+        vm.$data.geofences = data
+      })
+    } else { Vue.$log.debug(this.geofences.length, ' geofences already loaded') }
   },
   methods: {
     submitReport() {
@@ -174,14 +202,14 @@ export default {
           document.getElementById('viewer').style.display = 'none'
           document.getElementById('loader').style.display = 'block'
 
-          var report_id = generate_token(40)
-
+          const report_id = generate_token(40)
           const body = {
             username: cookie.email,
             password: cookie.password,
-            report: 'location',
+            report: this.reportType,
             report_id: report_id,
             selected_devices: this.selectedDevices,
+            selected_geofences: this.selectedGeofences,
             date_from: this.dateRange[0],
             date_to: this.dateRange[1]
           }
@@ -195,32 +223,20 @@ export default {
       }
     },
     renderReport: function(report_id) {
-      this.$log.debug('Creating report')
-
-      // eslint-disable-next-line no-undef
-      this.report = new Stimulsoft.Report.StiReport()
-
-      this.$log.debug('Loading template')
-      this.report.loadFile('/reports/report_location.mrt')
-
-      this.$log.debug('Loading data from remote JSON')
-      this.report.dictionary.databases.getByIndex(0).pathData = s3_report_base_url + '/' + report_id
-
-      this.$log.debug('Rendering Report')
-      this.viewer.report = this.report
-      document.getElementById('loader').style.display = 'none'
-      document.getElementById('viewer').style.display = 'block'
+      sutil.load(this.reportMrt, report_id).then(function() {
+        document.getElementById('loader').style.display = 'none'
+        document.getElementById('viewer').style.display = 'block'
+      })
     },
     errorHandler: function(report_id, reason) {
       this.$log.debug('Report triggering failed - ' + reason)
       setTimeout(this.check_if_online, 2000, report_id)
     },
     check_if_online: function(report_id) {
-      var url = s3_report_base_url + '/' + report_id
+      const url = s3_report_base_url + '/' + report_id
 
       this.$log.debug('Trying again ' + url)
-
-      var http = new XMLHttpRequest()
+      const http = new XMLHttpRequest()
       http.open('HEAD', url)
       const self = this
       http.onreadystatechange = function() {
