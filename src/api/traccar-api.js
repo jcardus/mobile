@@ -87,7 +87,7 @@ export const traccar = {
       })
   },
   route: function(deviceId, from, to, onFulfill) {
-    axios.get(route + '?deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.get(route + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -135,7 +135,7 @@ export const traccar = {
   },
   deleteGeofence: function(geofence, onFulfill) {
     axios.delete(geoFences + '/' + geofence.id, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(geofence))
+      .then(onFulfill(geofence))
       .catch(reason => {
         Vue.$log.error(reason)
       })
@@ -191,7 +191,7 @@ export const traccar = {
   deleteAlert: function(alertId, onFulfill) {
     return new Promise((resolve, reject) => {
       axios.delete(alerts + '/' + alertId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-        .then(response => onFulfill())
+        .then(onFulfill())
         .catch(error => {
           reject(error)
         })
