@@ -50,8 +50,9 @@ export default {
         data: {
           labels: this.labels,
           datasets: [{
-            backgroundColor: color('green').alpha(0.5).rgbString(),
+            backgroundColor: color('lemonchiffon').alpha(0.5).rgbString(),
             borderColor: color('green').alpha(1).rgbString(),
+            borderWidth: 1,
             fill: true,
             data: this.chartData
           }]

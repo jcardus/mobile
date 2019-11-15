@@ -51,7 +51,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? 'error' : 'debug',
+  logLevel: isProduction ? 'debug' : 'debug',
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,
