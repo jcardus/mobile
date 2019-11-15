@@ -11,7 +11,7 @@
         :cell-style="cellStyle"
         height="calc(100vh - 100px)"
         :show-header="false"
-        @current-change="vehicleSelected"
+        @row-click="vehicleSelected"
       >
         <el-table-column
           prop=""
@@ -117,7 +117,7 @@
             :cell-style="cellStyle"
             :show-header="false"
             height="calc(100vh - 150px)"
-            @current-change="vehicleSelected"
+            @row-click="vehicleSelected"
           >
             <el-table-column
               prop=""
@@ -330,10 +330,9 @@ export default {
         Vue.$log.debug('device=', device)
         vm.$data.isPlaying = false
         serverBus.$emit('deviceSelected', device)
-        if (vm.$data.historyMode) {
-          vm.$data.historyMode = false
-          serverBus.$emit('showRoutesChanged')
-        }
+        vm.$data.historyMode = false
+        Vue.$log.info('VehicleTable emit showRoutesChanged')
+        serverBus.$emit('showRoutesChanged')
       }
     },
     handleFilterState: function(state) {

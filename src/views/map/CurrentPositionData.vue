@@ -86,7 +86,7 @@ export default {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i
     },
     allTripsSource() {
-      return 'allTrips-' + this.device.id
+      return 'allTrips-'
     },
     positions: {
       get() {
@@ -108,13 +108,6 @@ export default {
         return Math.round(lnglat.arrayDistance(this.positions.map(x => [x.longitude, x.latitude])))
       }
       return 0
-    },
-    dates: {
-      get() { return [this._minDate, this._maxDate] },
-      set(value) {
-        this._minDate = value[0]
-        this._maxDate = value[1]
-      }
     },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
@@ -168,7 +161,10 @@ export default {
     }
   },
   watch: {
-    dates() {
+    _minDate() {
+      this.datesChanged()
+    },
+    _maxDate() {
       this.datesChanged()
     }
   },
@@ -186,13 +182,14 @@ export default {
     serverBus.$on('showRoutesChanged', this.showRoutesClick)
   },
   beforeDestroy() {
+    Vue.$log.info('CurrentPositionData')
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('routePlay', this.routePlay)
     serverBus.$off('routePlayStopped', this.routePlayStopped)
     serverBus.$off('showRoutesChanged', this.showRoutesClick)
   },
   mounted() {
-    Vue.$log.debug('CurrentPositionData mounted', this.device)
+    Vue.$log.debug('CurrentPositionData')
   },
   methods: {
     onPositions: function(positions) {

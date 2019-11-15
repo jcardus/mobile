@@ -87,6 +87,8 @@ export const traccar = {
       })
   },
   route: function(deviceId, from, to, onFulfill) {
+    from = Vue.moment(from).startOf('day').toDate()
+    to = Vue.moment(to).endOf('day').toDate()
     axios.get(route + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
