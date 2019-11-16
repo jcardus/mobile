@@ -240,7 +240,7 @@ export default {
       return vm.$data.alerts
     },
     devices: function() {
-      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return vm.$data.devices.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     geofences: function() {
       return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON'))
@@ -388,7 +388,6 @@ export default {
       this.clearFormData()
     },
     handleSubmitAlertForm() {
-      this.$log.debug(this.allVehicles)
       if (this.isNewAlert) {
         const newAlert = {
           type: this.selectedType,
@@ -466,12 +465,13 @@ export default {
       if (row.notification.always) {
         this.allVehicles.push('always')
       }
+
       const notificators = row.notification.notificators.split(',')
       notificators.forEach(n => this.notificatorsGroup.push(n))
+
       row.devices.forEach(d => this.selectedDevices.push(d.data.id))
 
       this.selectedGeofences = []
-
       this.isOpenAlertForm = !this.isOpenAlertForm
     },
     handleAllVehiclesSelect() {
