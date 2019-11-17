@@ -26,18 +26,17 @@ export function stopLoader() {
 }
 
 export function filterPositions(positions) {
-  const result = positions.filter(filterPosition)
   const firstPos = positions.findIndex(position => position.attributes.ignition || position.attributes.motion)
   if (firstPos > 0) {
     Vue.$log.debug('slicing positions at ', firstPos)
-    return result.slice(firstPos)
+    positions = positions.slice(firstPos)
   }
-  return result
+  return positions.filter(filterPosition)
 }
 
 function filterPosition(p) {
   if (p.valid === false) {
-    return p.attributes.ignition
+    return p.attributes.ignition || p.attributes.motion
   }
   if (p.protocol === 'osmand') {
     return !(p.attributes.event >= 200 || p.attributes.event === 30)

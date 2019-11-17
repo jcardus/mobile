@@ -72,7 +72,6 @@ export default {
             callbacks: {
               label: function(tooltipItem, data) {
                 let label = data.datasets[tooltipItem.datasetIndex].label || ''
-
                 if (label) {
                   label += ': '
                 }

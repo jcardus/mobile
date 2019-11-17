@@ -393,7 +393,7 @@ export default {
       if (style.sprite !== spriteUrl) {
         this.$log.debug('setting sprite')
         style.sprite = spriteUrl
-        this.map.setStyle(style)
+        setTimeout(this.map.setStyle, 1000, style)
       } else {
         this.$log.info('adding layers...')
         lnglat.addLayers(vm.$static.map)
