@@ -59,11 +59,31 @@ const actions = {
         vm.$data.devices.forEach(d => {
           traccar.alertsByDevice(d.id, function(alerts) {
             alerts.forEach(a => {
-              vm.$data.alerts
-                .find(a_data => a_data.notification.id === a.id)
-                .devices.push(d)
+              const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
+              if (a.always === false) {
+                if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                  traccar.geofencesByDevice(d.id, function(geofences) {
+                    alert.devices.push({ data: d, geofences: geofences })
+                  })
+                } else {
+                  alert.devices.push({ data: d })
+                }
+              }
             })
           })
+        })
+        vm.$data.alerts.forEach(a => {
+          if (a.notification.always === true) {
+            vm.$data.devices.forEach(d => {
+              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                traccar.geofencesByDevice(d.id, function(geofences) {
+                  a.devices.push({ data: d, geofences: geofences })
+                })
+              } else {
+                a.devices.push({ data: d })
+              }
+            })
+          }
         })
         resolve()
       }).catch(error => {
