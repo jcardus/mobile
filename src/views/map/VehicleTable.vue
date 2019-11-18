@@ -31,20 +31,15 @@
           :auto-update="60"
           :locale="$i18n.locale.substring(0,2)"
         ></timeago>
-        <div v-if="scope.row.attributes.has_immobilization" id="traffic-signal" style="float: right;">
-          <span v-if="scope.row.immobilization_active">
-            <span id="red-light-on" class="traffic-light"></span>
-            <el-tooltip :content="$t('vehicleTable.de_immobilize')" placement="bottom">
-              <span id="green-light-off" class="traffic-light" @click="commandImmobilize"></span>
-            </el-tooltip>
-          </span>
-          <span v-else>
-            <el-tooltip :content="$t('vehicleTable.immobilize')" placement="bottom">
-              <span id="red-light-off" class="traffic-light" @click="commandImmobilize"></span>
-            </el-tooltip>
-            <span id="green-light-on" class="traffic-light"></span>
-          </span>
-        </div>
+        <el-tooltip v-if="scope.row.attributes.has_immobilization" :content="$t('vehicleTable.de_immobilize')" placement="bottom">
+          <img
+            alt="immobilization"
+            style="float:right;"
+            :src="scope.row.immobilization_active ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'"
+            width="38"
+            @click="commandImmobilize(scope.row)"
+          >
+        </el-tooltip>
       </template>
     </el-table-column>
   </el-table>
@@ -100,6 +95,7 @@ export default {
       show: true,
       animating: false,
       data: [],
+      selectedDevice: null,
       selected: -1,
       devicesBackup: this.devices,
       propagate: true,
@@ -231,6 +227,7 @@ export default {
     vehicleSelected: function(device) {
       if (device) {
         this.selected = device.id
+        this.selectedDevice = device
         Vue.$log.debug('device=', device)
         vm.$data.isPlaying = false
         serverBus.$emit('deviceSelected', device)
@@ -242,14 +239,10 @@ export default {
     handleFilterState: function(state) {
       this.filterState = state
     },
-    commandImmobilize: function(device, value) {
-      Vue.$log.debug('Immobilization ' + value + ' for device ' + device)
-      let message
-      if (value) {
-        message = this.$t('vehicleTable.send_immobilization')
-      } else {
-        message = this.$t('vehicleTable.send_de_immobilization')
-      }
+    commandImmobilize(selectedDevice) {
+      Vue.$log.debug('Immobilization ' + selectedDevice.immobilization_active + ' for device ' + selectedDevice)
+      let message = selectedDevice.immobilization_active ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
+      message += (selectedDevice.name + '?')
       const self = this
       this.$confirm(message).then(() => {
         traccar.api_helper(
@@ -257,8 +250,8 @@ export default {
             'username': VueCookies.get('user-info').email,
             'password': VueCookies.get('user-info').password,
             'command': 'immobilization',
-            'deviceid': device,
-            'value': value
+            'deviceid': selectedDevice.id,
+            'value': !selectedDevice.immobilization_active
           },
           self.commandImmobilizeOk,
           self.commandImmobilizeNok)
@@ -282,63 +275,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-  /* Traffic light */
-  #traffic-signal {
-    background-color: #000000;
-    width: 30px;
-    height: 14px;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  .traffic-light {
-    position: relative;
-    left: 2px;
-    top: -4px;
-    height: 10px;
-    width: 10px;
-    border-radius: 100%;
-    display: inline-block;
-  }
-  #red-light-off {
-    background-color: #660000;
-  }
-  #red-light-off:hover {
-    background-color: #FF0000;
-  }
-  #green-light-off {
-    background-color: #005500;
-  }
-  #green-light-off:hover {
-    background-color: #00FF00;
-  }
-  #red-light-on {
-    background-color: #FF0000;
-    cursor: auto;
-  }
-  #green-light-on {
-    background-color: #00FF00;
-    cursor: auto;
-  }
-</style>
-<style>
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 7px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 7px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 7px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-        border-radius: 7px;
-    }
-</style>
