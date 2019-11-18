@@ -8,7 +8,7 @@
       :max="maxPos"
       :min="minPos"
       :tooltip="'always'"
-      :tooltip-placement="'top'"
+      :tooltip-placement="'bottom'"
       :marks="marks"
       :included="true"
       :hide-label="true"
@@ -17,9 +17,9 @@
       :adsorb="true"
       :use-keyboard="true"
     />
-    <i style="color:black" :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '3x' : '2x')" @click="click"></i>
-    <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'fas fa-backward fa-' + (isMobile ? '3x' : '2x')" @click="clickBackward"></i>
-    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible') + '; color:black'" :class="'fas fa-forward fa-' + (isMobile ? '3x' : '2x')" @click="clickForward"></i>
+    <i :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '3x' : '2x') + ' playButton'" @click="click"></i>
+    <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'playButton fas fa-backward fa-' + (isMobile ? '3x' : '2x')" @click="clickBackward"></i>
+    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible') + '; color:black'" :class="'playButton fas fa-forward fa-' + (isMobile ? '3x' : '2x')" @click="clickForward"></i>
   </div>
 </template>
 
@@ -186,7 +186,7 @@ export default {
       const categories = this.positions.map(x => this.$moment(x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime)
-      const series = this.positions.map(x => x.speed)
+      const series = this.positions.map(x => x.speed * 1.852)
       // Vue.$log.debug('categories: ', categories)
       // Vue.$log.debug('series: ', series)
       this.labels = categories
@@ -246,4 +246,8 @@ export default {
       padding-left: 10px;
       background-color: rgba(255,255,255,0);
     }
+  .playButton {
+    color:black;
+    padding: 40px 10px 0 0;
+  }
 </style>

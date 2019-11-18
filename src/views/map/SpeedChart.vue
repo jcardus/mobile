@@ -69,13 +69,18 @@ export default {
           aspectRatio: 9,
           tooltips: {
             backgroundColor: 'rgba(52, 152, 219, 0.8)',
+            mode: 'nearest',
+            position: 'nearest',
+            intersect: false,
+            bodyFontSize: 14,
+            caretSize: 10,
             callbacks: {
               label: function(tooltipItem, data) {
                 let label = data.datasets[tooltipItem.datasetIndex].label || ''
                 if (label) {
                   label += ': '
                 }
-                label += Math.round(tooltipItem.yLabel)
+                label += (Math.round(tooltipItem.yLabel) + ' km/h')
                 return label
               }
             }
