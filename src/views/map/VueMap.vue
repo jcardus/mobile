@@ -3,7 +3,7 @@
     id="map-app-container"
     class="app-container"
   >
-    <vehicle-table id="vehiclesDiv" />
+    <vehicle-table-container id="vehiclesDiv" />
     <div id="map" ref="map"></div>
   </div>
 </template>
@@ -29,13 +29,13 @@ import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
-import VehicleTable from './VehicleTable'
+import VehicleTableContainer from './VehicleTableContainer'
 import CurrentPositionData from './CurrentPositionData'
 import { TrackJS } from 'trackjs'
 
 export default {
   name: 'VueMap',
-  components: { VehicleTable },
+  components: { VehicleTableContainer },
   data() {
     return {
       accessToken: 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ',
@@ -91,6 +91,7 @@ export default {
   },
   created() {
     this.$log.info('VueMap created')
+    vm.$data.loadingRoutes = true
   },
   static() {
     return {
@@ -139,6 +140,8 @@ export default {
         this.map.dragRotate.disable()
         this.map.touchZoomRotate.disableRotation()
       }
+      this.$log.info('onMapLoad')
+      vm.$data.loadingRoutes = false
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
