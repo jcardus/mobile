@@ -5,7 +5,7 @@
     </span>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item>
-        <vehicle-table></vehicle-table>
+        <vehicle-table height="calc(100vh - 82px)"></vehicle-table>
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
@@ -30,7 +30,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
   .el-popper {
     max-height: calc(100vh - 80px) !important;

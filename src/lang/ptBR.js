@@ -31,8 +31,8 @@ export default {
   vehicleTable: {
     immobilize: 'Imobilizar',
     de_immobilize: 'Remobilizar',
-    send_immobilization: 'Enviar comando de imobilização?',
-    send_de_immobilization: 'Enviar comando de remobilização?',
+    send_immobilization: 'Enviar comando de imobilização para o veículo',
+    send_de_immobilization: 'Enviar comando de remobilização para veículo',
     all_vehicles: 'Todos',
     moving_vehicles: 'Em Movimento',
     idle_vehicles: 'Ralenti',
