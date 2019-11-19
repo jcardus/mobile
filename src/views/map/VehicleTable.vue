@@ -1,48 +1,50 @@
 <template>
-  <el-table
-    id="vehicleTable"
-    v-loading.fullscreen.lock="loading"
-    :cell-style="cellStyle"
-    :data="filteredVehicles"
-    :height="height"
-    :show-header="false"
-    highlight-current-row
-    stripe
-    @row-click="vehicleSelected"
-  >
-    <el-table-column
-      prop=""
-      label=""
-      width="10"
-      heigth="10"
+  <div class="mobileScroll">
+    <el-table
+      id="vehicleTable"
+      v-loading.fullscreen.lock="loading"
+      :cell-style="cellStyle"
+      :data="filteredVehicles"
+      :height="height"
+      :show-header="false"
+      highlight-current-row
+      stripe
+      @row-click="vehicleSelected"
     >
-    </el-table-column>
-    <el-table-column
-      prop="name"
-      label="Vehicles"
-      sortable=""
-      heigth="1"
-    >
-      <template slot-scope="scope">
-        <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
-        {{ scope.row.speed | formatNumber }} km/h<br />
-        <timeago
-          :datetime="scope.row.lastUpdate"
-          :auto-update="60"
-          :locale="$i18n.locale.substring(0,2)"
-        ></timeago>
-        <el-tooltip v-if="scope.row.attributes.has_immobilization" :content="$t('vehicleTable.de_immobilize')" placement="bottom">
-          <img
-            alt="immobilization"
-            style="float:right;"
-            :src="scope.row.immobilization_active ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'"
-            width="38"
-            @click="commandImmobilize(scope.row)"
-          >
-        </el-tooltip>
-      </template>
-    </el-table-column>
-  </el-table>
+      <el-table-column
+        prop=""
+        label=""
+        width="10"
+        heigth="10"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        label="Vehicles"
+        sortable=""
+        heigth="1"
+      >
+        <template slot-scope="scope">
+          <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
+          {{ scope.row.speed | formatNumber }} km/h<br />
+          <timeago
+            :datetime="scope.row.lastUpdate"
+            :auto-update="60"
+            :locale="$i18n.locale.substring(0,2)"
+          ></timeago>
+          <el-tooltip v-if="scope.row.attributes.has_immobilization" :content="$t('vehicleTable.de_immobilize')" placement="bottom">
+            <img
+              alt="immobilization"
+              style="float:right;"
+              :src="scope.row.immobilization_active ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'"
+              width="38"
+              @click="commandImmobilize(scope.row)"
+            >
+          </el-tooltip>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 <script>
 
@@ -277,7 +279,8 @@ export default {
 </script>
 
 <style scoped>
-  .el-table__body-wrapper {
-    -webkit-overflow-scrolling: touch
+  .mobileScroll {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 </style>
