@@ -147,6 +147,7 @@ export default {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
     deviceSelected: function(device) {
+      this.$log.debug('VueMap')
       this.selected = device
       if (device.id) {
         const feature = this.findFeatureByDeviceId(device.id)

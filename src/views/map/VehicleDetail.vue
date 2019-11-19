@@ -1,22 +1,30 @@
 <template>
-  <div v-show="!showRoutes">
-    <img v-show="showMapilary" id="mly" class="mly" :src="imageUrl" alt="">
-    <h1>
-      {{ device.name }}
-    </h1>
-    <el-switch
-      v-model="showRoutes"
-      v-loading="loadingRoutes"
-      :active-text="$t('vehicleDetail.show_route')"
-      @change="showRoutesChanged"
-    >
-    </el-switch>
-    <br>
-    {{ feature.properties.address }}
-    <br>
-    {{ Math.round(device.speed) }} km/h,
-    <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
-    <br>
+  <div v-show="!showRoutes" style="padding: 0">
+    <el-image v-show="showMapilary" id="mly" style="width: 100%;padding-top:13px;" :src="imageUrl" alt="" fit="scale-down">
+      <div slot="error" v-loading="true" class="image-slot" style="height: 100px">
+        <span style="width: 100%;padding-top:13px; height: 100px;"></span>
+      </div>
+    </el-image>
+    <div style="padding: 10px">
+      <div class="title">
+        {{ device.name }}
+      </div>
+      <div class="content">
+        {{ feature.properties.address }}
+        <br>
+        {{ Math.round(device.speed) }} km/h,
+        <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
+        <br>
+        <immobilize-button :selected-device="device"></immobilize-button>
+        <el-button
+          icon="el-icon-video-play"
+          style="float:right; padding-top: 10px;padding-right: 3px"
+          type="text"
+          size="mini"
+          @click="showRoutesChanged"
+        >{{ $t('vehicleDetail.show_route') }}</el-button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -25,9 +33,11 @@ import axios from 'axios'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import { serverBus, vm } from '../../main'
+import ImmobilizeButton from './ImmobilizeButton'
 
 export default {
   name: 'VehicleDetail',
+  components: { ImmobilizeButton },
   static() {
     return {
       mly: null
@@ -84,16 +94,12 @@ export default {
     serverBus.$off('deviceSelected', this.deviceSelected)
   },
   created() {
-    Vue.$log.debug('created VehicleDetail, subscribing events')
+    Vue.$log.debug('VehicleDetail, subscribing events')
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
   mounted: function() {
-    Vue.$log.debug('mounted VehicleDetail')
-    // odd width popups are blurry on Chrome, this enforces even widths
-    if (Math.ceil(this.$el.clientWidth) % 2) {
-      this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
-    }
+    Vue.$log.debug('VehicleDetail')
     const self = this
     if (!this.isMobile) {
       axios.get('https://a.mapillary.com/v3/images/?closeto=' + self.feature.geometry.coordinates[0] + ',' +
@@ -108,6 +114,10 @@ export default {
           Vue.$log.error(reason)
         })
     }
+    // odd width popups are blurry on Chrome, this enforces even widths
+    if (Math.ceil(this.$el.clientWidth) % 2) {
+      this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
+    }
   },
   methods: {
     deviceSelected(device) {
@@ -120,6 +130,7 @@ export default {
       }
     },
     showRoutesChanged() {
+      this.showRoutes = true
       Vue.$log.debug('emit showRoutesChanged')
       serverBus.$emit('showRoutesChanged')
     }
@@ -128,37 +139,50 @@ export default {
 </script>
 
 <style lang="scss">
-    .mly {
-        height: 165px;
-        width: 220px;
-        top:5px;
-    }
-    a {
-        text-decoration: underline;
-        cursor: pointer;
-        color: darkblue;
-    }
-    .marker {width:0; height:0;}
-    .marker  span {
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        box-sizing:border-box;
-        width: 40px;
-        height: 40px;
-        color:#fff;
-        background: #693;
-        border:solid 2px;
-        border-radius: 0 70% 70%;
-        box-shadow:0 0 2px #000;
-        cursor: pointer;
-        transform-origin:0 0;
-        transform: rotateZ(-135deg);
-    }
-    .finish span {
-        background: #991907;
-    }
-    .marker b {transform: rotateZ(135deg)}
-    .rotl span {transform: rotateZ(180deg)}
-    .rotr span {transform: rotateZ(-90deg)}
+  .mly {
+    height: 165px;
+    width: 100%;
+    padding-top:13px;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .marker {width:0; height:0;}
+  .marker  span {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      box-sizing:border-box;
+      width: 40px;
+      height: 40px;
+      color:#fff;
+      background: #693;
+      border:solid 2px;
+      border-radius: 25px;
+      box-shadow:0 0 2px #000;
+      cursor: pointer;
+      transform-origin:0 0;
+      transform: rotateZ(-135deg);
+  }
+  .finish span {
+      background: #991907;
+  }
+  .marker b {transform: rotateZ(135deg)}
+  .rotl span {transform: rotateZ(180deg)}
+  .rotr span {transform: rotateZ(-90deg)}
+  .mapboxgl-popup-content {
+    border-radius: 10px;
+    padding: 0;
+  }
+  .title {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    color: #32325D;
+    padding-top: 0;
+    padding-bottom: 10px;
+  }
+  .content {
+    font-size: 14px;
+    color: #8898AA;
+  }
 </style>

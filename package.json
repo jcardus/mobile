@@ -28,7 +28,7 @@
     "axios": "0.18.1",
     "chart.js": "latest",
     "core-js": "^2.6.5",
-    "element-ui": "2.7.0",
+    "element-ui": "2.11.1",
     "fuse.js": "3.4.4",
     "jsonlint": "1.6.3",
     "mapbox-gl": "latest",

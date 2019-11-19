@@ -12,7 +12,6 @@
           v-model="showRoutes"
           v-loading="loadingRoutes"
           style="float:right"
-
           @change="showRoutesClick"
         >
         </el-switch>
