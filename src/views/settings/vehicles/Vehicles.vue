@@ -33,7 +33,7 @@
       </div>
     </transition>
     <el-card>
-      <el-table :data="devices">
+      <el-table :data="devices" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
         <el-table-column
           :label="$t('settings.vehicle_name')"
           prop="name"
@@ -46,26 +46,35 @@
         >
         </el-table-column>
         <el-table-column
+          v-if="!isMobile"
           :label="$t('settings.vehicle_model')"
           prop="model"
         >
         </el-table-column>
         <el-table-column
+          v-if="!isMobile"
           :label="$t('settings.vehicle_speed_limit')"
           :formatter="alertSpeedRenderer"
           prop="attributes.speedLimit"
           sortable
         >
         </el-table-column>
-        <el-table-column label="">
+        <el-table-column label="" :min-width="isMobile ? '15px' : '50px'">
           <template slot-scope="scope">
             <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
               <el-button
+                v-if="!isMobile"
                 size="small"
                 class="formButton"
                 @click="handleEdit(scope.row)"
               ><i class="fas fa-edit"></i></el-button>
             </el-tooltip>
+            <el-dropdown v-if="isMobile">
+              <i class="fas fa-ellipsis-v"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.vehicle_edit') }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -77,6 +86,7 @@
 <script>
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
+import * as lnglat from '../../../utils/lnglat'
 
 export default {
   name: 'Vehicles',
@@ -90,11 +100,26 @@ export default {
     }
   },
   computed: {
+    isMobile() { return lnglat.isMobile() },
     devices: function() {
       return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
     }
   },
   methods: {
+    tableRowStyle({ row, rowIndex }) {
+      if (this.isMobile) {
+        return 'font-size: 12px'
+      } else {
+        return 'font-size: 14px'
+      }
+    },
+    tableHeaderStyle({ row, column, rowIndex, columnIndex }) {
+      if (this.isMobile) {
+        return 'font-size: 12px'
+      } else {
+        return 'font-size: 14px'
+      }
+    },
     handleCancelVehicleForm() {
       this.isOpenVehicleForm = false
       this.clearFormData()
@@ -183,5 +208,9 @@ export default {
     background: #00000094;
     z-index: 999;
     transition: opacity 0.2s ease;
+  }
+
+  .el-table .tomobile td:last-child {
+    font-size: 12px
   }
 </style>

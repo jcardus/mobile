@@ -46,13 +46,18 @@ export const traccar = {
       .then(() => ok(report_id))
       .catch(reason => nok(report_id, reason))
   },
-  report_events: function(userId, from, to, deviceIds, notificationType, onFulfill) {
+  report_events: function(from, to, deviceIds, notificationType, onFulfill) {
     let devices = ''
+    let type = ''
     deviceIds.forEach(d => {
       devices = devices + 'deviceId=' + d + '&'
       return devices
     })
-    axios.get(events + '?' + devices + 'from=' + from + '&to=' + to,
+    notificationType.forEach(n => {
+      type = type + 'type=' + n + '&'
+      return type
+    })
+    axios.get(events + '?' + devices + type + 'from=' + from + '&to=' + to,
       { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {

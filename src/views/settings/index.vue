@@ -7,7 +7,7 @@
     >
       <el-tab-pane>
         <span slot="label">
-          <i class="far fa-map"></i><span style="margin-left: 10px">{{ $t('settings.map') }}</span>
+          <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
         </span>
         <el-card>
           <div slot="header" class="clearfix">
@@ -23,13 +23,13 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
-          <i class="fas fa-car-side"></i><span style="margin-left: 10px">{{ $t('settings.vehicles') }}</span>
+          <i class="fas fa-car-side"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.vehicles') }}</span>
         </span>
         <vehicles></vehicles>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
-          <i class="fas fa-bell"></i><span style="margin-left: 10px">{{ $t('settings.alerts') }}</span>
+          <i class="fas fa-bell"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.alerts') }}</span>
         </span>
         <alerts></alerts>
       </el-tab-pane>
@@ -40,11 +40,13 @@
 <script>
 import Alerts from './alerts/Alerts'
 import Vehicles from './vehicles/Vehicles'
+import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'Settings',
   components: { Alerts, Vehicles },
   computed: {
+    isMobile() { return lnglat.isMobile() },
     matchRoutes: {
       get() { return this.$store.state.settings.matchRoutes },
       set(value) {

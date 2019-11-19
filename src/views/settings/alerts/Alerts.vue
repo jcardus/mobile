@@ -96,7 +96,11 @@
           ><i class="fas fa-bell"></i></el-button>
         </el-tooltip>
       </div>
-      <el-table :data="alerts">
+      <el-table
+        :data="alerts"
+        :row-style="tableRowStyle"
+        :header-cell-style="tableHeaderStyle"
+      >
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-table
@@ -168,6 +172,7 @@
         >
         </el-table-column>
         <el-table-column
+          v-if="!isMobile"
           :label="$t('settings.alerts_notificators')"
           prop="notification.notificators"
         >
@@ -178,16 +183,18 @@
           :formatter="devicesRenderer"
         >
         </el-table-column>
-        <el-table-column label="">
+        <el-table-column label="" :min-width="isMobile ? '15px' : '80px'">
           <template slot-scope="scope">
             <el-tooltip :content="$t('settings.alert_edit')" placement="top">
               <el-button
+                v-if="!isMobile"
                 size="small"
                 @click="handleEdit(scope.row)"
               ><i class="fas fa-edit"></i></el-button>
             </el-tooltip>
             <el-tooltip :content="$t('settings.alert_delete')" placement="top">
               <el-button
+                v-if="!isMobile"
                 size="small"
                 type="danger"
                 @click="handleDelete(scope.row)"
@@ -195,12 +202,20 @@
             </el-tooltip>
             <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
               <el-button
-                v-if="isInorOutGeofence(scope.row)"
+                v-if="isInorOutGeofence(scope.row) && !isMobile"
                 size="small"
                 type="primary"
                 @click="handleAssociateGeofences(true, scope.row)"
               ><i class="fas fa-draw-polygon"></i></el-button>
             </el-tooltip>
+            <el-dropdown v-if="isMobile">
+              <i class="fas fa-ellipsis-v"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.alert_edit') }}</el-dropdown-item>
+                <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.alert_delete') }}</el-dropdown-item>
+                <el-dropdown-item v-if="isInorOutGeofence(scope.row)" @click.native="handleAssociateGeofences(true, scope.row)">{{ $t('settings.alert_associate_geofences') }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -211,6 +226,7 @@
 <script>
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
+import * as lnglat from '../../../utils/lnglat'
 
 export default {
   name: 'Alerts',
@@ -236,6 +252,7 @@ export default {
     }
   },
   computed: {
+    isMobile() { return lnglat.isMobile() },
     alerts: function() {
       return vm.$data.alerts
     },
@@ -252,6 +269,7 @@ export default {
     }
   },
   methods: {
+
     isDeviceOverspeed: function(row) {
       return row.notification.type === 'deviceOverspeed'
     },
@@ -495,6 +513,20 @@ export default {
         type: 'success',
         duration: 5 * 1000
       })
+    },
+    tableRowStyle({ row, rowIndex }) {
+      if (this.isMobile) {
+        return 'font-size: 12px'
+      } else {
+        return 'font-size: 14px'
+      }
+    },
+    tableHeaderStyle({ row, column, rowIndex, columnIndex }) {
+      if (this.isMobile) {
+        return 'font-size: 12px'
+      } else {
+        return 'font-size: 14px'
+      }
     }
   }
 }

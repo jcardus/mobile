@@ -127,7 +127,6 @@ import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
 import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
-const cookie = VueCookies.get('user-info')
 
 const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
 
@@ -267,8 +266,9 @@ export default {
           this.$log.debug('Triggering report generation')
           document.getElementById('viewer').style.display = 'none'
           document.getElementById('loader').style.display = 'block'
+          const cookie = VueCookies.get('user-info')
 
-          const report_id = generate_token(40)
+          const report_id = cookie.email + '_' + generate_token(40)
           const body = {
             username: cookie.email,
             password: cookie.password,
