@@ -1,7 +1,7 @@
 <template>
   <div v-show="!showRoutes" style="padding: 0">
-    <el-image v-show="showMapilary" id="mly" style="width: 100%;padding-top:13px;" :src="imageUrl" alt="" fit="scale-down">
-      <div slot="error" v-loading="true" class="image-slot" style="height: 100px">
+    <el-image v-show="showMapilary && imageOk" id="mly" style="width: 100%;margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
+      <div slot="error" v-loading="loadingImage" class="image-slot" style="height: 100px">
         <span style="width: 100%;padding-top:13px; height: 100px;"></span>
       </div>
     </el-image>
@@ -50,7 +50,9 @@ export default {
       feature: null,
       i: 0,
       sliderVisible: false,
-      imageUrl: ''
+      imageUrl: '',
+      loadingImage: true,
+      imageOk: true
     }
   },
   computed: {
@@ -108,10 +110,16 @@ export default {
           Vue.$log.debug(response)
           if (response.data.features[0]) {
             self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
+            self.imageOk = true
+          } else {
+            self.imageOk = false
           }
+          self.loadingImage = false
         })
         .catch(reason => {
           Vue.$log.error(reason)
+          self.loadingImage = false
+          self.imageOk = false
         })
     }
     // odd width popups are blurry on Chrome, this enforces even widths
@@ -139,13 +147,6 @@ export default {
 </script>
 
 <style lang="scss">
-  .mly {
-    height: 165px;
-    width: 100%;
-    padding-top:13px;
-    padding-right: 0;
-    padding-left: 0;
-  }
   .marker {width:0; height:0;}
   .marker  span {
       display:flex;

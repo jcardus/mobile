@@ -156,6 +156,9 @@ export default {
             latitude: feature.geometry.coordinates[1],
             longitude: feature.geometry.coordinates[0]
           }) || this.$static.map.getZoom() < 10) {
+            this.popUps.forEach(function(v, i, a) {
+              if (a[i] && i !== device.id) { a[i].remove() }
+            })
             this.flyToDevice(feature, device)
           } else { this.showPopup(feature, device) }
           vm.$data.currentFeature = feature
