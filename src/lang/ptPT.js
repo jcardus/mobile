@@ -54,6 +54,7 @@ export default {
   },
   navbar: {
     profile: 'Perfil',
+    notifications: 'Notificações',
     settings: 'Configurações',
     logout: 'Sair'
   },

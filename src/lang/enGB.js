@@ -54,6 +54,7 @@ export default {
   },
   navbar: {
     profile: 'Profile',
+    notifications: 'Notifications',
     settings: 'Settings',
     logout: 'Log Out'
   },

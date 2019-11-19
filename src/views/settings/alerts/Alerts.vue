@@ -98,8 +98,8 @@
       </div>
       <el-table
         :data="alerts"
-        :row-style="isMobile ? 'font-size: 12px' : 'font-size: 14px'"
-        :header-cell-style="isMobile ? 'font-size: 12px' : 'font-size: 14px'"
+        :row-style="tableRowStyle"
+        :header-cell-style="tableHeaderStyle"
       >
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -513,6 +513,20 @@ export default {
         type: 'success',
         duration: 5 * 1000
       })
+    },
+    tableRowStyle({ row, rowIndex }) {
+      if (this.isMobile) {
+        return 'font-size: 12px'
+      } else {
+        return 'font-size: 14px'
+      }
+    },
+    tableHeaderStyle({ row, column, rowIndex, columnIndex }) {
+      if (this.isMobile) {
+        return 'font-size: 12px'
+      } else {
+        return 'font-size: 14px'
+      }
     }
   }
 }

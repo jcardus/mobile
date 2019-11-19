@@ -109,7 +109,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'settings',
+        path: 'index',
         component: () => import('@/views/settings'),
         name: 'Settings',
         meta: { title: 'settings', icon: 'fas fa-cog' }
@@ -127,6 +127,20 @@ export const constantRoutes = [
         component: () => import('@/views/profile/index'),
         name: 'Profile',
         meta: { title: 'Profile', icon: 'user', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/notifications',
+    component: Layout,
+    redirect: '/notifications/index',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/notifications/index'),
+        name: 'Notifications',
+        meta: { title: 'Notifications', icon: 'user', noCache: true }
       }
     ]
   }

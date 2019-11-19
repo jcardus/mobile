@@ -33,7 +33,7 @@
       </div>
     </transition>
     <el-card>
-      <el-table :data="devices" :row-style="tableRowStyle" :header-cell-style="tableHeaderColor">
+      <el-table :data="devices" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
         <el-table-column
           :label="$t('settings.vehicle_name')"
           prop="name"
@@ -113,7 +113,7 @@ export default {
         return 'font-size: 14px'
       }
     },
-    tableHeaderColor({ row, column, rowIndex, columnIndex }) {
+    tableHeaderStyle({ row, column, rowIndex, columnIndex }) {
       if (this.isMobile) {
         return 'font-size: 12px'
       } else {
