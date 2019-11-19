@@ -275,3 +275,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .el-table__body-wrapper {
+    -webkit-overflow-scrolling: touch
+  }
+</style>

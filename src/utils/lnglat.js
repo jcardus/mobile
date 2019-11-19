@@ -232,10 +232,10 @@ export function addVehiclesLayer(layer, source) {
       'text-allow-overlap': true,
       'icon-size': {
         stops: [
-          [1, 0.5],
+          [1, 0.4],
           [14, 0.6],
           [15, 0.8],
-          [16, 1]
+          [18, 1]
         ]
       }
 

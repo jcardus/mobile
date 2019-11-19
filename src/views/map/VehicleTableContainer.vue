@@ -141,7 +141,6 @@ export default {
 
   .dd-body-inner {
     padding: 5px;
-    -webkit-overflow-scrolling: touch
   }
   .label-tab {
     text-align: center;
