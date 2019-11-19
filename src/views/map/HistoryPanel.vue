@@ -137,8 +137,8 @@ export default {
           this.currentPos_ = i
           this.sliderPos = Vue.moment(this.positions[i].fixTime).unix()
         }
-      }
-      serverBus.$emit('posChanged', Math.max(this.currentPos, this.currentPos_))
+        serverBus.$emit('posChanged', Math.max(this.currentPos, this.currentPos_))
+      } else { serverBus.$emit('posChanged', this.currentPos) }
     }
   },
   created() {

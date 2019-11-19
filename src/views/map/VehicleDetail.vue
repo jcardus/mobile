@@ -1,7 +1,7 @@
 <template>
   <div v-show="!showRoutes" style="padding: 0">
-    <el-image v-show="showMapilary && imageOk" id="mly" style="width: 100%;margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
-      <div slot="error" v-loading="loadingImage" class="image-slot" style="height: 100px">
+    <el-image v-show="showMapilary && imageOk" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
+      <div slot="error" v-loading="loadingImage" class="image-slot" style="height: 150px">
         <span style="width: 100%;padding-top:13px; height: 100px;"></span>
       </div>
     </el-image>
@@ -183,7 +183,7 @@ export default {
     padding-bottom: 10px;
   }
   .content {
-    font-size: 14px;
+    font-size: 13px;
     color: #8898AA;
   }
 </style>
