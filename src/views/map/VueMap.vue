@@ -32,6 +32,8 @@ import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import VehicleTableContainer from './VehicleTableContainer'
 import CurrentPositionData from './CurrentPositionData'
 import { TrackJS } from 'trackjs'
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar style
 
 export default {
   name: 'VueMap',
@@ -90,7 +92,8 @@ export default {
     }
   },
   created() {
-    this.$log.info('VueMap created')
+    this.$log.info('VueMap')
+    NProgress.configure({ showSpinner: false }) // NProgress Configuration
     vm.$data.loadingRoutes = true
   },
   static() {
@@ -107,6 +110,7 @@ export default {
   },
   mounted() {
     this.$log.info('VueMap mounted')
+    NProgress.start()
     if (this.devices.length === 0) { traccar.devices(this.onDevices) }
     traccar.geofences(this.onGeofences)
     this.parentHeight = this.$parent.$el.clientHeight
@@ -142,6 +146,7 @@ export default {
       }
       this.$log.info('onMapLoad')
       vm.$data.loadingRoutes = false
+      NProgress.done()
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
