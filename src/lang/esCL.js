@@ -19,7 +19,8 @@ export default {
     poi_created: 'PDI criado con éxito!',
     poi_create_canceled: 'Creación de PDI cancelada!',
     create_confirm: 'Confirmar',
-    create_cancel: 'Cancelar'
+    create_cancel: 'Cancelar',
+    loading: 'Cargando...'
   },
   vehicleList: {
     title: 'Vehículos',

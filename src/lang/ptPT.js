@@ -19,7 +19,8 @@ export default {
     poi_created: 'POI criado com sucesso!',
     poi_create_canceled: 'Criação do POI cancelada!',
     create_confirm: 'Confirmar',
-    create_cancel: 'Cancelar'
+    create_cancel: 'Cancelar',
+    loading: 'A carregar'
   },
   vehicleList: {
     title: 'Veículos',

@@ -3,6 +3,9 @@
     <el-table
       id="vehicleTable"
       v-loading.fullscreen.lock="loading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.6)"
+      :element-loading-text="$t('map.loading')"
       :cell-style="cellStyle"
       :data="filteredVehicles"
       :height="height"
