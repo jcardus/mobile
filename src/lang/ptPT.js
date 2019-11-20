@@ -38,7 +38,7 @@ export default {
     moving_vehicles: 'Em Movimento',
     idle_vehicles: 'Ralenti',
     stopped_vehicles: 'Parado',
-    disconnected_vehicles: 'Desconectado'
+    disconnected_vehicles: 'Desconhecido'
   },
   vehicleDetail: {
     show_route: 'Rota'
