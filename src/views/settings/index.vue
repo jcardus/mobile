@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" :style="top">
     <el-tabs
       active-tab-color="#9b59b6"
       active-text-color="white"
@@ -46,6 +46,12 @@ export default {
   name: 'Settings',
   components: { Alerts, Vehicles },
   computed: {
+    top() {
+      if (('standalone' in window.navigator) && window.navigator.standalone) {
+        return 'padding-top:100px;'
+      }
+      return 'padding-top:60px'
+    },
     isMobile() { return lnglat.isMobile() },
     matchRoutes: {
       get() { return this.$store.state.settings.matchRoutes },
@@ -62,7 +68,6 @@ export default {
 
 <style scoped>
   .app-container {
-    padding-top: 60px;
     padding-right: 10px;
     padding-left: 10px;
   }

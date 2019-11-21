@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" :style="top">
     <div v-if="user">
       <el-row :gutter="20">
         <el-col :span="12" :xs="24">
@@ -20,6 +20,14 @@ export default {
   data() {
     return {
       user: {}
+    }
+  },
+  computed: {
+    top() {
+      if (('standalone' in window.navigator) && window.navigator.standalone) {
+        return 'padding-top:100px;'
+      }
+      return 'padding-top:60px'
     }
   },
   created() {

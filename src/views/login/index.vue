@@ -1,7 +1,6 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
       <div class="title-container">
         <img class="logo" :src="logoImage" alt="">
         <lang-select class="set-language" />
@@ -93,7 +92,9 @@ export default {
       return partner.getLogo()
     },
     version() {
-      return this.$store.state.app.packageVersion
+      if (process.env.NODE_ENV === 'development') {
+        return new Date()
+      } else { return this.$store.state.app.packageVersion }
     }
   },
   watch: {
@@ -216,6 +217,7 @@ $light_gray:#eee;
 
 .login-container {
   min-height: 100%;
+  height: 100vh;
   width: 100%;
   background-color: $bg;
   overflow: hidden;

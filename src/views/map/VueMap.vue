@@ -714,7 +714,7 @@ export default {
 <style lang="scss" scoped>
 
   .app-container {
-    height: 100%;
+    height: 100vh;
     padding:0;
     margin: 0;
   }

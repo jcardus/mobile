@@ -1,5 +1,5 @@
 <template>
-  <div class="reportContainer">
+  <div class="reportContainer" :style="top">
     <div v-if="isMobile">
       <el-row>
         <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
@@ -127,6 +127,7 @@ import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
 import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
+import * as iPhone from '../../utils/iphone'
 
 const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
 
@@ -219,6 +220,9 @@ export default {
     }
   },
   computed: {
+    top() {
+      return 'padding-top:' + (60 + iPhone.getNavBarTop()) + 'px'
+    },
     devices() {
       const sortKey = 'name'
       let devices = vm.$data.devices
@@ -326,7 +330,6 @@ export default {
   @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
 
   .reportContainer {
-    padding-top: 60px;
     padding-right: 10px;
     padding-left: 10px;
   }

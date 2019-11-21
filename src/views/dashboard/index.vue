@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-container">
+  <div class="dashboard-container" :style="top">
     <el-row :gutter="20">
       <el-col :span="16">
         <div class="grid-content">
@@ -72,6 +72,12 @@ export default {
     }
   },
   computed: {
+    top() {
+      if (('standalone' in window.navigator) && window.navigator.standalone) {
+        return 'padding-top:95px;'
+      }
+      return 'padding-top:60px;'
+    },
     parameters: function() {
       return {
         deviceIds: this.$root.$data.devices.map(e => e.id),
@@ -135,7 +141,7 @@ export default {
 
 <style scoped>
   .dashboard-container {
-    padding-top: 60px;
+
     padding-right: 10px;
     padding-left: 10px;
   }

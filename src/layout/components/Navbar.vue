@@ -11,9 +11,8 @@
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" alt="">
-          <i class="el-icon-caret-bottom"></i>
+        <div style="padding:5px" class="el-dropdown-link">
+          <el-avatar :src="avatar+'?imageView2/1/w/80/h/80'"></el-avatar>
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
@@ -40,6 +39,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import VehicleList from '../../views/map/VehicleList'
+import * as iPhone from '../../utils/iphone'
 
 export default {
   components: {
@@ -54,7 +54,10 @@ export default {
       'sidebar',
       'avatar',
       'device'
-    ])
+    ]),
+    top() {
+      return 'top:' + iPhone.getNavBarTop() + 'px'
+    }
   },
   methods: {
     toggleSideBar() {
@@ -69,6 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
     .el-dropdown-link {
     cursor: pointer;
     color: #409EFF;
@@ -77,14 +81,13 @@ export default {
   .navbar {
     height: 50px;
     width: 100%;
-    overflow: hidden;
     position: absolute;
     background: #f5f5f5;
-    background: rgba(0,0,0,0);
-    // box-shadow: 0 1px 4px rgba(0,21,41,.08);
+    background: rgba(0, 0, 0, 0);
     z-index: 99;
+  }
 
-  .hamburger-container {
+    .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
@@ -176,7 +179,7 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right:0;
 
       .avatar-wrapper {
         margin-top: 5px;
@@ -188,16 +191,8 @@ export default {
           height: 40px;
           border-radius: 10px;
         }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
       }
     }
   }
-}
+
 </style>
