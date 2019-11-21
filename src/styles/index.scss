@@ -33,7 +33,7 @@ html {
 }
 
 .no-padding {
-  padding: 0px !important;
+  padding: 0 !important;
 }
 
 .padding-content {
@@ -117,11 +117,6 @@ aside {
       color: rgb(32, 160, 255);
     }
   }
-}
-
-//main-container全局样式
-.app-container {
-  padding: 20px;
 }
 
 .components-container {

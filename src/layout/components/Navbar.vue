@@ -76,11 +76,13 @@ export default {
 
   .navbar {
     height: 50px;
+    width: 100%;
     overflow: hidden;
-    position: relative;
+    position: absolute;
     background: #f5f5f5;
-    box-shadow: 0 1px 4px rgba(0,21,41,.08);
-    z-index: 1;
+    background: rgba(0,0,0,0);
+    // box-shadow: 0 1px 4px rgba(0,21,41,.08);
+    z-index: 99;
 
   .hamburger-container {
     line-height: 46px;
@@ -94,16 +96,6 @@ export default {
       background: rgba(0, 0, 0, .025)
     }
   }
-
-  .breadcrumb-container {
-    float: left;
-  }
-
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
-  }
-
     .left-menu {
       float: left;
       height: 100%;

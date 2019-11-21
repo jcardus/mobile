@@ -5,7 +5,7 @@
     </span>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item>
-        <vehicle-table height="calc(100vh - 82px)"></vehicle-table>
+        <vehicle-table height="calc(100vh - 52px)"></vehicle-table>
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>

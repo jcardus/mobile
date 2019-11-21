@@ -79,7 +79,7 @@ export default {
       type: String
     },
     height: {
-      default: 'calc(100vh - 200px)',
+      default: 'calc(100vh - 151px)',
       type: String
     },
     filterKey: {
@@ -247,7 +247,6 @@ export default {
 
 <style scoped>
   .mobileScroll {
-
     -webkit-overflow-scrolling: touch;
   }
 </style>

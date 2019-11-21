@@ -714,11 +714,15 @@ export default {
 <style lang="scss" scoped>
 
   .app-container {
-    bottom: 0 !important;
+    height: 100%;
     padding:0;
-    width: 100%;
-    height: calc(100vh - var(--vh-offset, 0px) - 50px);
+    margin: 0;
   }
+
+  .app-main {
+    padding:0 !important;
+  }
+
   #map {
     height: 100%;
     margin-left: 300px;
