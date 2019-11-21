@@ -645,6 +645,11 @@ export default {
     background-color: rgba(0,0,0,0);
   }
 
+  .mapboxgl-ctrl {
+    padding: 0;
+    margin-top: 50px;
+  }
+
   @media screen and (max-width: 768px) {
     .currentPos {
       width: calc(100vw - 20px);
@@ -652,7 +657,7 @@ export default {
     }
     .mapboxgl-ctrl {
       padding: 0;
-      margin-top: 10px;
+      margin-top: 20px;
     }
   }
 </style>
