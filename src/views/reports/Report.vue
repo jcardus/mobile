@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="reportContainer">
     <div v-if="isMobile">
       <el-row>
         <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
@@ -55,8 +55,8 @@
       </el-row>
     </div>
     <div v-else>
-      <el-row :gutter="10">
-        <el-col :span="selectGeofences ? 7 : 14">
+      <el-row type="flex" justify="space-between">
+        <el-col :span="selectGeofences ? 7 : 16">
           <div class="grid-content">
             <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
               <el-select
@@ -86,7 +86,7 @@
             </el-tooltip>
           </div>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="6">
           <div class="grid-content">
             <el-tooltip :content="$t('report.select_period')" placement="bottom">
               <el-date-picker
@@ -106,7 +106,7 @@
             </el-tooltip>
           </div>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="1">
           <div class="grid-content">
             <el-tooltip :content="$t('report.generate_report')" placement="bottom">
               <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
@@ -325,11 +325,11 @@ export default {
 <style  scoped>
   @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
 
-  .app-container {
-    bottom: 0 !important;
-    padding:10px;
+  .reportContainer {
+    padding-top: 60px;
+    padding-right: 10px;
+    padding-left: 10px;
   }
-
   #viewer {
     padding-top: 5px;
   }
@@ -357,9 +357,5 @@ export default {
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
-
-  .el-row {
-    margin-bottom: 5px;
   }
 </style>

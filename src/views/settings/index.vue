@@ -61,7 +61,9 @@ export default {
 </script>
 
 <style scoped>
-.el-card {
-  margin-bottom: 10px;
-}
+  .app-container {
+    padding-top: 60px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
 </style>

@@ -24,10 +24,10 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
+   height: 100%;
+   width: 100%;
+   position: absolute;
+ }
 </style>
 
 <style lang="scss">

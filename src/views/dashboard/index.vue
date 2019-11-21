@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="dashboard-container">
     <el-row :gutter="20">
       <el-col :span="16">
         <div class="grid-content">
@@ -133,11 +133,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+  .dashboard-container {
+    padding-top: 60px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
   .dashboard {
     height: 100%;
     width: 100%;
-    top: 50px;
+    position: relative;
+    top: 10px
   }
   iframe {
     border-width: 0 !important;
