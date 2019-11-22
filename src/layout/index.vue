@@ -52,7 +52,7 @@ export default {
     if (this.unsubscribe) this.unsubscribe()
   },
   created() {
-    this.log.debug('layout created')
+    this.$log.debug('layout created')
     this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
       if (mutation.type === 'SOCKET_ONMESSAGE') {
         if (state.socket.message.events) {
