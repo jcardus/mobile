@@ -18,6 +18,9 @@ export default {
     key() {
       return this.$route.path
     }
+  },
+  created() {
+    this.$log.debug('appmain')
   }
 }
 </script>

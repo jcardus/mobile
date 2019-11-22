@@ -100,6 +100,8 @@ Vue.use(VueTimeago, {
 
 Vue.use(VueI18nFilter)
 
+Vue.$log.debug('starting main instance...')
+
 export const vm = new Vue({
   el: '#app',
   static() {

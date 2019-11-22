@@ -1,15 +1,17 @@
+import Vue from 'vue'
+
 export function getNavBarTop() {
   if (iPhoneVersion().includes('6')) {
-    this.$log.debug('detected iPhone 6')
+    Vue.$log.debug('detected iPhone 6')
     if (standAlone()) {
-      this.$log.debug('detected web app')
-      return 15
+      Vue.$log.debug('detected web app')
+      return 20
     }
   }
   if (iPhoneVersion().includes('X')) {
-    this.$log.debug('detected iPhone X')
+    Vue.$log.debug('detected iPhone X')
     if (standAlone()) {
-      this.$log.debug('detected web app')
+      Vue.$log.debug('detected web app')
       return 40
     }
   }

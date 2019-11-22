@@ -2,6 +2,7 @@
   <div :class="{'has-logo':showLogo}">
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-menu
+      id="sidebarMenu"
       :default-active="activeMenu"
       :collapse="isCollapse"
       :background-color="variables.menuBg"

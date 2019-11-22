@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" class="mapboxgl-ctrl" :style="isMobile?width:''">
+  <div v-show="show" class="mapboxgl-ctrl" :style="(isMobile?width:'') + ';' + marginTop">
     <el-card
       v-loading="loadingRoutes"
       :body-style="{ padding: '10px' }"
@@ -52,6 +52,7 @@ import * as consts from '../../utils/consts'
 import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
+import * as iPhone from '../../utils/iphone'
 
 export default {
   name: 'CurrentPositionData',
@@ -67,6 +68,9 @@ export default {
     }
   },
   computed: {
+    marginTop() {
+      return 'margin-top: ' + (iPhone.getNavBarTop() + 50) + 'px'
+    },
     isPlaying: {
       get() {
         return vm.$data.isPlaying
@@ -188,7 +192,7 @@ export default {
     serverBus.$off('showRoutesChanged', this.showRoutesClick)
   },
   mounted() {
-    Vue.$log.debug('CurrentPositionData')
+    Vue.$log.debug('CurrentPositionData mounted')
   },
   methods: {
     onPositions: function(positions) {
@@ -647,17 +651,13 @@ export default {
 
   .mapboxgl-ctrl {
     padding: 0;
-    margin-top: 50px;
+
   }
 
   @media screen and (max-width: 768px) {
     .currentPos {
       width: calc(100vw - 20px);
       padding: 0 !important;
-    }
-    .mapboxgl-ctrl {
-      padding: 0;
-      margin-top: 20px;
     }
   }
 </style>

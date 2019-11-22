@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+  <div class="navbar" :style="top">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div class="left-menu">
       <vehicle-list v-if="device==='mobile'" class="left-menu-item"></vehicle-list>
@@ -40,6 +40,7 @@ import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import VehicleList from '../../views/map/VehicleList'
 import * as iPhone from '../../utils/iphone'
+import Vue from 'vue'
 
 export default {
   components: {
@@ -48,7 +49,13 @@ export default {
     Screenfull,
     Search
   },
-
+  created() {
+    Vue.$log.debug('Navbar created')
+  },
+  mounted() {
+    Vue.$log.debug('Navbar mounted')
+  },
+  // eslint-disable-next-line vue/order-in-components
   computed: {
     ...mapGetters([
       'sidebar',
@@ -72,11 +79,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-    .el-dropdown-link {
-    cursor: pointer;
-    color: #409EFF;
-  }
 
   .navbar {
     height: 50px;
@@ -138,14 +140,6 @@ export default {
             width: 40px;
             height: 40px;
             border-radius: 10px;
-          }
-
-          .el-icon-caret-bottom {
-            cursor: pointer;
-            position: absolute;
-            right: -20px;
-            top: 25px;
-            font-size: 12px;
           }
         }
       }

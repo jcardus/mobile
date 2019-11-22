@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import Vue from 'vue'
+import * as utils from './utils'
 
-const serverHost = process.env.NODE_ENV === 'development' ? 'dev.pinme.io' : 'dev.' + window.location.hostname
+const serverHost = utils.getServerHost()
 
 // create an axios instance
 const service = axios.create({
@@ -26,16 +27,6 @@ service.interceptors.request.use(
 
 // response interceptor
 service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-  */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
   response => {
     Vue.$log.debug()
     return response

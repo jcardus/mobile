@@ -1,6 +1,12 @@
 import { vm } from '../main'
 import Vue from 'vue'
 
+export function getServerHost() {
+  return (process.env.NODE_ENV === 'development' || window.location.hostname.includes('172.20.10.2'))
+    ? 'dev.pinme.io'
+    : 'dev.' + window.location.hostname
+}
+
 export function getDate(dateString) {
   return Vue.moment(dateString)
 }
