@@ -1,8 +1,7 @@
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div>
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-menu
-      id="sidebarMenu"
       :default-active="activeMenu"
       :collapse="isCollapse"
       :background-color="variables.menuBg"
@@ -12,6 +11,9 @@
       :collapse-transition="false"
       mode="vertical"
     >
+      <div v-show="!isCollapse && activeMenu==='/map'">
+        <vehicle-table-container></vehicle-table-container>
+      </div>
       <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
     </el-menu>
   </div>
@@ -22,9 +24,17 @@ import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
+import VehicleTableContainer from '../../../views/map/VehicleTableContainer'
+import * as lnglat from '@/utils/lnglat'
 
 export default {
-  components: { SidebarItem, Logo },
+  components: { VehicleTableContainer, SidebarItem, Logo },
+  props: {
+    mode: {
+      default: 'vertical',
+      type: String
+    }
+  },
   computed: {
     ...mapGetters([
       'permission_routes',
@@ -47,6 +57,9 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    },
+    isMobile() {
+      return lnglat.isMobile()
     }
   }
 }

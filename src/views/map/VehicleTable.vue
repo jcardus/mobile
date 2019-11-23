@@ -246,6 +246,7 @@ export default {
 </script>
 
 <style scoped>
+
   .mobileScroll {
     -webkit-overflow-scrolling: touch;
   }

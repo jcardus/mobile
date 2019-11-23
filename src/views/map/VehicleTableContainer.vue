@@ -1,6 +1,6 @@
 <template>
   <div class="dd-body">
-    <div v-if="!isMobile" class="dd-body-inner">
+    <div class="dd-body-inner">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs
         active-tab-color="#9b59b6"

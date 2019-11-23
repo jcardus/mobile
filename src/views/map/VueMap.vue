@@ -3,7 +3,7 @@
     id="map-app-container"
     class="app-container"
   >
-    <vehicle-table-container id="vehiclesDiv" />
+    <!--vehicle-table-container id="vehiclesDiv" /-->
     <div id="map" ref="map"></div>
   </div>
 </template>
@@ -29,7 +29,6 @@ import HistoryPanel from './HistoryPanel'
 import * as utils from '../../utils/utils'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
-import VehicleTableContainer from './VehicleTableContainer'
 import CurrentPositionData from './CurrentPositionData'
 import { TrackJS } from 'trackjs'
 import NProgress from 'nprogress' // progress bar
@@ -37,7 +36,6 @@ import 'nprogress/nprogress.css' // progress bar style
 
 export default {
   name: 'VueMap',
-  components: { VehicleTableContainer },
   data() {
     return {
       accessToken: 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ',
@@ -725,7 +723,7 @@ export default {
 
   #map {
     height: 100%;
-    margin-left: 300px;
+    // margin-left: 300px;
   }
 
   #vehiclesDiv {

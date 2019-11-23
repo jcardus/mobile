@@ -19,13 +19,17 @@ export function getNavBarTop() {
 }
 
 export function iPhoneVersion() {
-  const iHeight = window.screen.height
   const iWidth = window.screen.width
+  const iHeight = window.screen.height
+
+  Vue.$log.debug('viewport size is ', iWidth, '*', iHeight,
+    'pixel-ratio 2:', window.matchMedia('(-webkit-min-device-pixel-ratio: 2)').matches,
+    'pixel-ratio 3:', window.matchMedia('(-webkit-min-device-pixel-ratio: 3)').matches,)
 
   if (isIphone()) {
-    if (iWidth === 414 && iHeight === 896 && window.matchMedia('(-webkit-min-device-pixel-ratio: 3)').matches) {
+    if (iWidth === 414 && iHeight === 896 && window.matchMedia('(-webkit-min-device-pixel-ratio: 2)').matches) {
       return 'Xmax-Xr'
-    } else if (iWidth === 375 && iHeight === 812 && window.matchMedia('(-webkit-min-device-pixel-ratio: 3)').matches) {
+    } else if (iWidth === 375 && iHeight === 812 && window.matchMedia('(-webkit-min-device-pixel-ratio: 2)').matches) {
       return 'X-Xs'
     } else if (iWidth === 320 && iHeight === 480) {
       return '4'
