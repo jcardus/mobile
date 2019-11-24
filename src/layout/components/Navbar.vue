@@ -7,9 +7,9 @@
           {{ $t('route.reports') }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item><router-link to="/map">{{ $t('route.map') }}</router-link></el-dropdown-item>
-          <el-dropdown-item><router-link to="/map">{{ $t('route.map') }}</router-link></el-dropdown-item>
-          <el-dropdown-item><router-link to="/dashboard">{{ $t('route.dashboard') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link to="/reports/report_trip_title">{{ $t('route.report_trip_title') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link to="/reports/report_location_title">{{ $t('route.report_location_title') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link to="/reports/report_zone_crossing">{{ $t('route.report_zone_crossing') }}</router-link></el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
