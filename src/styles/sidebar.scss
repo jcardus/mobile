@@ -110,8 +110,17 @@
 
     .el-submenu {
       overflow: hidden;
+
       &>.el-submenu__title {
-        height: 50px;
+        padding: 0 !important;
+
+        .svg-icon {
+          margin-left: 20px;
+        }
+
+        .el-submenu__icon-arrow {
+          display: none;
+        }
       }
     }
 
