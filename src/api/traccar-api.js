@@ -67,12 +67,13 @@ export const traccar = {
   startReceiving: function() {
     vm.$connect()
   },
-  devices: function(onFulfill) {
+  devices: function(onFulfill, onError) {
     cookie = VueCookies.get('user-info')
     axios.get(devices, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
+        onError(reason)
       })
   },
   updateDevice: function(deviceId, device, onFulfill) {

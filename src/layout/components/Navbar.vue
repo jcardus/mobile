@@ -1,15 +1,17 @@
 <template>
   <div class="navbar" :style="top">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-    <div class="left-menu">
-      <el-menu mode="horizontal">
-        <el-submenu index="2">
-          <template slot="title">{{ $t('route.reports') }}</template>
-          <el-menu-item index="2-1"><router-link to="/map">{{ $t('route.map') }}</router-link></el-menu-item>
-          <el-menu-item index="2-2"><router-link to="/map">{{ $t('route.map') }}</router-link></el-menu-item>
-          <el-menu-item index="2-3"><router-link to="/map">{{ $t('route.map') }}</router-link></el-menu-item>
-        </el-submenu>
-      </el-menu>
+    <div v-show="isMobile" class="left-menu">
+      <el-dropdown>
+        <span class="el-dropdown-link">
+          {{ $t('route.reports') }}<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item><router-link to="/map">{{ $t('route.map') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link to="/map">{{ $t('route.map') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link to="/dashboard">{{ $t('route.dashboard') }}</router-link></el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -46,6 +48,7 @@ import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import * as iPhone from '../../utils/iphone'
 import Vue from 'vue'
+import * as lnglat from '@/utils/lnglat'
 
 export default {
   components: {
@@ -68,6 +71,9 @@ export default {
     ]),
     top() {
       return 'top:' + iPhone.getNavBarTop() + 'px'
+    },
+    isMobile() {
+      return lnglat.isMobile()
     }
   },
   methods: {
@@ -83,7 +89,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .el-submenu__title {
+    height: 40px !important;
+  }
   .navbar {
     height: 50px;
     width: 100%;

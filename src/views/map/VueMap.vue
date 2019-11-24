@@ -109,7 +109,7 @@ export default {
   mounted() {
     this.$log.info('VueMap mounted')
     NProgress.start()
-    if (this.devices.length === 0) { traccar.devices(this.onDevices) }
+    if (this.devices.length === 0) { traccar.devices(this.onDevices, this.onErrorLoading) }
     traccar.geofences(this.onGeofences)
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
@@ -123,6 +123,15 @@ export default {
     this.subscribeEvents()
   },
   methods: {
+    onErrorLoading(error) {
+      this.$message({
+        message: error,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      vm.$data.loadingRoutes = false
+      NProgress.done()
+    },
     onDevices: function(devices) {
       vm.$data.devices = devices
       traccar.positions(this.processPositions)
