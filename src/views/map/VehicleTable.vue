@@ -233,6 +233,9 @@ export default {
           Vue.$log.info('VehicleTable emit showRoutesChanged')
           serverBus.$emit('showRoutesChanged')
         }
+        if (lnglat.isMobile() && this.$store.state.app.sidebar.opened) {
+          this.$store.dispatch('app/toggleSideBar')
+        }
       }
     },
     handleFilterState: function(state) {
