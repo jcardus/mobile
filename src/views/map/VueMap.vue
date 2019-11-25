@@ -3,7 +3,6 @@
     id="map-app-container"
     class="app-container"
   >
-    <!--vehicle-table-container id="vehiclesDiv" /-->
     <div id="map" ref="map"></div>
   </div>
 </template>

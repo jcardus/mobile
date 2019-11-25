@@ -216,6 +216,7 @@ export default {
       this.positions = positions
       Vue.$log.debug('emit routeFetched')
       serverBus.$emit('routeFetched')
+      this.loadingRoutes = false
     },
     onPositionsError() {
       this.loadingRoutes = false
