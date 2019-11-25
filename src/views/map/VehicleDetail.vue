@@ -15,7 +15,9 @@
         {{ Math.round(device.speed) }} km/h,
         <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
         <br>
-        <immobilize-button :selected-device="device"></immobilize-button>
+        <div style="float:left">
+          <immobilize-button :selected-device="device"></immobilize-button>
+        </div>
         <el-button
           icon="el-icon-video-play"
           style="float:right; padding-top: 10px;padding-right: 3px"

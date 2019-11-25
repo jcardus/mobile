@@ -1,6 +1,6 @@
 <template>
   <div>
-    <logo v-if="showLogo" :collapse="isCollapse" />
+    <logo v-if="showLogo" v-show="activeMenu!=='/map' || isCollapse" :collapse="isCollapse" />
     <el-menu
       :default-active="activeMenu"
       :collapse="isCollapse"
