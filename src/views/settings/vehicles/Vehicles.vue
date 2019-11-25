@@ -131,9 +131,21 @@ export default {
       vehicle.name = this.vehicleName
       vehicle.model = this.vehicleModel
       vehicle.attributes.speedLimit = Math.round(this.vehicleSpeedLimit / 1.85200)
-      if (vehicle.uniqueId) { delete vehicle.uniqueId }
 
-      traccar.updateDevice(vehicle.id, vehicle, this.vehicleUpdated)
+      const v = {
+        id: vehicle.id,
+        name: vehicle.name,
+        attributes: {
+          speedLimit: vehicle.attributes.speedLimit
+        },
+        uniqueId: vehicle.uniqueId,
+        phone: vehicle.phone,
+        model: vehicle.model,
+        contact: vehicle.contact,
+        category: vehicle.category
+      }
+
+      traccar.updateDevice(vehicle.id, v, this.vehicleUpdated)
 
       this.isOpenVehicleForm = false
     },
