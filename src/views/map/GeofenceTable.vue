@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="geofenceTable">
+    <div class="header">
       <el-switch
         v-model="showGeofenceLayer"
         :active-text="$t('geofence.showGeofences')"
         inactive-text=""
         active-color="#1CCAD8"
-        inactive-color="white"
+        inactive-color="gray"
       ></el-switch>
     </div>
     <el-table
@@ -150,7 +150,8 @@ export default {
 </script>
 
 <style scoped>
-  .geofenceTable {
+  .header {
+    background: white;
     padding: 10px;
   }
 </style>
