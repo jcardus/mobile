@@ -1,12 +1,17 @@
 <template>
   <div>
-    <el-switch
-      v-model="showPOIsLayer"
-      :active-text="$t('poiTable.showPOIs')"
-      inactive-text=""
-    ></el-switch>
+    <div style="padding: 10px">
+      <el-switch
+        v-model="showPOIsLayer"
+        :active-text="$t('poiTable.showPOIs')"
+        inactive-text=""
+        active-color="#1CCAD8"
+        inactive-color="white"
+      ></el-switch>
+    </div>
     <el-table
       id="poiTable"
+      style="padding: 10px"
       highlight-current-row
       :data="filteredPOIs"
       :show-header="false"

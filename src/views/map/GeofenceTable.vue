@@ -1,12 +1,17 @@
 <template>
   <div>
-    <el-switch
-      v-model="showGeofenceLayer"
-      :active-text="$t('geofence.showGeofences')"
-      inactive-text=""
-    ></el-switch>
+    <div class="geofenceTable">
+      <el-switch
+        v-model="showGeofenceLayer"
+        :active-text="$t('geofence.showGeofences')"
+        inactive-text=""
+        active-color="#1CCAD8"
+        inactive-color="white"
+      ></el-switch>
+    </div>
     <el-table
       id="geofenceTable"
+      style="padding: 10px"
       highlight-current-row
       :data="filteredGeofences"
       :show-header="false"
@@ -144,6 +149,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .geofenceTable {
+    padding: 10px;
+  }
 </style>

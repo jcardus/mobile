@@ -106,14 +106,14 @@ export default {
     }
   },
   methods: {
-    tableRowStyle({ row, rowIndex }) {
+    tableRowStyle() {
       if (this.isMobile) {
         return 'font-size: 12px'
       } else {
         return 'font-size: 14px'
       }
     },
-    tableHeaderStyle({ row, column, rowIndex, columnIndex }) {
+    tableHeaderStyle() {
       if (this.isMobile) {
         return 'font-size: 12px'
       } else {
@@ -132,23 +132,11 @@ export default {
       vehicle.model = this.vehicleModel
       vehicle.attributes.speedLimit = Math.round(this.vehicleSpeedLimit / 1.85200)
 
-      const v = {
-        id: vehicle.id,
-        name: vehicle.name,
-        attributes: {
-          speedLimit: vehicle.attributes.speedLimit
-        },
-        uniqueId: vehicle.uniqueId,
-        model: vehicle.model,
-        contact: vehicle.contact,
-        category: vehicle.category
-      }
-
-      traccar.updateDevice(vehicle.id, v, this.vehicleUpdated)
+      traccar.updateDevice(vehicle.id, vehicle, this.vehicleUpdated)
 
       this.isOpenVehicleForm = false
     },
-    vehicleUpdated: function(updatedVehicle) {
+    vehicleUpdated: function() {
       this.$message({
         type: 'success',
         message: this.$t('settings.vehicle_updated')

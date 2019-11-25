@@ -10,7 +10,7 @@
         <el-tab-pane>
           <span slot="label">
             <div class="label-tab">
-              <i class="fas fa-car-side"></i>
+              <i class="fas fa-car-side" style="color:#1CCAD8"></i>
             </div>
           </span>
           <div style="margin-bottom: 15px;">
@@ -70,7 +70,7 @@
         <el-tab-pane>
           <span slot="label">
             <div class="label-tab">
-              <i class="fas fa-map-marker-alt"></i>
+              <i class="fas fa-map-marker-alt" style="color:#1CCAD8"></i>
             </div>
           </span>
           <p-o-i-table :filter-key="filterKey"></p-o-i-table>
@@ -78,7 +78,7 @@
         <el-tab-pane>
           <span slot="label">
             <div class="label-tab">
-              <i class="fas fa-draw-polygon"></i>
+              <i class="fas fa-draw-polygon" style="color:#1CCAD8"></i>
             </div>
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
