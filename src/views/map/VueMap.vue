@@ -3,7 +3,6 @@
     id="map-app-container"
     class="app-container"
   >
-    <!--vehicle-table-container id="vehiclesDiv" /-->
     <div id="map" ref="map"></div>
   </div>
 </template>
@@ -365,6 +364,9 @@ export default {
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
       // this.$static.map.on('pitch', this.onPitch)
+
+      this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('draw.create', this.drawCreate)
@@ -388,6 +390,8 @@ export default {
       window.addEventListener('resize', this.mapResize)
     },
     unsubscribeEvents() {
+      this.$static.map.off('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)

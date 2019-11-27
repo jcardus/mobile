@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar" :style="top">
+  <div v-if="!activeMenu.includes('report') || !isMobile" class="navbar" :style="top">
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div v-show="isMobile" class="left-menu">
       <el-dropdown>
@@ -7,9 +7,9 @@
           {{ $t('route.reports') }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item><router-link to="/reports/report_trip">{{ $t('route.report_trip_title') }}</router-link></el-dropdown-item>
-          <el-dropdown-item><router-link to="/reports/report_location">{{ $t('route.report_location_title') }}</router-link></el-dropdown-item>
-          <el-dropdown-item><router-link to="/reports/report_zone_crossing">{{ $t('route.report_zone_crossing') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link :target="isMobile ? '_blank' : ''" to="/reports/report_trip">{{ $t('route.report_trip_title') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link :target="isMobile ? '_blank' : ''" to="/reports/report_location">{{ $t('route.report_location_title') }}</router-link></el-dropdown-item>
+          <el-dropdown-item><router-link :target="isMobile ? '_blank' : ''" to="/reports/report_zone_crossing">{{ $t('route.report_zone_crossing') }}</router-link></el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -69,6 +69,17 @@ export default {
       'avatar',
       'device'
     ]),
+    activeMenu() {
+      const route = this.$route
+      const { meta, path } = route
+      // if set path, the sidebar will highlight the path you set
+      if (meta.activeMenu) {
+        this.$log.debug('returning ', meta.activeMenu)
+        return meta.activeMenu
+      }
+      this.$log.debug('returning ', path)
+      return path
+    },
     top() {
       return 'top:' + iPhone.getNavBarTop() + 'px'
     },
