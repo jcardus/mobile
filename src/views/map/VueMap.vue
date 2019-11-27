@@ -653,6 +653,24 @@ export default {
           const coord = coord_list[i].trim().split(' ')
           geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
         }
+      } else if (item.area.startsWith('LINE')) {
+        geojson = {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [[]]
+          },
+          properties: {
+            id: item.id,
+            title: item.name
+          }
+        }
+        const str = wkt.substring('LINESTRING('.length, wkt.length - 2)
+        const coord_list = str.split(',')
+        for (const i in coord_list) {
+          const coord = coord_list[i].trim().split(' ')
+          geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
+        }
       } else if (item.area.startsWith('CIRCLE')) {
         geojson = {
           type: 'Feature',
@@ -677,7 +695,7 @@ export default {
       const featureGeojson = this.getFeatureGeojson(feature)
       this.geofencesSource.features.push(featureGeojson)
       lnglat.refreshMap()
-      const type = this.getType(lnglat.getArea(feature.area))
+      const type = this.getType(feature.area)
       this.$message({
         type: 'success',
         message: this.$t('map.' + type + '_created')
@@ -709,7 +727,7 @@ export default {
     drawUpdate() {
     },
     getType(area) {
-      if (area.startsWith('POLYGON')) { return 'geofence' } else { return 'poi' }
+      if (area.startsWith('POLYGON') || area.startsWith('LINE')) { return 'geofence' } else { return 'poi' }
     },
     onMove() {
       lnglat.updateMarkers()

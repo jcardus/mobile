@@ -32,6 +32,8 @@ export function findFeatureById(id) {
 export function getArea(area) {
   if (area.features[0].geometry.type.toUpperCase() === 'POINT') {
     return 'CIRCLE (' + area.features[0].geometry.coordinates[1] + ' ' + area.features[0].geometry.coordinates[0] + ', 100)'
+  } else if (area.features[0].geometry.type.toUpperCase() === 'LINESTRING') {
+    return 'LINESTRING (' + area.features[0].geometry.coordinates.map(c => c[1] + ' ' + c[0]).join(',') + ')'
   } else {
     return area.features[0].geometry.type.toUpperCase() + '((' + area.features[0].geometry.coordinates[0].map(e => e[1] + ' ' + e[0]).join(',') + '))'
   }
@@ -106,6 +108,29 @@ function fetchGeofences(map) {
         visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
       },
       filter: ['==', '$type', 'Polygon']
+    })
+    map.addLayer({
+      id: 'geofences-lines',
+      type: 'line',
+      source: 'geofences',
+      paint: {
+        'line-color': '#B42222',
+        'line-width': 8
+      },
+      layout: {
+        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      },
+      filter: ['==', '$type', 'LineString']
+    })
+    map.addLayer({
+      id: 'geofences-lines-labels',
+      type: 'symbol',
+      source: 'geofences',
+      layout: {
+        'text-field': '{title}',
+        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      },
+      filter: ['==', '$type', 'LineString']
     })
     map.addLayer({
       id: 'pois',
