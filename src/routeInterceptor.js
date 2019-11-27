@@ -4,18 +4,15 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import Vue from 'vue'
+import * as lnglat from './utils/lnglat'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
-  // start progress bar
-  NProgress.start()
-
-  // determine whether the user has logged in
+export async function routerBeforeEach(next, to) {
+// determine whether the user has logged in
   const hasToken = getToken()
-
   if (hasToken) {
     const hasRoles = store.getters.roles && store.getters.roles.length > 0
     if (!hasRoles) {
@@ -37,6 +34,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     Vue.$log.warn('no token, redirecting')
     if (whiteList.indexOf(to.path) !== -1) {
+      Vue.$log.debug('invoking', next)
       // in the free login whitelist, go directly
       next()
     } else {
@@ -45,9 +43,17 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     }
   }
-})
+}
 
-router.afterEach(() => {
-  // finish progress bar
-  NProgress.done()
-})
+if (!lnglat.__isMobile()) {
+  router.beforeEach(async(to, from, next) => {
+    // start progress bar
+    NProgress.start()
+    await routerBeforeEach(next, to)
+  })
+
+  router.afterEach(() => {
+    // finish progress bar
+    NProgress.done()
+  })
+}

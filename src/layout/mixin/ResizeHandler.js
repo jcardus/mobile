@@ -1,7 +1,5 @@
 import store from '@/store'
-
-const { body } = document
-const WIDTH = 768 // refer to Bootstrap's responsive design
+import * as lnglat from '@/utils/lnglat'
 
 export default {
   watch: {
@@ -28,8 +26,7 @@ export default {
     // use $_ for mixins properties
     // https://vuejs.org/v2/style-guide/index.html#Private-property-names-essential
     $_isMobile() {
-      const rect = body.getBoundingClientRect()
-      return rect.width - 1 < WIDTH
+      return lnglat.__isMobile()
     },
     $_resizeHandler() {
       if (!document.hidden) {

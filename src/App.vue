@@ -6,10 +6,11 @@
 
 <script>
 import * as partner from '@/utils/partner'
+
 export default {
   name: 'App',
   mounted() {
-    this.$log.debug('App')
+    this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
   }

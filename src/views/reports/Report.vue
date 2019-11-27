@@ -127,17 +127,7 @@ import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
 import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
-
-const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
-
-function generate_token(length) {
-  let token = ''
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (let i = 0; i < length; i++) {
-    token += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return token
-}
+import * as utils from './utils/utils'
 
 export default {
   name: 'Report',
@@ -271,7 +261,7 @@ export default {
           this.loadingReport = true
           const cookie = VueCookies.get('user-info')
 
-          const report_id = cookie.email + '_' + generate_token(40)
+          const report_id = cookie.email + '_' + utils.generate_token(40)
           const body = {
             username: cookie.email,
             password: cookie.password,
@@ -301,7 +291,7 @@ export default {
       setTimeout(this.check_if_online, 2000, report_id)
     },
     check_if_online: function(report_id) {
-      const url = s3_report_base_url + '/' + report_id
+      const url = utils.s3_report_base_url + '/' + report_id
 
       this.$log.debug('Trying again ' + url)
       const http = new XMLHttpRequest()

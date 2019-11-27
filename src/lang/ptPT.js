@@ -3,6 +3,7 @@ export default {
     map: 'Mapa',
     dashboard: 'Central de Controlo',
     reports: 'Relatórios',
+    report: 'Relatório',
     report_trip_title: 'Relatório de viagens',
     report_location_title: 'Relatório de posições',
     report_zone_crossing: 'Relatório de zonas',
@@ -158,7 +159,8 @@ export default {
     select_period: 'Seleccionar período',
     date_start: 'Data de início',
     date_end: 'Data de fim',
-    generate_report: 'Gerar relatório'
+    generate_report: 'Gerar relatório',
+    period: 'Período'
   },
   layout: {
     deviceOnline: 'Dispositivo Online',

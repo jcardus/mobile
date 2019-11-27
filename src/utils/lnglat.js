@@ -16,6 +16,14 @@ const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'
 const _colorFormula = ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]
 const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-string', _colorFormula]], ['to-string', _colorFormula]]
 
+const { body } = document
+const WIDTH = 768 // refer to Bootstrap's responsive design
+
+export function __isMobile() {
+  const rect = body.getBoundingClientRect()
+  return rect.width - 1 < WIDTH
+}
+
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }

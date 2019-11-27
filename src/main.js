@@ -7,7 +7,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 import './icons' // icon
-import './permission' // permission control
+import './routeInterceptor'
 import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
@@ -18,6 +18,8 @@ import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import './registerServiceWorker'
 import { TrackJS } from 'trackjs'
+import * as lnglat from './utils/lnglat'
+const AppMobile = () => import('./AppMobile')
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
@@ -99,6 +101,10 @@ Vue.use(VueTimeago, {
 
 Vue.use(VueI18nFilter)
 
+import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
+import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
+Framework7.use(Framework7Vue)
+
 Vue.$log.debug('starting main instance...')
 
 export const vm = new Vue({
@@ -135,7 +141,8 @@ export const vm = new Vue({
       lazyLoad: false,
       distance: 0,
       vehiclePanel: null,
-      historyPanel: null
+      historyPanel: null,
+      loggedIn: false
     }
   },
   methods: {
@@ -156,8 +163,8 @@ export const vm = new Vue({
       this.$log.debug('done.')
     }
   },
-  router,
+  router: router,
   store,
   i18n,
-  render: h => h(App)
+  render: h => h(lnglat.__isMobile() ? AppMobile : App)
 })

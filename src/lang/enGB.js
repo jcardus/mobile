@@ -3,6 +3,7 @@ export default {
     map: 'Map',
     dashboard: 'Dashboard',
     reports: 'Reports',
+    report: 'Report',
     report_trip_title: 'Trip Report',
     report_location_title: 'Location Report',
     report_zone_crossing: 'Zone Report',
@@ -156,6 +157,7 @@ export default {
     select_geofences: 'Select geofences',
     select_geofences_placeholder: 'Geofences',
     select_period: 'Select period',
+    period: 'Period',
     date_start: 'Start date',
     date_end: 'End date',
     generate_report: 'Generate report'
