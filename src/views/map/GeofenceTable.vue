@@ -61,7 +61,7 @@ export default {
   computed: {
     map: function() { return vm.$static.map },
     geofences: function() {
-      return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON'))
+      return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING'))
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredGeofences: function() {

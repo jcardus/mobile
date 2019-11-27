@@ -155,24 +155,24 @@ export default {
     min-width: 50px;
   }
   #state-all {
-    background-color: rgba(White, 0.25);
-    color: Black;
+    background-color: rgba(White, 1);
+    color: #333333;
   }
   #state-moving {
-    background-color: rgba(#63EA4F, 0.25);
-    color: #63EA4F;
+    background-color: rgba(#63EA4F, 1);
+    color: #333333;
   }
   #state-idle {
-    background-color: rgba(#d4c404, 0.2);
-    color: #d4c404;
+    background-color: rgba(#d4c404, 1);
+    color: #333333;
   }
   #state-stopped {
-    background-color: rgba(#D50303, 0.2);
-    color: #D50303;
+    background-color: rgba(#D50303, 1);
+    color: #333333;
   }
   #state-disconnected {
-    background-color: rgba(gray, 0.2);
-    color: gray;
+    background-color: rgba(gray, 1);
+    color: #333333;
   }
 </style>
 
