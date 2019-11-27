@@ -6,11 +6,11 @@
     <f7-views tabs class="safe-areas">
       <f7-toolbar tabbar labels bottom>
         <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" text="Map"></f7-link>
-        <f7-link tab-link="#view-catalog" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" text="Reports"></f7-link>
+        <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" text="Reports"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" text="Settings"></f7-link>
       </f7-toolbar>
       <f7-view v-if="loggedIn" id="view-map" main tab tab-active url="/map"></f7-view>
-      <f7-view id="view-catalog" name="catalog" tab url="/reports"></f7-view>
+      <f7-view id="view-reports" name="reports" tab url="/reports"></f7-view>
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
     </f7-views>
     <f7-login-screen :opened="!loggedIn" animate="false">

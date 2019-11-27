@@ -237,7 +237,9 @@ export default {
       }
     },
     refreshMap() {
-      this.$static.map.getSource('positions').setData(this.positionsSource)
+      if (this.$static.map.getSource('positions')) {
+        this.$static.map.getSource('positions').setData(this.positionsSource)
+      }
     },
     setZoomAndCenter() {
       try {

@@ -160,7 +160,8 @@ export default {
     date_start: 'Data de início',
     date_end: 'Data de fim',
     generate_report: 'Gerar relatório',
-    period: 'Período'
+    period: 'Período',
+    validate_period: 'Por favor seleccione o período.'
   },
   layout: {
     deviceOnline: 'Dispositivo Online',

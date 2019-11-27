@@ -11,10 +11,23 @@
 
 <script>
 import VueMap from './VueMap'
+import { serverBus } from '.././../main'
 
 export default {
   name: 'MapMobileContainer',
-  components: { VueMap }
+  components: { VueMap },
+  mounted() {
+    this.$log.debug('VueMap mobile')
+    serverBus.$on('deviceSelected', this.deviceSelected)
+  },
+  methods: {
+    beforeDestroy() {
+      serverBus.$off('deviceSelected', this.deviceSelected)
+    },
+    deviceSelected() {
+      this.$f7.panel.close('left')
+    }
+  }
 }
 </script>
 

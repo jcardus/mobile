@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import 'normalize.css/normalize.css' // a modern alternative to CSS resets
+import './styles/element-variables.scss'
+import '@/styles/index.scss' // global css
 import * as partner from '@/utils/partner'
 
 export default {

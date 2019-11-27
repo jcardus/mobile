@@ -1,9 +1,6 @@
 import Vue from 'vue'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import ElementUI from 'element-ui'
-import './styles/element-variables.scss'
-import '@/styles/index.scss' // global css
-import App from './App'
 import store from './store'
 import router from './router'
 import './icons' // icon
@@ -20,6 +17,7 @@ import './registerServiceWorker'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
 const AppMobile = () => import('./AppMobile')
+const App = () => import('./App')
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
@@ -38,10 +36,8 @@ Vue.config.errorHandler = (err, vm, info) => {
   if (info) {
     infoMessage += `Error occurred during lifecycle hook: ${info}\n`
   }
-
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
-
   // Track the native JS error
   // eslint-disable-next-line no-undef
   TrackJS.track(err)

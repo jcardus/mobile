@@ -61,5 +61,5 @@ export function load(template, reportId) {
   Vue.$log.debug('report ', report)
   viewer.report = report
 
-  viewer.renderHtml('viewer')
+  viewer.renderHtml('viewerDiv')
 }

@@ -61,7 +61,7 @@ export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
 export function isMobile() {
-  return vm.$store.state.app.device === 'mobile'
+  return __isMobile()
 }
 export class MapboxCustomControl {
   constructor(id) {

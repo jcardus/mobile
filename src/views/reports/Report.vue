@@ -288,27 +288,7 @@ export default {
     errorHandler: function(report_id, reason) {
       this.loadingReport = false
       this.$log.debug('Report triggering failed - ' + reason)
-      setTimeout(this.check_if_online, 2000, report_id)
-    },
-    check_if_online: function(report_id) {
-      const url = utils.s3_report_base_url + '/' + report_id
-
-      this.$log.debug('Trying again ' + url)
-      const http = new XMLHttpRequest()
-      http.open('HEAD', url)
-      const self = this
-      http.onreadystatechange = function() {
-        if (this.readyState === this.DONE) {
-          if (http.status === 200) {
-            self.$log.debug('Online now! :)')
-            self.renderReport(report_id, null)
-          } else {
-            self.$log.debug('Still offline... :(')
-            setTimeout(self.check_if_online, 2000, report_id)
-          }
-        }
-      }
-      http.send()
+      setTimeout(utils.check_if_online, 2000, report_id, this.renderReport)
     }
   }
 }

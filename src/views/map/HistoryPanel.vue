@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="mapboxgl-ctrl panel" :style="width">
+  <div v-if="show" class="mapboxgl-ctrl historyPanel" :style="width">
     <speed-chart :labels="labels" :chart-data="chartData" />
     <vue-slider
       v-model="sliderPos"
@@ -241,7 +241,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .panel {
+    .historyPanel {
       font-size: 15px;
       padding-left: 10px;
       background-color: rgba(255,255,255,0);

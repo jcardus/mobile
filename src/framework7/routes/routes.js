@@ -1,5 +1,6 @@
 import Reports from '../pages/reports.vue'
 import SettingsPage from '../pages/settings.vue'
+import Viewer from '../pages/viewer.vue'
 import MapMobileContainer from '../../views/map/MapMobileContainer'
 
 const routes = [
@@ -14,6 +15,10 @@ const routes = [
   {
     path: '/settings',
     component: SettingsPage
+  },
+  {
+    path: '/viewer',
+    component: Viewer
   }
 ]
 
