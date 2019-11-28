@@ -1,6 +1,5 @@
 <template>
   <div>
-    <logo v-if="showLogo" :collapse="isCollapse" />
     <el-menu
       :default-active="activeMenu"
       :collapse="isCollapse"
@@ -18,13 +17,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
 import * as lnglat from '@/utils/lnglat'
 
 export default {
-  components: { SidebarItem, Logo },
+  components: { SidebarItem },
   props: {
     mode: {
       default: 'vertical',

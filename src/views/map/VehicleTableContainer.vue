@@ -149,7 +149,6 @@ export default {
 
   .mainContainer {
     background-color: $--color-white;
-    box-shadow: 0 0 32px rgba(136, 152, 170, 0.15);
   }
   .dd-body-inner {
     padding: 5px;
