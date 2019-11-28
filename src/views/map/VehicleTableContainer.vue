@@ -1,62 +1,56 @@
 <template>
-  <div class="dd-body">
+  <div class="mainContainer">
     <div class="dd-body-inner">
+      <img class="logo" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
-      <el-tabs
-        active-tab-color="#9b59b6"
-        active-text-color="white"
-        :stretch="true"
-      >
+      <el-tabs stretch>
         <el-tab-pane>
           <span slot="label">
-            <div class="label-tab">
-              <i class="fas fa-car-side" style="color:#1CCAD8"></i>
-            </div>
+            <i class="fas fa-car-side"></i>
           </span>
           <div style="margin-bottom: 15px;">
             <el-row type="flex" justify="space-around">
               <el-col :span="4">
-                <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="top">
+                <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
                   <el-button
-                    size="small"
-                    if="state-all"
-                    class="state-button"
+                    round
+                    size="mini"
                     @click="handleFilterState(null)"
                   >{{ devices.length }}</el-button>
                 </el-tooltip></el-col>
               <el-col :span="4">
-                <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="top">
+                <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="bottom">
                   <el-button
-                    id="state-moving"
-                    size="small"
-                    class="state-button"
+                    type="success"
+                    round
+                    size="mini"
                     @click="handleFilterState('Moving')"
                   >{{ devicesOn.length }}</el-button>
                 </el-tooltip></el-col>
               <el-col :span="4">
-                <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="top">
+                <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
                   <el-button
-                    id="state-idle"
-                    size="small"
-                    class="state-button"
+                    round
+                    type="warning"
+                    size="mini"
                     @click="handleFilterState('Idle')"
                   >{{ devicesIdle.length }}</el-button>
                 </el-tooltip></el-col>
               <el-col :span="4">
-                <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="top">
+                <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
                   <el-button
-                    id="state-stopped"
-                    size="small"
-                    class="state-button"
+                    round
+                    size="mini"
+                    type="danger"
                     @click="handleFilterState('Stopped')"
                   >{{ devicesOff.length }}</el-button>
                 </el-tooltip></el-col>
               <el-col :span="4">
-                <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="top">
+                <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
                   <el-button
-                    id="state-disconnected"
-                    size="small"
-                    class="state-button"
+                    round
+                    size="mini"
+                    type="info"
                     @click="handleFilterState('Disconnected')"
                   >{{ devicesDisconnected.length }}</el-button>
                 </el-tooltip></el-col>
@@ -69,17 +63,13 @@
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">
-            <div class="label-tab">
-              <i class="fas fa-map-marker-alt" style="color:#1CCAD8"></i>
-            </div>
+            <i class="fas fa-map-marker-alt"></i>
           </span>
           <p-o-i-table :filter-key="filterKey"></p-o-i-table>
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">
-            <div class="label-tab">
-              <i class="fas fa-draw-polygon" style="color:#1CCAD8"></i>
-            </div>
+            <i class="fas fa-draw-polygon"></i>
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
@@ -94,6 +84,7 @@ import GeofenceTable from './GeofenceTable'
 import POITable from './POITable'
 import VehicleTable from './VehicleTable'
 import { vm } from '@/main'
+import * as partner from '../../utils/partner'
 
 export default {
   name: 'VehicleTableContainer',
@@ -105,6 +96,9 @@ export default {
     }
   },
   computed: {
+    logoImage: function() {
+      return partner.getLogo()
+    },
     isMobile() {
       return lnglat.isMobile()
     },
@@ -138,7 +132,25 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  @import '../../styles/element-variables.scss';
+  .dd-body-inner {
+    padding: 5px;
+  }
+  .logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+  .input {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 
+  .mainContainer {
+    background-color: $--color-white;
+    box-shadow: 0 0 32px rgba(136, 152, 170, 0.15);
+  }
   .dd-body-inner {
     padding: 5px;
   }
@@ -149,48 +161,5 @@ export default {
   .hidden_header {
     display: none;
   }
-  .state-button {
-    font-weight: bold;
-    font-size: 16px;
-    min-width: 50px;
-  }
-  #state-all {
-    background-color: rgba(White, 1);
-    color: #333333;
-  }
-  #state-moving {
-    background-color: rgba(#63EA4F, 1);
-    color: #333333;
-  }
-  #state-idle {
-    background-color: rgba(#d4c404, 1);
-    color: #333333;
-  }
-  #state-stopped {
-    background-color: rgba(#D50303, 1);
-    color: #333333;
-  }
-  #state-disconnected {
-    background-color: rgba(gray, 1);
-    color: #333333;
-  }
-</style>
 
-<style>
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 7px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 7px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 7px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-    border-radius: 7px;
-  }
 </style>

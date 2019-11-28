@@ -5,9 +5,11 @@ import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm, settings } from '../main'
+import styles from '@/styles/element-variables.scss'
+
 let markersOnScreen = {}
 
-const colors = ['#606060', '#08C803', '#D4C404', '#D50303']
+const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
 const gray = ['>', ['get', 'fixDays'], 5]
 const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]

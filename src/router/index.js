@@ -62,7 +62,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'map',
-        component: () => import('@/views/map/VueMap'),
+        component: () => import('@/views/map/MapView'),
         meta: { title: 'map', icon: 'far fa-map' }
       }]
   },

@@ -1,10 +1,7 @@
 <template>
-  <div
-    id="map-app-container"
-    class="app-container"
-  >
-    <div id="map" ref="map"></div>
-  </div>
+
+  <div id="map" ref="map"></div>
+
 </template>
 
 <script>
@@ -744,10 +741,10 @@ export default {
 
 <style lang="scss" scoped>
 
-  .app-container {
-    height: 100%;
+  .app-container {;
     padding:0;
     margin: 0;
+    width: 100%;
   }
 
   .app-main {
@@ -756,14 +753,8 @@ export default {
 
   #map {
     height: 100%;
-    // margin-left: 300px;
-  }
 
-  #vehiclesDiv {
-    width: 300px;
-    position: absolute;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    // margin-left: 300px;
   }
 
   @media screen and (max-width: 768px) {

@@ -5,8 +5,6 @@
         v-model="showPOIsLayer"
         :active-text="$t('poiTable.showPOIs')"
         inactive-text=""
-        active-color="#1CCAD8"
-        inactive-color="white"
       ></el-switch>
     </div>
     <el-table
@@ -144,6 +142,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

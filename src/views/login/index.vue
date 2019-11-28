@@ -5,7 +5,6 @@
         <img class="logo" :src="logoImage" alt="">
         <lang-select class="set-language" />
       </div>
-
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -46,7 +45,6 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
       <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
     </el-form>
-
   </div>
 </template>
 

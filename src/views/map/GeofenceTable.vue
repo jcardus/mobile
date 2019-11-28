@@ -5,8 +5,6 @@
         v-model="showGeofenceLayer"
         :active-text="$t('geofence.showGeofences')"
         inactive-text=""
-        active-color="#1CCAD8"
-        inactive-color="gray"
       ></el-switch>
     </div>
     <el-table

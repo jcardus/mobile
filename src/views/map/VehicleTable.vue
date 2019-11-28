@@ -47,6 +47,7 @@ import { serverBus, vm } from '../../main'
 import * as lnglat from '@/utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
+import styles from '@/styles/element-variables.scss'
 
 export default {
   name: 'VehicleTable',
@@ -79,7 +80,7 @@ export default {
       type: String
     },
     height: {
-      default: 'calc(100vh - 151px)',
+      default: 'calc(100vh - 204px)',
       type: String
     },
     filterKey: {
@@ -177,12 +178,13 @@ export default {
         return 'Gray'
       }
       if (this.getDeviceState(device) === 'Moving') {
-        return '#63EA4F'
+        // return '#63EA4F'
+        return styles.success
       }
       if (this.getDeviceState(device) === 'Idle') {
-        return '#d4c404'
+        return styles.warning
       }
-      return '#D50303'
+      return styles.danger
     },
     getDeviceState: function(device) {
       if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) {
