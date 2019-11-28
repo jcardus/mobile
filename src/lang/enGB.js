@@ -149,7 +149,8 @@ export default {
     poi_edited: 'POI edited sucessfully!',
     poi_deleted: 'POI has been deleted',
     poi_edit_title: 'Edit POI',
-    poi_edit_name: 'Please enter the name of this POI...'
+    poi_edit_name: 'Please enter the name of this POI...',
+    searchGeofence: 'Procurar geocerca'
   },
   report: {
     select_vehicles: 'Select vehicles',

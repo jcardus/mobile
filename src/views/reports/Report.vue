@@ -116,7 +116,7 @@
         </el-col>
       </el-row>
     </div>
-    <div id="viewer"></div>
+    <div id="viewerDiv"></div>
   </div>
 </template>
 
@@ -237,8 +237,10 @@ export default {
     isMobile() { return lnglat.isMobile() }
   },
   created() {
-    Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js')
-    Vue.loadScript('stimulsoft/stimulsoft.viewer.pack.js')
+    if (!this.$store.state.app.stiLoaded) {
+      Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js')
+      Vue.loadScript('stimulsoft/stimulsoft.viewer.pack.js')
+    }
   },
   mounted() {
     if (this.devices.length === 0) {
@@ -282,11 +284,10 @@ export default {
       }
     },
     renderReport: function(report_id) {
-      this.loadingReport = false
       sutil.load(this.reportMrt, report_id)
+      this.loadingReport = false
     },
     errorHandler: function(report_id, reason) {
-      this.loadingReport = false
       this.$log.debug('Report triggering failed - ' + reason)
       setTimeout(utils.check_if_online, 2000, report_id, this.renderReport)
     }
@@ -300,7 +301,7 @@ export default {
   .reportContainer {
     padding: 10px;
   }
-  #viewer {
+  #viewerDiv {
     padding-top: 5px;
   }
   .el-row {

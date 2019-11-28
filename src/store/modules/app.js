@@ -7,7 +7,8 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  size: VueCookies.get('size') || 'medium'
+  size: VueCookies.get('size') || 'medium',
+  stiLoaded: false
 }
 
 const mutations = {
