@@ -20,18 +20,15 @@
         prop="name"
       >
       </el-table-column>
-      <el-table-column label="" width="130">
+      <el-table-column label="" width="50">
         <template slot-scope="scope">
-
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.row)"
-          ><i class="fas fa-edit"></i></el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.row)"
-          ><i class="fas fa-trash-alt"></i></el-button>
+          <el-dropdown>
+            <i class="fas fa-ellipsis-v"></i>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('geofence.edit_geofence') }}</el-dropdown-item>
+              <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('geofence.delete_geofence') }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -149,7 +146,6 @@ export default {
 
 <style scoped>
   .header {
-    background: white;
     padding: 10px;
   }
 </style>

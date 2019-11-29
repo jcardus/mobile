@@ -147,7 +147,10 @@ export default {
     poi_edited: 'POI editada com sucesso!',
     poi_deleted: 'POI  foi apagada',
     poi_edit_title: 'Editar POI',
-    poi_edit_name: 'Por favor indique o nome do POI...'
+    poi_edit_name: 'Por favor indique o nome do POI...',
+    searchGeofence: 'Procurar Cerca Eletrônica',
+    edit_geofence: 'Editar',
+    delete_geofence: 'Apagar'
   },
   report: {
     select_vehicles: 'Seleccionar veículos',

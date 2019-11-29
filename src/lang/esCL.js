@@ -45,7 +45,9 @@ export default {
     show_route: 'Mostrar ruta'
   },
   poiTable: {
-    showPOIs: 'Mostar PDIs'
+    showPOIs: 'Mostar PDIs',
+    edit_poi: 'Editar',
+    delete_poi: 'Apagar'
   },
   dashboard: {
     startdate: 'Fecha de inicio',
@@ -148,7 +150,10 @@ export default {
     poi_edited: 'PDI editado con éxito!',
     poi_deleted: 'PDI ha sido apagado',
     poi_edit_title: 'Editar PDI',
-    poi_edit_name: 'Por favor indicar el nombre de PDI...'
+    poi_edit_name: 'Por favor indicar el nombre de PDI...',
+    searchGeofence: 'Procurar Geocerca',
+    edit_geofence: 'Editar',
+    delete_geofence: 'Apagar'
   },
   report: {
     select_vehicles: 'Seleccione vehículos',

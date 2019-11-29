@@ -45,7 +45,9 @@ export default {
     show_route: 'Rota'
   },
   poiTable: {
-    showPOIs: 'Ver POIs'
+    showPOIs: 'Ver POIs',
+    edit_poi: 'Editar',
+    delete_poi: 'Apagar'
   },
   dashboard: {
     startdate: 'Data de Início',
@@ -149,7 +151,10 @@ export default {
     poi_edited: 'POI editada com sucesso!',
     poi_deleted: 'POI  foi apagada',
     poi_edit_title: 'Editar POI',
-    poi_edit_name: 'Por favor indique o nome do POI...'
+    poi_edit_name: 'Por favor indique o nome do POI...',
+    searchGeofence: 'Procurar baliza',
+    edit_geofence: 'Editar',
+    delete_geofence: 'Apagar'
   },
   report: {
     select_vehicles: 'Seleccionar veículos',

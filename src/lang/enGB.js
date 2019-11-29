@@ -45,7 +45,9 @@ export default {
     show_route: 'Show route'
   },
   poiTable: {
-    showPOIs: 'Show POIs'
+    showPOIs: 'Show POIs',
+    edit_poi: 'Edit',
+    delete_poi: 'Delete'
   },
   dashboard: {
     startdate: 'Start date',
@@ -150,7 +152,9 @@ export default {
     poi_deleted: 'POI has been deleted',
     poi_edit_title: 'Edit POI',
     poi_edit_name: 'Please enter the name of this POI...',
-    searchGeofence: 'Procurar geocerca'
+    searchGeofence: 'Search geofence',
+    edit_geofence: 'Edit',
+    delete_geofence: 'Delete'
   },
   report: {
     select_vehicles: 'Select vehicles',
