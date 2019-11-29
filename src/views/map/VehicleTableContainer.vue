@@ -145,7 +145,8 @@ export default {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 50%;
+    /* width: 50%; */
+
   }
   .input {
     padding-top: 10px;
