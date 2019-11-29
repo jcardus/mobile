@@ -1,38 +1,38 @@
 <template>
-  <div v-loading="loadingReport" class="reportContainer" :style="top">
-    <div v-if="isMobile">
-      <div style="text-align: center; font-size: larger">
-        <span :content="title">{{ title }}
-        </span>
-      </div>
-      <el-row>
-        <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
-          <el-select
-            v-model="selectedDevices"
-            multiple
-            :placeholder="$t('report.select_vehicles_placeholder')"
-            value=""
-            style="width: 100%"
-          >
-            <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-        </el-tooltip>
-      </el-row>
-      <el-row v-if="selectGeofences">
-        <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
-          <el-select
-            v-model="selectedGeofences"
-            style="width: 100%; height: 35px"
-            multiple
-            :placeholder="$t('report.select_geofences_placeholder')"
-            value=""
-          >
-            <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-        </el-tooltip>
-      </el-row>
-      <el-row type="flex" justify="space-between">
-        <el-col :span="21">
+  <div v-loading="loadingReport" class="reportContainer">
+    <el-row type="flex" justify="space-between">
+      <el-col :span="selectGeofences ? 7 : 16">
+        <div class="grid-content">
+          <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
+            <el-select
+              v-model="selectedDevices"
+              style="width: 100%; height: 35px"
+              multiple
+              :placeholder="$t('report.select_vehicles_placeholder')"
+              value=""
+            >
+              <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-tooltip>
+        </div>
+      </el-col>
+      <el-col v-if="selectGeofences" :span="7">
+        <div class="grid-content">
+          <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
+            <el-select
+              v-model="selectedGeofences"
+              style="width: 100%; height: 35px"
+              multiple
+              :placeholder="$t('report.select_geofences_placeholder')"
+              value=""
+            >
+              <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-tooltip>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content">
           <el-tooltip :content="$t('report.select_period')" placement="bottom">
             <el-date-picker
               v-model="dateRange"
@@ -48,74 +48,16 @@
               :default-time="['00:00:00', '23:59:59']"
             />
           </el-tooltip>
-        </el-col>
-        <el-col :span="2">
+        </div>
+      </el-col>
+      <el-col :span="1">
+        <div class="grid-content">
           <el-tooltip :content="$t('report.generate_report')" placement="bottom">
             <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
           </el-tooltip>
-        </el-col>
-      </el-row>
-    </div>
-    <div v-else>
-      <el-row type="flex" justify="space-between">
-        <el-col :span="selectGeofences ? 7 : 16">
-          <div class="grid-content">
-            <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
-              <el-select
-                v-model="selectedDevices"
-                style="width: 100%; height: 35px"
-                multiple
-                :placeholder="$t('report.select_vehicles_placeholder')"
-                value=""
-              >
-                <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-tooltip>
-          </div>
-        </el-col>
-        <el-col v-if="selectGeofences" :span="7">
-          <div class="grid-content">
-            <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
-              <el-select
-                v-model="selectedGeofences"
-                style="width: 100%; height: 35px"
-                multiple
-                :placeholder="$t('report.select_geofences_placeholder')"
-                value=""
-              >
-                <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-tooltip>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="grid-content">
-            <el-tooltip :content="$t('report.select_period')" placement="bottom">
-              <el-date-picker
-                v-model="dateRange"
-                style="width: 100%"
-                type="daterange"
-                unlink-panels
-                range-separator="-"
-                format="dd-MM-yyyy"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                :start-placeholder="$t('report.date_start')"
-                :end-placeholder="$t('report.date_end')"
-                :picker-options="pickerOptions"
-                :default-time="['00:00:00', '23:59:59']"
-              />
-            </el-tooltip>
-          </div>
-        </el-col>
-        <el-col :span="1">
-          <div class="grid-content">
-            <el-tooltip :content="$t('report.generate_report')" placement="bottom">
-              <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
-            </el-tooltip>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+        </div>
+      </el-col>
+    </el-row>
     <div id="viewerDiv"></div>
   </div>
 </template>
@@ -214,10 +156,7 @@ export default {
       return vm.$t('route.' + this.$route.meta.title)
     },
     top() {
-      if (!lnglat.isMobile()) {
-        return 'padding-top: 60px'
-      }
-      return 'padding-top: 10px'
+      return 'padding-top: 20px'
     },
     devices() {
       const sortKey = 'name'
@@ -299,7 +238,8 @@ export default {
   @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
 
   .reportContainer {
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   #viewerDiv {
     padding-top: 5px;

@@ -90,9 +90,11 @@ export default {
       return partner.getLogo()
     },
     version() {
+      let v = this.$store.state.app.packageVersion
       if (process.env.NODE_ENV === 'development') {
-        return new Date()
-      } else { return this.$store.state.app.packageVersion }
+        v += '-dev'
+      }
+      return v
     }
   },
   watch: {
@@ -170,10 +172,11 @@ export default {
 </script>
 
 <style lang="scss">
+  @import '../../styles/element-variables.scss';
 
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+$bg:$--color-text-primary;
+$light_gray:$--color-white;
+$cursor:$--color-info;
 
 /* reset element-ui css */
 .login-container {
@@ -222,7 +225,7 @@ $light_gray:#eee;
 
   .login-form {
     position: relative;
-    width: 520px;
+    width: 450px;
     max-width: 100%;
     padding: 160px 35px 0;
     margin: 0 auto;
@@ -284,10 +287,5 @@ $light_gray:#eee;
     bottom: 6px;
   }
 
-  @media only screen and (max-width: 470px) {
-    .thirdparty-button {
-      display: none;
-    }
-  }
 }
 </style>

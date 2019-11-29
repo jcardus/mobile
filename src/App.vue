@@ -7,7 +7,6 @@
 <script>
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import './styles/element-variables.scss'
-import '@/styles/index.scss' // global css
 import * as partner from '@/utils/partner'
 
 export default {
@@ -19,3 +18,12 @@ export default {
   }
 }
 </script>
+<style>
+  body {
+    height: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  }
+</style>

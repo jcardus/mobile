@@ -76,7 +76,7 @@ export default {
       if (('standalone' in window.navigator) && window.navigator.standalone) {
         return 'padding-top:95px;'
       }
-      return 'padding-top:60px;'
+      return 'padding-top:10px;'
     },
     parameters: function() {
       return {

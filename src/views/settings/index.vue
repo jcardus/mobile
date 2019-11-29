@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container" :style="top">
+  <div class="app-container">
     <el-tabs
       active-tab-color="#9b59b6"
       active-text-color="white"
@@ -10,9 +10,6 @@
           <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
         </span>
         <el-card>
-          <div slot="header" class="clearfix">
-            <span>{{ $t('settings.title') }}</span>
-          </div>
           <el-switch
             v-model="matchRoutes"
             :active-text="$t('settings.route_match')"
@@ -50,7 +47,7 @@ export default {
       if (('standalone' in window.navigator) && window.navigator.standalone) {
         return 'padding-top:100px;'
       }
-      return 'padding-top:60px'
+      return 'padding-top:15px'
     },
     isMobile() { return lnglat.isMobile() },
     matchRoutes: {

@@ -132,7 +132,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  @import '../../styles/element-variables.scss';
   .dd-body-inner {
     padding: 5px;
   }
@@ -145,10 +144,11 @@ export default {
   .input {
     padding-top: 10px;
     padding-bottom: 10px;
+    color: #979797;
   }
 
   .mainContainer {
-    background-color: $--color-white;
+    background-color: #F8F9FE;
   }
   .dd-body-inner {
     padding: 5px;

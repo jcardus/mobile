@@ -1,7 +1,7 @@
 <template>
-  <section class="app-main">
+  <section class="app-main" :style="$route.path.includes('map')?'':'padding-top:40px'">
     <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cachedViews">
+      <keep-alive>
         <router-view :key="key" />
       </keep-alive>
     </transition>
@@ -12,9 +12,6 @@
 export default {
   name: 'AppMain',
   computed: {
-    cachedViews() {
-      return this.$store.state.tagsView.cachedViews
-    },
     key() {
       return this.$route.path
     }
@@ -25,19 +22,3 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.app-main {
-   height: 100vh;
-   width: 100%;
-   position: absolute;
- }
-</style>
-
-<style lang="scss">
-// fix css style bug in open el-dialog
-.el-popup-parent--hidden {
-  .fixed-header {
-    padding-right: 15px;
-  }
-}
-</style>

@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "1.0.88",
+  "version": "1.0.90",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -28,7 +28,7 @@
     "axios": "0.18.1",
     "chart.js": "latest",
     "core-js": "^2.6.5",
-    "element-ui": "2.11.1",
+    "element-ui": "latest",
     "fuse.js": "3.4.4",
     "jsonlint": "1.6.3",
     "mapbox-gl": "latest",

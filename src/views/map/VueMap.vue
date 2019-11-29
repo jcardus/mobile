@@ -1,7 +1,5 @@
 <template>
-
   <div id="map" ref="map"></div>
-
 </template>
 
 <script>
@@ -148,7 +146,7 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
       this.$log.info('onMapLoad')
-      vm.$data.loadingRoutes = false
+      // vm.$data.loadingRoutes = false
       NProgress.done()
     },
     findFeatureByDeviceId(deviceId) {
@@ -415,11 +413,12 @@ export default {
       if (style.sprite !== spriteUrl) {
         this.$log.debug('setting sprite')
         style.sprite = spriteUrl
-        setTimeout(this.map.setStyle, 1000, style)
+        setTimeout(this.map.setStyle, 100, style)
       } else {
         this.$log.info('adding layers...')
         lnglat.addLayers(vm.$static.map)
         this.$log.info('done adding layers')
+        setTimeout(() => { vm.$data.loadingRoutes = false }, 1000)
       }
     },
     onData() {

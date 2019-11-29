@@ -4,7 +4,7 @@
       id="vehicleTable"
       v-loading.fullscreen.lock="loading"
       element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.6)"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
       :element-loading-text="$t('map.loading')"
       :cell-style="cellStyle"
       :data="filteredVehicles"
@@ -80,7 +80,7 @@ export default {
       type: String
     },
     height: {
-      default: 'calc(100vh - 204px)',
+      default: 'calc(100vh - 207px)',
       type: String
     },
     filterKey: {
