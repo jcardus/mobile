@@ -132,6 +132,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
   .dd-body-inner {
     padding: 5px;
   }

@@ -47,7 +47,7 @@ import { serverBus, vm } from '../../main'
 import * as lnglat from '@/utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
-import styles from '@/styles/element-variables.scss'
+import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'VehicleTable',
@@ -79,10 +79,6 @@ export default {
       default: '',
       type: String
     },
-    height: {
-      default: 'calc(100vh - 212px)',
-      type: String
-    },
     filterKey: {
       default: '',
       type: String
@@ -103,6 +99,9 @@ export default {
     }
   },
   computed: {
+    height() {
+      return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
+    },
     loading() {
       return vm.$data.loadingRoutes
     },
@@ -250,11 +249,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .mobileScroll {
     -webkit-overflow-scrolling: touch;
   }
-
 </style>
 <style>
   ::-webkit-scrollbar {

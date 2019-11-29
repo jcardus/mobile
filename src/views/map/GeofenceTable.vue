@@ -13,7 +13,7 @@
       highlight-current-row
       :data="filteredGeofences"
       :show-header="false"
-      height="calc(100vh - 150px)"
+      :height="height"
       @current-change="geofenceSelected"
     >
       <el-table-column
@@ -40,6 +40,7 @@ import { serverBus, vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
+import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'GeofenceTable',
@@ -54,6 +55,9 @@ export default {
     }
   },
   computed: {
+    height() {
+      return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
+    },
     map: function() { return vm.$static.map },
     geofences: function() {
       return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING'))
