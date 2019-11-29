@@ -80,7 +80,7 @@ export default {
       type: String
     },
     height: {
-      default: 'calc(100vh - 207px)',
+      default: 'calc(100vh - 212px)',
       type: String
     },
     filterKey: {

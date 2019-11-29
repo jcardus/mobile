@@ -1,11 +1,12 @@
 <template>
-  <section class="app-main" :style="$route.path.includes('map')?'':'padding-top:40px'">
+  <div>
+    <div v-if="!$route.path.includes('map')" style="height: 50px"></div>
     <transition name="fade-transform" mode="out-in">
       <keep-alive>
         <router-view :key="key" />
       </keep-alive>
     </transition>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -21,4 +22,7 @@ export default {
   }
 }
 </script>
+<style>
+
+</style>
 
