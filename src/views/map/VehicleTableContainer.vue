@@ -1,7 +1,8 @@
 <template>
   <div class="mainContainer">
     <div class="dd-body-inner">
-      <img class="logo" :src="logoImage" alt="">
+      <logo-svg v-if="hasSVG" class="logo"></logo-svg>
+      <img v-else class="logo" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs stretch>
         <el-tab-pane>
@@ -85,10 +86,11 @@ import POITable from './POITable'
 import VehicleTable from './VehicleTable'
 import { vm } from '@/main'
 import * as partner from '../../utils/partner'
+import LogoSvg from '../../layout/components/LogoSvg'
 
 export default {
   name: 'VehicleTableContainer',
-  components: { VehicleTable, GeofenceTable, POITable },
+  components: { VehicleTable, GeofenceTable, POITable, LogoSvg },
   data() {
     return {
       filterKey: '',
@@ -96,6 +98,9 @@ export default {
     }
   },
   computed: {
+    hasSVG() {
+      return partner.hasSVG()
+    },
     logoImage: function() {
       return partner.getLogo()
     },
@@ -160,6 +165,9 @@ export default {
   }
   .hidden_header {
     display: none;
+  }
+  .collapse {
+    float: left;
   }
 
 </style>
