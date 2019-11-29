@@ -222,6 +222,7 @@ $light_gray:#eee;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
+  -webkit-text-fill-color: #fff!important;
 
   .login-form {
     position: relative;
