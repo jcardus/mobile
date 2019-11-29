@@ -4,10 +4,10 @@
       <span>{{ title }}</span>
     </div>
     <div class="right-menu">
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div style="padding:5px" class="el-dropdown-link">
+      <el-dropdown trigger="click">
+        <span class="el-dropdown-link">
           <el-avatar :src="avatar+'?imageView2/1/w/80/h/80'"></el-avatar>
-        </div>
+        </span>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
             <el-dropdown-item>{{ $t('navbar.profile') }}</el-dropdown-item>
@@ -73,52 +73,12 @@ export default {
     width: calc(100vw - 64px);
     position: absolute;
     left: 64px;
-    background: #f5f5f5;
     background: rgba(0, 0, 0, 0);
     z-index: 99;
   }
   .right-menu {
     float: right;
-    height: 100%;
-    line-height: 50px;
-
-    &:focus {
-      outline: none;
-    }
-
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: background .3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, .025)
-        }
-      }
-    }
-
-    .avatar-container {
-      margin-right:0;
-
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-      }
-    }
+    padding: 5px;
   }
 .left {
   padding: 10px;
@@ -128,4 +88,7 @@ export default {
   opacity: 0.5;
   font-weight: bold;
 }
+  a:link {
+    text-decoration: none;
+  }
 </style>

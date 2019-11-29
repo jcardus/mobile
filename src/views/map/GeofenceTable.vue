@@ -24,11 +24,11 @@
         <template slot-scope="scope">
 
           <el-button
-            size="small"
+            size="mini"
             @click="handleEdit(scope.row)"
           ><i class="fas fa-edit"></i></el-button>
           <el-button
-            size="small"
+            size="mini"
             type="danger"
             @click="handleDelete(scope.row)"
           ><i class="fas fa-trash-alt"></i></el-button>

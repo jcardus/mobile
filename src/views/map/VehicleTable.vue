@@ -251,8 +251,23 @@ export default {
 </script>
 
 <style scoped>
-
   .mobileScroll {
     -webkit-overflow-scrolling: touch;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 5px;
   }
 </style>
