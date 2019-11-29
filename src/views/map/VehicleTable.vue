@@ -255,6 +255,8 @@ export default {
     -webkit-overflow-scrolling: touch;
   }
 
+</style>
+<style>
   ::-webkit-scrollbar {
     width: 5px;
   }
