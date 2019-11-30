@@ -26,7 +26,7 @@
                     round
                     size="mini"
                     @click="handleFilterState('Moving')"
-                  >{{ devicesOn.length }}</el-button>
+                  >{{ devicesOnCount }}</el-button>
                 </el-tooltip></el-col>
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
@@ -108,10 +108,13 @@ export default {
       return lnglat.isMobile()
     },
     devices: { get: function() { return vm.$data.devices }, set: function(value) { vm.$data.devices = value } },
-    devicesDisconnected: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected') },
-    devicesOff: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Stopped') },
-    devicesIdle: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Idle') },
-    devicesOn: function() { return this.devices.filter(d => this.getDeviceState(d) === 'Moving') },
+    devicesDisconnected() { return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected') },
+    devicesOff() { return this.devices.filter(d => this.getDeviceState(d) === 'Stopped') },
+    devicesIdle() { return this.devices.filter(d => this.getDeviceState(d) === 'Idle') },
+    devicesOn() { return this.devices.filter(d => this.getDeviceState(d) === 'Moving') },
+    devicesOnCount() {
+      return this.devicesOn.length
+    },
     positions() {
       return vm.$data.positions
     }
@@ -145,8 +148,7 @@ export default {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    /* width: 50%; */
-
+    width:60%;
   }
   .input {
     padding-top: 10px;

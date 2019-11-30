@@ -40,7 +40,8 @@ export default {
       mapStyle: this.$root.$data.mapStyle,
       unsubscribe: null,
       parentHeight: 0,
-      imageDownloadQueue: []
+      imageDownloadQueue: [],
+      loadingCount: 0
     }
   },
   computed: {

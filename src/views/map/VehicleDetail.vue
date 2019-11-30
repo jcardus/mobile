@@ -1,9 +1,6 @@
 <template>
   <div v-show="!showRoutes" style="padding: 0">
     <el-image v-show="showMapilary && imageOk" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
-      <div slot="error" v-loading="loadingImage" class="image-slot" style="height: 150px">
-        <span style="width: 100%;padding-top:13px; height: 100px;"></span>
-      </div>
     </el-image>
     <div style="padding: 10px">
       <div class="title">
@@ -109,7 +106,6 @@ export default {
       axios.get('https://a.mapillary.com/v3/images/?closeto=' + self.feature.geometry.coordinates[0] + ',' +
         self.feature.geometry.coordinates[1] + '&radius=500&per_page=1&client_id=NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj')
         .then((response) => {
-          Vue.$log.debug(response)
           if (response.data.features[0]) {
             self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
             self.imageOk = true
