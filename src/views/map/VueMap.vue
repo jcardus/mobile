@@ -573,6 +573,11 @@ export default {
     },
     processPositions: function(positions) {
       const self = this
+
+      function getImmobilizationActive(position) {
+        return position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
+      }
+
       positions.forEach(function(position) {
         let feature = self.findFeatureByDeviceId(position.deviceId)
         const device = self.devices.find(e => e.id === position.deviceId)
@@ -582,13 +587,13 @@ export default {
             return
           }
           device.speed = position.speed
-          device.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
+          device.immobilization_active = getImmobilizationActive(position)
           feature = self.positionToFeature(position, device)
           self.positionsSource.features.push(feature)
           if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
         } else {
           if (!device) return
-          device.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
+          device.immobilization_active = getImmobilizationActive(position)
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers && lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {

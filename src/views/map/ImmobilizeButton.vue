@@ -28,10 +28,16 @@ export default {
     }
   },
   methods: {
+    getImmobilizationValue: function(selectedDevice) {
+      if (selectedDevice.immobilization_active === undefined) {
+        return false
+      }
+      return selectedDevice.immobilization_active
+    },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
-      Vue.$log.debug('Immobilization ' + selectedDevice.immobilization_active + ' for device ' + selectedDevice)
-      let message = selectedDevice.immobilization_active ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
+      Vue.$log.debug('Immobilization ' + this.getImmobilizationValue(selectedDevice) + ' for device ' + selectedDevice)
+      let message = this.getImmobilizationValue(selectedDevice) ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
       message += (selectedDevice.name + '?')
       const self = this
       this.$confirm(message).then(() => {
@@ -41,11 +47,13 @@ export default {
             'password': VueCookies.get('user-info').password,
             'command': 'immobilization',
             'deviceid': selectedDevice.id,
-            'value': !selectedDevice.immobilization_active
+            'value': this.getImmobilizationValue(selectedDevice)
           },
           self.commandImmobilizeOk,
           self.commandImmobilizeNok)
-      }).catch(e => Vue.$log.error(e))
+      }).catch(
+        e => Vue.$log.error(e)
+      )
     },
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result' + response.data)

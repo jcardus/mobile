@@ -109,4 +109,10 @@ export default {
 <style lang="scss" scoped>
   @import './framework7/css/framework7.bundle.min.css';
   @import './framework7/css/icons.css';
+
+  .logo {
+    margin: 0 auto 40px auto;
+    display: block;
+    width: 50%;
+  }
 </style>
