@@ -744,7 +744,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 
   .app-container {;
     padding:0;
@@ -758,17 +758,42 @@ export default {
 
   #map {
     height: 100%;
-
-    // margin-left: 300px;
   }
 
-  @media screen and (max-width: 768px) {
-    #map {
-      margin-left:0;
-    }
-    #vehiclesDiv {
-      width: 0;
-    }
+  .mapboxgl-ctrl-icon.mapboxgl-ctrl-fullscreen {
+      background-image: url('../../icons/fullscreen.svg') !important;
+  }
+  .mapboxgl-ctrl-icon.mapboxgl-style-switcher {
+      background-image: url('../../icons/layers.svg') !important;
+  }
+  .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate::before {
+    background-image: url('../../icons/geolocate.svg') !important;
+  }
+  .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in {
+    background-image: url('../../icons/zoom-in.svg') !important;
+  }
+  .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+    background-image: url('../../icons/zoom-out.svg') !important;
+  }
+  .mapboxgl-ctrl-icon.mapboxgl-ctrl-compass > .mapboxgl-ctrl-compass-arrow {
+    background-image: url('../../icons/compass-arrow.svg') !important;
+  }
+  .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_line {
+    background-image: url('../../icons/draw-line.svg') !important;
+  }
+  .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_polygon {
+    background-image: url('../../icons/draw-square.svg') !important;
+  }
+  .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_point {
+    background-image: url('../../icons/draw-point.svg') !important;
+  }
+  .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_trash {
+    background-image: url('../../icons/draw-trash.svg') !important;
+  }
+
+  svg {
+    fill: #055AE5;
+    fill-opacity: 0.6;
   }
 
 </style>

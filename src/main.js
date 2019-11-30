@@ -3,7 +3,6 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import store from './store'
 import router from './router'
-import './icons' // icon
 import './routeInterceptor'
 import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
