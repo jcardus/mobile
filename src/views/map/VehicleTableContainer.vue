@@ -14,7 +14,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
                   <el-button
-                    round
+                    :round="buttonRound"
                     :size="buttonSize"
                     @click="handleFilterState(null)"
                   >{{ devices.length }}</el-button>
@@ -23,7 +23,7 @@
                 <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="bottom">
                   <el-button
                     type="success"
-                    round
+                    :round="buttonRound"
                     :size="buttonSize"
                     @click="handleFilterState('Moving')"
                   >{{ devicesOnCount }}</el-button>
@@ -31,7 +31,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
                   <el-button
-                    round
+                    :round="buttonRound"
                     type="warning"
                     :size="buttonSize"
                     @click="handleFilterState('Idle')"
@@ -40,7 +40,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
                   <el-button
-                    round
+                    :round="buttonRound"
                     :size="buttonSize"
                     type="danger"
                     @click="handleFilterState('Stopped')"
@@ -49,7 +49,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
                   <el-button
-                    round
+                    :round="buttonRound"
                     :size="buttonSize"
                     type="info"
                     @click="handleFilterState('Disconnected')"
@@ -87,6 +87,7 @@ import VehicleTable from './VehicleTable'
 import { vm } from '@/main'
 import * as partner from '../../utils/partner'
 import LogoSvg from '../../layout/components/LogoSvg'
+import Vue from 'vue'
 
 export default {
   name: 'VehicleTableContainer',
@@ -98,6 +99,9 @@ export default {
     }
   },
   computed: {
+    buttonRound() {
+      return !this.isMobile
+    },
     hasSVG() {
       return partner.hasSVG()
     },
@@ -108,7 +112,7 @@ export default {
       return lnglat.isMobile()
     },
     buttonSize() {
-      return this.isMobile ? 'medium' : 'mini'
+      return this.isMobile ? 'large' : 'mini'
     },
     devices() { return vm.$data.devices },
     devicesDisconnected() { return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected') },
@@ -137,7 +141,9 @@ export default {
       if (state === 'Disconnected') return 3
     },
     handleFilterState: function(state) {
+      Vue.$log.debug('state: ', state)
       let devices = this.devices
+      this.filterState = state
       if (state != null) {
         this.filterState = state
         devices = this.devices.filter(d => this.getDeviceState(d) === state)

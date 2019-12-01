@@ -8,6 +8,7 @@
       :element-loading-text="$t('map.loading')"
       :cell-style="cellStyle"
       :data="filteredVehicles"
+      row-key="id"
       :height="height"
       :show-header="false"
       highlight-current-row
@@ -108,17 +109,13 @@ export default {
     isMobile() {
       return lnglat.isMobile()
     },
-    devices: {
-      get: function() {
-        return vm.$data.devices
-      }, set: function(value) {
-        vm.$data.devices = value
-      }
+    devices() {
+      return vm.$data.devices
     },
-    devicesDisconnected: function() {
+    devicesDisconnected() {
       return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected')
     },
-    devicesOff: function() {
+    devicesOff() {
       return this.devices.filter(d => this.getDeviceState(d) === 'Stopped')
     },
     devicesIdle: function() {
