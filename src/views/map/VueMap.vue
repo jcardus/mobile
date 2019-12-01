@@ -791,9 +791,9 @@ export default {
     background-image: url('../../icons/draw-trash.svg') !important;
   }
 
-  svg {
-    fill: #055AE5;
-    fill-opacity: 0.6;
-  }
+  button svg {
+        fill: #055AE5;
+        fill-opacity: 0.6;
+      }
 
 </style>

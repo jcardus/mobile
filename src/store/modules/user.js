@@ -95,7 +95,8 @@ const actions = {
   getInfo({ commit, state }) {
     commit('SET_ROLES', ['admin'])
     commit('SET_NAME', getToken().name)
-    commit('SET_AVATAR', 'https://ui-avatars.com/api/?name=' + getToken().name)
+    const nameSplit = getToken().name.split(' ')
+    commit('SET_AVATAR', nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase()))
     return { roles: state.roles }
   },
 

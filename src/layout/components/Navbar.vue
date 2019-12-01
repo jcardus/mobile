@@ -6,7 +6,7 @@
     <div class="right-menu">
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
-          <el-avatar :src="avatar+'?imageView2/1/w/80/h/80'"></el-avatar>
+          <el-avatar size="large">{{ avatar }}</el-avatar>
         </span>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
@@ -19,6 +19,7 @@
             <el-dropdown-item>{{ $t('navbar.settings') }}</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
+
             <span style="display:block;" @click="logout">{{ $t('navbar.logout') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -90,5 +91,10 @@ export default {
 }
   a:link {
     text-decoration: none;
+  }
+  .el-avatar {
+    color:$--color-white;
+    background-color:$--color-primary;
+    opacity: 0.6;
   }
 </style>
