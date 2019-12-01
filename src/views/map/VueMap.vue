@@ -792,8 +792,8 @@ export default {
   }
 
   button svg {
-        fill: #055AE5;
-        fill-opacity: 0.6;
+        fill: #909399;
+        opacity: 1;
       }
 
 </style>

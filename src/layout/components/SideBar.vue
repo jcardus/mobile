@@ -2,16 +2,16 @@
   <div style="width:64px">
     <el-menu collapse style="height:100vh" default-active="1" router>
       <el-menu-item index="/map">
-        <i class="el-icon-place"></i>
+        <i class="el-icon-place" :style="iconStyle"></i>
         <span slot="title">{{ $t('route.map') }}</span>
       </el-menu-item>
       <el-menu-item index="/dashboard/index">
-        <i class="el-icon-menu"></i>
+        <i class="el-icon-menu" :style="iconStyle"></i>
         <span slot="title">{{ $t('route.dashboard') }}</span>
       </el-menu-item>
       <el-submenu index="/reports">
         <template slot="title">
-          <i class="el-icon-document"></i>
+          <i class="el-icon-document" :style="iconStyle"></i>
         </template>
         <el-menu-item-group>
           <el-menu-item index="/reports/report_trip">{{ $t('route.report_trip_title') }}</el-menu-item>
@@ -21,12 +21,20 @@
       </el-submenu>
 
       <el-menu-item index="/settings/index">
-        <i class="el-icon-setting"></i>
+        <i class="el-icon-setting" :style="iconStyle"></i>
         <span slot="title">{{ $t('route.settings') }}</span>
       </el-menu-item>
     </el-menu>
   </div>
 </template>
-
+<script>
+export default {
+  computed: {
+    iconStyle() {
+      return '' // return 'color:' + styles.primary + ';opacity:0.6'
+    }
+  }
+}
+</script>
 <style scoped>
 </style>

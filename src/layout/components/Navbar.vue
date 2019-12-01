@@ -19,7 +19,6 @@
             <el-dropdown-item>{{ $t('navbar.settings') }}</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
-
             <span style="display:block;" @click="logout">{{ $t('navbar.logout') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -93,9 +92,9 @@ export default {
     text-decoration: none;
   }
   .el-avatar {
-    color:$--color-primary;
+    color:$--color-text-regular;
     background-color:white;
-    opacity: 0.6;
+    opacity: 0.8;
     font-weight: bold;
   }
 </style>

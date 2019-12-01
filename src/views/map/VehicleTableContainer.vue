@@ -80,7 +80,7 @@
 </template>
 <script>
 
-import * as lnglat from '@/utils/lnglat'
+import * as lnglat from '../../utils/lnglat'
 import GeofenceTable from './GeofenceTable'
 import POITable from './POITable'
 import VehicleTable from './VehicleTable'
@@ -107,7 +107,7 @@ export default {
     isMobile() {
       return lnglat.isMobile()
     },
-    devices: { get: function() { return vm.$data.devices }, set: function(value) { vm.$data.devices = value } },
+    devices() { return vm.$data.devices },
     devicesDisconnected() { return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected') },
     devicesOff() { return this.devices.filter(d => this.getDeviceState(d) === 'Stopped') },
     devicesIdle() { return this.devices.filter(d => this.getDeviceState(d) === 'Idle') },
@@ -134,7 +134,12 @@ export default {
       if (state === 'Disconnected') return 3
     },
     handleFilterState: function(state) {
-      this.filterState = state
+      let devices = this.devices
+      if (state != null) {
+        this.filterState = state
+        devices = this.devices.filter(d => this.getDeviceState(d) === state)
+      }
+      lnglat.fitBounds(devices)
     }
   }
 }

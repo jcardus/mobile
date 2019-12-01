@@ -30,9 +30,7 @@ export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }
 export function findFeatureByDeviceId(deviceId) {
-  return vm.$static.positionsSource.features.find(e => {
-    return e.properties.deviceId === deviceId
-  })
+  return vm.$static.positionsSource.features.find(e => e.properties.deviceId === deviceId)
 }
 export function findFeatureById(id) {
   return vm.$static.geofencesSource.features.find(e => {
@@ -340,6 +338,14 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
+}
+
+export function fitBounds(devices) {
+  const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
+  const coords = features.map(f => f.geometry.coordinates)
+  const box = bbox(helpers.lineString(coords))
+  const bounds = [[box[0], box[1]], [box[2], box[3]]]
+  vm.$static.map.fitBounds(bounds, { padding: 30 })
 }
 export function contains(lngLatBounds, position) {
   return (
