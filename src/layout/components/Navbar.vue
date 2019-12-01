@@ -93,8 +93,9 @@ export default {
     text-decoration: none;
   }
   .el-avatar {
-    color:$--color-white;
-    background-color:$--color-primary;
+    color:$--color-primary;
+    background-color:white;
     opacity: 0.6;
+    font-weight: bold;
   }
 </style>
