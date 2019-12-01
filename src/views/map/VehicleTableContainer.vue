@@ -15,7 +15,7 @@
                 <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
                   <el-button
                     round
-                    size="mini"
+                    :size="isMobile?'small':'mini'"
                     @click="handleFilterState(null)"
                   >{{ devices.length }}</el-button>
                 </el-tooltip></el-col>
@@ -24,7 +24,7 @@
                   <el-button
                     type="success"
                     round
-                    size="mini"
+                    :size="isMobile?'small':'mini'"
                     @click="handleFilterState('Moving')"
                   >{{ devicesOnCount }}</el-button>
                 </el-tooltip></el-col>
@@ -33,7 +33,7 @@
                   <el-button
                     round
                     type="warning"
-                    size="mini"
+                    :size="isMobile?'small':'mini'"
                     @click="handleFilterState('Idle')"
                   >{{ devicesIdle.length }}</el-button>
                 </el-tooltip></el-col>
@@ -41,7 +41,7 @@
                 <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
                   <el-button
                     round
-                    size="mini"
+                    :size="isMobile?'small':'mini'"
                     type="danger"
                     @click="handleFilterState('Stopped')"
                   >{{ devicesOff.length }}</el-button>
@@ -50,7 +50,7 @@
                 <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
                   <el-button
                     round
-                    size="mini"
+                    :size="isMobile?'small':'mini'"
                     type="info"
                     @click="handleFilterState('Disconnected')"
                   >{{ devicesDisconnected.length }}</el-button>
