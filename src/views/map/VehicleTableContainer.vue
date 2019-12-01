@@ -15,7 +15,7 @@
                 <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
                   <el-button
                     round
-                    :size="isMobile?'small':'mini'"
+                    :size="buttonSize"
                     @click="handleFilterState(null)"
                   >{{ devices.length }}</el-button>
                 </el-tooltip></el-col>
@@ -24,7 +24,7 @@
                   <el-button
                     type="success"
                     round
-                    :size="isMobile?'small':'mini'"
+                    :size="buttonSize"
                     @click="handleFilterState('Moving')"
                   >{{ devicesOnCount }}</el-button>
                 </el-tooltip></el-col>
@@ -33,7 +33,7 @@
                   <el-button
                     round
                     type="warning"
-                    :size="isMobile?'small':'mini'"
+                    :size="buttonSize"
                     @click="handleFilterState('Idle')"
                   >{{ devicesIdle.length }}</el-button>
                 </el-tooltip></el-col>
@@ -41,7 +41,7 @@
                 <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
                   <el-button
                     round
-                    :size="isMobile?'small':'mini'"
+                    :size="buttonSize"
                     type="danger"
                     @click="handleFilterState('Stopped')"
                   >{{ devicesOff.length }}</el-button>
@@ -50,7 +50,7 @@
                 <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
                   <el-button
                     round
-                    :size="isMobile?'small':'mini'"
+                    :size="buttonSize"
                     type="info"
                     @click="handleFilterState('Disconnected')"
                   >{{ devicesDisconnected.length }}</el-button>
@@ -106,6 +106,9 @@ export default {
     },
     isMobile() {
       return lnglat.isMobile()
+    },
+    buttonSize() {
+      return this.isMobile ? 'medium' : 'mini'
     },
     devices() { return vm.$data.devices },
     devicesDisconnected() { return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected') },
