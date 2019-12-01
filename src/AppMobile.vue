@@ -1,6 +1,6 @@
 <template>
   <f7-app :params="f7params">
-    <f7-panel left cover theme-dark>
+    <f7-panel left cover theme-dark @panel:closed="panelClosed">
       <vehicle-table-container v-if="loggedIn"></vehicle-table-container>
     </f7-panel>
     <f7-views tabs class="safe-areas">
@@ -55,6 +55,7 @@ import VehicleTableContainer from './views/map/VehicleTableContainer'
 import Vue from 'vue'
 import { getToken } from './utils/auth'
 import * as partner from './utils/partner'
+import * as lnglat from './utils/lnglat'
 
 export default {
   name: 'AppMobile',
@@ -94,8 +95,13 @@ export default {
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
   },
   methods: {
+    panelClosed() {
+      Vue.$log.debug('panelClosed')
+      lnglat.updateMarkers()
+    },
     signIn() {
       this.$log.debug('dispatch user login ')
+      this.$f7.preloader.show()
       this.$store.dispatch('user/login', { username: this.username, password: this.password })
         .then(() => { location.reload() })
         .catch(exception => {

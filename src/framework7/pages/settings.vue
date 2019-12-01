@@ -13,6 +13,7 @@ export default {
   name: 'Settings',
   methods: {
     logout() {
+      this.$f7.preloader.show()
       this.$store.dispatch('user/logout').then(
         () => {
           Vue.$log.debug('ok - reloading page')

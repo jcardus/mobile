@@ -347,6 +347,7 @@ export function fitBounds(devices) {
     const box = bbox(helpers.lineString(coords))
     const bounds = [[box[0], box[1]], [box[2], box[3]]]
     vm.$static.map.fitBounds(bounds, { padding: 30 })
+    updateMarkers()
   }
 }
 export function contains(lngLatBounds, position) {
