@@ -14,6 +14,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
                   <el-button
+                    id="btnAll"
                     :round="buttonRound"
                     :size="buttonSize"
                     @click="handleFilterState(null)"
@@ -22,6 +23,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="bottom">
                   <el-button
+                    id="btnMoving"
                     type="success"
                     :round="buttonRound"
                     :size="buttonSize"
@@ -31,6 +33,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
                   <el-button
+                    id="btnIdle"
                     :round="buttonRound"
                     type="warning"
                     :size="buttonSize"
@@ -40,6 +43,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
                   <el-button
+                    id="btnOff"
                     :round="buttonRound"
                     :size="buttonSize"
                     type="danger"
@@ -49,6 +53,7 @@
               <el-col :span="4">
                 <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
                   <el-button
+                    id="btnUnknown"
                     :round="buttonRound"
                     :size="buttonSize"
                     type="info"
@@ -126,6 +131,13 @@ export default {
       return vm.$data.positions
     }
   },
+  mounted() {
+    document.getElementById('btnMoving').addEventListener('touchstart', this.filterStateOn)
+    document.getElementById('btnOff').addEventListener('touchstart', this.filterStateOff)
+    document.getElementById('btnIdle').addEventListener('touchstart', this.filterStateIdle)
+    document.getElementById('btnAll').addEventListener('touchstart', this.filterStateAll)
+    document.getElementById('btnUnknown').addEventListener('touchstart', this.filterStateUnknown)
+  },
   methods: {
     getDeviceState: function(device) {
       if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Disconnected' }
@@ -140,8 +152,23 @@ export default {
       if (state === 'Stopped') return 2
       if (state === 'Disconnected') return 3
     },
+    filterStateOn() {
+      this.handleFilterState('Moving')
+    },
+    filterStateAll() {
+      this.handleFilterState(null)
+    },
+    filterStateIdle() {
+      this.handleFilterState('Idle')
+    },
+    filterStateUnknown() {
+      this.handleFilterState('Disconnected')
+    },
+    filterStateOff() {
+      this.handleFilterState('Stopped')
+    },
     handleFilterState: function(state) {
-      Vue.$log.debug('state: ', state)
+      Vue.$log.debug('state is', state)
       let devices = this.devices
       this.filterState = state
       if (state != null) {
