@@ -105,7 +105,7 @@ export default {
           for (let i = 0; i < events.length; i++) {
             const event = events[i]
             this.$f7.notification.create({
-              icon: '<img width="20" height="20" src= alt=""' + partner.getFavIcon() + '/>',
+              icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '"/>',
               titleRightText: '',
               title: this.$t('layout.' + event.type),
               text: notifications.getMessage(event),
