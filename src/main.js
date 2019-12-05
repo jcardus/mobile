@@ -17,12 +17,13 @@ import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
+import { getToken } from './utils/auth'
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
   version: store.state.app.packageVersion
 })
-TrackJS.addMetadata('user', store.state.name)
+TrackJS.addMetadata('user', getToken() ? getToken().name : 'none')
 
 Vue.config.errorHandler = (err, vm, info) => {
   // Log properties passed to the component if there are any
@@ -37,8 +38,6 @@ Vue.config.errorHandler = (err, vm, info) => {
   }
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
-  // Track the native JS error
-  // eslint-disable-next-line no-undef
   TrackJS.track(err)
 }
 
@@ -137,7 +136,8 @@ export const vm = new Vue({
       distance: 0,
       vehiclePanel: null,
       historyPanel: null,
-      loggedIn: false
+      loggedIn: false,
+      loadingMap: true
     }
   },
   methods: {

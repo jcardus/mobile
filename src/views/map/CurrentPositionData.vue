@@ -1,44 +1,50 @@
 <template>
-  <div v-show="show" class="mapboxgl-ctrl" :style="(isMobile?width:'') + ';' + marginTop">
-    <el-card
-      v-loading="loadingRoutes"
-      :body-style="{ padding: '10px' }"
-      class="box-card currentPos"
-      shadow="always"
-    >
-      <h2>
+  <div v-if="show">
+    <div>
+      <span class="header">
         {{ name }}
         <el-switch
+          v-if="!isMobile"
           v-model="showRoutes"
-          v-loading="loadingRoutes"
           style="float:right"
-          @change="showRoutesClick"
         >
         </el-switch>
-      </h2>
-      <el-row>
-        <div style="float:left">
-          <label>
-            <input v-model="_minDate" type="date">
-          </label>
-        </div>
+        <f7-toggle
+          v-else
+          :checked="checked"
+          style="float:right"
+          type="checkbox"
+          @change="toggleChanged"
+        >
+        </f7-toggle>
+      </span>
+    </div>
+    <el-row>
+      <div style="float:left; padding-top: 5px; border: 2px;">
+        <label>
+          <input v-model="_minDate" type="date">
+        </label>
+      </div>
 
-        <div style="float:right">
-          <label>
-            <input v-model="_maxDate" type="date">
-          </label>
-        </div>
-      </el-row><el-row>
-        <div style="float:right">
-          {{ totalDistance }} Kms
-        </div>
-        <div>
-          {{ formattedDate }}
-          <br>
-          {{ formatAddress }}
-        </div>
-      </el-row>
-    </el-card>
+      <div style="float:right; padding-top: 5px">
+        <label>
+          <input v-model="_maxDate" type="date">
+        </label>
+      </div>
+    </el-row>
+    <el-row>
+      <el-col :span="19" style="max-height: 42px">
+        {{ formattedDate }}
+        <br>
+        {{ formatAddress }}
+      </el-col>
+      <el-col :span="5"><span>
+        {{ totalDistance }} Kms
+      </span></el-col>
+      <div style="float:left; padding-top: 10px; max-height:52px; overflow: hidden">
+
+      </div>
+    </el-row>
   </div>
 </template>
 
@@ -52,25 +58,23 @@ import * as consts from '../../utils/consts'
 import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
-import * as iPhone from '../../utils/iphone'
 
 export default {
   name: 'CurrentPositionData',
   data() {
     return {
+      checked: true,
       currentPos: 0,
       oldPos: 0,
       width: 'width:0px',
       currentTrip: 0,
       trips: [],
       startMarker: null,
-      endMarker: null
+      endMarker: null,
+      f7toggle: ''
     }
   },
   computed: {
-    marginTop() {
-      return 'margin-top: ' + (iPhone.getNavBarTop() + 50) + 'px'
-    },
     isPlaying: {
       get() {
         return vm.$data.isPlaying
@@ -129,7 +133,7 @@ export default {
       return vm.$data.historyMode
     },
     formattedDate: function() {
-      if (this.positions && this.positions.length > 0) {
+      if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
         return Vue.moment(this.positions[this.currentPos].fixTime).format('YYYY-MM-DD HH:mm:ss')
       } else { return '' }
     },
@@ -169,16 +173,28 @@ export default {
     },
     _maxDate() {
       this.datesChanged()
+    },
+    showRoutes() {
+      Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
+      if (this.device && vm.$data.popUps[this.device.id]) {
+        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
+        vm.$data.popUps[this.device.id].remove()
+      }
+      if (this.showRoutes) {
+        traccar.stopReceiving()
+        this.getRoute(this.minDate, this.maxDate)
+      } else {
+        this.removeLayers()
+        traccar.startReceiving()
+      }
+      this.loadingRoutes = this.showRoutes
+      vm.$data.currentDevice = this.device
+      lnglat.hideLayers(this.showRoutes)
+      animation.hideRouteLayer(!this.showRoutes)
     }
   },
   created() {
-    const self = this
     window.addEventListener('resize', this.resizeDiv)
-    this.unsubscribe = vm.$store.subscribe((mutation) => {
-      if (mutation.type === 'app/TOGGLE_SIDEBAR') {
-        setTimeout(function() { self.resizeDiv() }, 1000)
-      }
-    })
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
     serverBus.$on('routePlayStopped', this.routePlayStopped)
@@ -195,6 +211,28 @@ export default {
     Vue.$log.debug('CurrentPositionData mounted')
   },
   methods: {
+    toggleChanged: function() {
+      this.showRoutes = !this.showRoutes
+      setTimeout(window.dispatchEvent, 500, new Event('resize'))
+    },
+    showRoutesClick: function() {
+      Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
+      if (this.device && vm.$data.popUps[this.device.id]) {
+        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
+        vm.$data.popUps[this.device.id].remove()
+      }
+      if (this.showRoutes) {
+        traccar.stopReceiving()
+        this.getRoute(this.minDate, this.maxDate)
+      } else {
+        this.removeLayers()
+        traccar.startReceiving()
+      }
+      this.loadingRoutes = this.showRoutes
+      vm.$data.currentDevice = this.device
+      lnglat.hideLayers(this.showRoutes)
+      animation.hideRouteLayer(!this.showRoutes)
+    },
     onPositions: function(positions) {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
@@ -337,8 +375,9 @@ export default {
     },
     drawAll: function(positions) {
       if (positions && positions.length > 0) {
+        this.map.resize()
         const bounds = lnglat.getBounds(positions.map(p => [p.longitude, p.latitude]))
-        vm.$static.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
+        this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
         const lineString = { type: 'LineString', coordinates: positions.map(p => [p.longitude, p.latitude]) }
         const routeGeoJSON = this.getGeoJSON(lineString)
         this.createAllTripsLayer(routeGeoJSON)
@@ -483,24 +522,6 @@ export default {
         this.$log.warn('currentposition, no map element...')
       }
     },
-    showRoutesClick: function() {
-      Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
-      if (this.device && vm.$data.popUps[this.device.id]) {
-        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
-        vm.$data.popUps[this.device.id].remove()
-      }
-      if (this.showRoutes) {
-        traccar.stopReceiving()
-        this.getRoute(this.minDate, this.maxDate)
-      } else {
-        this.removeLayers()
-        traccar.startReceiving()
-      }
-      this.loadingRoutes = this.showRoutes
-      vm.$data.currentDevice = this.device
-      lnglat.hideLayers(this.showRoutes)
-      animation.hideRouteLayer(!this.showRoutes)
-    },
     onPosChanged(newPos) {
       Vue.$log.debug('onPosChanged to ', newPos)
       this.currentPos = newPos
@@ -610,15 +631,11 @@ export default {
 </script>
 
 <style scoped>
-  h2 {
-    margin: 10px 0;
-    font-size: 20px;
-  }
-  .currentPos {
-    width: 400px;
-    font-size: 14px;
+
+  .header {
+    font-weight: bold;
+    font-size: 18px;
     color: #5a5e66;
-    background-color: rgba(255, 255, 255, 0.9);
   }
 
   input[type="date"]::-webkit-clear-button {
@@ -634,31 +651,15 @@ export default {
 
   /* A few custom styles for date inputs */
   input[type="date"] {
-    appearance: none;
-    -webkit-appearance: none;
     color: #5a5e66;
     font-family: "Helvetica", arial, sans-serif;
     font-size: 15px;
     border-width:1px;
-    border-color: #1da1f2;
     padding:0;
-    display: inline-block !important;
     visibility: visible !important;
     box-shadow: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    background-color: rgba(0,0,0,0);
   }
 
-  .mapboxgl-ctrl {
-    padding: 0;
-
-  }
-
-  @media screen and (max-width: 768px) {
-    .currentPos {
-      width: calc(100vw - 20px);
-      padding: 0 !important;
-    }
-  }
 </style>

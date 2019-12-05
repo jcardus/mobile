@@ -65,6 +65,7 @@ export default {
             display: false
           },
           aspectRatio: 9,
+          maintainAspectRatio: false,
           tooltips: {
             backgroundColor: 'rgba(52, 152, 219, 0.8)',
             mode: 'nearest',
@@ -116,3 +117,6 @@ export default {
   }
 }
 </script>
+<style>
+
+</style>

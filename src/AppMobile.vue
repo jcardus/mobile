@@ -4,7 +4,7 @@
       <vehicle-table-container v-if="loggedIn"></vehicle-table-container>
     </f7-panel>
     <f7-views tabs class="safe-areas">
-      <f7-toolbar tabbar labels bottom>
+      <f7-toolbar bottom labels tabbar>
         <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" text="Map"></f7-link>
         <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" text="Reports"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" text="Settings"></f7-link>
@@ -56,6 +56,7 @@ import Vue from 'vue'
 import { getToken } from './utils/auth'
 import * as partner from './utils/partner'
 import * as lnglat from './utils/lnglat'
+import * as notifications from './utils/notifications'
 
 export default {
   name: 'AppMobile',
@@ -88,6 +89,8 @@ export default {
   created() {
     Vue.$log.debug('created AppMobile')
     Vue.$log.debug('loggedIn: ', this.loggedIn)
+
+    this.$root.$store.subscribe(this.showNotifications)
   },
   mounted() {
     this.$log.debug('App mobile')
@@ -95,16 +98,36 @@ export default {
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
   },
   methods: {
+    showNotifications(mutation, state) {
+      if (mutation.type === 'SOCKET_ONMESSAGE') {
+        if (state.socket.message.events) {
+          const events = state.socket.message.events
+          for (let i = 0; i < events.length; i++) {
+            const event = events[i]
+            this.$f7.notification.create({
+              icon: '<img width="20" height="20" src= alt=""' + partner.getFavIcon() + '/>',
+              titleRightText: '',
+              title: this.$t('layout.' + event.type),
+              text: notifications.getMessage(event),
+              closeTimeout: 5000,
+              subtitle: partner.getTitle()
+            }).open()
+          }
+        }
+      }
+    },
     panelClosed() {
       Vue.$log.debug('panelClosed')
       lnglat.updateMarkers()
     },
     signIn() {
+      const self = this
       this.$log.debug('dispatch user login ')
       this.$f7.preloader.show()
       this.$store.dispatch('user/login', { username: this.username, password: this.password })
         .then(() => { location.reload() })
         .catch(exception => {
+          self.$f7.preloader.hide()
           Vue.$log.error(exception)
         })
     }

@@ -176,6 +176,7 @@ export default {
     ignitionOn: 'Ignition On',
     deviceOverspeed: 'Device Overspeed',
     geofenceEnter: 'Geofence Enter',
-    geofenceExit: 'Geofence Exit'
+    geofenceExit: 'Geofence Exit',
+    test: 'Test Notification'
   }
 }

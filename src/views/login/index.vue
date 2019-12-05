@@ -3,12 +3,8 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
         <img class="logo" :src="logoImage" alt="">
-        <lang-select class="set-language" />
       </div>
       <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
         <el-input
           ref="username"
           v-model="loginForm.username"
@@ -21,9 +17,6 @@
       </el-form-item>
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
-          </span>
           <el-input
             :key="passwordType"
             ref="password"
@@ -37,9 +30,6 @@
             @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
           />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
         </el-form-item>
       </el-tooltip>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
@@ -51,12 +41,10 @@
 <script>
 
 import Vue from 'vue'
-import LangSelect from '@/components/LangSelect'
 import * as partner from '@/utils/partner'
 
 export default {
   name: 'Login',
-  components: { LangSelect },
   data() {
     const validateUsername = (rule, value, callback) => {
       callback()

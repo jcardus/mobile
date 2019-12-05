@@ -238,8 +238,8 @@ export default {
   @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
 
   .reportContainer {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
   #viewerDiv {
     padding-top: 5px;

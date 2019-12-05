@@ -104,7 +104,7 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     loading() {
-      return vm.$data.loadingRoutes
+      return vm.$data.loadingMap
     },
     isMobile() {
       return lnglat.isMobile()

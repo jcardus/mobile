@@ -1,9 +1,10 @@
 <template>
-  <div v-if="show" class="mapboxgl-ctrl historyPanel" :style="width">
-    <speed-chart :labels="labels" :chart-data="chartData" />
+  <div v-show="show" v-loading="loadingRoutes" class="historyPanel" :style="width">
+    <div style="position: relative; height:80px">
+      <speed-chart :labels="labels" :chart-data="chartData" />
+    </div>
     <vue-slider
       v-model="sliderPos"
-      v-loading="loadingRoutes"
       :tooltip-formatter="formatter"
       :max="maxPos"
       :min="minPos"
@@ -12,14 +13,16 @@
       :marks="marks"
       :included="true"
       :hide-label="true"
-      :dot-size="isMobile ? 40 : 20"
+      dot-size="30"
       :disabled="isPlaying"
       :adsorb="true"
       :use-keyboard="true"
     />
-    <i :class="(isPlaying ? 'fa-stop' : 'fa-play') + ' fas fa-' + (isMobile ? '3x' : '2x') + ' playButton'" @click="click"></i>
-    <i :style="'display:' + (isPlaying ? 'none' : 'initial') + '; color:black'" :class="'playButton fas fa-backward fa-' + (isMobile ? '3x' : '2x')" @click="clickBackward"></i>
-    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible') + '; color:black'" :class="'playButton fas fa-forward fa-' + (isMobile ? '3x' : '2x')" @click="clickForward"></i>
+    <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
+
+    <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
+
+    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
   </div>
 </template>
 
@@ -37,6 +40,7 @@ export default {
   components: { SpeedChart, VueSlider },
   data() {
     return {
+      padding: 60,
       oldPos: 0,
       sliderPos: 0,
       currentPos: 0,
@@ -142,13 +146,7 @@ export default {
     }
   },
   created() {
-    const self = this
     window.addEventListener('resize', this.resizeDiv)
-    this.unsubscribe = vm.$store.subscribe((mutation) => {
-      if (mutation.type === 'app/TOGGLE_SIDEBAR') {
-        setTimeout(function() { self.resizeDiv() }, 1000)
-      }
-    })
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
   },
@@ -165,7 +163,7 @@ export default {
     resizeDiv: function() {
       Vue.$log.debug('resizeDiv')
       if (document.getElementById('map')) {
-        this.width = 'z-index=10000; width:' + (document.getElementById('map').clientWidth - 128) + 'px'
+        this.width = 'z-index=10000; width:' + (document.getElementById('map').clientWidth - this.padding) + 'px'
       } else {
         Vue.$log.warn('resizing div but no map on dom...')
       }
@@ -241,13 +239,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .historyPanel {
+
+  .historyPanel {
       font-size: 15px;
-      padding-left: 10px;
+      padding-left:20px;
+    padding-right: 20px;
+
       background-color: rgba(255,255,255,0);
     }
   .playButton {
-    color:black;
-    padding: 40px 10px 0 0;
+    padding: 15px 10px 0 0;
+    font-size:40px;
   }
 </style>

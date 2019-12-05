@@ -1,5 +1,11 @@
 <template>
-  <div id="map" ref="map"></div>
+  <div style="width: 100%; height: 100%">
+    <div id="map" ref="map" :style="heightMap"></div>
+    <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
+      <current-position-data class="currentPositionData"></current-position-data>
+      <history-panel class="historyPanel"></history-panel>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -24,12 +30,12 @@ import * as utils from '../../utils/utils'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
-import { TrackJS } from 'trackjs'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 
 export default {
   name: 'VueMap',
+  components: { CurrentPositionData, HistoryPanel },
   data() {
     return {
       accessToken: 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ',
@@ -45,6 +51,15 @@ export default {
     }
   },
   computed: {
+    historyMode() {
+      return vm.$data.historyMode
+    },
+    heightMap() {
+      return this.historyMode ? 'height: calc(100% - 280px)' : 'height:100%'
+    },
+    heightHistoryPanel() {
+      return this.historyMode ? 'height: 280px' : 'height:0'
+    },
     historyPanel: {
       get() { return vm.$data.historyPanel },
       set(value) { vm.$data.historyPanel = value }
@@ -87,7 +102,7 @@ export default {
   created() {
     this.$log.info('VueMap')
     NProgress.configure({ showSpinner: false }) // NProgress Configuration
-    vm.$data.loadingRoutes = true
+    vm.$data.loadingMap = true
   },
   static() {
     return {
@@ -109,10 +124,10 @@ export default {
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
-    this.$root.$static.map = TrackJS.watchAll(new mapboxgl.Map({
+    this.$root.$static.map = new mapboxgl.Map({
       container: 'map',
       style: this.$root.$data.mapStyle
-    }))
+    })
     this.setZoomAndCenter()
     this.map.on('load', this.onMapLoad)
     this.subscribeEvents()
@@ -124,7 +139,7 @@ export default {
         type: 'error',
         duration: 5 * 1000
       })
-      vm.$data.loadingRoutes = false
+      vm.$data.loadingMap = false
       NProgress.done()
     },
     onDevices: function(devices) {
@@ -313,10 +328,11 @@ export default {
         trackUserLocation: true
       }), 'bottom-right')
       map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
-      let VD = Vue.extend(StyleSwitcherControl)
+      const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
 
+      /*
       // this is very important, these Vue instances are not destroyed when the user logs off...
       map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
       if (this.historyPanel !== null) {
@@ -325,8 +341,8 @@ export default {
       }
       VD = Vue.extend(HistoryPanel)
       this.historyPanel = new VD({ i18n: i18n })
-      this.historyPanel.$mount('#slider-div')
-
+      this.historyPanel.$mount('#slider-div')*/
+      /*
       map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
       if (this.vehiclePanel !== null) {
         Vue.$log.warn('destroying old vehicle panel')
@@ -334,7 +350,7 @@ export default {
       }
       VD = Vue.extend(CurrentPositionData)
       this.vehiclePanel = new VD({ i18n: i18n })
-      this.vehiclePanel.$mount('#currentPos-div')
+      this.vehiclePanel.$mount('#currentPos-div')*/
 
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
     },
@@ -361,16 +377,13 @@ export default {
       this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
-      // this.$static.map.on('pitch', this.onPitch)
-
-      this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      // this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
-      // this.$static.map.on('styleimagemissing', this.missingImage)
       this.$static.map.on('data', this.onData)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
@@ -388,7 +401,7 @@ export default {
       window.addEventListener('resize', this.mapResize)
     },
     unsubscribeEvents() {
-      this.$static.map.off('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.off('touchstart', 'unclustered-point', this.onTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
@@ -414,18 +427,23 @@ export default {
       if (style.sprite !== spriteUrl) {
         this.$log.debug('setting sprite')
         style.sprite = spriteUrl
-        setTimeout(this.map.setStyle, 100, style)
+        this.map.setStyle(style)
       } else {
         this.$log.info('adding layers...')
         lnglat.addLayers(vm.$static.map)
         this.$log.info('done adding layers')
-        setTimeout(() => { vm.$data.loadingRoutes = false }, 1000)
+        setTimeout(() => { vm.$data.loadingMap = false }, 1000)
       }
     },
     onData() {
       lnglat.updateMarkers()
     },
+    onTouchUnclustered: function(e) {
+      this.$log.debug('touchUnclustered', e)
+      this.onClickTouchUnclustered(e)
+    },
     onClickTouchUnclustered: function(e) {
+      this.$log.debug('clickUnclustered', e)
       const feature = e.features[0]
       const device = this.devices.find(d => d.id === feature.properties.deviceId)
       if (device) {
@@ -745,6 +763,7 @@ export default {
 </script>
 
 <style lang="scss" >
+  @import '../../styles/element-variables';
 
   .app-container {;
     padding:0;
@@ -756,8 +775,13 @@ export default {
     padding:0 !important;
   }
 
-  #map {
-    height: 100%;
+  .historyPanel {
+    overflow: hidden;
+    padding: 0 8px;
+    background-color: $--border-color-extra-light;
+  }
+  .currentPositionData {
+    padding-top: 5px;
   }
 
   .mapboxgl-ctrl-icon.mapboxgl-ctrl-fullscreen {

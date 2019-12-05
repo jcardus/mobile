@@ -13,6 +13,7 @@
 import AppMain from './components/AppMain'
 import SideBar from './components/SideBar'
 import Navbar from './components/Navbar'
+import * as notifications from '../utils/notifications'
 
 export default {
   name: 'Layout',
@@ -45,7 +46,7 @@ export default {
             const event = events[i]
             self.$notify({
               title: this.$t('layout.' + event.type),
-              message: this.getMessage(event),
+              message: notifications.getMessage(event),
               type: 'info',
               duration: 5000
             })
@@ -53,16 +54,6 @@ export default {
         }
       }
     })
-  },
-  methods: {
-    getMessage(event) {
-      if (event.type === 'deviceOverspeed') {
-        return this.$root.device(event.deviceId).name + ' - ' + ~~(event.attributes.speed * 1.852) + ' km/h (Max. ' + ~~(event.attributes.speedLimit * 1.852) + ' km/h)'
-      } else {
-        return this.$root.device(event.deviceId).name
-      }
-    }
-
   }
 }
 </script>
