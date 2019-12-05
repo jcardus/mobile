@@ -7,6 +7,7 @@
           v-if="!isMobile"
           v-model="showRoutes"
           style="float:right"
+          @change="switchChanged"
         >
         </el-switch>
         <f7-toggle
@@ -33,16 +34,18 @@
       </div>
     </el-row>
     <el-row>
-      <el-col :span="19" style="max-height: 42px">
+      <el-col :span="17" style="max-height: 42px; color:gray" class="textFormat">
         {{ formattedDate }}
         <br>
         {{ formatAddress }}
       </el-col>
-      <el-col :span="5"><span>
-        {{ totalDistance }} Kms
-      </span></el-col>
+      <el-col :span="7">
+        <span v-if="!isMobile" class="textFormat">
+        </span>
+        <span class="textFormat" style="float:right">{{ (isMobile? '' : $t('map.totalDistance') + ':') }}
+          {{ totalDistance }} Kms
+        </span></el-col>
       <div style="float:left; padding-top: 10px; max-height:52px; overflow: hidden">
-
       </div>
     </el-row>
   </div>
@@ -211,6 +214,9 @@ export default {
     Vue.$log.debug('CurrentPositionData mounted')
   },
   methods: {
+    switchChanged() {
+      setTimeout(window.dispatchEvent, 500, new Event('resize'))
+    },
     toggleChanged: function() {
       this.showRoutes = !this.showRoutes
       setTimeout(window.dispatchEvent, 500, new Event('resize'))
@@ -630,8 +636,7 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
   .header {
     font-weight: bold;
     font-size: 18px;
@@ -660,6 +665,11 @@ export default {
     box-shadow: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
+  }
+  .textFormat {
+    color: gray;
+    font-size: 14px;
+
   }
 
 </style>
