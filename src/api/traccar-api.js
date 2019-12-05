@@ -199,7 +199,7 @@ export const traccar = {
   deleteAlert: function(alertId, onFulfill) {
     return new Promise((resolve, reject) => {
       axios.delete(alerts + '/' + alertId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-        .then(onFulfill())
+        .then(onFulfill(alertId))
         .catch(error => {
           reject(error)
         })

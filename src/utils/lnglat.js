@@ -123,9 +123,12 @@ function fetchGeofences(map) {
       source: 'geofences',
       paint: {
         'line-color': '#B42222',
-        'line-width': 8
+        'line-width': 4,
+        'line-opacity': 0.4
       },
       layout: {
+        'line-join': 'round',
+        'line-cap': 'round',
         visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
       },
       filter: ['==', '$type', 'LineString']

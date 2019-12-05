@@ -684,18 +684,18 @@ export default {
           type: 'Feature',
           geometry: {
             type: 'LineString',
-            coordinates: [[]]
+            coordinates: []
           },
           properties: {
             id: item.id,
             title: item.name
           }
         }
-        const str = wkt.substring('LINESTRING('.length, wkt.length - 2)
+        const str = wkt.substring('LINESTRING('.length + 1, wkt.length - 1)
         const coord_list = str.split(',')
         for (const i in coord_list) {
           const coord = coord_list[i].trim().split(' ')
-          geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
+          geojson.geometry.coordinates.push([parseFloat(coord[1]), parseFloat(coord[0])])
         }
       } else if (item.area.startsWith('CIRCLE')) {
         geojson = {
@@ -764,12 +764,6 @@ export default {
 
 <style lang="scss" >
   @import '../../styles/element-variables';
-
-  .app-container {;
-    padding:0;
-    margin: 0;
-    width: 100%;
-  }
 
   .app-main {
     padding:0 !important;
