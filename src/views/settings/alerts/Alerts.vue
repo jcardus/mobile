@@ -285,6 +285,7 @@ export default {
         }
         result.push(alarm_data)
       })
+
       vm.$data.alerts = result
 
       this.devices.forEach(d => {
@@ -506,13 +507,15 @@ export default {
       }).catch(() => {
       })
     },
-    alertDeleted() {
-      traccar.alerts(this.loadAlerts)
+    alertDeleted(id) {
+      this.$log.debug('alert deleted')
       this.$message({
         message: this.$t('settings.alert_deleted'),
         type: 'success',
         duration: 5 * 1000
       })
+
+      vm.$data.alerts = vm.$data.alerts.filter((e) => e.notification.id !== id)
     },
     tableRowStyle({ row, rowIndex }) {
       if (this.isMobile) {

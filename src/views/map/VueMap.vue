@@ -746,12 +746,6 @@ export default {
 
 <style lang="scss" >
 
-  .app-container {;
-    padding:0;
-    margin: 0;
-    width: 100%;
-  }
-
   .app-main {
     padding:0 !important;
   }
