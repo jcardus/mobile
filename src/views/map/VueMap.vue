@@ -591,7 +591,7 @@ export default {
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
       feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
-      feature.properties.immobilization_active = position.attributes.out1 || position.attributes.out2 === true || position.attributes.isImmobilizationOn
+      feature.properties.immobilization_active = position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
       device.address = position.address
       device.lastUpdate = position.fixTime
     },

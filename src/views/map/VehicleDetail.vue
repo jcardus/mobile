@@ -149,7 +149,7 @@ export default {
 <style lang="scss">
   .vehicleDetail {
     padding: 0;
-    z-index:999;
+    z-index:999 ;
   }
   .marker {width:0; height:0;}
   .marker  span {
