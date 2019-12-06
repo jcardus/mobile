@@ -1,4 +1,6 @@
 import VueCookies from 'vue-cookies'
+import { vm, serverBus } from '../../main'
+import Vue from 'vue'
 
 const state = {
   packageVersion: process.env.PACKAGE_VERSION || '0',
@@ -8,18 +10,16 @@ const state = {
   },
   device: 'desktop',
   size: VueCookies.get('size') || 'medium',
-  stiLoaded: false
+  stiLoaded: false,
+  historyMode: false
 }
 
 const mutations = {
-  TOGGLE_SIDEBAR: state => {
-    state.sidebar.opened = !state.sidebar.opened
-    state.sidebar.withoutAnimation = false
-    if (state.sidebar.opened) {
-      VueCookies.set('sidebarStatus', 1)
-    } else {
-      VueCookies.set('sidebarStatus', 0)
-    }
+  TOGGLE_HISTORYMODE: () => {
+    vm.$data.historyMode = !vm.$data.historyMode
+    state.historyMode = vm.$data.historyMode
+    Vue.$log.debug('historyMode changed to ', vm.$data.historyMode, ' emitting event')
+    serverBus.$emit('showRoutesChanged')
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
     VueCookies.set('sidebarStatus', 0)
@@ -54,17 +54,8 @@ const mutations = {
 }
 
 const actions = {
-  toggleSideBar({ commit }) {
-    commit('TOGGLE_SIDEBAR')
-  },
-  closeSideBar({ commit }, { withoutAnimation }) {
-    commit('CLOSE_SIDEBAR', withoutAnimation)
-  },
-  toggleDevice({ commit }, device) {
-    commit('TOGGLE_DEVICE', device)
-  },
-  setSize({ commit }, size) {
-    commit('SET_SIZE', size)
+  toggleHistoryMode({ commit }) {
+    commit('TOGGLE_HISTORYMODE')
   }
 }
 

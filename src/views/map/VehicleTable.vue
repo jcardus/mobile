@@ -100,6 +100,9 @@ export default {
     }
   },
   computed: {
+    historyMode() {
+      return this.$store.state.app.historyMode
+    },
     height() {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
@@ -164,11 +167,18 @@ export default {
   },
   mounted() {
     serverBus.$on('deviceSelectedOnMap', this.deviceSelectedOnMap)
+    serverBus.$on('showRoutesChanged', this.showRoutesChanged)
   },
   beforeDestroy() {
     serverBus.$off('deviceSelectedOnMap', this.deviceSelectedOnMap)
+    serverBus.$off('showRoutesChanged', this.showRoutesChanged)
   },
   methods: {
+    showRoutesChanged() {
+      if (this.historyMode) {
+        this.filterKey = this.selectedDevice.name
+      } else { this.filterKey = '' }
+    },
     getBgColor: function(device) {
       if (this.getDeviceState(device) === 'Disconnected') {
         return 'Gray'
@@ -220,19 +230,18 @@ export default {
       })
     },
     vehicleSelected: function(device) {
-      if (device) {
-        this.selected = device.id
-        this.selectedDevice = device
-        Vue.$log.debug('device=', device)
-        vm.$data.isPlaying = false
-        serverBus.$emit('deviceSelected', device)
-        if (vm.$data.historyMode) {
-          vm.$data.historyMode = false
-          Vue.$log.info('VehicleTable emit showRoutesChanged')
-          serverBus.$emit('showRoutesChanged')
-        }
-        if (lnglat.isMobile() && this.$store.state.app.sidebar.opened) {
-          this.$store.dispatch('app/toggleSideBar')
+      if (this.$store.state.app.historyMode) {
+        vm.$store.dispatch('app/toggleHistoryMode')
+        vm.$data.historyMode = false
+        Vue.$log.info('VehicleTable emit showRoutesChanged')
+        serverBus.$emit('showRoutesChanged')
+      } else {
+        if (device) {
+          this.selected = device.id
+          this.selectedDevice = device
+          Vue.$log.debug('device=', device)
+          vm.$data.isPlaying = false
+          serverBus.$emit('deviceSelected', device)
         }
       }
     },

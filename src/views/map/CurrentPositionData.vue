@@ -4,14 +4,14 @@
       <span class="header">
         {{ name }}
         <el-switch
-          v-if="!isMobile"
-          v-model="showRoutes"
+          v-show="!isMobile"
+          :value="true"
           style="float:right"
-          @change="switchChanged"
+          @change="toggleChanged"
         >
         </el-switch>
         <f7-toggle
-          v-else
+          v-if="isMobile"
           :checked="checked"
           style="float:right"
           type="checkbox"
@@ -26,7 +26,6 @@
           <input v-model="_minDate" type="date">
         </label>
       </div>
-
       <div style="float:right; padding-top: 5px">
         <label>
           <input v-model="_maxDate" type="date">
@@ -74,7 +73,7 @@ export default {
       trips: [],
       startMarker: null,
       endMarker: null,
-      f7toggle: ''
+      elSwitchValue: true
     }
   },
   computed: {
@@ -214,11 +213,8 @@ export default {
     Vue.$log.debug('CurrentPositionData mounted')
   },
   methods: {
-    switchChanged() {
-      setTimeout(window.dispatchEvent, 500, new Event('resize'))
-    },
     toggleChanged: function() {
-      this.showRoutes = !this.showRoutes
+      vm.$store.dispatch('app/toggleHistoryMode')
       setTimeout(window.dispatchEvent, 500, new Event('resize'))
     },
     showRoutesClick: function() {
@@ -329,6 +325,7 @@ export default {
       this.trips = result
     },
     drawTrip: function() {
+      if (this.currentTrip < 0) return
       this.drawStartEnd()
       if (vm.$store.state.settings.matchRoutes) {
         this.iterate()
@@ -346,6 +343,7 @@ export default {
       return Math.sqrt(dx * dx + dy * dy)
     },
     drawStartEnd: function() {
+      if (this.currentTrip < 0) return
       const positions = this.trips[this.currentTrip]
       const start = [positions[0].longitude, positions[0].latitude]
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]

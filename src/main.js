@@ -103,20 +103,6 @@ Vue.$log.debug('starting main instance...')
 
 export const vm = new Vue({
   el: '#app',
-  static() {
-    return {
-      markers: {},
-      map: null,
-      positionsSource: {
-        'type': 'FeatureCollection',
-        'features': []
-      },
-      geofencesSource: {
-        'type': 'FeatureCollection',
-        'features': []
-      }
-    }
-  },
   data: function() {
     return {
       loadingRoutes: false,
@@ -138,6 +124,25 @@ export const vm = new Vue({
       historyPanel: null,
       loggedIn: false,
       loadingMap: true
+    }
+  },
+  watch: {
+    historyMode() {
+      store.state.app.historyMode = this.historyMode
+    }
+  },
+  static() {
+    return {
+      markers: {},
+      map: null,
+      positionsSource: {
+        'type': 'FeatureCollection',
+        'features': []
+      },
+      geofencesSource: {
+        'type': 'FeatureCollection',
+        'features': []
+      }
     }
   },
   methods: {

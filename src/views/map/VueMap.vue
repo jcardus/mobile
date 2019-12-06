@@ -169,7 +169,7 @@ export default {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
     deviceSelected: function(device) {
-      this.$log.debug('VueMap')
+      this.$log.debug('VueMap deviceSelected')
       this.selected = device
       if (device.id) {
         const feature = this.findFeatureByDeviceId(device.id)
@@ -230,6 +230,7 @@ export default {
         const self = this
         this.$static.map.once('moveend', function() {
           self.showPopup(feature, self.selected)
+          window.dispatchEvent(new Event('resize'))
         })
       }
     },

@@ -136,9 +136,8 @@ export default {
       }
     },
     showRoutesChanged() {
-      this.showRoutes = true
-      Vue.$log.debug('emit showRoutesChanged')
-      serverBus.$emit('showRoutesChanged')
+      vm.$store.dispatch('app/toggleHistoryMode')
+      Vue.$log.debug('showRoutesChanged was ', this.showRoutes)
     }
   }
 }
