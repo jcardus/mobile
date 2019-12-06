@@ -119,7 +119,10 @@ export default {
   mounted() {
     this.$log.info('VueMap mounted')
     NProgress.start()
-    if (this.devices.length === 0) { traccar.devices(this.onDevices, this.onErrorLoading) }
+    if (this.devices.length === 0) {
+      this.$log.debug('getting devices...')
+      traccar.devices(this.onDevices, this.onErrorLoading)
+    }
     traccar.geofences(this.onGeofences)
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
@@ -143,6 +146,7 @@ export default {
       NProgress.done()
     },
     onDevices: function(devices) {
+      this.$log.debug('got devices getting positions...')
       vm.$data.devices = devices
       traccar.positions(this.processPositions)
     },
@@ -200,24 +204,22 @@ export default {
         if (a[i] && i !== device.id) { a[i].remove() }
       })
       if (this.popUps[device.id]) {
-        this.popUps[device.id]
-          .setLngLat(coordinates)
-          .addTo(this.$static.map)
-      } else {
-        this.popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
-          .setLngLat(coordinates)
-          .setHTML(description)
-          .addTo(this.$static.map)
-        const VD = Vue.extend(VehicleDetail)
-        const vm = new VD({
-          i18n: i18n,
-          data: {
-            device: device,
-            feature: feature
-          }
-        })
-        vm.$mount('#vue-vehicle-popup')
+        this.popUps[device.id].remove()
       }
+      this.popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(this.$static.map)
+      const VD = Vue.extend(VehicleDetail)
+      const vm = new VD({
+        i18n: i18n,
+        data: {
+          device: device,
+          feature: feature
+        }
+      })
+      vm.$mount('#vue-vehicle-popup')
+
       if (settings.truck3d) { this.truck.setCoords(coordinates) }
     },
     flyToDevice: function(feature) {
@@ -586,17 +588,12 @@ export default {
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
       feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
-      feature.properties.immobilization_active = position.attributes.out1 || position.attributes.isImmobilizationOn
+      feature.properties.immobilization_active = position.attributes.out1 || position.attributes.out2 === true || position.attributes.isImmobilizationOn
       device.address = position.address
       device.lastUpdate = position.fixTime
     },
     processPositions: function(positions) {
       const self = this
-
-      function getImmobilizationActive(position) {
-        return position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
-      }
-
       positions.forEach(function(position) {
         let feature = self.findFeatureByDeviceId(position.deviceId)
         const device = self.devices.find(e => e.id === position.deviceId)
@@ -606,13 +603,11 @@ export default {
             return
           }
           device.speed = position.speed
-          device.immobilization_active = getImmobilizationActive(position)
           feature = self.positionToFeature(position, device)
           self.positionsSource.features.push(feature)
           if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
         } else {
           if (!device) return
-          device.immobilization_active = getImmobilizationActive(position)
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers && lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
@@ -626,6 +621,7 @@ export default {
             if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
           }
         }
+        device.currentFeature = feature
       })
     },
     getMatch: function(coordinates, radius, route, timestamps, feature, position) {

@@ -29,14 +29,18 @@
         heigth="1"
       >
         <template slot-scope="scope">
-          <span style="font-weight: bold;">{{ scope.row.name }}</span><br />
+          <span style="font-weight: bold;">{{ scope.row.name }}</span>
+          <br />
           {{ scope.row.speed | formatNumber }} km/h<br />
           <timeago
             :datetime="scope.row.lastUpdate"
             :auto-update="60"
             :locale="$i18n.locale.substring(0,2)"
           ></timeago>
-          <ImmobilizeButton :selected-device="scope.row" />
+          <immobilize-button
+            :selected-device="scope.row"
+            :immobilization-active="scope.row.currentFeature ? scope.row.currentFeature.properties.immobilization_active : false"
+          />
         </template>
       </el-table-column>
     </el-table>

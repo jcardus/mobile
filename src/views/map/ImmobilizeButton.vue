@@ -1,13 +1,13 @@
 <template>
   <el-tooltip
     v-if="selectedDevice.attributes.has_immobilization"
-    :content="selectedDevice.immobilization_active ? $t('vehicleTable.de_immobilize') : $t('vehicleTable.immobilize')"
+    :content="immobilizationActive ? $t('vehicleTable.de_immobilize') : $t('vehicleTable.immobilize')"
     placement="bottom"
   >
     <img
       alt="immobilization"
       style="float:right;"
-      :src="selectedDevice.immobilization_active ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'"
+      :src="immobilizationActive ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'"
       width="38"
       @click="commandImmobilize"
     >
@@ -25,6 +25,10 @@ export default {
     selectedDevice: {
       type: Object,
       default: null
+    },
+    immobilizationActive: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

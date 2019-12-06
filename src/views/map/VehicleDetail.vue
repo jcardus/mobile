@@ -13,7 +13,10 @@
         <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
         <br>
         <div style="float:left">
-          <immobilize-button :selected-device="device"></immobilize-button>
+          <immobilize-button
+            :selected-device="device"
+            :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
+          ></immobilize-button>
         </div>
         <el-button
           icon="el-icon-video-play"
