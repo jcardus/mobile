@@ -1,5 +1,5 @@
 <template>
-  <div v-show="!showRoutes" style="padding: 0">
+  <div v-show="!showRoutes" class="vehicleDetail">
     <el-image v-show="showMapilary && imageOk" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
     </el-image>
     <div style="padding: 10px">
@@ -147,6 +147,10 @@ export default {
 </script>
 
 <style lang="scss">
+  .vehicleDetail {
+    padding: 0;
+    z-index:999;
+  }
   .marker {width:0; height:0;}
   .marker  span {
       display:flex;

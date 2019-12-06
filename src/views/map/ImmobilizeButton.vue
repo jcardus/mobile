@@ -18,6 +18,8 @@
 import Vue from 'vue'
 import { traccar } from '../../api/traccar-api'
 import VueCookies from 'vue-cookies'
+import * as lnglat from '../../utils/lnglat'
+import * as partner from '../../utils/partner'
 
 export default {
   name: 'ImmobilizeButton',
@@ -31,38 +33,61 @@ export default {
       default: false
     }
   },
+  computed: {
+    isMobile() {
+      return lnglat.isMobile()
+    }
+  },
   methods: {
-    getImmobilizationValue: function(selectedDevice) {
-      if (selectedDevice.immobilization_active === undefined) {
-        return false
-      }
-      return selectedDevice.immobilization_active
+    sendImmobilizationCommand() {
+      traccar.api_helper(
+        {
+          'username': VueCookies.get('user-info').email,
+          'password': VueCookies.get('user-info').password,
+          'command': 'immobilization',
+          'deviceid': this.selectedDevice.id,
+          'value': !this.immobilizationActive
+        },
+        this.commandImmobilizeOk,
+        this.commandImmobilizeNok)
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
-      Vue.$log.debug('Immobilization ' + this.getImmobilizationValue(selectedDevice) + ' for device ' + selectedDevice)
-      let message = this.getImmobilizationValue(selectedDevice) ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
+      Vue.$log.debug('Immobilization ' + this.immobilizationActive + ' for device ' + selectedDevice)
+      let message = this.immobilizationActive ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
       message += (selectedDevice.name + '?')
-      const self = this
-      this.$confirm(message).then(() => {
-        traccar.api_helper(
-          {
-            'username': VueCookies.get('user-info').email,
-            'password': VueCookies.get('user-info').password,
-            'command': 'immobilization',
-            'deviceid': selectedDevice.id,
-            'value': this.getImmobilizationValue(selectedDevice)
-          },
-          self.commandImmobilizeOk,
-          self.commandImmobilizeNok)
-      }).catch(
-        e => Vue.$log.error(e)
-      )
+      if (this.isMobile) {
+        this.$f7.dialog.confirm(message, this.sendImmobilizationCommand)
+      } else {
+        this.$confirm(message).then(() => {
+          this.sendImmobilizationCommand()
+        }).catch(
+          e => Vue.$log.error(e)
+        )
+      }
     },
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result' + response.data)
       if (response.data.success) {
-        this.$message('OK: ' + response.data.details)
+        if (this.isMobile) {
+          this.$f7.notification.create({
+            icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
+            titleRightText: '',
+            text: 'OK: ' + response.data.details,
+            closeTimeout: 5000,
+            subtitle: partner.getTitle()
+          }).open()
+        } else {
+          this.$message('OK: ' + response.data.details)
+        }
+      } else if (this.isMobile) {
+        this.$f7.notification.create({
+          icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
+          titleRightText: '',
+          text: 'NOK: ' + response.data.details,
+          closeTimeout: 5000,
+          subtitle: partner.getTitle()
+        }).open()
       } else {
         this.$message('NOK: ' + response.data.details)
       }

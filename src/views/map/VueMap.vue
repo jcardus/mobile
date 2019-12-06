@@ -568,7 +568,10 @@ export default {
           text: device.name,
           deviceId: position.deviceId,
           speed: position.speed,
-          immobilization_active: position.attributes.out1 || position.attributes.isImmobilizationOn,
+          immobilization_active:
+            position.attributes.out1 === true ||
+            position.attributes.out2 === true ||
+            position.attributes.isImmobilizationOn,
           ignition: position.attributes.ignition,
           motion: position.attributes.motion,
           fixTime: position.fixTime,
