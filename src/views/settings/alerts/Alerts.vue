@@ -260,7 +260,7 @@ export default {
       return vm.$data.devices.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     geofences: function() {
-      return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON'))
+      return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING'))
     }
   },
   mounted() {

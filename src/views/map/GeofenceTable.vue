@@ -135,9 +135,9 @@ export default {
       })
     },
     geofenceDeleted(item) {
-      vm.$data.geofences.remove(item)
-      this.geofencesSource.features.remove(lnglat.findFeatureById(item.id))
-      lnglat.refreshMap()
+      vm.$data.geofences = vm.$data.geofences.filter((e) => e.id !== item.id)
+      this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== item.id)
+      lnglat.refreshGeofences()
       this.$message({
         message: this.$t('geofence.geofence_deleted'),
         type: 'success',

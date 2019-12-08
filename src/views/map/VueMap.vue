@@ -153,6 +153,7 @@ export default {
     onGeofences: function(geofences) {
       vm.$data.geofences = geofences
       this.geofencesSource.features = this.processGeofences(geofences)
+      this.refreshGeofences()
     },
     mapResize: function() {
       this.map.resize()
@@ -243,6 +244,10 @@ export default {
             center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
             zoom: 13
           })
+        } else if (feature.geometry.type === 'LineString') {
+          this.$static.map.fitBounds(lnglat.getBounds(feature.geometry.coordinates), {
+            padding: 50
+          })
         } else {
           this.$static.map.fitBounds(lnglat.getBounds(feature.geometry.coordinates[0]), {
             padding: 50
@@ -253,6 +258,12 @@ export default {
     refreshMap() {
       if (this.$static.map.getSource('positions')) {
         this.$static.map.getSource('positions').setData(this.positionsSource)
+      }
+    },
+    refreshGeofences() {
+      // Geofences ... POIs ... Lines
+      if (vm.$static.map.getSource('geofences')) {
+        vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
       }
     },
     setZoomAndCenter() {
@@ -720,7 +731,7 @@ export default {
       this.$static.draw.deleteAll()
       const featureGeojson = this.getFeatureGeojson(feature)
       this.geofencesSource.features.push(featureGeojson)
-      lnglat.refreshMap()
+      this.refreshGeofences()
       const type = this.getType(feature.area)
       this.$message({
         type: 'success',
