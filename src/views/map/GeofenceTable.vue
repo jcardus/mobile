@@ -100,6 +100,10 @@ export default {
         this.showGeofenceLayer ? 'visible' : 'none')
       this.map.setLayoutProperty('geofences-labels', 'visibility',
         this.showGeofenceLayer ? 'visible' : 'none')
+      this.map.setLayoutProperty('geofences-lines', 'visibility',
+        this.showGeofenceLayer ? 'visible' : 'none')
+      this.map.setLayoutProperty('geofences-lines-labels', 'visibility',
+        this.showGeofenceLayer ? 'visible' : 'none')
     },
     handleEdit(row) {
       this.$prompt(this.$t('geofence.geofence_edit_name'), this.$t('geofence.geofence_edit_title'), {

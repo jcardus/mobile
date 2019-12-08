@@ -56,6 +56,10 @@ export default {
         this.geofencesVisible ? 'visible' : 'none')
       this.map.setLayoutProperty('geofences-labels', 'visibility',
         this.geofencesVisible ? 'visible' : 'none')
+      this.map.setLayoutProperty('geofences-lines', 'visibility',
+        this.geofencesVisible ? 'visible' : 'none')
+      this.map.setLayoutProperty('geofences-lines-labels', 'visibility',
+        this.geofencesVisible ? 'visible' : 'none')
     },
     togglePOIs: function() {
       vm.$store.dispatch('map/togglePOIs')
