@@ -202,7 +202,7 @@
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,19.8,1.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,28</Font>
+              <Font>Open Sans,28,Bold</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text37</Name>
               <Page isRef="7" />
@@ -1652,10 +1652,10 @@ g0B9BAiA+hzxhiBgQ4AAsEHLYBCoj8D/AP/PZXkRrFJDAAAAAElFTkSuQmCC</ImageBytes>
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>12/10/2019 8:10:33 PM</ReportChanged>
+  <ReportChanged>12/10/2019 8:15:11 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_trip.mrt</ReportFile>
-  <ReportGuid>14ccba54f9de4348a74c5b6bde4f8512</ReportGuid>
+  <ReportGuid>25878cad7d7646e6a37ad5fbf1361e77</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.4.2.0</ReportVersion>

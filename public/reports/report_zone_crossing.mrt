@@ -143,7 +143,7 @@
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,11.8,1.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,28</Font>
+              <Font>Open Sans,28,Bold</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text37</Name>
               <Page isRef="7" />
@@ -346,10 +346,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>12/10/2019 8:11:06 PM</ReportChanged>
+  <ReportChanged>12/10/2019 8:15:36 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_zone_crossing.mrt</ReportFile>
-  <ReportGuid>e3a0f88098aa485c9c2f436910048a64</ReportGuid>
+  <ReportGuid>e1e13b9b63454f66b37c692a8f2eb4ff</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.4.2.0</ReportVersion>
