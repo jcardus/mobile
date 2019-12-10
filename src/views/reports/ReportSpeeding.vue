@@ -74,6 +74,7 @@ import Vue from 'vue'
 import * as utils from './utils/utils'
 import ReportSpeedingTable from './ReportSpeedingTable'
 import axios from 'axios'
+import { routeMatch } from '../../api/here'
 
 const rServerUrl = 'https://8w09p74n5g.execute-api.us-east-1.amazonaws.com/Prod/report'
 
@@ -227,14 +228,13 @@ export default {
             body,
             {
               headers: { 'Content-Type': 'application/json' },
-              timeout: 29000 // Maximum timeour for the Lambda API Gateway
+              timeout: 60000 // Maximum timeour for the Lambda API Gateway
             }
           ).then((response) => {
             if (response.data) {
-              this.tableData = response.data[0].positions
-              this.show = true
+              const rows = response.data
+              routeMatch(rows, this.onHereData)
             }
-            this.loadingReport = false
           }).catch((e) => {
             this.$log.error(e)
             this.loadingReport = false
@@ -253,6 +253,11 @@ export default {
     errorHandler: function(report_id, reason) {
       this.$log.debug('Report triggering failed - ' + reason)
       setTimeout(utils.check_if_online, 2000, report_id, this.renderReport)
+    },
+    onHereData(data) {
+      this.loadingReport = false
+      this.tableData = data
+      this.show = true
     }
   }
 }

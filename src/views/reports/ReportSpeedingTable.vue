@@ -7,26 +7,35 @@
       stripe
     >
       <el-table-column
-        label="Date"
-        prop="fixtime"
+        label="Date / Time"
+        prop="timestamp"
+        width="250px"
       >
         <template slot-scope="scope">
-          {{ scope.row.fixtime | moment("YYYY-MM-DD hh:mm:ss") }}
+          {{ scope.row.timestamp | moment('LL LTS') }}
         </template>
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="Address"
-        width="300"
+        label="Speed"
+        align="right"
+        width="120px"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.currentSpeedKmh | formatNumber }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="speedLimit"
+        label="Speed Limit"
+        align="right"
+        width="120px"
       >
       </el-table-column>
       <el-table-column
-        prop="speed"
-        label="Speed"
-        align="right"
+        label="Address"
       >
         <template slot-scope="scope">
-          {{ scope.row.speed | formatNumber }}
+          {{ scope.row | formatAddress }}
         </template>
       </el-table-column>
     </el-table>
@@ -41,6 +50,9 @@ export default {
     },
     formatDate() {
       return this.$moment()
+    },
+    formatAddress(row) {
+      return row.roadName + ' ' + row.distanceMarkers
     }
   },
   props: {
