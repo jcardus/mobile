@@ -140,7 +140,7 @@
             <Text15 Ref="9" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>20.8,0,6.8,0.6</ClientRectangle>
+              <ClientRectangle>25.6,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Open Sans,8</Font>
               <GrowToHeight>True</GrowToHeight>
@@ -159,7 +159,7 @@
             <Text33 Ref="10" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>0,0,6.8,0.6</ClientRectangle>
+              <ClientRectangle>0,0,4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Open Sans,8</Font>
               <GrowToHeight>True</GrowToHeight>
@@ -202,7 +202,7 @@
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,19.8,1.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans ExtraBold,28</Font>
+              <Font>Open Sans,28</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text37</Name>
               <Page isRef="7" />
@@ -1172,7 +1172,6 @@ g0B9BAiA+hzxhiBgQ4AAsEHLYBCoj8D/AP/PZXkRrFJDAAAAAElFTkSuQmCC</ImageBytes>
               <VertAlignment>Center</VertAlignment>
             </Text34>
           </Components>
-          <ComponentStyle>Header</ComponentStyle>
           <Conditions isList="true" count="0" />
           <Name>GroupHeaderBand2</Name>
           <Page isRef="7" />
@@ -1653,10 +1652,10 @@ g0B9BAiA+hzxhiBgQ4AAsEHLYBCoj8D/AP/PZXkRrFJDAAAAAElFTkSuQmCC</ImageBytes>
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>12/10/2019 4:59:48 PM</ReportChanged>
+  <ReportChanged>12/10/2019 8:10:33 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_trip.mrt</ReportFile>
-  <ReportGuid>b389ead118b1427babbf505df137013c</ReportGuid>
+  <ReportGuid>14ccba54f9de4348a74c5b6bde4f8512</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.4.2.0</ReportVersion>
