@@ -1,0 +1,87 @@
+const url = 'https://rme.api.here.com/2/matchroute.json?app_id=10NhEXUZQ6VIbaHm2ifh&' +
+  'app_code=PlJd3hrHLjpI38mn1HvB0Q&routemode=car&filetype=CSV&' +
+  'attributes=SPEED_LIMITS_FCn(*),ROAD_NAME_FCn(*),ROAD_ADMIN_FCn(*),DISTANCE_MARKERS_FCn(*)' +
+  ',ROAD_GEOM_FCn(*),TOLL_BOOTH_FCn(*),TRUCK_SPEED_LIMITS_FCn(*),TRUCK_RESTR_FCn(*)'
+
+const axios = require('axios')
+const util = require('util')
+
+function mpsToKmh(mps) {
+  return mps * 3.6
+}
+
+function getSpeedLimit(li) {
+  const from = li.attributes.SPEED_LIMITS_FCN[0].FROM_REF_SPEED_LIMIT
+  const to = li.attributes.SPEED_LIMITS_FCN[0].TO_REF_SPEED_LIMIT
+  if (from > to) { return from }
+  return to
+}
+
+function getRoadName(li) {
+  if (li.attributes.ROAD_GEOM_FCN) {
+    return li.attributes.ROAD_GEOM_FCN[0].NAME
+  }
+  return ''
+}
+
+function getTruckSpeedLimits(li) {
+  if (li.attributes.TRUCK_SPEED_LIMITS_FCN) {
+    return li.attributes.TRUCK_SPEED_LIMITS_FCN
+  }
+  return null
+}
+
+function getDistanceMarkers(li) {
+  if (li.attributes.DISTANCE_MARKERS_FCN) {
+    const dMarkers = li.attributes.DISTANCE_MARKERS_FCN
+    if (dMarkers.length > 1) {
+      return util.format('between km %d and %d', dMarkers[1].DISTANCE_VALUE, dMarkers[0].DISTANCE_VALUE)
+    }
+    return util.format('km %d', dMarkers[0].DISTANCE_VALUE)
+  }
+  return ''
+}
+
+export async function routeMatch(rows, result) {
+  try {
+    const route = []
+    route.push('latitude, longitude, speed_mph, heading, timestamp')
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i]
+      route.push(r.latitude + ',' + r.longitude + ',' + r.speed + ',' + r.course + ',' + JSON.stringify(r.fixtime).replace('\"', '').replace('\"', ''))
+    }
+    const csv = route.join('\n')
+    console.log(url)
+    const response = await axios.post(url, csv, { headers: { 'Content-Type': 'application/binary' }})
+    const hereData = response.data
+    console.log('here response: %s', hereData)
+    const results = []
+    if (hereData.TracePoints.length > 0) {
+      for (let i = 0; i < hereData.TracePoints.length; i++) {
+        const tp = hereData.TracePoints[i]
+        const li = hereData.RouteLinks.find(l => l.linkId === tp.linkIdMatched)
+        if (mpsToKmh(tp.speedMps) > getSpeedLimit(li)) {
+          results.push({
+            timestamp: tp.timestamp,
+            currentSpeedKmh: mpsToKmh(tp.speedMps),
+            latitude: tp.lat,
+            longitude: tp.lon,
+            latMatched: tp.latMatched,
+            lonMatched: tp.lonMatched,
+            heading: tp.headingDegreeNorthClockwise,
+            headingMatched: tp.headingMatched,
+            speedLimit: getSpeedLimit(li),
+            roadName: getRoadName(li),
+            truckSpeedLimits: getTruckSpeedLimits(li),
+            distanceMarkers: getDistanceMarkers(li)
+          })
+        }
+      }
+    }
+    return result(results)
+  } catch (e) {
+    console.error(e)
+    return result([])
+  }
+}
+

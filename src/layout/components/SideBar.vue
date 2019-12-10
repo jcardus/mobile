@@ -17,6 +17,7 @@
           <el-menu-item index="/reports/report_trip">{{ $t('route.report_trip_title') }}</el-menu-item>
           <el-menu-item index="/reports/report_location">{{ $t('route.report_location_title') }}</el-menu-item>
           <el-menu-item index="/reports/report_zone_crossing">{{ $t('route.report_zone_crossing') }}</el-menu-item>
+          <el-menu-item index="/reports/report_speeding">{{ $t('route.report_speeding') }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
