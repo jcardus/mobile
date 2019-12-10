@@ -127,6 +127,11 @@ export const traccar = {
       description: '',
       area: area
     }
+    if (area.startsWith('LINESTRING')) {
+      body.attributes = {
+        polylineDistance: 100
+      }
+    }
     Vue.$log.debug(area)
     axios.post(geoFences, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
       .then(response => onFulfill(response.data))

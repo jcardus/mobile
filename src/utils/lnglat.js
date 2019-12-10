@@ -359,11 +359,7 @@ export function contains(lngLatBounds, position) {
     (lngLatBounds.getSouth() < position.latitude && position.latitude < lngLatBounds.getNorth())
   )
 }
-export function refreshMap() {
-  if (vm.$data.historyMode) return
-  if (vm.$static.map.getSource('positions')) {
-    vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
-  }
+export function refreshGeofences() {
   if (vm.$static.map.getSource('geofences')) {
     vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
   }
@@ -381,7 +377,7 @@ export function hideLayers(hide) {
   }
   hideLayer('unclustered-point', hide)
   if (hide) { removeMarkers() }
-  refreshMap()
+  refreshGeofences()
 }
 function removeMarkers() {
   for (const id in markersOnScreen) {

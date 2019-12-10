@@ -100,6 +100,10 @@ export default {
         this.showGeofenceLayer ? 'visible' : 'none')
       this.map.setLayoutProperty('geofences-labels', 'visibility',
         this.showGeofenceLayer ? 'visible' : 'none')
+      this.map.setLayoutProperty('geofences-lines', 'visibility',
+        this.showGeofenceLayer ? 'visible' : 'none')
+      this.map.setLayoutProperty('geofences-lines-labels', 'visibility',
+        this.showGeofenceLayer ? 'visible' : 'none')
     },
     handleEdit(row) {
       this.$prompt(this.$t('geofence.geofence_edit_name'), this.$t('geofence.geofence_edit_title'), {
@@ -135,9 +139,9 @@ export default {
       })
     },
     geofenceDeleted(item) {
-      vm.$data.geofences.remove(item)
-      this.geofencesSource.features.remove(lnglat.findFeatureById(item.id))
-      lnglat.refreshMap()
+      vm.$data.geofences = vm.$data.geofences.filter((e) => e.id !== item.id)
+      this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== item.id)
+      lnglat.refreshGeofences()
       this.$message({
         message: this.$t('geofence.geofence_deleted'),
         type: 'success',
