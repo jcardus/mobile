@@ -106,7 +106,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,6.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Bahnschrift,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>7a6ef3d6a7fb4d188cdcdebe9d164faa</Guid>
               <Margins>0,0,0,0</Margins>
@@ -124,7 +124,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.8,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Bahnschrift,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e11dd94f9ef344da9efc99ca3e92aa25</Guid>
               <HorAlignment>Right</HorAlignment>
@@ -154,7 +154,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,2,2.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10,Bold</Font>
+              <Font>Helvetica Neue,10,Bold</Font>
               <Guid>dfbbea473a0a4ec8b4888f7dcb118113</Guid>
               <Margins>20,0,5,0</Margins>
               <Name>Text14</Name>
@@ -171,7 +171,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>2.2,2.4,16.8,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <Guid>9853bcee558d4513ae876e3c6095774c</Guid>
               <Margins>0,0,0,5</Margins>
               <Name>Text3</Name>
@@ -189,7 +189,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>2.2,2,16.8,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <Guid>51866e2cf78d40518bb86a526e9474f5</Guid>
               <Margins>0,0,5,0</Margins>
               <Name>Text28</Name>
@@ -206,7 +206,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,2.4,2.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10,Bold</Font>
+              <Font>Helvetica Neue,10,Bold</Font>
               <Guid>3c98801193534bf0bbc43996910d2b07</Guid>
               <Margins>20,0,0,5</Margins>
               <Name>Text29</Name>
@@ -222,7 +222,7 @@
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,11.8,1.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,28,Bold</Font>
+              <Font>Helvetica Neue,28,Bold</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text37</Name>
               <Page isRef="7" />
@@ -263,7 +263,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0.2,0,3.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,8,Bold</Font>
+              <Font>Helvetica Neue,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>3b776bbe1c50467e819edde83034a1ac</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -281,7 +281,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>15.4,0,1.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,8,Bold</Font>
+              <Font>Helvetica Neue,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>1d33264e7209418eb34e69e171338f4a</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -299,7 +299,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.8,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,8,Bold</Font>
+              <Font>Helvetica Neue,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>1b7b52130ace4f0ebfc2e9b885c3b69e</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -317,7 +317,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>3.6,0,11.6,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,8,Bold</Font>
+              <Font>Helvetica Neue,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e3abeab592a9446aa7e41ce1e1416154</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -348,7 +348,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>15.4,0,1.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
@@ -367,7 +367,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.8,0,2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
@@ -386,7 +386,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>3.6,0,11.6,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>f07fa20ff58d46c4809a7c759ebd3a9f</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -409,7 +409,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0.2,0,3.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Helvetica Neue,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>

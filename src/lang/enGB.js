@@ -7,6 +7,7 @@ export default {
     report_trip_title: 'Trip Report',
     report_location_title: 'Location Report',
     report_zone_crossing: 'Zone Report',
+    report_speeding: 'Relatório de Excessos de Velocidade',
     settings: 'Settings',
     duration: 'Duration'
   },

@@ -23,12 +23,14 @@
     <el-row>
       <div style="float:left; padding-top: 5px; border: 2px;">
         <label>
-          <input v-model="_minDate" type="date">
+          <input v-if="isMobile" v-model="_minDate" type="date">
+          <el-date-picker v-else v-model="_minDate"></el-date-picker>
         </label>
       </div>
       <div style="float:right; padding-top: 5px">
         <label>
-          <input v-model="_maxDate" type="date">
+          <input v-if="isMobile" v-model="_maxDate" type="date">
+          <el-date-picker v-else v-model="_maxDate"></el-date-picker>
         </label>
       </div>
     </el-row>
