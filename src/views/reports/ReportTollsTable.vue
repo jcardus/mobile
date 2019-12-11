@@ -7,6 +7,7 @@
     >
       <el-table-column
         label="Data / Hora"
+        width="250px"
       >
         <template slot-scope="scope">
           {{ scope.row.timestamp | moment('LL LTS') }}
@@ -15,6 +16,7 @@
       <el-table-column
         label="Country"
         prop="country"
+        width="100px"
       >
       </el-table-column>
       <el-table-column
@@ -47,9 +49,6 @@ export default {
   filters: {
     formatNumber(value) {
       return value.toFixed()
-    },
-    formatDate() {
-      return this.$moment()
     },
     formatAddress(row) {
       return row.roadName + ' ' + row.distanceMarkers

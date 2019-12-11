@@ -99,7 +99,7 @@ export function routeMatch(rows, result) {
   }
 }
 
-export async function tollsMatch(rows, result) {
+export function tollsMatch(rows, result) {
   try {
     const route = []
     route.push('latitude, longitude, speed_kmh, heading, timestamp')
@@ -113,25 +113,39 @@ export async function tollsMatch(rows, result) {
       console.log('here response: %s', hereData)
       const results = []
       const tolls = hereData.response.route[0].tollCost.routeTollItems
-      tolls.forEach((i) => {
-        if (i.tollCostAlternatives) {
-          const wayPoints = hereData.response.route[0].waypoint
-          const li = wayPoints.find(l => parseInt(l.linkId) === parseInt(i.linkIds[0]))
-          results.push({
-            country: i.country,
-            road: i.tollSystem[0].name,
-            amount: i.tollCostAlternatives[0].amount,
-            currency: i.tollCostAlternatives[0].currency,
-            toll: i.tollStructures[0].name,
-            timestamp: li ? li.timestamp : '',
-            speed: li ? mpsToKmh(li.speedMps) : ''
-          })
-        }
-      })
-      result(results)
+      if (tolls) {
+        let it = 0
+        const wayPoints = hereData.response.route[0].waypoint
+        const links = hereData.response.route[0].leg[0].link
+        tolls.forEach((i) => {
+          if (i.tollCostAlternatives) {
+            for (let il = 0; il < links.length; il++) {
+              if (parseInt(links[il].linkId) === parseInt(i.tollStructures[0].linkIds[0])) {
+                for (; it < wayPoints.length; it++) {
+                  if (wayPoints[it].routeLinkSeqNrMatched >= il) {
+                    const li = wayPoints[it]
+                    results.push({
+                      country: i.country,
+                      road: i.tollSystem[0].name,
+                      amount: i.tollCostAlternatives[0].amount,
+                      currency: i.tollCostAlternatives[0].currency,
+                      toll: i.tollStructures[0].name,
+                      timestamp: li ? li.timestamp : '',
+                      speed: li ? mpsToKmh(li.speedMps) : ''
+                    })
+                    break
+                  }
+                }
+                break
+              }
+            }
+          }
+        })
+        result(results)
+      }
     })
   } catch (e) {
     console.error(e)
-    return result([])
   }
+  return result([])
 }
