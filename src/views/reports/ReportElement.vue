@@ -58,18 +58,16 @@
         </div>
       </el-col>
     </el-row>
-    <div v-if="show">
+    <div v-show="show">
       <slot></slot>
     </div>
   </div>
 </template>
-
 <script>
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
-import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
 import * as utils from './utils/utils'
 import axios from 'axios'
@@ -82,14 +80,6 @@ export default {
     filterData: {
       type: Function,
       default: function() {}
-    },
-    reportType: {
-      type: String,
-      default: ''
-    },
-    reportMrt: {
-      type: String,
-      default: ''
     },
     selectGeofences: {
       type: Boolean,
@@ -162,16 +152,6 @@ export default {
     }
   },
   computed: {
-    tableData: {
-      set(value) {
-      //  this.$store.dispatch('app/setReportData', value)
-        vm.$data.reportData = value
-      },
-      get() {
-        // return this.$store.state.app.elementReportData
-        return vm.$data.reportData
-      }
-    },
     title() {
       return vm.$t('route.' + this.$route.meta.title)
     },
@@ -196,10 +176,6 @@ export default {
     isMobile() { return lnglat.isMobile() }
   },
   created() {
-    if (!this.$store.state.app.stiLoaded) {
-      Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js')
-      Vue.loadScript('stimulsoft/stimulsoft.viewer.pack.js')
-    }
   },
   mounted() {
     if (this.devices.length === 0) {
@@ -247,7 +223,6 @@ export default {
             }
           }).catch((e) => {
             this.$log.error(e)
-            this.loadingReport = false
           })
         } else {
           this.$alert('No date period selected')
@@ -256,17 +231,9 @@ export default {
         this.$alert('No vehicles selected')
       }
     },
-    renderReport: function(report_id) {
-      sutil.load(this.reportMrt, report_id)
-      this.loadingReport = false
-    },
-    errorHandler: function(report_id, reason) {
-      this.$log.debug('Report triggering failed - ' + reason)
-      setTimeout(utils.check_if_online, 2000, report_id, this.renderReport)
-    },
     onHereData(data) {
+      vm.$data.reportData = data
       this.loadingReport = false
-      this.tableData = data
       this.show = true
     }
   }

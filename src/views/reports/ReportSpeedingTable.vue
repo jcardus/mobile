@@ -50,16 +50,12 @@ export default {
     formatNumber(value) {
       return value.toFixed()
     },
-    formatDate() {
-      return this.$moment()
-    },
     formatAddress(row) {
       return row.roadName + ' ' + row.distanceMarkers
     }
   },
   computed: {
     tableData() {
-      // return this.$store.state.app.elementReportData
       return vm.$data.reportData
     }
   }

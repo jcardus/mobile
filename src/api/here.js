@@ -117,7 +117,8 @@ export function tollsMatch(rows, result) {
         let it = 0
         const wayPoints = hereData.response.route[0].waypoint
         const links = hereData.response.route[0].leg[0].link
-        tolls.forEach((i) => {
+        for (let ti = 0; ti < tolls.length; ti++) {
+          const i = tolls[ti]
           if (i.tollCostAlternatives) {
             for (let il = 0; il < links.length; il++) {
               if (parseInt(links[il].linkId) === parseInt(i.tollStructures[0].linkIds[0])) {
@@ -140,12 +141,12 @@ export function tollsMatch(rows, result) {
               }
             }
           }
-        })
+        }
         result(results)
       }
     })
   } catch (e) {
     console.error(e)
+    result([])
   }
-  return result([])
 }
