@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 const url = 'https://rme.api.here.com/2/matchroute.json?app_id=10NhEXUZQ6VIbaHm2ifh&' +
   'app_code=PlJd3hrHLjpI38mn1HvB0Q&routemode=car&filetype=CSV&' +
   'attributes=SPEED_LIMITS_FCn(*),ROAD_NAME_FCn(*),ROAD_ADMIN_FCn(*),DISTANCE_MARKERS_FCn(*)' +
@@ -11,16 +13,23 @@ function mpsToKmh(mps) {
 }
 
 function getSpeedLimit(li) {
-  const from = li.attributes.SPEED_LIMITS_FCN[0].FROM_REF_SPEED_LIMIT
-  const to = li.attributes.SPEED_LIMITS_FCN[0].TO_REF_SPEED_LIMIT
-  if (from > to) { return from }
-  return to
+  if (li.attributes.SPEED_LIMITS_FCN) {
+    const from = li.attributes.SPEED_LIMITS_FCN[0].FROM_REF_SPEED_LIMIT
+    const to = li.attributes.SPEED_LIMITS_FCN[0].TO_REF_SPEED_LIMIT
+    if (from > to) {
+      return from
+    }
+    return to
+  }
+  return 999
 }
 
 function getRoadName(li) {
   if (li.attributes.ROAD_GEOM_FCN) {
-    return li.attributes.ROAD_GEOM_FCN[0].NAME
+    const result = li.attributes.ROAD_GEOM_FCN[0].NAME
+    if (result && result.length > 0) { return result }
   }
+  Vue.$log.warn('no road name for ', li)
   return ''
 }
 
@@ -45,10 +54,10 @@ function getDistanceMarkers(li) {
 export async function routeMatch(rows, result) {
   try {
     const route = []
-    route.push('latitude, longitude, speed_mph, heading, timestamp')
+    route.push('latitude, longitude, speed_kmh, heading, timestamp')
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i]
-      route.push(r.latitude + ',' + r.longitude + ',' + r.speed + ',' + r.course + ',' + JSON.stringify(r.fixtime).replace('\"', '').replace('\"', ''))
+      route.push(r.latitude + ',' + r.longitude + ',' + r.speed * 1.852 + ',' + r.course + ',' + JSON.stringify(r.fixtime).replace('\"', '').replace('\"', ''))
     }
     const csv = route.join('\n')
     console.log(url)
