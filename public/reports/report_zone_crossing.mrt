@@ -3,12 +3,12 @@
   <Dictionary Ref="1" type="Dictionary" isKey="true">
     <BusinessObjects isList="true" count="0" />
     <Databases isList="true" count="1">
-      <data Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
-        <Alias>data</Alias>
+      <zona Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
+        <Alias>zona</Alias>
         <Key />
-        <Name>data</Name>
-        <PathData>C:\xampp\htdocs\traccar-reports\DT6Ce7ShJLJFxCWy9ytGNcaeqrE521IavVHydoDr.json</PathData>
-      </data>
+        <Name>zona</Name>
+        <PathData>C:\Temp\zona.json</PathData>
+      </zona>
     </Databases>
     <DataSources isList="true" count="4">
       <root Ref="3" type="DataTableSource" isKey="true">
@@ -20,9 +20,9 @@
           <value>positions,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>4be58e08626f495b80e168b946260b03</Key>
+        <Key>d0d9e00b0d044061900b3281d8d2b094</Key>
         <Name>root</Name>
-        <NameInSource>data.root</NameInSource>
+        <NameInSource>zona.root</NameInSource>
       </root>
       <root_header Ref="4" type="DataTableSource" isKey="true">
         <Alias>root_header</Alias>
@@ -33,37 +33,45 @@
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>36544c9a077a4485a1f5d2a22726558b</Key>
+        <Key>fb1bd32781514396a7a90172c0bd05ae</Key>
         <Name>root_header</Name>
-        <NameInSource>data.root_header</NameInSource>
+        <NameInSource>zona.root_header</NameInSource>
       </root_header>
       <root_positions Ref="5" type="DataTableSource" isKey="true">
         <Alias>root_positions</Alias>
-        <Columns isList="true" count="4">
+        <Columns isList="true" count="6">
           <value>device_name,System.String</value>
           <value>device_id,System.Decimal</value>
+          <value>device_licenseplate,System.String</value>
+          <value>device_model,System.String</value>
           <value>fixtime,System.String</value>
           <value>crossing_event,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>874636ff26314f87b67c9debf36e4f1c</Key>
+        <Key>66f74af62bdd42b48521fc0a88474a2e</Key>
         <Name>root_positions</Name>
-        <NameInSource>data.root_positions</NameInSource>
+        <NameInSource>zona.root_positions</NameInSource>
       </root_positions>
       <root_strings Ref="6" type="DataTableSource" isKey="true">
         <Alias>root_strings</Alias>
-        <Columns isList="true" count="6">
+        <Columns isList="true" count="12">
           <value>report_title,System.String</value>
           <value>vehicle,System.String</value>
           <value>period,System.String</value>
           <value>date,System.String</value>
           <value>crossing_event,System.String</value>
+          <value>from,System.String</value>
+          <value>to,System.String</value>
+          <value>entered_geofence,System.String</value>
+          <value>exited_geofence,System.String</value>
+          <value>entered_poi,System.String</value>
+          <value>exited_poi,System.String</value>
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>4503a5a2e2ec40bd8a7718109a1c5680</Key>
+        <Key>310ca418ea0848f693ea907fc0880495</Key>
         <Name>root_strings</Name>
-        <NameInSource>data.root_strings</NameInSource>
+        <NameInSource>zona.root_strings</NameInSource>
       </root_strings>
     </DataSources>
     <Relations isList="true" count="0" />
@@ -87,9 +95,9 @@
             <Text33 Ref="9" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>0,0,6.8,0.6</ClientRectangle>
+              <ClientRectangle>0,0,4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Bahnschrift,10</Font>
+              <Font>Open Sans,8</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>7a6ef3d6a7fb4d188cdcdebe9d164faa</Guid>
               <Margins>0,0,0,0</Margins>
@@ -107,7 +115,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.8,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Bahnschrift,10</Font>
+              <Font>Open Sans,8</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e11dd94f9ef344da9efc99ca3e92aa25</Guid>
               <HorAlignment>Right</HorAlignment>
@@ -129,83 +137,13 @@
         </PageFooterBand1>
         <GroupHeaderBand1 Ref="11" type="GroupHeaderBand" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>0,0.4,19,3</ClientRectangle>
-          <Components isList="true" count="6">
-            <Text14 Ref="12" type="Text" isKey="true">
-              <Border>None;Black;3;Solid;False;4;Black</Border>
-              <Brush>[255:213:170]</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>0,2,2.2,0.4</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10,Bold</Font>
-              <Guid>dfbbea473a0a4ec8b4888f7dcb118113</Guid>
-              <Margins>20,0,5,0</Margins>
-              <Name>Text14</Name>
-              <Page isRef="7" />
-              <Parent isRef="11" />
-              <Text>{root_strings.vehicle}:</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <Type>Expression</Type>
-              <VertAlignment>Center</VertAlignment>
-            </Text14>
-            <Text3 Ref="13" type="Text" isKey="true">
-              <Brush>[255:213:170]</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>2.2,2.4,16.8,0.4</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
-              <Guid>9853bcee558d4513ae876e3c6095774c</Guid>
-              <Margins>0,0,0,5</Margins>
-              <Name>Text3</Name>
-              <Page isRef="7" />
-              <Parent isRef="11" />
-              <Text>{Left(root_header.date_from, 16)} - {Left(root_header.date_to, 16)}</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <Type>Expression</Type>
-              <VertAlignment>Center</VertAlignment>
-            </Text3>
-            <Text28 Ref="14" type="Text" isKey="true">
-              <Border>None;Black;3;Solid;False;4;Black</Border>
-              <Brush>[255:213:170]</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>2.2,2,16.8,0.4</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
-              <Guid>51866e2cf78d40518bb86a526e9474f5</Guid>
-              <Margins>0,0,5,0</Margins>
-              <Name>Text28</Name>
-              <Page isRef="7" />
-              <Parent isRef="11" />
-              <Text>{root_positions.device_name}</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <Type>Expression</Type>
-              <VertAlignment>Center</VertAlignment>
-            </Text28>
-            <Text29 Ref="15" type="Text" isKey="true">
-              <Brush>[255:213:170]</Brush>
-              <CanGrow>True</CanGrow>
-              <ClientRectangle>0,2.4,2.2,0.4</ClientRectangle>
-              <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10,Bold</Font>
-              <Guid>3c98801193534bf0bbc43996910d2b07</Guid>
-              <Margins>20,0,0,5</Margins>
-              <Name>Text29</Name>
-              <Page isRef="7" />
-              <Parent isRef="11" />
-              <Text>{root_strings.period}:</Text>
-              <TextBrush>Black</TextBrush>
-              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-              <Type>Expression</Type>
-              <VertAlignment>Center</VertAlignment>
-            </Text29>
-            <Text37 Ref="16" type="Text" isKey="true">
+          <ClientRectangle>0,0.4,19,2.4</ClientRectangle>
+          <Components isList="true" count="3">
+            <Text37 Ref="12" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,11.8,1.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,28,Bold</Font>
+              <Font>Open Sans,28,Bold</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text37</Name>
               <Page isRef="7" />
@@ -214,7 +152,7 @@
               <TextBrush>Black</TextBrush>
               <Type>Expression</Type>
             </Text37>
-            <Image1 Ref="17" type="Image" isKey="true">
+            <Image1 Ref="13" type="Image" isKey="true">
               <AspectRatio>True</AspectRatio>
               <Brush>Transparent</Brush>
               <ClientRectangle>14.4,0,4.4,1.3</ClientRectangle>
@@ -228,6 +166,52 @@
               <Stretch>True</Stretch>
               <VertAlignment>Center</VertAlignment>
             </Image1>
+            <Panel1 Ref="14" type="Panel" isKey="true">
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>0,1.4,19,0.8</ClientRectangle>
+              <Components isList="true" count="2">
+                <Text43 Ref="15" type="Text" isKey="true">
+                  <Border>None;Black;3;Solid;False;4;Black</Border>
+                  <Brush>EmptyBrush</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>12.2,0,6.8,0.8</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Font>Open Sans,12</Font>
+                  <Guid>29f57fd2b4ce43149382da38a184e1bb</Guid>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,5,0</Margins>
+                  <Name>Text43</Name>
+                  <Page isRef="7" />
+                  <Parent isRef="14" />
+                  <Text>{root_strings.from} {Left(root_header.date_from, 10)} {root_strings.to} {Left(root_header.date_to, 10)} </Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <Type>Expression</Type>
+                </Text43>
+                <Text28 Ref="16" type="Text" isKey="true">
+                  <Border>None;Black;3;Solid;False;4;Black</Border>
+                  <Brush>EmptyBrush</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>0,0,12,0.8</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Font>Open Sans,12</Font>
+                  <Guid>f3e39a8e03ab4a579e3681103650ebee</Guid>
+                  <Margins>0,0,5,0</Margins>
+                  <Name>Text28</Name>
+                  <Page isRef="7" />
+                  <Parent isRef="14" />
+                  <Text>{root_positions.device_name}, {root_positions.device_licenseplate}, {root_positions.device_model}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <Type>Expression</Type>
+                </Text28>
+              </Components>
+              <Conditions isList="true" count="0" />
+              <Name>Panel1</Name>
+              <Page isRef="7" />
+              <Parent isRef="11" />
+            </Panel1>
           </Components>
           <Condition>{root_positions.device_name}{root_positions.device_id}</Condition>
           <Conditions isList="true" count="0" />
@@ -236,46 +220,46 @@
           <Page isRef="7" />
           <Parent isRef="7" />
         </GroupHeaderBand1>
-        <GroupHeaderBand2 Ref="18" type="GroupHeaderBand" isKey="true">
-          <Border>Bottom;[31:73:125];2;Solid;False;4;Black</Border>
-          <Brush>Transparent</Brush>
-          <ClientRectangle>0,4.2,19,0.8</ClientRectangle>
+        <GroupHeaderBand2 Ref="17" type="GroupHeaderBand" isKey="true">
+          <Border>None;[31:73:125];2;Solid;False;4;Black</Border>
+          <Brush>[145:212:0]</Brush>
+          <ClientRectangle>0,3.6,19,0.8</ClientRectangle>
           <Components isList="true" count="2">
-            <Text4 Ref="19" type="Text" isKey="true">
+            <Text4 Ref="18" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>0.2,0,3.2,0.6</ClientRectangle>
+              <ClientRectangle>0.2,0,3.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,8,Bold</Font>
+              <Font>Open Sans,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>3b776bbe1c50467e819edde83034a1ac</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text4</Name>
               <Page isRef="7" />
-              <Parent isRef="18" />
+              <Parent isRef="17" />
               <Text>{root_strings.date}</Text>
-              <TextBrush>Black</TextBrush>
+              <TextBrush>White</TextBrush>
               <Type>Expression</Type>
-              <VertAlignment>Bottom</VertAlignment>
+              <VertAlignment>Center</VertAlignment>
             </Text4>
-            <Text7 Ref="20" type="Text" isKey="true">
+            <Text7 Ref="19" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>4,0,12.2,0.6</ClientRectangle>
+              <ClientRectangle>4.2,0,10.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,8,Bold</Font>
+              <Font>Open Sans,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e3abeab592a9446aa7e41ce1e1416154</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>Text7</Name>
               <Page isRef="7" />
-              <Parent isRef="18" />
+              <Parent isRef="17" />
               <Text>{root_strings.crossing_event}</Text>
-              <TextBrush>Black</TextBrush>
+              <TextBrush>White</TextBrush>
               <Type>Expression</Type>
-              <VertAlignment>Bottom</VertAlignment>
+              <VertAlignment>Center</VertAlignment>
             </Text7>
           </Components>
           <Conditions isList="true" count="0" />
@@ -284,24 +268,24 @@
           <Parent isRef="7" />
           <PrintOnAllPages>True</PrintOnAllPages>
         </GroupHeaderBand2>
-        <DataBand1 Ref="21" type="DataBand" isKey="true">
-          <Border>Bottom;Black;1;Solid;False;4;Black</Border>
+        <DataBand1 Ref="20" type="DataBand" isKey="true">
+          <Border>Bottom;[216:216:216];1;Solid;False;4;Black</Border>
           <Brush>Transparent</Brush>
           <BusinessObjectGuid isNull="true" />
-          <ClientRectangle>0,5.8,19,0.6</ClientRectangle>
+          <ClientRectangle>0,5.2,19,0.6</ClientRectangle>
           <Components isList="true" count="2">
-            <Text1 Ref="22" type="Text" isKey="true">
+            <Text1 Ref="21" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>4,0,12.2,0.4</ClientRectangle>
+              <ClientRectangle>4.2,0,10.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Open Sans,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>f07fa20ff58d46c4809a7c759ebd3a9f</Guid>
               <Margins>0,0,0,0</Margins>
               <Name>Text1</Name>
               <Page isRef="7" />
-              <Parent isRef="21" />
+              <Parent isRef="20" />
               <Text>{root_positions.crossing_event}</Text>
               <TextBrush>Black</TextBrush>
               <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
@@ -309,18 +293,18 @@
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
             </Text1>
-            <DataTextroot2 Ref="23" type="Text" isKey="true">
+            <DataTextroot2 Ref="22" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>0.2,0,3.2,0.4</ClientRectangle>
+              <ClientRectangle>0.2,0,3.4,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Leelawadee UI,10</Font>
+              <Font>Open Sans,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
               <Name>DataTextroot2</Name>
               <Page isRef="7" />
-              <Parent isRef="21" />
+              <Parent isRef="20" />
               <Text>{root_positions.fixtime}</Text>
               <TextBrush>Black</TextBrush>
               <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
@@ -332,10 +316,8 @@
           <Conditions isList="true" count="0" />
           <DataRelationName isNull="true" />
           <DataSourceName>root_positions</DataSourceName>
-          <EvenStyle>Style2</EvenStyle>
           <Filters isList="true" count="0" />
           <Name>DataBand1</Name>
-          <OddStyle>Style1</OddStyle>
           <Page isRef="7" />
           <Parent isRef="7" />
           <Sort isList="true" count="2">
@@ -364,13 +346,13 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>10/28/2019 3:06:12 PM</ReportChanged>
+  <ReportChanged>12/10/2019 8:15:36 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\report_zone_crossing.mrt</ReportFile>
-  <ReportGuid>06dc44c417f34706b9320ce73035d02c</ReportGuid>
+  <ReportGuid>e1e13b9b63454f66b37c692a8f2eb4ff</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
-  <ReportVersion>2019.3.4.0</ReportVersion>
+  <ReportVersion>2019.4.2.0</ReportVersion>
   <Script>using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -396,18 +378,18 @@ namespace Reports
 </Script>
   <ScriptLanguage>CSharp</ScriptLanguage>
   <Styles isList="true" count="2">
-    <Style1 Ref="24" type="Stimulsoft.Report.StiStyle" isKey="true">
+    <Style1 Ref="23" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>[200:226:253]</Brush>
       <Conditions isList="true" count="0" />
-      <Font>Arial,8</Font>
+      <Font>Open Sans,8</Font>
       <Name>Style1</Name>
       <NegativeTextBrush>Red</NegativeTextBrush>
       <TextBrush>Black</TextBrush>
     </Style1>
-    <Style2 Ref="25" type="Stimulsoft.Report.StiStyle" isKey="true">
+    <Style2 Ref="24" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>Transparent</Brush>
       <Conditions isList="true" count="0" />
-      <Font>Arial,8</Font>
+      <Font>Open Sans,8</Font>
       <Name>Style2</Name>
       <NegativeTextBrush>Red</NegativeTextBrush>
       <TextBrush>Black</TextBrush>
