@@ -140,7 +140,7 @@ export function tollsMatch(rows, result) {
           }
         }
         result(results)
-      }
+      } else { result([]) }
     })
   } catch (e) {
     console.error(e)

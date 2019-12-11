@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loadingReport" class="reportContainer">
+  <div class="reportContainer">
     <el-row type="flex" justify="space-between">
       <el-col :span="selectGeofences ? 7 : 16">
         <div class="grid-content">
@@ -53,12 +53,13 @@
       <el-col :span="1">
         <div class="grid-content">
           <el-tooltip :content="$t('report.generate_report')" placement="bottom">
-            <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
+            <el-button :disabled="loadingReport" type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
           </el-tooltip>
         </div>
       </el-col>
     </el-row>
-    <div v-show="show">
+    <div v-if="!show" v-loading="loadingReport" style="height: 300px;"></div>
+    <div v-if="show" v-loading="loadingReport">
       <slot></slot>
     </div>
   </div>
@@ -196,6 +197,7 @@ export default {
         if (this.dateRange.length > 0) {
           this.$log.debug('Triggering report generation')
           this.loadingReport = true
+          this.show = false
           const cookie = VueCookies.get('user-info')
 
           const report_id = cookie.email + '_' + utils.generate_token(40)
