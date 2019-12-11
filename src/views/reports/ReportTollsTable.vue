@@ -46,17 +46,8 @@
 <script>
 import { vm } from '../../main'
 export default {
-  filters: {
-    formatNumber(value) {
-      return value.toFixed()
-    },
-    formatAddress(row) {
-      return row.roadName + ' ' + row.distanceMarkers
-    }
-  },
   computed: {
     tableData() {
-      // return this.$store.state.app.elementReportData
       return vm.$data.reportData
     }
   }
