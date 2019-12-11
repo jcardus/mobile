@@ -31,7 +31,7 @@
         <template slot-scope="scope">
           <span style="font-weight: bold;">{{ scope.row.name }}</span>
           <br />
-          {{ scope.row.speed | formatNumber }} km/h<br />
+          {{ scope.row.speed * 1.852 | formatNumber }} km/h<br />
           <timeago
             :datetime="scope.row.lastUpdate"
             :auto-update="60"

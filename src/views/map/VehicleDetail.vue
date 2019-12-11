@@ -9,7 +9,7 @@
       <div class="content">
         {{ feature.properties.address }}
         <br>
-        {{ Math.round(device.speed) }} km/h,
+        {{ Math.round(device.speed * 1.852) }} km/h,
         <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
         <br>
         <div style="float:left">
