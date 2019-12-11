@@ -5,9 +5,8 @@
         <div class="grid-content">
           <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
             <el-select
-              v-model="selectedDevices"
+              v-model="selectedDevice"
               style="width: 100%; height: 35px"
-              multiple
               :placeholder="$t('report.select_vehicles_placeholder')"
               value=""
             >
@@ -90,7 +89,7 @@ export default {
   data() {
     return {
       loadingReport: false,
-      selectedDevices: [],
+      selectedDevice: null,
       pickerOptions: {
         shortcuts: [{
           text: 'Today',
@@ -153,6 +152,9 @@ export default {
     }
   },
   computed: {
+    selectedDevices() {
+      return [this.selectedDevice]
+    },
     title() {
       return vm.$t('route.' + this.$route.meta.title)
     },
