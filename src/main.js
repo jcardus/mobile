@@ -123,7 +123,8 @@ export const vm = new Vue({
       vehiclePanel: null,
       historyPanel: null,
       loggedIn: false,
-      loadingMap: true
+      loadingMap: true,
+      reportData: []
     }
   },
   watch: {

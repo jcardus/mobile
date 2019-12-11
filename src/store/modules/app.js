@@ -11,10 +11,14 @@ const state = {
   device: 'desktop',
   size: VueCookies.get('size') || 'medium',
   stiLoaded: false,
-  historyMode: false
+  historyMode: false,
+  elementReportData: []
 }
 
 const mutations = {
+  SET_REPORT_DATA: (data) => {
+    state.elementReportData = data
+  },
   TOGGLE_HISTORYMODE: () => {
     vm.$data.historyMode = !vm.$data.historyMode
     state.historyMode = vm.$data.historyMode
@@ -56,6 +60,9 @@ const mutations = {
 const actions = {
   toggleHistoryMode({ commit }) {
     commit('TOGGLE_HISTORYMODE')
+  },
+  setReportData({ commit }, data) {
+    commit('SET_REPORT_DATA', data)
   }
 }
 

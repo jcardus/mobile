@@ -8,6 +8,7 @@ export default {
     report_location_title: 'Location Report',
     report_zone_crossing: 'Zone Report',
     report_speeding: 'Relatório de Excessos de Velocidade',
+    report_tolls: 'Relatório de Portagens',
     settings: 'Settings',
     duration: 'Duration'
   },

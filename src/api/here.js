@@ -1,9 +1,14 @@
 import Vue from 'vue'
 
-const url = 'https://rme.api.here.com/2/matchroute.json?app_id=10NhEXUZQ6VIbaHm2ifh&' +
+const speeds = 'https://rme.api.here.com/2/matchroute.json?app_id=10NhEXUZQ6VIbaHm2ifh&' +
   'app_code=PlJd3hrHLjpI38mn1HvB0Q&routemode=car&filetype=CSV&' +
   'attributes=SPEED_LIMITS_FCn(*),ROAD_NAME_FCn(*),ROAD_ADMIN_FCn(*),DISTANCE_MARKERS_FCn(*)' +
-  ',ROAD_GEOM_FCn(*),TOLL_BOOTH_FCn(*),TRUCK_SPEED_LIMITS_FCn(*),TRUCK_RESTR_FCn(*)'
+  ',ROAD_GEOM_FCn(*),TOLL_LINK_FCn(*),TOLL_BOOTH_FCn(*),TRUCK_SPEED_LIMITS_FCn(*),TRUCK_RESTR_FCn(*)'
+
+const tolls = 'https://fleet.cit.api.here.com/2/calculateroute.json?app_id=10NhEXUZQ6VIbaHm2ifh&detailedTollCosts=1&' +
+  'app_code=PlJd3hrHLjpI38mn1HvB0Q&routeMatch=1&filetype=CSV&mode=car&tollVehicleType=1&rollups=none,country;tollsys&' +
+  'attributes=SPEED_LIMITS_FCn(*),ROAD_NAME_FCn(*),ROAD_ADMIN_FCn(*),DISTANCE_MARKERS_FCn(*)' +
+  ',ROAD_GEOM_FCn(*),TOLL_LINK_FCn(*),TOLL_BOOTH_FCn(*),TRUCK_SPEED_LIMITS_FCn(*),TRUCK_RESTR_FCn(*)'
 
 const axios = require('axios')
 const util = require('util')
@@ -51,7 +56,7 @@ function getDistanceMarkers(li) {
   return ''
 }
 
-export async function routeMatch(rows, result) {
+export function routeMatch(rows, result) {
   try {
     const route = []
     route.push('latitude, longitude, speed_kmh, heading, timestamp')
@@ -60,37 +65,73 @@ export async function routeMatch(rows, result) {
       route.push(r.latitude + ',' + r.longitude + ',' + r.speed * 1.852 + ',' + r.course + ',' + JSON.stringify(r.fixtime).replace('\"', '').replace('\"', ''))
     }
     const csv = route.join('\n')
-    console.log(url)
-    const response = await axios.post(url, csv, { headers: { 'Content-Type': 'application/binary' }})
-    const hereData = response.data
-    console.log('here response: %s', hereData)
-    const results = []
-    if (hereData.TracePoints.length > 0) {
-      for (let i = 0; i < hereData.TracePoints.length; i++) {
-        const tp = hereData.TracePoints[i]
-        const li = hereData.RouteLinks.find(l => l.linkId === tp.linkIdMatched)
-        if (mpsToKmh(tp.speedMps) > getSpeedLimit(li)) {
-          results.push({
-            timestamp: tp.timestamp,
-            currentSpeedKmh: mpsToKmh(tp.speedMps),
-            latitude: tp.lat,
-            longitude: tp.lon,
-            latMatched: tp.latMatched,
-            lonMatched: tp.lonMatched,
-            heading: tp.headingDegreeNorthClockwise,
-            headingMatched: tp.headingMatched,
-            speedLimit: getSpeedLimit(li),
-            roadName: getRoadName(li),
-            truckSpeedLimits: getTruckSpeedLimits(li),
-            distanceMarkers: getDistanceMarkers(li)
-          })
+    axios.post(speeds, csv, { headers: { 'Content-Type': 'application/binary' }}).then((response) => {
+      const hereData = response.data
+      console.log('here response: %s', hereData)
+      const results = []
+      if (hereData.TracePoints.length > 0) {
+        for (let i = 0; i < hereData.TracePoints.length; i++) {
+          const tp = hereData.TracePoints[i]
+          const li = hereData.RouteLinks.find(l => l.linkId === tp.linkIdMatched)
+          if (mpsToKmh(tp.speedMps) > getSpeedLimit(li)) {
+            results.push({
+              timestamp: tp.timestamp,
+              currentSpeedKmh: mpsToKmh(tp.speedMps),
+              latitude: tp.lat,
+              longitude: tp.lon,
+              latMatched: tp.latMatched,
+              lonMatched: tp.lonMatched,
+              heading: tp.headingDegreeNorthClockwise,
+              headingMatched: tp.headingMatched,
+              speedLimit: getSpeedLimit(li),
+              roadName: getRoadName(li),
+              truckSpeedLimits: getTruckSpeedLimits(li),
+              distanceMarkers: getDistanceMarkers(li)
+            })
+          }
         }
       }
+      result(results)
+    })
+  } catch (e) {
+    console.error(e)
+    result([])
+  }
+}
+
+export async function tollsMatch(rows, result) {
+  try {
+    const route = []
+    route.push('latitude, longitude, speed_kmh, heading, timestamp')
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i]
+      route.push(r.latitude + ',' + r.longitude + ',' + r.speed * 1.852 + ',' + r.course + ',' + JSON.stringify(r.fixtime).replace('\"', '').replace('\"', ''))
     }
-    return result(results)
+    const csv = route.join('\n')
+    axios.post(tolls, csv, { headers: { 'Content-Type': 'application/binary' }}).then((response) => {
+      const hereData = response.data
+      console.log('here response: %s', hereData)
+      const results = []
+      const tolls = hereData.response.route[0].tollCost.routeTollItems
+      tolls.forEach((i) => {
+        if (i.tollCostAlternatives) {
+          const wayPoints = hereData.response.route[0].waypoint
+          const li = wayPoints.find(l => parseInt(l.linkId) === parseInt(i.linkIds[0]))
+          results.push({
+            country: i.country,
+            road: i.tollSystem[0].name,
+            amount: i.tollCostAlternatives[0].amount,
+            currency: i.tollCostAlternatives[0].currency,
+            toll: i.tollStructures[0].name,
+            timestamp: li ? li.timestamp : '',
+            speed: li ? mpsToKmh(li.speedMps) : ''
+          })
+        }
+      })
+      result(results)
+    })
   } catch (e) {
     console.error(e)
     return result([])
   }
 }
-

@@ -54,7 +54,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'report_trip',
-        component: () => import('@/views/reports/TripReport'),
+        component: () => import('@/views/reports/ReportTrip'),
         name: 'TripReport',
         meta: { title: 'route.report_trip_title' }
       },
@@ -66,7 +66,7 @@ export const constantRoutes = [
       },
       {
         path: 'report_zone_crossing',
-        component: () => import('@/views/reports/ZoneReport'),
+        component: () => import('@/views/reports/ReportZone'),
         name: 'Zone Report',
         meta: { title: 'route.report_zone_crossing' }
       },
@@ -75,6 +75,12 @@ export const constantRoutes = [
         component: () => import('@/views/reports/ReportSpeeding'),
         name: 'Speeding Report',
         meta: { title: 'route.report_speeding' }
+      },
+      {
+        path: 'report_tolls',
+        component: () => import('@/views/reports/ReportTolls'),
+        name: 'Speeding Report',
+        meta: { title: 'route.report_tolls' }
       }
     ]
   },
