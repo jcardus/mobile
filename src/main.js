@@ -9,6 +9,7 @@ import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import VueTimeago from 'vue-timeago'
 import i18n from './lang'
+import { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
@@ -70,8 +71,13 @@ export const settings = {
   truck3d: false,
   show3dBuildings: false
 }
+const moment = require('moment')
+require('moment/locale/pt')
+require('moment/locale/es')// 'fr'
+moment.locale(getLanguage().slice(2))
+Vue.use(require('vue-moment'), { moment })
 
-Vue.use(require('vue-moment'))
+console.log('moment locales: ', moment.locales(), ', now: ', moment.locale())
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

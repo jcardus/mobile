@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "1.0.149",
+  "version": "1.0.150",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -42,6 +42,7 @@
     "vue-cookies": "latest",
     "vue-i18n": "^8.14.0",
     "vue-i18n-filter": "latest",
+    "moment": "latest",
     "vue-moment": "latest",
     "vue-native-websocket": "latest",
     "vue-plugin-load-script": "latest",
