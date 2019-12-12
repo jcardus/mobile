@@ -1,20 +1,11 @@
 <template>
-  <report-element :filter-data="filterData"><report-speeding-table></report-speeding-table></report-element>
+  <report report-type="speeding2" report-mrt="/reports/report_speeding.mrt"></report>
 </template>
 
 <script>
-import ReportSpeedingTable from './ReportSpeedingTable'
-import ReportElement from './ReportElement'
-import { routeMatch } from '../../api/here'
-
+import Report from './Report'
 export default {
   name: 'ReportSpeeding',
-  components: { ReportSpeedingTable, ReportElement },
-  methods: {
-    filterData(rows, onResolve) {
-      routeMatch(rows, onResolve)
-    }
-  }
+  components: { Report }
 }
 </script>
-
