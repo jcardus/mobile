@@ -109,7 +109,7 @@ Framework7.use(Framework7Vue)
 
 const amplifyConfig = {
   Auth: {
-    identityPoolId: 'b886ef89-6a90-4903-96fc-25af82fc629a',
+    identityPoolId: 'us-east-1:b886ef89-6a90-4903-96fc-25af82fc629a',
     region: 'us-east-1'
   }
 }
