@@ -1,0 +1,14 @@
+{
+	"auth": {
+		"cognito455cdfc3": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation"
+		}
+	},
+	"analytics": {
+		"pinmeweb": {
+			"service": "Pinpoint",
+			"providerPlugin": "awscloudformation"
+		}
+	}
+}

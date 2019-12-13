@@ -19,6 +19,8 @@ import * as lnglat from './utils/lnglat'
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
 import { getToken } from './utils/auth'
+import Analytics from '@aws-amplify/analytics'
+import Auth from '@aws-amplify/auth'
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
@@ -104,6 +106,37 @@ Vue.use(VueI18nFilter)
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
+
+const amplifyConfig = {
+  Auth: {
+    identityPoolId: 'b886ef89-6a90-4903-96fc-25af82fc629a',
+    region: 'us-east-1'
+  }
+}
+
+Auth.configure(amplifyConfig)
+
+const analyticsConfig = {
+  AWSPinpoint: {
+    // Amazon Pinpoint App Client ID
+    appId: '0209da656f784a2fad69793a32251916',
+    // Amazon service region
+    region: 'us-east-1',
+    mandatorySignIn: false
+  }
+}
+
+Analytics.configure(analyticsConfig)
+
+Analytics.record('applicationStart')
+
+/*
+//Record a custom event
+Analytics.record({
+  name: 'Album',
+  attributes: { genre: 'Rock', year: '1989' }
+});
+ */
 
 Vue.$log.debug('starting main instance...')
 

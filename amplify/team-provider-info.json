@@ -1,0 +1,20 @@
+{
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-vue-element-admin-prod-200150-authRole",
+            "UnauthRoleArn": "arn:aws:iam::903002861645:role/amplify-vue-element-admin-prod-200150-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::903002861645:role/amplify-vue-element-admin-prod-200150-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-vue-element-admin-prod-200150-deployment",
+            "UnauthRoleName": "amplify-vue-element-admin-prod-200150-unauthRole",
+            "StackName": "amplify-vue-element-admin-prod-200150",
+            "StackId": "arn:aws:cloudformation:us-east-1:903002861645:stack/amplify-vue-element-admin-prod-200150/9b771e20-1de6-11ea-bf84-12dffdf25cac",
+            "AmplifyAppId": "d1dnsny5ecab85"
+        },
+        "categories": {
+            "auth": {
+                "cognito455cdfc3": {}
+            }
+        }
+    }
+}

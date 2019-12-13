@@ -15,6 +15,8 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
+    "@aws-amplify/analytics": "latest",
+    "@aws-amplify/auth": "latest",
     "@mapbox/mapbox-gl-draw": "latest",
     "@mapbox/mapbox-gl-geocoder": "latest",
     "@turf/along": "latest",
@@ -53,7 +55,8 @@
     "vuejs-logger": "^1.5.3",
     "vuex": "3.1.0",
     "framework7": "latest",
-    "framework7-vue": "latest"
+    "framework7-vue": "latest",
+    "zen-observable": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
