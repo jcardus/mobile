@@ -206,7 +206,7 @@ export default {
           const body = {
             username: cookie.email,
             password: cookie.password,
-            report: this.reportType,
+            report: 'speedingReport',
             report_id: report_id,
             selected_devices: this.selectedDevices,
             selected_geofences: this.selectedGeofences,
