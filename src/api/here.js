@@ -11,11 +11,6 @@ const tolls = 'https://fleet.cit.api.here.com/2/calculateroute.json?app_id=10NhE
   'attributes=SPEED_LIMITS_FCn(*),ROAD_NAME_FCn(*),ROAD_ADMIN_FCn(*),DISTANCE_MARKERS_FCn(*)' +
   ',ROAD_GEOM_FCn(*),TOLL_LINK_FCn(*),TOLL_BOOTH_FCn(*),TRUCK_SPEED_LIMITS_FCn(*),TRUCK_RESTR_FCn(*)'
 
-const rGeocode = 'https://reverse.geocoder.api.here.com/6.2/multi-reversegeocode.json?' +
-//  'app_id=10NhEXUZQ6VIbaHm2ifh&app_code=PlJd3hrHLjpI38mn1HvB0Q' +
-  'apiKey=24PKx1vMh7toUPFIB2TgMB5cOepaOdPHFXM3-pl_Qwk' +
-  '&mode=retrieveAddresses&gen=9'
-
 const util = require('util')
 
 function mpsToKmh(mps) {
@@ -72,28 +67,6 @@ function generateCSV(rows) {
   return route.join('\n')
 }
 
-function generateCoordsCSV(rows) {
-  const route = []
-  for (let i = 0; i < rows.length; i++) {
-    const r = rows[i]
-    route.push('id=' + i + '&prox=' + r.latitude + ',' + r.longitude + ',20')
-  }
-  return route.join('\n')
-}
-
-function fillGeocoding(rows) {
-  return new Promise((resolve) => {
-    const csv = generateCoordsCSV(rows)
-    axios.post(rGeocode, csv, { headers: { 'Content-Type': 'application/binary' }}).then((response) => {
-      const hereData = response.data
-      for (let i = 0; i < hereData.length; i++) {
-        rows[i].geocoding = hereData.Response.Item[i].Result.Address.Label
-      }
-      resolve(rows)
-    })
-  })
-}
-
 export function routeMatch(rows, result) {
   const csv = generateCSV(rows)
   axios.post(speeds, csv, { headers: { 'Content-Type': 'application/binary' }}).then((response) => {
@@ -122,7 +95,7 @@ export function routeMatch(rows, result) {
         }
       }
     }
-    fillGeocoding(results).then(response => { result(response) })
+    result(results)
   }).catch(e => {
     console.error(e)
     result([])
