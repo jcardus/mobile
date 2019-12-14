@@ -47,9 +47,6 @@ function getTruckSpeedLimits(li) {
 function getDistanceMarkers(li) {
   if (li.attributes.DISTANCE_MARKERS_FCN) {
     const dMarkers = li.attributes.DISTANCE_MARKERS_FCN
-    if (dMarkers.length > 1) {
-      return util.format('between km %d and %d', dMarkers[1].DISTANCE_VALUE, dMarkers[0].DISTANCE_VALUE)
-    }
     return util.format('km %d', dMarkers[0].DISTANCE_VALUE)
   }
   return ''

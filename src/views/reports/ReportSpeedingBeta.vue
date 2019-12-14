@@ -32,15 +32,15 @@
         >
         </el-table-column>
         <el-table-column
-          label="Address"
-          prop="geocoding"
-          width="550px"
-        >
-        </el-table-column>
-        <el-table-column
           prop="distanceMarkers"
           label="Km Marker"
           width="100px"
+        >
+        </el-table-column>
+        <el-table-column
+          label="Address"
+          prop="geocoding"
+          min-width="550px"
         >
         </el-table-column>
       </el-table>
