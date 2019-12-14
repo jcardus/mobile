@@ -70,8 +70,7 @@ import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
 import Vue from 'vue'
 import axios from 'axios'
-
-const rServerUrl = 'https://8w09p74n5g.execute-api.us-east-1.amazonaws.com/Prod/report'
+import { rServerUrl } from '../../utils/consts'
 
 export default {
   name: 'ReportElement',

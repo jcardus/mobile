@@ -34,7 +34,7 @@
         <el-table-column
           label="Address"
           prop="geocoding"
-          width="450px"
+          width="550px"
         >
         </el-table-column>
         <el-table-column
