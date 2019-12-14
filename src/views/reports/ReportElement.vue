@@ -1,5 +1,5 @@
 <template>
-  <div class="reportContainer">
+  <div class="header">
     <el-row type="flex" justify="space-between">
       <el-col :span="selectGeofences ? 7 : 16">
         <div class="grid-content">
@@ -58,7 +58,7 @@
       </el-col>
     </el-row>
     <div v-if="!show" v-loading="loadingReport" style="height: 300px;"></div>
-    <div v-if="show" v-loading="loadingReport">
+    <div v-if="show" v-loading="loadingReport" class="report">
       <slot></slot>
     </div>
   </div>
@@ -69,7 +69,6 @@ import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import VueCookies from 'vue-cookies'
 import Vue from 'vue'
-import * as utils from './utils/utils'
 import axios from 'axios'
 
 const rServerUrl = 'https://8w09p74n5g.execute-api.us-east-1.amazonaws.com/Prod/report'
@@ -194,40 +193,39 @@ export default {
     } else { Vue.$log.debug(this.geofences.length, ' geofences already loaded') }
   },
   methods: {
+    invokeReport: function() {
+      const cookie = VueCookies.get('user-info')
+      const body = {
+        username: cookie.email,
+        password: cookie.password,
+        report: 'speedingReport',
+        selected_devices: this.selectedDevices,
+        selected_geofences: this.selectedGeofences,
+        date_from: this.dateRange[0],
+        date_to: this.dateRange[1]
+      }
+      axios.post(rServerUrl,
+        body,
+        {
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 60000 // Maximum timeour for the Lambda API Gateway
+        }
+      ).then((response) => {
+        if (response.data) {
+          const rows = response.data
+          this.filterData(rows, this.onHereData)
+        }
+      }).catch((e) => {
+        this.$log.error(e)
+      })
+    },
     submitReport() {
       if (this.selectedDevices.length > 0) {
         if (this.dateRange.length > 0) {
           this.$log.debug('Triggering report generation')
           this.loadingReport = true
           this.show = false
-          const cookie = VueCookies.get('user-info')
-
-          const report_id = cookie.email + '_' + utils.generate_token(40)
-          const body = {
-            username: cookie.email,
-            password: cookie.password,
-            report: 'speedingReport',
-            report_id: report_id,
-            selected_devices: this.selectedDevices,
-            selected_geofences: this.selectedGeofences,
-            date_from: this.dateRange[0],
-            date_to: this.dateRange[1]
-          }
-
-          axios.post(rServerUrl,
-            body,
-            {
-              headers: { 'Content-Type': 'application/json' },
-              timeout: 60000 // Maximum timeour for the Lambda API Gateway
-            }
-          ).then((response) => {
-            if (response.data) {
-              const rows = response.data
-              this.filterData(rows, this.onHereData)
-            }
-          }).catch((e) => {
-            this.$log.error(e)
-          })
+          this.invokeReport()
         } else {
           this.$alert('No date period selected')
         }
@@ -245,16 +243,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-  .reportContainer {
+  .header {
     padding-left: 10px;
     padding-right: 10px;
   }
-  #viewerDiv {
-    padding-top: 5px;
+  .report {
+    margin-top:10px;
+    margin-left:0;
+    height: 100%;
+    width: 100%;
   }
   .el-row {
     margin-top:10px;
   }
-
 </style>
