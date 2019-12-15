@@ -39,17 +39,17 @@ if (workbox) {
   self.addEventListener('push', (e) => {
     let data
     if (e.data) {
-      data = e.data.json()
+      data = e.data
     }
 
     const options = {
-      body: data.body,
+      body: data.text(),
       icon: '/img/icons/android-chrome-192x192.png',
       image: '/img/autumn-forest.png',
       vibrate: [300, 200, 300],
       badge: '/img/icons/plint-badge-96x96.png'
     }
 
-    e.waitUntil(self.registration.showNotification(data.title, options))
+    e.waitUntil(self.registration.showNotification(data.text(), options))
   })
 }
