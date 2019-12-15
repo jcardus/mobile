@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "1.0.157",
+  "version": "1.0.158",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -15,8 +15,6 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
-    "@aws-amplify/analytics": "latest",
-    "@aws-amplify/auth": "latest",
     "@mapbox/mapbox-gl-draw": "latest",
     "@mapbox/mapbox-gl-geocoder": "latest",
     "@turf/along": "latest",
@@ -25,9 +23,12 @@
     "@turf/bearing": "latest",
     "@turf/helpers": "latest",
     "@turf/length": "latest",
+    "aws-amplify": "latest",
+    "aws-amplify-vue": "latest",
     "amazon-quicksight-embedding-sdk": "latest",
     "angles": "latest",
     "axios": "0.18.1",
+    "aws-sdk": "^2.209.0",
     "chart.js": "latest",
     "core-js": "^2.6.5",
     "element-ui": "latest",
@@ -56,7 +57,7 @@
     "vuex": "3.1.0",
     "framework7": "latest",
     "framework7-vue": "latest",
-    "zen-observable": "latest"
+    "@aws-amplify/analytics": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

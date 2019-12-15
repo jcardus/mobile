@@ -8,9 +8,13 @@
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
+import { components } from 'aws-amplify-vue'
 
 export default {
   name: 'App',
+  components: {
+    ...components
+  },
   mounted() {
     this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()

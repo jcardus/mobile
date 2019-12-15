@@ -19,8 +19,8 @@ import * as lnglat from './utils/lnglat'
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
 import { getToken } from './utils/auth'
-import Analytics from '@aws-amplify/analytics'
-import Auth from '@aws-amplify/auth'
+import Amplify, * as AmplifyModules from 'aws-amplify'
+import { AmplifyPlugin } from 'aws-amplify-vue'
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
@@ -107,14 +107,9 @@ import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
 
-const amplifyConfig = {
-  Auth: {
-    identityPoolId: 'us-east-1:b886ef89-6a90-4903-96fc-25af82fc629a',
-    region: 'us-east-1'
-  }
-}
-
-Auth.configure(amplifyConfig)
+import awsconfig from './aws-exports'
+import Analytics from '@aws-amplify/analytics'
+Amplify.configure(awsconfig)
 
 const analyticsConfig = {
   AWSPinpoint: {
@@ -129,14 +124,22 @@ const analyticsConfig = {
 Analytics.configure(analyticsConfig)
 
 Analytics.record('applicationStart')
+Vue.use(AmplifyPlugin, AmplifyModules)
 
-/*
-//Record a custom event
-Analytics.record({
-  name: 'Album',
-  attributes: { genre: 'Rock', year: '1989' }
-});
- */
+import { I18n } from 'aws-amplify'
+
+const dict = {
+  'es': {
+    'Sign In': 'Registrarse',
+    'Sign Up': 'Regístrate'
+  },
+  'fr': {
+    'Sign In': 'Se connecter2',
+    'Sign Up': "S'inscrire"
+  }
+}
+
+I18n.putVocabularies(dict)
 
 Vue.$log.debug('starting main instance...')
 

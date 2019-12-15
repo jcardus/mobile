@@ -24,7 +24,8 @@ export default {
   },
   data() {
     return {
-      unsubscribe: null
+      unsubscribe: null,
+      serviceWorker: null
     }
   },
   computed: {
@@ -35,7 +36,7 @@ export default {
   beforeDestroy() {
     if (this.unsubscribe) this.unsubscribe()
   },
-  created() {
+  created: function() {
     this.$log.debug('layout created')
     const self = this
     this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
@@ -50,8 +51,17 @@ export default {
               type: 'info',
               duration: 5000
             })
+            if (this.serviceWorker) {
+              this.serviceWorker.postMessage(notifications.getMessage(event))
+            }
           }
         }
+      }
+    })
+    const swPath = 'service-worker.js'
+    navigator.serviceWorker.register(swPath).then(registration => {
+      if (registration.active) {
+        self.serviceWorker = registration.active
       }
     })
   }
