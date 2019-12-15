@@ -1,4 +1,20 @@
-// custom service-worker.js
+function askPermission() {
+  return new Promise(function(resolve, reject) {
+    const permissionResult = Notification.requestPermission(function(result) {
+      resolve(result)
+    })
+
+    if (permissionResult) {
+      permissionResult.then(resolve, reject)
+    }
+  })
+    .then(function(permissionResult) {
+      if (permissionResult !== 'granted') {
+        throw new Error('We weren\'t granted permission.')
+      }
+    })
+}
+
 // eslint-disable-next-line no-undef
 if (workbox) {
   // apply precaching. In the built version, the precacheManifest will
@@ -49,7 +65,8 @@ if (workbox) {
       vibrate: [300, 200, 300],
       badge: '/img/icons/plint-badge-96x96.png'
     }
-
-    e.waitUntil(self.registration.showNotification(data.text(), options))
+    askPermission().then(() => {
+      e.waitUntil(self.registration.showNotification(data.text(), options))
+    })
   })
 }

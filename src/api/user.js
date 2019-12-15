@@ -1,10 +1,13 @@
-import request from '@/utils/request'
 import VueCookies from 'vue-cookies'
+import axios from 'axios'
+import * as utils from '../utils/utils'
 
 export function login(data) {
   const body = 'email=' + encodeURIComponent(data.username) + '&password=' + encodeURIComponent(data.password)
-  return request({
-    url: '/api/session',
+  return axios({
+    withCredentials: true, // send cookies when cross-domain requests
+    timeout: 5000,
+    url: 'https://' + utils.getServerHost() + '/api/session',
     method: 'post',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -28,8 +31,10 @@ export function getInfo(token) {
 
 export function logout() {
   const cookie = VueCookies.get('user-info')
-  return request({
-    url: '/api/session',
+  return axios({
+    withCredentials: true, // send cookies when cross-domain requests
+    timeout: 5000,
+    url: 'https://' + utils.getServerHost() + '/api/session',
     method: 'delete',
     auth: { username: cookie ? cookie.email : '', password: cookie ? cookie.password : '' },
     headers: {
