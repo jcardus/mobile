@@ -19,6 +19,25 @@ export default {
     this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
+    this.askPermission()
+  },
+  methods: {
+    askPermission() {
+      return new Promise(function(resolve, reject) {
+        const permissionResult = Notification.requestPermission(function(result) {
+          resolve(result)
+        })
+
+        if (permissionResult) {
+          permissionResult.then(resolve, reject)
+        }
+      })
+        .then(function(permissionResult) {
+          if (permissionResult !== 'granted') {
+            throw new Error('We weren\'t granted permission.')
+          }
+        })
+    }
   }
 }
 </script>

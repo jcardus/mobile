@@ -1,20 +1,3 @@
-function askPermission() {
-  return new Promise(function(resolve, reject) {
-    const permissionResult = Notification.requestPermission(function(result) {
-      resolve(result)
-    })
-
-    if (permissionResult) {
-      permissionResult.then(resolve, reject)
-    }
-  })
-    .then(function(permissionResult) {
-      if (permissionResult !== 'granted') {
-        throw new Error('We weren\'t granted permission.')
-      }
-    })
-}
-
 // eslint-disable-next-line no-undef
 if (workbox) {
   // apply precaching. In the built version, the precacheManifest will
@@ -39,6 +22,8 @@ if (workbox) {
       cacheName: 'fontawesome'
     })
   )
+
+  // eslint-disable-next-line no-inner-declarations
 
   // This code listens for the user's confirmation to update the app.
   self.addEventListener('message', (e) => {
@@ -65,8 +50,6 @@ if (workbox) {
       vibrate: [300, 200, 300],
       badge: '/img/icons/plint-badge-96x96.png'
     }
-    askPermission().then(() => {
-      e.waitUntil(self.registration.showNotification(data.text(), options))
-    })
+    e.waitUntil(self.registration.showNotification(data.text(), options))
   })
 }
