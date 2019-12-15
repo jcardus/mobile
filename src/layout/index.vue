@@ -62,6 +62,8 @@ export default {
     navigator.serviceWorker.register(swPath).then(registration => {
       if (registration.active) {
         self.serviceWorker = registration.active
+      } else {
+        this.$log.warn('service worker no active...')
       }
     })
   }
