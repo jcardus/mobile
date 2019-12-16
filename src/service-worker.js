@@ -23,6 +23,15 @@ if (workbox) {
     })
   )
 
+  // eslint-disable-next-line no-undef
+  workbox.routing.registerRoute(
+    /^https:\/\/fonts\.googleapis\.com/,
+    // eslint-disable-next-line no-undef
+    new workbox.strategies.StaleWhileRevalidate({
+      cacheName: 'googlefonts'
+    })
+  )
+
   // eslint-disable-next-line no-inner-declarations
 
   // This code listens for the user's confirmation to update the app.
@@ -45,11 +54,11 @@ if (workbox) {
 
     const options = {
       body: data.text(),
-      icon: '/img/icons/android-chrome-192x192.png',
-      image: '/img/autumn-forest.png',
+      icon: '/img/favicon/pinme192.png',
+      image: '/img/logos/localhost.png',
       vibrate: [300, 200, 300],
-      badge: '/img/icons/plint-badge-96x96.png'
+      badge: '/img/favicon/pinme192.png'
     }
-    e.waitUntil(self.registration.showNotification(data.text(), options))
+    e.waitUntil(self.registration.showNotification('WuizyGo', options))
   })
 }

@@ -13,7 +13,9 @@
         },
         "categories": {
             "auth": {
-                "cognito455cdfc3": {}
+                "cognito455cdfc3": {
+                    "hostedUIProviderCreds": "[]"
+                }
             }
         }
     }

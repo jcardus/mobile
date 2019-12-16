@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
 import VueNativeSock from 'vue-native-websocket'
+import * as utils from '../utils/utils'
 
 Vue.use(Vuex)
 
@@ -52,7 +53,7 @@ const store = new Vuex.Store({
 })
 
 export default store
-const hostName = process.env.NODE_ENV === 'development' ? 'dev.pinme.io' : 'dev.' + window.location.hostname
+const hostName = utils.getServerHost()
 
 Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
   store: store,

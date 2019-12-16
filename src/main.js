@@ -50,7 +50,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? 'debug' : 'debug',
+  logLevel: isProduction ? 'warn' : 'debug',
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,
@@ -123,7 +123,13 @@ const analyticsConfig = {
 
 Analytics.configure(analyticsConfig)
 
-Analytics.record('applicationStart')
+Analytics.record('applicationStart').then(() => {})
+
+Analytics.autoTrack('session', {
+  enable: true,
+  provider: 'AWSPinpoint'
+})
+
 Vue.use(AmplifyPlugin, AmplifyModules)
 
 import { I18n } from 'aws-amplify'

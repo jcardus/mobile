@@ -1,10 +1,15 @@
-import { login, logout } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import router, { resetRouter } from '@/router'
-import { traccar } from '@/api/traccar-api'
-import { setLanguage } from '@/lang/index'
-import { vm } from '@/main'
+import { login, logout } from '../../api/user'
+import { getToken, setToken, removeToken } from '../../utils/auth'
+import router, { resetRouter } from '../../router'
+import { traccar } from '../../api/traccar-api'
+import { setLanguage } from '../../lang/index'
+import { vm } from '../../main'
 import { TrackJS } from 'trackjs'
+import { API, graphqlOperation, ServiceWorker } from 'aws-amplify'
+import * as gqlMutations from '../../graphql/mutations'
+import Vue from 'vue'
+
+const serviceWorker = new ServiceWorker()
 
 const state = {
   token: getToken(),
@@ -29,6 +34,28 @@ const mutations = {
   }
 }
 
+function initPushNotification() {
+  serviceWorker.register().then(() => {
+    serviceWorker.enablePush('BFvZh7RWWZQQ6F7uvf_C0kbSAhPw_MX2WuBKRzybEqP-ER4mgh-SM39P24-MY-qm_B6z970bqhsZshVv1sBNn2Y').then((subscription) => {
+      Vue.$log.warn('subscription ', subscription)
+      const newSub = {
+        id: 0,
+        subscription: JSON.stringify(subscription),
+        email: getToken().email
+      }
+      Vue.$log.warn('creating subscription ', newSub)
+      API.graphql(graphqlOperation(gqlMutations.createWebSubs, { input: newSub })).then(
+        (createdSub) => {
+          Vue.$log.debug(createdSub)
+        }).catch((e) => {
+        Vue.$log.error(e)
+      })
+    })
+  }).catch((e) => {
+    Vue.$log.error(e)
+  })
+}
+
 const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
@@ -39,6 +66,7 @@ const actions = {
         data.password = password
         setToken(response.data)
         setLanguage(data.attributes.lang)
+        initPushNotification()
         traccar.devices(function(devices) {
           vm.$data.devices = devices
         })

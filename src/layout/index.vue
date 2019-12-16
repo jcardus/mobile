@@ -51,19 +51,17 @@ export default {
               type: 'info',
               duration: 5000
             })
-            if (this.serviceWorker) {
-              this.serviceWorker.postMessage(notifications.getMessage(event))
+            try {
+              if (self.serviceWorker) {
+                self.serviceWorker.postMessage(notifications.getMessage(event))
+              } else {
+                self.$log.warn('serviceWorker is null...')
+              }
+            } catch (e) {
+              self.$log.error(e)
             }
           }
         }
-      }
-    })
-    const swPath = 'service-worker.js'
-    navigator.serviceWorker.register(swPath).then(registration => {
-      if (registration.active) {
-        self.serviceWorker = registration.active
-      } else {
-        this.$log.warn('service worker no active...')
       }
     })
   }
