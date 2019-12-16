@@ -50,7 +50,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 const defaultLang = 'en'
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? 'warn' : 'debug',
+  logLevel: isProduction ? 'debug' : 'debug',
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,
@@ -146,6 +146,23 @@ const dict = {
 }
 
 I18n.putVocabularies(dict)
+
+function askPermissionForNotifications() {
+  return new Promise(function(resolve, reject) {
+    const permissionResult = Notification.requestPermission(function(result) {
+      resolve(result)
+    })
+    if (permissionResult) {
+      permissionResult.then(resolve, reject)
+    }
+  }).then(function(permissionResult) {
+    if (permissionResult !== 'granted') {
+      console.error('user blocked notifications: ', permissionResult)
+    }
+  })
+}
+
+askPermissionForNotifications().then()
 
 Vue.$log.debug('starting main instance...')
 

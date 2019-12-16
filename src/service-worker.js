@@ -4,7 +4,7 @@ if (workbox) {
   // be imported using importScripts (as is workbox itself) and we can
   // precache this. This is all we need for precaching
   // eslint-disable-next-line no-undef
-  self.__precacheManifest = self.__precacheManifest.filter(x => !x.url.startsWith('/static/js/runtime'))
+  // self.__precacheManifest = self.__precacheManifest.filter(x => !x.url.startsWith('/static/js/runtime'))
   // eslint-disable-next-line no-undef
   workbox.precaching.precacheAndRoute(self.__precacheManifest)
 
@@ -21,6 +21,27 @@ if (workbox) {
     new workbox.strategies.StaleWhileRevalidate({
       cacheName: 'fontawesome'
     })
+  )
+
+  // eslint-disable-next-line no-undef
+  workbox.routing.registerRoute(
+    new RegExp('https://.*\\.amazonaws\\.com/v1/.*'),
+    // eslint-disable-next-line no-undef
+    new workbox.strategies.NetworkOnly()
+  )
+
+  // eslint-disable-next-line no-undef
+  workbox.routing.registerRoute(
+    new RegExp('https://capture\\.trackjs\\.com/.*'),
+    // eslint-disable-next-line no-undef
+    new workbox.strategies.NetworkOnly()
+  )
+
+  // eslint-disable-next-line no-undef
+  workbox.routing.registerRoute(
+    new RegExp('https://.*\\.amazonaws.com/v1/.*'),
+    // eslint-disable-next-line no-undef
+    new workbox.strategies.NetworkOnly()
   )
 
   // eslint-disable-next-line no-undef
@@ -53,12 +74,11 @@ if (workbox) {
     }
 
     const options = {
-      body: data.text(),
+      body: data.text().split(' ')[1],
       icon: '/img/favicon/pinme192.png',
-      image: '/img/logos/localhost.png',
       vibrate: [300, 200, 300],
       badge: '/img/favicon/pinme192.png'
     }
-    e.waitUntil(self.registration.showNotification('WuizyGo', options))
+    e.waitUntil(self.registration.showNotification(data.text().split(' ')[0], options))
   })
 }

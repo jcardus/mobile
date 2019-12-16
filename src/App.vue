@@ -24,23 +24,6 @@ export default {
     this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
-    this.askPermissionForNotifications()
-  },
-  methods: {
-    askPermissionForNotifications() {
-      return new Promise(function(resolve, reject) {
-        const permissionResult = Notification.requestPermission(function(result) {
-          resolve(result)
-        })
-        if (permissionResult) {
-          permissionResult.then(resolve, reject)
-        }
-      }).then(function(permissionResult) {
-        if (permissionResult !== 'granted') {
-          this.$log.warn('user blocked notifications!')
-        }
-      })
-    }
   }
 }
 </script>

@@ -619,7 +619,11 @@ export default {
           device.speed = position.speed
           feature = self.positionToFeature(position, device)
           self.positionsSource.features.push(feature)
-          if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
+          if (vm.$static.map) {
+            if (vm.$static.map.getSource('positions')) {
+              vm.$static.map.getSource('positions').setData(self.positionsSource)
+            }
+          }
         } else {
           if (!device) return
           const oldFixTime = feature.properties.fixTime
@@ -632,7 +636,11 @@ export default {
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
             self.$log.debug('refresh map...')
-            if (vm.$static.map.getSource('positions')) { vm.$static.map.getSource('positions').setData(self.positionsSource) }
+            if (vm.$static.map) {
+              if (vm.$static.map.getSource('positions')) {
+                vm.$static.map.getSource('positions').setData(self.positionsSource)
+              }
+            }
           }
         }
         device.currentFeature = feature

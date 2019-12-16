@@ -48,11 +48,13 @@ function initPushNotification() {
         (createdSub) => {
           Vue.$log.debug(createdSub)
         }).catch((e) => {
-        Vue.$log.error(e)
+        Vue.$log.error('error on graphql operation', e)
       })
+    }).catch((e) => {
+      Vue.$log.error('error on enablePush', e)
     })
   }).catch((e) => {
-    Vue.$log.error(e)
+    Vue.$log.error('error on register', e)
   })
 }
 
