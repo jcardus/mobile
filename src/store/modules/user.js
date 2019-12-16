@@ -35,26 +35,31 @@ const mutations = {
 }
 
 function initPushNotification() {
-  serviceWorker.register().then(() => {
-    serviceWorker.enablePush('BFvZh7RWWZQQ6F7uvf_C0kbSAhPw_MX2WuBKRzybEqP-ER4mgh-SM39P24-MY-qm_B6z970bqhsZshVv1sBNn2Y').then((subscription) => {
-      Vue.$log.warn('subscription ', subscription)
-      const newSub = {
-        id: 0,
-        subscription: JSON.stringify(subscription),
-        email: getToken().email
-      }
-      Vue.$log.warn('creating subscription ', newSub)
-      API.graphql(graphqlOperation(gqlMutations.createWebSubs, { input: newSub })).then(
-        (createdSub) => {
-          Vue.$log.debug(createdSub)
-        }).catch((e) => {
-        Vue.$log.error('error on graphql operation', e)
+  return new Promise((resolve, reject) => {
+    serviceWorker.register().then(() => {
+      serviceWorker.enablePush('BFvZh7RWWZQQ6F7uvf_C0kbSAhPw_MX2WuBKRzybEqP-ER4mgh-SM39P24-MY-qm_B6z970bqhsZshVv1sBNn2Y').then((subscription) => {
+        Vue.$log.warn('subscription ', subscription)
+        const newSub = {
+          id: 0,
+          subscription: JSON.stringify(subscription),
+          email: getToken().email
+        }
+        Vue.$log.warn('creating subscription ', newSub)
+        API.graphql(graphqlOperation(gqlMutations.createWebSubs, { input: newSub })).then(
+          (createdSub) => {
+            resolve(createdSub)
+          }).catch((e) => {
+          Vue.$log.error('error on graphql operation', e)
+          reject(e)
+        })
+      }).catch((e) => {
+        Vue.$log.error('error on enablePush', e)
+        reject(e)
       })
     }).catch((e) => {
-      Vue.$log.error('error on enablePush', e)
+      Vue.$log.error('error on register', e)
+      reject(e)
     })
-  }).catch((e) => {
-    Vue.$log.error('error on register', e)
   })
 }
 
@@ -68,56 +73,58 @@ const actions = {
         data.password = password
         setToken(response.data)
         setLanguage(data.attributes.lang)
-        initPushNotification()
-        traccar.devices(function(devices) {
-          vm.$data.devices = devices
-        })
-        traccar.geofences(function(geofences) {
-          vm.$data.geofences = geofences
-        })
-        traccar.alerts(function(alerts) {
-          const result = []
-          alerts.forEach(a => {
-            const alert_data = {
-              notification: a,
-              devices: []
-            }
-            result.push(alert_data)
+        initPushNotification().then((sub) => {
+          Vue.$log.debug('created sub! ', sub)
+          traccar.devices(function(devices) {
+            vm.$data.devices = devices
           })
-          vm.$data.alerts = result
-        })
-        vm.$data.devices.forEach(d => {
-          traccar.alertsByDevice(d.id, function(alerts) {
+          traccar.geofences(function(geofences) {
+            vm.$data.geofences = geofences
+          })
+          traccar.alerts(function(alerts) {
+            const result = []
             alerts.forEach(a => {
-              const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
-              if (a.always === false) {
+              const alert_data = {
+                notification: a,
+                devices: []
+              }
+              result.push(alert_data)
+            })
+            vm.$data.alerts = result
+          })
+          vm.$data.devices.forEach(d => {
+            traccar.alertsByDevice(d.id, function(alerts) {
+              alerts.forEach(a => {
+                const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
+                if (a.always === false) {
+                  if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                    traccar.geofencesByDevice(d.id, function(geofences) {
+                      alert.devices.push({ data: d, geofences: geofences })
+                    })
+                  } else {
+                    alert.devices.push({ data: d })
+                  }
+                }
+              })
+            })
+          })
+          vm.$data.alerts.forEach(a => {
+            if (a.notification.always === true) {
+              vm.$data.devices.forEach(d => {
                 if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
                   traccar.geofencesByDevice(d.id, function(geofences) {
-                    alert.devices.push({ data: d, geofences: geofences })
+                    a.devices.push({ data: d, geofences: geofences })
                   })
                 } else {
-                  alert.devices.push({ data: d })
+                  a.devices.push({ data: d })
                 }
-              }
-            })
+              })
+            }
           })
+          resolve()
+        }).catch(error => {
+          reject(error)
         })
-        vm.$data.alerts.forEach(a => {
-          if (a.notification.always === true) {
-            vm.$data.devices.forEach(d => {
-              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                traccar.geofencesByDevice(d.id, function(geofences) {
-                  a.devices.push({ data: d, geofences: geofences })
-                })
-              } else {
-                a.devices.push({ data: d })
-              }
-            })
-          }
-        })
-        resolve()
-      }).catch(error => {
-        reject(error)
       })
     })
   },
