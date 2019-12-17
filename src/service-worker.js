@@ -77,7 +77,7 @@ if (workbox) {
       body: data.text().split(' ')[1],
       icon: '/img/favicon/pinme192.png',
       vibrate: [300, 200, 300],
-      badge: '/img/favicon/pinme192.png'
+      badge: '/img/favicon/pinme32.png'
     }
     e.waitUntil(self.registration.showNotification(data.text().split(' ')[0], options))
   })
