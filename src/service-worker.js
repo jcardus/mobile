@@ -61,7 +61,7 @@ if (workbox) {
       return
     }
 
-    if (e.data === 'skipWaiting') {
+    if (e.data.type === 'SKIP_WAITING') {
       self.skipWaiting()
     }
   })
