@@ -35,7 +35,7 @@ const mutations = {
 }
 
 function initPushNotification() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     serviceWorker.register().then(() => {
       serviceWorker.enablePush('BFvZh7RWWZQQ6F7uvf_C0kbSAhPw_MX2WuBKRzybEqP-ER4mgh-SM39P24-MY-qm_B6z970bqhsZshVv1sBNn2Y').then((subscription) => {
         Vue.$log.warn('subscription ', subscription)
@@ -50,15 +50,15 @@ function initPushNotification() {
             resolve(createdSub)
           }).catch((e) => {
           Vue.$log.error('error on graphql operation', e)
-          reject(e)
+          resolve(e)
         })
       }).catch((e) => {
         Vue.$log.error('error on enablePush', e)
-        reject(e)
+        resolve(e)
       })
     }).catch((e) => {
       Vue.$log.error('error on register', e)
-      reject(e)
+      resolve(e)
     })
   })
 }

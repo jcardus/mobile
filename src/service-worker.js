@@ -72,13 +72,13 @@ if (workbox) {
     if (e.data) {
       data = e.data
     }
-
+    const event = JSON.parse(data.text())
     const options = {
-      body: data.text().split(' ')[1],
+      body: event.type,
       icon: '/img/favicon/pinme192.png',
       vibrate: [300, 200, 300],
       badge: '/img/favicon/pinme32.png'
     }
-    e.waitUntil(self.registration.showNotification(data.text().split(' ')[0], options))
+    e.waitUntil(self.registration.showNotification(event.device, options))
   })
 }
