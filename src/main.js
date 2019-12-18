@@ -107,8 +107,18 @@ import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
 
-import awsconfig from './aws-exports'
+import Auth from '@aws-amplify/auth'
 import Analytics from '@aws-amplify/analytics'
+import awsconfig from './aws-exports'
+
+const amplifyConfig = {
+  Auth: {
+    identityPoolId: 'us-east-1:b6d2631a-1b45-4894-9ec8-0b26ca3020ae',
+    region: 'us-east-1'
+  }
+}
+
+Auth.configure(amplifyConfig)
 Amplify.configure(awsconfig)
 
 const analyticsConfig = {
