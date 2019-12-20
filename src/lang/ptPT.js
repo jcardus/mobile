@@ -176,6 +176,7 @@ export default {
     ignitionOn: 'Ignição Ligada',
     deviceOverspeed: 'Excesso de Velocidade',
     geofenceEnter: 'Entrada de Baliza',
-    geofenceExit: 'Saída de Baliza'
+    geofenceExit: 'Saída de Baliza',
+    newVersion: 'Está disponível uma nova versão desta aplicação. Carregue aqui para actualizar.'
   }
 }

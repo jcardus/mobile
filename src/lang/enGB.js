@@ -181,6 +181,7 @@ export default {
     deviceOverspeed: 'Device Overspeed',
     geofenceEnter: 'Geofence Enter',
     geofenceExit: 'Geofence Exit',
-    test: 'Test Notification'
+    test: 'Test Notification',
+    newVersion: 'A new version of this app is available. Click here to update.'
   }
 }
