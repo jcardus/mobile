@@ -59,7 +59,6 @@ Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
   store: store,
   format: 'json',
   reconnection: true,
-  reconnectionAttempts: 5,
   reconnectionDelay: 3000,
   connectManually: true
 })
