@@ -174,6 +174,7 @@ export default {
     ignitionOn: 'Motor encendido',
     deviceOverspeed: 'Traspassos de velocidad',
     geofenceEnter: 'Entrada en geocerca',
-    geofenceExit: 'Salida de geocerca'
+    geofenceExit: 'Salida de geocerca',
+    newVersion: 'Una nueva versión de esta aplicación está disponible. Haga clic aquí para actualizar.'
   }
 }
