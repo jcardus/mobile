@@ -6,8 +6,8 @@ export function getServerHost() {
     window.location.hostname.includes('192.168.1.') ||
     window.location.hostname.includes('172.20.10.') ||
     window.location.hostname.includes('localhost'))
-    ? 'dev.pinme.io'
-    : 'dev.' + window.location.hostname
+    ? 'ws.pinme.io'
+    : 'ws.' + window.location.hostname
 }
 
 export function getDate(dateString) {
