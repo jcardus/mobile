@@ -141,6 +141,11 @@ export default {
         .catch(exception => {
           self.$f7.preloader.hide()
           Vue.$log.error(exception)
+          this.$f7.toast.create({
+            closeTimeout: 4000,
+            text: exception,
+            destroyOnClose: true
+          }).open()
         })
     },
     updateAvailable() {
