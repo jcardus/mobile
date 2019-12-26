@@ -76,9 +76,11 @@ export const settings = {
 }
 
 export let newServiceWorker
+export let regServiceWorker
 
 if ('serviceWorker' in navigator) {
   new ServiceWorker().register().then(reg => {
+    regServiceWorker = reg
     reg.addEventListener('updatefound', () => {
       // A wild service worker has appeared in reg.installing!
       newServiceWorker = reg.installing

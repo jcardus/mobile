@@ -1,4 +1,4 @@
-import { vm } from '../main'
+import { vm, newServiceWorker, regServiceWorker } from '../main'
 import Vue from 'vue'
 
 export function getServerHost() {
@@ -51,4 +51,22 @@ function filterPosition(p) {
     return !(p.attributes.event >= 200 || p.attributes.event === 30)
   }
   return true
+}
+
+export function reload() {
+  if (newServiceWorker) {
+    Vue.$log.debug('reloading!')
+    newServiceWorker.postMessage({ action: 'skipWaiting' })
+  } else {
+    Vue.$log.error('this shouldnt happen')
+  }
+}
+
+export function checkForUpdates() {
+  if (regServiceWorker) {
+    Vue.$log.debug('checking for updates...')
+    regServiceWorker.update()
+  } else {
+    Vue.$log.warn('no service worker.. thats not good...')
+  }
 }
