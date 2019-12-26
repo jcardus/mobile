@@ -5,9 +5,9 @@
     </f7-panel>
     <f7-views tabs class="safe-areas">
       <f7-toolbar bottom labels tabbar>
-        <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" text="Map"></f7-link>
-        <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" text="Reports"></f7-link>
-        <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" text="Settings"></f7-link>
+        <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" :text="$t('route.map')"></f7-link>
+        <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" :text="$t('route.reports')"></f7-link>
+        <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
       </f7-toolbar>
       <f7-view v-if="loggedIn" id="view-map" main tab tab-active url="/map"></f7-view>
       <f7-view id="view-reports" name="reports" tab url="/reports"></f7-view>
@@ -137,7 +137,10 @@ export default {
       this.$log.debug('dispatch user login ')
       this.$f7.preloader.show()
       this.$store.dispatch('user/login', { username: this.username, password: this.password })
-        .then(() => { location.reload() })
+        .then(() => {
+          this.$log.debug('reload...')
+          location.reload()
+        })
         .catch(exception => {
           self.$f7.preloader.hide()
           Vue.$log.error(exception)
