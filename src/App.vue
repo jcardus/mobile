@@ -19,8 +19,7 @@ export default {
   },
   data() {
     return {
-      showUpdateDiv: false,
-      newServiceWorker: null
+      showUpdateDiv: false
     }
   },
   created() {

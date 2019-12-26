@@ -57,6 +57,8 @@ import { getToken } from './utils/auth'
 import * as partner from './utils/partner'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
+import { serverBus } from './main'
+import { reload, checkForUpdates } from './utils/utils'
 
 export default {
   name: 'AppMobile',
@@ -70,7 +72,8 @@ export default {
         name: 'Pinme', // App name
         theme: 'auto', // Automatic theme detection
         routes: routes
-      }
+      },
+      toastNewVersion: null
     }
   },
   computed: {
@@ -89,13 +92,21 @@ export default {
   created() {
     Vue.$log.debug('created AppMobile')
     Vue.$log.debug('loggedIn: ', this.loggedIn)
-
     this.$root.$store.subscribe(this.showNotifications)
+    serverBus.$on('updateAvailable', this.updateAvailable)
   },
-  mounted() {
+  mounted: function() {
     this.$log.debug('App mobile')
     document.getElementById('favicon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
+    this.toastNewVersion = this.$f7.toast.create({
+      text: this.$t('layout.newVersion'),
+      closeButton: true,
+      closeButtonColor: 'white',
+      on: {
+        close: reload
+      }
+    })
   },
   methods: {
     showNotifications(mutation, state) {
@@ -105,7 +116,7 @@ export default {
           for (let i = 0; i < events.length; i++) {
             const event = events[i]
             this.$f7.notification.create({
-              icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '"/>',
+              icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '" alt=""/>',
               titleRightText: '',
               title: this.$t('layout.' + event.type),
               text: notifications.getMessage(event),
@@ -119,6 +130,7 @@ export default {
     panelClosed() {
       Vue.$log.debug('panelClosed')
       lnglat.updateMarkers()
+      checkForUpdates()
     },
     signIn() {
       const self = this
@@ -130,6 +142,9 @@ export default {
           self.$f7.preloader.hide()
           Vue.$log.error(exception)
         })
+    },
+    updateAvailable() {
+      this.toastNewVersion.open()
     }
   }
 }
