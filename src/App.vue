@@ -10,7 +10,7 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
 import { components } from 'aws-amplify-vue'
-import { serverBus } from './main'
+import { serverBus, newServiceWorker } from './main'
 
 export default {
   name: 'App',
@@ -36,9 +36,9 @@ export default {
       this.showUpdateDiv = true
     },
     reload() {
-      if (navigator.serviceWorker) {
+      if (newServiceWorker) {
         this.$log.debug('reloading!')
-        navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' })
+        newServiceWorker.postMessage({ action: 'skipWaiting' })
       } else {
         this.$log.error('this shouldnt happen')
       }

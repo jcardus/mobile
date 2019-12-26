@@ -75,11 +75,13 @@ export const settings = {
   show3dBuildings: false
 }
 
+export let newServiceWorker
+
 if ('serviceWorker' in navigator) {
   new ServiceWorker().register().then(reg => {
     reg.addEventListener('updatefound', () => {
       // A wild service worker has appeared in reg.installing!
-      const newServiceWorker = reg.installing
+      newServiceWorker = reg.installing
       newServiceWorker.addEventListener('statechange', () => {
         // Has network.state changed?
         if (newServiceWorker.state === 'installed') {
