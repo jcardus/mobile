@@ -38,7 +38,7 @@ export default {
     reload() {
       if (navigator.serviceWorker) {
         this.$log.debug('reloading!')
-        navigator.serviceWorker.postMessage({ action: 'skipWaiting' })
+        navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' })
       } else {
         this.$log.error('this shouldnt happen')
       }
