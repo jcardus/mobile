@@ -21,6 +21,7 @@ const App = () => import('./App')
 import { getToken } from './utils/auth'
 import Amplify, * as AmplifyModules from 'aws-amplify'
 import { AmplifyPlugin } from 'aws-amplify-vue'
+import { ServiceWorker } from 'aws-amplify'
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
@@ -73,6 +74,33 @@ export const settings = {
   truck3d: false,
   show3dBuildings: false
 }
+
+export let newServiceWorker
+
+if ('serviceWorker' in navigator) {
+  new ServiceWorker().register().then(reg => {
+    reg.addEventListener('updatefound', () => {
+      // A wild service worker has appeared in reg.installing!
+      newServiceWorker = reg.installing
+      newServiceWorker.addEventListener('statechange', () => {
+        // Has network.state changed?
+        if (newServiceWorker.state === 'installed') {
+          if (navigator.serviceWorker.controller) {
+            // new update available
+            serverBus.$emit('updateAvailable')
+          }
+        }
+      })
+    })
+  })
+  let refreshing
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (refreshing) return
+    window.location.reload()
+    refreshing = true
+  })
+}
+
 const moment = require('moment')
 require('moment/locale/pt')
 require('moment/locale/es')// 'fr'

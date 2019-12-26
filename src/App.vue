@@ -10,7 +10,7 @@ import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
 import { components } from 'aws-amplify-vue'
-import { ServiceWorker } from 'aws-amplify'
+import { serverBus, newServiceWorker } from './main'
 
 export default {
   name: 'App',
@@ -23,40 +23,24 @@ export default {
       newServiceWorker: null
     }
   },
+  created() {
+    serverBus.$on('updateAvailable', this.updateAvailable)
+  },
   mounted() {
     this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
-    const self = this
-    if ('serviceWorker' in navigator) {
-      new ServiceWorker().register().then(reg => {
-        reg.addEventListener('updatefound', () => {
-          // A wild service worker has appeared in reg.installing!
-          self.newServiceWorker = reg.installing
-          self.newServiceWorker.addEventListener('statechange', () => {
-            // Has network.state changed?
-            if (self.newServiceWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // new update available
-                self.showUpdateDiv = true
-              }
-            }
-          })
-        })
-      })
-      let refreshing
-      navigator.serviceWorker.addEventListener('controllerchange', function() {
-        if (refreshing) return
-        window.location.reload()
-        refreshing = true
-      })
-    }
   },
   methods: {
+    updateAvailable() {
+      this.showUpdateDiv = true
+    },
     reload() {
-      if (this.newServiceWorker) {
+      if (newServiceWorker) {
         this.$log.debug('reloading!')
-        this.newServiceWorker.postMessage({ action: 'skipWaiting' })
+        newServiceWorker.postMessage({ action: 'skipWaiting' })
+      } else {
+        this.$log.error('this shouldnt happen')
       }
     }
   }
