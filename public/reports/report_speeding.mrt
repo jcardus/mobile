@@ -423,7 +423,7 @@
               <Name>DataTextroot4</Name>
               <Page isRef="7" />
               <Parent isRef="26" />
-              <Text>{root_trips.trip_end_address}</Text>
+              <Text>{root_trips.trip_start_address}</Text>
               <TextBrush>Black</TextBrush>
               <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
               <TextQuality>Wysiwyg</TextQuality>
