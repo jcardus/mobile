@@ -78,10 +78,11 @@ export let newServiceWorker
 export let regServiceWorker
 
 if ('serviceWorker' in navigator) {
+  Vue.$log.debug('registering service worker...')
   new ServiceWorker().register().then(reg => {
     regServiceWorker = reg
     reg.addEventListener('updatefound', () => {
-      // A wild service worker has appeared in reg.installing!
+      Vue.$log.debug('A wild service worker has appeared in reg.installing!')
       newServiceWorker = reg.installing
       newServiceWorker.addEventListener('statechange', () => {
         // Has network.state changed?
@@ -102,6 +103,8 @@ if ('serviceWorker' in navigator) {
     window.location.reload()
     refreshing = true
   })
+} else {
+  Vue.$log.warn('no serviceWorker detected, weird browser...')
 }
 
 const moment = require('moment')
