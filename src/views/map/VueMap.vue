@@ -119,11 +119,7 @@ export default {
   mounted() {
     this.$log.info('VueMap mounted')
     NProgress.start()
-    if (this.devices.length === 0) {
-      this.$log.debug('getting devices...')
-      traccar.devices(this.onDevices, this.onErrorLoading)
-    }
-    traccar.geofences(this.onGeofences)
+    this.initData()
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
@@ -136,6 +132,11 @@ export default {
     this.subscribeEvents()
   },
   methods: {
+    initData: function() {
+      this.$log.debug('VueMap initData')
+      traccar.devices(this.onDevices, this.onErrorLoading)
+      traccar.geofences(this.onGeofences)
+    },
     onErrorLoading(error) {
       this.$message({
         message: error,
@@ -169,6 +170,7 @@ export default {
       this.$log.info('onMapLoad')
       // vm.$data.loadingRoutes = false
       NProgress.done()
+      serverBus.$emit('mapLoaded')
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
@@ -399,6 +401,7 @@ export default {
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('data', this.onData)
+      serverBus.$on('mapViewActive', this.initData)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
@@ -427,10 +430,12 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
+
       // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
+      serverBus.$off('mapViewActive', this.initData)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },

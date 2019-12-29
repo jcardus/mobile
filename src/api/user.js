@@ -31,13 +31,16 @@ export function getInfo(token) {
 
 export function logout() {
   const cookie = VueCookies.get('user-info')
-  return axios({
-    withCredentials: true, // send cookies when cross-domain requests
-    timeout: 5000,
-    url: 'https://' + utils.getServerHost() + '/api/session',
-    method: 'delete',
-    auth: { username: cookie ? cookie.email : '', password: cookie ? cookie.password : '' },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }})
+  if (cookie) {
+    return axios({
+      withCredentials: true, // send cookies when cross-domain requests
+      timeout: 5000,
+      url: 'https://' + utils.getServerHost() + '/api/session',
+      method: 'delete',
+      auth: { username: cookie ? cookie.email : '', password: cookie ? cookie.password : '' },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+  }
 }
