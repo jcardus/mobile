@@ -17,11 +17,13 @@ export default {
       this.$store.dispatch('user/logout').then(
         () => {
           Vue.$log.debug('ok - reloading page')
-          location.reload()
+          this.$f7router.navigate('/login')
+          this.$f7.preloader.hide()
         },
         () => {
           Vue.$log.debug('nok - reloading page')
-          location.reload()
+          this.$f7router.navigate('/login')
+          this.$f7.preloader.hide()
         }
       )
     }

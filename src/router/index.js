@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import * as lnglat from '../utils/lnglat'
 
 Vue.use(Router)
 
@@ -139,12 +140,17 @@ const createRouter = () => new Router({
   routes: constantRoutes
 })
 
-const router = createRouter()
+let router
+if (!lnglat.isMobile()) {
+  router = createRouter()
+}
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  if (!lnglat.isMobile()) {
+    const newRouter = createRouter()
+    router.matcher = newRouter.matcher // reset router
+  }
 }
 
 export default router

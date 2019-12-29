@@ -1,6 +1,7 @@
-import Reports from '../pages/reports.vue'
-import SettingsPage from '../pages/settings.vue'
-import Viewer from '../pages/viewer.vue'
+import Reports from '../pages/reports'
+import SettingsPage from '../pages/settings'
+import Viewer from '../pages/viewer'
+import Login from '../pages/login'
 import MapMobileContainer from '../../views/map/MapMobileContainer'
 
 const routes = [
@@ -19,6 +20,10 @@ const routes = [
   {
     path: '/viewer',
     component: Viewer
+  },
+  {
+    path: '/login',
+    component: Login
   }
 ]
 

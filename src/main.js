@@ -48,7 +48,6 @@ Vue.config.errorHandler = (err, vm, info) => {
 Vue.use(LoadScript)
 
 const isProduction = process.env.NODE_ENV === 'production'
-const defaultLang = 'en'
 const options = {
   isEnabled: true,
   logLevel: isProduction ? 'debug' : 'debug',
@@ -60,7 +59,7 @@ const options = {
 }
 
 Vue.use(VueLogger, options)
-Vue.config.lang = defaultLang
+Vue.config.lang = getLanguage().slice(2)
 Vue.use(ElementUI, {
   size: VueCookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
@@ -94,6 +93,8 @@ if ('serviceWorker' in navigator) {
         }
       })
     })
+  }).catch((e) => {
+    Vue.$log.error(e)
   })
   let refreshing
   navigator.serviceWorker.addEventListener('controllerchange', function() {
@@ -267,6 +268,7 @@ export const vm = new Vue({
       this.$static.geofencesSource.features = []
       this.$data.historyMode = false
       this.$log.debug('done.')
+      this.devices = []
     }
   },
   router: router,
