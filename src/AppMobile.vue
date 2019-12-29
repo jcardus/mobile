@@ -71,7 +71,6 @@ export default {
   methods: {
     viewMapShow() {
       serverBus.$emit('mapViewActive')
-      this.showVehicleTable = true
     },
     showNotifications(mutation, state) {
       if (mutation.type === 'SOCKET_ONMESSAGE') {

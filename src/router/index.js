@@ -86,7 +86,7 @@ export const constantRoutes = [
       {
         path: 'report_tolls',
         component: () => import('@/views/reports/ReportTolls'),
-        name: 'Speeding Report',
+        name: 'Tolls Report',
         meta: { title: 'route.report_tolls' }
       }
     ]

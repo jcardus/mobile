@@ -1,5 +1,4 @@
 import router from './router'
-import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
@@ -14,15 +13,6 @@ export async function routerBeforeEach(next, to) {
 // determine whether the user has logged in
   const hasToken = getToken()
   if (hasToken) {
-    const hasRoles = store.getters.roles && store.getters.roles.length > 0
-    if (!hasRoles) {
-      const { roles } = await store.dispatch('user/getInfo')
-      // generate accessible routes map based on roles
-      const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-      // dynamically add accessible routes
-      router.addRoutes(accessRoutes)
-      next({ ...to, replace: true })
-    }
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       Vue.$log.debug('redirecting to /')

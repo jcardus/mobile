@@ -7,6 +7,9 @@ export default {
     report_trip_title: 'Relatório de viagens',
     report_location_title: 'Relatório de posições',
     report_zone_crossing: 'Relatório de zonas',
+    report_speeding: 'Relatório de excessos de velocidade',
+    report_speeding_beta: 'Relatórios de excexsos de velocidade BETA',
+    report_tolls: 'Relatório de Portagens',
     settings: 'Configurações',
     duration: 'Duração'
   },

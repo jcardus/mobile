@@ -133,9 +133,12 @@ export default {
   },
   methods: {
     initData: function() {
-      this.$log.debug('VueMap initData')
-      traccar.devices(this.onDevices, this.onErrorLoading)
-      traccar.geofences(this.onGeofences)
+      if (this.$store.state.user.token != null) {
+        this.$log.debug('VueMap initData')
+        traccar.devices(this.onDevices, this.onErrorLoading)
+        traccar.geofences(this.onGeofences)
+        this.mapResize()
+      }
     },
     onErrorLoading(error) {
       this.$message({
@@ -157,7 +160,9 @@ export default {
       this.refreshGeofences()
     },
     mapResize: function() {
-      this.map.resize()
+      if (this.map) {
+        this.map.resize()
+      }
     },
     onMapLoad: function() {
       this.addControls()
@@ -264,7 +269,7 @@ export default {
     },
     refreshGeofences() {
       // Geofences ... POIs ... Lines
-      if (vm.$static.map.getSource('geofences')) {
+      if (vm.$static.map && vm.$static.map.getSource('geofences')) {
         vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
       }
     },
