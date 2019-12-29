@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     showVehicleTable() {
-      if (window.location.hash.includes('/map') && getToken() !== null) {
+      if (getToken() !== null) {
         this.$log.debug('showing vehicle trable')
         return true
       } else {
@@ -81,6 +81,7 @@ export default {
   methods: {
     viewMapShow() {
       serverBus.$emit('mapViewActive')
+      this.showVehicleTable = true
     },
     showNotifications(mutation, state) {
       if (mutation.type === 'SOCKET_ONMESSAGE') {
