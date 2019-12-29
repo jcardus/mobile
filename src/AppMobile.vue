@@ -1,7 +1,7 @@
 <template>
   <f7-app :params="f7params">
     <f7-panel left cover theme-dark @panel:closed="panelClosed">
-      <vehicle-table-container v-if="showVehicleTable"></vehicle-table-container>
+      <vehicle-table-container></vehicle-table-container>
     </f7-panel>
     <f7-views tabs class="safe-areas">
       <f7-toolbar bottom labels tabbar>
@@ -45,20 +45,8 @@ export default {
       toastNewVersion: null
     }
   },
-  computed: {
-    showVehicleTable() {
-      if (getToken() !== null) {
-        this.$log.debug('showing vehicle trable')
-        return true
-      } else {
-        this.$log.debug('not showing vehicle trable')
-        return false
-      }
-    }
-  },
   created() {
     Vue.$log.debug('created AppMobile')
-    Vue.$log.debug('loggedIn: ', this.loggedIn)
     this.$root.$store.subscribe(this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
   },
@@ -74,7 +62,9 @@ export default {
         close: reload
       }
     })
-    if (getToken() === null) {
+    const cookie = getToken()
+    Vue.$log.debug(cookie)
+    if (cookie === null) {
       this.$f7.views.main.router.navigate('/login')
     }
   },
