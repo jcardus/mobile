@@ -62,6 +62,7 @@ const actions = {
         TrackJS.addMetadata('user', username)
         data.password = password
         setToken(response.data)
+        state.token = getToken()
         setLanguage(data.attributes.lang)
         initPushNotification()
         traccar.devices(function(devices) {
@@ -134,12 +135,14 @@ const actions = {
         removeToken()
         traccar.stopReceiving()
         vm.reset()
+        state.token = null
         resolve()
       }).catch(() => {
         commit('SET_ROLES', [])
         resetRouter()
         removeToken()
         resolve()
+        state.token = null
       })
     })
   }
