@@ -25,7 +25,7 @@
     <f7-list>
       <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
       <f7-block-footer>
-        {{ version }}
+        {{ version }} {{ domain }}
       </f7-block-footer>
     </f7-list>
   </f7-page>
@@ -43,6 +43,9 @@ export default {
     }
   },
   computed: {
+    domain() {
+      return window.location.hostname
+    },
     version() {
       if (process.env.NODE_ENV === 'development') {
         return new Date()
