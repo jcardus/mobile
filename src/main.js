@@ -13,7 +13,6 @@ import { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
-import './registerServiceWorker'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
 const AppMobile = () => import('./AppMobile')
