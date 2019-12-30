@@ -88,7 +88,9 @@ export default {
     geofences() {
       return this.$root.$data.geofences
     },
-    map() { return vm.$static.map },
+    map() {
+      return vm.$static.map
+    },
     selected: {
       get: function() {
         return vm.$data.currentDevice
@@ -128,7 +130,11 @@ export default {
       style: this.$root.$data.mapStyle
     })
     this.setZoomAndCenter()
-    this.map.on('load', this.onMapLoad)
+    if (this.map) {
+      this.map.on('load', this.onMapLoad)
+    } else {
+      Vue.$log.debug('map is null!')
+    }
     this.subscribeEvents()
   },
   methods: {
@@ -137,7 +143,9 @@ export default {
         this.$log.debug('VueMap initData')
         traccar.devices(this.onDevices, this.onErrorLoading)
         traccar.geofences(this.onGeofences)
-        this.mapResize()
+        // this.mapResize()
+      } else {
+        this.$log.debug('user token is null, ignoring initData')
       }
     },
     onErrorLoading(error) {
