@@ -88,7 +88,9 @@ export default {
     geofences() {
       return this.$root.$data.geofences
     },
-    map() { return vm.$static.map },
+    map() {
+      return vm.$static.map
+    },
     selected: {
       get: function() {
         return vm.$data.currentDevice
@@ -128,14 +130,23 @@ export default {
       style: this.$root.$data.mapStyle
     })
     this.setZoomAndCenter()
-    this.map.on('load', this.onMapLoad)
+    if (this.map) {
+      this.map.on('load', this.onMapLoad)
+    } else {
+      Vue.$log.debug('map is null!')
+    }
     this.subscribeEvents()
   },
   methods: {
     initData: function() {
-      this.$log.debug('VueMap initData')
-      traccar.devices(this.onDevices, this.onErrorLoading)
-      traccar.geofences(this.onGeofences)
+      if (this.$store.state.user.token != null) {
+        this.$log.debug('VueMap initData')
+        traccar.devices(this.onDevices, this.onErrorLoading)
+        traccar.geofences(this.onGeofences)
+        // this.mapResize()
+      } else {
+        this.$log.debug('user token is null, ignoring initData')
+      }
     },
     onErrorLoading(error) {
       this.$message({
@@ -157,7 +168,9 @@ export default {
       this.refreshGeofences()
     },
     mapResize: function() {
-      this.map.resize()
+      if (this.map) {
+        this.map.resize()
+      }
     },
     onMapLoad: function() {
       this.addControls()
@@ -264,7 +277,7 @@ export default {
     },
     refreshGeofences() {
       // Geofences ... POIs ... Lines
-      if (vm.$static.map.getSource('geofences')) {
+      if (vm.$static.map && vm.$static.map.getSource('geofences')) {
         vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
       }
     },

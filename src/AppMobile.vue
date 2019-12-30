@@ -70,8 +70,8 @@ export default {
   },
   methods: {
     viewMapShow() {
+      Vue.$log.debug('emit mapViewActive')
       serverBus.$emit('mapViewActive')
-      this.showVehicleTable = true
     },
     showNotifications(mutation, state) {
       if (mutation.type === 'SOCKET_ONMESSAGE') {

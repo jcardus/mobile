@@ -82,7 +82,7 @@ export default {
     }
   },
   mounted() {
-    if (this.geofences.length === 0) { traccar.geofences(this.loadGeofences) }
+    if (this.geofences.length === 0 && this.$store.state.user.token != null) { traccar.geofences(this.loadGeofences) }
   },
   methods: {
     loadGeofences: function(geofences) {

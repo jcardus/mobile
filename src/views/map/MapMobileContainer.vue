@@ -19,10 +19,16 @@ export default {
   mounted() {
     this.$log.debug('VueMap mobile')
     serverBus.$on('deviceSelected', this.deviceSelected)
+    serverBus.$on('mapLoaded', this.mapLoaded)
+    this.$f7.preloader.show()
   },
   methods: {
+    mapLoaded() {
+      this.$f7.preloader.hide()
+    },
     beforeDestroy() {
       serverBus.$off('deviceSelected', this.deviceSelected)
+      serverBus.$off('mapLoaded', this.mapLoaded)
     },
     deviceSelected() {
       this.$f7.panel.close('left')

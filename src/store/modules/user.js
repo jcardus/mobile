@@ -1,6 +1,6 @@
 import { login, logout } from '../../api/user'
 import { getToken, setToken, removeToken } from '../../utils/auth'
-import router, { resetRouter } from '../../router'
+import { resetRouter } from '../../router'
 import { traccar } from '../../api/traccar-api'
 import { setLanguage } from '../../lang/index'
 import { vm } from '../../main'
@@ -13,16 +13,10 @@ const serviceWorker = new ServiceWorker()
 
 const state = {
   token: getToken(),
-  name: '',
-  avatar: '',
-  introduction: '',
-  roles: []
+  name: ''
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
   SET_NAME: (state, name) => {
     state.name = name
   },
@@ -68,6 +62,7 @@ const actions = {
         TrackJS.addMetadata('user', username)
         data.password = password
         setToken(response.data)
+        state.token = getToken()
         setLanguage(data.attributes.lang)
         initPushNotification()
         traccar.devices(function(devices) {
@@ -140,48 +135,15 @@ const actions = {
         removeToken()
         traccar.stopReceiving()
         vm.reset()
+        state.token = null
         resolve()
       }).catch(() => {
         commit('SET_ROLES', [])
         resetRouter()
         removeToken()
         resolve()
+        state.token = null
       })
-    })
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
-      removeToken()
-      resolve()
-    })
-  },
-
-  // dynamically modify permissions
-  changeRoles({ commit, dispatch }, role) {
-    return new Promise(async resolve => {
-      const token = role + '-token'
-
-      commit('SET_TOKEN', token)
-      setToken(token)
-
-      const { roles } = await dispatch('getInfo')
-
-      resetRouter()
-
-      // generate accessible routes map based on roles
-      const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-
-      // dynamically add accessible routes
-      router.addRoutes(accessRoutes)
-
-      // reset visited views and cached views
-      dispatch('tagsView/delAllViews', null, { root: true })
-
-      resolve()
     })
   }
 }
