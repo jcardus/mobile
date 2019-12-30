@@ -79,7 +79,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
   .logo {
     margin: 0 auto 40px auto;
     display: block;
