@@ -18,7 +18,7 @@ if (workbox) {
   workbox.routing.registerRoute(
     /^https:\/\/kit-free\.fontawesome\.com/,
     // eslint-disable-next-line no-undef
-    new workbox.strategies.StaleWhileRevalidate({
+    new workbox.strategies.CacheFirst({
       cacheName: 'fontawesome'
     })
   )
@@ -48,7 +48,7 @@ if (workbox) {
   workbox.routing.registerRoute(
     /^https:\/\/fonts\.googleapis\.com/,
     // eslint-disable-next-line no-undef
-    new workbox.strategies.StaleWhileRevalidate({
+    new workbox.strategies.CacheFirst({
       cacheName: 'googlefonts'
     })
   )

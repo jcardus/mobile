@@ -70,6 +70,7 @@ export default {
   },
   methods: {
     viewMapShow() {
+      Vue.$log.debug('emit mapViewActive')
       serverBus.$emit('mapViewActive')
     },
     showNotifications(mutation, state) {
