@@ -21,6 +21,7 @@ export default {
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('mapLoaded', this.mapLoaded)
     this.$f7.preloader.show()
+    setTimeout(this.$f7.preloader.hide, 10000)
   },
   methods: {
     mapLoaded() {

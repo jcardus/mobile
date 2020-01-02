@@ -13,7 +13,8 @@ const serviceWorker = new ServiceWorker()
 
 const state = {
   token: getToken(),
-  name: ''
+  name: '',
+  avatar: ''
 }
 
 const mutations = {
@@ -22,9 +23,6 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
-  },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
   }
 }
 
@@ -119,7 +117,6 @@ const actions = {
   },
 
   getInfo({ commit, state }) {
-    commit('SET_ROLES', ['admin'])
     commit('SET_NAME', getToken().name)
     const nameSplit = getToken().name.split(' ')
     commit('SET_AVATAR', nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase()))
@@ -127,10 +124,9 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout({ state }) {
     return new Promise((resolve) => {
       logout(state.token).then(() => {
-        commit('SET_ROLES', [])
         resetRouter()
         removeToken()
         traccar.stopReceiving()
@@ -138,7 +134,6 @@ const actions = {
         state.token = null
         resolve()
       }).catch(() => {
-        commit('SET_ROLES', [])
         resetRouter()
         removeToken()
         resolve()

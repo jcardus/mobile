@@ -15,12 +15,13 @@ import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
-const AppMobile = () => import('./AppMobile')
-const App = () => import('./App')
 import { getToken } from './utils/auth'
 import Amplify, * as AmplifyModules from 'aws-amplify'
 import { AmplifyPlugin } from 'aws-amplify-vue'
 import { ServiceWorker } from 'aws-amplify'
+
+const AppMobile = () => import('./AppMobile')
+const App = () => import('./App')
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
@@ -206,6 +207,11 @@ function askPermissionForNotifications() {
 }
 
 askPermissionForNotifications().then()
+
+if (lnglat.__isMobile()) {
+  Vue.$log.debug('loading inobounce...')
+  Vue.loadScript('/lib/inobounce.min.js')
+}
 
 Vue.$log.debug('starting main instance...')
 
