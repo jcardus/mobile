@@ -68,7 +68,6 @@ export default {
       if (cookie === null) {
         this.$f7.views.main.router.navigate('/login')
       }
-      this.$log.debug('adisable body scrolll')
     } catch (e) {
       Vue.$log.error(e)
     }

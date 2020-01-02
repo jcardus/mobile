@@ -208,6 +208,11 @@ function askPermissionForNotifications() {
 
 askPermissionForNotifications().then()
 
+if (lnglat.__isMobile()) {
+  Vue.$log.debug('loading inobounce...')
+  Vue.loadScript('/lib/inobounce.min.js')
+}
+
 Vue.$log.debug('starting main instance...')
 
 export const vm = new Vue({
