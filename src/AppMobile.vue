@@ -51,21 +51,26 @@ export default {
     serverBus.$on('updateAvailable', this.updateAvailable)
   },
   mounted: function() {
-    this.$log.debug('App mobile')
-    document.getElementById('favicon').href = partner.getFavIcon()
-    document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
-    this.toastNewVersion = this.$f7.toast.create({
-      text: this.$t('layout.newVersion'),
-      closeButton: true,
-      closeButtonColor: 'white',
-      on: {
-        close: reload
+    try {
+      this.$log.debug('App mobile')
+      document.getElementById('favicon').href = partner.getFavIcon()
+      document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
+      this.toastNewVersion = this.$f7.toast.create({
+        text: this.$t('layout.newVersion'),
+        closeButton: true,
+        closeButtonColor: 'white',
+        on: {
+          close: reload
+        }
+      })
+      const cookie = getToken()
+      Vue.$log.debug('cookie:', cookie)
+      if (cookie === null) {
+        this.$f7.views.main.router.navigate('/login')
       }
-    })
-    const cookie = getToken()
-    Vue.$log.debug(cookie)
-    if (cookie === null) {
-      this.$f7.views.main.router.navigate('/login')
+      this.$log.debug('adisable body scrolll')
+    } catch (e) {
+      Vue.$log.error(e)
     }
   },
   methods: {
@@ -103,7 +108,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import './framework7/css/framework7.bundle.min.css';
   @import './framework7/css/icons.css';
 </style>
