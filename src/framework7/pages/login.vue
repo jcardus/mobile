@@ -63,7 +63,7 @@ export default {
       this.$store.dispatch('user/login', { username: this.username, password: this.password })
         .then(() => {
           this.$log.debug('reload...')
-          this.$f7router.navigate('/map')
+          this.$f7router.back()
           this.$f7.preloader.hide()
         })
         .catch(exception => {
