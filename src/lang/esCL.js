@@ -7,6 +7,9 @@ export default {
     report_trip_title: 'Informe de viajes',
     report_location_title: 'Informe de posiciones',
     report_zone_crossing: 'Informe de zonas',
+    report_speeding: 'Informe de excesos de velocidad',
+    report_speeding_beta: 'Informe de excesos de velocidad BETA',
+    report_tolls: 'Informe de Peajes',
     settings: 'Configuraciones',
     duration: 'Duracción'
   },
