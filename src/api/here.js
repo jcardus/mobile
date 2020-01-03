@@ -99,7 +99,7 @@ function fillGeocoding(rows) {
   })
 }
 
-export function routeMatch(rows, result) {
+export function routeMatch(rows, withGeocoding, result) {
   const csv = generateCSV(rows)
   axios.post(calcRoute, csv, { headers: { 'Content-Type': 'application/binary' }}).then((response) => {
     const hereData = response.data
@@ -130,7 +130,13 @@ export function routeMatch(rows, result) {
         }
       }
     }
-    fillGeocoding(results).then(response => { result(response) })
+    if (withGeocoding) {
+      fillGeocoding(results).then(response => {
+        result(response)
+      })
+    } else {
+      result(results)
+    }
   }).catch(e => {
     console.error(e)
     result([])

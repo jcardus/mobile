@@ -10,6 +10,15 @@
           @change="toggleChanged"
         >
         </el-switch>
+        <i class="far fa-play-circle" style="float:right; margin-right:5px"></i>
+        <el-switch
+          v-show="!isMobile"
+          v-model="showRouteAlerts"
+          :value="true"
+          style="float:right; margin-right:20px"
+        >
+        </el-switch>
+        <i class="fas fa-bell" style="float:right; margin-right:5px"></i>
         <f7-toggle
           v-if="isMobile"
           :checked="checked"
@@ -55,6 +64,7 @@
 <script>
 
 import { vm, serverBus } from '../../main'
+import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
@@ -73,6 +83,9 @@ export default {
       width: 'width:0px',
       currentTrip: 0,
       trips: [],
+      speedTrips: [],
+      speedMarkers: [],
+      showAlertMarkers: true,
       startMarker: null,
       endMarker: null,
       elSwitchValue: true
@@ -95,6 +108,9 @@ export default {
     },
     routeSource() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i
+    },
+    routeSpeedSource() {
+      return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i + 'speedalert'
     },
     allTripsSource() {
       return 'allTrips-'
@@ -147,6 +163,14 @@ export default {
     showRoutes: {
       get() { return vm.$data.historyMode },
       set(value) { vm.$data.historyMode = value }
+    },
+    showRouteAlerts: {
+      get() { return this.showAlertMarkers },
+      set(value) {
+        Vue.$log.debug('showRouteAlerts ', value)
+        this.showAlertMarkers = value
+        this.changeRouteAlertsVisibility()
+      }
     },
     _minDate: {
       get() {
@@ -237,6 +261,14 @@ export default {
       lnglat.hideLayers(this.showRoutes)
       animation.hideRouteLayer(!this.showRoutes)
     },
+    changeRouteAlertsVisibility() {
+      Vue.$log.debug('showRouteAlertsChanged to ', this.showRouteAlerts)
+      this.speedMarkers.forEach(m => { m.getElement().style.visibility = this.showRouteAlerts ? 'visible' : 'hidden' })
+      vm.$static.map.setLayoutProperty(this.routeSpeedSource, 'visibility',
+        this.showRouteAlerts ? 'visible' : 'none')
+      vm.$static.map.setLayoutProperty(this.routeSpeedSource + 'arrows', 'visibility',
+        this.showRouteAlerts ? 'visible' : 'none')
+    },
     onPositions: function(positions) {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
@@ -246,6 +278,16 @@ export default {
         this.removeLayers()
         this.drawAll(positions)
         this.getRouteTrips(positions)
+        const routes = positions.map(p => {
+          const a = {
+            fixtime: Vue.moment(p.fixTime).format('YYYY-MM-DD HH:mm:ss'),
+            latitude: p.latitude,
+            longitude: p.longitude,
+            speed: p.speed,
+            course: p.course
+          }
+          return a
+        })
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
         this.filterTrips()
         Vue.$log.debug('after filter got ', this.trips.length, ' trips')
@@ -253,6 +295,7 @@ export default {
           Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime, trip.slice(-1)[0])
         })
         this.currentTrip = this.trips.length - 1
+        routeMatch(routes, false, this.getSpeedTrips)
         this.drawTrip()
       }
       this.positions = positions
@@ -271,10 +314,17 @@ export default {
           vm.$static.map.removeLayer(this.routeSource + 'arrows')
           vm.$static.map.removeSource(this.routeSource)
         }
+        if (vm.$static.map.getLayer(this.routeSpeedSource)) {
+          Vue.$log.debug('removing ', this.routeSpeedSource)
+          vm.$static.map.removeLayer(this.routeSpeedSource)
+          vm.$static.map.removeLayer(this.routeSpeedSource + 'arrows')
+          vm.$static.map.removeSource(this.routeSpeedSource)
+        }
       }
       this.i = 0
       if (this.startMaker) { this.startMaker.remove() }
       if (this.endMarker) { this.endMarker.remove() }
+      this.speedMarkers.map(m => m.remove())
       if (!keepMain) {
         if (this.map.getLayer(this.allTripsSource)) {
           this.map.removeLayer(this.allTripsSource)
@@ -318,6 +368,142 @@ export default {
       })
       if (trips.length === 0) { trips.push(positions) }
     },
+    getSpeedTrips(data) {
+      Vue.$log.debug('Get Speed Trips')
+      this.speedTrips = []
+      let locations = []
+      let startPos = false
+      Vue.$log.debug(this.device)
+      let speedLimit = Math.round(this.device.attributes.speedLimit * 1.85200)
+      const trips = this.speedTrips
+
+      this.trips.forEach(function(tripPositions) {
+        const currentSpeedTrips = []
+        tripPositions.forEach(function(position) {
+          Vue.$log.debug(Vue.moment(position.fixTime).unix())
+
+          const speedPosition = data.find(d => Vue.moment(d.timestamp).unix() === Vue.moment(position.fixTime).unix())
+          if (startPos && (speedPosition && speedLimit !== speedPosition.speedLimit)) {
+            locations.push(position)
+            const speedTrip = {
+              positions: locations,
+              speedLimit: speedLimit
+            }
+            Vue.$log.debug('SpeedTrip', speedTrip)
+            currentSpeedTrips.push(speedTrip)
+            startPos = false
+            locations = []
+          }
+          if (!startPos && speedPosition) {
+            locations.push(position)
+            speedLimit = speedPosition.speedLimit
+            startPos = true
+            return
+          }
+          if (startPos && !speedPosition) {
+            locations.push(position)
+            const speedTrip = {
+              positions: locations,
+              speedLimit: speedLimit
+            }
+            Vue.$log.debug('SpeedTrip', speedTrip)
+            currentSpeedTrips.push(speedTrip)
+            startPos = false
+            locations = []
+            return
+          }
+          if (startPos && speedPosition) {
+            locations.push(position)
+            return
+          }
+        })
+        trips.push(currentSpeedTrips)
+      })
+
+      const speedCoordinates = this.speedTrips[this.currentTrip].map(t => t.positions.map(p => [p.longitude, p.latitude]))
+
+      const speedLineString = []
+      speedCoordinates.forEach(function(locations) {
+        const lineStringTrip = { type: 'LineString', coordinates: locations }
+        speedLineString.push(lineStringTrip)
+      })
+      this.drawSpeedTrip()
+    },
+    drawSpeedTrip: function() {
+      if (vm.$static.map.getSource(this.routeSpeedSource)) {
+        Vue.$log.warn('ignoring layer ', this.routeSpeedSource, ', already exists...')
+        return
+      }
+
+      Vue.$log.debug('Draw speed trip')
+      const speedCoordinates = this.speedTrips[this.currentTrip].map(t => t.positions.map(p => [p.longitude, p.latitude]))
+
+      const speedLineString = []
+      speedCoordinates.forEach(function(locations) {
+        const lineStringTrip = { type: 'LineString', coordinates: locations }
+        speedLineString.push(lineStringTrip)
+      })
+
+      const alertsGeoJSON = lnglat.getGeoJSONFeatures(speedLineString)
+      Vue.$log.debug('Positions Route Alerts', alertsGeoJSON)
+
+      vm.$static.map.addSource(this.routeSpeedSource, {
+        type: 'geojson',
+        data: alertsGeoJSON
+      })
+      vm.$static.map.addLayer({
+        id: this.routeSpeedSource,
+        type: 'line',
+        source: this.routeSpeedSource,
+        layout: {
+          visibility: this.showRouteAlerts ? 'visible' : 'none',
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#FF0000',
+          'line-width': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            12, 3,
+            22, 12
+          ]
+        }
+      })
+      vm.$static.map.addLayer({
+        id: this.routeSpeedSource + 'arrows',
+        type: 'symbol',
+        source: this.routeSpeedSource,
+        layout: {
+          visibility: this.showRouteAlerts ? 'visible' : 'none',
+          'symbol-placement': 'line',
+          'text-field': '▶',
+          'text-size': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            12, 24,
+            22, 60
+          ],
+          'symbol-spacing': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            12, 30,
+            22, 160
+          ],
+          'text-keep-upright': false
+        },
+        paint: {
+          'text-color': '#FF0000',
+          'text-halo-color': 'hsl(55, 11%, 96%)',
+          'text-halo-width': 3
+        }
+      })
+      vm.$static.map.getSource(this.routeSpeedSource).setData(alertsGeoJSON)
+      this.drawSpeedMarkers()
+    },
     filterTrips() {
       const result = []
       if (this.trips.length < 2) { return }
@@ -333,6 +519,7 @@ export default {
         this.iterate()
       } else {
         const coordinates = this.trips[this.currentTrip].map(p => [p.longitude, p.latitude])
+
         this.drawRoute(coordinates)
         const bounds = lnglat.getBounds(coordinates)
         vm.$static.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
@@ -379,6 +566,29 @@ export default {
         this.endMarker.addTo(vm.$static.map)
       }
     },
+    drawSpeedMarkers: function() {
+      Vue.$log.debug('Draw Speed Markers')
+
+      const speedTrips = this.speedTrips[this.currentTrip]
+      if (this.speedMarkers) {
+        this.speedMarkers.map(m => m.remove())
+      }
+      const self = this
+
+      speedTrips.forEach(function(trip) {
+        const start = [trip.positions[0].longitude, trip.positions[0].latitude]
+        const el = self.getMarkerElement('marker speed', trip.speedLimit)
+        el.style.visibility = self.showRouteAlerts ? 'visible' : 'hidden'
+        self.speedMarkers.push(new mapboxgl.Marker(el).setLngLat(start))
+        self.speedMarkers[self.speedMarkers.length - 1].addTo(vm.$static.map)
+      })
+    },
+    getMarkerElement: function(classname, label) {
+      const el = document.createElement('div')
+      el.className = classname
+      el.innerHTML = '<span><b>' + label + '</b></span>'
+      return el
+    },
     drawAll: function(positions) {
       if (positions && positions.length > 0) {
         this.map.resize()
@@ -401,8 +611,11 @@ export default {
     },
     drawRoute(positions, timestamps) {
       const lineString = { type: 'LineString', coordinates: positions }
+
       if (!vm.$store.state.settings.matchRoutes) {
         const routeGeoJSON = this.getGeoJSON(lineString)
+        Vue.$log.debug('Positions Route ', routeGeoJSON)
+
         this.createLayers(routeGeoJSON)
       } else {
         lnglat.matchRoute(positions, positions.map(() => [25]), timestamps, this.onRouteMatch)
@@ -411,7 +624,7 @@ export default {
     getGeoJSON: function(coords) {
       return lnglat.getGeoJSON(coords)
     },
-    createLayers: function(routeGeoJSON) {
+    createLayers: function(routeGeoJSON, alertsGeoJSON) {
       if (vm.$static.map.getSource(this.routeSource)) {
         Vue.$log.warn('ignoring layer ', this.routeSource, ', already exists...')
         return
@@ -469,6 +682,7 @@ export default {
           'text-halo-width': 3
         }
       })
+
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
     createAllTripsLayer: function(routeGeoJSON) {
@@ -606,6 +820,7 @@ export default {
           this.removeLayers(true)
           this.currentTrip = t
           this.drawTrip()
+          this.drawSpeedTrip()
 
           if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
             vm.$static.map.panTo(
