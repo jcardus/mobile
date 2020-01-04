@@ -10,7 +10,7 @@
           @change="toggleChanged"
         >
         </el-switch>
-        <i class="far fa-play-circle" style="float:right; margin-right:5px"></i>
+        <i v-show="!isMobile" class="far fa-play-circle" style="float:right; margin-right:5px"></i>
         <el-switch
           v-show="!isMobile"
           v-model="showRouteAlerts"
@@ -18,7 +18,7 @@
           style="float:right; margin-right:20px"
         >
         </el-switch>
-        <i class="fas fa-bell" style="float:right; margin-right:5px"></i>
+        <i v-show="!isMobile" class="fas fa-bell" style="float:right; margin-right:5px"></i>
         <f7-toggle
           v-if="isMobile"
           :checked="checked"
@@ -27,6 +27,16 @@
           @change="toggleChanged"
         >
         </f7-toggle>
+        <i v-show="isMobile" class="far fa-play-circle" style="float:right; margin-right:5px"></i>
+        <f7-toggle
+          v-if="isMobile"
+          :checked="checked"
+          style="float:right; margin-right:20px"
+          type="checkbox"
+        >
+        </f7-toggle>
+        <i v-show="isMobile" class="fas fa-bell" style="float:right; margin-right:5px"></i>
+
       </span>
     </div>
     <el-row>
@@ -380,8 +390,6 @@ export default {
       this.trips.forEach(function(tripPositions) {
         const currentSpeedTrips = []
         tripPositions.forEach(function(position) {
-          Vue.$log.debug(Vue.moment(position.fixTime).unix())
-
           const speedPosition = data.find(d => Vue.moment(d.timestamp).unix() === Vue.moment(position.fixTime).unix())
           if (startPos && (speedPosition && speedLimit !== speedPosition.speedLimit)) {
             locations.push(position)
@@ -389,7 +397,6 @@ export default {
               positions: locations,
               speedLimit: speedLimit
             }
-            Vue.$log.debug('SpeedTrip', speedTrip)
             currentSpeedTrips.push(speedTrip)
             startPos = false
             locations = []
@@ -406,7 +413,6 @@ export default {
               positions: locations,
               speedLimit: speedLimit
             }
-            Vue.$log.debug('SpeedTrip', speedTrip)
             currentSpeedTrips.push(speedTrip)
             startPos = false
             locations = []
@@ -432,6 +438,11 @@ export default {
     drawSpeedTrip: function() {
       if (vm.$static.map.getSource(this.routeSpeedSource)) {
         Vue.$log.warn('ignoring layer ', this.routeSpeedSource, ', already exists...')
+        return
+      }
+
+      if (!this.show) {
+        Vue.$log.warn('ignoring layer ', this.routeSpeedSource, ', history mode off...')
         return
       }
 
