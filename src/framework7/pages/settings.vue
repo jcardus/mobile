@@ -1,6 +1,6 @@
 <template>
   <f7-page name="settings">
-    <f7-navbar title="Settings"></f7-navbar>
+    <f7-navbar :title="$t('route.settings')"></f7-navbar>
     <f7-block>
       <f7-button large raised fill @click="logout">Logout</f7-button>
     </f7-block>
