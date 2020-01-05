@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     filterData(rows, onResolve) {
-      routeMatch(rows, onResolve)
+      routeMatch(rows, true, onResolve)
     }
   }
 }
