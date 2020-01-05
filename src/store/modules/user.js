@@ -13,8 +13,8 @@ const serviceWorker = new ServiceWorker()
 
 const state = {
   token: getToken(),
-  name: '',
-  avatar: ''
+  name: getToken() ? getToken().name : '',
+  avatar: getToken() ? getAvatar() : ''
 }
 
 const mutations = {
@@ -51,6 +51,11 @@ function initPushNotification() {
   }
 }
 
+function getAvatar() {
+  const nameSplit = getToken().name.split(' ')
+  return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
+}
+
 const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
@@ -62,6 +67,8 @@ const actions = {
         setToken(response.data)
         state.token = getToken()
         setLanguage(data.attributes.lang)
+        commit('SET_NAME', getToken().name)
+        commit('SET_AVATAR', getAvatar())
         initPushNotification()
         traccar.devices(function(devices) {
           vm.$data.devices = devices
@@ -115,14 +122,6 @@ const actions = {
       })
     })
   },
-
-  getInfo({ commit, state }) {
-    commit('SET_NAME', getToken().name)
-    const nameSplit = getToken().name.split(' ')
-    commit('SET_AVATAR', nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase()))
-    return { roles: state.roles }
-  },
-
   // user logout
   logout({ state }) {
     return new Promise((resolve) => {
