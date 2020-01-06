@@ -16,5 +16,7 @@ export function getTitle() {
 }
 
 export function hasSVG() {
-  return window.location.hostname === 'wuizy.co.ao'
+  return window.location.hostname === 'wuizy.co.ao' ||
+    window.location.hostname.includes('pinme.io') ||
+    window.location.hostname.includes('localhost')
 }

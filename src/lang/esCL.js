@@ -9,8 +9,8 @@ export default {
     report_zone_crossing: 'Informe de zonas',
     report_speeding: 'Informe de excesos de velocidad',
     report_speeding_beta: 'Informe de excesos de velocidad BETA',
-    report_tolls: 'Informe de Peajes',
-    settings: 'Configuraciones',
+    report_tolls: 'Informe de peajes',
+    settings: 'Ajustes',
     duration: 'Duracción'
   },
   map: {

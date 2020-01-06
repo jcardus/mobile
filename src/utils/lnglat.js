@@ -29,6 +29,11 @@ export function __isMobile() {
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
 }
+
+export function getGeoJSONFeatures(coordsArray) {
+  return helpers.featureCollection(coordsArray.map(coords => helpers.feature(coords)))
+}
+
 export function findFeatureByDeviceId(deviceId) {
   return vm.$static.positionsSource.features.find(e => e.properties.deviceId === deviceId)
 }

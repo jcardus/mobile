@@ -171,6 +171,13 @@ export default {
   .finish span {
       background: #991907;
   }
+  .speed span {
+    background: #fff;
+    color:#000000;
+    border-color: #ff0000;
+    width: 35px;
+    height: 35px;
+  }
   .marker b {transform: rotateZ(135deg)}
   .rotl span {transform: rotateZ(180deg)}
   .rotr span {transform: rotateZ(-90deg)}
