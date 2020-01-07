@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view />
-    <div v-if="showUpdateDiv" id="snackbar" class="show"><a id="reload" @click="reload()">{{ $t('layout.newVersion') }}</a></div>
+    <div v-if="showUpdateDiv" id="snackbar" class="show"><a id="reload" href="" @click="reload()">{{ $t('layout.newVersion') }}</a></div>
   </div>
 </template>
 
