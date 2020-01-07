@@ -8,6 +8,7 @@ import { TrackJS } from 'trackjs'
 import { API, graphqlOperation, ServiceWorker } from 'aws-amplify'
 import * as gqlMutations from '../../graphql/mutations'
 import Vue from 'vue'
+import { checkForUpdates } from '../../utils/utils'
 
 const serviceWorker = new ServiceWorker()
 
@@ -69,6 +70,7 @@ const actions = {
         setLanguage(data.attributes.lang)
         commit('SET_NAME', getToken().name)
         commit('SET_AVATAR', getAvatar())
+        checkForUpdates()
         initPushNotification()
         traccar.devices(function(devices) {
           vm.$data.devices = devices

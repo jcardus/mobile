@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view />
-    <div v-if="showUpdateDiv" id="snackbar" class="show"><a id="reload" @click="reload()">{{ $t('layout.newVersion') }}</a></div>
+    <div v-if="showUpdateDiv" id="snackbar" class="show"><a id="reload" href="" @click="reload()">{{ $t('layout.newVersion') }}</a></div>
   </div>
 </template>
 
@@ -46,6 +46,14 @@ export default {
 }
 </script>
 <style>
+
+  a {
+    text-decoration: none;
+  }
+  a:visited {
+    color: white;
+  }
+
   body {
     height: 100%;
     -moz-osx-font-smoothing: grayscale;

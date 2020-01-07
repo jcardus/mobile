@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <div id="map" ref="map" :style="heightMap"></div>
+    <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
     <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data class="currentPositionData"></current-position-data>
       <history-panel class="historyPanel"></history-panel>
@@ -362,24 +362,24 @@ export default {
       _vm.$mount('#style-switcher-div')
 
       /*
-      // this is very important, these Vue instances are not destroyed when the user logs off...
-      map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
-      if (this.historyPanel !== null) {
-        Vue.$log.warn('destroying old history panel')
-        this.historyPanel.$destroy()
-      }
-      VD = Vue.extend(HistoryPanel)
-      this.historyPanel = new VD({ i18n: i18n })
-      this.historyPanel.$mount('#slider-div')*/
+        // this is very important, these Vue instances are not destroyed when the user logs off...
+        map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
+        if (this.historyPanel !== null) {
+          Vue.$log.warn('destroying old history panel')
+          this.historyPanel.$destroy()
+        }
+        VD = Vue.extend(HistoryPanel)
+        this.historyPanel = new VD({ i18n: i18n })
+        this.historyPanel.$mount('#slider-div')*/
       /*
-      map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
-      if (this.vehiclePanel !== null) {
-        Vue.$log.warn('destroying old vehicle panel')
-        this.vehiclePanel.$destroy()
-      }
-      VD = Vue.extend(CurrentPositionData)
-      this.vehiclePanel = new VD({ i18n: i18n })
-      this.vehiclePanel.$mount('#currentPos-div')*/
+        map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
+        if (this.vehiclePanel !== null) {
+          Vue.$log.warn('destroying old vehicle panel')
+          this.vehiclePanel.$destroy()
+        }
+        VD = Vue.extend(CurrentPositionData)
+        this.vehiclePanel = new VD({ i18n: i18n })
+        this.vehiclePanel.$mount('#currentPos-div')*/
 
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
     },
@@ -534,7 +534,7 @@ export default {
         const box = bbox(route)
         const bounds = [[box[0], box[1]], [box[2], box[3]]]
         if (!lnglat.contains(this.$static.map.getBounds(), { longitude: box[0], latitude: box[1] }) ||
-                        !lnglat.contains(this.$static.map.getBounds(), { longitude: box[2], latitude: box[3] })
+            !lnglat.contains(this.$static.map.getBounds(), { longitude: box[2], latitude: box[3] })
         ) { this.$static.map.fitBounds(bounds, { maxZoom: this.$static.map.getZoom() }) }
       }
 
@@ -598,9 +598,9 @@ export default {
           deviceId: position.deviceId,
           speed: position.speed,
           immobilization_active:
-            position.attributes.out1 === true ||
-            position.attributes.out2 === true ||
-            position.attributes.isImmobilizationOn,
+              position.attributes.out1 === true ||
+              position.attributes.out2 === true ||
+              position.attributes.isImmobilizationOn,
           ignition: position.attributes.ignition,
           motion: position.attributes.motion,
           fixTime: position.fixTime,
@@ -806,6 +806,12 @@ export default {
     padding:0 !important;
   }
 
+  @media only screen and (min-width: 768px) {
+    .divMapGL {
+      border-radius: 8px;
+    }
+  }
+
   .historyPanel {
     overflow: hidden;
     padding: 0 8px;
@@ -816,10 +822,10 @@ export default {
   }
 
   .mapboxgl-ctrl-icon.mapboxgl-ctrl-fullscreen {
-      background-image: url('../../icons/fullscreen.svg') !important;
+    background-image: url('../../icons/fullscreen.svg') !important;
   }
   .mapboxgl-ctrl-icon.mapboxgl-style-switcher {
-      background-image: url('../../icons/layers.svg') !important;
+    background-image: url('../../icons/layers.svg') !important;
   }
   .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate::before {
     background-image: url('../../icons/geolocate.svg') !important;
@@ -847,8 +853,8 @@ export default {
   }
 
   button svg {
-        fill: #909399;
-        opacity: 1;
-      }
+    fill: #909399;
+    opacity: 1;
+  }
 
 </style>
