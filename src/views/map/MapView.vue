@@ -23,7 +23,7 @@ export default {
   }
   .divVehicles {
     min-width: 300px;
-    max-width:300px;
+    max-width: 300px;
     -webkit-box-shadow: 0 0 32px rgba(136, 152, 170, 0.4);
     z-index: 10;
   }
