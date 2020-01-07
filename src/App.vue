@@ -46,6 +46,14 @@ export default {
 }
 </script>
 <style>
+
+  a {
+    text-decoration: none;
+  }
+  a:visited {
+    color: white;
+  }
+
   body {
     height: 100%;
     -moz-osx-font-smoothing: grayscale;

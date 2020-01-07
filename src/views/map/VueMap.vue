@@ -806,8 +806,10 @@ export default {
     padding:0 !important;
   }
 
-  .divMapGL {
-    border-radius: 8px;
+  @media only screen and (min-width: 768px) {
+    .divMapGL {
+      border-radius: 8px;
+    }
   }
 
   .historyPanel {
