@@ -29,6 +29,9 @@ export default {
   }
   .divMap {
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 16px);
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
   }
 </style>
