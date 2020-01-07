@@ -78,7 +78,8 @@ export default {
   }
   .right-menu {
     float: right;
-    padding: 5px;
+    padding-top: 15px;
+    padding-right: 10px;
   }
 .left {
   padding: 10px;

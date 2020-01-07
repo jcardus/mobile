@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 100%; height: 100%">
-    <div id="map" ref="map" :style="heightMap"></div>
+  <div class="mainVueMapDiv">
+    <div id="map" ref="map" :style="heightMap" class="divMap"></div>
     <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data class="currentPositionData"></current-position-data>
       <history-panel class="historyPanel"></history-panel>
@@ -801,6 +801,17 @@ export default {
 
 <style lang="scss" >
   @import '../../styles/element-variables';
+
+  .mainVueMapDiv {
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+    padding-left: 8px;
+    padding-top: 8px;
+  }
+
+  .divMap {
+    border-radius: 10px;
+  }
 
   .app-main {
     padding:0 !important;
