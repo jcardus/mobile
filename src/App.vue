@@ -72,7 +72,7 @@ export default {
      border-radius: 2px;
      padding: 16px;
      position: fixed;
-     z-index: 1;
+     z-index: 100000;
      left: 50%;
      bottom: 30px;
    }
