@@ -87,20 +87,23 @@ export default {
     },
     devices: function() {
       return vm.$data.devices
+    },
+    selectedDeviceIds() {
+      return this.selectedDevices.map(d => d.id)
     }
   },
   watch: {
-    dateRange: function() {
+    dateRange() {
       this.parameters.from = this.dateRange[0]
       this.parameters.to = this.dateRange[1]
-      this.parameters.deviceIds = this.selectedDevices
+      this.parameters.deviceIds = this.selectedDeviceIds
       if (this.selectedDevices.length > 0) {
         this.dashboard.setParameters(this.parameters)
       }
     },
-    selectedDevices: function(newValue) {
-      this.$log.debug(newValue)
-      this.parameters.deviceIds = this.selectedDevices
+    selectedDevices() {
+      this.$log.debug(this.selectedDeviceIds)
+      this.parameters.deviceIds = this.selectedDeviceIds
       this.parameters.from = this.dateRange[0]
       this.parameters.to = this.dateRange[1]
       if (this.dateRange.length > 0) {
