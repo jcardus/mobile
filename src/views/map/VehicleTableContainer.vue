@@ -2,7 +2,7 @@
   <div class="mainContainer">
     <div class="dd-body-inner">
       <logo-svg v-if="hasSVG" class="logo"></logo-svg>
-      <img v-else class="logo" height="49" :src="logoImage" alt="">
+      <img v-else class="logo" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs stretch>
         <el-tab-pane>
