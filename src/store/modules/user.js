@@ -9,6 +9,7 @@ import { API, graphqlOperation, ServiceWorker } from 'aws-amplify'
 import * as gqlMutations from '../../graphql/mutations'
 import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
+import * as lnglat from '../../utils/lnglat'
 
 const serviceWorker = new ServiceWorker()
 
@@ -118,6 +119,9 @@ const actions = {
             })
           }
         })
+        if (lnglat.isMobile()) {
+          traccar.startReceiving()
+        }
         resolve()
       }).catch(error => {
         reject(error)
