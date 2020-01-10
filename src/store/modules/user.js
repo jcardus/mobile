@@ -138,7 +138,8 @@ const actions = {
         vm.reset()
         state.token = null
         resolve()
-      }).catch(() => {
+      }).catch((e) => {
+        this.log.error(e)
         resetRouter()
         removeToken()
         resolve()
