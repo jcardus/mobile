@@ -117,7 +117,8 @@ export default {
       .then(json => {
         const containerDiv = document.getElementById('dashboardContainer')
         const options = {
-          url: json.body,
+          // url: json.body,
+          url: 'https://us-east-1.quicksight.aws.amazon.com/embed/b5ffc6bf04ec40128cc052054b5096ad/dashboards/joaquimfleetrackcl_8ndwbd?code=AYABeHHVe8qCGOieOUoJMwRxqLcAAAABAAdhd3Mta21zAEthcm46YXdzOmttczp1cy1lYXN0LTE6MjU5NDgwNDYyMTMyOmtleS81NGYwMjdiYy03MDJhLTQxY2YtYmViNS0xNDViOTExNzFkYzMAuAECAQB4P-lAb3AsrVHPwO-wVCEmuFDTp0yz4wFfkrwutzPupewBiN9qXGij-LiortBwC2HqtQAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDN6EJW85HdBuVw6miQIBEIA7N25Z3meLzFR0Ds88ToD_I2rJLOoIb0EsUTvT048s5iD9YBLEqTBeXpsslV06FjSodtjaO8dv84UmeiwCAAAAAAwAABAAAAAAAAAAAAAAAAAAsc-JVqdnp55hK-e8xAC35P____8AAAABAAAAAAAAAAAAAAABAAAAzIlEPR_9vsxwJ3owyDZOpyVVf0Obxy3Sp8y-vjuTbVT1xkibgWOiQYjD4Rh8sgulHaDa09Y-fIAQ71oR8YcTjNGmpuoCLe_5A5q02s69slfgU0VUIqCcDF_wFpJKFqXc81rJCI29lAnSo0GD8HyXbf4__7fplcsoFR2YsWyc-48A6nIm9ZZTJYCKcCJ-VxpVP2X7tX9whi2OCd95wFhsm4hodu0Qh34G3s5SpBJcl2JaYqB50BVK_BiFpUitKrUxBh2o-8UiMxUhd3PKjwmeGl2FB5epNl20k9zZsBo%3D\u0026identityprovider=quicksight\u0026isauthcode=true","RequestId":"99f3edf1-39cc-45f1-8f0a-f7024952584e',
           parameters: this.parameters,
           container: containerDiv,
           scrolling: 'yes',
