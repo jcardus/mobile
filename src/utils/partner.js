@@ -1,22 +1,21 @@
-export function getPartnerLogo() {
-  return '/img/' + window.location
-}
+const hostname = window.location.hostname.replace('dev.', '')
+
 export function getFavIcon() {
-  return '/img/favicon/' + window.location.hostname + '.png'
+  return '/img/favicon/' + hostname + '.png'
 }
 export function getLogo() {
-  return '/img/logos/' + window.location.hostname + '.png'
+  return '/img/logos/' + hostname + '.png'
 }
 
 export function getTitle() {
-  if (window.location.hostname === 'wuizy.co.ao') { return 'WuizyGo' }
-  if (window.location.hostname === 'web.fleetrack.cl') { return 'Fleetrack' }
-  if (window.location.hostname === 'map.able-on.mobi') { return 'able-on' }
+  if (hostname === 'wuizy.co.ao') { return 'WuizyGo' }
+  if (hostname === 'web.fleetrack.cl') { return 'Fleetrack' }
+  if (hostname === 'map.able-on.mobi') { return 'able-on' }
   return 'Pinme'
 }
 
 export function hasSVG() {
-  return window.location.hostname === 'wuizy.co.ao' ||
-    window.location.hostname.includes('pinme.io') ||
-    window.location.hostname.includes('localhost')
+  return hostname === 'wuizy.co.ao' ||
+    hostname.includes('pinme.io') ||
+    hostname.includes('localhost')
 }

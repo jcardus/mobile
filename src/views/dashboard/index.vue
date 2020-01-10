@@ -3,7 +3,7 @@
     <el-row :gutter="20">
       <el-col :span="16">
         <div class="grid-content">
-          <el-select v-model="selectedDevices" style="width: 100%; height: 35px" multiple placeholder="" value="">
+          <el-select v-model="selectedDevices" value-key="id" style="width: 100%; height: 35px" multiple placeholder="" value="">
             <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </div>
@@ -35,7 +35,7 @@ import { traccar } from '../../api/traccar-api'
 
 export default {
   name: 'Dashboard',
-  data: function() {
+  data() {
     return {
       from: this.$moment().subtract(1, 'month').startOf('day'),
       to: this.$moment().subtract(1, 'day').endOf('day'),
@@ -68,7 +68,12 @@ export default {
         }]
       },
       dateRange: [this.from, this.to],
-      dashboard: null
+      dashboard: null,
+      parameters: {
+        deviceIds: this.$root.$data.devices.map(e => e.id),
+        from: this.$moment().subtract(1, 'month').startOf('day'),
+        to: this.$moment().subtract(1, 'day').endOf('day')
+      }
     }
   },
   computed: {
@@ -78,19 +83,12 @@ export default {
       }
       return 'padding-top:10px;'
     },
-    parameters: function() {
-      return {
-        deviceIds: this.$root.$data.devices.map(e => e.id),
-        from: this.$moment().subtract(1, 'month').startOf('day'),
-        to: this.$moment().subtract(1, 'day').endOf('day')
-      }
-    },
     devices: function() {
       return vm.$data.devices
     }
   },
   watch: {
-    dateRange: function() {
+    dateRange() {
       this.parameters.from = this.dateRange[0]
       this.parameters.to = this.dateRange[1]
       this.parameters.deviceIds = this.selectedDevices
@@ -98,8 +96,8 @@ export default {
         this.dashboard.setParameters(this.parameters)
       }
     },
-    selectedDevices: function(newValue) {
-      this.$log.debug(newValue)
+    selectedDevices() {
+      this.$log.debug(this.selectedDevices)
       this.parameters.deviceIds = this.selectedDevices
       this.parameters.from = this.dateRange[0]
       this.parameters.to = this.dateRange[1]
@@ -127,13 +125,16 @@ export default {
           width: '100%'
         }
         this.dashboard = QuickSightEmbedding.embedDashboard(options)
-        // dashboard.on("error", onError);
+        this.dashboard.on('error', this.onError)
         this.dashboard.on('load', this.onDashboardLoad)
       })
   },
   methods: {
     onDashboardLoad() {
-
+      this.$log.debug('onDashboardLoad')
+    },
+    onError(e) {
+      this.$log.error('onError, ', e)
     }
   }
 }
