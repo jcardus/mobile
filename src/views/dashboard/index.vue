@@ -33,6 +33,7 @@ import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 
+const embedUrl = 'https://us-east-1.quicksight.aws.amazon.com/embed/b4e11e7eb0e2407bb5e5f8e0111ea0c1/dashboards/joaquimfleetrackcl_8ndwbd?code=AYABeKqOtaX2OGCB_wCYgNxey-kAAAABAAdhd3Mta21zAEthcm46YXdzOmttczp1cy1lYXN0LTE6MjU5NDgwNDYyMTMyOmtleS81NGYwMjdiYy03MDJhLTQxY2YtYmViNS0xNDViOTExNzFkYzMAuAECAQB4P-lAb3AsrVHPwO-wVCEmuFDTp0yz4wFfkrwutzPupewBsHivhIb8oXC8vkYGB3MqrwAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDH1YXgDavNS5JSno1wIBEIA71zCVsEplJ7QRe-8RCcK2WBrQrVrgseUIZvpGH7oXKOdkNBjeLihGgR106fku68OIOGOy5G2j5KPPKcECAAAAAAwAABAAAAAAAAAAAAAAAAAAJVUU04DC03etoJOEe70y1_____8AAAABAAAAAAAAAAAAAAABAAAAzAzlDUAMzg5c7MowCQfNhGNcCmGK65e3f48ZfFz1ejonc977z7wNw1e-AnPX46zXQsfk2NRVeJwaIwUOoTxhOqfDbUy5ZaxXczMZtKnwCMCsFsSoaa0dH6aYnt7hHtp_c5ScnUlgceBJBf3mA6JCpEiXXDlFtt0uM7HmCc0SCVE-rOZqY0wKjfHtpDlL17-OPZblRY8yAUqLd8oyjWeP6XPbRe6Sn336uUDDAz8DVcv_MUXCgHi__AOLNSt30GA2Edkr_JTWhiHVTZyJtSDxSh_hQleCXceWHZW7YY8%3D'
 export default {
   name: 'Dashboard',
   data() {
@@ -118,7 +119,7 @@ export default {
         const containerDiv = document.getElementById('dashboardContainer')
         const options = {
           // url: json.body,
-          url: 'https://us-east-1.quicksight.aws.amazon.com/embed/5ebdbe38e23c42b3bf12e8f304103ea6/dashboards/joaquimfleetrackcl_8ndwbd?code=AYABeL3sJtqHBSefYEerDpcG_X0AAAABAAdhd3Mta21zAEthcm46YXdzOmttczp1cy1lYXN0LTE6MjU5NDgwNDYyMTMyOmtleS81NGYwMjdiYy03MDJhLTQxY2YtYmViNS0xNDViOTExNzFkYzMAuAECAQB4P-lAb3AsrVHPwO-wVCEmuFDTp0yz4wFfkrwutzPupewBOFZ7hVZ96vhsQczO19PjhAAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDKj4MlGKM4YIu_MnBAIBEIA7lvBFISvSzyQXTZtvbc2Hvj1ZjhsT9oW49fTmoOrXssJ64ihwgbyQdGaslUqF8-gvwFez8Y0uemxuuikCAAAAAAwAABAAAAAAAAAAAAAAAAAA_i-EyGOiP6CYK9s-NTrmo_____8AAAABAAAAAAAAAAAAAAABAAAAzBUhncdATYVC7Y2MkFom3OddObR4z5gMQ8xATR-e3E_xBG3xoo3yHRtWe8Jr01NJdNVTr4U1dJZAlfM4NDxcO6-v-RuINfbHAO1_yndKqM9va0acqvd8umG46I6PnbnQX3p41UEyXFgdYZ0UmG0pQGdOZ80l8MhvYCoU3IDhvLxO7YtkEYTRmGw8ge8h3g0RiGL4kYPDusUIIY0P1xAt-wRdVFtM8vxxjriQoqnPHIqsqp8YtC5q6YVd_syqL8MpGJJXk2Ar60K48MTX85dSckVoaqFVbSdE1RGdKFw%3D',
+          url: embedUrl,
           parameters: this.parameters,
           container: containerDiv,
           scrolling: 'yes',
