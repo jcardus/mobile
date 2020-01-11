@@ -117,7 +117,7 @@ export default {
       .then(json => {
         const containerDiv = document.getElementById('dashboardContainer')
         const options = {
-          url: json.body,
+          url: json.EmbedUrl,
           parameters: this.parameters,
           container: containerDiv,
           scrolling: 'yes',
