@@ -33,7 +33,6 @@ import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 
-const embedUrl = 'https://us-east-1.quicksight.aws.amazon.com/embed/0948142364c9414cba4329f62bbc4889/dashboards/joaquimfleetrackcl_8ndwbd?code=AYABeIBrhiaqvdHGR0ash3VYEpAAAAABAAdhd3Mta21zAEthcm46YXdzOmttczp1cy1lYXN0LTE6MjU5NDgwNDYyMTMyOmtleS81NGYwMjdiYy03MDJhLTQxY2YtYmViNS0xNDViOTExNzFkYzMAuAECAQB4P-lAb3AsrVHPwO-wVCEmuFDTp0yz4wFfkrwutzPupewBq1VFBZujnKWVacyJdWkgAAAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDIg104wqKWZK2VC4LAIBEIA7uV_4if7dZPKBPN9_oEIyM1hpd6u3UicBJdTGP-FrMHH7gFLO9fEERTuQxvC5kAh4jUmB0AyvxCtJOKgCAAAAAAwAABAAAAAAAAAAAAAAAAAA95-my5YFzNe2ktgOUvTDLf____8AAAABAAAAAAAAAAAAAAABAAAAzNWl2vz5bVYl3EKcnM4gb7IJ8k0mP4-4vcKZjwbbo1xEQie7s0XLHtBZnJcxK5N87ga1BrGLGT8SizB9tME0JSPO44J-RiYzkDHHFrOlwRqdt8f47B2ltnRYYx5yXCrzUlStFMIPwufGs5gqIObjtdJoObyBucD0VpitC3bjIaLRry9rgBY-0w2ZDa7lGMDt0REhZNhxHE6gds5XVfqZkb8ar5Vp_GZxL51aWh3XBZyv_SISzI3UQ7a5vTdopTed06SDZNfSgzsZneLgTYF3tPpba3OaEvu7Ui1exlg%3D&identityprovider=quicksight&isauthcode=true'
 export default {
   name: 'Dashboard',
   data() {
@@ -113,13 +112,12 @@ export default {
         vm.$data.devices = data
       })
     }
-    fetch('https://dkrtki468d.execute-api.us-east-1.amazonaws.com/default/myApp')
+    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/QuickSightFunction')
       .then(response => response.json())
       .then(json => {
         const containerDiv = document.getElementById('dashboardContainer')
         const options = {
-          // url: json.body,
-          url: embedUrl,
+          url: json.body,
           parameters: this.parameters,
           container: containerDiv,
           scrolling: 'yes',
