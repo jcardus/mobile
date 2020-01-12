@@ -112,12 +112,12 @@ export default {
         vm.$data.devices = data
       })
     }
-    fetch('https://dkrtki468d.execute-api.us-east-1.amazonaws.com/default/myApp')
+    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight')
       .then(response => response.json())
       .then(json => {
         const containerDiv = document.getElementById('dashboardContainer')
         const options = {
-          url: json.body,
+          url: json.EmbedUrl,
           parameters: this.parameters,
           container: containerDiv,
           scrolling: 'yes',

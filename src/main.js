@@ -269,14 +269,20 @@ export const vm = new Vue({
       this.$disconnect()
       for (const i in this.$static.markers) {
         // noinspection JSUnfilteredForInLoop
+        console.log('deleting static marker ', this.$static.markers[i])
+        // noinspection JSUnfilteredForInLoop
+        this.$static.markers[i].remove()
+        // noinspection JSUnfilteredForInLoop
         delete this.$static.markers[i]
       }
+      this.$static.markers = {}
       this.$log.warn('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
       this.$data.historyMode = false
       this.$log.debug('done.')
       this.devices = []
+      this.$log.debug('reset end')
     }
   },
   router: router,
