@@ -113,7 +113,7 @@ export default {
         vm.$data.devices = data
       })
     }
-    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight?username=' + getToken().name + '&userid=' + getToken().id)
+    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
       .then(response => response.json())
       .then(json => {
         const containerDiv = document.getElementById('dashboardContainer')
