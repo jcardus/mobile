@@ -32,6 +32,7 @@
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
+import { getToken } from '../../utils/auth'
 
 export default {
   name: 'Dashboard',
@@ -112,7 +113,7 @@ export default {
         vm.$data.devices = data
       })
     }
-    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight')
+    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight?username=' + getToken().name + '&userid=' + getToken().id)
       .then(response => response.json())
       .then(json => {
         const containerDiv = document.getElementById('dashboardContainer')
@@ -142,7 +143,8 @@ export default {
 
 <style scoped>
   .dashboard-container {
-
+    height: 100%;
+    width: 100%;
     padding-right: 10px;
     padding-left: 10px;
   }
