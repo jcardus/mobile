@@ -139,7 +139,7 @@ const actions = {
         state.token = null
         resolve()
       }).catch((e) => {
-        this.log.error(e)
+        Vue.$log.error(e)
         resetRouter()
         removeToken()
         resolve()
