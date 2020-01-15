@@ -10,12 +10,29 @@
           <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
         </span>
         <el-card>
+          <h3>Histórico de Rota</h3>
           <el-switch
             v-model="matchRoutes"
             :active-text="$t('settings.route_match')"
             inactive-text=""
           >
           </el-switch>
+          <br /><br />
+          <el-switch
+            v-model="viewSpeedAlerts"
+            active-text="Mostrar alertas de velocidade"
+            inactive-text=""
+          >
+          </el-switch>
+          <br /><br />
+          <el-radio-group :value="radioValue" @input="changeMaxSpeedType">
+            <el-radio label="road">Usar limites da estrada</el-radio>
+            <el-radio label="vehicle">Usar limite definido no carro</el-radio>
+          </el-radio-group>
+          <br /><br />
+          <el-form>
+            <span>Tolerância Máxima <el-input v-model="speedThreshold" style="width: 100px;" @change="changeSpeedThreshold" /></span> Km/h
+          </el-form>
         </el-card>
       </el-tab-pane>
       <el-tab-pane>
@@ -35,6 +52,7 @@
 </template>
 
 <script>
+import { vm } from '../../main'
 import Alerts from './alerts/Alerts'
 import Vehicles from './vehicles/Vehicles'
 import * as lnglat from '../../utils/lnglat'
@@ -42,6 +60,12 @@ import * as lnglat from '../../utils/lnglat'
 export default {
   name: 'Settings',
   components: { Alerts, Vehicles },
+  data() {
+    return {
+      radioValue: 'road',
+      speedThreshold: 0
+    }
+  },
   computed: {
     top() {
       if (('standalone' in window.navigator) && window.navigator.standalone) {
@@ -58,6 +82,34 @@ export default {
           value: value
         })
       }
+    },
+    viewSpeedAlerts: {
+      get() { return this.$store.state.settings.viewSpeedAlerts },
+      set(value) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'viewSpeedAlerts',
+          value: value
+        })
+      }
+    }
+  },
+  mounted() {
+    this.radioValue = vm.$store.state.settings.maxSpeedType
+    this.speedThreshold = vm.$store.state.settings.speedThreshold
+  },
+  methods: {
+    changeMaxSpeedType(data) {
+      this.radioValue = data
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'maxSpeedType',
+        value: data
+      })
+    },
+    changeSpeedThreshold() {
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'speedThreshold',
+        value: this.speedThreshold
+      })
     }
   }
 }
