@@ -10,15 +10,6 @@
           @change="toggleChanged"
         >
         </el-switch>
-        <i v-show="!isMobile" class="far fa-play-circle" style="float:right; margin-right:5px"></i>
-        <el-switch
-          v-show="!isMobile"
-          v-model="showRouteAlerts"
-          :value="true"
-          style="float:right; margin-right:20px"
-        >
-        </el-switch>
-        <i v-show="!isMobile" class="fas fa-bell" style="float:right; margin-right:5px"></i>
         <f7-toggle
           v-if="isMobile"
           :checked="checked"
@@ -95,7 +86,6 @@ export default {
       trips: [],
       speedTrips: [],
       speedMarkers: [],
-      showAlertMarkers: true,
       startMarker: null,
       endMarker: null,
       elSwitchValue: true
@@ -173,14 +163,6 @@ export default {
     showRoutes: {
       get() { return vm.$data.historyMode },
       set(value) { vm.$data.historyMode = value }
-    },
-    showRouteAlerts: {
-      get() { return this.showAlertMarkers },
-      set(value) {
-        Vue.$log.debug('showRouteAlerts ', value)
-        this.showAlertMarkers = value
-        this.changeRouteAlertsVisibility()
-      }
     },
     _minDate: {
       get() {
@@ -271,14 +253,6 @@ export default {
       lnglat.hideLayers(this.showRoutes)
       animation.hideRouteLayer(!this.showRoutes)
     },
-    changeRouteAlertsVisibility() {
-      Vue.$log.debug('showRouteAlertsChanged to ', this.showRouteAlerts)
-      this.speedMarkers.forEach(m => { m.getElement().style.visibility = this.showRouteAlerts ? 'visible' : 'hidden' })
-      vm.$static.map.setLayoutProperty(this.routeSpeedSource, 'visibility',
-        this.showRouteAlerts ? 'visible' : 'none')
-      vm.$static.map.setLayoutProperty(this.routeSpeedSource + 'arrows', 'visibility',
-        this.showRouteAlerts ? 'visible' : 'none')
-    },
     onPositions: function(positions) {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
@@ -288,16 +262,6 @@ export default {
         this.removeLayers()
         this.drawAll(positions)
         this.getRouteTrips(positions)
-        const routes = positions.map(p => {
-          const a = {
-            fixtime: Vue.moment(p.fixTime).format('YYYY-MM-DD HH:mm:ss'),
-            latitude: p.latitude,
-            longitude: p.longitude,
-            speed: p.speed,
-            course: p.course
-          }
-          return a
-        })
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
         this.filterTrips()
         Vue.$log.debug('after filter got ', this.trips.length, ' trips')
@@ -305,8 +269,11 @@ export default {
           Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime, trip.slice(-1)[0])
         })
         this.currentTrip = this.trips.length - 1
-        routeMatch(routes, false, this.getSpeedTrips)
-        this.drawTrip()
+        if (vm.$store.state.settings.viewSpeedAlerts) {
+          this.getSpeedTrips(positions)
+        } else {
+          this.drawTrip()
+        }
       }
       this.positions = positions
       Vue.$log.debug('emit routeFetched')
@@ -378,7 +345,61 @@ export default {
       })
       if (trips.length === 0) { trips.push(positions) }
     },
-    getSpeedTrips(data) {
+    getSpeedTrips(positions) {
+      const speedThreshold = vm.$store.state.settings.speedThreshold
+      if ((vm.$store.state.settings.maxSpeedType === 'vehicle')) {
+        Vue.$log.debug('Use vehicle speed limit')
+        this.speedTrips = []
+        let locations = []
+        let startPos = false
+        const trips = this.speedTrips
+        const vehicleSpeedLimitThreshold = Math.round(this.device.attributes.speedLimit * 1.85200) + Number(speedThreshold)
+        const vehicleSpeedLimit = Math.round(this.device.attributes.speedLimit * 1.85200)
+        this.trips.forEach(function(tripPositions) {
+          const currentSpeedTrips = []
+          tripPositions.forEach(function(position) {
+            const positionSpeed = Math.round(position.speed * 1.85200)
+            if (!startPos && positionSpeed > vehicleSpeedLimitThreshold) {
+              locations.push(position)
+              startPos = true
+              return
+            }
+            if (startPos && positionSpeed < vehicleSpeedLimitThreshold) {
+              locations.push(position)
+              const speedTrip = {
+                positions: locations,
+                speedLimit: vehicleSpeedLimit
+              }
+              currentSpeedTrips.push(speedTrip)
+              startPos = false
+              locations = []
+              return
+            }
+            if (startPos && positionSpeed > vehicleSpeedLimitThreshold) {
+              locations.push(position)
+              return
+            }
+          })
+          trips.push(currentSpeedTrips)
+        })
+        this.drawTrip()
+        this.drawSpeedTrip()
+      } else {
+        Vue.$log.debug('Use road speed limit')
+        const routes = positions.map(p => {
+          const a = {
+            fixtime: Vue.moment(p.fixTime).format('YYYY-MM-DD HH:mm:ss'),
+            latitude: p.latitude,
+            longitude: p.longitude,
+            speed: p.speed - speedThreshold,
+            course: p.course
+          }
+          return a
+        })
+        routeMatch(routes, false, this.roadSpeedTrips)
+      }
+    },
+    roadSpeedTrips(data) {
       Vue.$log.debug('Get Speed Trips')
       this.speedTrips = []
       let locations = []
@@ -433,6 +454,7 @@ export default {
         const lineStringTrip = { type: 'LineString', coordinates: locations }
         speedLineString.push(lineStringTrip)
       })
+      this.drawTrip()
       this.drawSpeedTrip()
     },
     drawSpeedTrip: function() {
@@ -448,7 +470,7 @@ export default {
 
       Vue.$log.debug('Draw speed trip')
       const speedCoordinates = this.speedTrips[this.currentTrip].map(t => t.positions.map(p => [p.longitude, p.latitude]))
-
+      Vue.$log.debug(speedCoordinates)
       const speedLineString = []
       speedCoordinates.forEach(function(locations) {
         const lineStringTrip = { type: 'LineString', coordinates: locations }
@@ -467,7 +489,6 @@ export default {
         type: 'line',
         source: this.routeSpeedSource,
         layout: {
-          visibility: this.showRouteAlerts ? 'visible' : 'none',
           'line-join': 'round',
           'line-cap': 'round'
         },
@@ -487,7 +508,6 @@ export default {
         type: 'symbol',
         source: this.routeSpeedSource,
         layout: {
-          visibility: this.showRouteAlerts ? 'visible' : 'none',
           'symbol-placement': 'line',
           'text-field': '▶',
           'text-size': [
@@ -589,7 +609,6 @@ export default {
       speedTrips.forEach(function(trip) {
         const start = [trip.positions[0].longitude, trip.positions[0].latitude]
         const el = self.getMarkerElement('marker speed', trip.speedLimit)
-        el.style.visibility = self.showRouteAlerts ? 'visible' : 'hidden'
         self.speedMarkers.push(new mapboxgl.Marker(el).setLngLat(start))
         self.speedMarkers[self.speedMarkers.length - 1].addTo(vm.$static.map)
       })
