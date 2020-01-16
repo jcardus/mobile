@@ -43,6 +43,10 @@ export function setLanguage(lang) {
     Cookies.set('language', key)
   }
 }
+export function getLanguageI18n() {
+  const lang = getLanguage()
+  return lang.slice(0, 2) + '-' + lang.slice(-2)
+}
 
 export function getLanguage() {
   const chooseLanguage = Cookies.get('language')

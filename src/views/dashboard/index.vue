@@ -33,6 +33,7 @@ import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import { getToken } from '../../utils/auth'
+import { getLanguageI18n } from '../../lang'
 
 export default {
   name: 'Dashboard',
@@ -123,11 +124,14 @@ export default {
           container: containerDiv,
           scrolling: 'yes',
           height: 'AutoFit',
-          width: '100%'
+          width: '100%',
+          locale: getLanguageI18n()
         }
         this.dashboard = QuickSightEmbedding.embedDashboard(options)
         this.dashboard.on('error', this.onError)
         this.dashboard.on('load', this.onDashboardLoad)
+      }).catch((e) => {
+        this.$log.error(e)
       })
   },
   methods: {
