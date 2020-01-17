@@ -33,6 +33,7 @@ import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import { getToken } from '../../utils/auth'
+import { getLanguageI18n } from '../../lang'
 
 export default {
   name: 'Dashboard',
@@ -71,9 +72,8 @@ export default {
       dateRange: [this.from, this.to],
       dashboard: null,
       parameters: {
-        deviceIds: this.$root.$data.devices.map(e => e.id),
-        from: this.$moment().subtract(1, 'month').startOf('day'),
-        to: this.$moment().subtract(1, 'day').endOf('day')
+        StartDate: this.$moment().subtract(6, 'month').startOf('day'),
+        EndDate: this.$moment().subtract(1, 'day').endOf('day')
       }
     }
   },
@@ -124,7 +124,7 @@ export default {
           scrolling: 'yes',
           height: 'AutoFit',
           width: '100%',
-          locale: 'es-ES'
+          locale: getLanguageI18n()
         }
         this.dashboard = QuickSightEmbedding.embedDashboard(options)
         this.dashboard.on('error', this.onError)
@@ -147,7 +147,7 @@ export default {
 <style scoped>
   .dashboard-container {
     height: 100%;
-    width: 100%;
+    width: calc(100% - 20px);
     padding-right: 10px;
     padding-left: 10px;
   }
