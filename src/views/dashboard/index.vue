@@ -1,29 +1,5 @@
 <template>
   <div class="dashboard-container" :style="top">
-    <el-row :gutter="20">
-      <el-col :span="16">
-        <div class="grid-content">
-          <el-select v-model="selectedDevices" value-key="id" style="width: 100%; height: 35px" multiple placeholder="" value="">
-            <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="grid-content">
-          <el-date-picker
-            v-model="dateRange"
-            style="width: 100%"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="-"
-            :start-placeholder="$t('dashboard.startdate')"
-            :end-placeholder="$t('dashboard.enddate')"
-            :picker-options="pickerOptions"
-          />
-        </div>
-      </el-col>
-    </el-row>
     <div id="dashboardContainer" class="dashboard"></div>
   </div>
 </template>
