@@ -172,6 +172,7 @@ export default {
       background: #991907;
   }
   .speed span {
+    border:solid 4px;
     background: #fff;
     color:#000000;
     border-color: #ff0000;

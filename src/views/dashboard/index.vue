@@ -1,29 +1,5 @@
 <template>
   <div class="dashboard-container" :style="top">
-    <el-row :gutter="20">
-      <el-col :span="16">
-        <div class="grid-content">
-          <el-select v-model="selectedDevices" value-key="id" style="width: 100%; height: 35px" multiple placeholder="" value="">
-            <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="grid-content">
-          <el-date-picker
-            v-model="dateRange"
-            style="width: 100%"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="-"
-            :start-placeholder="$t('dashboard.startdate')"
-            :end-placeholder="$t('dashboard.enddate')"
-            :picker-options="pickerOptions"
-          />
-        </div>
-      </el-col>
-    </el-row>
     <div id="dashboardContainer" class="dashboard"></div>
   </div>
 </template>
@@ -32,6 +8,8 @@
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
+import { getToken } from '../../utils/auth'
+import { getLanguageI18n } from '../../lang'
 
 export default {
   name: 'Dashboard',
@@ -70,9 +48,8 @@ export default {
       dateRange: [this.from, this.to],
       dashboard: null,
       parameters: {
-        deviceIds: this.$root.$data.devices.map(e => e.id),
-        from: this.$moment().subtract(1, 'month').startOf('day'),
-        to: this.$moment().subtract(1, 'day').endOf('day')
+        StartDate: this.$moment().subtract(6, 'month').startOf('day').format(),
+        EndDate: this.$moment().subtract(1, 'day').endOf('day').format()
       }
     }
   },
@@ -112,7 +89,7 @@ export default {
         vm.$data.devices = data
       })
     }
-    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight')
+    fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
       .then(response => response.json())
       .then(json => {
         const containerDiv = document.getElementById('dashboardContainer')
@@ -122,11 +99,14 @@ export default {
           container: containerDiv,
           scrolling: 'yes',
           height: 'AutoFit',
-          width: '100%'
+          width: '100%',
+          locale: getLanguageI18n()
         }
         this.dashboard = QuickSightEmbedding.embedDashboard(options)
         this.dashboard.on('error', this.onError)
         this.dashboard.on('load', this.onDashboardLoad)
+      }).catch((e) => {
+        this.$log.error(e)
       })
   },
   methods: {
@@ -142,7 +122,8 @@ export default {
 
 <style scoped>
   .dashboard-container {
-
+    height: 100%;
+    width: calc(100% - 20px);
     padding-right: 10px;
     padding-left: 10px;
   }
