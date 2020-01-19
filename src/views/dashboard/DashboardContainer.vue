@@ -1,10 +1,15 @@
 <template>
-  <div class="dashboard-container"></div>
+  <div class="dashboard-container">
+    <dashboard></dashboard>
+  </div>
 </template>
 
 <script>
+import Dashboard from './Dashboard'
+
 export default {
-  name: 'DashboardContainer'
+  name: 'DashboardContainer',
+  components: { Dashboard }
 }
 </script>
 
