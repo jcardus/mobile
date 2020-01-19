@@ -8,10 +8,12 @@
         <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" :text="$t('route.map')"></f7-link>
         <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" :text="$t('route.reports')"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
+        <f7-link tab-link="#view-dashboard" icon-ios="f7:dashboard" icon-aurora="f7:dashboard" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
       </f7-toolbar>
       <f7-view id="view-map" main tab tab-active url="/map"></f7-view>
       <f7-view id="view-reports" name="reports" tab url="/reports"></f7-view>
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
+      <f7-view id="view-dashboard" name="dashboard" url="/dashboard"></f7-view>
       <f7-view id="view-login" name="login" url="/login"></f7-view>
     </f7-views>
   </f7-app>
@@ -66,7 +68,7 @@ export default {
       const cookie = getToken()
       Vue.$log.debug('cookie:', cookie)
       if (cookie === null) {
-        this.$f7.views.main.router.navigate('/login')
+        this.$f7.views.main.router.navigate('/login', { transition: 'f7-fade' })
       }
     } catch (e) {
       Vue.$log.error(e)
