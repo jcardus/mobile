@@ -3,7 +3,7 @@ import SettingsPage from '../pages/settings'
 import Viewer from '../pages/viewer'
 import Login from '../pages/login'
 import MapMobileContainer from '../../views/map/MapMobileContainer'
-import Dashboard from '../../views/dashboard'
+import Dashboard from '../../views/dashboard/Dashboard'
 
 const routes = [
   {
