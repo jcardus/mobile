@@ -3,6 +3,7 @@ import SettingsPage from '../pages/settings'
 import Viewer from '../pages/viewer'
 import Login from '../pages/login'
 import MapMobileContainer from '../../views/map/MapMobileContainer'
+import Dashboard from '../../views/dashboard'
 
 const routes = [
   {
@@ -24,6 +25,10 @@ const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/dashboard',
+    component: Dashboard
   }
 ]
 
