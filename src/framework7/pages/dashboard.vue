@@ -1,5 +1,5 @@
 <template>
-  <f7-page>
+  <f7-page page-content="true" ptr="false">
     <dashboard></dashboard>
   </f7-page>
 </template>
