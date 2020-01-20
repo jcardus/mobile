@@ -14,7 +14,8 @@ export default {
       dashboard: null,
       parameters: {
         StartDate: this.$moment().subtract(6, 'month').startOf('day').format(),
-        EndDate: this.$moment().subtract(1, 'day').endOf('day').format()
+        EndDate: this.$moment().subtract(1, 'day').endOf('day').format(),
+        Vehicles: null
       }
     }
   },
