@@ -8,6 +8,7 @@
               v-model="selectedDevices"
               style="width: 100%; height: 35px"
               multiple
+              filterable
               :placeholder="$t('report.select_vehicles_placeholder')"
               value=""
             >
@@ -23,6 +24,7 @@
               v-model="selectedGeofences"
               style="width: 100%; height: 35px"
               multiple
+              filterable
               :placeholder="$t('report.select_geofences_placeholder')"
               value=""
             >
@@ -147,7 +149,7 @@ export default {
         }],
         firstDayOfWeek: 1
       },
-      dateRange: [],
+      dateRange: [new Date().toISOString().split('T')[0] + ' 00:00:00', new Date().toISOString().split('T')[0] + ' 23:59:59'],
       selectedGeofences: []
     }
   },
@@ -168,6 +170,7 @@ export default {
           return (a === b ? 0 : a > b ? 1 : -1)
         })
       }
+      if (devices.length > 0) devices.unshift({ 'id': 0, 'name': 'Todos' })
       return devices
     },
     geofences() {
