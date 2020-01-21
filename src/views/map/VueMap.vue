@@ -30,8 +30,8 @@ import * as utils from '../../utils/utils'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
-import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css' // progress bar style
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 export default {
   name: 'VueMap',
@@ -103,7 +103,7 @@ export default {
   },
   created() {
     this.$log.info('VueMap')
-    NProgress.configure({ showSpinner: false }) // NProgress Configuration
+    NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
   },
   static() {

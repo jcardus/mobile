@@ -1,16 +1,19 @@
 <template>
-  <div id="quicksightContainer" class="dashboard"></div>
+  <div id="quicksightContainer" v-loading="loading" class="dashboard"></div>
 </template>
 
 <script>
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import { getToken } from '../../utils/auth'
 import { getLanguageI18n } from '../../lang'
+import 'nprogress/nprogress.css'
+import NProgress from 'nprogress'
 
 export default {
   name: 'Dashboard',
   data() {
     return {
+      loading: true,
       dashboard: null,
       parameters: {
         StartDate: this.$moment().subtract(6, 'month').startOf('day').format(),
@@ -20,6 +23,7 @@ export default {
     }
   },
   mounted() {
+    NProgress.start()
     fetch('https://s3emhl8duc.execute-api.us-east-1.amazonaws.com/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
       .then(response => response.json())
       .then(json => {
@@ -41,11 +45,17 @@ export default {
       })
   },
   methods: {
+    stopLoading() {
+      NProgress.done()
+      this.loading = false
+    },
     onDashboardLoad() {
       this.$log.debug('onDashboardLoad')
+      this.stopLoading()
     },
     onError(e) {
       this.$log.error('onError, ', e)
+      this.stopLoading()
     }
   }
 }
