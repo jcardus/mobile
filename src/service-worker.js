@@ -64,7 +64,8 @@ if (workbox) {
 
     if (e.data.action === 'skipWaiting') {
       console.log('skip waiting...')
-      self.skipWaiting()
+      e.waitUntil(self.skipWaiting())
+      console.log('skip waiting done')
     }
   })
 
