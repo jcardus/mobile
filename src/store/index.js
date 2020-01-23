@@ -32,16 +32,19 @@ const store = new Vuex.Store({
   mutations: {
     SOCKET_ONOPEN(state, event) {
       state.socket.isConnected = true
-      Vue.$log.warn('SOCKET_ONOPEN', state, event)
+      Vue.$log.warn(state)
+      Vue.$log.warn(event)
       TrackJS.track('SOCKET_ONOPEN')
     },
     SOCKET_ONCLOSE(state, event) {
       state.socket.isConnected = false
-      Vue.$log.warn('SOCKET_ONCLOSE', state, event)
+      Vue.$log.warn(state)
+      Vue.$log.warn(event)
       TrackJS.track('SOCKET_ONCLOSE')
     },
     SOCKET_ONERROR(state, event) {
-      Vue.$log.warn('SOCKET_ONERROR', state, event)
+      Vue.$log.warn(state)
+      Vue.$log.warn(event)
       TrackJS.track('SOCKET_ONERROR')
     },
     // default handler called for all methods
@@ -50,7 +53,7 @@ const store = new Vuex.Store({
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {
-      Vue.$log.warn('SOCKET_RECONNECT', state, count)
+      Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
       TrackJS.track('SOCKET_RECONNECT')
     },
     SOCKET_RECONNECT_ERROR(state) {

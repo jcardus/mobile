@@ -23,6 +23,8 @@ import { ServiceWorker } from 'aws-amplify'
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
 
+console.log('app starting...')
+
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
   version: store.state.app.packageVersion
