@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import getters from './getters'
 import VueNativeSock from 'vue-native-websocket'
 import * as utils from '../utils/utils'
+import { TrackJS } from 'trackjs'
 
 Vue.use(Vuex)
 
@@ -31,11 +32,17 @@ const store = new Vuex.Store({
   mutations: {
     SOCKET_ONOPEN(state) {
       state.socket.isConnected = true
+      Vue.$log.warn('SOCKET_ONOPEN', state)
+      TrackJS.track('SOCKET_ONOPEN')
     },
     SOCKET_ONCLOSE(state) {
       state.socket.isConnected = false
+      Vue.$log.warn('SOCKET_ONCLOSE', state)
+      TrackJS.track('SOCKET_ONCLOSE')
     },
-    SOCKET_ONERROR() {
+    SOCKET_ONERROR(e) {
+      Vue.$log.warn('SOCKET_ONERROR', e)
+      TrackJS.track('SOCKET_ONERROR')
     },
     // default handler called for all methods
     SOCKET_ONMESSAGE(state, message) {
@@ -43,9 +50,12 @@ const store = new Vuex.Store({
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT() {
+      TrackJS.track('SOCKET_RECONNECT')
     },
     SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true
+      Vue.$log.warn('SOCKET_RECONNECT_ERROR', state)
+      TrackJS.track('SOCKET_RECONNECT_ERROR')
     }
   },
   modules,
