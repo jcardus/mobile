@@ -31,7 +31,12 @@
         <template slot-scope="scope">
           <span style="font-weight: bold;">{{ scope.row.name }}</span>
           <br />
-          {{ scope.row.speed * 1.852 | formatNumber }} km/h<br />
+          <div v-if="getDeviceState(scope.row)==='Moving'">
+            {{ scope.row.speed * 1.852 | formatNumber }} km/h
+          </div>
+          <div v-else style="font-size: smaller">
+            {{ scope.row.address }}
+          </div>
           <timeago
             :datetime="scope.row.lastUpdate"
             :auto-update="60"
