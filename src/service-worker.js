@@ -39,13 +39,6 @@ if (workbox) {
 
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
-    new RegExp('https://.*\\.amazonaws.com/v1/.*'),
-    // eslint-disable-next-line no-undef
-    new workbox.strategies.NetworkOnly()
-  )
-
-  // eslint-disable-next-line no-undef
-  workbox.routing.registerRoute(
     /^https:\/\/fonts\.googleapis\.com/,
     // eslint-disable-next-line no-undef
     new workbox.strategies.CacheFirst({
@@ -64,7 +57,8 @@ if (workbox) {
 
     if (e.data.action === 'skipWaiting') {
       console.log('skip waiting...')
-      self.skipWaiting()
+      e.waitUntil(self.skipWaiting())
+      console.log('skip waiting done')
     }
   })
 
