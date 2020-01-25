@@ -50,7 +50,7 @@
 
 <script>
 
-import { vm } from '../../main'
+import { vm, serverBus } from '../../main'
 import VueCookies from 'vue-cookies'
 import * as utils from '../../views/reports/utils/utils'
 import Vue from 'vue'
@@ -60,9 +60,7 @@ export default {
   name: 'Reports',
   data() {
     return {
-      reports: [{ id: 'trip', title: this.$t('route.report_trip_title'), mrt: '/reports/report_trip.mrt' },
-        { id: 'location', mrt: '/reports/report_location.mrt', title: this.$t('route.report_location_title') },
-        { mrt: '/reports/report_zone_crossing.mrt', id: 'zone_crossing', title: this.$t('route.report_zone_crossing') }],
+      reports: null,
       dateStart: null,
       dateEnd: null,
       loadingReport: false,
@@ -84,7 +82,19 @@ export default {
       return vm.$data.geofences
     }
   },
+  created() {
+    serverBus.$on('reportsActive', this.pageActive)
+  },
+  beforeDestroy() {
+    serverBus.$off('reportsActive', this.pageActive)
+  },
   methods: {
+    pageActive() {
+      this.$log.debug('reports mobile after in')
+      this.reports = [{ id: 'trip', title: this.$t('route.report_trip_title'), mrt: '/reports/report_trip.mrt' },
+        { id: 'location', mrt: '/reports/report_location.mrt', title: this.$t('route.report_location_title') },
+        { mrt: '/reports/report_zone_crossing.mrt', id: 'zone_crossing', title: this.$t('route.report_zone_crossing') }]
+    },
     renderReport: function(report_id) {
       const report = this.reports.find(r => r.id === this.reportType)
       this.$f7.views.reports.router.navigate('/viewer', { props: { reportId: report_id, mrt: report.mrt }})

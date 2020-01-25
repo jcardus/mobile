@@ -34,7 +34,7 @@
           <div v-if="getDeviceState(scope.row)==='Moving'">
             {{ scope.row.speed * 1.852 | formatNumber }} km/h
           </div>
-          <div v-else style="font-size: smaller">
+          <div v-else style="font-size: x-small; word-wrap: break-spaces !important">
             {{ scope.row.address }}
           </div>
           <timeago
