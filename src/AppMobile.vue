@@ -11,7 +11,7 @@
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
       </f7-toolbar>
       <f7-view id="view-map" main tab tab-active url="/map"></f7-view>
-      <f7-view id="view-reports" name="reports" tab url="/reports"></f7-view>
+      <f7-view id="view-reports" name="reports" tab url="/reports" @tab:show="reportsShow"></f7-view>
       <f7-view v-if="!ios" id="view-dashboard" name="dashboard" tab url="/dashboard"></f7-view>
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
       <f7-view id="view-login" name="login" url="/login"></f7-view>
@@ -80,9 +80,9 @@ export default {
     }
   },
   methods: {
-    viewMapShow() {
-      Vue.$log.debug('emit mapViewActive')
-      serverBus.$emit('mapViewActive')
+    reportsShow() {
+      Vue.$log.debug('emit reportsActive')
+      serverBus.$emit('reportsActive')
     },
     showNotifications(mutation, state) {
       if (mutation.type === 'SOCKET_ONMESSAGE') {
