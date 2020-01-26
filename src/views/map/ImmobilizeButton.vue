@@ -55,7 +55,7 @@ export default {
       const selectedDevice = this.selectedDevice
       Vue.$log.debug('Immobilization ' + this.immobilizationActive + ' for device ' + selectedDevice)
       let message = this.immobilizationActive ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
-      message += (selectedDevice.name + '?')
+      message += (' ' + selectedDevice.name + '?')
       if (this.isMobile) {
         this.$f7.dialog.confirm(message, this.sendImmobilizationCommand)
       } else {

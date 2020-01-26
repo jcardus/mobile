@@ -1,6 +1,4 @@
 {
-    "identityPoolName": "pinmeweb_identitypool_7d31b0ff",
-    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "cognit90cb1cab",
     "userPoolName": "pinmeweb90cb1cab_userpool_90cb1cab",
     "autoVerifiedAttributes": [
@@ -30,7 +28,7 @@
     ],
     "userpoolClientLambdaRole": "cognit90cb1cab_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "authSelections": "identityPoolAndUserPool",
+    "authSelections": "userPoolOnly",
     "resourceName": "cognito455cdfc3",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -45,19 +43,23 @@
         ]
     },
     "useDefault": "manual",
-    "userPoolGroups": false,
+    "userPoolGroups": true,
     "adminQueries": false,
     "triggers": "{}",
     "hostedUI": true,
-    "userPoolGroupList": [],
+    "userPoolGroupList": [
+        "pinme"
+    ],
     "parentStack": {
         "Ref": "AWS::StackId"
     },
     "permissions": [],
     "dependsOn": [],
-    "thirdPartyAuth": false,
     "hostedUIDomainName": "pinmedomainprefix",
-    "authProvidersUserPool": [],
-    "hostedUIProviderMeta": "[]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://pinme.io/\"],\"LogoutURLs\":[\"https://pinme.io/\"]}"
+    "authProvidersUserPool": [
+        "Facebook",
+        "Google"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"id\"}},{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://pinme.io/\",\"https://pinme.io/\"],\"LogoutURLs\":[\"https://pinme.io/\"]}"
 }

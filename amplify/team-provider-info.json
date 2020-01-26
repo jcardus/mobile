@@ -14,7 +14,7 @@
         "categories": {
             "auth": {
                 "cognito455cdfc3": {
-                    "hostedUIProviderCreds": "[]"
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"1213\",\"client_secret\":\"123123\"},{\"ProviderName\":\"Google\",\"client_id\":\"213231\",\"client_secret\":\"132313123\"}]"
                 }
             }
         }
