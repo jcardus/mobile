@@ -30,7 +30,7 @@
       >
         <template slot-scope="scope">
           <span style="font-weight: bold;">{{ scope.row.name }} </span>
-          <span style="float: right">{{ scope.row.groupName || '' }} </span>
+          <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span>
           <br />
           <div v-if="getDeviceState(scope.row)==='Moving'">
             {{ scope.row.speed * 1.852 | formatNumber }} km/h
