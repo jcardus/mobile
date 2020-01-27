@@ -62,7 +62,8 @@ export default {
   navbar: {
     profile: 'Perfil',
     settings: 'Ajustes',
-    logout: 'Salir'
+    logout: 'Salir',
+    notifications: 'Notificaciones'
   },
   login: {
     login_password: 'Contraseña',

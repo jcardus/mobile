@@ -13,8 +13,16 @@
         },
         "categories": {
             "auth": {
-                "cognito455cdfc3": {
-                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"1213\",\"client_secret\":\"123123\"},{\"ProviderName\":\"Google\",\"client_id\":\"213231\",\"client_secret\":\"132313123\"}]"
+                "pinmeweb7dc90d43": {},
+                "pinmewebeb1e1db3eb1e1db3": {},
+                "pinmeweb8fb26b148fb26b14": {},
+                "pinmeweb1b6ac32e1b6ac32e": {}
+            },
+            "function": {
+                "pinmewebeb1e1db3eb1e1db3CustomMessage": {
+                    "REDIRECTURL": "https://pinme.io/",
+                    "EMAILSUBJECT": "",
+                    "EMAILMESSAGE": ""
                 }
             }
         }

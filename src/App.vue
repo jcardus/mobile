@@ -11,6 +11,7 @@ import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
 import { components } from 'aws-amplify-vue'
 import { serverBus, newServiceWorker } from './main'
+import { getToken } from './utils/auth'
 
 export default {
   name: 'App',
@@ -24,6 +25,12 @@ export default {
   },
   created() {
     serverBus.$on('updateAvailable', this.updateAvailable)
+    if (getToken()) {
+      this.$log.debug('App created with cookie dispatching setUser')
+      this.$store.dispatch('user/setUser')
+    } else {
+      this.$log.debug('App created without cookie, should go to login')
+    }
   },
   mounted() {
     this.$log.debug('App Desktop')

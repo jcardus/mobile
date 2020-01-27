@@ -116,12 +116,10 @@ export default {
   beforeDestroy() {
     Vue.$log.warn('VueMap beforeDestroy')
     this.unsubscribeEvents()
-    traccar.stopReceiving()
   },
   mounted() {
     this.$log.info('VueMap mounted')
     NProgress.start()
-    this.initData()
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
     this.$log.debug('on map loaded')
@@ -139,33 +137,14 @@ export default {
   },
   methods: {
     initData: function() {
-      if (this.$store.state.user.token != null) {
-        this.$log.debug('VueMap initData')
-        traccar.devices(this.onDevices, this.onErrorLoading)
-        traccar.geofences(this.onGeofences)
-        // this.mapResize()
-      } else {
-        this.$log.debug('user token is null, ignoring initData')
-      }
-    },
-    onErrorLoading(error) {
-      this.$message({
-        message: error,
-        type: 'error',
-        duration: 5 * 1000
+      const self = this
+      traccar.positions((pos) => {
+        self.processPositions(pos)
+        self.geofencesSource.features = self.processGeofences(vm.$data.geofences)
+        self.refreshGeofences()
+        vm.$data.loadingMap = false
+        NProgress.done()
       })
-      vm.$data.loadingMap = false
-      NProgress.done()
-    },
-    onDevices: function(devices) {
-      this.$log.debug('got devices getting positions...')
-      vm.$data.devices = devices
-      traccar.positions(this.processPositions)
-    },
-    onGeofences: function(geofences) {
-      vm.$data.geofences = geofences
-      this.geofencesSource.features = this.processGeofences(geofences)
-      this.refreshGeofences()
     },
     mapResize: function() {
       if (this.map) {
@@ -174,7 +153,6 @@ export default {
     },
     onMapLoad: function() {
       this.addControls()
-      traccar.startReceiving()
       this.map.resize()
       if (this.isMobile) {
         this.map.dragRotate.disable()
@@ -414,7 +392,7 @@ export default {
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('data', this.onData)
-      serverBus.$on('mapViewActive', this.initData)
+      serverBus.$on('dataLoaded', this.initData)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
@@ -448,7 +426,7 @@ export default {
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
-      serverBus.$off('mapViewActive', this.initData)
+      serverBus.$off('dataLoaded', this.initData)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
@@ -464,7 +442,6 @@ export default {
         this.$log.info('adding layers...')
         lnglat.addLayers(vm.$static.map)
         this.$log.info('done adding layers')
-        setTimeout(() => { vm.$data.loadingMap = false }, 1000)
       }
     },
     onData() {

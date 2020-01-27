@@ -1,14 +1,10 @@
-import variables from '@/styles/element-variables.scss'
-import defaultSettings from '@/settings'
+import defaultSettings from '../../settings'
 import VueCookies from 'vue-cookies'
 import Vue from 'vue'
 
-const { tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const { sidebarLogo } = defaultSettings
 
 const state = {
-  theme: variables.theme,
-  tagsView: tagsView,
-  fixedHeader: fixedHeader,
   sidebarLogo: sidebarLogo,
   matchRoutes: VueCookies.get('settings.matchRoutes') ? !!+VueCookies.get('settings.matchRoutes') : false,
   viewSpeedAlerts: VueCookies.get('settings.viewSpeedAlerts') ? !!+VueCookies.get('settings.viewSpeedAlerts') : true,
