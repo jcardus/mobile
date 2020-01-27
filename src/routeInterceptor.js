@@ -24,7 +24,6 @@ export async function routerBeforeEach(next, to) {
   } else {
     Vue.$log.warn('no token, redirecting')
     if (whiteList.indexOf(to.path) !== -1) {
-      Vue.$log.debug('invoking', next)
       // in the free login whitelist, go directly
       next()
     } else {

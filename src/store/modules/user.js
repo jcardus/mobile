@@ -3,28 +3,26 @@ import { getToken, setToken, removeToken } from '../../utils/auth'
 import { resetRouter } from '../../router'
 import { traccar } from '../../api/traccar-api'
 import { setLanguage } from '../../lang/index'
-import { vm } from '../../main'
+import { vm, serverBus } from '../../main'
 import { TrackJS } from 'trackjs'
 import { API, graphqlOperation, ServiceWorker } from 'aws-amplify'
 import * as gqlMutations from '../../graphql/mutations'
 import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
-import * as lnglat from '../../utils/lnglat'
 
 const serviceWorker = new ServiceWorker()
 
 const state = {
-  token: getToken(),
-  name: getToken() ? getToken().name : '',
-  avatar: getToken() ? getAvatar() : ''
+  name: '',
+  avatar: '',
+  userId: 0
 }
 
 const mutations = {
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_USER: (state, token) => {
+    state.name = token.name
+    state.userId = token.id
+    state.avatar = getAvatar(token.name)
   }
 }
 
@@ -53,32 +51,18 @@ function initPushNotification() {
   }
 }
 
-function getAvatar() {
-  const nameSplit = getToken().name.split(' ')
+function getAvatar(name) {
+  const nameSplit = name.split(' ')
   return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
 }
 
 const actions = {
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const data = response.data
-        TrackJS.addMetadata('user', username)
-        data.password = password
-        setToken(response.data)
-        state.token = getToken()
-        setLanguage(data.attributes.lang)
-        commit('SET_NAME', getToken().name)
-        commit('SET_AVATAR', getAvatar())
-        checkForUpdates()
-        initPushNotification()
-        traccar.devices(function(devices) {
-          vm.$data.devices = devices
-        })
-        traccar.geofences(function(geofences) {
-          vm.$data.geofences = geofences
-        })
+  setUser({ commit }) {
+    return new Promise((resolve) => {
+      const newToken = getToken()
+      commit('SET_USER', newToken)
+      traccar.geofences(function(geofences) {
+        vm.$data.geofences = geofences
         traccar.alerts(function(alerts) {
           const result = []
           alerts.forEach(a => {
@@ -89,46 +73,69 @@ const actions = {
             result.push(alert_data)
           })
           vm.$data.alerts = result
-        })
-        vm.$data.devices.forEach(d => {
-          traccar.alertsByDevice(d.id, function(alerts) {
-            alerts.forEach(a => {
-              const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
-              if (a.always === false) {
+          vm.$data.alerts.forEach(a => {
+            if (a.notification.always === true) {
+              vm.$data.devices.forEach(d => {
                 if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
                   traccar.geofencesByDevice(d.id, function(geofences) {
-                    alert.devices.push({ data: d, geofences: geofences })
+                    a.devices.push({ data: d, geofences: geofences })
                   })
                 } else {
-                  alert.devices.push({ data: d })
+                  a.devices.push({ data: d })
                 }
-              }
-            })
+              })
+            }
           })
         })
-        vm.$data.alerts.forEach(a => {
-          if (a.notification.always === true) {
+        traccar.groups(state.userId, function(groups) {
+          state.groups = groups
+          traccar.devices(function(devices) {
+            vm.$data.devices = devices
             vm.$data.devices.forEach(d => {
-              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                traccar.geofencesByDevice(d.id, function(geofences) {
-                  a.devices.push({ data: d, geofences: geofences })
+              traccar.alertsByDevice(d.id, function(alerts) {
+                alerts.forEach(a => {
+                  const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
+                  if (a.always === false) {
+                    if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                      traccar.geofencesByDevice(d.id, function(geofences) {
+                        alert.devices.push({ data: d, geofences: geofences })
+                      })
+                    } else {
+                      alert.devices.push({ data: d })
+                    }
+                  }
                 })
-              } else {
-                a.devices.push({ data: d })
-              }
+              })
+              const group = groups.find((g) => g.id === d.groupId)
+              d.groupName = group && group.name
             })
-          }
+            traccar.startReceiving()
+            serverBus.$emit('dataLoaded')
+          })
         })
-        if (lnglat.isMobile()) {
-          traccar.startReceiving()
-        }
+      })
+      TrackJS.addMetadata('user', state.name)
+      setLanguage(newToken.attributes.lang)
+      resolve()
+    })
+  },
+  login(context, userInfo) {
+    Vue.$log.debug(context)
+    const { username, password } = userInfo
+    return new Promise((resolve, reject) => {
+      login({ username: username.trim(), password: password }).then(response => {
+        const data = response.data
+        data.password = password
+        setToken(response.data)
+        context.dispatch('setUser')
+        checkForUpdates()
+        initPushNotification()
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
   },
-  // user logout
   logout({ state }) {
     return new Promise((resolve) => {
       logout(state.token).then(() => {

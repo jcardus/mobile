@@ -149,7 +149,7 @@ import awsconfig from './aws-exports'
 
 const amplifyConfig = {
   Auth: {
-    identityPoolId: 'us-east-1:b6d2631a-1b45-4894-9ec8-0b26ca3020ae',
+    identityPoolId: 'us-east-1:382a2127-91bf-4ba6-92c0-396fde025ead',
     region: 'us-east-1'
   }
 }

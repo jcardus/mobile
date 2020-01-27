@@ -74,6 +74,9 @@ export default {
       Vue.$log.debug('cookie:', cookie)
       if (cookie === null) {
         this.$f7.views.main.router.navigate('/login', { transition: 'f7-fade' })
+      } else {
+        this.$log.debug('App mobile created with cookie dispatching setUser')
+        this.$store.dispatch('user/setUser')
       }
     } catch (e) {
       Vue.$log.error(e)

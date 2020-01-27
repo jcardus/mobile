@@ -14,10 +14,21 @@ const trips = baseUrl + 'reports/trips'
 const geoFences = baseUrl + 'geofences'
 const alerts = baseUrl + 'notifications'
 const permissions = baseUrl + 'permissions'
+const groups = baseUrl + 'groups'
 const users = baseUrl + 'users'
 let cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
 const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaws.com/default/api_helper'
+
+function invokeApi(url, onFulfill, onError) {
+  cookie = VueCookies.get('user-info')
+  axios.get(url, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    .then(response => onFulfill(response.data))
+    .catch(reason => {
+      Vue.$log.error(reason)
+      onError(reason)
+    })
+}
 
 export const traccar = {
   api_helper: function(options, ok, nok) {
@@ -68,13 +79,7 @@ export const traccar = {
     vm.$connect()
   },
   devices: function(onFulfill, onError) {
-    cookie = VueCookies.get('user-info')
-    axios.get(devices, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-        onError(reason)
-      })
+    invokeApi(devices, onFulfill, onError)
   },
   updateDevice: function(deviceId, device, onFulfill) {
     Vue.$log.debug(device)
@@ -228,5 +233,8 @@ export const traccar = {
       .catch(reason => {
         Vue.$log.error(reason)
       })
+  },
+  groups: function(userId, onFulfill, onError) {
+    invokeApi(groups + '?userId=' + userId, onFulfill, onError)
   }
 }

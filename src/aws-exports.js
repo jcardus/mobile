@@ -2,24 +2,11 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-1",
-    "aws_cognito_identity_pool_id": "us-east-1:b6d2631a-1b45-4894-9ec8-0b26ca3020ae",
+    "aws_cognito_identity_pool_id": "us-east-1:382a2127-91bf-4ba6-92c0-396fde025ead",
     "aws_cognito_region": "us-east-1",
-    "aws_user_pools_id": "us-east-1_NZm6epoVq",
-    "aws_user_pools_web_client_id": "5ulc6bd56m3uc1jbbl26fcc6t9",
-    "oauth": {
-        "domain": "pinmedomainprefix-prod.auth.us-east-1.amazoncognito.com",
-        "scope": [
-            "phone",
-            "email",
-            "openid",
-            "profile",
-            "aws.cognito.signin.user.admin"
-        ],
-        "redirectSignIn": "https://pinme.io/",
-        "redirectSignOut": "https://pinme.io/",
-        "responseType": "code"
-    },
-    "federationTarget": "COGNITO_USER_POOLS",
+    "aws_user_pools_id": "us-east-1_4IQkoDGPc",
+    "aws_user_pools_web_client_id": "2sehb31hlq83s6lu5pqu1so5uc",
+    "oauth": {},
     "aws_mobile_analytics_app_id": "0209da656f784a2fad69793a32251916",
     "aws_mobile_analytics_app_region": "us-east-1",
     "aws_appsync_graphqlEndpoint": "https://yh5deqyr7ndt7mjzpxx5jpful4.appsync-api.us-east-1.amazonaws.com/graphql",

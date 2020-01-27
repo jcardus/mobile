@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar" :style="top">
+  <div class="navbar">
     <div v-show="!$route.path.includes('map')" class="left">
       <span>{{ title }}</span>
     </div>
@@ -29,7 +29,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import * as iPhone from '../../utils/iphone'
 import Vue from 'vue'
 import * as lnglat from '@/utils/lnglat'
 
@@ -49,9 +48,6 @@ export default {
     ]),
     title() {
       return this.$t(this.$route.meta.title)
-    },
-    top() {
-      return 'top:' + iPhone.getNavBarTop() + 'px'
     },
     isMobile() {
       return lnglat.isMobile()

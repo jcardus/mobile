@@ -16,19 +16,6 @@ export function login(data) {
   })
 }
 
-export function getInfo(token) {
-  return new Promise(function(resolve) {
-    resolve({
-      code: 200, data: {
-        roles: ['admin'],
-        introduction: '',
-        avatar: 'https://ui-avatars.com/api/?name=' + token.name,
-        name: ''
-      }
-    })
-  })
-}
-
 export function logout() {
   const cookie = VueCookies.get('user-info')
   if (cookie) {
