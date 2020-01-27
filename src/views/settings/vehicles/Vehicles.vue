@@ -46,6 +46,10 @@
         >
         </el-table-column>
         <el-table-column
+          :label="$t('settings.vehicle_group')"
+          prop="groupName"
+        ></el-table-column>
+        <el-table-column
           v-if="!isMobile"
           :label="$t('settings.vehicle_model')"
           prop="model"
