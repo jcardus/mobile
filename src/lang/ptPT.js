@@ -133,7 +133,8 @@ export default {
     vehicle_form_name: 'Nome',
     vehicle_form_model: 'Modelo',
     vehicle_form_speed_limit: 'Limite de Velocidade (Km/h)',
-    vehicle_updated: 'Veículo actualizado com sucesso!'
+    vehicle_updated: 'Veículo actualizado com sucesso!',
+    vehicle_group: 'Grupo'
   },
   geofence: {
     showGeofences: 'Ver Balizas',

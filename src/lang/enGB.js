@@ -134,7 +134,8 @@ export default {
     vehicle_form_name: 'Name',
     vehicle_form_model: 'Model',
     vehicle_form_speed_limit: 'Speed Limit (Km/h)',
-    vehicle_updated: 'Vehicle updated sucessfully!'
+    vehicle_updated: 'Vehicle updated sucessfully!',
+    vehicle_group: 'Grupo'
   },
   geofence: {
     showGeofences: 'Show Geofences',
