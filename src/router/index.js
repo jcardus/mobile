@@ -11,16 +11,16 @@ export const constantRoutes = [
     path: '/redirect',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+    children: [{ path: '/redirect/:path*', component: () => import('../views/redirect/index') }]
+  },
+  {
+    path: '/amplogin',
+    component: () => import('../views/login/AmpLogin'),
+    hidden: true
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('../views/login/index'),
     hidden: true
   },
   {
@@ -28,23 +28,12 @@ export const constantRoutes = [
     redirect: '/map',
     hidden: false,
     component: Layout,
-    children: [
-      {
-        path: 'map',
-        component: () => import('@/views/map/MapView'),
-        meta: { title: 'map', icon: 'far fa-map' }
-      }]
+    children: [{ path: 'map', component: () => import('../views/map/MapView'), meta: { title: 'map', icon: 'far fa-map' }}]
   },
   {
     path: '/dashboard',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('../views/dashboard/DashboardContainer'),
-        meta: { title: 'route.dashboard', icon: 'fa fa-dashboard' }
-      }
-    ]
+    children: [{ path: 'index', component: () => import('../views/dashboard/DashboardContainer'), meta: { title: 'route.dashboard', icon: 'fa fa-dashboard' }}]
   },
   {
     path: '/reports',
@@ -94,14 +83,7 @@ export const constantRoutes = [
   {
     path: '/settings',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/settings'),
-        name: 'Settings',
-        meta: { title: 'route.settings', icon: 'fas fa-cog' }
-      }
-    ]
+    children: [{ path: 'index', component: () => import('../views/settings'), name: 'Settings', meta: { title: 'route.settings', icon: 'fas fa-cog' }}]
   },
   {
     path: '/profile',
@@ -111,7 +93,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/profile/index'),
+        component: () => import('../views/profile/index'),
         name: 'Profile',
         meta: { title: 'Profile', icon: 'user', noCache: true }
       }
@@ -122,20 +104,11 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/notifications/index',
     hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/notifications/index'),
-        name: 'Notifications',
-        meta: { title: 'Notifications', icon: 'user', noCache: true }
-      }
-    ]
+    children: [{ path: 'index', component: () => import('../views/notifications/index'), name: 'Notifications', meta: { title: 'Notifications', icon: 'user', noCache: true }}]
   }
-
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

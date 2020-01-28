@@ -1,13 +1,40 @@
+import VueCookies from 'vue-cookies'
+import { vm, serverBus } from '../../main'
+import Vue from 'vue'
+
 const state = {
   packageVersion: process.env.PACKAGE_VERSION || '0',
+  sidebar: {
+    opened: VueCookies.get('sidebarStatus') ? !!+VueCookies.get('sidebarStatus') : false,
+    withoutAnimation: false
+  },
+  device: 'desktop',
+  size: VueCookies.get('size') || 'medium',
   stiLoaded: false,
   historyMode: false,
   elementReportData: []
 }
 
-const mutations = {}
+const mutations = {
+  SET_REPORT_DATA: (data) => {
+    state.elementReportData = data
+  },
+  TOGGLE_HISTORYMODE: () => {
+    vm.$data.historyMode = !vm.$data.historyMode
+    state.historyMode = vm.$data.historyMode
+    Vue.$log.debug('historyMode changed to ', vm.$data.historyMode, ' emitting event')
+    serverBus.$emit('showRoutesChanged')
+  }
+}
 
-const actions = {}
+const actions = {
+  toggleHistoryMode({ commit }) {
+    commit('TOGGLE_HISTORYMODE')
+  },
+  setReportData({ commit }, data) {
+    commit('SET_REPORT_DATA', data)
+  }
+}
 
 export default {
   namespaced: true,

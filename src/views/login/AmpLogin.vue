@@ -7,14 +7,14 @@
       <img v-else class="logo" :src="logoImage" alt="">
     </el-row>
     <el-row type="flex" justify="center" align="middle">
-      <amplify-authenticator></amplify-authenticator>
+      <amplify-authenticator :auth-config="authConfig">
+      </amplify-authenticator>
     </el-row>
   </div>
 </template>
 
 <script>
 
-import Vue from 'vue'
 import * as partner from '../../utils/partner'
 import LogoSvg from '../../layout/components/LogoSvg'
 
@@ -22,6 +22,39 @@ export default {
   name: 'AmpLogin',
   components: { LogoSvg },
   data() {
+    return {
+      authConfig: {
+        usernameAttributes: 'Email',
+        signUpConfig: {
+          hideAllDefaults: true,
+          defaultCountryCode: '351',
+          signUpFields: [
+            {
+              label: 'Email',
+              key: 'email',
+              required: true,
+              displayOrder: 1,
+              type: 'string',
+              signUpWith: true
+            },
+            {
+              label: 'Password',
+              key: 'password',
+              required: true,
+              displayOrder: 2,
+              type: 'password'
+            },
+            {
+              label: 'PhoneNumber',
+              key: 'phone_number',
+              required: true,
+              displayOrder: 3,
+              type: 'string'
+            }
+          ]
+        }
+      }
+    }
   },
   computed: {
     logoImage: function() {
@@ -47,33 +80,9 @@ export default {
       immediate: true
     }
   },
-  mounted() {
-  },
   methods: {
     hasSVG() {
       return partner.hasSVG()
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          Vue.$log.debug('dispatch user login ', this.loginForm)
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              Vue.$log.debug('pushing...', this.redirect || '/', this.otherQuery)
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
-              Vue.$log.debug('done')
-            })
-            .catch(exception => {
-              Vue.$log.error(exception)
-              this.loading = false
-            })
-        } else {
-          Vue.$log.error('error submit!!')
-          return false
-        }
-      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
