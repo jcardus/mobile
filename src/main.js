@@ -143,31 +143,10 @@ import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
 
-import Auth from '@aws-amplify/auth'
 import Analytics from '@aws-amplify/analytics'
 import awsconfig from './aws-exports'
 
-const amplifyConfig = {
-  Auth: {
-    identityPoolId: 'us-east-1:382a2127-91bf-4ba6-92c0-396fde025ead',
-    region: 'us-east-1'
-  }
-}
-
-Auth.configure(amplifyConfig)
 Amplify.configure(awsconfig)
-
-const analyticsConfig = {
-  AWSPinpoint: {
-    // Amazon Pinpoint App Client ID
-    appId: '0209da656f784a2fad69793a32251916',
-    // Amazon service region
-    region: 'us-east-1',
-    mandatorySignIn: false
-  }
-}
-
-Analytics.configure(analyticsConfig)
 
 Analytics.record('applicationStart').then(() => {})
 
