@@ -159,11 +159,7 @@ export const traccar = {
       })
   },
   geofences: function(onFulfill) {
-    return new Promise((resolve, reject) => {
-      axios.get(geoFences, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-        .then(response => onFulfill(response.data))
-        .catch(error => { reject(error) })
-    })
+    invokeApi(geoFences, onFulfill)
   },
   geofencesByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
