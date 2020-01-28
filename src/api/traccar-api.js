@@ -158,8 +158,8 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  geofences: function(onFulfill) {
-    invokeApi(geoFences, onFulfill)
+  geofences: function(onFulfill, onError) {
+    invokeApi(geoFences, onFulfill, onError)
   },
   geofencesByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
