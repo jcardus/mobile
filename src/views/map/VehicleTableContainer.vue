@@ -7,7 +7,7 @@
       <el-tabs stretch>
         <el-tab-pane>
           <span slot="label">
-            <i class="fas fa-car-side"></i>
+            <i class="fas fa-car"></i>
           </span>
           <div style="margin-bottom: 15px;">
             <el-row type="flex" justify="space-around">

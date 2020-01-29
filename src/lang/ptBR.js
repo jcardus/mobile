@@ -123,6 +123,8 @@ export default {
     alert_form_geofences_placeholder: 'Seleccionar balizas',
     vehicle_edit: 'Editar Veículo',
     vehicle_name: 'Nome',
+    vehicle_form_group: 'Grupo',
+    vehicle_form_groups_placeholder: 'Seleccionar Grupo',
     vehicle_licenseplate: 'Matrícula',
     vehicle_model: 'Modelo',
     vehicle_speed_limit: 'Limite de Velocidade',

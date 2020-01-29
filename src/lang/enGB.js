@@ -137,6 +137,8 @@ export default {
     vehicle_form_cancel: 'Cancel',
     vehicle_form_confirm: 'Save',
     vehicle_form_name: 'Name',
+    vehicle_form_group: 'Group',
+    vehicle_form_groups_placeholder: 'Select group',
     vehicle_form_model: 'Model',
     vehicle_form_speed_limit: 'Speed Limit (Km/h)',
     vehicle_updated: 'Vehicle updated sucessfully!',

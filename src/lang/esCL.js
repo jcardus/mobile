@@ -130,6 +130,8 @@ export default {
     alert_form_geofences_placeholder: 'Seleccione geocercas',
     vehicle_edit: 'Editar Vehículo',
     vehicle_name: 'Nombre',
+    vehicle_form_group: 'Grupo',
+    vehicle_form_groups_placeholder: 'Seleccionar Grupo',
     vehicle_licenseplate: 'Placa',
     vehicle_model: 'Modelo',
     vehicle_speed_limit: 'Límite de Velocidad',

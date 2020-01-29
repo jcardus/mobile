@@ -136,6 +136,8 @@ export default {
     vehicle_form_cancel: 'Cancelar',
     vehicle_form_confirm: 'Guardar',
     vehicle_form_name: 'Nome',
+    vehicle_form_group: 'Grupo',
+    vehicle_form_groups_placeholder: 'Seleccionar Grupo',
     vehicle_form_model: 'Modelo',
     vehicle_form_speed_limit: 'Limite de Velocidade (Km/h)',
     vehicle_updated: 'Veículo actualizado com sucesso!',
