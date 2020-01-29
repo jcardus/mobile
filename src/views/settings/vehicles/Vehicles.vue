@@ -9,6 +9,16 @@
               <el-form-item :label="$t('settings.vehicle_form_name')">
                 <el-input v-model="vehicleName" />
               </el-form-item>
+              <el-form-item :label="$t('settings.vehicle_form_group')">
+                <el-select
+                  v-model="selectedGroup"
+                  style="width: 100%; height: 35px"
+                  :placeholder="$t('settings.vehicle_form_groups_placeholder')"
+                  value=""
+                >
+                  <el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
               <el-form-item :label="$t('settings.vehicle_form_model')">
                 <el-input v-model="vehicleModel" />
               </el-form-item>
@@ -47,7 +57,9 @@
         </el-table-column>
         <el-table-column
           :label="$t('settings.vehicle_group')"
-          prop="groupName"
+          :formatter="groupRenderer"
+          prop="groupId"
+          sortable
         ></el-table-column>
         <el-table-column
           v-if="!isMobile"
@@ -100,13 +112,17 @@ export default {
       selectedVehicle: null,
       vehicleName: '',
       vehicleModel: '',
-      vehicleSpeedLimit: 0
+      vehicleSpeedLimit: 0,
+      selectedGroup: null
     }
   },
   computed: {
     isMobile() { return lnglat.isMobile() },
     devices: function() {
       return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+    },
+    groups: function() {
+      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     }
   },
   methods: {
@@ -133,12 +149,14 @@ export default {
 
       const vehicle = this.selectedVehicle
       vehicle.name = this.vehicleName
+      vehicle.groupId = this.selectedGroup
       vehicle.model = this.vehicleModel
       vehicle.attributes.speedLimit = Math.round(this.vehicleSpeedLimit / 1.85200)
 
       const v = {
         id: vehicle.id,
         name: vehicle.name,
+        groupId: vehicle.groupId,
         attributes: {
           speedLimit: vehicle.attributes.speedLimit
         },
@@ -162,11 +180,10 @@ export default {
     },
     handleEdit(row) {
       this.selectedVehicle = row
-
+      this.selectedGroup = row.groupId
       this.vehicleName = row.name
       this.vehicleModel = row.model
       this.vehicleSpeedLimit = Math.round(row.attributes.speedLimit * 1.85200)
-
       this.isOpenVehicleForm = !this.isOpenVehicleForm
     },
     alertSpeedRenderer(row, column, cellValue) {
@@ -176,8 +193,17 @@ export default {
         return ''
       }
     },
+    groupRenderer(row, column, cellValue) {
+      if (cellValue) {
+        const group = vm.$data.groups.find((g) => g.id === cellValue)
+        return group && group.name
+      } else {
+        return ''
+      }
+    },
     clearFormData() {
       this.vehicleName = ''
+      this.selectedGroup = null
       this.vehicleModel = ''
       this.vehicleSpeedLimit = 0
     }
