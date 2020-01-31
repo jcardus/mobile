@@ -30,6 +30,16 @@ function invokeApi(url, onFulfill, onError) {
     })
 }
 
+function invokeDeleteApi(url, id, onFulfill) {
+  return new Promise((resolve, reject) => {
+    axios.delete(url + '/' + id, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(onFulfill(id))
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export const traccar = {
   api_helper: function(options, ok, nok) {
     axios.post(
@@ -232,5 +242,24 @@ export const traccar = {
   },
   groups: function(userId, onFulfill, onError) {
     invokeApi(groups + '?userId=' + userId, onFulfill, onError)
+  },
+  editGroup: function(groupId, group, onFulfill) {
+    Vue.$log.debug(group)
+    axios.put(groups + '/' + groupId, group, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  deleteGroup: function(groupId, onFulfill) {
+    invokeDeleteApi(groups, groupId, onFulfill)
+  },
+  newGroup: function(group, onFulfill) {
+    Vue.$log.debug(group)
+    axios.post(groups, group, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
   }
 }
