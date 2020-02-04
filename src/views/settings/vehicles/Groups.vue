@@ -35,7 +35,7 @@
             class="formButton"
             size="small"
             @click="handleAddGroup"
-          ><i class="fas fa-grip-horizontal"></i></el-button>
+          ><i class="fas fa-plus"></i></el-button>
         </el-tooltip>
       </div>
       <el-table :data="groups" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
@@ -88,7 +88,6 @@
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
-import getters from '../../../store/getters'
 
 export default {
   name: 'Groups',
@@ -145,7 +144,7 @@ export default {
         message: this.$t('settings.group_created')
       })
       this.clearFormData()
-      traccar.groups(getters.userId, this.loadGroups)
+      vm.$data.groups.push(newGroup)
     },
     loadGroups: function(groups) {
       vm.$data.groups = groups
@@ -204,10 +203,8 @@ export default {
         type: 'success',
         duration: 5 * 1000
       })
-      alert('Delete:' + id)
-      alert('total groups' + vm.$data.groups.length)
-      vm.$data.groups = vm.$data.groups.filter((e) => e.id !== id)
-      alert('total groups' + vm.$data.groups.length)
+      const groupDeleted = vm.$data.groups.find(g => g.id === id)
+      vm.$data.groups.splice(vm.$data.groups.indexOf(groupDeleted), 1)
     },
     clearFormData() {
       this.groupName = ''
