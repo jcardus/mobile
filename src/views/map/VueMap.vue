@@ -600,7 +600,7 @@ export default {
       const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
       if (immoValue !== feature.properties.immobilization_active) {
         feature.properties.immobilization_active = immoValue
-        this.$store.dispatch('devices/setCommandPending', { device: this.device.id, pending: false }).then(() => {})
+        this.$store.dispatch('devices/setCommandPending', { device: device.id, pending: false }).then(() => {})
       }
       device.address = position.address
       device.lastUpdate = position.fixTime
