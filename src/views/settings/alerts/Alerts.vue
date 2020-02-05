@@ -68,6 +68,17 @@
                   <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
+              <el-form-item :label="$t('settings.alert_form_pois')">
+                <el-select
+                  v-model="selectedPOIs"
+                  style="width: 100%; height: 35px"
+                  multiple
+                  :placeholder="$t('settings.alert_form_pois_placeholder')"
+                  value=""
+                >
+                  <el-option v-for="item in pois" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
             </el-form>
             <el-button
               type="info"
@@ -93,7 +104,7 @@
             class="alertFormButton"
             size="small"
             @click="handleAddAlert"
-          ><i class="fas fa-bell"></i></el-button>
+          ><i class="fas fa-plus"></i></el-button>
         </el-tooltip>
       </div>
       <el-table
@@ -242,6 +253,7 @@ export default {
       selectedDevices: [],
       selectedDevice: null,
       selectedGeofences: [],
+      selectedPOIs: [],
       alertTypes: [
         { value: 'geofenceExit', text: this.$t('settings.alert_geofenceExit') },
         { value: 'geofenceEnter', text: this.$t('settings.alert_geofenceEnter') },
@@ -261,6 +273,9 @@ export default {
     },
     geofences: function() {
       return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING'))
+    },
+    pois: function() {
+      return vm.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
     }
   },
   mounted() {
@@ -356,7 +371,13 @@ export default {
     },
     handleAssociateGeofences(allDevices, row) {
       if (allDevices === false) {
-        row.geofences.forEach(g => this.selectedGeofences.push(g.id))
+        row.geofences.forEach(g => {
+          if (g.area.startsWith('CIRCLE')) {
+            this.selectedPOIs.push(g.id)
+          } else {
+            this.selectedGeofences.push(g.id)
+          }
+        })
         this.selectedDevice = row.data
       } else {
         this.selectedAlert = row
@@ -391,6 +412,14 @@ export default {
         })
 
         self.selectedGeofences.forEach(g => {
+          const permission = {
+            deviceId: device.id,
+            geofenceId: g
+          }
+          traccar.addPermission(permission, function() { })
+        })
+
+        self.selectedPOIs.forEach(g => {
           const permission = {
             deviceId: device.id,
             geofenceId: g

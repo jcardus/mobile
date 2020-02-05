@@ -10,36 +10,49 @@
           <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
         </span>
         <el-card>
-          <h3>Histórico de Rota</h3>
-          <el-switch
-            v-model="matchRoutes"
-            :active-text="$t('settings.route_match')"
-            inactive-text=""
-          >
-          </el-switch>
-          <br /><br />
-          <el-switch
-            v-model="viewSpeedAlerts"
-            active-text="Mostrar alertas de velocidade"
-            inactive-text=""
-          >
-          </el-switch>
-          <br /><br />
-          <el-radio-group :value="radioValue" @input="changeMaxSpeedType">
-            <el-radio label="road">Usar limites da estrada</el-radio>
-            <el-radio label="vehicle">Usar limite definido no carro</el-radio>
-          </el-radio-group>
-          <br /><br />
-          <el-form>
-            <span>Tolerância Máxima <el-input v-model="speedThreshold" style="width: 100px;" @change="changeSpeedThreshold" /></span> Km/h
+          <h3>{{ $t('settings.route_history') }}</h3>
+          <div>
+            <el-switch
+              v-model="matchRoutes"
+              :active-text="$t('settings.route_match')"
+              inactive-text=""
+            >
+            </el-switch>
+          </div>
+          <div style="margin-top: 20px">
+            <el-switch
+              v-model="viewSpeedAlerts"
+              :active-text="$t('settings.view_speed_alerts')"
+              inactive-text=""
+            >
+            </el-switch>
+          </div>
+          <el-form :disabled="!viewSpeedAlerts" style="padding-left: 25px; margin-top: 10px">
+            <el-radio-group :value="radioValue" @input="changeMaxSpeedType">
+              <div style="margin-top: 20px">
+                <el-radio label="road">{{ $t('settings.use_route_speed_limit') }}</el-radio>
+              </div>
+              <div style="margin-top: 10px">
+                <el-radio label="vehicle">{{ $t('settings.use_vehicle_speed_limit') }}</el-radio>
+              </div>
+            </el-radio-group>
+            <div style="margin-top: 20px">
+              <span class="text_max_speed">{{ $t('settings.max_speed_threshold') }}<el-input v-model="speedThreshold" type="number" min="0" style="margin-left: 5px; width: 100px;" @change="changeSpeedThreshold" /></span>
+            </div>
           </el-form>
         </el-card>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
-          <i class="fas fa-car-side"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.vehicles') }}</span>
+          <i class="fas fa-car"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.vehicles') }}</span>
         </span>
         <vehicles></vehicles>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
+          <i class="fas fa-grip-horizontal"></i><span v-if="!isMobile" style="margin-left: 10px">Grupos</span>
+        </span>
+        <groups></groups>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
@@ -55,11 +68,12 @@
 import { vm } from '../../main'
 import Alerts from './alerts/Alerts'
 import Vehicles from './vehicles/Vehicles'
+import Groups from './vehicles/Groups'
 import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'Settings',
-  components: { Alerts, Vehicles },
+  components: { Alerts, Vehicles, Groups },
   data() {
     return {
       radioValue: 'road',
@@ -120,4 +134,10 @@ export default {
     padding-right: 10px;
     padding-left: 10px;
   }
+
+  .text_max_speed {
+    font-size: 14px;
+    color: #055AE5;
+  }
 </style>
+

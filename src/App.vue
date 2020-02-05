@@ -12,6 +12,7 @@ import * as partner from '@/utils/partner'
 import { components } from 'aws-amplify-vue'
 import { serverBus, newServiceWorker } from './main'
 import { getToken } from './utils/auth'
+import Vue from 'vue'
 
 export default {
   name: 'App',
@@ -27,7 +28,11 @@ export default {
     serverBus.$on('updateAvailable', this.updateAvailable)
     if (getToken()) {
       this.$log.debug('App created with cookie dispatching setUser')
-      this.$store.dispatch('user/setUser')
+      this.$store.dispatch('user/setUser').then(() => {
+        Vue.$log.debug('user/setUser done')
+      }).catch((e) => {
+        this.$log.error(e)
+      })
     } else {
       this.$log.debug('App created without cookie, should go to login')
     }

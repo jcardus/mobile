@@ -43,7 +43,8 @@ export default {
     moving_vehicles: 'Moving',
     idle_vehicles: 'Idle',
     stopped_vehicles: 'Stopped',
-    disconnected_vehicles: 'Disconnected'
+    disconnected_vehicles: 'Disconnected',
+    immo_pending: 'Ya existe un comando de pendente para el vehículo. Por favor aguarde el resultado.'
   },
   vehicleDetail: {
     show_route: 'Show route'
@@ -90,7 +91,12 @@ export default {
     map: 'Map',
     vehicles: 'Vehicles',
     title: 'Settings',
+    route_history: 'History Route',
     route_match: 'Route match',
+    view_speed_alerts: 'Show speed alerts',
+    use_route_speed_limit: 'Use route speed limit',
+    use_vehicle_speed_limit: 'Use vehicle speed limit',
+    max_speed_threshold: 'Max speed threshold in Km/h',
     alerts: 'Alerts',
     alerts_type: 'Type',
     alerts_notificators: 'Notificators',
@@ -132,10 +138,27 @@ export default {
     vehicle_form_cancel: 'Cancel',
     vehicle_form_confirm: 'Save',
     vehicle_form_name: 'Name',
+    vehicle_form_group: 'Group',
+    vehicle_form_groups_placeholder: 'Select group',
     vehicle_form_model: 'Model',
     vehicle_form_speed_limit: 'Speed Limit (Km/h)',
     vehicle_updated: 'Vehicle updated sucessfully!',
-    vehicle_group: 'Grupo'
+    vehicle_group: 'Group',
+    groups: 'Groups',
+    group_name: 'Name',
+    group_add: 'Add Group',
+    group_edit: 'Edit Group',
+    group_delete: 'Delete Group',
+    group_form_cancel: 'Cancel',
+    group_form_confirm: 'Save',
+    group_form_name: 'Name',
+    group_updated: 'Group updated sucessfully!',
+    group_deleted: 'Group has been deleted.',
+    group_delete_info: 'Do you want to delete the grupo ',
+    group_delete_title: 'Delete Group',
+    group_edit_confirm: 'Confirm',
+    group_edit_cancel: 'Cancel',
+    group_created: 'Group created sucessfully!'
   },
   geofence: {
     showGeofences: 'Show Geofences',

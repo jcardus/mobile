@@ -185,10 +185,7 @@ export default {
       })
     }
     if (this.geofences.length === 0) {
-      Vue.$log.debug('getting geofences')
-      traccar.geofences(function(data) {
-        vm.$data.geofences = data
-      })
+      Vue.$log.error('geofences should be loaded!')
     } else { Vue.$log.debug(this.geofences.length, ' geofences already loaded') }
   },
   methods: {

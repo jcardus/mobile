@@ -1,15 +1,8 @@
-import VueCookies from 'vue-cookies'
 import { vm, serverBus } from '../../main'
 import Vue from 'vue'
 
 const state = {
   packageVersion: process.env.PACKAGE_VERSION || '0',
-  sidebar: {
-    opened: VueCookies.get('sidebarStatus') ? !!+VueCookies.get('sidebarStatus') : false,
-    withoutAnimation: false
-  },
-  device: 'desktop',
-  size: VueCookies.get('size') || 'medium',
   stiLoaded: false,
   historyMode: false,
   elementReportData: []

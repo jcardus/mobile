@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mainLogin">
     <el-row type="flex" style="height: 10vh">
     </el-row>
     <el-row type="flex" justify="center" class="header">
@@ -17,6 +17,8 @@
 
 import * as partner from '../../utils/partner'
 import LogoSvg from '../../layout/components/LogoSvg'
+import { I18n } from '@aws-amplify/core'
+import { getLanguage } from '../../lang'
 
 export default {
   name: 'AmpLogin',
@@ -80,6 +82,21 @@ export default {
       immediate: true
     }
   },
+  created() {
+    const dict = {
+      'es': {
+        'Sign In': 'Registrarse',
+        'Sign Up': 'Regístrate'
+      },
+      'fr': {
+        'Sign In': 'Se connecter2',
+        'Sign Up': "S'inscrire"
+      }
+    }
+
+    I18n.putVocabularies(dict)
+    I18n.setLanguage(getLanguage().slice(2))
+  },
   methods: {
     hasSVG() {
       return partner.hasSVG()
@@ -97,12 +114,13 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  @import '../../styles/element-variables';
 
-  $bg:#283443;
-  $light_gray:#fff;
-  $cursor: #fff;
-
+  .mainLogin {
+    background-color: $--border-color-lighter;
+    height: 100vh;
+  }
   .logo {
     max-width:300px;
     padding: 20px

@@ -89,6 +89,7 @@ const actions = {
         })
         traccar.groups(state.userId, function(groups) {
           state.groups = groups
+          vm.$data.groups = groups
           traccar.devices(function(devices) {
             vm.$data.devices = devices
             vm.$data.devices.forEach(d => {

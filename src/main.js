@@ -157,21 +157,6 @@ Analytics.autoTrack('session', {
 
 Vue.use(AmplifyPlugin, AmplifyModules)
 
-import { I18n } from 'aws-amplify'
-
-const dict = {
-  'es': {
-    'Sign In': 'Registrarse',
-    'Sign Up': 'Regístrate'
-  },
-  'fr': {
-    'Sign In': 'Se connecter2',
-    'Sign Up': "S'inscrire"
-  }
-}
-
-I18n.putVocabularies(dict)
-
 function askPermissionForNotifications() {
   return new Promise(function(resolve, reject) {
     const permissionResult = Notification.requestPermission(function(result) {
