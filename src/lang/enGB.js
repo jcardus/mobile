@@ -143,7 +143,22 @@ export default {
     vehicle_form_model: 'Model',
     vehicle_form_speed_limit: 'Speed Limit (Km/h)',
     vehicle_updated: 'Vehicle updated sucessfully!',
-    vehicle_group: 'Grupo'
+    vehicle_group: 'Group',
+    groups: 'Groups',
+    group_name: 'Name',
+    group_add: 'Add Group',
+    group_edit: 'Edit Group',
+    group_delete: 'Delete Group',
+    group_form_cancel: 'Cancel',
+    group_form_confirm: 'Save',
+    group_form_name: 'Name',
+    group_updated: 'Group updated sucessfully!',
+    group_deleted: 'Group has been deleted.',
+    group_delete_info: 'Do you want to delete the grupo ',
+    group_delete_title: 'Delete Group',
+    group_edit_confirm: 'Confirm',
+    group_edit_cancel: 'Cancel',
+    group_created: 'Group created sucessfully!'
   },
   geofence: {
     showGeofences: 'Show Geofences',
