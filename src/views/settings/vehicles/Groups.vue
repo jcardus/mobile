@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="dataLoaded">
     <transition name="modal">
       <div v-if="isOpenGroupForm">
         <div class="overlay">
@@ -106,6 +106,9 @@ export default {
     },
     groups: function() {
       return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+    },
+    dataLoaded: function() {
+      return this.$store.state.user.dataLoaded
     }
   },
   mounted() {
@@ -145,9 +148,6 @@ export default {
       })
       this.clearFormData()
       vm.$data.groups.push(newGroup)
-    },
-    loadGroups: function(groups) {
-      vm.$data.groups = groups
     },
     groupUpdated: function() {
       this.$message({

@@ -15,7 +15,8 @@ const serviceWorker = new ServiceWorker()
 const state = {
   name: '',
   avatar: '',
-  userId: 0
+  userId: 0,
+  dataLoaded: false
 }
 
 const mutations = {
@@ -23,6 +24,9 @@ const mutations = {
     state.name = token.name
     state.userId = token.id
     state.avatar = getAvatar(token.name)
+  },
+  SET_DATA_LOADED: (state, loaded) => {
+    state.dataLoaded = loaded
   }
 }
 
@@ -112,6 +116,7 @@ const actions = {
             })
             traccar.startReceiving()
             serverBus.$emit('dataLoaded')
+            commit('SET_DATA_LOADED', true)
           })
         })
       })
