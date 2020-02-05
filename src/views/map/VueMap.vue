@@ -159,9 +159,11 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
       this.$log.info('onMapLoad')
-      // vm.$data.loadingRoutes = false
-      NProgress.done()
       serverBus.$emit('mapLoaded')
+      if (this.$store.state.user.dataLoaded) {
+        this.initData()
+        NProgress.done()
+      }
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
