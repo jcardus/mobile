@@ -42,12 +42,6 @@ export default {
     this.loadGeofences()
   },
   methods: {
-    loadGeofences() {
-      traccar.geofences()
-        .then(response => {
-          this.geofences = response.data
-        })
-    },
     handleEdit(row) {
       this.$prompt(this.$t('geofence.geofence_edit_name'), this.$t('geofence.geofence_edit_title'), {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),

@@ -43,7 +43,8 @@ export default {
     moving_vehicles: 'Moving',
     idle_vehicles: 'Idle',
     stopped_vehicles: 'Stopped',
-    disconnected_vehicles: 'Disconnected'
+    disconnected_vehicles: 'Disconnected',
+    immo_pending: 'Ya existe un comando de pendente para el vehículo. Por favor aguarde el resultado.'
   },
   vehicleDetail: {
     show_route: 'Show route'

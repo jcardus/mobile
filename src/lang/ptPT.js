@@ -42,7 +42,8 @@ export default {
     moving_vehicles: 'Em Movimento',
     idle_vehicles: 'Ralenti',
     stopped_vehicles: 'Parado',
-    disconnected_vehicles: 'Desconhecido'
+    disconnected_vehicles: 'Desconhecido',
+    immo_pending: 'Já existe um comando pendente para este veículo. Por favor aguardo o resultado.'
   },
   vehicleDetail: {
     show_route: 'Rota'

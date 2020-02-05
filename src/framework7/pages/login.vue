@@ -34,6 +34,7 @@
 <script>
 import * as partner from '../../utils/partner'
 import Vue from 'vue'
+import { serverBus } from '../../main'
 
 export default {
   data() {
@@ -64,6 +65,7 @@ export default {
         .then(() => {
           this.$f7router.back()
           this.$f7.preloader.hide()
+          serverBus.$emit('userLoggedIn')
         })
         .catch(exception => {
           self.$f7.preloader.hide()
