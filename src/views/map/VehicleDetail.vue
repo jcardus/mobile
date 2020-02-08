@@ -54,7 +54,7 @@ export default {
       sliderVisible: false,
       imageUrl: '',
       loadingImage: true,
-      imageOk: true
+      imageOk: false
     }
   },
   computed: {
@@ -139,8 +139,8 @@ export default {
       }
     },
     showRoutesChanged() {
-      vm.$store.dispatch('app/toggleHistoryMode')
       Vue.$log.debug('showRoutesChanged was ', this.showRoutes)
+      vm.$store.dispatch('app/toggleHistoryMode')
     }
   }
 }

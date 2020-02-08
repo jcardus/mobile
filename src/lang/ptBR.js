@@ -7,7 +7,8 @@ export default {
     report_location_title: 'Relatório de posições',
     report_zone_crossing: 'Relatório de zonas',
     settings: 'Configurações',
-    duration: 'Duração'
+    duration: 'Duração',
+    nodata: 'Não existem dados para o período seleccionado'
   },
   map: {
     geofence_create_title: 'Nova Cerca Eletrônica',

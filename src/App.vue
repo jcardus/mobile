@@ -26,6 +26,7 @@ export default {
   },
   created() {
     serverBus.$on('updateAvailable', this.updateAvailable)
+    serverBus.$on('alertMessage', this.alertMessage)
     if (getToken()) {
       this.$log.debug('App created with cookie dispatching setUser')
       this.$store.dispatch('user/setUser').then(() => {
@@ -37,12 +38,19 @@ export default {
       this.$log.debug('App created without cookie, should go to login')
     }
   },
+  beforeDestroy() {
+    serverBus.$off('updateAvailable', this.updateAvailable)
+    serverBus.$off('alertMessage', this.alertMessage)
+  },
   mounted() {
     this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
   },
   methods: {
+    alertMessage(message) {
+      this.$alert(this.$t(message))
+    },
     updateAvailable() {
       this.showUpdateDiv = true
     },

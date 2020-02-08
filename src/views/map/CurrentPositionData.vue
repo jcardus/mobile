@@ -185,7 +185,7 @@ export default {
       this.datesChanged()
     },
     showRoutes() {
-      Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
+      Vue.$log.debug('CurrentPositionData showRoutesChanged to ', this.showRoutes)
       if (this.device && vm.$data.popUps[this.device.id]) {
         Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
         vm.$data.popUps[this.device.id].remove()
@@ -208,14 +208,12 @@ export default {
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
     serverBus.$on('routePlayStopped', this.routePlayStopped)
-    serverBus.$on('showRoutesChanged', this.showRoutesClick)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('routePlay', this.routePlay)
     serverBus.$off('routePlayStopped', this.routePlayStopped)
-    serverBus.$off('showRoutesChanged', this.showRoutesClick)
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData mounted')
@@ -247,9 +245,9 @@ export default {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
       Vue.$log.debug('positions after filter ', positions)
+      this.removeLayers()
       if (positions && positions.length > 1) {
         Vue.$log.debug('got ', positions.length, ' positions')
-        this.removeLayers()
         this.drawAll(positions)
         this.getRouteTrips(positions)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
@@ -264,10 +262,13 @@ export default {
         } else {
           this.drawTrip()
         }
+        this.positions = positions
+        Vue.$log.debug('emit routeFetched')
+        serverBus.$emit('routeFetched')
+      } else {
+        this.$alert('no data for the periodo selected')
+        serverBus.$emit('alertMessage', 'route.nodata')
       }
-      this.positions = positions
-      Vue.$log.debug('emit routeFetched')
-      serverBus.$emit('routeFetched')
       this.loadingRoutes = false
     },
     onPositionsError() {
@@ -847,8 +848,8 @@ export default {
     },
     datesChanged() {
       if (this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
-        this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
         this.loadingRoutes = true
+        this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
       }
     }
   }

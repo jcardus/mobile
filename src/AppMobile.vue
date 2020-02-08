@@ -56,6 +56,7 @@ export default {
     Vue.$log.debug('created AppMobile')
     this.$root.$store.subscribe(this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
+    serverBus.$on('alertMessage', this.alertMessage)
   },
   mounted: function() {
     try {
@@ -83,6 +84,9 @@ export default {
     }
   },
   methods: {
+    alertMessage(message) {
+      this.$f7.dialog.alert(this.$t(message))
+    },
     reportsShow() {
       Vue.$log.debug('emit reportsActive')
       serverBus.$emit('reportsActive')

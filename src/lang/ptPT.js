@@ -11,7 +11,8 @@ export default {
     report_speeding_beta: 'Relatórios de excexsos de velocidade BETA',
     report_tolls: 'Relatório de Portagens',
     settings: 'Configurações',
-    duration: 'Duração'
+    duration: 'Duração',
+    nodata: 'Não existem dados para o período seleccionado.'
   },
   map: {
     geofence_create_title: 'Nova Geofence',

@@ -11,7 +11,8 @@ export default {
     report_speeding_beta: 'Informe de excesos de velocidad BETA',
     report_tolls: 'Informe de peajes',
     settings: 'Ajustes',
-    duration: 'Duracción'
+    duration: 'Duracción',
+    nodata: 'no hay datos para el periodo seleccionado.'
   },
   map: {
     geofence_create_title: 'Nueva geocerca',
