@@ -145,8 +145,6 @@ export default {
       this.clearFormData()
     },
     handleSubmitVehicleForm() {
-      this.$log.debug(this.allVehicles)
-
       const vehicle = this.selectedVehicle
       vehicle.name = this.vehicleName
       vehicle.groupId = this.selectedGroup
@@ -158,7 +156,9 @@ export default {
         name: vehicle.name,
         groupId: vehicle.groupId,
         attributes: {
-          speedLimit: vehicle.attributes.speedLimit
+          speedLimit: vehicle.attributes.speedLimit,
+          license_plate: vehicle.attributes.license_plate,
+          has_immobilization: vehicle.attributes.has_immobilization
         },
         uniqueId: vehicle.uniqueId,
         phone: vehicle.phone,
