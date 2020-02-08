@@ -11,7 +11,8 @@ export default {
     report_speeding_beta: 'Informe de excesos de velocidad BETA',
     report_tolls: 'Informe de peajes',
     settings: 'Ajustes',
-    duration: 'Duracción'
+    duration: 'Duracción',
+    nodata: 'no hay datos para el periodo seleccionado.'
   },
   map: {
     geofence_create_title: 'Nueva geocerca',
@@ -24,7 +25,8 @@ export default {
     poi_create_canceled: 'Creación de PDI cancelada!',
     create_confirm: 'Confirmar',
     create_cancel: 'Cancelar',
-    loading: 'Cargando...'
+    loading: 'Cargando...',
+    totalDistance: 'Distância total'
   },
   vehicleList: {
     title: 'Vehículos',

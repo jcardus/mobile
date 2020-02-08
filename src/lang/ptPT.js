@@ -11,7 +11,8 @@ export default {
     report_speeding_beta: 'Relatórios de excexsos de velocidade BETA',
     report_tolls: 'Relatório de Portagens',
     settings: 'Configurações',
-    duration: 'Duração'
+    duration: 'Duração',
+    nodata: 'Não existem dados para o período seleccionado.'
   },
   map: {
     geofence_create_title: 'Nova Geofence',
@@ -24,7 +25,8 @@ export default {
     poi_create_canceled: 'Criação do POI cancelada!',
     create_confirm: 'Confirmar',
     create_cancel: 'Cancelar',
-    loading: 'A carregar'
+    loading: 'A carregar',
+    totalDistance: 'Distância total'
   },
   vehicleList: {
     title: 'Veículos',

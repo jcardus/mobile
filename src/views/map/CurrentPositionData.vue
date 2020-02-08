@@ -18,16 +18,6 @@
           @change="toggleChanged"
         >
         </f7-toggle>
-        <i v-show="isMobile" class="far fa-play-circle" style="float:right; margin-right:5px"></i>
-        <f7-toggle
-          v-if="isMobile"
-          :checked="checked"
-          style="float:right; margin-right:20px"
-          type="checkbox"
-        >
-        </f7-toggle>
-        <i v-show="isMobile" class="fas fa-bell" style="float:right; margin-right:5px"></i>
-
       </span>
     </div>
     <el-row>
@@ -195,7 +185,7 @@ export default {
       this.datesChanged()
     },
     showRoutes() {
-      Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
+      Vue.$log.debug('CurrentPositionData showRoutesChanged to ', this.showRoutes)
       if (this.device && vm.$data.popUps[this.device.id]) {
         Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
         vm.$data.popUps[this.device.id].remove()
@@ -218,14 +208,12 @@ export default {
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
     serverBus.$on('routePlayStopped', this.routePlayStopped)
-    serverBus.$on('showRoutesChanged', this.showRoutesClick)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('routePlay', this.routePlay)
     serverBus.$off('routePlayStopped', this.routePlayStopped)
-    serverBus.$off('showRoutesChanged', this.showRoutesClick)
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData mounted')
@@ -257,9 +245,9 @@ export default {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
       Vue.$log.debug('positions after filter ', positions)
+      this.removeLayers()
       if (positions && positions.length > 1) {
         Vue.$log.debug('got ', positions.length, ' positions')
-        this.removeLayers()
         this.drawAll(positions)
         this.getRouteTrips(positions)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
@@ -274,10 +262,13 @@ export default {
         } else {
           this.drawTrip()
         }
+        this.positions = positions
+        Vue.$log.debug('emit routeFetched')
+        serverBus.$emit('routeFetched')
+      } else {
+        this.$alert('no data for the periodo selected')
+        serverBus.$emit('alertMessage', 'route.nodata')
       }
-      this.positions = positions
-      Vue.$log.debug('emit routeFetched')
-      serverBus.$emit('routeFetched')
       this.loadingRoutes = false
     },
     onPositionsError() {
@@ -362,9 +353,7 @@ export default {
             if (!startPos && positionSpeed > vehicleSpeedLimitThreshold) {
               locations.push(position)
               startPos = true
-              return
-            }
-            if (startPos && positionSpeed < vehicleSpeedLimitThreshold) {
+            } else if (startPos && positionSpeed < vehicleSpeedLimitThreshold) {
               locations.push(position)
               const speedTrip = {
                 positions: locations,
@@ -373,11 +362,8 @@ export default {
               currentSpeedTrips.push(speedTrip)
               startPos = false
               locations = []
-              return
-            }
-            if (startPos && positionSpeed > vehicleSpeedLimitThreshold) {
+            } else if (startPos && positionSpeed > vehicleSpeedLimitThreshold) {
               locations.push(position)
-              return
             }
           })
           trips.push(currentSpeedTrips)
@@ -387,14 +373,13 @@ export default {
       } else {
         Vue.$log.debug('Use road speed limit')
         const routes = positions.map(p => {
-          const a = {
+          return {
             fixtime: Vue.moment(p.fixTime).format('YYYY-MM-DD HH:mm:ss'),
             latitude: p.latitude,
             longitude: p.longitude,
             speed: p.speed - speedThreshold,
             course: p.course
           }
-          return a
         })
         routeMatch(routes, false, this.roadSpeedTrips)
       }
@@ -426,7 +411,6 @@ export default {
             locations.push(position)
             speedLimit = speedPosition.speedLimit
             startPos = true
-            return
           }
           if (startPos && !speedPosition) {
             locations.push(position)
@@ -437,23 +421,14 @@ export default {
             currentSpeedTrips.push(speedTrip)
             startPos = false
             locations = []
-            return
           }
           if (startPos && speedPosition) {
             locations.push(position)
-            return
           }
         })
         trips.push(currentSpeedTrips)
       })
 
-      const speedCoordinates = this.speedTrips[this.currentTrip].map(t => t.positions.map(p => [p.longitude, p.latitude]))
-
-      const speedLineString = []
-      speedCoordinates.forEach(function(locations) {
-        const lineStringTrip = { type: 'LineString', coordinates: locations }
-        speedLineString.push(lineStringTrip)
-      })
       this.drawTrip()
       this.drawSpeedTrip()
     },
@@ -654,7 +629,7 @@ export default {
     getGeoJSON: function(coords) {
       return lnglat.getGeoJSON(coords)
     },
-    createLayers: function(routeGeoJSON, alertsGeoJSON) {
+    createLayers: function(routeGeoJSON) {
       if (vm.$static.map.getSource(this.routeSource)) {
         Vue.$log.warn('ignoring layer ', this.routeSource, ', already exists...')
         return
@@ -873,8 +848,8 @@ export default {
     },
     datesChanged() {
       if (this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
-        this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
         this.loadingRoutes = true
+        this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
       }
     }
   }
