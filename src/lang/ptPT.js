@@ -25,7 +25,8 @@ export default {
     poi_create_canceled: 'Criação do POI cancelada!',
     create_confirm: 'Confirmar',
     create_cancel: 'Cancelar',
-    loading: 'A carregar'
+    loading: 'A carregar',
+    totalDistance: 'Distância total'
   },
   vehicleList: {
     title: 'Veículos',
