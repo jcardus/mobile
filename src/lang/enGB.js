@@ -32,7 +32,11 @@ export default {
     search: 'Search...',
     column_name: 'Name',
     column_speed: 'Km/h',
-    column_lastUpdate: 'Last update'
+    column_lastUpdate: 'Last update',
+    order_by_status: 'Ordenar por Estado',
+    order_by_vehicle: 'Ordenar por Veículo',
+    order_by_group: 'Ordenar por Grupo',
+    order_by_last_update: 'Ordenar pela última actualização'
   },
   vehicleTable: {
     immobilize: 'Immobilize',

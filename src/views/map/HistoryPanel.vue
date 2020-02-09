@@ -243,8 +243,7 @@ export default {
   .historyPanel {
       font-size: 15px;
       padding-left:20px;
-    padding-right: 20px;
-
+      padding-right: 20px;
       background-color: rgba(255,255,255,0);
     }
   .playButton {
