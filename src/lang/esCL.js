@@ -35,9 +35,9 @@ export default {
     column_speed: 'Km/h',
     column_lastUpdate: 'Ultima actualización',
     order_by_status: 'Ordenar por Estado',
-    order_by_vehicle: 'Ordenar por Veículo',
+    order_by_vehicle: 'Ordenar por Vehículo',
     order_by_group: 'Ordenar por Grupo',
-    order_by_last_update: 'Ordenar pela última actualização'
+    order_by_last_update: 'Ordenar pela ultima actualización'
   },
   vehicleTable: {
     immobilize: 'Inmovilizar',
