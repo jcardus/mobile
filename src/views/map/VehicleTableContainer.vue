@@ -4,6 +4,15 @@
       <logo-svg v-if="hasSVG" class="logo"></logo-svg>
       <img v-else class="logo" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
+      <el-select v-model="orderedBy" style="width: 100%" @change="orderByChanged">
+        <el-option
+          v-for="item in orderBy"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
       <el-tabs stretch>
         <el-tab-pane>
           <span slot="label">
@@ -65,6 +74,7 @@
           <vehicle-table
             :filter-state="filterState"
             :filter-key="filterKey"
+            :ordered-by="orderedBy"
           />
         </el-tab-pane>
         <el-tab-pane>
@@ -99,8 +109,22 @@ export default {
   components: { VehicleTable, GeofenceTable, POITable, LogoSvg },
   data() {
     return {
+      orderedBy: 'orderByStatus',
       filterKey: '',
-      filterState: null
+      filterState: null,
+      orderBy: [{
+        value: 'orderByStatus',
+        label: this.$t('vehicleList.order_by_status')
+      }, {
+        value: 'order_by_vehicle',
+        label: this.$t('vehicleList.order_by_vehicle')
+      }, {
+        value: 'order_by_group',
+        label: this.$t('vehicleList.order_by_group')
+      }, {
+        value: 'order_by_last_update',
+        label: this.$t('vehicleList.order_by_last_update')
+      }]
     }
   },
   computed: {
@@ -139,6 +163,8 @@ export default {
     document.getElementById('btnUnknown').addEventListener('touchstart', this.filterStateUnknown)
   },
   methods: {
+    orderByChanged() {
+    },
     getDeviceState: function(device) {
       if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) { return 'Disconnected' }
       if (device.speed > 2) { return 'Moving' }

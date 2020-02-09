@@ -93,6 +93,10 @@ export default {
     filterKey: {
       default: '',
       type: String
+    },
+    orderedBy: {
+      default: '',
+      type: String
     }
   },
   data() {
@@ -167,8 +171,24 @@ export default {
         })
       }
       devices = devices.slice().sort(function(a, b) {
-        a = self.getDeviceStateOrder(a) + ' ' + a['name']
-        b = self.getDeviceStateOrder(b) + ' ' + b['name']
+        switch (self.orderedBy) {
+          case 'orderByStatus':
+            a = self.getDeviceStateOrder(a) + ' ' + a['name']
+            b = self.getDeviceStateOrder(b) + ' ' + b['name']
+            break
+          case 'order_by_vehicle':
+            a = a['name']
+            b = b['name']
+            break
+          case 'order_by_group':
+            a = a['groupName'] ? a['groupName'] : 'z'
+            b = b['groupName'] ? b['groupName'] : 'z'
+            break
+          case 'order_by_last_update':
+            a = self.$moment(a['lastUpdate'])
+            b = self.$moment(b['lastUpdate'])
+            return (a === b ? 0 : a > b ? -1 : 1)
+        }
         return (a === b ? 0 : a > b ? 1 : -1)
       })
 
