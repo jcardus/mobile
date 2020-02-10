@@ -1,4 +1,8 @@
 export default {
+  app: {
+    connectionLost: 'Ligação perdida',
+    reconnect: 'Deseja restabelecer a ligação ao servidor?'
+  },
   route: {
     map: 'Mapa',
     dashboard: 'Central de Controlo',
