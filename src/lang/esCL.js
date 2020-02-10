@@ -93,6 +93,7 @@ export default {
     user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos'
   },
   settings: {
+    version: 'Versión',
     connected: 'Conectado',
     disconnected: 'Desconectado',
     connection: 'Conexión',

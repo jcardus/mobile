@@ -6,7 +6,9 @@
     </f7-block>
     <f7-block-title></f7-block-title>
     <f7-list>
-      <f7-list-item :header="$t('vehicleList.column_lastUpdate')" :title="lastUpdate.fromNow()" :after="lastUpdate.format('LLL')">
+      <f7-list-item :title="$t('settings.version')" :after="$store.state.app.packageVersion">
+      </f7-list-item>
+      <f7-list-item :title="$t('vehicleList.column_lastUpdate')" :after="lastUpdate.format('LLL')">
       </f7-list-item>
       <f7-list-item :title="$t('settings.connection')" :after="connected">
       </f7-list-item>
