@@ -6,7 +6,7 @@
     </f7-block>
     <f7-block-title></f7-block-title>
     <f7-list>
-      <f7-list-item :title="$t('vehicleList.column_lastUpdate')" :after="lastUpdate">
+      <f7-list-item :header="$t('vehicleList.column_lastUpdate')" :title="lastUpdate.fromNow()" :after="lastUpdate.format('LLL')">
       </f7-list-item>
       <f7-list-item :title="$t('settings.connection')" :after="connected">
       </f7-list-item>
@@ -19,7 +19,7 @@ export default {
   name: 'Settings',
   computed: {
     lastUpdate() {
-      return this.$moment(this.$store.state.lastUpdate).fromNow()
+      return this.$moment(this.$store.state.lastUpdate)
     },
     connected() {
       return this.$store.state.socket.isConnected ? this.$t('settings.connected') : this.$t('settings.disconnected')
