@@ -71,7 +71,7 @@ const hostName = utils.getServerHost()
 Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
   store: store,
   format: 'json',
-  reconnection: false,
+  reconnection: true,
   reconnectionDelay: 3000,
   connectManually: true
 })
