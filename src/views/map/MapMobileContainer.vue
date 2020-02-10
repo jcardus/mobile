@@ -52,7 +52,7 @@ export default {
 <style scoped>
   .offline {
     float:right;
-    margin-top: 10px;
+    margin-top: 30px;
   }
   .offlineIcon {
     background-color: rgba(0,0,0,0.6);

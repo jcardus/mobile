@@ -1,6 +1,7 @@
 <template>
   <div class="mainContainer">
     <div class="dd-body-inner">
+      <div v-if="isMobile" style="height:25px"></div>
       <logo-svg v-if="hasSVG" class="logo"></logo-svg>
       <img v-else class="logo" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
@@ -13,7 +14,6 @@
         >
         </el-option>
       </el-select>
-      <select v-else></select>
       <el-tabs stretch>
         <el-tab-pane>
           <span slot="label">
