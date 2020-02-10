@@ -4,12 +4,27 @@
     <f7-block>
       <f7-button large raised fill @click="logout">Logout</f7-button>
     </f7-block>
+    <f7-block-title></f7-block-title>
+    <f7-list>
+      <f7-list-item :title="$t('vehicleList.column_lastUpdate')" :after="lastUpdate">
+      </f7-list-item>
+      <f7-list-item :title="$t('settings.connection')" :after="connected">
+      </f7-list-item>
+    </f7-list>
   </f7-page>
 </template>
 <script>
 
 export default {
   name: 'Settings',
+  computed: {
+    lastUpdate() {
+      return this.$moment(this.$store.state.lastUpdate).fromNow()
+    },
+    connected() {
+      return this.$store.state.socket.isConnected ? this.$t('settings.connected') : this.$t('settings.disconnected')
+    }
+  },
   methods: {
     logout() {
       this.$f7.preloader.show()

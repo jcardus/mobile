@@ -37,7 +37,7 @@ export default {
     order_by_status: 'Ordenar por Estado',
     order_by_vehicle: 'Ordenar por Vehículo',
     order_by_group: 'Ordenar por Grupo',
-    order_by_last_update: 'Ordenar pela ultima actualización'
+    order_by_last_update: 'Ordenar por ultima actualización'
   },
   vehicleTable: {
     immobilize: 'Inmovilizar',
@@ -93,6 +93,9 @@ export default {
     user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos'
   },
   settings: {
+    connected: 'Conectado',
+    disconnected: 'Desconectado',
+    connection: 'Conexión',
     map: 'Mapa',
     vehicles: 'Vehículos',
     title: 'Configuraciones',
