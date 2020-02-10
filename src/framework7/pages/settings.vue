@@ -17,14 +17,19 @@
 </template>
 <script>
 
+import { appOffline } from '../../utils/utils'
+
 export default {
   name: 'Settings',
   computed: {
     lastUpdate() {
       return this.$moment(this.$store.state.lastUpdate)
     },
+    offline() {
+      return appOffline()
+    },
     connected() {
-      return this.$store.state.socket.isConnected ? this.$t('settings.connected') : this.$t('settings.disconnected')
+      return this.offline ? this.$t('settings.disconnected') : this.$t('settings.connected')
     }
   },
   methods: {

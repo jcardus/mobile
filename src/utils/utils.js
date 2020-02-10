@@ -70,3 +70,7 @@ export function checkForUpdates() {
     Vue.$log.warn('no service worker.. thats not good...')
   }
 }
+
+export function appOffline() {
+  return !vm.$store.state.socket.isConnected || !vm.$store.state.user.connectionOk
+}

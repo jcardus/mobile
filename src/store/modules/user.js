@@ -16,7 +16,8 @@ const state = {
   name: '',
   avatar: '',
   userId: 0,
-  dataLoaded: false
+  dataLoaded: false,
+  connectionOk: false
 }
 
 const mutations = {
@@ -27,6 +28,9 @@ const mutations = {
   },
   SET_DATA_LOADED: (state, loaded) => {
     state.dataLoaded = loaded
+  },
+  TOGGLE_CONNECTION_OK: () => {
+    state.connectionOk = !state.connectionOk
   }
 }
 
@@ -119,6 +123,8 @@ const actions = {
             commit('SET_DATA_LOADED', true)
           })
         })
+      }, (e) => {
+        Vue.$log.error(e)
       })
       TrackJS.addMetadata('user', state.name)
       setLanguage(newToken.attributes.lang)
@@ -159,6 +165,15 @@ const actions = {
         state.token = null
       })
     })
+  },
+  connectionOk(context, data) {
+    if (state.connectionOk !== data.state) {
+      Vue.$log.debug('toggle connection ok...')
+      if (data.state) {
+        context.dispatch('setUser')
+      }
+      context.commit('TOGGLE_CONNECTION_OK')
+    }
   }
 }
 

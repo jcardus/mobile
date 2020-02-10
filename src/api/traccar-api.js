@@ -16,17 +16,24 @@ const alerts = baseUrl + 'notifications'
 const permissions = baseUrl + 'permissions'
 const groups = baseUrl + 'groups'
 const users = baseUrl + 'users'
+const server = baseUrl + 'server'
 let cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
 const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaws.com/default/api_helper'
 
 function invokeApi(url, onFulfill, onError) {
   cookie = VueCookies.get('user-info')
-  axios.get(url, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-    .then(response => onFulfill(response.data))
+  axios.get(url, { withCredentials: false, auth: { username: VueCookies.get('user-info').email, password: VueCookies.get('user-info').password }})
+    .then(response => {
+      vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
+        onFulfill(response.data)
+      })
+    })
     .catch(reason => {
-      Vue.$log.error(reason)
-      onError(reason)
+      vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
+        Vue.$log.error(reason)
+        onError(reason)
+      })
     })
 }
 
@@ -261,5 +268,8 @@ export const traccar = {
       .catch(reason => {
         Vue.$log.error(reason)
       })
+  },
+  ping: function(onFulfill, onError) {
+    invokeApi(server, onFulfill, onError)
   }
 }

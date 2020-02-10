@@ -10,12 +10,14 @@
         <f7-link v-if="!ios" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
       </f7-toolbar>
-      <f7-view id="view-map" main tab tab-active url="/map"></f7-view>
+      <f7-view id="view-map" main tab tab-active url="/map" @tab:show="mapShow"></f7-view>
       <f7-view id="view-reports" name="reports" tab url="/reports" @tab:show="reportsShow"></f7-view>
       <f7-view v-if="!ios" id="view-dashboard" name="dashboard" tab url="/dashboard"></f7-view>
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
       <f7-view id="view-login" name="login" url="/login"></f7-view>
     </f7-views>
+
+    <i class="f7-icons"></i>
   </f7-app>
 </template>
 
@@ -29,6 +31,8 @@ import * as notifications from './utils/notifications'
 import { serverBus } from './main'
 import { reload, checkForUpdates } from './utils/utils'
 import * as partner from './utils/partner'
+import { traccar } from './api/traccar-api'
+import { appOffline } from './utils/utils'
 
 export default {
   name: 'AppMobile',
@@ -50,6 +54,9 @@ export default {
   computed: {
     ios() {
       return this.$device.ios
+    },
+    offline() {
+      return appOffline()
     }
   },
   created() {
@@ -84,6 +91,21 @@ export default {
     }
   },
   methods: {
+    mapShow() {
+      this.$log.debug('mapShow')
+      traccar.ping(() => {}, (e) => {
+        Vue.$log.error(e)
+      })
+      if (this.offline) {
+        this.$log.debug('socket disconnected, reconnecting...')
+        const self = this
+        this.$f7.dialog.confirm(this.$t('app.reconnect'), this.$t('app.connectionLost'), () => {
+          self.$root.$store.dispatch('app/connect').then(() => {
+            Vue.$log.debug('reconnected')
+          })
+        })
+      }
+    },
     alertMessage(message) {
       this.$f7.dialog.alert(this.$t(message))
     },

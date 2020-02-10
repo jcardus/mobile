@@ -17,6 +17,10 @@ const mutations = {
     state.historyMode = vm.$data.historyMode
     Vue.$log.debug('historyMode changed to ', vm.$data.historyMode, ' emitting event')
     serverBus.$emit('showRoutesChanged')
+  },
+  CONNECT: () => {
+    Vue.$log.debug('connecting websocket...')
+    vm.$connect()
   }
 }
 
@@ -26,6 +30,9 @@ const actions = {
   },
   setReportData({ commit }, data) {
     commit('SET_REPORT_DATA', data)
+  },
+  connect({ commit }) {
+    commit('CONNECT')
   }
 }
 
