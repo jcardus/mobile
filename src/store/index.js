@@ -26,7 +26,8 @@ const store = new Vuex.Store({
       isConnected: false,
       message: '',
       reconnectError: false
-    }
+    },
+    lastUpdate: null
   },
   mutations: {
     SOCKET_ONOPEN(state, event) {
@@ -48,6 +49,7 @@ const store = new Vuex.Store({
     },
     SOCKET_ONMESSAGE(state, message) {
       state.socket.message = message
+      state.lastUpdate = Date.now()
     },
     SOCKET_RECONNECT(state, count) {
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)

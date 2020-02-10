@@ -84,6 +84,9 @@ export default {
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   settings: {
+    connected: 'Ligado',
+    disconnected: 'Desligado',
+    connection: 'Ligação',
     map: 'Mapa',
     vehicles: 'Veículos',
     title: 'Configurações',

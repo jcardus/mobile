@@ -92,6 +92,9 @@ export default {
     user_password_lengh: 'The password can not be less than 6 digits'
   },
   settings: {
+    connected: 'Ligado',
+    disconnected: 'Desligado',
+    connection: 'Ligação',
     map: 'Map',
     vehicles: 'Vehicles',
     title: 'Settings',
