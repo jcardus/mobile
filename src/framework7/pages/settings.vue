@@ -12,6 +12,8 @@
       </f7-list-item>
       <f7-list-item :title="$t('settings.connection')" :after="connected">
       </f7-list-item>
+      <f7-list-item :title="$t('login.login_user')" :after="$store.state.user.email">
+      </f7-list-item>
     </f7-list>
   </f7-page>
 </template>
