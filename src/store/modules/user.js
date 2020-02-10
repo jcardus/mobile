@@ -14,6 +14,7 @@ const serviceWorker = new ServiceWorker()
 
 const state = {
   name: '',
+  email: '',
   avatar: '',
   userId: 0,
   dataLoaded: false,
@@ -24,6 +25,7 @@ const mutations = {
   SET_USER: (state, token) => {
     state.name = token.name
     state.userId = token.id
+    state.email = token.email
     state.avatar = getAvatar(token.name)
   },
   SET_DATA_LOADED: (state, loaded) => {
