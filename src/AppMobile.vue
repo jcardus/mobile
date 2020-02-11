@@ -27,7 +27,7 @@ import { getToken } from './utils/auth'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
 import { serverBus } from './main'
-import { reload, checkForUpdates } from './utils/utils'
+import { reload } from './utils/utils'
 import * as partner from './utils/partner'
 import { appOffline } from './utils/utils'
 
@@ -116,7 +116,6 @@ export default {
     panelClosed() {
       Vue.$log.debug('panelClosed')
       lnglat.updateMarkers()
-      checkForUpdates()
     },
     updateAvailable() {
       this.toastNewVersion.open()
