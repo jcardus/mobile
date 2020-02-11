@@ -157,6 +157,10 @@ Analytics.autoTrack('session', {
 
 Vue.use(AmplifyPlugin, AmplifyModules)
 
+import VueTimers from 'vue-timers'
+
+Vue.use(VueTimers)
+
 function askPermissionForNotifications() {
   return new Promise(function(resolve, reject) {
     const permissionResult = Notification.requestPermission(function(result) {

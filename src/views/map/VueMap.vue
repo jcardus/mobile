@@ -135,7 +135,16 @@ export default {
     }
     this.subscribeEvents()
   },
+  timers: {
+    ping: { time: 30000, autostart: true, repeat: true }
+  },
   methods: {
+    ping() {
+      traccar.ping(() => {}, () => {
+        vm.$data.loadingMap = false
+        NProgress.done()
+      })
+    },
     initData: function() {
       const self = this
       traccar.positions((pos) => {
@@ -636,7 +645,6 @@ export default {
             self.$log.debug('device ', feature.properties.text, ' off bounds')
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
-            self.$log.debug('refresh map...')
             if (vm.$static.map) {
               if (vm.$static.map.getSource('positions')) {
                 vm.$static.map.getSource('positions').setData(self.positionsSource)
