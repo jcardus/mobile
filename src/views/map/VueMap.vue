@@ -159,7 +159,10 @@ export default {
     },
     mapResize: function() {
       if (this.map) {
+        this.$log.debug('map.resize')
         this.map.resize()
+      } else {
+        this.$log.error('mapResize received but theres no map instance!')
       }
     },
     onMapLoad: function() {
