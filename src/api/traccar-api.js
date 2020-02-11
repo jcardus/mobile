@@ -93,7 +93,7 @@ export const traccar = {
       })
   },
   startReceiving: function() {
-    vm.$connect()
+    // vm.$connect()
   },
   devices: function(onFulfill, onError) {
     invokeApi(devices, onFulfill, onError)
