@@ -52,10 +52,10 @@ const store = new Vuex.Store({
       state.lastUpdate = Date.now()
     },
     SOCKET_RECONNECT(state, count) {
-      if (count === 50) {
+      if (count === 15) {
         Vue.$log.warn('count = 50, refreshing!')
         TrackJS.track('REFRESHING')
-        window.refresh()
+        location.reload()
       }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
       TrackJS.track('SOCKET_RECONNECT')
