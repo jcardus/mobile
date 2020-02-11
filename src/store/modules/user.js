@@ -36,7 +36,7 @@ const mutations = {
   },
   CONNECT: () => {
     Vue.$log.debug('disconnecting websocket...')
-    vm.$disconnect()
+    // vm.$disconnect()
   }
 }
 
