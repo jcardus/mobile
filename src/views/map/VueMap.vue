@@ -146,7 +146,6 @@ export default {
         NProgress.done()
       })
       checkForUpdates()
-      this.$static.map.triggerRepaint()
     },
     initData: function() {
       const self = this
@@ -407,6 +406,7 @@ export default {
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('data', this.onData)
       serverBus.$on('dataLoaded', this.initData)
+      serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
@@ -435,12 +435,12 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
-
       // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
+      serverBus.$off('mapShown', this.mapResize)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
