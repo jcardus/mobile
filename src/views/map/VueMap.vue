@@ -146,6 +146,7 @@ export default {
         NProgress.done()
       })
       checkForUpdates()
+      this.$static.map.triggerRepaint()
     },
     initData: function() {
       const self = this
