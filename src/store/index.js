@@ -52,6 +52,11 @@ const store = new Vuex.Store({
       state.lastUpdate = Date.now()
     },
     SOCKET_RECONNECT(state, count) {
+      if (count === 50) {
+        Vue.$log.warn('count = 50, refreshing!')
+        TrackJS.track('REFRESHING')
+        window.refresh()
+      }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
       TrackJS.track('SOCKET_RECONNECT')
     },
@@ -72,6 +77,5 @@ Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
   store: store,
   format: 'json',
   reconnection: true,
-  reconnectionDelay: 3000,
-  connectManually: true
+  reconnectionDelay: 6000
 })
