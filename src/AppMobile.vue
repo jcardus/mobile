@@ -10,7 +10,7 @@
         <f7-link v-if="!ios" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
       </f7-toolbar>
-      <f7-view id="view-map" main tab tab-active url="/map"></f7-view>
+      <f7-view id="view-map" main tab tab-active url="/map" @tab:show="mapShow"></f7-view>
       <f7-view id="view-reports" name="reports" tab url="/reports" @tab:show="reportsShow"></f7-view>
       <f7-view v-if="!ios" id="view-dashboard" name="dashboard" tab url="/dashboard"></f7-view>
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
@@ -62,7 +62,7 @@ export default {
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('alertMessage', this.alertMessage)
   },
-  mounted: function() {
+  mounted() {
     try {
       this.$log.debug('App mobile')
       document.getElementById('favicon').href = partner.getFavIcon()
@@ -88,6 +88,9 @@ export default {
     }
   },
   methods: {
+    mapShow() {
+      serverBus.$emit('mapShown')
+    },
     alertMessage(message) {
       this.$f7.dialog.alert(this.$t(message))
     },
