@@ -4,6 +4,7 @@ import getters from './getters'
 import VueNativeSock from 'vue-native-websocket'
 import * as utils from '../utils/utils'
 import { TrackJS } from 'trackjs'
+import { removeToken } from '../utils/auth'
 
 Vue.use(Vuex)
 
@@ -52,9 +53,10 @@ const store = new Vuex.Store({
       state.lastUpdate = Date.now()
     },
     SOCKET_RECONNECT(state, count) {
-      if (count === 15) {
-        Vue.$log.warn('count = 50, refreshing!')
+      if (count === 20) {
+        Vue.$log.warn('count = 20, refreshing!')
         TrackJS.track('REFRESHING')
+        removeToken()
         location.reload()
       }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
