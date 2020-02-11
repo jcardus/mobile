@@ -32,6 +32,7 @@ import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { checkForUpdates } from '../../utils/utils'
 
 export default {
   name: 'VueMap',
@@ -144,6 +145,7 @@ export default {
         vm.$data.loadingMap = false
         NProgress.done()
       })
+      checkForUpdates()
     },
     initData: function() {
       const self = this
