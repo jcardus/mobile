@@ -235,8 +235,6 @@ export const vm = new Vue({
       return this.devices.find(e => e.id === deviceId)
     },
     reset: function() {
-      this.$log.warn('disconnect socket')
-      this.$disconnect()
       for (const i in this.$static.markers) {
         // noinspection JSUnfilteredForInLoop
         console.log('deleting static marker ', this.$static.markers[i])
