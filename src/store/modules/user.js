@@ -33,6 +33,10 @@ const mutations = {
   },
   TOGGLE_CONNECTION_OK: () => {
     state.connectionOk = !state.connectionOk
+  },
+  CONNECT: () => {
+    Vue.$log.debug('disconnecting websocket...')
+    // vm.$disconnect()
   }
 }
 
@@ -171,11 +175,18 @@ const actions = {
   connectionOk(context, data) {
     if (state.connectionOk !== data.state) {
       Vue.$log.debug('toggle connection ok...')
-      if (data.state) {
-        context.dispatch('setUser')
-      }
       context.commit('TOGGLE_CONNECTION_OK')
+      if (data.state) {
+        context.dispatch('setUser').then(() => {
+          context.dispatch('connect').then(() => {
+            Vue.$log.debug('connectionOk done')
+          })
+        })
+      }
     }
+  },
+  connect({ commit }) {
+    commit('CONNECT')
   }
 }
 

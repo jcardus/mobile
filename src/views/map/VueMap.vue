@@ -32,6 +32,8 @@ import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { checkForUpdates } from '../../utils/utils'
+import { TrackJS } from 'trackjs'
 
 export default {
   name: 'VueMap',
@@ -131,11 +133,22 @@ export default {
     if (this.map) {
       this.map.on('load', this.onMapLoad)
     } else {
-      Vue.$log.debug('map is null!')
+      Vue.$log.error('map is null: ', this.map)
+      TrackJS.track('MAP')
     }
     this.subscribeEvents()
   },
+  timers: {
+    ping: { time: 30000, autostart: true, repeat: true }
+  },
   methods: {
+    ping() {
+      traccar.ping(() => {}, () => {
+        vm.$data.loadingMap = false
+        NProgress.done()
+      })
+      checkForUpdates()
+    },
     initData: function() {
       const self = this
       traccar.positions((pos) => {
@@ -148,7 +161,11 @@ export default {
     },
     mapResize: function() {
       if (this.map) {
+        this.$log.debug('map.resize')
         this.map.resize()
+      } else {
+        this.$log.error('mapResize received but theres no map instance: ', this.map)
+        TrackJS.track('MAP')
       }
     },
     onMapLoad: function() {
@@ -262,17 +279,19 @@ export default {
       }
     },
     setZoomAndCenter() {
+      let center = [0, 0]
       try {
         const cookie = VueCookies.get('mapPos')
         const lat = cookie.split('|')[0].split(',')[0]
         const lon = cookie.split('|')[0].split(',')[1]
         const zoom = parseFloat(cookie.split('|')[1])
-        const center = [parseFloat(lon), parseFloat(lat)]
+        center = [parseFloat(lon), parseFloat(lat)]
         this.$static.map.setZoom(zoom)
-        this.origin = center
-        this.$static.map.setCenter(center)
       } catch (e) {
         this.$log.warn('no cookie...', e)
+      } finally {
+        this.origin = center
+        this.$static.map.setCenter(center)
       }
     },
     stopLoader: function() {
@@ -395,6 +414,7 @@ export default {
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('data', this.onData)
       serverBus.$on('dataLoaded', this.initData)
+      serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
@@ -423,12 +443,12 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
-
       // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
+      serverBus.$off('mapShown', this.mapResize)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
@@ -636,7 +656,6 @@ export default {
             self.$log.debug('device ', feature.properties.text, ' off bounds')
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
-            self.$log.debug('refresh map...')
             if (vm.$static.map) {
               if (vm.$static.map.getSource('positions')) {
                 vm.$static.map.getSource('positions').setData(self.positionsSource)

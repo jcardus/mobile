@@ -1,4 +1,8 @@
 export default {
+  app: {
+    connectionLost: 'Conexion terminada',
+    reconnect: 'Desea restabelecer la conexión con el servidor?'
+  },
   route: {
     map: 'Map',
     dashboard: 'Dashboard',

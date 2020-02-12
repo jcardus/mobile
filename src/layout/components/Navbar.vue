@@ -3,7 +3,9 @@
     <div v-show="!$route.path.includes('map')" class="left">
       <span>{{ title }}</span>
     </div>
+
     <div class="right-menu">
+      <div v-if="offline">Offline...</div>
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
           <el-avatar size="large">{{ avatar }}</el-avatar>
@@ -31,6 +33,7 @@
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
 import * as lnglat from '@/utils/lnglat'
+import { appOffline } from '../../utils/utils'
 
 export default {
   created() {
@@ -51,6 +54,9 @@ export default {
     },
     isMobile() {
       return lnglat.isMobile()
+    },
+    offline() {
+      return appOffline()
     }
   },
   methods: {

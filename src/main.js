@@ -44,6 +44,7 @@ Vue.config.errorHandler = (err, vm, info) => {
   }
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
+  console.error(err)
   TrackJS.track(err)
 }
 
@@ -157,6 +158,10 @@ Analytics.autoTrack('session', {
 
 Vue.use(AmplifyPlugin, AmplifyModules)
 
+import VueTimers from 'vue-timers'
+
+Vue.use(VueTimers)
+
 function askPermissionForNotifications() {
   return new Promise(function(resolve, reject) {
     const permissionResult = Notification.requestPermission(function(result) {
@@ -231,8 +236,6 @@ export const vm = new Vue({
       return this.devices.find(e => e.id === deviceId)
     },
     reset: function() {
-      this.$log.warn('disconnect socket')
-      this.$disconnect()
       for (const i in this.$static.markers) {
         // noinspection JSUnfilteredForInLoop
         console.log('deleting static marker ', this.$static.markers[i])

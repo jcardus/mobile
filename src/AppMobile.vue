@@ -16,8 +16,6 @@
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
       <f7-view id="view-login" name="login" url="/login"></f7-view>
     </f7-views>
-
-    <i class="f7-icons"></i>
   </f7-app>
 </template>
 
@@ -29,9 +27,8 @@ import { getToken } from './utils/auth'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
 import { serverBus } from './main'
-import { reload, checkForUpdates } from './utils/utils'
+import { reload } from './utils/utils'
 import * as partner from './utils/partner'
-import { traccar } from './api/traccar-api'
 import { appOffline } from './utils/utils'
 
 export default {
@@ -65,7 +62,7 @@ export default {
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('alertMessage', this.alertMessage)
   },
-  mounted: function() {
+  mounted() {
     try {
       this.$log.debug('App mobile')
       document.getElementById('favicon').href = partner.getFavIcon()
@@ -92,19 +89,7 @@ export default {
   },
   methods: {
     mapShow() {
-      this.$log.debug('mapShow')
-      traccar.ping(() => {}, (e) => {
-        Vue.$log.error(e)
-      })
-      if (this.offline) {
-        this.$log.debug('socket disconnected, reconnecting...')
-        const self = this
-        this.$f7.dialog.confirm(this.$t('app.reconnect'), this.$t('app.connectionLost'), () => {
-          self.$root.$store.dispatch('app/connect').then(() => {
-            Vue.$log.debug('reconnected')
-          })
-        })
-      }
+      serverBus.$emit('mapShown')
     },
     alertMessage(message) {
       this.$f7.dialog.alert(this.$t(message))
@@ -134,7 +119,6 @@ export default {
     panelClosed() {
       Vue.$log.debug('panelClosed')
       lnglat.updateMarkers()
-      checkForUpdates()
     },
     updateAvailable() {
       this.toastNewVersion.open()
