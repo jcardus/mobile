@@ -33,6 +33,7 @@ import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
+import { TrackJS } from 'trackjs'
 
 export default {
   name: 'VueMap',
@@ -132,7 +133,8 @@ export default {
     if (this.map) {
       this.map.on('load', this.onMapLoad)
     } else {
-      Vue.$log.debug('map is null!')
+      Vue.$log.error('map is null: ', this.map)
+      TrackJS.track('MAP')
     }
     this.subscribeEvents()
   },
@@ -162,7 +164,8 @@ export default {
         this.$log.debug('map.resize')
         this.map.resize()
       } else {
-        this.$log.error('mapResize received but theres no map instance!')
+        this.$log.error('mapResize received but theres no map instance: ', this.map)
+        TrackJS.track('MAP')
       }
     },
     onMapLoad: function() {
@@ -276,17 +279,19 @@ export default {
       }
     },
     setZoomAndCenter() {
+      let center = [0, 0]
       try {
         const cookie = VueCookies.get('mapPos')
         const lat = cookie.split('|')[0].split(',')[0]
         const lon = cookie.split('|')[0].split(',')[1]
         const zoom = parseFloat(cookie.split('|')[1])
-        const center = [parseFloat(lon), parseFloat(lat)]
+        center = [parseFloat(lon), parseFloat(lat)]
         this.$static.map.setZoom(zoom)
-        this.origin = center
-        this.$static.map.setCenter(center)
       } catch (e) {
         this.$log.warn('no cookie...', e)
+      } finally {
+        this.origin = center
+        this.$static.map.setCenter(center)
       }
     },
     stopLoader: function() {
