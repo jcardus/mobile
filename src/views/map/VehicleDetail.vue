@@ -6,6 +6,12 @@
       <div class="title">
         {{ device.name }}
       </div>
+      <IOdometer
+        class="iOdometer"
+        theme="car"
+        :value="(feature.properties.totalDistance/1000).toFixed(1)"
+      />
+      <br />
       <div class="content">
         {{ feature.properties.address }}
         <br>
@@ -26,6 +32,7 @@
           @click="showRoutesChanged"
         >{{ $t('vehicleDetail.show_route') }}</el-button>
       </div>
+
     </div>
   </div>
 </template>
@@ -36,10 +43,12 @@ import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import { serverBus, vm } from '../../main'
 import ImmobilizeButton from './ImmobilizeButton'
+import 'odometer/themes/odometer-theme-car.css'
+import IOdometer from 'vue-odometer'
 
 export default {
   name: 'VehicleDetail',
-  components: { ImmobilizeButton },
+  components: { ImmobilizeButton, IOdometer },
   static() {
     return {
       mly: null
@@ -147,6 +156,11 @@ export default {
 </script>
 
 <style lang="scss">
+  .iOdometer {
+    margin: 0;
+    float: right;
+    top: 5px;
+  }
   .vehicleDetail {
     padding: 0;
     z-index:999 ;
@@ -187,15 +201,18 @@ export default {
     padding: 0;
   }
   .title {
+    float:left;
     font-style: normal;
     font-weight: bold;
     font-size: 22px;
     color: #32325D;
-    padding-top: 0;
     padding-bottom: 10px;
+    padding-top: 10px;
   }
   .content {
     font-size: 13px;
     color: #8898AA;
+    float:left;
   }
+
 </style>

@@ -622,6 +622,7 @@ export default {
       feature.properties.speed = device.speed = position.speed
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
+      feature.properties.totalDistance = position.attributes.totalDistance
       feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
       if (immoValue !== feature.properties.immobilization_active) {

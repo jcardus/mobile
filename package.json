@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "1.0.358",
+  "version": "1.0.359",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -43,6 +43,8 @@
     "moment": "latest",
     "normalize.css": "7.0.0",
     "nprogress": "latest",
+    "odometer": "latest",
+    "vue-odometer": "latest",
     "serve": "^11.3.0",
     "vue": "2.6.10",
     "vue-cookies": "^1.6.1",
