@@ -3,6 +3,7 @@
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
     <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data class="currentPositionData"></current-position-data>
+      <div style="height: 10px"></div>
       <history-panel class="historyPanel"></history-panel>
     </div>
   </div>
@@ -35,6 +36,8 @@ import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
 
+const historyPanelHeight = 300
+
 export default {
   name: 'VueMap',
   components: { CurrentPositionData, HistoryPanel },
@@ -57,10 +60,10 @@ export default {
       return vm.$data.historyMode
     },
     heightMap() {
-      return this.historyMode ? 'height: calc(100% - 280px)' : 'height:100%'
+      return this.historyMode ? 'height: calc(100% - ' + historyPanelHeight + 'px)' : 'height:100%'
     },
     heightHistoryPanel() {
-      return this.historyMode ? 'height: 280px' : 'height:0'
+      return this.historyMode ? 'height: ' + historyPanelHeight + 'px' : 'height:0'
     },
     historyPanel: {
       get() { return vm.$data.historyPanel },
@@ -817,7 +820,7 @@ export default {
 
   .historyPanel {
     overflow: hidden;
-    padding: 0 8px;
+    padding-left: 8px;
   }
   .currentPositionData {
     padding-top: 5px;

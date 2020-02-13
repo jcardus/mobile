@@ -9,6 +9,7 @@ import { getLanguageI18n } from '../../lang'
 import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
 import { backEndHostName } from '../../utils/consts'
+import { TrackJS } from 'trackjs'
 
 export default {
   name: 'Dashboard',
@@ -25,24 +26,29 @@ export default {
   },
   mounted() {
     NProgress.start()
-    fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
-      .then(response => response.json())
-      .then(json => {
-        const containerDiv = document.getElementById('quicksightContainer')
-        const options = {
-          url: json.EmbedUrl,
-          parameters: this.parameters,
-          container: containerDiv,
-          height: 'AutoFit',
-          width: '100%',
-          locale: getLanguageI18n()
-        }
-        this.dashboard = QuickSightEmbedding.embedDashboard(options)
-        this.dashboard.on('error', this.onError)
-        this.dashboard.on('load', this.onDashboardLoad)
-      }).catch((e) => {
-        this.$log.error(e)
-      })
+    try {
+      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
+        .then(response => response.json())
+        .then(json => {
+          const containerDiv = document.getElementById('quicksightContainer')
+          const options = {
+            url: json.EmbedUrl,
+            parameters: this.parameters,
+            container: containerDiv,
+            height: 'AutoFit',
+            width: '100%',
+            locale: getLanguageI18n()
+          }
+          this.dashboard = QuickSightEmbedding.embedDashboard(options)
+          this.dashboard.on('error', this.onError)
+          this.dashboard.on('load', this.onDashboardLoad)
+        }).catch((e) => {
+          this.$log.error(e)
+        })
+    } catch (e) {
+      this.$log.error(e)
+      TrackJS.track('DASHBOARD')
+    }
   },
   methods: {
     stopLoading() {

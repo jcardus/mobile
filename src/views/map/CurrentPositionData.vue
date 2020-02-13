@@ -34,11 +34,13 @@
         </label>
       </div>
     </el-row>
+    <div style="height: 10px"></div>
     <el-row>
       <el-col :span="17" style="max-height: 42px; color:gray" class="textFormat">
         {{ formattedDate }}
         <br>
-        {{ formatAddress }}
+        <div style="white-space: nowrap;">
+          {{ formatAddress }}</div>
       </el-col>
       <el-col :span="7">
         <span v-if="!isMobile" class="textFormat">

@@ -10,13 +10,14 @@
         </label>
       </f7-list-item>
       <f7-list-item
+        ref="smartSelectLI"
         :title="$t('report.select_vehicles')"
         smart-select
         :smart-select-params="{sortable:true, searchbar: true, searchbarPlaceholder: $t('vehicleList.search')}"
       >
         <label>
           <select v-model="selectedDevices" multiple name="devices">
-            <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.name }}</option>
+            <option v-for="device in devices" :key="device.id" :value="device.id" selected="selected">{{ device.name }}</option>
           </select>
         </label>
       </f7-list-item>

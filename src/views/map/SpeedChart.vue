@@ -105,9 +105,9 @@ export default {
               ticks: {
                 precision: 1
               },
-              display: false,
+              display: true,
               gridLines: {
-                display: false
+                display: true
               }
             }]
           }
