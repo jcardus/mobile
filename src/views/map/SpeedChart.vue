@@ -108,6 +108,10 @@ export default {
               display: true,
               gridLines: {
                 display: true
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Km/h'
               }
             }]
           }

@@ -3,7 +3,7 @@
     <div style="position: relative; height:80px">
       <speed-chart :labels="labels" :chart-data="chartData" />
     </div>
-    <div style="padding-left:30px">
+    <div style="padding-left:57px">
       <vue-slider
         v-model="sliderPos"
         :tooltip-formatter="formatter"
@@ -244,7 +244,8 @@ export default {
     border-right:0;
   }
   .playButton {
-    padding: 15px 10px 0 0;
+    padding-top: 15px;
+    padding-right: 10px;
     font-size:40px;
   }
 </style>
