@@ -209,7 +209,8 @@ export default {
     date_end: 'Data de fim',
     generate_report: 'Gerar relatório',
     period: 'Período',
-    validate_period: 'Por favor seleccione o período.'
+    validate_period: 'Por favor seleccione o período.',
+    select_all: 'Todos'
   },
   layout: {
     deviceOnline: 'Dispositivo Online',

@@ -117,6 +117,7 @@ export default {
   },
   beforeDestroy() {
     Vue.$log.warn('VueMap beforeDestroy')
+    TrackJS.track('DESTROY')
     this.unsubscribeEvents()
   },
   mounted() {
@@ -817,7 +818,6 @@ export default {
   .historyPanel {
     overflow: hidden;
     padding: 0 8px;
-    background-color: $--border-color-extra-light;
   }
   .currentPositionData {
     padding-top: 5px;

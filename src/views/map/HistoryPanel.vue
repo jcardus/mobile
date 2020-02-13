@@ -241,11 +241,10 @@ export default {
 <style lang="scss" scoped>
 
   .historyPanel {
-      font-size: 15px;
-      padding-left:20px;
-      padding-right: 20px;
-      background-color: rgba(255,255,255,0);
-    }
+    font-size: 15px;
+    padding-left:20px;
+    padding-right: 20px;
+  }
   .playButton {
     padding: 15px 10px 0 0;
     font-size:40px;
