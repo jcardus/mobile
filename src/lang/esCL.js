@@ -208,7 +208,8 @@ export default {
     date_start: 'Fecha de inicio',
     date_end: 'Fecha de fin',
     generate_report: 'Generar informe',
-    period: 'Periodo'
+    period: 'Periodo',
+    select_all: 'Todos'
   },
   layout: {
     deviceOnline: 'Dispositivo en línea',

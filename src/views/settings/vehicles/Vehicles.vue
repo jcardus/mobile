@@ -158,6 +158,7 @@ export default {
         attributes: {
           speedLimit: vehicle.attributes.speedLimit,
           license_plate: vehicle.attributes.license_plate,
+          'decoder.timezone': vehicle.attributes['decoder.timezone'],
           has_immobilization: vehicle.attributes.has_immobilization
         },
         uniqueId: vehicle.uniqueId,

@@ -206,7 +206,8 @@ export default {
     date_start: 'Start date',
     date_end: 'End date',
     generate_report: 'Generate report',
-    validate_period: 'Por favor seleccione o período'
+    validate_period: 'Por favor seleccione o período',
+    select_all: 'Todos'
   },
   layout: {
     deviceOnline: 'Device Online',
