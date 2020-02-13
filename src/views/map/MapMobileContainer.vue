@@ -9,7 +9,7 @@
       </div>
     </f7-page>
     <f7-menu v-if="offline" class="offline">
-      <f7-menu-item icon-f7="wifi_slash" class="offlineIcon"></f7-menu-item>
+      <f7-menu-item icon-f7="wifi_slash" class="offlineIcon" @click="clickOffline"></f7-menu-item>
     </f7-menu>
   </div>
 </template>
@@ -35,6 +35,10 @@ export default {
     setTimeout(this.$f7.preloader.hide, 10000)
   },
   methods: {
+    clickOffline() {
+      this.$log.warn('clicked offline icon, reloading...')
+      location.reload()
+    },
     mapLoaded() {
       this.$f7.preloader.hide()
     },
