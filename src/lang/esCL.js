@@ -97,6 +97,7 @@ export default {
     user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos'
   },
   settings: {
+    refresh: 'Recargar la aplicación',
     version: 'Versión',
     connected: 'Conectado',
     disconnected: 'Desconectado',
