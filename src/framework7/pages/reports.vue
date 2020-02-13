@@ -16,8 +16,7 @@
         :smart-select-params="{sortable:true, searchbar: true, searchbarPlaceholder: $t('vehicleList.search')}"
       >
         <label>
-          <select v-model="selectedDevices" multiple name="devices" @change="selectedGeofencesChanged">
-            <option key="-1" value="-1">{{ $t('report.select_all') }}</option>
+          <select v-model="selectedDevices" multiple name="devices">
             <option v-for="device in devices" :key="device.id" :value="device.id" selected="selected">{{ device.name }}</option>
           </select>
         </label>
@@ -91,18 +90,6 @@ export default {
     serverBus.$off('reportsActive', this.pageActive)
   },
   methods: {
-    selectedGeofencesChanged() {
-      const sSelect = this.$refs.smartSelectLI.f7SmartSelect
-      // this.$log.debug(this.selectedDevices)
-      if (this.selectedDevices.includes('-1') && this.selectedDevices.length < this.devices.length + 1) {
-        const all = ['-1'].concat(this.devices.map(d => (d.id + '')))
-        this.$log.debug(all)
-        this.$log.debug('sSelect', sSelect.getValue())
-        sSelect.setValue(all)
-        this.$log.debug('sSelect', sSelect.getValue())
-        this.$log.debug(sSelect.selectEl)
-      }
-    },
     pageActive() {
       this.$log.debug('reports mobile after in')
       this.reports = [{ id: 'trip', title: this.$t('route.report_trip_title'), mrt: '/reports/report_trip.mrt' },
