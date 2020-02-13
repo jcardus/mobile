@@ -4,6 +4,7 @@
     <f7-block>
       <f7-button large raised fill @click="logout">Logout</f7-button>
     </f7-block>
+
     <f7-block-title></f7-block-title>
     <f7-list>
       <f7-list-item :title="$t('settings.version')" :after="$store.state.app.packageVersion">
@@ -15,6 +16,9 @@
       <f7-list-item :title="$t('login.login_user')" :after="$store.state.user.email">
       </f7-list-item>
     </f7-list>
+    <f7-block>
+      <f7-button raised fill @click="refreshApp">{{ $t('settings.refresh') }}</f7-button>
+    </f7-block>
   </f7-page>
 </template>
 <script>
@@ -35,6 +39,10 @@ export default {
     }
   },
   methods: {
+    refreshApp() {
+      this.$log.debug('refreshing...')
+      location.reload()
+    },
     logout() {
       this.$f7.preloader.show()
       this.$store.dispatch('user/logout').then(
