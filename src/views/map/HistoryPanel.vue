@@ -3,25 +3,24 @@
     <div style="position: relative; height:80px">
       <speed-chart :labels="labels" :chart-data="chartData" />
     </div>
-    <vue-slider
-      v-model="sliderPos"
-      :tooltip-formatter="formatter"
-      :max="maxPos"
-      :min="minPos"
-      :tooltip="'always'"
-      :tooltip-placement="'bottom'"
-      :marks="marks"
-      :included="true"
-      :hide-label="true"
-      dot-size="30"
-      :disabled="isPlaying"
-      :adsorb="true"
-      :use-keyboard="true"
-    />
+    <div style="padding-left:30px">
+      <vue-slider
+        v-model="sliderPos"
+        :tooltip-formatter="formatter"
+        :max="maxPos"
+        :min="minPos"
+        :tooltip="'always'"
+        :tooltip-placement="'bottom'"
+        :marks="marks"
+        :included="true"
+        :hide-label="true"
+        dot-size="30"
+        :disabled="isPlaying"
+        :adsorb="true"
+        :use-keyboard="true"
+      /></div>
     <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
-
     <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
-
     <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
   </div>
 </template>
@@ -40,7 +39,7 @@ export default {
   components: { SpeedChart, VueSlider },
   data() {
     return {
-      padding: 60,
+      padding: 20,
       oldPos: 0,
       sliderPos: 0,
       currentPos: 0,
@@ -239,11 +238,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
   .historyPanel {
     font-size: 15px;
-    padding-left:20px;
-    padding-right: 20px;
+    margin: 0 !important;
+    border-right:0;
   }
   .playButton {
     padding: 15px 10px 0 0;
