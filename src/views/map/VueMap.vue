@@ -820,10 +820,10 @@ export default {
 
   .historyPanel {
     overflow: hidden;
-    padding-left: 8px;
+    padding-left: 0;
   }
   .currentPositionData {
-    padding-top: 5px;
+    padding: 5px;
   }
 
   .mapboxgl-ctrl-icon.mapboxgl-ctrl-fullscreen {
