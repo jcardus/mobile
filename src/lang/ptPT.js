@@ -97,6 +97,7 @@ export default {
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   settings: {
+    refresh: 'Recarregar aplicação',
     version: 'Versão',
     connected: 'Ligado',
     disconnected: 'Desligado',

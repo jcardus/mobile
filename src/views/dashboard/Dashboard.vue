@@ -33,7 +33,6 @@ export default {
           url: json.EmbedUrl,
           parameters: this.parameters,
           container: containerDiv,
-          scrolling: 'yes',
           height: 'AutoFit',
           width: '100%',
           locale: getLanguageI18n()
