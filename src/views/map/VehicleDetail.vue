@@ -302,9 +302,9 @@ export default {
     -moz-border-radius: 0.34em;
     -webkit-border-radius: 0.34em;
     border-radius: 0.34em;
-    font-family: "Arimo", monospace;
+    //font-family: "Arimo", monospace;
     padding: 0.15em;
-    background: #70675d;
+    background: rgba(0xbb,0xaa,0x9a, 0.6);
     color: #eee0d3;
   }
   .odometer.odometer-auto-theme .odometer-digit, .odometer.odometer-theme-car .odometer-digit {
