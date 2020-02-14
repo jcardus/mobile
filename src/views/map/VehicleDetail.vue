@@ -20,7 +20,7 @@
           ></immobilize-button>
           <IOdometer
             class="iOdometer"
-            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.9em;background-color: rgba(0,0,0,0.8)"
+            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.8em;background-color: rgba(0,0,0,0.8)"
             theme="car"
             format="(,ddd).d"
             :value="feature.properties.totalDistance/1000"
