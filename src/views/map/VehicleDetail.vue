@@ -2,8 +2,7 @@
   <div v-show="!showRoutes" class="vehicleDetail">
     <el-image v-show="showMapilary && imageOk" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
     </el-image>
-    <div style="padding: 10px">
-
+    <div style="padding-left: 6px;padding-right: 6px;">
       <div class="title">
         {{ device.name }}
       </div>
@@ -211,6 +210,7 @@ export default {
     font-size: 13px;
     color: #8898AA;
     float:left;
+    width: 100%;
   }
 
 </style>
