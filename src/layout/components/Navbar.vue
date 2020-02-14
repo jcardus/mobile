@@ -6,7 +6,15 @@
 
     <div class="right-menu">
       <div v-if="offline">Offline...</div>
-      <el-dropdown trigger="click">
+      <div v-if="false" style="padding-top:0">
+        <IOdometer
+          class="iOdometer"
+          theme="car"
+          style="float:left;"
+          :value="deviceKms"
+        />
+      </div>
+      <el-dropdown v-else trigger="click">
         <span class="el-dropdown-link">
           <el-avatar size="large">{{ avatar }}</el-avatar>
         </span>
@@ -26,16 +34,23 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Vue from 'vue'
 import * as lnglat from '@/utils/lnglat'
 import { appOffline } from '../../utils/utils'
+import 'odometer/themes/odometer-theme-car.css'
+import IOdometer from 'vue-odometer'
+import { vm } from '../../main'
+import Vue from 'vue'
 
 export default {
+  components: {
+    IOdometer
+  },
   created() {
     Vue.$log.debug('Navbar created')
   },
@@ -49,6 +64,12 @@ export default {
       'avatar',
       'device'
     ]),
+    deviceKms() {
+      if (vm.$data.currentFeature) {
+        return (vm.$data.currentFeature.properties.totalDistance / 1000).toFixed(1)
+      }
+      return 0
+    },
     title() {
       return this.$t(this.$route.meta.title)
     },
@@ -57,6 +78,9 @@ export default {
     },
     offline() {
       return appOffline()
+    },
+    deviceSelected() {
+      return vm.$data.currentDevice != null
     }
   },
   methods: {
@@ -100,4 +124,5 @@ export default {
     opacity: 0.8;
     font-weight: bold;
   }
+
 </style>

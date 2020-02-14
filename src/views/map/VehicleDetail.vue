@@ -3,14 +3,10 @@
     <el-image v-show="showMapilary && imageOk" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
     </el-image>
     <div style="padding: 10px">
+
       <div class="title">
         {{ device.name }}
       </div>
-      <IOdometer
-        class="iOdometer"
-        theme="car"
-        :value="(feature.properties.totalDistance/1000).toFixed(1)"
-      />
       <br />
       <div class="content">
         {{ feature.properties.address }}
@@ -23,6 +19,12 @@
             :selected-device="device"
             :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
           ></immobilize-button>
+          <IOdometer
+            class="iOdometer"
+            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.9em;"
+            theme="car"
+            :value="(feature.properties.totalDistance/1000).toFixed(1)"
+          />
         </div>
         <el-button
           icon="el-icon-video-play"
@@ -156,11 +158,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .iOdometer {
-    margin: 0;
-    float: right;
-    top: 5px;
-  }
+
   .vehicleDetail {
     padding: 0;
     z-index:999 ;
