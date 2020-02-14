@@ -592,22 +592,12 @@ export default {
       this.$log.debug('received ', this.positions.length, ' positions')
       this.processPositions(this.positions)
     },
-    positionToFeature: function(position, device) {
-      return {
+    positionToFeature(position, device) {
+      const feature = {
         type: 'Feature',
         properties: {
-          course: position.course,
           text: device.name,
           deviceId: position.deviceId,
-          speed: position.speed,
-          immobilization_active:
-              position.attributes.out1 === true ||
-              position.attributes.out2 === true ||
-              position.attributes.isImmobilizationOn,
-          ignition: position.attributes.ignition,
-          motion: position.attributes.motion,
-          fixTime: position.fixTime,
-          fixDays: this.$moment().diff(this.$moment(device.lastUpdate), 'days'),
           description: '<div id=\'vue-vehicle-popup\'></div>'
         },
         geometry: {
@@ -615,8 +605,12 @@ export default {
           'coordinates': [position.longitude, position.latitude]
         }
       }
+      this.updateFeature(feature, device, position)
+      return feature
     },
-    updateFeature: function(feature, device, position) {
+    updateFeature(feature, device, position) {
+      feature.properties.course = position.course
+      feature.properties.outdated = device.outdated = position.outdated
       feature.properties.ignition = device.ignition = position.attributes.ignition
       feature.properties.motion = device.motion = position.attributes.motion
       feature.properties.speed = device.speed = position.speed
