@@ -66,7 +66,7 @@ export default {
     ]),
     deviceKms() {
       if (vm.$data.currentFeature) {
-        return (vm.$data.currentFeature.properties.totalDistance / 1000).toFixed(1)
+        return vm.$data.currentFeature.properties.totalDistance / 1000
       }
       return 0
     },

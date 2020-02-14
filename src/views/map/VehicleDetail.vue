@@ -13,21 +13,22 @@
         {{ Math.round(device.speed * 1.852) }} km/h,
         <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
         <br>
-        <div style="float:left">
+        <div style="float:left;padding-right: 10px">
           <immobilize-button
             :selected-device="device"
             :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
           ></immobilize-button>
           <IOdometer
             class="iOdometer"
-            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.9em;"
+            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.9em;background-color: rgba(0,0,0,0.8)"
             theme="car"
-            :value="(feature.properties.totalDistance/1000).toFixed(1)"
+            format="(,ddd).d"
+            :value="feature.properties.totalDistance/1000"
           />
         </div>
         <el-button
           icon="el-icon-video-play"
-          style="float:right; padding-top: 10px;padding-right: 3px"
+          style="float:right;padding-top: 10px"
           type="text"
           size="mini"
           @click="showRoutesChanged"
@@ -211,6 +212,6 @@ export default {
     color: #8898AA;
     float:left;
     width: 100%;
+    overflow: auto;
   }
-
 </style>
