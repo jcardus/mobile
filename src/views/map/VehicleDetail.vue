@@ -18,14 +18,14 @@
             :selected-device="device"
             :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
           ></immobilize-button>
-          <!--IOdometer
+          <IOdometer
             class="iOdometer"
             style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.8em;opacity: 40%"
             theme="car"
             format="(,ddd).d"
             :value="feature.properties.totalDistance/1000"
-          /-->
-          <VIOdometer :value="feature.properties.totalDistance/1000"></VIOdometer>
+          />
+          <!--VIOdometer :value="feature.properties.totalDistance/1000" ></VIOdometer-->
         </div>
         <el-button
           icon="el-icon-video-play"
@@ -47,11 +47,11 @@ import Vue from 'vue'
 import { serverBus, vm } from '../../main'
 import ImmobilizeButton from './ImmobilizeButton'
 import 'odometer/themes/odometer-theme-car.css'
-import VIOdometer from './VIOdometer'
+import IOdometer from 'vue-odometer'
 
 export default {
   name: 'VehicleDetail',
-  components: { VIOdometer, ImmobilizeButton },
+  components: { IOdometer, ImmobilizeButton },
   static() {
     return {
       mly: null
