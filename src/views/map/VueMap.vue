@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userLoggedIn" style="width: 100%; height: 100%">
+  <div style="width: 100%; height: 100%">
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
     <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data class="currentPositionData"></current-position-data>
