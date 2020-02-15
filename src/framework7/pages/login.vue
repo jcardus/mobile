@@ -63,7 +63,6 @@ export default {
       this.$f7.preloader.show()
       this.$store.dispatch('user/login', { username: this.username, password: this.password })
         .then(() => {
-          this.$f7router.back()
           this.$f7.preloader.hide()
           serverBus.$emit('userLoggedIn')
         })

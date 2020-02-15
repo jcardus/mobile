@@ -4,7 +4,7 @@
       <f7-fab slot="fixed" position="left-top" color="gray" @click="$f7.panel.open('left')">
         <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
       </f7-fab>
-      <div style="height: 100%">
+      <div v-if="userLoggedIn" style="height: 100%">
         <VueMap></VueMap>
       </div>
     </f7-page>
@@ -18,17 +18,24 @@
 import VueMap from './VueMap'
 import { serverBus } from '../../main'
 import { appOffline } from '../../utils/utils'
+import { getToken } from '../../utils/auth'
 
 export default {
   name: 'MapMobileContainer',
   components: { VueMap },
   computed: {
+    userLoggedIn() {
+      return this.$store.state.user.name !== '' && getToken() !== null
+    },
     offline() {
       return appOffline()
     }
   },
+  created() {
+    this.$log.debug('created VueMap mobile')
+  },
   mounted() {
-    this.$log.debug('VueMap mobile')
+    this.$log.debug('mounted VueMap mobile')
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('mapLoaded', this.mapLoaded)
     this.$f7.preloader.show()

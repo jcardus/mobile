@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 100%">
+  <div v-if="userLoggedIn" style="width: 100%; height: 100%">
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
     <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data class="currentPositionData"></current-position-data>
@@ -35,6 +35,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
+import { getToken } from '../../utils/auth'
 
 const historyPanelHeight = 300
 
@@ -56,6 +57,9 @@ export default {
     }
   },
   computed: {
+    userLoggedIn() {
+      return this.$store.state.user.name !== '' && getToken() !== null
+    },
     historyMode() {
       return vm.$data.historyMode
     },
