@@ -32,26 +32,19 @@ export default {
     }
   },
   created() {
-    this.$log.debug('created VueMap mobile')
+    this.$log.debug('created VueMap mobile, user loggedin: ', this.userLoggedIn)
   },
   mounted() {
-    this.$log.debug('mounted VueMap mobile')
+    this.$log.debug('mounted VueMap mobile, user loggedin: ', this.userLoggedIn)
     serverBus.$on('deviceSelected', this.deviceSelected)
-    serverBus.$on('mapLoaded', this.mapLoaded)
-    this.$f7.preloader.show()
-    setTimeout(this.$f7.preloader.hide, 10000)
   },
   methods: {
     clickOffline() {
       this.$log.warn('clicked offline icon, reloading...')
       location.reload()
     },
-    mapLoaded() {
-      this.$f7.preloader.hide()
-    },
     beforeDestroy() {
       serverBus.$off('deviceSelected', this.deviceSelected)
-      serverBus.$off('mapLoaded', this.mapLoaded)
     },
     deviceSelected() {
       this.$f7.panel.close('left')

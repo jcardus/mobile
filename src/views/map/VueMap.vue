@@ -111,7 +111,7 @@ export default {
     }
   },
   created() {
-    this.$log.info('VueMap')
+    this.$log.info('created VueMap, userLoggedIn: ', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
   },
@@ -184,7 +184,6 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
       this.$log.info('onMapLoad')
-      serverBus.$emit('mapLoaded')
       if (this.$store.state.user.dataLoaded) {
         this.initData()
         NProgress.done()

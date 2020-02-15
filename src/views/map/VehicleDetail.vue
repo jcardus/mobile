@@ -20,20 +20,21 @@
           ></immobilize-button>
           <IOdometer
             class="iOdometer"
-            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.8em;opacity: 40%"
+            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.8em;opacity: 0.4"
             theme="car"
             format="(,ddd).d"
             :value="feature.properties.totalDistance/1000"
           />
           <!--VIOdometer :value="feature.properties.totalDistance/1000" ></VIOdometer-->
         </div>
-        <el-button
-          icon="el-icon-video-play"
-          style="float:right;padding-top: 10px"
-          type="text"
-          size="mini"
-          @click="showRoutesChanged"
-        >{{ $t('vehicleDetail.show_route') }}</el-button>
+        <div style="float:right">
+          <el-button
+            icon="el-icon-video-play"
+            style="float:right;padding-top: 10px"
+            type="text"
+            size="mini"
+            @click="showRoutesChanged"
+          >{{ $t('vehicleDetail.show_route') }}</el-button></div>
       </div>
 
     </div>
@@ -71,7 +72,7 @@ export default {
   },
   computed: {
     showMapilary() {
-      return !this.isMobile && !this.isPlaying
+      return !this.isPlaying
     },
     showRoutes: {
       get() { return this.historyMode },
