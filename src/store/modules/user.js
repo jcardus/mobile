@@ -28,6 +28,12 @@ const mutations = {
     state.email = token.email
     state.avatar = getAvatar(token.name)
   },
+  REMOVE_USER: (state) => {
+    state.name = ''
+    state.userId = 0
+    state.email = ''
+    state.avatar = ''
+  },
   SET_DATA_LOADED: (state, loaded) => {
     state.dataLoaded = loaded
   },
@@ -154,12 +160,12 @@ const actions = {
       })
     })
   },
-  logout({ state }) {
+  logout({ commit }) {
     return new Promise((resolve) => {
       logout(state.token).then(() => {
         resetRouter()
         removeToken()
-        traccar.stopReceiving()
+        commit('REMOVE_USER')
         vm.reset()
         state.token = null
         resolve()
