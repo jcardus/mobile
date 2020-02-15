@@ -47,14 +47,14 @@ export default {
       this.$f7.preloader.show()
       this.$store.dispatch('user/logout').then(
         () => {
-          this.$f7router.navigate('/login')
-          this.$f7.preloader.hide()
         },
         () => {
-          this.$f7router.navigate('/login')
-          this.$f7.preloader.hide()
         }
-      )
+      ).finally(() => {
+        // this.$f7.preloader.hide()
+        // this.$f7.loginScreen.open('#loginScreen', false)
+        location.reload()
+      })
     }
   }
 }

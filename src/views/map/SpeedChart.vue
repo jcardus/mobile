@@ -37,7 +37,7 @@ export default {
     }
   },
   mounted() {
-    Vue.$log.debug('created')
+    Vue.$log.debug('SpeedChart created')
     const speedChart = document.getElementById('speedChart')
     if (!speedChart) return
     const ctx = speedChart.getContext('2d')

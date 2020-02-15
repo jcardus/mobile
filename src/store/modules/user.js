@@ -175,7 +175,6 @@ const actions = {
         vm.reset()
         state.token = null
         resolve()
-        location.reload()
       }).catch((e) => {
         Vue.$log.error(e)
         resetRouter()

@@ -116,7 +116,6 @@ export default {
         }
       })
       const cookie = getToken()
-      Vue.$log.debug('cookie:', cookie)
       if (cookie !== null) {
         this.$log.debug('closing login screen...', this.$f7.loginScreen)
         this.$f7.loginScreen.close()
@@ -125,7 +124,6 @@ export default {
       } else {
         this.$log.debug('opening login screen...', this.$f7.loginScreen)
         this.$f7.loginScreen.open('#loginScreen')
-        this.$log.debug('done')
       }
     } catch (e) {
       Vue.$log.error(e)
