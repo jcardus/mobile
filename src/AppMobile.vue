@@ -4,7 +4,7 @@
       <vehicle-table-container></vehicle-table-container>
     </f7-panel>
     <f7-views tabs class="safe-areas">
-      <f7-toolbar bottom="true" labels tabbar>
+      <f7-toolbar :bottom="true" labels tabbar>
         <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" :text="$t('route.map')"></f7-link>
         <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" :text="$t('route.reports')"></f7-link>
         <f7-link v-if="!ios" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
