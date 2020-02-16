@@ -142,6 +142,7 @@ export default {
     vehicle_form_groups_placeholder: 'Seleccionar Grupo',
     vehicle_licenseplate: 'Matrícula',
     vehicle_model: 'Modelo',
+    vehicle_form_total_kms: 'Total de Kms',
     vehicle_speed_limit: 'Limite de Velocidade',
     vehicle_form_cancel: 'Cancelar',
     vehicle_form_confirm: 'Guardar',

@@ -152,6 +152,7 @@ export default {
     vehicle_form_groups_placeholder: 'Seleccionar Grupo',
     vehicle_licenseplate: 'Placa',
     vehicle_model: 'Modelo',
+    vehicle_form_total_kms: 'Total de Kms',
     vehicle_speed_limit: 'Límite de Velocidad',
     vehicle_form_cancel: 'Cancelar',
     vehicle_form_confirm: 'Gravar',

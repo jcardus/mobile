@@ -147,6 +147,7 @@ export default {
     vehicle_name: 'Name',
     vehicle_licenseplate: 'License Plate',
     vehicle_model: 'Model',
+    vehicle_form_total_kms: 'Total Kms',
     vehicle_speed_limit: 'Speed Limit',
     vehicle_form_cancel: 'Cancel',
     vehicle_form_confirm: 'Save',

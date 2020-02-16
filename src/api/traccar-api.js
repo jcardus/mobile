@@ -113,6 +113,19 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
+  updateDeviceAccumulators: function(deviceId, accumulators, onFulfill) {
+    const body = {
+      deviceId: deviceId,
+      totalDistance: accumulators.totalDistance,
+      hours: accumulators.hours
+    }
+    Vue.$log.debug(body)
+    axios.put(devices + '/' + deviceId + '/accumulators', body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
   updateUser: function(userid, user, onFulfill) {
     axios.put(users + '/' + userid, user,
       { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
@@ -174,12 +187,8 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  deleteGeofence: function(geofence, onFulfill) {
-    axios.delete(geoFences + '/' + geofence.id, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(onFulfill(geofence))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+  deleteGeofence: function(geofenceId, onFulfill) {
+    invokeDeleteApi(geoFences, geofenceId, onFulfill)
   },
   geofences: function(onFulfill, onError) {
     invokeApi(geoFences, onFulfill, onError)
@@ -227,11 +236,7 @@ export const traccar = {
   },
   deleteAlert: function(alertId, onFulfill) {
     return new Promise((resolve, reject) => {
-      axios.delete(alerts + '/' + alertId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-        .then(onFulfill(alertId))
-        .catch(error => {
-          reject(error)
-        })
+      invokeDeleteApi(alerts, alertId, onFulfill)
     })
   },
   addPermission: function(permission, onFulfill) {
