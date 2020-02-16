@@ -22,8 +22,11 @@
               <el-form-item :label="$t('settings.vehicle_form_model')">
                 <el-input v-model="vehicleModel" />
               </el-form-item>
-              <el-form-item :label="$t('settings.vehicle_form_speed_limit')">
-                <el-input v-model="vehicleSpeedLimit" />
+              <el-form-item class="el-input-number-fix" :label="$t('settings.vehicle_form_total_kms')">
+                <el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
+              </el-form-item>
+              <el-form-item class="el-input-number-fix" :label="$t('settings.vehicle_form_speed_limit')">
+                <el-input-number v-model="vehicleSpeedLimit" :min="0" :precision="0" />
               </el-form-item>
             </el-form>
             <el-button
@@ -113,6 +116,7 @@ export default {
       vehicleName: '',
       vehicleModel: '',
       vehicleSpeedLimit: 0,
+      vehicleTotalKms: 0,
       selectedGroup: null
     }
   },
@@ -126,6 +130,9 @@ export default {
     }
   },
   methods: {
+    findFeatureByDeviceId(deviceId) {
+      return lnglat.findFeatureByDeviceId(deviceId)
+    },
     tableRowStyle() {
       if (this.isMobile) {
         return 'font-size: 12px'
@@ -168,9 +175,21 @@ export default {
         category: vehicle.category
       }
 
+      const p = this.findFeatureByDeviceId(vehicle.id)
+
+      const accumulator = {
+        deviceId: vehicle.id,
+        totalDistance: this.vehicleTotalKms * 1000,
+        hours: p.properties.hours
+      }
+
+      traccar.updateDeviceAccumulators(vehicle.id, accumulator, this.accumulatorUpdated)
       traccar.updateDevice(vehicle.id, v, this.vehicleUpdated)
 
       this.isOpenVehicleForm = false
+    },
+    accumulatorUpdated: function() {
+
     },
     vehicleUpdated: function() {
       this.$message({
@@ -180,10 +199,12 @@ export default {
       this.clearFormData()
     },
     handleEdit(row) {
+      const p = this.findFeatureByDeviceId(row.id)
       this.selectedVehicle = row
       this.selectedGroup = row.groupId
       this.vehicleName = row.name
       this.vehicleModel = row.model
+      this.vehicleTotalKms = p.properties.totalDistance / 1000
       this.vehicleSpeedLimit = Math.round(row.attributes.speedLimit * 1.85200)
       this.isOpenVehicleForm = !this.isOpenVehicleForm
     },
@@ -207,6 +228,7 @@ export default {
       this.selectedGroup = null
       this.vehicleModel = ''
       this.vehicleSpeedLimit = 0
+      this.vehicleTotalKms = 0
     }
   }
 }
@@ -220,7 +242,7 @@ export default {
   .modal {
     width: 500px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 15px;
     background-color: #fff;
     border-radius: 2px;
     box-shadow: 0 2px 8px 3px;
@@ -244,5 +266,14 @@ export default {
 
   .el-table .tomobile td:last-child {
     font-size: 12px
+  }
+
+  .el-form-item {
+    margin-bottom: 10px
+  }
+
+  .el-input-number-fix {
+    width: 200px;
+    text-align: left;
   }
 </style>

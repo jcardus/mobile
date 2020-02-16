@@ -157,6 +157,7 @@ export default {
     vehicle_form_group: 'Grupo',
     vehicle_form_groups_placeholder: 'Seleccionar Grupo',
     vehicle_form_model: 'Modelo',
+    vehicle_form_total_kms: 'Total de Kms',
     vehicle_form_speed_limit: 'Limite de Velocidade (Km/h)',
     vehicle_updated: 'Veículo actualizado com sucesso!',
     vehicle_group: 'Grupo',

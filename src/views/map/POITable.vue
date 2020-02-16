@@ -118,7 +118,7 @@ export default {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
         cancelButtonText: this.$t('geofence.geofence_edit_cancel')
       }).then(() => {
-        traccar.deleteGeofence(row, this.geofenceDeleted)
+        traccar.deleteGeofence(row.id, this.geofenceDeleted)
       }).catch(() => {
       })
     },
@@ -128,9 +128,9 @@ export default {
         message: this.$t('geofence.poi_edited')
       })
     },
-    geofenceDeleted(item) {
-      vm.$data.geofences = vm.$data.geofences.filter((e) => e.id !== item.id)
-      this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== item.id)
+    geofenceDeleted(geofenceId) {
+      vm.$data.geofences = vm.$data.geofences.filter((e) => e.id !== geofenceId)
+      this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== geofenceId)
       lnglat.refreshGeofences()
       this.$message({
         message: this.$t('geofence.poi_deleted'),

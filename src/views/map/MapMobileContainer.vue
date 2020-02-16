@@ -4,7 +4,7 @@
       <f7-fab slot="fixed" position="left-top" color="gray" @click="$f7.panel.open('left')">
         <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
       </f7-fab>
-      <div v-if="userLoggedIn" style="height: 100%">
+      <div style="height: 100%">
         <VueMap></VueMap>
       </div>
     </f7-page>
@@ -32,26 +32,22 @@ export default {
     }
   },
   created() {
-    this.$log.debug('created VueMap mobile')
+    this.$log.debug('created VueMap mobile, user loggedin: ', this.userLoggedIn)
   },
   mounted() {
-    this.$log.debug('mounted VueMap mobile')
+    this.$log.debug('mounted VueMap mobile, user loggedin: ', this.userLoggedIn)
     serverBus.$on('deviceSelected', this.deviceSelected)
-    serverBus.$on('mapLoaded', this.mapLoaded)
-    this.$f7.preloader.show()
-    setTimeout(this.$f7.preloader.hide, 10000)
+  },
+  beforeDestroy() {
+    this.$log.debug('destroying MapMobileContainer')
   },
   methods: {
     clickOffline() {
       this.$log.warn('clicked offline icon, reloading...')
       location.reload()
     },
-    mapLoaded() {
-      this.$f7.preloader.hide()
-    },
     beforeDestroy() {
       serverBus.$off('deviceSelected', this.deviceSelected)
-      serverBus.$off('mapLoaded', this.mapLoaded)
     },
     deviceSelected() {
       this.$f7.panel.close('left')

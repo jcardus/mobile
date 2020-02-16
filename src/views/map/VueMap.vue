@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userLoggedIn" style="width: 100%; height: 100%">
+  <div style="width: 100%; height: 100%">
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
     <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data class="currentPositionData"></current-position-data>
@@ -111,7 +111,7 @@ export default {
     }
   },
   created() {
-    this.$log.info('VueMap')
+    this.$log.info('created VueMap, userLoggedIn: ', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
   },
@@ -184,7 +184,6 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
       this.$log.info('onMapLoad')
-      serverBus.$emit('mapLoaded')
       if (this.$store.state.user.dataLoaded) {
         this.initData()
         NProgress.done()
@@ -602,6 +601,17 @@ export default {
         properties: {
           text: device.name,
           deviceId: position.deviceId,
+          speed: position.speed,
+          immobilization_active:
+              position.attributes.out1 === true ||
+              position.attributes.out2 === true ||
+              position.attributes.isImmobilizationOn,
+          ignition: position.attributes.ignition,
+          motion: position.attributes.motion,
+          fixTime: position.fixTime,
+          totalDistance: position.attributes.totalDistance,
+          hours: position.attributes.hours,
+          fixDays: this.$moment().diff(this.$moment(device.lastUpdate), 'days'),
           description: '<div id=\'vue-vehicle-popup\'></div>'
         },
         geometry: {
@@ -621,6 +631,7 @@ export default {
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
       feature.properties.totalDistance = position.attributes.totalDistance
+      feature.properties.hours = position.attributes.hours
       feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
       if (immoValue !== feature.properties.immobilization_active) {

@@ -6,7 +6,7 @@
   >
     <img
       alt="immobilization"
-      style="float:right;"
+      style="float:right"
       :src="getIcon"
       width="38"
       :style="commandPending[selectedDevice.id]?'opacity: 0.2':''"

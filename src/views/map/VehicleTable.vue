@@ -29,24 +29,26 @@
         heigth="1"
       >
         <template slot-scope="scope">
-          <span style="font-weight: bold;">{{ scope.row.name }} </span>
-          <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span>
-          <br />
+          <div style="padding: 3px 0 0;">
+            <span style="font-weight: bold">{{ scope.row.name }} </span>
+            <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
           <div v-if="getDeviceState(scope.row)==='Moving'">
             {{ scope.row.speed * 1.852 | formatNumber }} km/h
           </div>
-          <div v-else style="font-size: x-small; word-break: normal">
+          <div v-else style="font-size: smaller; word-break: normal;line-height: normal">
             {{ scope.row.address }}
           </div>
-          <timeago
-            :datetime="scope.row.lastUpdate"
-            :auto-update="60"
-            :locale="$i18n.locale.substring(0,2)"
-          ></timeago>
-          <immobilize-button
-            :selected-device="scope.row"
-            :immobilization-active="scope.row.currentFeature ? scope.row.currentFeature.properties.immobilization_active : false"
-          />
+          <div style="padding: 6px 0;float:left">
+            <timeago
+              :datetime="scope.row.lastUpdate"
+              :auto-update="60"
+              :locale="$i18n.locale.substring(0,2)"
+            ></timeago></div><div style="float: right">
+            <immobilize-button
+              style="padding-bottom:0; "
+              :selected-device="scope.row"
+              :immobilization-active="scope.row.currentFeature ? scope.row.currentFeature.properties.immobilization_active : false"
+            /></div>
         </template>
       </el-table-column>
     </el-table>

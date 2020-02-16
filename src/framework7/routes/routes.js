@@ -1,7 +1,6 @@
 import Reports from '../pages/reports'
 import SettingsPage from '../pages/settings'
 import Viewer from '../pages/viewer'
-import Login from '../pages/login'
 import MapMobileContainer from '../../views/map/MapMobileContainer'
 import Dashboard from '../../views/dashboard/Dashboard'
 
@@ -21,10 +20,6 @@ const routes = [
   {
     path: '/viewer',
     component: Viewer
-  },
-  {
-    path: '/login',
-    component: Login
   },
   {
     path: '/dashboard',
