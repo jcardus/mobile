@@ -25,6 +25,11 @@ export default {
     }
   },
   mounted() {
+    this.$log.debug('mounting dashboard')
+    if (getToken() === null) {
+      this.$log.debug('no cookie, skip dashboard')
+      return
+    }
     NProgress.start()
     try {
       fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)

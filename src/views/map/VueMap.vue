@@ -35,6 +35,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
+import { getToken } from '../../utils/auth'
 
 const historyPanelHeight = 300
 
@@ -56,6 +57,9 @@ export default {
     }
   },
   computed: {
+    userLoggedIn() {
+      return this.$store.state.user.name !== '' && getToken() !== null
+    },
     historyMode() {
       return vm.$data.historyMode
     },
@@ -107,7 +111,7 @@ export default {
     }
   },
   created() {
-    this.$log.info('VueMap')
+    this.$log.info('created VueMap, userLoggedIn: ', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
   },
@@ -180,7 +184,6 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
       this.$log.info('onMapLoad')
-      serverBus.$emit('mapLoaded')
       if (this.$store.state.user.dataLoaded) {
         this.initData()
         NProgress.done()
@@ -592,11 +595,10 @@ export default {
       this.$log.debug('received ', this.positions.length, ' positions')
       this.processPositions(this.positions)
     },
-    positionToFeature: function(position, device) {
-      return {
+    positionToFeature(position, device) {
+      const feature = {
         type: 'Feature',
         properties: {
-          course: position.course,
           text: device.name,
           deviceId: position.deviceId,
           speed: position.speed,
@@ -617,8 +619,12 @@ export default {
           'coordinates': [position.longitude, position.latitude]
         }
       }
+      this.updateFeature(feature, device, position)
+      return feature
     },
-    updateFeature: function(feature, device, position) {
+    updateFeature(feature, device, position) {
+      feature.properties.course = position.course
+      feature.properties.outdated = device.outdated = position.outdated
       feature.properties.ignition = device.ignition = position.attributes.ignition
       feature.properties.motion = device.motion = position.attributes.motion
       feature.properties.speed = device.speed = position.speed

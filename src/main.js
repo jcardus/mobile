@@ -116,8 +116,6 @@ require('moment/locale/es')// 'fr'
 moment.locale(getLanguage().slice(2))
 Vue.use(require('vue-moment'), { moment })
 
-console.log('moment locales: ', moment.locales(), ', now: ', moment.locale())
-
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })

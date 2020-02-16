@@ -223,13 +223,14 @@ export default {
       return styles.danger
     },
     getDeviceState: function(device) {
-      if (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5) {
+      if (device.outdated ||
+        (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5)) {
         return 'Disconnected'
       }
-      if (device.speed > 2) {
+      if (device.speed > 2 && !device.outdated) {
         return 'Moving'
       }
-      if (device.ignition) {
+      if (device.ignition && !device.outdated) {
         return 'Idle'
       }
       return 'Stopped'

@@ -18,33 +18,36 @@
 import VueMap from './VueMap'
 import { serverBus } from '../../main'
 import { appOffline } from '../../utils/utils'
+import { getToken } from '../../utils/auth'
 
 export default {
   name: 'MapMobileContainer',
   components: { VueMap },
   computed: {
+    userLoggedIn() {
+      return this.$store.state.user.name !== '' && getToken() !== null
+    },
     offline() {
       return appOffline()
     }
   },
+  created() {
+    this.$log.debug('created VueMap mobile, user loggedin: ', this.userLoggedIn)
+  },
   mounted() {
-    this.$log.debug('VueMap mobile')
+    this.$log.debug('mounted VueMap mobile, user loggedin: ', this.userLoggedIn)
     serverBus.$on('deviceSelected', this.deviceSelected)
-    serverBus.$on('mapLoaded', this.mapLoaded)
-    this.$f7.preloader.show()
-    setTimeout(this.$f7.preloader.hide, 10000)
+  },
+  beforeDestroy() {
+    this.$log.debug('destroying MapMobileContainer')
   },
   methods: {
     clickOffline() {
       this.$log.warn('clicked offline icon, reloading...')
       location.reload()
     },
-    mapLoaded() {
-      this.$f7.preloader.hide()
-    },
     beforeDestroy() {
       serverBus.$off('deviceSelected', this.deviceSelected)
-      serverBus.$off('mapLoaded', this.mapLoaded)
     },
     deviceSelected() {
       this.$f7.panel.close('left')

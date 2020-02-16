@@ -9,6 +9,9 @@ import { API, graphqlOperation, ServiceWorker } from 'aws-amplify'
 import * as gqlMutations from '../../graphql/mutations'
 import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
+import store from '../index'
+import VueNativeSock from 'vue-native-websocket'
+import * as utils from '../../utils/utils'
 
 const serviceWorker = new ServiceWorker()
 
@@ -28,15 +31,17 @@ const mutations = {
     state.email = token.email
     state.avatar = getAvatar(token.name)
   },
+  REMOVE_USER: (state) => {
+    state.name = ''
+    state.userId = 0
+    state.email = ''
+    state.avatar = ''
+  },
   SET_DATA_LOADED: (state, loaded) => {
     state.dataLoaded = loaded
   },
   TOGGLE_CONNECTION_OK: () => {
     state.connectionOk = !state.connectionOk
-  },
-  CONNECT: () => {
-    Vue.$log.debug('disconnecting websocket...')
-    // vm.$disconnect()
   }
 }
 
@@ -134,6 +139,13 @@ const actions = {
       })
       TrackJS.addMetadata('user', state.name)
       setLanguage(newToken.attributes.lang)
+      const hostName = utils.getServerHost()
+      Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
+        store: store,
+        format: 'json',
+        reconnection: true,
+        reconnectionDelay: 6000
+      })
       resolve()
     })
   },
@@ -154,12 +166,12 @@ const actions = {
       })
     })
   },
-  logout({ state }) {
+  logout({ commit }) {
     return new Promise((resolve) => {
       logout(state.token).then(() => {
         resetRouter()
         removeToken()
-        traccar.stopReceiving()
+        commit('REMOVE_USER')
         vm.reset()
         state.token = null
         resolve()
@@ -178,9 +190,7 @@ const actions = {
       context.commit('TOGGLE_CONNECTION_OK')
       if (data.state) {
         context.dispatch('setUser').then(() => {
-          context.dispatch('connect').then(() => {
-            Vue.$log.debug('connectionOk done')
-          })
+          Vue.$log.debug('connectionOk done')
         })
       }
     }

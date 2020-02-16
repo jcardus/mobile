@@ -4,7 +4,7 @@
       <vehicle-table-container></vehicle-table-container>
     </f7-panel>
     <f7-views tabs class="safe-areas">
-      <f7-toolbar bottom labels tabbar>
+      <f7-toolbar :bottom="true" labels tabbar>
         <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" :text="$t('route.map')"></f7-link>
         <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" :text="$t('route.reports')"></f7-link>
         <f7-link v-if="!ios" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
@@ -16,6 +16,37 @@
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
       <f7-view id="view-login" name="login" url="/login"></f7-view>
     </f7-views>
+    <f7-login-screen id="loginScreen">
+      <f7-page login-screen>
+        <f7-login-screen-title>
+          <div class="title-container">
+            <img class="logo" :src="logo" alt="">
+          </div>
+        </f7-login-screen-title>
+        <f7-list form>
+          <f7-list-input
+            name="username"
+            :label="$t('login.login_user')"
+            type="text"
+            :value="username"
+            @input="username = $event.target.value"
+          ></f7-list-input>
+          <f7-list-input
+            name="password"
+            :label="$t('login.login_password')"
+            type="password"
+            :value="password"
+            @input="password = $event.target.value"
+          ></f7-list-input>
+        </f7-list>
+        <f7-list>
+          <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
+          <f7-block-footer>
+            {{ version }} {{ domain }}
+          </f7-block-footer>
+        </f7-list>
+      </f7-page>
+    </f7-login-screen>
   </f7-app>
 </template>
 
@@ -36,10 +67,8 @@ export default {
   components: { VehicleTableContainer },
   data() {
     return {
-      loginScreenOpened: true,
       username: '',
       password: '',
-      // Framework7 Parameters
       f7params: {
         name: 'Pinme', // App name
         theme: 'auto', // Automatic theme detection
@@ -49,6 +78,17 @@ export default {
     }
   },
   computed: {
+    domain() {
+      return window.location.hostname
+    },
+    version() {
+      if (process.env.NODE_ENV === 'development') {
+        return new Date()
+      } else { return this.$store.state.app.packageVersion }
+    },
+    logo() {
+      return partner.getLogo()
+    },
     ios() {
       return this.$device.ios
     },
@@ -64,7 +104,7 @@ export default {
   },
   mounted() {
     try {
-      this.$log.debug('App mobile')
+      this.$log.debug('mounted App mobile')
       document.getElementById('favicon').href = partner.getFavIcon()
       document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
       this.toastNewVersion = this.$f7.toast.create({
@@ -76,18 +116,39 @@ export default {
         }
       })
       const cookie = getToken()
-      Vue.$log.debug('cookie:', cookie)
-      if (cookie === null) {
-        this.$f7.views.main.router.navigate('/login', { transition: 'f7-fade' })
-      } else {
+      if (cookie !== null) {
+        this.$log.debug('closing login screen...', this.$f7.loginScreen)
+        this.$f7.loginScreen.close()
         this.$log.debug('App mobile created with cookie dispatching setUser')
         this.$store.dispatch('user/setUser')
+      } else {
+        this.$log.debug('opening login screen...', this.$f7.loginScreen)
+        this.$f7.loginScreen.open('#loginScreen')
       }
     } catch (e) {
       Vue.$log.error(e)
     }
   },
   methods: {
+    signIn() {
+      const self = this
+      this.$log.debug('dispatch user login ')
+      this.$f7.preloader.show()
+      this.$store.dispatch('user/login', { username: this.username, password: this.password })
+        .then(() => {
+          self.$f7.preloader.hide()
+          self.$f7.loginScreen.close()
+        })
+        .catch(exception => {
+          self.$f7.preloader.hide()
+          Vue.$log.error(exception)
+          self.$f7.toast.create({
+            closeTimeout: 4000,
+            text: exception,
+            destroyOnClose: true
+          }).open()
+        })
+    },
     mapShow() {
       serverBus.$emit('mapShown')
     },
@@ -127,7 +188,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import './framework7/css/framework7.bundle.min.css';
   @import './framework7/css/icons.css';
+  .logo {
+    margin: 0 auto 40px auto;
+    display: block;
+    width: 50%;
+  }
 </style>

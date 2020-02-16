@@ -11,10 +11,10 @@ let markersOnScreen = {}
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
-const gray = ['>', ['get', 'fixDays'], 5]
-const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
-const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5]]
-const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2]]
+const gray = ['any', ['>', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], true]]
+const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
+const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
+const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2], ['==', ['get', 'outdated'], false]]
 const _colorFormula = ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]
 const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-string', _colorFormula]], ['to-string', _colorFormula]]
 

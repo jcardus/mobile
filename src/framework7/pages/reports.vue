@@ -84,7 +84,8 @@ export default {
     }
   },
   created() {
-    serverBus.$on('reportsActive', this.pageActive)
+    this.$log.debug('reports created')
+    serverBus.$on('mobile reportsActive', this.pageActive)
   },
   beforeDestroy() {
     serverBus.$off('reportsActive', this.pageActive)

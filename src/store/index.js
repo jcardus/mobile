@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
-import VueNativeSock from 'vue-native-websocket'
-import * as utils from '../utils/utils'
 import { TrackJS } from 'trackjs'
 import { removeToken } from '../utils/auth'
 
@@ -73,11 +71,3 @@ const store = new Vuex.Store({
 })
 
 export default store
-const hostName = utils.getServerHost()
-
-Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
-  store: store,
-  format: 'json',
-  reconnection: true,
-  reconnectionDelay: 6000
-})
