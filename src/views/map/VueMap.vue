@@ -607,6 +607,8 @@ export default {
           ignition: position.attributes.ignition,
           motion: position.attributes.motion,
           fixTime: position.fixTime,
+          totalDistance: position.attributes.totalDistance,
+          hours: position.attributes.hours,
           fixDays: this.$moment().diff(this.$moment(device.lastUpdate), 'days'),
           description: '<div id=\'vue-vehicle-popup\'></div>'
         },
@@ -623,6 +625,7 @@ export default {
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
       feature.properties.totalDistance = position.attributes.totalDistance
+      feature.properties.hours = position.attributes.hours
       feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
       if (immoValue !== feature.properties.immobilization_active) {
