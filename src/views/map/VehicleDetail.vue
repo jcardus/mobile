@@ -14,7 +14,7 @@
           </div>
         </div>
         <div style="padding-top: 5px">
-          <div style="float:left;padding-right: 10px; width:50%">
+          <div style="float:left;padding-right: 10px; width:51%">
             <div style="float: left;padding: 6px 0">
               <IOdometer
                 class="iOdometer"

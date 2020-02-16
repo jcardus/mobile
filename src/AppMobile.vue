@@ -1,6 +1,6 @@
 <template>
   <f7-app :params="f7params">
-    <f7-panel left cover theme-dark @panel:closed="panelClosed">
+    <f7-panel left cover theme-dark style="min-width: 300px" @panel:closed="panelClosed">
       <vehicle-table-container></vehicle-table-container>
     </f7-panel>
     <f7-views tabs class="safe-areas">
