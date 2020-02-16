@@ -118,12 +118,12 @@ export default {
       const cookie = getToken()
       if (cookie !== null) {
         this.$log.debug('closing login screen...', this.$f7.loginScreen)
-        this.$f7.loginScreen.close()
+        this.$f7.loginScreen.close('#loginScreen', false)
         this.$log.debug('App mobile created with cookie dispatching setUser')
         this.$store.dispatch('user/setUser')
       } else {
         this.$log.debug('opening login screen...', this.$f7.loginScreen)
-        this.$f7.loginScreen.open('#loginScreen')
+        this.$f7.loginScreen.open('#loginScreen', false)
       }
     } catch (e) {
       Vue.$log.error(e)

@@ -1,45 +1,47 @@
 <template>
   <div v-show="!showRoutes" class="vehicleDetail">
-    <el-image v-show="showMapilary && imageOk" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down">
-    </el-image>
+    <el-image v-show="imageUrl !== ''" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down" />
     <div style="padding-left: 6px;padding-right: 6px;">
       <div class="title">
-        {{ device.name }}
+        <span>{{ device.name }}</span>
       </div>
-      <br />
       <div class="content">
         {{ feature.properties.address }}
-        <br>
-        {{ Math.round(device.speed * 1.852) }} km/h,
-        <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>.
-        <br>
-        <div style="float:left;padding-right: 10px">
-          <immobilize-button
-            :selected-device="device"
-            :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
-          ></immobilize-button>
-          <IOdometer
-            class="iOdometer"
-            style="margin-right: 4px;margin-top:4px;margin-bottom:4px;font-size: 0.8em;opacity: 0.4"
-            theme="car"
-            format="(,ddd).d"
-            :value="feature.properties.totalDistance/1000"
-          />
-          <!--VIOdometer :value="feature.properties.totalDistance/1000" ></VIOdometer-->
+        <div style="padding-top: 5px;">
+          <div v-if="feature.properties.ignition || device.speed > 5" style="color:#32325D;">
+            {{ Math.round(device.speed * 1.852) }} km/h,
+            <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>
+          </div>
         </div>
-        <div style="float:right">
-          <el-button
-            icon="el-icon-video-play"
-            style="float:right;padding-top: 10px"
-            type="text"
-            size="mini"
-            @click="showRoutesChanged"
-          >{{ $t('vehicleDetail.show_route') }}</el-button></div>
+        <div style="padding-top: 5px">
+          <div style="float:left;padding-right: 10px; width:50%">
+            <div style="float: left;padding: 6px 0">
+              <IOdometer
+                class="iOdometer"
+                style="margin-right: 4px;font-size: 1em;opacity: 0.4"
+                theme="car"
+                format="(,ddd).d"
+                :value="feature.properties.totalDistance/1000"
+              />
+            </div>
+            <immobilize-button
+              :selected-device="device"
+              :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
+            ></immobilize-button>
+          </div>
+          <div style="float:right; padding: 3px 0">
+            <el-button
+              icon="el-icon-video-play"
+              style="float:right"
+              type="text"
+              size="mini"
+              @click="showRoutesChanged"
+            >{{ $t('vehicleDetail.show_route') }}</el-button>
+          </div>
+        </div>
       </div>
-
     </div>
-  </div>
-</template>
+  </div></template>
 <script>
 
 import axios from 'axios'
@@ -71,9 +73,6 @@ export default {
     }
   },
   computed: {
-    showMapilary() {
-      return !this.isPlaying
-    },
     showRoutes: {
       get() { return this.historyMode },
       set(value) { this.historyMode = value }
@@ -116,26 +115,21 @@ export default {
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
   mounted: function() {
-    Vue.$log.debug('VehicleDetail')
+    Vue.$log.debug('mounted VehicleDetail ', this.device.name, this.device, this.feature)
     const self = this
-    if (!this.isMobile) {
-      axios.get('https://a.mapillary.com/v3/images/?closeto=' + self.feature.geometry.coordinates[0] + ',' +
+    axios.get('https://a.mapillary.com/v3/images/?closeto=' + self.feature.geometry.coordinates[0] + ',' +
         self.feature.geometry.coordinates[1] + '&radius=500&per_page=1&client_id=NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj')
-        .then((response) => {
-          if (response.data.features[0]) {
-            self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
-            self.imageOk = true
-          } else {
-            self.imageOk = false
-          }
-          self.loadingImage = false
-        })
-        .catch(reason => {
-          Vue.$log.error(reason)
-          self.loadingImage = false
-          self.imageOk = false
-        })
-    }
+      .then((response) => {
+        if (response.data.features[0]) {
+          self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
+        }
+        self.loadingImage = false
+      })
+      .catch(reason => {
+        Vue.$log.error(reason)
+        self.loadingImage = false
+        self.imageOk = false
+      })
     // odd width popups are blurry on Chrome, this enforces even widths
     if (Math.ceil(this.$el.clientWidth) % 2) {
       this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
@@ -160,7 +154,6 @@ export default {
 </script>
 
 <style lang="scss">
-
   .vehicleDetail {
     padding: 0;
     z-index:999 ;
@@ -208,6 +201,7 @@ export default {
     color: #32325D;
     padding-bottom: 10px;
     padding-top: 10px;
+    overflow: auto;
   }
   .content {
     font-size: 13px;
@@ -215,5 +209,9 @@ export default {
     float:left;
     width: 100%;
     overflow: auto;
+    line-height: normal;
+  }
+  .mapboxgl-popup-content {
+    min-width: 250px;
   }
 </style>
