@@ -562,6 +562,7 @@ export default {
         if (coordinates) {
           feature.geometry.coordinates = coordinates
           if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates.slice()) }
+          serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
           const p1 = feature.route[counter >= steps ? counter - 1 : counter]
           const p2 = feature.route[counter >= steps ? counter : counter + 1]
           if (p1 && p2) {

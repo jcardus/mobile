@@ -10,8 +10,8 @@
         <div style="padding-top: 5px;">
           <div v-if="feature.properties.ignition || device.speed > 5" style="color:#32325D;">
             {{ Math.round(device.speed * 1.852) }} km/h,
-            <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>
           </div>
+          <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>
         </div>
         <div style="padding-top: 5px">
           <div style="float:left;padding-right: 10px; width:51%">
@@ -68,8 +68,8 @@ export default {
       i: 0,
       sliderVisible: false,
       imageUrl: '',
-      loadingImage: true,
-      imageOk: false
+      imageOk: false,
+      lastImageUpdate: new Date(0)
     }
   },
   computed: {
@@ -111,31 +111,50 @@ export default {
   },
   created() {
     Vue.$log.debug('VehicleDetail, subscribing events')
+    serverBus.$on('devicePositionChanged', this.devicePositionChanged)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
   mounted: function() {
     Vue.$log.debug('mounted VehicleDetail ', this.device.name, this.device, this.feature)
-    const self = this
-    axios.get('https://a.mapillary.com/v3/images/?closeto=' + self.feature.geometry.coordinates[0] + ',' +
-        self.feature.geometry.coordinates[1] + '&radius=500&per_page=1&client_id=NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj')
-      .then((response) => {
-        if (response.data.features[0]) {
-          self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
-        }
-        self.loadingImage = false
-      })
-      .catch(reason => {
-        Vue.$log.error(reason)
-        self.loadingImage = false
-        self.imageOk = false
-      })
+    this.updateImage(this)
     // odd width popups are blurry on Chrome, this enforces even widths
     if (Math.ceil(this.$el.clientWidth) % 2) {
       this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
     }
   },
   methods: {
+    getUrl() {
+      return 'https://a.mapillary.com/v3/images/?closeto=' +
+        this.feature.geometry.coordinates[0] + ',' +
+        this.feature.geometry.coordinates[1] +
+        '&radius=500&per_page=1&client_id=NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj'
+    },
+    updateImage: function() {
+      const self = this
+      axios.get(this.getUrl())
+        .then((response) => {
+          if (response.data.features[0]) {
+            self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
+          } else {
+            Vue.$log.debug('no mapillary found at ', this.feature.geometry.coordinates)
+          }
+        })
+        .catch(reason => {
+          Vue.$log.error(reason)
+        })
+    },
+    devicePositionChanged(deviceId) {
+      if (this.device.id === deviceId) {
+        if (this.lastImageUpdate < (new Date() - 1000)) {
+          Vue.$log.debug('updating mapillary')
+          this.lastImageUpdate = new Date()
+          this.updateImage()
+        }
+      } else {
+        Vue.$log.debug('ignoring ', deviceId, ' my id is ', this.device.id)
+      }
+    },
     deviceSelected(device) {
       Vue.$log.debug('device selected ', device.id)
       if (this.device && this.device.id !== device.id) {
