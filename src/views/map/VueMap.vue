@@ -13,9 +13,11 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import '@mapbox/mapbox-gl-traffic/mapbox-gl-traffic.css'
 import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import { serverBus, settings, vm } from '../../main'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -359,6 +361,7 @@ export default {
         map.addControl(this.$static.draw, 'bottom-right')
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
       }
+      map.addControl(new MapboxTraffic(), 'bottom-right')
       map.addControl(new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
@@ -851,23 +854,20 @@ export default {
     padding: 5px;
   }
 
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-fullscreen {
+  .mapboxgl-ctrl button.mapboxgl-ctrl-fullscreen .mapboxgl-ctrl-icon {
     background-image: url('../../icons/fullscreen.svg') !important;
   }
   .mapboxgl-ctrl-icon.mapboxgl-style-switcher {
     background-image: url('../../icons/layers.svg') !important;
   }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate::before {
+   .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon {
     background-image: url('../../icons/geolocate.svg') !important;
   }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in {
+  .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon {
     background-image: url('../../icons/zoom-in.svg') !important;
   }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+  .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon {
     background-image: url('../../icons/zoom-out.svg') !important;
-  }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-compass > .mapboxgl-ctrl-compass-arrow {
-    background-image: url('../../icons/compass-arrow.svg') !important;
   }
   .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_line {
     background-image: url('../../icons/draw-line.svg') !important;
@@ -880,6 +880,15 @@ export default {
   }
   .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_trash {
     background-image: url('../../icons/draw-trash.svg') !important;
+  }
+  .mapboxgl-ctrl-icon.mapboxgl-ctrl-map {
+    background-image: url('../../icons/map.svg') !important;
+  }
+  .mapboxgl-ctrl-traffic {
+    background-image: url('../../icons/traffic.svg') !important;
+  }
+  .mapboxgl-ctrl button.mapboxgl-ctrl-compass .mapboxgl-ctrl-icon {
+    background-image: url('../../icons/compass-arrow.svg') !important;
   }
 
   button svg {
