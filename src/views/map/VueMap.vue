@@ -97,6 +97,9 @@ export default {
     geofences() {
       return this.$root.$data.geofences
     },
+    pois: function() {
+      return this.geofences.filter(g => g.area.startsWith('CIRCLE'))
+    },
     map() {
       return vm.$static.map
     },
@@ -558,6 +561,7 @@ export default {
         const coordinates = feature.route[counter]
         if (coordinates) {
           feature.geometry.coordinates = coordinates
+          if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates.slice()) }
           const p1 = feature.route[counter >= steps ? counter - 1 : counter]
           const p2 = feature.route[counter >= steps ? counter : counter + 1]
           if (p1 && p2) {
@@ -601,17 +605,6 @@ export default {
         properties: {
           text: device.name,
           deviceId: position.deviceId,
-          speed: position.speed,
-          immobilization_active:
-              position.attributes.out1 === true ||
-              position.attributes.out2 === true ||
-              position.attributes.isImmobilizationOn,
-          ignition: position.attributes.ignition,
-          motion: position.attributes.motion,
-          fixTime: position.fixTime,
-          totalDistance: position.attributes.totalDistance,
-          hours: position.attributes.hours,
-          fixDays: this.$moment().diff(this.$moment(device.lastUpdate), 'days'),
           description: '<div id=\'vue-vehicle-popup\'></div>'
         },
         geometry: {
@@ -640,6 +633,7 @@ export default {
       }
       device.address = position.address
       device.lastUpdate = position.fixTime
+      device.poi = this.findNearestPOI(position)
     },
     processPositions: function(positions) {
       const self = this
@@ -648,10 +642,9 @@ export default {
         const device = self.devices.find(e => e.id === position.deviceId)
         if (!feature) {
           if (!device) {
-            Vue.$log.warn('no feature and no device, this is weird, position:', position)
+            Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position)
             return
           }
-          device.speed = position.speed
           feature = self.positionToFeature(position, device)
           self.positionsSource.features.push(feature)
           if (vm.$static.map) {
@@ -663,7 +656,10 @@ export default {
           if (!device) return
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
-          if (settings.animateMarkers && lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] })) {
+          if (settings.animateMarkers &&
+            lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
+            self.map.getZoom() > 10
+          ) {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
@@ -680,12 +676,25 @@ export default {
         device.currentFeature = feature
       })
     },
+    findNearestPOI: function(position) {
+      if (this.pois.length === 0) {
+        return null
+      }
+      const a = this.pois.map(p => {
+        const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
+        const coord = str.trim().split(' ')
+        return { id: p.id, distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude)) }
+      }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
+
+      if (a.length > 0) {
+        return a[0].id
+      }
+    },
     getMatch: function(coordinates, radius, route, timestamps, feature, position) {
       const self = this
       const lineDistance = lnglat.lineDistance(route)
 
       if (lineDistance > 0.03) {
-        if (this.popUps[position.deviceId]) { this.popUps[position.deviceId].remove() }
         lnglat.matchRoute(coordinates, radius, timestamps,
           function(r) {
             if (r.data.matchings && r.data.matchings.length > 0) {
