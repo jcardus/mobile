@@ -468,7 +468,6 @@ export default {
       window.removeEventListener('resize', this.mapResize)
     },
     onStyleImageMissing(e) {
-      this.map.addImage(e.id, new Image(1, 1))
     },
     onStyleLoad(e) {
       const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
@@ -605,7 +604,6 @@ export default {
         this.$log.warn('updateMarkers canceled, positions is undefined')
         return
       }
-      this.$log.debug('received ', this.positions.length, ' positions')
       this.processPositions(this.positions)
     },
     positionToFeature(position, device) {
