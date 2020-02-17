@@ -13,9 +13,11 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import '@mapbox/mapbox-gl-traffic/mapbox-gl-traffic.css'
 import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import { serverBus, settings, vm } from '../../main'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -359,6 +361,7 @@ export default {
         map.addControl(this.$static.draw, 'bottom-right')
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
       }
+      map.addControl(new MapboxTraffic(), 'bottom-right')
       map.addControl(new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
@@ -415,7 +418,6 @@ export default {
       this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
-      // this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
@@ -423,6 +425,7 @@ export default {
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('data', this.onData)
+      this.$static.map.on('styleimagemissing', this.onStyleImageMissing)
       serverBus.$on('dataLoaded', this.initData)
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
@@ -453,14 +456,19 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
+      this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
       // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
       serverBus.$off('mapShown', this.mapResize)
+
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
+    },
+    onStyleImageMissing(e) {
+      this.map.addImage(e.id, new Image(1, 1))
     },
     onStyleLoad(e) {
       const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
@@ -846,23 +854,20 @@ export default {
     padding: 5px;
   }
 
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-fullscreen {
+  .mapboxgl-ctrl button.mapboxgl-ctrl-fullscreen .mapboxgl-ctrl-icon {
     background-image: url('../../icons/fullscreen.svg') !important;
   }
   .mapboxgl-ctrl-icon.mapboxgl-style-switcher {
     background-image: url('../../icons/layers.svg') !important;
   }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate::before {
+   .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon {
     background-image: url('../../icons/geolocate.svg') !important;
   }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in {
+  .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon {
     background-image: url('../../icons/zoom-in.svg') !important;
   }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+  .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon {
     background-image: url('../../icons/zoom-out.svg') !important;
-  }
-  .mapboxgl-ctrl-icon.mapboxgl-ctrl-compass > .mapboxgl-ctrl-compass-arrow {
-    background-image: url('../../icons/compass-arrow.svg') !important;
   }
   .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_line {
     background-image: url('../../icons/draw-line.svg') !important;
@@ -875,6 +880,15 @@ export default {
   }
   .mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_trash {
     background-image: url('../../icons/draw-trash.svg') !important;
+  }
+  .mapboxgl-ctrl-icon.mapboxgl-ctrl-map {
+    background-image: url('../../icons/map.svg') !important;
+  }
+  .mapboxgl-ctrl-traffic {
+    background-image: url('../../icons/traffic.svg') !important;
+  }
+  .mapboxgl-ctrl button.mapboxgl-ctrl-compass .mapboxgl-ctrl-icon {
+    background-image: url('../../icons/compass-arrow.svg') !important;
   }
 
   button svg {
