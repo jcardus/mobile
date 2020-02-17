@@ -32,24 +32,25 @@
           <div style="padding: 3px 0 0;">
             <span style="font-weight: bold">{{ scope.row.name }} </span>
             <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
-          <div style="line-height: normal">
-            <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
+          <div style="line-height: normal;padding-top: 2px">
+            <span v-if="scope.row.currentFeature" style="font-size: 12px"><i class="fas fa-road" style="width: 15px"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
             <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
           </div>
-          <div v-if="hasNearestPOI(scope.row)">
-            <span style="font-size: 12px;line-height: normal"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px"></i> {{ getPOIName(scope.row.poi) }}</span>
+          <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
+            <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px"></i> {{ getPOIName(scope.row.poi) }}</span>
           </div>
-          <div v-else>
-            <span style="font-size: 12px; word-break: normal;line-height: normal"><i class="fas fa-home" style="width: 15px"></i> {{ scope.row.address }}</span>
+          <div v-else style="line-height: normal">
+            <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px"></i> {{ scope.row.address }}</span>
           </div>
-          <div style="padding: 6px 0;float:left">
+          <div style="padding-top: 6px;float:left">
             <timeago
               :datetime="scope.row.lastUpdate"
               :auto-update="60"
               :locale="$i18n.locale.substring(0,2)"
-            ></timeago></div><div style="float: right">
+            ></timeago></div>
+          <div style="float: right">
             <immobilize-button
-              style="padding-bottom:0; "
+              style="padding:0"
               :selected-device="scope.row"
               :immobilization-active="scope.row.currentFeature ? scope.row.currentFeature.properties.immobilization_active : false"
             /></div>
