@@ -10,14 +10,13 @@
         </label>
       </f7-list-item>
       <f7-list-item
-        ref="smartSelectLI"
         :title="$t('report.select_vehicles')"
         smart-select
         :smart-select-params="{sortable:true, searchbar: true, searchbarPlaceholder: $t('vehicleList.search')}"
       >
         <label>
           <select v-model="selectedDevices" multiple name="devices">
-            <option v-for="device in devices" :key="device.id" :value="device.id" selected="selected">{{ device.name }}</option>
+            <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.name }}</option>
           </select>
         </label>
       </f7-list-item>
@@ -84,8 +83,7 @@ export default {
     }
   },
   created() {
-    this.$log.debug('reports created')
-    serverBus.$on('mobile reportsActive', this.pageActive)
+    serverBus.$on('reportsActive', this.pageActive)
   },
   beforeDestroy() {
     serverBus.$off('reportsActive', this.pageActive)
