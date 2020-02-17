@@ -51,7 +51,7 @@ const store = new Vuex.Store({
       state.lastUpdate = Date.now()
     },
     SOCKET_RECONNECT(state, count) {
-      if (count === 20) {
+      if (count === 10) {
         Vue.$log.warn('count = 20, refreshing!')
         TrackJS.track('REFRESHING')
         removeToken()
