@@ -828,6 +828,12 @@ export default {
       border-radius: 8px;
     }
   }
+  @media only screen and (max-width: 768px) {
+    .mapboxgl-ctrl-group > button {
+      width: 42px;
+      height: 42px;
+    }
+  }
 
   .historyPanel {
     overflow: hidden;
