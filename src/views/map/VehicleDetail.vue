@@ -1,6 +1,6 @@
 <template>
-  <div v-show="!showRoutes" class="vehicleDetail">
-    <el-image v-show="imageUrl !== ''" id="mly" style="margin-top:13px;" :src="imageUrl" alt="" fit="scale-down" />
+  <div class="vehicleDetail">
+    <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
       <div class="title">
         <span>{{ device.name }}</span>
@@ -52,6 +52,8 @@ import ImmobilizeButton from './ImmobilizeButton'
 import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
 
+const mlyClientId = 'NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj'
+
 export default {
   name: 'VehicleDetail',
   components: { IOdometer, ImmobilizeButton },
@@ -69,7 +71,10 @@ export default {
       sliderVisible: false,
       imageUrl: '',
       imageOk: false,
-      lastImageUpdate: new Date(0)
+      lastImageUpdate: new Date(0),
+      oldPosition: null,
+      fetching: false,
+      sequenceKey: null
     }
   },
   computed: {
@@ -124,35 +129,51 @@ export default {
     }
   },
   methods: {
+    loaded() {
+      Vue.$log.debug('loaded')
+    },
     getUrl() {
-      return 'https://a.mapillary.com/v3/images/?closeto=' +
-        this.feature.geometry.coordinates[0] + ',' +
-        this.feature.geometry.coordinates[1] +
-        '&radius=500&per_page=1&client_id=NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj'
+      const oldCoords = this.oldPosition || this.feature.geometry.coordinates
+      return 'https://a.mapillary.com/v3/images/?closeto=' + oldCoords.join(',') +
+              '&per_page=1&lookat=' + this.feature.geometry.coordinates.join(',') +
+              '&client_id=' + mlyClientId +
+        (this.sequenceKey ? '&sequence_keys=' + this.sequenceKey : '')
+    },
+    handleLoad(e, img) {
+      this.imageUrl = img.src
     },
     updateImage: function() {
       const self = this
       axios.get(this.getUrl())
         .then((response) => {
-          if (response.data.features[0]) {
-            self.imageUrl = 'https://images.mapillary.com/' + response.data.features[0].properties.key + '/thumb-320.jpg'
+          if (response.data.features.length > 0) {
+            Vue.$log.debug('got features: ', response.data.features)
+            self.sequenceKey = response.data.features[0].properties.sequence_key
+            if (self.key !== response.data.features[0].properties.key) {
+              self.key = response.data.features[0].properties.key
+              const img = new Image()
+              img.onload = e => this.handleLoad(e, img)
+              img.src = 'https://images.mapillary.com/' + self.key + '/thumb-320.jpg'
+            }
           } else {
             Vue.$log.debug('no mapillary found at ', this.feature.geometry.coordinates)
           }
         })
         .catch(reason => {
           Vue.$log.error(reason)
+        }).finally(() => {
+          self.fetching = false
         })
     },
     devicePositionChanged(deviceId) {
       if (this.device.id === deviceId) {
-        if (this.lastImageUpdate < (new Date() - 1000)) {
+        if (!this.fetching && this.lastImageUpdate < (new Date() - 3000)) {
+          this.fetching = true
           Vue.$log.debug('updating mapillary')
           this.lastImageUpdate = new Date()
           this.updateImage()
+          this.oldPosition = this.feature.geometry.coordinates
         }
-      } else {
-        Vue.$log.debug('ignoring ', deviceId, ' my id is ', this.device.id)
       }
     },
     deviceSelected(device) {
@@ -219,7 +240,7 @@ export default {
     font-size: 22px;
     color: #32325D;
     padding-bottom: 10px;
-    padding-top: 10px;
+    padding-top: 1px;
     overflow: auto;
   }
   .content {
