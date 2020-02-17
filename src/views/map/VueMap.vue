@@ -415,7 +415,6 @@ export default {
       this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
-      // this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
@@ -423,6 +422,7 @@ export default {
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('data', this.onData)
+      this.$static.map.on('styleimagemissing', this.onStyleImageMissing)
       serverBus.$on('dataLoaded', this.initData)
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
@@ -453,14 +453,19 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
+      this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
       // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
       serverBus.$off('mapShown', this.mapResize)
+
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
+    },
+    onStyleImageMissing(e) {
+      this.map.addImage(e.id, new Image(1, 1))
     },
     onStyleLoad(e) {
       const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
