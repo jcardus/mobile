@@ -693,7 +693,7 @@ export default {
         const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
         const coord = str.trim().split(' ')
         return { id: p.id, distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude)) }
-      }).filter(a => a.distance < 500).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
+      }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
 
       if (a.length > 0) {
         return a[0].id
