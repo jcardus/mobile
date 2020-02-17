@@ -18,6 +18,7 @@ import mapboxgl from 'mapbox-gl'
 import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { serverBus, settings, vm } from '../../main'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -348,6 +349,10 @@ export default {
       const map = this.$static.map
       this.$log.debug('adding mapcontrols...')
       if (!this.isMobile) {
+        map.addControl(new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        }), 'bottom-right')
         map.addControl(new RulerControl(), 'bottom-right')
         this.$static.draw = new MapboxDraw({
           displayControlsDefault: false,
@@ -361,37 +366,17 @@ export default {
         map.addControl(this.$static.draw, 'bottom-right')
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
       }
-      map.addControl(new MapboxTraffic(), 'bottom-right')
       map.addControl(new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
         },
         trackUserLocation: true
       }), 'bottom-right')
+      map.addControl(new MapboxTraffic(), 'bottom-right')
       map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
-
-      /*
-        // this is very important, these Vue instances are not destroyed when the user logs off...
-        map.addControl(new MapboxCustomControl('slider-div'), 'bottom-left')
-        if (this.historyPanel !== null) {
-          Vue.$log.warn('destroying old history panel')
-          this.historyPanel.$destroy()
-        }
-        VD = Vue.extend(HistoryPanel)
-        this.historyPanel = new VD({ i18n: i18n })
-        this.historyPanel.$mount('#slider-div')*/
-      /*
-        map.addControl(new MapboxCustomControl('currentPos-div'), this.isMobile ? 'top-left' : 'top-right')
-        if (this.vehiclePanel !== null) {
-          Vue.$log.warn('destroying old vehicle panel')
-          this.vehiclePanel.$destroy()
-        }
-        VD = Vue.extend(CurrentPositionData)
-        this.vehiclePanel = new VD({ i18n: i18n })
-        this.vehiclePanel.$mount('#currentPos-div')*/
 
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
     },
