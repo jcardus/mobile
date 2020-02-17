@@ -34,7 +34,7 @@
             <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
           <div style="line-height: normal">
             <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
-            <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt"></i> {{ 75 * 1.852 | formatNumber }} km/h </span>
+            <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
           </div>
           <div v-if="hasNearestPOI(scope.row)">
             <span style="font-size: 12px;line-height: normal"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px"></i> {{ getPOIName(scope.row.poi) }}</span>
