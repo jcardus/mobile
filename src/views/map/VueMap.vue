@@ -97,6 +97,9 @@ export default {
     geofences() {
       return this.$root.$data.geofences
     },
+    pois: function() {
+      return this.geofences.filter(g => g.area.startsWith('CIRCLE'))
+    },
     map() {
       return vm.$static.map
     },
@@ -640,6 +643,7 @@ export default {
       }
       device.address = position.address
       device.lastUpdate = position.fixTime
+      device.poi = this.findNearestPOI(position)
     },
     processPositions: function(positions) {
       const self = this
@@ -679,6 +683,21 @@ export default {
         }
         device.currentFeature = feature
       })
+    },
+    findNearestPOI: function(position) {
+      if (this.pois.length === 0) {
+        return null
+      }
+
+      const a = this.pois.map(p => {
+        const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
+        const coord = str.trim().split(' ')
+        return { id: p.id, distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude)) }
+      }).filter(a => a.distance < 500).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
+
+      if (a.length > 0) {
+        return a[0].id
+      }
     },
     getMatch: function(coordinates, radius, route, timestamps, feature, position) {
       const self = this

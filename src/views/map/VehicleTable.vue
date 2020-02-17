@@ -32,11 +32,15 @@
           <div style="padding: 3px 0 0;">
             <span style="font-weight: bold">{{ scope.row.name }} </span>
             <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
-          <div v-if="getDeviceState(scope.row)==='Moving'">
-            {{ scope.row.speed * 1.852 | formatNumber }} km/h
+          <div style="line-height: normal">
+            <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
+            <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt"></i> {{ 75 * 1.852 | formatNumber }} km/h </span>
           </div>
-          <div v-else style="font-size: smaller; word-break: normal;line-height: normal">
-            {{ scope.row.address }}
+          <div v-if="hasNearestPOI(scope.row)">
+            <span style="font-size: 12px;line-height: normal"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px"></i> {{ getPOIName(scope.row.poi) }}</span>
+          </div>
+          <div v-else>
+            <span style="font-size: 12px; word-break: normal;line-height: normal"><i class="fas fa-map-pin" style="width: 12px;padding-left: 3px"></i> {{ scope.row.address }}</span>
           </div>
           <div style="padding: 6px 0;float:left">
             <timeago
@@ -195,6 +199,9 @@ export default {
       })
 
       return devices
+    },
+    pois: function() {
+      return this.$root.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
     }
   },
   mounted() {
@@ -283,6 +290,12 @@ export default {
     },
     deviceSelectedOnMap(device) {
       this.selected = device.id
+    },
+    hasNearestPOI(device) {
+      return device.poi
+    },
+    getPOIName(poiId) {
+      return this.pois.find(p => p.id === poiId).name
     }
   }
 }
