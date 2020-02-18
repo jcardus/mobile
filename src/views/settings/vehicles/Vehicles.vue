@@ -175,12 +175,9 @@ export default {
         category: vehicle.category
       }
 
-      const p = this.findFeatureByDeviceId(vehicle.id)
-
       const accumulator = {
         deviceId: vehicle.id,
-        totalDistance: this.vehicleTotalKms * 1000,
-        hours: p.properties.hours
+        totalDistance: this.vehicleTotalKms * 1000
       }
 
       traccar.updateDeviceAccumulators(vehicle.id, accumulator, this.accumulatorUpdated)
