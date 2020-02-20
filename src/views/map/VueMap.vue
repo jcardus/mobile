@@ -39,6 +39,7 @@ import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
+import * as consts from '../../utils/consts'
 
 const historyPanelHeight = 300
 
@@ -455,12 +456,11 @@ export default {
     onStyleImageMissing(e) {
     },
     onStyleLoad(e) {
-      const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
-      if (style.sprite !== spriteUrl) {
+      if (style.sprite !== consts.spriteUrl) {
         this.$log.debug('setting sprite')
-        style.sprite = spriteUrl
+        style.sprite = consts.spriteUrl
         this.map.setStyle(style)
       } else {
         this.$log.info('adding layers...')

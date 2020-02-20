@@ -60,15 +60,14 @@ export function arrayDistance(coordinates) {
   return lineDistance(lineString)
 }
 export function coordsDistance(lon1, lat1, lon2, lat2) {
-  var R = 6371000
-  var dLat = deg2rad(lat2 - lat1)
-  var dLon = deg2rad(lon2 - lon1)
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  const R = 6371000
+  const dLat = deg2rad(lat2 - lat1)
+  const dLon = deg2rad(lon2 - lon1)
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
     Math.sin(dLon / 2) * Math.sin(dLon / 2)
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  var d = R * c
-  return d
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
 }
 export function deg2rad(deg) {
   return deg * (Math.PI / 180)
@@ -272,6 +271,9 @@ export function addVehiclesLayer(layer, source) {
     source: source,
     filter: ['!=', 'cluster', true],
     layout: {
+      'icon-keep-upright': true,
+      'icon-pitch-alignment': 'map',
+      'icon-rotation-alignment': 'map',
       'icon-image': ['concat',
         ['case',
           gray, 'gray',
@@ -311,7 +313,7 @@ export function addLayers(map) {
     })
   } else { Vue.$log.warn(source, ' already exists...') }
   if (settings.show3dBuildings) {
-    this.map.addLayer({
+    vm.$static.map.addLayer({
       'id': '3d-buildings',
       'source': 'composite',
       'source-layer': 'building',

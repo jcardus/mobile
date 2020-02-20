@@ -4,16 +4,16 @@ module.exports = function(grunt) {
     sprite: {
       all: {
         src: '1x/*.png',
-        destCss: 'sprite.json',
-        dest: 'sprite.png',
+        destCss: 'public/img/sprite.json',
+        dest: 'public/img/sprite.png',
         cssVarMap: function(sprite) {
           sprite.pixelRatio = 1
         }
       },
       all2: {
-        src: '2x/*.png',
-        destCss: 'sprite@2x.json',
-        dest: 'sprite@2x.png',
+        src: '1x/*.png',
+        destCss: 'public/img/sprite@2x.json',
+        dest: 'public/img/sprite@2x.png',
         cssVarMap: function(sprite) {
           sprite.pixelRatio = 2
         }
