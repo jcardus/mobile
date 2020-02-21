@@ -24,6 +24,7 @@
     "@turf/area": "latest",
     "@turf/bbox": "latest",
     "@turf/bearing": "latest",
+    "@turf/distance": "latest",
     "@turf/helpers": "latest",
     "@turf/length": "latest",
     "amazon-quicksight-embedding-sdk": "latest",

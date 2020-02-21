@@ -19,9 +19,23 @@
                   <el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item :label="$t('settings.vehicle_form_model')">
-                <el-input v-model="vehicleModel" />
-              </el-form-item>
+              <div class="form-item-block">
+                <div class="form-item-row">
+                  <el-form-item class="form-item-block-left" :label="$t('settings.vehicle_form_model')">
+                    <el-input v-model="vehicleModel" />
+                  </el-form-item>
+                  <el-form-item class="form-item-block-right" :label="$t('settings.vehicle_form_category')">
+                    <el-select
+                      v-model="selectedCategory"
+                      style="width: 100%; height: 35px"
+                      :placeholder="$t('settings.vehicle_form_category_placeholder')"
+                      value=""
+                    >
+                      <el-option v-for="item in categoryType" :key="item.value" :label="item.text" :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </div>
+              </div>
               <el-form-item class="el-input-number-fix" :label="$t('settings.vehicle_form_total_kms')">
                 <el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
               </el-form-item>
@@ -117,7 +131,23 @@ export default {
       vehicleModel: '',
       vehicleSpeedLimit: 0,
       vehicleTotalKms: 0,
-      selectedGroup: null
+      selectedGroup: null,
+      selectedCategory: null,
+      categoryType: [
+        { value: 'car', text: this.$t('settings.vehicle_icon_car') },
+        { value: 'truck', text: this.$t('settings.vehicle_icon_truck') },
+        { value: 'van', text: this.$t('settings.vehicle_icon_van') },
+        { value: 'default', text: this.$t('settings.vehicle_icon_default') },
+        { value: 'bicycle', text: this.$t('settings.vehicle_icon_bicycle') },
+        { value: 'person', text: this.$t('settings.vehicle_icon_person') },
+        { value: 'arrow', text: this.$t('settings.vehicle_icon_arrow') },
+        { value: 'bus', text: this.$t('settings.vehicle_icon_bus') },
+        { value: 'tractor', text: this.$t('settings.vehicle_icon_tractor') },
+        { value: 'helicopter', text: this.$t('settings.vehicle_icon_helicopter') },
+        { value: 'motorcycle', text: this.$t('settings.vehicle_icon_motorcycle') },
+        { value: 'boat', text: this.$t('settings.vehicle_icon_boat') },
+        { value: 'pickup', text: this.$t('settings.vehicle_icon_pickup') }
+      ]
     }
   },
   computed: {
@@ -126,6 +156,9 @@ export default {
       return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     groups: function() {
+      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+    },
+    categories: function() {
       return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     }
   },
@@ -155,6 +188,7 @@ export default {
       const vehicle = this.selectedVehicle
       vehicle.name = this.vehicleName
       vehicle.groupId = this.selectedGroup
+      vehicle.category = this.selectedCategory
       vehicle.model = this.vehicleModel
       vehicle.attributes.speedLimit = Math.round(this.vehicleSpeedLimit / 1.85200)
 
@@ -199,6 +233,7 @@ export default {
       const p = this.findFeatureByDeviceId(row.id)
       this.selectedVehicle = row
       this.selectedGroup = row.groupId
+      this.selectedCategory = row.category
       this.vehicleName = row.name
       this.vehicleModel = row.model
       this.vehicleTotalKms = p.properties.totalDistance / 1000
@@ -223,6 +258,7 @@ export default {
     clearFormData() {
       this.vehicleName = ''
       this.selectedGroup = null
+      this.selectedCategory = null
       this.vehicleModel = ''
       this.vehicleSpeedLimit = 0
       this.vehicleTotalKms = 0
@@ -232,6 +268,26 @@ export default {
 </script>
 
 <style scoped>
+  .form-item-block {
+    width: 100%;
+    display: table;
+    margin-bottom: 10px
+  }
+
+  .form-item-row {
+    display: table-row;
+  }
+
+  .form-item-block-left{
+    display: table-cell;
+    width: 200px;
+    padding-right: 50px;
+  }
+  .form-item-block-right{
+    width: 200px;
+    display: table-cell;
+  }
+
   .formButton {
     float: right;
     margin-right: 10px;
