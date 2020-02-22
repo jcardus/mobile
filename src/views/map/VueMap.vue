@@ -591,12 +591,36 @@ export default {
       }
       this.processPositions(this.positions)
     },
+    getCategory(category) {
+      if (category === null) { return 'default' }
+      if (!category) { return 'default' }
+      switch (category) {
+        case 'helicopter':
+        case 'bicycle':
+        case 'person':
+        case 'motorcycle':
+        case 'boat':
+        case 'tractor':
+        case 'bus':
+          return 'arrow'
+        case '':
+        case 'car':
+        case 'van':
+        case 'pickup':
+          return 'default'
+        case 'truck':
+          return 'car'
+        default:
+          return 'arrow'
+      }
+    },
     positionToFeature(position, device) {
       const feature = {
         type: 'Feature',
         properties: {
           text: device.name,
           deviceId: position.deviceId,
+          category: this.getCategory(device.category),
           description: '<div id=\'vue-vehicle-popup\'></div>'
         },
         geometry: {

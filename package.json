@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "1.0.384",
+  "version": "1.0.385",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -99,7 +99,9 @@
     "svg-sprite-loader": "4.1.3",
     "svgo": "1.2.0",
     "trackjs": "latest",
-    "vue-template-compiler": "2.6.10"
+    "vue-template-compiler": "2.6.10",
+    "grunt-convert-svg-to-png": "latest",
+    "grunt-move": "latest"
   },
   "browserslist": [
     "> 1%",

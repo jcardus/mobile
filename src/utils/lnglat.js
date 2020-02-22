@@ -270,29 +270,34 @@ export function addVehiclesLayer(layer, source) {
     type: 'symbol',
     source: source,
     filter: ['!=', 'cluster', true],
+    paint: {
+      'icon-opacity': ['case',
+        gray, 1,
+        1
+      ]
+    },
     layout: {
       'icon-keep-upright': true,
       'icon-pitch-alignment': 'map',
       'icon-rotation-alignment': 'map',
       'icon-image': ['concat',
         ['case',
-          gray, 'gray',
-          green, 'green',
-          yellow, 'yellow',
-          'red'
+          gray, ['concat', 'gray', ['get', 'category']],
+          green, ['concat', 'green', ['get', 'category']],
+          yellow, ['concat', 'yellow', ['get', 'category']],
+          ['concat', 'red', ['get', 'category']]
         ], '00', colorFormula],
       'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
       'icon-allow-overlap': true,
       'text-allow-overlap': true,
       'icon-size': {
         stops: [
-          [1, 0.4],
-          [14, 0.6],
+          [1, 0.6],
+          [14, 0.7],
           [15, 0.8],
           [18, 1]
         ]
       }
-
     }
   })
 }
@@ -349,7 +354,7 @@ export function addLayers(map) {
       filter: ['has', 'point_count'],
       layout: {
         'icon-allow-overlap': true,
-        'icon-image': 'red0000'
+        'icon-image': 'reddefault0000'
       },
       paint: {
         'icon-opacity': 0
@@ -360,7 +365,6 @@ export function addLayers(map) {
     fetchGeofences(map)
   }
 }
-
 export function fitBounds(devices) {
   const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
   if (features.length > 1) {

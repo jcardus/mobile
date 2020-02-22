@@ -1,6 +1,24 @@
 module.exports = function(grunt) {
   // Configure grunt
   grunt.initConfig({
+    'convert-svg-to-png': {
+      fallback: {
+        options: {
+          size: { w: 100, h: 100 }
+        },
+        files: [{
+          expand: true,
+          src: ['maki/11/*.svg', 'maki/15/*.svg'],
+          dest: '1x'
+        }]
+      }
+    },
+    move: {
+      maki15: {
+        src: ['1x/*-15.png'],
+        dest: '2x'
+      }
+    },
     sprite: {
       all: {
         src: '1x/*.png',
@@ -11,7 +29,7 @@ module.exports = function(grunt) {
         }
       },
       all2: {
-        src: '1x/*.png',
+        src: '2x/*.png',
         destCss: 'public/img/sprite@2x.json',
         dest: 'public/img/sprite@2x.png',
         cssVarMap: function(sprite) {
@@ -23,4 +41,6 @@ module.exports = function(grunt) {
 
   // Load in `grunt-spritesmith`
   grunt.loadNpmTasks('grunt-spritesmith')
+  grunt.loadNpmTasks('grunt-convert-svg-to-png')
+  grunt.loadNpmTasks('grunt-move')
 }
