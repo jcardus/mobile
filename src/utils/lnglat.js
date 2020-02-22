@@ -1,4 +1,5 @@
 import length from '@turf/length'
+import distance from '@turf/distance'
 import Vue from 'vue'
 import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
@@ -60,15 +61,11 @@ export function arrayDistance(coordinates) {
   return lineDistance(lineString)
 }
 export function coordsDistance(lon1, lat1, lon2, lat2) {
-  var R = 6371000
-  var dLat = deg2rad(lat2 - lat1)
-  var dLon = deg2rad(lon2 - lon1)
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2)
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  var d = R * c
-  return d
+  const from = helpers.point([lon1, lat1])
+  const to = helpers.point([lon2, lat2])
+  const options = { units: 'kilometers' }
+
+  return (distance(from, to, options) * 1000)
 }
 export function deg2rad(deg) {
   return deg * (Math.PI / 180)
@@ -271,26 +268,34 @@ export function addVehiclesLayer(layer, source) {
     type: 'symbol',
     source: source,
     filter: ['!=', 'cluster', true],
+    paint: {
+      'icon-opacity': ['case',
+        gray, 1,
+        1
+      ]
+    },
     layout: {
+      'icon-keep-upright': true,
+      'icon-pitch-alignment': 'map',
+      'icon-rotation-alignment': 'map',
       'icon-image': ['concat',
         ['case',
-          gray, 'gray',
-          green, 'green',
-          yellow, 'yellow',
-          'red'
+          gray, ['concat', 'gray', ['get', 'category']],
+          green, ['concat', 'green', ['get', 'category']],
+          yellow, ['concat', 'yellow', ['get', 'category']],
+          ['concat', 'red', ['get', 'category']]
         ], '00', colorFormula],
       'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
       'icon-allow-overlap': true,
       'text-allow-overlap': true,
       'icon-size': {
         stops: [
-          [1, 0.4],
-          [14, 0.6],
+          [1, 0.6],
+          [14, 0.7],
           [15, 0.8],
           [18, 1]
         ]
       }
-
     }
   })
 }
@@ -311,7 +316,7 @@ export function addLayers(map) {
     })
   } else { Vue.$log.warn(source, ' already exists...') }
   if (settings.show3dBuildings) {
-    this.map.addLayer({
+    vm.$static.map.addLayer({
       'id': '3d-buildings',
       'source': 'composite',
       'source-layer': 'building',
@@ -347,7 +352,7 @@ export function addLayers(map) {
       filter: ['has', 'point_count'],
       layout: {
         'icon-allow-overlap': true,
-        'icon-image': 'red0000'
+        'icon-image': 'reddefault0000'
       },
       paint: {
         'icon-opacity': 0
@@ -358,7 +363,6 @@ export function addLayers(map) {
     fetchGeofences(map)
   }
 }
-
 export function fitBounds(devices) {
   const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
   if (features.length > 1) {

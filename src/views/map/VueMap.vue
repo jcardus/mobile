@@ -39,6 +39,7 @@ import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
+import * as consts from '../../utils/consts'
 
 const historyPanelHeight = 300
 
@@ -455,12 +456,11 @@ export default {
     onStyleImageMissing(e) {
     },
     onStyleLoad(e) {
-      const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
-      if (style.sprite !== spriteUrl) {
+      if (style.sprite !== consts.spriteUrl) {
         this.$log.debug('setting sprite')
-        style.sprite = spriteUrl
+        style.sprite = consts.spriteUrl
         this.map.setStyle(style)
       } else {
         this.$log.info('adding layers...')
@@ -591,12 +591,36 @@ export default {
       }
       this.processPositions(this.positions)
     },
+    getCategory(category) {
+      if (category === null) { return 'default' }
+      if (!category) { return 'default' }
+      switch (category) {
+        case 'helicopter':
+        case 'bicycle':
+        case 'person':
+        case 'motorcycle':
+        case 'boat':
+        case 'tractor':
+        case 'bus':
+          return 'arrow'
+        case '':
+        case 'car':
+        case 'van':
+        case 'pickup':
+          return 'default'
+        case 'truck':
+          return 'car'
+        default:
+          return 'arrow'
+      }
+    },
     positionToFeature(position, device) {
       const feature = {
         type: 'Feature',
         properties: {
           text: device.name,
           deviceId: position.deviceId,
+          category: this.getCategory(device.category),
           description: '<div id=\'vue-vehicle-popup\'></div>'
         },
         geometry: {
