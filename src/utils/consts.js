@@ -5,5 +5,5 @@ export const routePlaySpeed = 0.0005
 export const refreshRate = 55
 export const backEndHostName = 'xmjth8acs5.execute-api.us-east-1.amazonaws.com'
 export const rServerUrl = 'https://' + backEndHostName + '/Prod/report'
-export const spriteUrl = 'https://d2alv66jwtleln.cloudfront.net/sprite/sprite'
+export const spriteUrl = 'https://3dicons.s3.amazonaws.com/sprite/sprite'
 // export const spriteUrl = 'https://localhost:8080/img/sprite'
