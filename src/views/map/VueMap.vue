@@ -608,8 +608,6 @@ export default {
         case 'van':
         case 'pickup':
           return 'default'
-        case 'truck':
-          return 'car'
         default:
           return 'arrow'
       }

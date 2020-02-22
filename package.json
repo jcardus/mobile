@@ -1,6 +1,6 @@
 {
   "name": "pinme",
-  "version": "1.0.386",
+  "version": "1.0.387",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
