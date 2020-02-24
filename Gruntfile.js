@@ -13,15 +13,9 @@ module.exports = function(grunt) {
         }]
       }
     },
-    move: {
-      maki15: {
-        src: ['1x/*-15.png'],
-        dest: '2x'
-      }
-    },
     sprite: {
       all: {
-        src: '1x/*.png',
+        src: '1x/**/*.png',
         destCss: 'public/img/sprite.json',
         dest: 'public/img/sprite.png',
         cssVarMap: function(sprite) {
@@ -29,7 +23,7 @@ module.exports = function(grunt) {
         }
       },
       all2: {
-        src: '2x/*.png',
+        src: '2x/**/*.png',
         destCss: 'public/img/sprite@2x.json',
         dest: 'public/img/sprite@2x.png',
         cssVarMap: function(sprite) {
