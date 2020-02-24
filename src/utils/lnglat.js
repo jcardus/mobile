@@ -16,7 +16,7 @@ const gray = ['any', ['>', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], t
 const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
 const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
 const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2], ['==', ['get', 'outdated'], false]]
-const _colorFormula = ['%', ['-', 50, ['floor', ['/', ['get', 'course'], 7.2]]], 50]
+const _colorFormula = ['%', ['-', 25, ['floor', ['/', ['get', 'course'], 14.4]]], 25]
 const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-string', _colorFormula]], ['to-string', _colorFormula]]
 
 const { body } = document
@@ -285,7 +285,7 @@ export function addVehiclesLayer(layer, source) {
           yellow, ['concat', 'yellow', ['get', 'category']],
           ['concat', 'red', ['get', 'category']]
         ], '00', colorFormula],
-      'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 7.2]], 7.2]], 1],
+      'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 14.4]], 14.4]], 1],
       'icon-allow-overlap': true,
       'text-allow-overlap': true,
       'icon-size': {

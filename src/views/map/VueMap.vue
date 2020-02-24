@@ -48,7 +48,7 @@ export default {
   components: { CurrentPositionData, HistoryPanel },
   data() {
     return {
-      accessToken: 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ',
+      accessToken: consts.mapboxAccessToken,
       center: [],
       origin: [-9.267959, 38.720023],
       destination: [],
@@ -458,6 +458,7 @@ export default {
     onStyleLoad(e) {
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
+      this.$log.warn('old sprite ', style.sprite)
       if (style.sprite !== consts.spriteUrl) {
         this.$log.debug('setting sprite')
         style.sprite = consts.spriteUrl
@@ -580,7 +581,7 @@ export default {
     },
     _animate: function() {
       if (this.animating) {
-        this.$static.map.triggerRepaint()
+        // this.$static.map.triggerRepaint()
         requestAnimationFrame(this._animate)
       }
     },
@@ -592,7 +593,6 @@ export default {
       this.processPositions(this.positions)
     },
     getCategory(category) {
-      if (category === null) { return 'default' }
       if (!category) { return 'default' }
       switch (category) {
         case 'helicopter':
@@ -608,6 +608,8 @@ export default {
         case 'van':
         case 'pickup':
           return 'default'
+        case 'truck':
+          return 'truck'
         default:
           return 'arrow'
       }
