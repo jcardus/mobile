@@ -14,20 +14,20 @@
           <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>
         </div>
         <div style="padding-top: 5px">
-          <div style="float:left;padding-right: 10px; width:51%">
+          <div style="float:left;padding-right: 10px; width:55%">
             <div style="float: left;padding: 6px 0">
               <IOdometer
                 class="iOdometer"
                 style="margin-right: 4px;font-size: 1em;opacity: 0.4"
                 theme="car"
-                format="(,ddd).d"
-                :value="feature.properties.totalDistance/1000"
+                format="( ddd).d"
+                :value="totalDistance"
               />
-            </div>
-            <immobilize-button
-              :selected-device="device"
-              :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
-            ></immobilize-button>
+            </div><div style="float: left">
+              <immobilize-button
+                :selected-device="device"
+                :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
+              ></immobilize-button></div>
           </div>
           <div style="float:right; padding: 3px 0">
             <el-button
@@ -78,6 +78,11 @@ export default {
     }
   },
   computed: {
+    totalDistance() {
+      let result = this.feature.properties.totalDistance / 1000
+      if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
+      return result
+    },
     showRoutes: {
       get() { return this.historyMode },
       set(value) { this.historyMode = value }
