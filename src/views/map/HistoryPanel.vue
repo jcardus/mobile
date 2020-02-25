@@ -1,9 +1,9 @@
 <template>
-  <div v-show="show" v-loading="loadingRoutes" class="historyPanel" :style="width">
-    <div style="position: relative; height:80px">
+  <div v-show="show" v-loading="loadingRoutes" class="historyPanel2" :style="width">
+    <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :labels="labels" :chart-data="chartData" />
     </div>
-    <div style="padding-left:57px">
+    <div style="padding-left:50px; padding-right: 20px">
       <vue-slider
         v-model="sliderPos"
         :tooltip-formatter="formatter"
@@ -14,14 +14,16 @@
         :marks="marks"
         :included="true"
         :hide-label="true"
-        dot-size="30"
+        dot-size="35"
         :disabled="isPlaying"
         :adsorb="true"
         :use-keyboard="true"
       /></div>
-    <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
-    <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
-    <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
+    <div style="padding-left: 10px">
+      <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
+      <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
+      <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
+    </div>
   </div>
 </template>
 
@@ -39,7 +41,7 @@ export default {
   components: { SpeedChart, VueSlider },
   data() {
     return {
-      padding: 20,
+      padding: 0,
       oldPos: 0,
       sliderPos: 0,
       currentPos: 0,
@@ -238,7 +240,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .historyPanel {
+  .historyPanel2 {
     font-size: 15px;
     margin: 0 !important;
     border-right:0;

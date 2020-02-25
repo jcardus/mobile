@@ -41,7 +41,7 @@ import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
 
-const historyPanelHeight = 300
+const historyPanelHeight = 310
 
 export default {
   name: 'VueMap',
@@ -858,6 +858,7 @@ export default {
   .historyPanel {
     overflow: hidden;
     padding-left: 0;
+    padding-right: 0;
   }
   .currentPositionData {
     padding: 5px;
