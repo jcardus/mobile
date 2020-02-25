@@ -19,3 +19,8 @@ export function hasSVG() {
     hostname.includes('pinme.io') ||
     hostname.includes('localhost')
 }
+
+export function hasTolls() {
+  return hostname === 'web.fleetrack.cl' ||
+    hostname.includes('localhost')
+}

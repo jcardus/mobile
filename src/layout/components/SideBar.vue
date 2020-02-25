@@ -18,6 +18,7 @@
           <el-menu-item index="/reports/report_location">{{ $t('route.report_location_title') }}</el-menu-item>
           <el-menu-item index="/reports/report_zone_crossing">{{ $t('route.report_zone_crossing') }}</el-menu-item>
           <el-menu-item index="/reports/report_speeding">{{ $t('route.report_speeding') }}</el-menu-item>
+          <el-menu-item v-if="tollsReport" index="/reports/report_tolls">{{ $t('route.report_tolls') }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
@@ -29,10 +30,16 @@
   </div>
 </template>
 <script>
+
+import * as partner from '../../utils/partner'
+
 export default {
   computed: {
     iconStyle() {
       return '' // return 'color:' + styles.primary + ';opacity:0.6'
+    },
+    tollsReport() {
+      return partner.hasTolls()
     }
   }
 }
