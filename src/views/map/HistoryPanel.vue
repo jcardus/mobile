@@ -3,7 +3,7 @@
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :labels="labels" :chart-data="chartData" />
     </div>
-    <div style="padding-left:50px; padding-right: 20px">
+    <div style="padding-left:57px; padding-right: 20px">
       <vue-slider
         v-model="sliderPos"
         :tooltip-formatter="formatter"
