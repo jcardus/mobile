@@ -41,7 +41,7 @@ import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
 
-const historyPanelHeight = 300
+const historyPanelHeight = 310
 
 export default {
   name: 'VueMap',
@@ -253,14 +253,10 @@ export default {
       if (feature) {
         this.$static.map.flyTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
-          zoom: 13
-        }
-        )
-        const self = this
-        this.$static.map.once('moveend', function() {
-          self.showPopup(feature, self.selected)
-          window.dispatchEvent(new Event('resize'))
+          zoom: 13,
+          maxDuration: 5000
         })
+        this.showPopup(feature, this.selected)
       }
     },
     flyToFeature: function(feature) {
@@ -862,6 +858,7 @@ export default {
   .historyPanel {
     overflow: hidden;
     padding-left: 0;
+    padding-right: 0;
   }
   .currentPositionData {
     padding: 5px;
