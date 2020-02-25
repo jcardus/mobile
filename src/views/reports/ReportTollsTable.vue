@@ -6,7 +6,7 @@
       stripe
     >
       <el-table-column
-        label="Data / Hora"
+        label="Fecha / Hora"
         width="250px"
       >
         <template slot-scope="scope">
@@ -14,28 +14,28 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="Country"
+        label="País"
         prop="country"
         width="100px"
       >
       </el-table-column>
       <el-table-column
-        label="Road"
+        label="Calle"
         prop="road"
       >
       </el-table-column>
       <el-table-column
-        label="Toll"
+        label="Peaje"
         prop="toll"
       >
       </el-table-column>
       <el-table-column
-        label="Amount"
+        label="Valor"
         prop="amount"
       >
       </el-table-column>
       <el-table-column
-        label="Currency"
+        label="Moneda"
         prop="currency"
       >
       </el-table-column>
