@@ -253,14 +253,10 @@ export default {
       if (feature) {
         this.$static.map.flyTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
-          zoom: 13
-        }
-        )
-        const self = this
-        this.$static.map.once('moveend', function() {
-          self.showPopup(feature, self.selected)
-          window.dispatchEvent(new Event('resize'))
+          zoom: 13,
+          maxDuration: 5000
         })
+        this.showPopup(feature, this.selected)
       }
     },
     flyToFeature: function(feature) {
