@@ -129,7 +129,7 @@ export default {
       })
     },
     geofenceDeleted(geofenceId) {
-      vm.$data.geofences = vm.$data.geofences.filter((e) => e.id !== geofenceId)
+      vm.$data.geofences = vm.$data.geofences.filter((e) => e && e.id !== geofenceId)
       this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== geofenceId)
       lnglat.refreshGeofences()
       this.$message({
