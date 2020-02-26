@@ -269,7 +269,7 @@ export default {
         serverBus.$emit('routeFetched')
       } else {
         this.$alert('no data for the periodo selected')
-        serverBus.$emit('alertMessage', 'route.nodata')
+        serverBus.$emit('message', 'route.nodata')
       }
       this.loadingRoutes = false
     },

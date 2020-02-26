@@ -44,6 +44,22 @@ function invokeApi(url, onFulfill, onError) {
   }
 }
 
+function invokeApiPost(url, body, onFulfill, onError) {
+  try {
+    cookie = VueCookies.get('user-info')
+    axios.post(url, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      .then(response => vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
+        onFulfill(response.data)
+      }))
+      .catch(reason => vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
+        Vue.$log.error(reason)
+        onError(reason)
+      }))
+  } catch (e) {
+    onError(e)
+  }
+}
+
 function invokeDeleteApi(url, id, onFulfill) {
   return new Promise((resolve, reject) => {
     axios.delete(url + '/' + id, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
@@ -162,7 +178,7 @@ export const traccar = {
   },
   stopReceiving: function() {
   },
-  newGeofence: function(name, description, area, onFulfill) {
+  newGeofence(name, description, area, onFulfill, onError) {
     const body = {
       name: name,
       description: '',
@@ -174,11 +190,7 @@ export const traccar = {
       }
     }
     Vue.$log.debug(area)
-    axios.post(geoFences, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+    invokeApiPost(geoFences, body, onFulfill, onError)
   },
   editGeofence: function(geofenceId, geofence, onFulfill) {
     axios.put(geoFences + '/' + geofenceId, geofence, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
@@ -235,7 +247,7 @@ export const traccar = {
       })
   },
   deleteAlert: function(alertId, onFulfill) {
-    return new Promise((resolve, reject) => {
+    return new Promise(() => {
       invokeDeleteApi(alerts, alertId, onFulfill)
     })
   },

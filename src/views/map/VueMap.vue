@@ -121,6 +121,10 @@ export default {
     this.$log.info('created VueMap, userLoggedIn: ', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
+    if (this.isMobile) {
+      this.$prompt = this.$f7.dialog.prompt
+      this.$alert = this.$f7.dialog.alert
+    }
   },
   static() {
     return {
@@ -139,18 +143,11 @@ export default {
     NProgress.start()
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
-    this.$log.debug('on map loaded')
     this.$root.$static.map = new mapboxgl.Map({
       container: 'map',
       style: this.$root.$data.mapStyle
     })
     this.setZoomAndCenter()
-    if (this.map) {
-      this.map.on('load', this.onMapLoad)
-    } else {
-      Vue.$log.error('map is null: ', this.map)
-      TrackJS.track('MAP')
-    }
     this.subscribeEvents()
   },
   timers: {
@@ -190,7 +187,7 @@ export default {
         this.map.dragRotate.disable()
         this.map.touchZoomRotate.disableRotation()
       }
-      this.$log.info('onMapLoad')
+      this.$log.info('VueMap')
       if (this.$store.state.user.dataLoaded) {
         this.initData()
         NProgress.done()
@@ -351,18 +348,18 @@ export default {
           mapboxgl: mapboxgl
         }), 'bottom-right')
         map.addControl(new RulerControl(), 'bottom-right')
-        this.$static.draw = new MapboxDraw({
-          displayControlsDefault: false,
-          controls: {
-            point: true,
-            line_string: true,
-            polygon: true,
-            trash: true
-          }
-        })
-        map.addControl(this.$static.draw, 'bottom-right')
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
       }
+      this.$static.draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          point: true,
+          line_string: !this.isMobile,
+          polygon: !this.isMobile,
+          trash: true
+        }
+      })
+      map.addControl(this.$static.draw, 'bottom-right')
       map.addControl(new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
@@ -374,7 +371,6 @@ export default {
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
-
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
     },
     onMoveEnd: function() {
@@ -397,6 +393,7 @@ export default {
     },
     subscribeEvents() {
       const self = this
+      this.$static.map.on('load', this.onMapLoad)
       this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
@@ -426,6 +423,7 @@ export default {
       window.addEventListener('resize', this.mapResize)
     },
     unsubscribeEvents() {
+      this.$static.map.off('load', this.onMapLoad)
       this.$static.map.off('touchstart', 'unclustered-point', this.onTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
@@ -454,7 +452,6 @@ export default {
     onStyleLoad(e) {
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
-      this.$log.warn('old sprite ', style.sprite)
       if (style.sprite !== consts.spriteUrl) {
         this.$log.debug('setting sprite')
         style.sprite = consts.spriteUrl
@@ -659,18 +656,13 @@ export default {
           }
           feature = self.positionToFeature(position, device)
           self.positionsSource.features.push(feature)
-          if (vm.$static.map) {
-            if (vm.$static.map.getSource('positions')) {
-              vm.$static.map.getSource('positions').setData(self.positionsSource)
-            }
-          }
         } else {
           if (!device) return
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            self.map.getZoom() > 10
+            self.map.getZoom() > 11
           ) {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
@@ -678,15 +670,11 @@ export default {
             self.$log.debug('device ', feature.properties.text, ' off bounds')
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
-            if (vm.$static.map) {
-              if (vm.$static.map.getSource('positions')) {
-                vm.$static.map.getSource('positions').setData(self.positionsSource)
-              }
-            }
           }
         }
         device.currentFeature = feature
       })
+      this.refreshMap()
     },
     findNearestPOI: function(position) {
       if (this.pois.length === 0) {
@@ -801,25 +789,37 @@ export default {
         message: this.$t('map.' + type + '_created')
       })
     },
-    drawCreate(e) {
+    drawCreate() {
       const data = this.$static.draw.getAll()
+      const self = this
+      const type = this.getType(lnglat.getArea(data))
+
+      function createGeofence(geofenceName) {
+        self.$log.debug('creating ', geofenceName)
+        traccar.newGeofence(geofenceName, 'description', lnglat.getArea(data), self.featureCreated,
+          e => serverBus.$emit('message', self.$t('map.' + type + '_create_error') + ': ' + e)
+        )
+      }
+
+      function errorCreating(e) {
+        Vue.$log.error(e)
+        serverBus.$emit('message', self.$t('map.' + type + '_create_canceled'))
+      }
+
       if (data.features.length > 0) {
-        const type = this.getType(lnglat.getArea(data))
-        this.$log.debug('creating ', data)
-        this.$prompt(this.$t('map.' + type + '_create_name'), this.$t('map.' + type + '_create_title'), {
-          confirmButtonText: this.$t('map.create_confirm'),
-          cancelButtonText: this.$t('map.create_cancel')
-        }).then(({ value }) => {
-          traccar.newGeofence(value, 'description', lnglat.getArea(data), this.featureCreated)
-        }).catch((e) => {
-          Vue.$log.error(e)
-          this.$message({
-            type: 'info',
-            message: this.$t('map.' + type + '_create_canceled')
-          })
-        })
-      } else {
-        if (e.type !== 'draw.delete') alert('Use the draw tools to draw a polygon!')
+        try {
+          this.$prompt(
+            this.$t('map.' + type + '_create_name'),
+            this.$t('map.' + type + '_create_title'),
+            this.isMobile ? createGeofence : {
+              confirmButtonText: this.$t('map.create_confirm'),
+              cancelButtonText: this.$t('map.create_cancel')
+            },
+            errorCreating
+          ).then(({ value }) => createGeofence(value))
+        } catch (e) {
+          this.$log.debug(e) // on mobile version an exception is thrown
+        }
       }
     },
     drawDelete() {
@@ -852,6 +852,7 @@ export default {
     .mapboxgl-ctrl-group > button {
       width: 42px;
       height: 42px;
+      background-size: cover;
     }
   }
 

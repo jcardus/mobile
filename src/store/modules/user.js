@@ -127,8 +127,8 @@ function initData(commit) {
             d.groupName = group && group.name
           })
           traccar.startReceiving()
-          serverBus.$emit('dataLoaded')
           commit('SET_DATA_LOADED', true)
+          serverBus.$emit('dataLoaded')
           resolve()
         })
       })
