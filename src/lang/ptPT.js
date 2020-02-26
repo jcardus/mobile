@@ -32,7 +32,8 @@ export default {
     create_confirm: 'Confirmar',
     create_cancel: 'Cancelar',
     loading: 'A carregar',
-    totalDistance: 'Distância total'
+    totalDistance: 'Distância total',
+    poi_click_on_map: 'Clique no ponto do mapa onde deseja criar o POI'
   },
   vehicleList: {
     title: 'Veículos',

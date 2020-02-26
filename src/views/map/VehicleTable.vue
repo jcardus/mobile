@@ -202,7 +202,7 @@ export default {
       return devices
     },
     pois: function() {
-      return this.$root.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
+      return this.$root.$data.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     }
   },
   mounted() {

@@ -48,8 +48,11 @@ export default {
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
   },
   methods: {
-    message(message) {
-      this.$message(this.$t(message))
+    message(message, type) {
+      this.$message({
+        type: type || 'info',
+        message: message
+      })
     },
     updateAvailable() {
       this.showUpdateDiv = true

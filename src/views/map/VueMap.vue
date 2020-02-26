@@ -101,8 +101,8 @@ export default {
     geofences() {
       return this.$root.$data.geofences
     },
-    pois: function() {
-      return this.geofences.filter(g => g.area.startsWith('CIRCLE'))
+    pois() {
+      return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
     map() {
       return vm.$static.map
@@ -403,6 +403,7 @@ export default {
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
+      this.$static.map.on('draw.modechange', this.drawModeChange)
       this.$static.map.on('data', this.onData)
       this.$static.map.on('styleimagemissing', this.onStyleImageMissing)
       serverBus.$on('dataLoaded', this.initData)
@@ -436,6 +437,7 @@ export default {
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
+      this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
       // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
@@ -722,9 +724,11 @@ export default {
       const result = []
       Vue.$log.debug('converting ', geofences.length, ' features')
       geofences.forEach(function(item) {
-        const geojson = self.getFeatureGeojson(item)
-        Vue.$log.debug('adding... ', geojson)
-        result.push(geojson)
+        if (item) {
+          const geojson = self.getFeatureGeojson(item)
+          Vue.$log.debug('adding... ', geojson)
+          result.push(geojson)
+        }
       })
       return result
     },
@@ -792,12 +796,10 @@ export default {
       this.geofencesSource.features.push(featureGeojson)
       this.refreshGeofences()
       const type = this.getType(feature.area)
-      this.$message({
-        type: 'success',
-        message: this.$t('map.' + type + '_created')
-      })
+      serverBus.$emit('message', this.$t('map.' + type + '_created'), 'success')
     },
-    drawCreate() {
+    drawCreate(e) {
+      this.$log.debug(e)
       const data = this.$static.draw.getAll()
       const self = this
       const type = this.getType(lnglat.getArea(data))
@@ -805,13 +807,17 @@ export default {
       function createGeofence(geofenceName) {
         self.$log.debug('creating ', geofenceName)
         traccar.newGeofence(geofenceName, 'description', lnglat.getArea(data), self.featureCreated,
-          e => serverBus.$emit('message', self.$t('map.' + type + '_create_error') + ': ' + e)
+          e => {
+            serverBus.$emit('message', self.$t('map.' + type + '_create_error') + ': ' + e)
+            self.$static.draw.deleteAll()
+          }
         )
       }
 
       function errorCreating(e) {
         Vue.$log.error(e)
         serverBus.$emit('message', self.$t('map.' + type + '_create_canceled'))
+        self.$static.draw.deleteAll()
       }
 
       if (data.features.length > 0) {
@@ -824,13 +830,19 @@ export default {
               cancelButtonText: this.$t('map.create_cancel')
             },
             errorCreating
-          ).then(({ value }) => createGeofence(value))
+          ).then(({ value }) => createGeofence(value)
+          ).catch(errorCreating)
         } catch (e) {
           this.$log.debug(e) // on mobile version an exception is thrown
         }
       }
     },
     drawDelete() {
+    },
+    drawModeChange(e) {
+      if (e.mode === 'draw_point') {
+        serverBus.$emit('message', this.$t('map.poi_click_on_map'))
+      }
     },
     drawUpdate() {
     },

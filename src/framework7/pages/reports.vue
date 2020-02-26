@@ -79,7 +79,7 @@ export default {
       })
     },
     geofences() {
-      return vm.$data.geofences
+      return vm.$data.geofences.filter(g => g) // filter null geofences...
     }
   },
   created() {

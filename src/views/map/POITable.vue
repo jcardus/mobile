@@ -60,7 +60,7 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     pois: function() {
-      return vm.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
+      return vm.$data.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredPOIs: function() {
