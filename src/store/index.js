@@ -51,9 +51,9 @@ const store = new Vuex.Store({
       state.lastUpdate = Date.now()
     },
     SOCKET_RECONNECT(state, count) {
-      if (count === 10) {
-        Vue.$log.warn('count = 20, refreshing!')
-        TrackJS.track('REFRESHING')
+      if (count === 5) {
+        Vue.$log.warn('count = 5, logging out')
+        TrackJS.track('LOGOUT')
         removeToken()
         location.reload()
       }

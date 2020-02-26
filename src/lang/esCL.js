@@ -30,7 +30,8 @@ export default {
     create_confirm: 'Confirmar',
     create_cancel: 'Cancelar',
     loading: 'Cargando...',
-    totalDistance: 'Distância total'
+    totalDistance: 'Distância total',
+    poi_click_on_map: 'Clique en el mapa para crear el PDI'
   },
   vehicleList: {
     title: 'Vehículos',

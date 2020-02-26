@@ -19,6 +19,8 @@ export default {
     nodata: 'Não existem dados para o período seleccionado.'
   },
   map: {
+    geofence_create_error: 'Erro a criar baliza',
+    poi_create_error: 'Erro a criar POI',
     geofence_create_title: 'Nova Geofence',
     geofence_create_name: 'Por favor indique o nome da baliza...',
     geofence_created: 'Geofence criada com sucesso!',
@@ -30,7 +32,8 @@ export default {
     create_confirm: 'Confirmar',
     create_cancel: 'Cancelar',
     loading: 'A carregar',
-    totalDistance: 'Distância total'
+    totalDistance: 'Distância total',
+    poi_click_on_map: 'Clique no ponto do mapa onde deseja criar o POI'
   },
   vehicleList: {
     title: 'Veículos',

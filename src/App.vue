@@ -26,7 +26,7 @@ export default {
   },
   created() {
     serverBus.$on('updateAvailable', this.updateAvailable)
-    serverBus.$on('alertMessage', this.alertMessage)
+    serverBus.$on('message', this.message)
     if (getToken()) {
       this.$log.debug('App created with cookie dispatching setUser')
       this.$store.dispatch('user/setUser').then(() => {
@@ -40,7 +40,7 @@ export default {
   },
   beforeDestroy() {
     serverBus.$off('updateAvailable', this.updateAvailable)
-    serverBus.$off('alertMessage', this.alertMessage)
+    serverBus.$off('message', this.message)
   },
   mounted() {
     this.$log.debug('App Desktop')
@@ -48,8 +48,11 @@ export default {
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
   },
   methods: {
-    alertMessage(message) {
-      this.$alert(this.$t(message))
+    message(message, type) {
+      this.$message({
+        type: type || 'info',
+        message: message
+      })
     },
     updateAvailable() {
       this.showUpdateDiv = true

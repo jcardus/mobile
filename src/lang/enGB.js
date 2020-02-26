@@ -18,6 +18,8 @@ export default {
     duration: 'Duration'
   },
   map: {
+    geofence_create_error: 'Erro a criar baliza',
+    poi_create_error: 'Erro a criar POI',
     geofence_create_title: 'New geofence',
     geofence_create_name: 'Please enter the name of this geofence...',
     geofence_created: 'Geofence created sucessfully!',
@@ -29,7 +31,8 @@ export default {
     create_confirm: 'OK',
     create_cancel: 'Cancel',
     loading: 'Loading',
-    totalDistance: 'Distância total'
+    totalDistance: 'Distância total',
+    poi_click_on_map: 'Clique no ponto do mapa onde deseja criar o POI'
   },
   vehicleList: {
     title: 'Vehicle',

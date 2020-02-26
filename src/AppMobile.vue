@@ -100,7 +100,7 @@ export default {
     Vue.$log.debug('created AppMobile')
     this.$root.$store.subscribe(this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
-    serverBus.$on('alertMessage', this.alertMessage)
+    serverBus.$on('message', this.message)
   },
   mounted() {
     try {
@@ -152,8 +152,15 @@ export default {
     mapShow() {
       serverBus.$emit('mapShown')
     },
-    alertMessage(message) {
-      this.$f7.dialog.alert(this.$t(message))
+    message(message) {
+      this.$f7.notification.create({
+        icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '" alt=""/>',
+        titleRightText: '',
+        // title: this.$t('layout.' + event.type),
+        text: message,
+        closeTimeout: 5000,
+        subtitle: partner.getTitle()
+      }).open()
     },
     reportsShow() {
       Vue.$log.debug('emit reportsActive')
