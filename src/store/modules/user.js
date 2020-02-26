@@ -21,7 +21,7 @@ const state = {
   avatar: '',
   userId: 0,
   dataLoaded: false,
-  connectionOk: false
+  connectionOk: true
 }
 
 const mutations = {
@@ -128,6 +128,7 @@ function initData(commit) {
           })
           traccar.startReceiving()
           commit('SET_DATA_LOADED', true)
+          Vue.$log.debug('emit dataLoaded')
           serverBus.$emit('dataLoaded')
           resolve()
         })
