@@ -356,7 +356,7 @@ export default {
           point: true,
           line_string: !this.isMobile,
           polygon: !this.isMobile,
-          trash: true
+          trash: false
         }
       })
       map.addControl(this.$static.draw, 'bottom-right')
@@ -681,11 +681,19 @@ export default {
         return null
       }
       const a = this.pois.map(p => {
-        const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
-        const coord = str.trim().split(' ')
-        return { id: p.id, distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude)) }
+        if (p.area) {
+          const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
+          const coord = str.trim().split(' ')
+          return {
+            id: p.id,
+            distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude))
+          }
+        }
+        return {
+          id: p.id,
+          distance: Number.MAX_SAFE_INTEGER
+        }
       }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
-
       if (a.length > 0) {
         return a[0].id
       }
