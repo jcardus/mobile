@@ -127,4 +127,19 @@ export default {
     background-size: 70%;
   }
 
+  @media only screen and (max-width: 768px) {
+    .mapboxgl-ctrl-group > button {
+      width: 42px;
+      height: 42px;
+      background-size: cover;
+    }
+    .mapboxgl-style-list button
+    {
+      font-size: 28px;
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+
+  }
+
 </style>

@@ -161,7 +161,8 @@ export default {
       })
       checkForUpdates()
     },
-    initData: function() {
+    initData() {
+      Vue.$log.debug('VueMap')
       const self = this
       traccar.positions((pos) => {
         self.processPositions(pos)
@@ -188,10 +189,7 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
       this.$log.info('VueMap')
-      if (this.$store.state.user.dataLoaded) {
-        this.initData()
-        NProgress.done()
-      }
+      NProgress.done()
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
@@ -868,6 +866,7 @@ export default {
       border-radius: 8px;
     }
   }
+
   @media only screen and (max-width: 768px) {
     .mapboxgl-ctrl-group > button {
       width: 42px;

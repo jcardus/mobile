@@ -95,7 +95,9 @@ export default {
     }
 
     I18n.putVocabularies(dict)
-    I18n.setLanguage(getLanguage().slice(2))
+    const lang = getLanguage().slice(2)
+    this.$log.debug('setting lang to ', lang)
+    I18n.setLanguage(lang)
   },
   methods: {
     hasSVG() {
