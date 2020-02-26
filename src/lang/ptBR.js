@@ -93,6 +93,8 @@ export default {
     disconnected: 'Desligado',
     connection: 'Ligação',
     map: 'Mapa',
+    about: 'Informações',
+    logout: 'Sair',
     vehicles: 'Veículos',
     title: 'Configurações',
     route_history: 'Histórico de Rota',

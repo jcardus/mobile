@@ -15,6 +15,7 @@ export default {
     report_speeding_beta: 'Relatórios de excexsos de velocidade BETA',
     report_tolls: 'Relatório de Portagens',
     settings: 'Configurações',
+    settings_map: 'Mapa',
     duration: 'Duração',
     nodata: 'Não existem dados para o período seleccionado.'
   },
@@ -106,6 +107,8 @@ export default {
     disconnected: 'Desligado',
     connection: 'Ligação',
     map: 'Mapa',
+    about: 'Informações',
+    logout: 'Sair',
     vehicles: 'Veículos',
     title: 'Configurações',
     route_history: 'Histórico de Rota',
