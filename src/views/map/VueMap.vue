@@ -188,10 +188,7 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
       this.$log.info('VueMap')
-      if (this.$store.state.user.dataLoaded) {
-        this.initData()
-        NProgress.done()
-      }
+      NProgress.done()
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
