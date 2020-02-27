@@ -57,6 +57,7 @@ export default {
   methods: {
     refreshApp() {
       this.$log.debug('refreshing...')
+      this.$f7.preloader.show()
       location.reload()
     },
     logout() {
