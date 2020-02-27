@@ -135,9 +135,9 @@ export default {
     }
     .mapboxgl-style-list button
     {
-      font-size: 28px;
-      padding-top: 30px;
-      padding-bottom: 30px;
+      font-size: 24px;
+      padding-top: 5px;
+      padding-bottom: 26px;
     }
 
   }
