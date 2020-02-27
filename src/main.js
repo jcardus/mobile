@@ -74,7 +74,8 @@ export const settings = {
   showVehicleList: true,
   showSlider: true,
   truck3d: false,
-  show3dBuildings: true
+  show3dBuildings: true,
+  experiment: true
 }
 
 export let newServiceWorker
