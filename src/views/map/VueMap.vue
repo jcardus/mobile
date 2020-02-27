@@ -120,7 +120,7 @@ export default {
   created() {
     this.$log.info('created VueMap, userLoggedIn: ', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
-    vm.$data.loadingMap = false
+    vm.$data.loadingMap = true
     if (this.isMobile) {
       this.$prompt = this.$f7.dialog.prompt
       this.$alert = this.$f7.dialog.alert
@@ -148,7 +148,7 @@ export default {
       style: this.$root.$data.mapStyle
     })
     this.setZoomAndCenter()
-    // this.subscribeEvents()
+    this.subscribeEvents()
   },
   timers: {
     ping: { time: 30000, autostart: true, repeat: true }
@@ -282,7 +282,7 @@ export default {
       }
     },
     refreshMap() {
-      if (this.$static.map.getSource('positions') && !this.map.isMoving() && !this.map.isZooming()) {
+      if (this.$static.map.getSource('positions')) {
         this.$static.map.getSource('positions').setData(this.positionsSource)
       }
     },
@@ -402,7 +402,7 @@ export default {
       const self = this
       this.$static.map.on('load', this.onMapLoad)
       this.$static.map.on('style.load', this.onStyleLoad)
-      this.$static.map.on('move', this.onMove)
+      // this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
