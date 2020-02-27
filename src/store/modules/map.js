@@ -1,4 +1,5 @@
 import VueCookies from 'vue-cookies'
+import { vm } from '../../main'
 
 const state = {
   showGeofences: VueCookies.get('showGeofences') === '1',
@@ -20,8 +21,12 @@ const actions = {
   toggleGeofences({ commit }) {
     commit('TOGGLE_GEOFENCES')
   },
-  togglePOIs({ commit }) {
-    commit('TOGGLE_POIS')
+  togglePOIs(context) {
+    context.commit('TOGGLE_POIS')
+    vm.$static.map.setLayoutProperty('pois', 'visibility',
+      state.showPOIs ? 'visible' : 'none')
+    vm.$static.map.setLayoutProperty('pois-labels', 'visibility',
+      state.showPOIs ? 'visible' : 'none')
   }
 }
 

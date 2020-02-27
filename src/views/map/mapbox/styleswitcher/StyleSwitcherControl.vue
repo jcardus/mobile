@@ -63,10 +63,6 @@ export default {
     },
     togglePOIs: function() {
       vm.$store.dispatch('map/togglePOIs')
-      this.map.setLayoutProperty('pois', 'visibility',
-        this.poisVisible ? 'visible' : 'none')
-      this.map.setLayoutProperty('pois-labels', 'visibility',
-        this.poisVisible ? 'visible' : 'none')
     },
     btnClick: function() {
       this.btnVisible = false

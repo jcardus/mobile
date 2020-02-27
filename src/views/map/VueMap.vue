@@ -364,7 +364,8 @@ export default {
           line_string: !this.isMobile,
           polygon: !this.isMobile,
           trash: false
-        }
+        },
+        touchEnabled: false
       })
       map.addControl(this.$static.draw, 'bottom-right')
       map.addControl(new mapboxgl.GeolocateControl({
@@ -413,7 +414,6 @@ export default {
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('draw.modechange', this.drawModeChange)
       this.$static.map.on('data', this.onData)
-      this.$static.map.on('styleimagemissing', this.onStyleImageMissing)
       serverBus.$on('dataLoaded', this.initData)
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
@@ -447,7 +447,6 @@ export default {
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
-      // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
@@ -809,13 +808,21 @@ export default {
     },
     drawCreate(e) {
       this.$log.debug(e)
+      if (!this.$store.state.map.showPOIs) {
+        this.$store.dispatch('map/togglePOIs')
+      }
       const data = this.$static.draw.getAll()
+      this.$log.debug(data)
+      const area = e.lngLats
+        ? 'CIRCLE (' + e.lngLats[0].lat + ' ' + e.lngLats[0].lng + ', 100)'
+        : lnglat.getArea(data)
+
       const self = this
-      const type = this.getType(lnglat.getArea(data))
+      const type = this.getType(area)
 
       function createGeofence(geofenceName) {
         self.$log.debug('creating ', geofenceName)
-        traccar.newGeofence(geofenceName, 'description', lnglat.getArea(data), self.featureCreated,
+        traccar.newGeofence(geofenceName, 'description', area, self.featureCreated,
           e => {
             serverBus.$emit('message', self.$t('map.' + type + '_create_error') + ': ' + e)
             self.$static.draw.deleteAll()
@@ -829,7 +836,7 @@ export default {
         self.$static.draw.deleteAll()
       }
 
-      if (data.features.length > 0) {
+      if (data.features.length > 0 || e.lngLats) {
         try {
           this.$prompt(
             this.$t('map.' + type + '_create_name'),
@@ -851,6 +858,7 @@ export default {
     drawModeChange(e) {
       if (e.mode === 'draw_point') {
         serverBus.$emit('message', this.$t('map.poi_click_on_map'))
+        this.map.once('touchstart', this.drawCreate)
       }
     },
     drawUpdate() {
