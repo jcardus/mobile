@@ -282,7 +282,7 @@ export default {
       }
     },
     refreshMap() {
-      if (this.$static.map.getSource('positions')) {
+      if (this.$static.map.getSource('positions') && !this.map.isMoving() && !this.map.isZooming()) {
         this.$static.map.getSource('positions').setData(this.positionsSource)
       }
     },
@@ -447,7 +447,6 @@ export default {
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
-      // this.$static.map.off('styleimagemissing', this.missingImage)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
