@@ -364,7 +364,8 @@ export default {
           line_string: !this.isMobile,
           polygon: !this.isMobile,
           trash: false
-        }
+        },
+        touchEnabled: false
       })
       map.addControl(this.$static.draw, 'bottom-right')
       map.addControl(new mapboxgl.GeolocateControl({
@@ -402,8 +403,8 @@ export default {
       const self = this
       this.$static.map.on('load', this.onMapLoad)
       this.$static.map.on('style.load', this.onStyleLoad)
-      // this.$static.map.on('move', this.onMove)
-      // this.$static.map.on('moveend', this.onMoveEnd)
+      this.$static.map.on('move', this.onMove)
+      this.$static.map.on('moveend', this.onMoveEnd)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
@@ -807,13 +808,21 @@ export default {
     },
     drawCreate(e) {
       this.$log.debug(e)
+      if (!this.$store.state.map.showPOIs) {
+        this.$store.dispatch('map/togglePOIs')
+      }
       const data = this.$static.draw.getAll()
+      this.$log.debug(data)
+      const area = e.lngLats
+        ? 'CIRCLE (' + e.lngLats[0].lat + ' ' + e.lngLats[0].lng + ', 100)'
+        : lnglat.getArea(data)
+
       const self = this
-      const type = this.getType(lnglat.getArea(data))
+      const type = this.getType(area)
 
       function createGeofence(geofenceName) {
         self.$log.debug('creating ', geofenceName)
-        traccar.newGeofence(geofenceName, 'description', lnglat.getArea(data), self.featureCreated,
+        traccar.newGeofence(geofenceName, 'description', area, self.featureCreated,
           e => {
             serverBus.$emit('message', self.$t('map.' + type + '_create_error') + ': ' + e)
             self.$static.draw.deleteAll()
@@ -827,7 +836,7 @@ export default {
         self.$static.draw.deleteAll()
       }
 
-      if (data.features.length > 0) {
+      if (data.features.length > 0 || e.lngLats) {
         try {
           this.$prompt(
             this.$t('map.' + type + '_create_name'),
@@ -849,6 +858,7 @@ export default {
     drawModeChange(e) {
       if (e.mode === 'draw_point') {
         serverBus.$emit('message', this.$t('map.poi_click_on_map'))
+        this.map.once('touchstart', this.drawCreate)
       }
     },
     drawUpdate() {
