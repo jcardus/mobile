@@ -397,6 +397,7 @@ export default {
       this.$static.map.on('moveend', this.onMoveEnd)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)

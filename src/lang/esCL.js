@@ -104,6 +104,8 @@ export default {
     disconnected: 'Desconectado',
     connection: 'Conexión',
     map: 'Mapa',
+    about: 'Informações',
+    logout: 'Salir',
     vehicles: 'Vehículos',
     title: 'Configuraciones',
     route_history: 'Histórico de Rota',
