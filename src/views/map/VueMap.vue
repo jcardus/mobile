@@ -888,9 +888,9 @@ export default {
 
   @media only screen and (max-width: 768px) {
     .mapboxgl-ctrl-group > button {
-      width: 42px;
-      height: 42px;
-      background-size: cover;
+     width: 42px;
+     height: 42px;
+     background-size: cover;
     }
   }
 
