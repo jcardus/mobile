@@ -122,7 +122,7 @@ function initData(commit) {
                   }
                 }
               })
-            })
+            }).catch(e => Vue.$log.error(e))
             const group = groups.find((g) => g.id === d.groupId)
             d.groupName = group && group.name
           })

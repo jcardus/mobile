@@ -175,6 +175,7 @@ export default {
     finishLoading() {
       if (++this.loadingCount === 2) {
         vm.$data.loadingMap = false
+        if (this.isMobile) { this.$f7.preloader.hide() }
       } else if (this.$store.state.user.dataLoaded && this.loadingCount === 1) {
         this.initData()
       } else {

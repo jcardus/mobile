@@ -33,10 +33,13 @@ export default {
   },
   created() {
     this.$log.debug('created VueMap mobile, user loggedin: ', this.userLoggedIn)
+    serverBus.$on('deviceSelected', this.deviceSelected)
   },
   mounted() {
     this.$log.debug('mounted VueMap mobile, user loggedin: ', this.userLoggedIn)
-    serverBus.$on('deviceSelected', this.deviceSelected)
+    if (this.userLoggedIn) {
+      this.$f7.preloader.show()
+    }
   },
   beforeDestroy() {
     this.$log.debug('destroying MapMobileContainer')
