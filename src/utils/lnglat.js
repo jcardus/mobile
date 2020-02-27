@@ -290,8 +290,8 @@ export function addVehiclesLayer(layer, source) {
       'text-allow-overlap': true,
       'icon-size': {
         stops: [
-          [1, 0.7],
-          [14, 0.8],
+          [1, 0.6],
+          [14, 0.7],
           [15, 0.9],
           [18, 1]
         ]
