@@ -461,7 +461,7 @@ export default {
         this.$log.info('adding layers...')
         lnglat.addLayers(vm.$static.map)
         this.$log.info('done adding layers')
-        this.loadingMap = false
+        vm.$data.loadingMap = false
       }
     },
     onData() {
