@@ -120,7 +120,7 @@ export default {
   created() {
     this.$log.info('created VueMap, userLoggedIn: ', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
-    vm.$data.loadingMap = true
+    vm.$data.loadingMap = false
     if (this.isMobile) {
       this.$prompt = this.$f7.dialog.prompt
       this.$alert = this.$f7.dialog.alert
@@ -148,7 +148,7 @@ export default {
       style: this.$root.$data.mapStyle
     })
     this.setZoomAndCenter()
-    this.subscribeEvents()
+    // this.subscribeEvents()
   },
   timers: {
     ping: { time: 30000, autostart: true, repeat: true }

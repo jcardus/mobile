@@ -300,7 +300,6 @@ export function addVehiclesLayer(layer, source) {
   })
 }
 export function addLayers(map) {
-  if (settings.experiment) { return }
   if (!map.getSource(source)) {
     map.addSource(source, {
       type: 'geojson',
