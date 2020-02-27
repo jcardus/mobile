@@ -1,23 +1,39 @@
 <template>
   <f7-page name="settings">
     <f7-navbar :title="$t('route.settings')"></f7-navbar>
-    <f7-block>
-      <f7-button large raised fill @click="logout">Logout</f7-button>
-    </f7-block>
-
-    <f7-block-title></f7-block-title>
-    <f7-list>
-      <f7-list-item :title="$t('settings.version')" :after="$store.state.app.packageVersion">
-      </f7-list-item>
-      <f7-list-item :title="$t('vehicleList.column_lastUpdate')" :after="lastUpdate.format('LLL')">
-      </f7-list-item>
-      <f7-list-item :title="$t('settings.connection')" :after="connected">
-      </f7-list-item>
-      <f7-list-item :title="$t('login.login_user')" :after="$store.state.user.email">
-      </f7-list-item>
-    </f7-list>
-    <f7-block>
-      <f7-button raised fill @click="refreshApp">{{ $t('settings.refresh') }}</f7-button>
+    <f7-block inset>
+      <!-- <f7-row tag="p">
+        <f7-col>
+          <f7-button fill large raised style="font-size:20px" href="/settings/vehicles"><i class="fas fa-car-alt"></i> Vehicles</f7-button>
+        </f7-col>
+        <f7-col>
+          <f7-button fill large raised style="font-size:20px" href="/settings/pois"><i class="fas fa-map-marker-alt"></i> POIs</f7-button>
+        </f7-col>
+      </f7-row>
+      <f7-row tag="p">
+        <f7-col>
+          <f7-button fill large raised style="font-size:20px" href="/settings/geofences"><i class="fas fa-draw-polygon"></i> Geofences</f7-button>
+        </f7-col>
+        <f7-col>
+          <f7-button fill large raised style="font-size:20px" href="/settings/alerts"><i class="fas fa-bell"></i> Alerts</f7-button>
+        </f7-col>
+      </f7-row>-->
+      <f7-row tag="p">
+        <f7-col>
+          <f7-button fill large raised style="font-size:15px" href="/settings/map"><i class="fas fa-map"></i> {{ $t('settings.map') }}</f7-button>
+        </f7-col>
+        <f7-col>
+          <f7-button fill large raised style="font-size:15px" href="/settings/about"><i class="fas fa-info-circle"></i> {{ $t('settings.about') }}</f7-button>
+        </f7-col>
+      </f7-row>
+      <f7-row tag="p">
+        <f7-col>
+          <f7-button fill large raised style="font-size:15px" @click="refreshApp"><i class="fas fa-redo"></i> {{ $t('settings.refresh') }}</f7-button>
+        </f7-col>
+        <f7-col>
+          <f7-button fill large raised style="font-size:15px" @click="logout"><i class="fas fa-sign-out-alt"></i> {{ $t('settings.logout') }}</f7-button>
+        </f7-col>
+      </f7-row>
     </f7-block>
   </f7-page>
 </template>
