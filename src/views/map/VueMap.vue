@@ -168,9 +168,18 @@ export default {
         self.processPositions(pos)
         self.geofencesSource.features = self.processGeofences(vm.$data.geofences)
         self.refreshGeofences()
-        vm.$data.loadingMap = false
+        self.finishLoading()
         NProgress.done()
       })
+    },
+    finishLoading() {
+      if (++this.loadingCount === 2) {
+        vm.$data.loadingMap = false
+      } else if (this.$store.state.user.dataLoaded && this.loadingCount === 1) {
+        this.initData()
+      } else {
+        this.$log.warn('not finishing loading, count = ', this.loadingCount)
+      }
     },
     mapResize: function() {
       if (this.map) {
@@ -461,7 +470,7 @@ export default {
         this.$log.info('adding layers...')
         lnglat.addLayers(vm.$static.map)
         this.$log.info('done adding layers')
-        vm.$data.loadingMap = false
+        this.finishLoading()
       }
     },
     onData() {
