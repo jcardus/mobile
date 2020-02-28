@@ -69,7 +69,7 @@ module.exports = {
         'type': 'image/png'
       }],
       'start_url': '/index.html',
-      'display': 'fullscreen',
+      'display': 'standalone',
       'background_color': '#F8F9FE',
       'theme_color': '#F8F9FE'
     }
