@@ -269,7 +269,7 @@ export default {
       this.loadingRoutes = false
     },
     removeLayers: function(keepMain) {
-      for (this.i = 0; this.i < 10000; this.i += 99) {
+      for (this.i = 0; this.i < 10000; this.i++) {
         if (vm.$static.map.getLayer(this.routeSource)) {
           Vue.$log.debug('removing ', this.routeSource)
           vm.$static.map.removeLayer(this.routeSource)
