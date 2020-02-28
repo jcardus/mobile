@@ -51,8 +51,8 @@ const store = new Vuex.Store({
       state.lastUpdate = Date.now()
     },
     SOCKET_RECONNECT(state, count) {
-      if (count === 5) {
-        Vue.$log.warn('count = 5, logging out')
+      if (count === 4) {
+        Vue.$log.warn('count = 4, logging out')
         TrackJS.track('LOGOUT')
         removeToken()
         location.reload()

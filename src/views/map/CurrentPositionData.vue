@@ -1,38 +1,46 @@
 <template>
-  <div v-if="show">
-    <div>
-      <span class="header">
-        {{ name }}
-        <el-switch
-          v-show="!isMobile"
-          :value="true"
-          style="float:right"
-          @change="toggleChanged"
-        >
-        </el-switch>
-        <f7-toggle
-          v-if="isMobile"
-          :checked="checked"
-          style="float:right"
-          type="checkbox"
-          @change="toggleChanged"
-        >
-        </f7-toggle>
-      </span>
-    </div>
-    <el-row>
-      <div style="float:left; padding-top: 5px; border: 2px;">
+  <div>
+
+    <span class="header">
+      <el-row>
+        <el-col :span="12">
+          {{ name }}</el-col>
+        <el-col :span="12">
+          <el-switch
+            v-show="!isMobile"
+            :value="true"
+            style="float:right"
+            @change="toggleChanged"
+          >
+          </el-switch>
+          <f7-toggle
+            v-if="isMobile"
+            :checked="checked"
+            style="float:right"
+            type="checkbox"
+            @change="toggleChanged"
+          >
+          </f7-toggle></el-col></el-row>
+    </span>
+
+    <el-row style="padding-top: 5px">
+      <el-col :span="12">
+
         <label>
           <input v-if="isMobile" v-model="_minDate" type="date">
           <el-date-picker v-else v-model="_minDate"></el-date-picker>
         </label>
-      </div>
-      <div style="float:right; padding-top: 5px">
-        <label>
-          <input v-if="isMobile" v-model="_maxDate" type="date">
-          <el-date-picker v-else v-model="_maxDate"></el-date-picker>
-        </label>
-      </div>
+
+      </el-col>
+      <el-col :span="12">
+        <div style="float:right">
+          <label>
+            <input v-if="isMobile" v-model="_maxDate" style="float: right" type="date">
+            <el-date-picker v-else v-model="_maxDate"></el-date-picker>
+          </label>
+        </div>
+
+      </el-col>
     </el-row>
     <div style="height: 10px"></div>
     <el-row>
@@ -141,9 +149,6 @@ export default {
     device() {
       return vm.$data.currentDevice
     },
-    show: function() {
-      return vm.$data.historyMode
-    },
     formattedDate: function() {
       if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
         return Vue.moment(this.positions[this.currentPos].fixTime).format('YYYY-MM-DD HH:mm:ss')
@@ -206,13 +211,14 @@ export default {
     }
   },
   created() {
+    Vue.$log.debug('CurrentPositionData created')
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
     serverBus.$on('routePlayStopped', this.routePlayStopped)
   },
   beforeDestroy() {
-    Vue.$log.info('CurrentPositionData')
+    Vue.$log.info('CurrentPositionData before destroy')
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('routePlay', this.routePlay)
     serverBus.$off('routePlayStopped', this.routePlayStopped)
@@ -879,8 +885,8 @@ export default {
   /* A few custom styles for date inputs */
   input[type="date"] {
     color: #5a5e66;
-    font-family: "Helvetica", arial, sans-serif;
-    font-size: 15px;
+    // font-family: "Helvetica", arial, sans-serif;
+    font-size: 19px;
     border-width:1px;
     padding:0;
     visibility: visible !important;

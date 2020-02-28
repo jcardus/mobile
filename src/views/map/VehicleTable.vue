@@ -207,7 +207,9 @@ export default {
   },
   mounted() {
     serverBus.$on('deviceSelectedOnMap', this.deviceSelectedOnMap)
-    serverBus.$on('showRoutesChanged', this.showRoutesChanged)
+    if (!this.isMobile) {
+      serverBus.$on('showRoutesChanged', this.showRoutesChanged)
+    }
   },
   beforeDestroy() {
     serverBus.$off('deviceSelectedOnMap', this.deviceSelectedOnMap)
@@ -216,7 +218,9 @@ export default {
   methods: {
     showRoutesChanged() {
       if (this.historyMode) {
-        this.filterKey = this.selectedDevice.name
+        if (this.selectedDevice) {
+          this.filterKey = this.selectedDevice.name
+        }
       } else { this.filterKey = '' }
     },
     getBgColor: function(device) {
