@@ -15,7 +15,8 @@ export default {
     report_speeding_beta: 'Relatório de Excessos de Velocidade BETA',
     report_tolls: 'Relatório de Portagens',
     settings: 'Settings',
-    duration: 'Duration'
+    duration: 'Duration',
+    nodata: 'Não existem dados para o período seleccionado.'
   },
   map: {
     geofence_create_error: 'Erro a criar baliza',
