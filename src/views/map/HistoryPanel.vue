@@ -147,9 +147,9 @@ export default {
     }
   },
   created() {
-    window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
+    window.addEventListener('resize', this.resizeDiv)
   },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)

@@ -3,8 +3,8 @@
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
     <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data v-if="historyMode" class="currentPositionData"></current-position-data>
-      <div style="height: 10px"></div>
-      <history-panel class="historyPanel"></history-panel>
+      <div v-if="historyMode" style="height: 10px"></div>
+      <history-panel v-if="historyMode" class="historyPanel"></history-panel>
     </div>
   </div>
 </template>
