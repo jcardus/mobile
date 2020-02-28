@@ -7,7 +7,7 @@
       <f7-toolbar :bottom="true" labels tabbar>
         <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" :text="$t('route.map')"></f7-link>
         <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" :text="$t('route.reports')"></f7-link>
-        <f7-link v-if="!ios" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-ios="f7:rectangle_grid_2x2" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
+        <f7-link href="https://www.google.com" external target="_blank" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-ios="f7:rectangle_grid_2x2" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
       </f7-toolbar>
       <f7-view id="view-map" main tab tab-active url="/map" @tab:show="mapShow"></f7-view>
