@@ -57,7 +57,8 @@ export default {
       unsubscribe: null,
       parentHeight: 0,
       imageDownloadQueue: [],
-      loadingCount: 0
+      loadingCount: 0,
+      initialized: false
     }
   },
   computed: {
@@ -170,14 +171,13 @@ export default {
         self.refreshGeofences()
         self.finishLoading()
         NProgress.done()
+        this.initialized = true
       })
     },
     finishLoading() {
-      if (++this.loadingCount === 2) {
+      if (++this.loadingCount === 3) {
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
-      } else if (this.$store.state.user.dataLoaded && this.loadingCount === 1) {
-        this.initData()
       } else {
         this.$log.warn('not finishing loading, count = ', this.loadingCount)
       }
@@ -200,6 +200,10 @@ export default {
       }
       this.$log.info('VueMap')
       NProgress.done()
+      if (this.$store.state.user.dataLoaded && this.userLoggedIn && !this.initialized) {
+        this.initData()
+      }
+      this.finishLoading()
     },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
