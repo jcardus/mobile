@@ -190,24 +190,6 @@ export default {
     },
     _maxDate() {
       this.datesChanged()
-    },
-    showRoutes() {
-      Vue.$log.debug('CurrentPositionData showRoutesChanged to ', this.showRoutes)
-      if (this.device && vm.$data.popUps[this.device.id]) {
-        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
-        vm.$data.popUps[this.device.id].remove()
-      }
-      if (this.showRoutes) {
-        traccar.stopReceiving()
-        this.getRoute(this.minDate, this.maxDate)
-      } else {
-        this.removeLayers()
-        traccar.startReceiving()
-      }
-      this.loadingRoutes = this.showRoutes
-      vm.$data.currentDevice = this.device
-      lnglat.hideLayers(this.showRoutes)
-      animation.hideRouteLayer(!this.showRoutes)
     }
   },
   created() {
@@ -222,9 +204,14 @@ export default {
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('routePlay', this.routePlay)
     serverBus.$off('routePlayStopped', this.routePlayStopped)
+    this.removeLayers()
+    lnglat.hideLayers(this.showRoutes)
+    animation.hideRouteLayer(!this.showRoutes)
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData mounted')
+    this.loadingRoutes = true
+    this.getRoute(this.minDate, this.maxDate)
   },
   methods: {
     toggleChanged: function() {
@@ -274,8 +261,7 @@ export default {
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {
-        this.$alert('no data for the periodo selected')
-        serverBus.$emit('message', 'route.nodata')
+        serverBus.$emit('message', this.$t('route.nodata'))
       }
       this.loadingRoutes = false
     },

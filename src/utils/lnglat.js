@@ -5,7 +5,7 @@ import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
-import { vm, settings } from '../main'
+import { vm } from '../main'
 import styles from '@/styles/element-variables.scss'
 
 let markersOnScreen = {}
@@ -392,7 +392,7 @@ export function hideLayer(layer, hide) {
   } else { Vue.$log.debug('didnt find layer ', layer) }
 }
 export function hideLayers(hide) {
-  if (settings.show3dBuildings) {
+  if (!isMobile()) {
     hideLayer('3d-buildings', hide)
   }
   hideLayer('unclustered-point', hide)
