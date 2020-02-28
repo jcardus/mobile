@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.423",
+  "version": "1.0.428",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -16,6 +16,8 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
+    "mapbox-gl": "latest",
+    "mapbox-gl-controls": "latest",
     "@aws-amplify/analytics": "^2.2.5",
     "@aws-amplify/auth": "^2.1.5",
     "@mapbox/mapbox-gl-draw": "latest",
@@ -41,8 +43,6 @@
     "framework7-vue": "^5.4.5",
     "fuse.js": "3.4.4",
     "jsonlint": "1.6.3",
-    "mapbox-gl": "latest",
-    "mapbox-gl-controls": "latest",
     "moment": "latest",
     "normalize.css": "7.0.0",
     "nprogress": "latest",
