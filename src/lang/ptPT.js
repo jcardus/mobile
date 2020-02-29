@@ -101,7 +101,7 @@ export default {
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   settings: {
-    refresh: 'Recarregar aplicação',
+    refresh: 'Recarregar',
     version: 'Versão',
     connected: 'Ligado',
     disconnected: 'Desligado',
@@ -110,6 +110,7 @@ export default {
     about: 'Informações',
     logout: 'Sair',
     vehicles: 'Veículos',
+    pois: 'POIs',
     title: 'Configurações',
     route_history: 'Histórico de Rota',
     route_match: 'Rota na estrada',
@@ -214,8 +215,8 @@ export default {
     geofence_edited: 'Baliza editada com sucesso!',
     poi_delete_info: 'Pretende apagar o POI ',
     poi_delete_title: 'Apagar POI',
-    poi_edited: 'POI editada com sucesso!',
-    poi_deleted: 'POI  foi apagada',
+    poi_edited: 'POI editado com sucesso!',
+    poi_deleted: 'POI foi apagado',
     poi_edit_title: 'Editar POI',
     poi_edit_name: 'Por favor indique o nome do POI...',
     searchGeofence: 'Procurar baliza',

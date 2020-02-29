@@ -31,7 +31,7 @@
                       :placeholder="$t('settings.vehicle_form_category_placeholder')"
                       value=""
                     >
-                      <el-option v-for="item in categoryType" :key="item.value" :label="item.text" :value="item.value" />
+                      <el-option v-for="item in categories" :key="item.value" :label="item.text" :value="item.value" />
                     </el-select>
                   </el-form-item>
                 </div>
@@ -132,8 +132,21 @@ export default {
       vehicleSpeedLimit: 0,
       vehicleTotalKms: 0,
       selectedGroup: null,
-      selectedCategory: null,
-      categoryType: [
+      selectedCategory: null
+    }
+  },
+  computed: {
+    isMobile() {
+      return lnglat.isMobile()
+    },
+    devices: function() {
+      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+    },
+    groups: function() {
+      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+    },
+    categories: function() {
+      const categoryType = [
         { value: 'car', text: this.$t('settings.vehicle_icon_car') },
         { value: 'truck', text: this.$t('settings.vehicle_icon_truck') },
         { value: 'van', text: this.$t('settings.vehicle_icon_van') },
@@ -148,18 +161,7 @@ export default {
         { value: 'boat', text: this.$t('settings.vehicle_icon_boat') },
         { value: 'pickup', text: this.$t('settings.vehicle_icon_pickup') }
       ]
-    }
-  },
-  computed: {
-    isMobile() { return lnglat.isMobile() },
-    devices: function() {
-      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
-    },
-    groups: function() {
-      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
-    },
-    categories: function() {
-      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return categoryType
     }
   },
   methods: {
