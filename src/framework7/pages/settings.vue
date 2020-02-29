@@ -2,15 +2,15 @@
   <f7-page name="settings">
     <f7-navbar :title="$t('route.settings')"></f7-navbar>
     <f7-block inset>
-      <!-- <f7-row tag="p">
+      <f7-row tag="p">
         <f7-col>
-          <f7-button fill large raised style="font-size:20px" href="/settings/vehicles"><i class="fas fa-car-alt"></i> Vehicles</f7-button>
+          <f7-button fill large raised style="font-size:15px" href="/settings/vehicles"><i class="fas fa-car-alt"></i> {{ $t('settings.vehicles') }}</f7-button>
         </f7-col>
         <f7-col>
-          <f7-button fill large raised style="font-size:20px" href="/settings/pois"><i class="fas fa-map-marker-alt"></i> POIs</f7-button>
+          <f7-button fill large raised style="font-size:15px" href="/settings/pois"><i class="fas fa-map-marker-alt"></i> {{ $t('settings.pois') }}</f7-button>
         </f7-col>
       </f7-row>
-      <f7-row tag="p">
+      <!-- <f7-row tag="p">
         <f7-col>
           <f7-button fill large raised style="font-size:20px" href="/settings/geofences"><i class="fas fa-draw-polygon"></i> Geofences</f7-button>
         </f7-col>

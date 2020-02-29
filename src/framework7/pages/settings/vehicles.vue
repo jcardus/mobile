@@ -1,7 +1,7 @@
 <template>
   <f7-page name="Vehicles">
-    <f7-navbar back-link title="Configurações"></f7-navbar>
-    <f7-block-title style="font-size: 20px"><i class="fas fa-car-alt"></i> Vehicles</f7-block-title>
+    <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
+    <f7-block-title style="font-size: 20px"><i class="fas fa-car-alt"></i> {{ $t('settings.vehicles') }}</f7-block-title>
     <f7-list
       media-list
       virtual-list
@@ -12,7 +12,6 @@
           v-for="item in devices"
           :key="item.id"
           media-item
-          link="/settings/vehicleDetails"
           :title="item.name"
           :subtitle="item.attributes.license_plate"
           :after="groupName(item.groupId)"
