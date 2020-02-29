@@ -256,5 +256,5 @@ export const vm = new Vue({
   router: router,
   store,
   i18n,
-  render: h => h(lnglat.__isMobile() && !location.href.includes('iosdashboard') ? AppMobile : App)
+  render: h => h(lnglat.__isMobile() ? AppMobile : App)
 })

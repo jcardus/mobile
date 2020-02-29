@@ -24,7 +24,7 @@ const WIDTH = 768 // refer to Bootstrap's responsive design
 
 export function __isMobile() {
   const rect = body.getBoundingClientRect()
-  return rect.width - 1 < WIDTH
+  return rect.width - 1 < WIDTH && !location.href.includes('iosdashboard')
 }
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
