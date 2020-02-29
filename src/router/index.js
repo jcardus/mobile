@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import * as lnglat from '../utils/lnglat'
+import Dashboard from '../views/dashboard/Dashboard'
 
 Vue.use(Router)
 
@@ -25,7 +26,7 @@ export const constantRoutes = [
   },
   {
     path: '/iosdashboard',
-    component: () => import('../views/dashboard/Dashboard'),
+    component: Dashboard,
     hidden: true
   },
   {
