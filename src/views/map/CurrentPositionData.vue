@@ -210,8 +210,15 @@ export default {
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData mounted')
+    if (this.device && vm.$data.popUps[this.device.id]) {
+      Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
+      vm.$data.popUps[this.device.id].remove()
+    }
     this.loadingRoutes = true
     this.getRoute(this.minDate, this.maxDate)
+    vm.$data.currentDevice = this.device
+    lnglat.hideLayers(this.showRoutes)
+    animation.hideRouteLayer(!this.showRoutes)
   },
   methods: {
     toggleChanged: function() {
