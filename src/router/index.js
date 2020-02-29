@@ -24,6 +24,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/iosdashboard',
+    component: () => import('../views/dashboard/Dashboard'),
+    hidden: true
+  },
+  {
     path: '/',
     redirect: '/map',
     hidden: false,

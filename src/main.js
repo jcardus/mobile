@@ -183,7 +183,7 @@ if (lnglat.__isMobile()) {
   Vue.loadScript('/lib/inobounce.min.js')
 }
 
-Vue.$log.debug('starting main instance...')
+Vue.$log.debug('starting main instance...', location.href)
 
 export const vm = new Vue({
   el: '#app',
@@ -256,5 +256,5 @@ export const vm = new Vue({
   router: router,
   store,
   i18n,
-  render: h => h(lnglat.__isMobile() ? AppMobile : App)
+  render: h => h(lnglat.__isMobile() && !location.href.includes('iosdashboard') ? AppMobile : App)
 })
