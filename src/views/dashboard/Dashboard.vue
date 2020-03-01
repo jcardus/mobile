@@ -37,7 +37,7 @@ export default {
         .then(json => {
           const containerDiv = document.getElementById('quicksightContainer')
           const options = {
-            url: json.EmbedUrl.replace('us-east-1.quicksight.aws.amazon.com', 'quicksight.pinme.io'),
+            url: json.EmbedUrl, // .replace('us-east-1.quicksight.aws.amazon.com', 'quicksight.pinme.io'),
             parameters: this.parameters,
             container: containerDiv,
             height: 'AutoFit',
