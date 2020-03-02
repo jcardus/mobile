@@ -2,16 +2,11 @@
   <f7-page name="Vehicles">
     <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
     <f7-block-title style="font-size: 20px"><i class="fas fa-car-alt"></i> {{ $t('settings.vehicles') }}</f7-block-title>
-    <f7-list
-      media-list
-      virtual-list
-      :virtual-list-params="{ devices, renderExternal, height: $theme.ios ? 63 : ($theme.md ? 73 : 46)}"
-    >
+    <f7-list>
       <ul>
         <f7-list-item
           v-for="item in devices"
           :key="item.id"
-          media-item
           :title="item.name"
           :subtitle="item.attributes.license_plate"
           :after="groupName(item.groupId)"
@@ -29,7 +24,7 @@ export default {
   name: 'Vehicles',
   computed: {
     devices: function() {
-      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return vm.$data.devices
     }
   },
   methods: {
