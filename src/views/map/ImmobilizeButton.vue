@@ -47,7 +47,7 @@ export default {
     }
   },
   mounted() {
-    Vue.$log.debug('mounted immobilizeButton for device ', this.selectedDevice.name)
+    // Vue.$log.debug('mounted immobilizeButton for device ', this.selectedDevice.name)
   },
   beforeDestroy() {
     Vue.$log.debug('destroying immobilizeButton, device ', this.selectedDevice)

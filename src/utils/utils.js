@@ -2,12 +2,16 @@ import { vm, newServiceWorker, regServiceWorker } from '../main'
 import Vue from 'vue'
 
 export function getServerHost() {
+  const hostName = window.location.hostname
+  if (hostName.includes('dev')) {
+    return hostName.replace('dev', 'ws')
+  }
   return (process.env.NODE_ENV === 'development' ||
-    window.location.hostname.includes('192.168.1.') ||
-    window.location.hostname.includes('172.20.10.') ||
-    window.location.hostname.includes('localhost'))
+    hostName.includes('192.168.1.') ||
+    hostName.includes('172.20.10.') ||
+    hostName.includes('localhost'))
     ? 'ws.pinme.io'
-    : 'ws.' + window.location.hostname
+    : 'ws.' + hostName
 }
 
 export function getDate(dateString) {
