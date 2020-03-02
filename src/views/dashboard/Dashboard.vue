@@ -52,7 +52,7 @@ export default {
             url: url,
             parameters: this.parameters,
             container: containerDiv,
-            height: 'AutoFit',
+            // height: 'AutoFit',
             width: '100%',
             locale: getLanguageI18n()
           }
