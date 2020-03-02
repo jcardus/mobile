@@ -11,6 +11,7 @@ import NProgress from 'nprogress'
 import { backEndHostName } from '../../utils/consts'
 import { TrackJS } from 'trackjs'
 import { isMobile } from '../../utils/lnglat'
+import * as partner from '../../utils/partner'
 
 export default {
   name: 'Dashboard',
@@ -39,7 +40,7 @@ export default {
           const containerDiv = document.getElementById('quicksightContainer')
           let url = json.EmbedUrl
           if (isMobile() && this.$f7 && this.$f7.device.iphone) {
-            url = url.replace('us-east-1.quicksight.aws.amazon.com', 'quicksight.pinme.io')
+            url = url.replace('us-east-1.quicksight.aws.amazon.com', partner.getQuicksightHostName())
           }
           const options = {
             url: url,
