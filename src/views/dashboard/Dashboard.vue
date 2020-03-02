@@ -10,6 +10,7 @@ import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
 import { backEndHostName } from '../../utils/consts'
 import { TrackJS } from 'trackjs'
+import { isMobile } from '../../utils/lnglat'
 
 export default {
   name: 'Dashboard',
@@ -36,8 +37,12 @@ export default {
         .then(response => response.json())
         .then(json => {
           const containerDiv = document.getElementById('quicksightContainer')
+          let url = json.EmbedUrl
+          if (isMobile() && this.$f7 && this.$f7.device.iphone) {
+            url = url.replace('us-east-1.quicksight.aws.amazon.com', 'quicksight.pinme.io')
+          }
           const options = {
-            url: json.EmbedUrl.replace('us-east-1.quicksight.aws.amazon.com', 'quicksight.pinme.io'),
+            url: url,
             parameters: this.parameters,
             container: containerDiv,
             height: 'AutoFit',
