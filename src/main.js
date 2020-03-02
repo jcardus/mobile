@@ -183,7 +183,7 @@ if (lnglat.__isMobile()) {
   Vue.loadScript('/lib/inobounce.min.js')
 }
 
-Vue.$log.debug('starting main instance...')
+Vue.$log.debug('starting main instance...', location.href)
 
 export const vm = new Vue({
   el: '#app',
