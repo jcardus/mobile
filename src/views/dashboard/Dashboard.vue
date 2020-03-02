@@ -1,5 +1,5 @@
 <template>
-  <div id="quicksightContainer" v-loading="loading" class="dashboard"></div>
+  <div id="quicksightContainer" v-loading="loading && !isMobile" class="dashboard"></div>
 </template>
 
 <script>
@@ -12,6 +12,7 @@ import { backEndHostName } from '../../utils/consts'
 import { TrackJS } from 'trackjs'
 import { isMobile } from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
+import { serverBus } from '../../main'
 
 export default {
   name: 'Dashboard',
@@ -24,6 +25,11 @@ export default {
         EndDate: this.$moment().subtract(1, 'day').endOf('day').format(),
         Vehicles: '[ALL]'
       }
+    }
+  },
+  computed: {
+    isMobile() {
+      return isMobile()
     }
   },
   mounted() {
@@ -55,9 +61,12 @@ export default {
           this.dashboard.on('load', this.onDashboardLoad)
         }).catch((e) => {
           this.$log.error(e)
+          this.loading = false
+          serverBus.$emit('message', e)
         })
     } catch (e) {
       this.$log.error(e)
+      this.loading = false
       TrackJS.track('DASHBOARD')
     }
   },
