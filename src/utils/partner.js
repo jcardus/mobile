@@ -24,3 +24,7 @@ export function hasTolls() {
   return hostname === 'web.fleetrack.cl' ||
     hostname.includes('localhost')
 }
+
+export function getQuicksightHostName() {
+  return 'quicksight.' + hostname
+}
