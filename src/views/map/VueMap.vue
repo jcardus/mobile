@@ -201,7 +201,11 @@ export default {
       this.$log.info('VueMap')
       NProgress.done()
       if (this.$store.state.user.dataLoaded && this.userLoggedIn && !this.initialized) {
+        this.$log.debug('userData is loaded and not initialized, initializing...')
         this.initData()
+      } else {
+        this.$log.debug('userDataLoaded: ', this.$store.state.user.dataLoaded, ', initialized: ', this.initialized)
+        this.$log.debug('hopefully we\'ll receive an event...')
       }
       this.finishLoading()
     },
