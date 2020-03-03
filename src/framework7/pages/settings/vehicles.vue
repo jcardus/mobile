@@ -5,14 +5,13 @@
     <f7-list
       media-list
       virtual-list
-      :virtual-list-params="{ devices, renderExternal, height: $theme.ios ? 63 : ($theme.md ? 73 : 46)}"
     >
       <ul>
         <f7-list-item
           v-for="item in devices"
           :key="item.id"
-          media-item
           :title="item.name"
+          :link="'/settings/vehicleDetails/' + item.id"
           :subtitle="item.attributes.license_plate"
           :after="groupName(item.groupId)"
         >
@@ -29,7 +28,7 @@ export default {
   name: 'Vehicles',
   computed: {
     devices: function() {
-      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return vm.$data.devices
     }
   },
   methods: {
