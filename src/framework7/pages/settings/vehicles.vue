@@ -2,12 +2,16 @@
   <f7-page name="Vehicles">
     <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
     <f7-block-title style="font-size: 20px"><i class="fas fa-car-alt"></i> {{ $t('settings.vehicles') }}</f7-block-title>
-    <f7-list>
+    <f7-list
+      media-list
+      virtual-list
+    >
       <ul>
         <f7-list-item
           v-for="item in devices"
           :key="item.id"
           :title="item.name"
+          :link="'/settings/vehicleDetails/' + item.id"
           :subtitle="item.attributes.license_plate"
           :after="groupName(item.groupId)"
         >

@@ -192,7 +192,7 @@ export default {
       vehicle.groupId = this.selectedGroup
       vehicle.category = this.selectedCategory
       vehicle.model = this.vehicleModel
-      vehicle.attributes.speedLimit = Math.round(this.vehicleSpeedLimit / 1.85200)
+      vehicle.attributes.speedLimit = this.vehicleSpeedLimit / 1.85200
 
       const v = {
         id: vehicle.id,

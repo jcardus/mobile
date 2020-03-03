@@ -33,7 +33,7 @@ const routes = [
     component: VehiclesSettingsPage
   },
   {
-    path: '/settings/vehicleDetails',
+    path: '/settings/vehicleDetails/:deviceId',
     component: VehicleDetailsPage
   },
   {
