@@ -9,7 +9,7 @@ import AlertsSettingsPage from '../pages/settings/alerts'
 import AboutPage from '../pages/settings/about'
 import Viewer from '../pages/viewer'
 import MapMobileContainer from '../../views/map/MapMobileContainer'
-import Dashboard from '../../views/dashboard/Dashboard'
+import DashboardPage from '../pages/dashboard'
 
 const routes = [
   {
@@ -58,7 +58,7 @@ const routes = [
   },
   {
     path: '/dashboard',
-    component: Dashboard
+    component: DashboardPage
   }
 ]
 

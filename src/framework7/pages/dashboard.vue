@@ -1,5 +1,6 @@
 <template>
   <f7-page name="dashboard">
+    <f7-navbar :title="$t('route.dashboard')"></f7-navbar>
     <Dashboard></Dashboard>
   </f7-page>
 </template>
