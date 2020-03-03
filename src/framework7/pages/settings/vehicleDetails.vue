@@ -175,10 +175,10 @@ export default {
     vehicleUpdated: function() {
       this.$f7.dialog.alert(this.$t('settings.vehicle_updated'), this.$t('settings.vehicle_edit'))
       this.clearFormData()
-      this.$f7router.navigate('/settings/vehicles')
+      this.$f7router.back()
     },
     handleCancelVehicleForm() {
-      this.$f7router.navigate('/settings/vehicles')
+      this.$f7router.back()
     },
     clearFormData() {
       this.vehicleName = ''
