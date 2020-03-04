@@ -1,22 +1,23 @@
 <template>
   <f7-page name="VehicleDetails">
-    <f7-navbar back-link title="Configurações > Vehicles"></f7-navbar>
-    <f7-block-title style="font-size: 20px">Edit Vehicle</f7-block-title>
+    <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
+    <f7-block-title style="font-size: 20px">{{ $t('settings.vehicle_edit') }}</f7-block-title>
     <f7-list no-hairlines-md>
       <f7-list-input
         :label="$t('settings.vehicle_form_name')"
         type="text"
         :value="vehicleName"
         clear-button
-        @input="vehicleName = $event.target.value"
+        @input="vehicleName = $event.target"
       >
       </f7-list-input>
       <f7-list-input
         :label="$t('settings.vehicle_form_group')"
         type="select"
         placeholder="Please choose..."
+        @input="selectedGroup = $event.target.value"
       >
-        <option v-for="(item) in groups" :key="item.id" :selected="(item.id === selectedGroup)">{{ item.name }}</option>
+        <option v-for="(item) in groups" :key="item.id" :value="item.id" :selected="(item.id === selectedGroup)">{{ item.name }}</option>
       </f7-list-input>
       <f7-list-input
         :label="$t('settings.vehicle_form_model')"
@@ -30,6 +31,7 @@
         :label="$t('settings.vehicle_form_category')"
         type="select"
         placeholder="Please choose..."
+        @input="selectedCategory = $event.target.value"
       >
         <option v-for="(opt) in categories" :key="opt.value" :value="selectedCategory" :selected="(opt.value === selectedCategory)">{{ opt.text }}</option>
       </f7-list-input>
@@ -136,6 +138,9 @@ export default {
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
+    onVehicleGroupChanged(value) {
+      alert(value)
+    },
     handleSubmitVehicleForm() {
       const vehicle = this.selectedVehicle
       vehicle.name = this.vehicleName
@@ -168,9 +173,6 @@ export default {
 
       traccar.updateDeviceAccumulators(vehicle.id, accumulator, this.accumulatorUpdated)
       traccar.updateDevice(vehicle.id, v, this.vehicleUpdated)
-    },
-    accumulatorUpdated: function() {
-
     },
     vehicleUpdated: function() {
       this.$f7.dialog.alert(this.$t('settings.vehicle_updated'), this.$t('settings.vehicle_edit'))
