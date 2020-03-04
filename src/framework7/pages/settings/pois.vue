@@ -1,7 +1,7 @@
 <template>
   <f7-page name="POIs">
     <f7-navbar back-link></f7-navbar>
-    <f7-block-title style="font-size: 20px"><i class="fas fa-map-marker"></i> POIs</f7-block-title>
+    <f7-block-title style="font-size: 20px"><i class="fas fa-map-marker"></i> {{ $t('settings.pois_title') }}</f7-block-title>
     <f7-list
       media-list
       virtual-list

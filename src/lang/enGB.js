@@ -192,7 +192,8 @@ export default {
     group_delete_title: 'Delete Group',
     group_edit_confirm: 'Confirm',
     group_edit_cancel: 'Cancel',
-    group_created: 'Group created sucessfully!'
+    group_created: 'Group created sucessfully!',
+    pois_title: 'POIs'
   },
   geofence: {
     showGeofences: 'Show Geofences',
