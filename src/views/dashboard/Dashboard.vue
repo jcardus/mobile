@@ -18,6 +18,7 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      dashboardLoaded: false,
       loading: true,
       dashboard: null,
       parameters: {
@@ -32,45 +33,59 @@ export default {
       return isMobile()
     }
   },
+  created() {
+    serverBus.$on('dashboardActive', this.load)
+  },
   mounted() {
     this.$log.debug('mounting dashboard')
-    if (getToken() === null) {
-      this.$log.debug('no cookie, skip dashboard')
-      return
-    }
-    NProgress.start()
-    try {
-      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
-        .then(response => response.json())
-        .then(json => {
-          const containerDiv = document.getElementById('quicksightContainer')
-          let url = json.EmbedUrl
-          if (isMobile() && this.$f7 && this.$f7.device.iphone) {
-            url = url.replace('us-east-1.quicksight.aws.amazon.com', partner.getQuicksightHostName())
-          }
-          const options = {
-            url: url,
-            parameters: this.parameters,
-            container: containerDiv,
-            // height: 'AutoFit',
-            width: '100%',
-            locale: getLanguageI18n()
-          }
-          this.dashboard = QuickSightEmbedding.embedDashboard(options)
-          this.dashboard.on('error', this.onError)
-          this.dashboard.on('load', this.onDashboardLoad)
-        }).catch((e) => {
-          this.$log.error(e)
-          this.loading = false
-          serverBus.$emit('message', e)
-        })
-    } catch (e) {
-      this.$log.error(e)
-      this.loading = false
-      TrackJS.track('DASHBOARD')
-    }
+    this.load()
+  },
+  beforeDestroy() {
+    serverBus.$off('dashboardActive', this.load)
   },
   methods: {
+    load() {
+      if (getToken() === null) {
+        this.$log.debug('no cookie, skip loading dashboard')
+        return
+      }
+      if (this.dashboardLoaded) {
+        this.$log.debug('dashboard already lodade, skip loading')
+        return
+      }
+      const self = this
+      NProgress.start()
+      try {
+        fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
+          .then(response => response.json())
+          .then(json => {
+            const containerDiv = document.getElementById('quicksightContainer')
+            let url = json.EmbedUrl
+            if (isMobile() && this.$f7 && this.$f7.device.iphone) {
+              url = url.replace('us-east-1.quicksight.aws.amazon.com', partner.getQuicksightHostName())
+            }
+            const options = {
+              url: url,
+              parameters: this.parameters,
+              container: containerDiv,
+              // height: 'AutoFit',
+              width: '100%',
+              locale: getLanguageI18n()
+            }
+            self.dashboard = QuickSightEmbedding.embedDashboard(options)
+            self.dashboard.on('error', this.onError)
+            self.dashboard.on('load', this.onDashboardLoad)
+          }).catch((e) => {
+            self.$log.error(e)
+            self.loading = false
+            serverBus.$emit('message', e)
+          })
+      } catch (e) {
+        self.$log.error(e)
+        self.loading = false
+        TrackJS.track('DASHBOARD')
+      }
+    },
     stopLoading() {
       NProgress.done()
       this.loading = false
@@ -78,6 +93,7 @@ export default {
     onDashboardLoad() {
       this.$log.debug('onDashboardLoad')
       this.stopLoading()
+      this.dashboardLoaded()
     },
     onError(e) {
       this.$log.error('onError, ', e)
