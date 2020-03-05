@@ -50,7 +50,7 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
-          <i class="fas fa-grip-horizontal"></i><span v-if="!isMobile" style="margin-left: 10px">Grupos</span>
+          <i class="fas fa-grip-horizontal"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.groups') }}</span>
         </span>
         <groups></groups>
       </el-tab-pane>

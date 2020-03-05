@@ -12,6 +12,7 @@ import { checkForUpdates } from '../../utils/utils'
 import store from '../index'
 import VueNativeSock from 'vue-native-websocket'
 import * as utils from '../../utils/utils'
+import { backEndHostName } from '../../utils/consts'
 
 const serviceWorker = new ServiceWorker()
 
@@ -179,20 +180,25 @@ const actions = {
   },
   logout({ commit }) {
     return new Promise((resolve) => {
-      logout(state.token).then(() => {
-        resetRouter()
-        removeToken()
-        commit('REMOVE_USER')
-        vm.reset()
-        state.token = null
-        resolve()
-      }).catch((e) => {
-        Vue.$log.error(e)
-        resetRouter()
-        removeToken()
-        resolve()
-        state.token = null
-      })
+      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id + '&deleteData=true')
+        .catch(e => { Vue.$log.error(e) })
+        .finally(
+          () => {
+            logout(state.token).then(() => {
+              resetRouter()
+              removeToken()
+              commit('REMOVE_USER')
+              vm.reset()
+              state.token = null
+              resolve()
+            }).catch((e) => {
+              Vue.$log.error(e)
+              resetRouter()
+              removeToken()
+              resolve()
+              state.token = null
+            })
+          })
     })
   },
   connectionOk(context, data) {
