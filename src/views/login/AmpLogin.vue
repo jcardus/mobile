@@ -1,28 +1,30 @@
 <template>
-  <div class="mainLogin">
-    <el-row type="flex" style="height: 10vh">
-    </el-row>
-    <el-row type="flex" justify="center" class="header">
-      <logo-svg v-if="hasSVG" class="logo"></logo-svg>
-      <img v-else class="logo" :src="logoImage" alt="">
-    </el-row>
-    <el-row type="flex" justify="center" align="middle">
-      <amplify-authenticator :auth-config="authConfig">
-      </amplify-authenticator>
-    </el-row>
+  <div class="login-container">
+    <div class="loginFormDiv">
+      <div class="loginForm">
+        <div class="title-container">
+          <img class="logo" :src="logoImage" alt="">
+        </div>
+        <div>
+          <amplify-authenticator :auth-config="authConfig">
+          </amplify-authenticator>
+        </div>
+        <div>
+          <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 
 import * as partner from '../../utils/partner'
-import LogoSvg from '../../layout/components/LogoSvg'
 import { I18n } from '@aws-amplify/core'
 import { getLanguage } from '../../lang'
 
 export default {
   name: 'AmpLogin',
-  components: { LogoSvg },
   data() {
     return {
       authConfig: {
@@ -116,16 +118,65 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import '../../styles/element-variables';
 
-  .mainLogin {
-    background-color: $--border-color-lighter;
+  $bg:#ffffff;
+  $dark_gray:#889aa4;
+  $light_gray:#fff;
+  $cursor: #202020;
+  $darkest_gray:#202020;
+
+  .login-container {
+    min-height: 100%;
     height: 100vh;
-  }
-  .logo {
-    max-width:300px;
-    padding: 20px
+    width: 100%;
+    background-color: $bg;
+    overflow: hidden;
+    background-image: url('../../../public/img/login/login.png');
+    background-repeat: no-repeat;
+    background-size: 50% 100%;
+
+    .loginFormDiv {
+      position: relative;
+      width: 50%;
+      float: right;
+      overflow: hidden;
+
+      .loginForm {
+        padding: 150px 50px;
+      }
+
+      .tips {
+        font-size: 14px;
+        color: #fff;
+        margin-bottom: 10px;
+
+        span {
+          &:first-of-type {
+            margin-right: 16px;
+          }
+        }
+      }
+
+      .title-container {
+        position: relative;
+
+        .logo {
+          margin: 0 auto 20px auto;
+          max-width: 200px;
+        }
+
+        .set-language {
+          color: #fff;
+          position: absolute;
+          top: 3px;
+          font-size: 18px;
+          right: 0;
+          cursor: pointer;
+        }
+      }
+    }
   }
 
 </style>

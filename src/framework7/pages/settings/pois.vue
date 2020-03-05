@@ -1,11 +1,10 @@
 <template>
   <f7-page name="POIs">
-    <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
-    <f7-block-title style="font-size: 20px"><i class="fas fa-map-marker"></i> POIs</f7-block-title>
+    <f7-navbar back-link></f7-navbar>
+    <f7-block-title style="font-size: 20px"><i class="fas fa-map-marker"></i> {{ $t('settings.pois_title') }}</f7-block-title>
     <f7-list
       media-list
       virtual-list
-      :virtual-list-params="{ devices, renderExternal, height: $theme.ios ? 63 : ($theme.md ? 73 : 46)}"
     >
       <ul>
         <f7-list-item
@@ -17,8 +16,8 @@
           @swipeout:deleted="onPoiDelete(item.id)"
         >
           <f7-swipeout-actions right>
-            <f7-swipeout-button color="green" @click="onPoiEdit(item)">Edit</f7-swipeout-button>
-            <f7-swipeout-button delete :confirm-title="$t('geofence.poi_delete_title')" :confirm-text="$t('geofence.poi_delete_info') + item.name">Delete</f7-swipeout-button>
+            <f7-swipeout-button color="blue" @click="onPoiEdit(item)">{{ $t('geofence.edit_geofence') }}</f7-swipeout-button>
+            <f7-swipeout-button delete :confirm-title="$t('geofence.poi_delete_title')" :confirm-text="$t('geofence.poi_delete_info') + item.name">{{ $t('geofence.delete_geofence') }}</f7-swipeout-button>
           </f7-swipeout-actions>
         </f7-list-item>
       </ul>

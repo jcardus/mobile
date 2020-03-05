@@ -153,6 +153,7 @@ export default {
     vehicle_name: 'Name',
     vehicle_licenseplate: 'License Plate',
     vehicle_model: 'Model',
+    vehicle_form_category: 'Icon',
     vehicle_form_total_kms: 'Total Kms',
     vehicle_speed_limit: 'Speed Limit',
     vehicle_form_cancel: 'Cancel',
@@ -191,7 +192,8 @@ export default {
     group_delete_title: 'Delete Group',
     group_edit_confirm: 'Confirm',
     group_edit_cancel: 'Cancel',
-    group_created: 'Group created sucessfully!'
+    group_created: 'Group created sucessfully!',
+    pois_title: 'POIs'
   },
   geofence: {
     showGeofences: 'Show Geofences',
