@@ -93,7 +93,7 @@ export default {
     onDashboardLoad() {
       this.$log.debug('onDashboardLoad')
       this.stopLoading()
-      this.dashboardLoaded()
+      this.dashboardLoaded = true
     },
     onError(e) {
       this.$log.error('onError, ', e)
