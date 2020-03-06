@@ -67,9 +67,10 @@ export default {
               url: url,
               parameters: this.parameters,
               container: containerDiv,
-              // height: 'AutoFit',
-              width: '100%',
               locale: getLanguageI18n()
+            }
+            if (!isMobile()) {
+              options.height = 'AutoFit'
             }
             self.dashboard = QuickSightEmbedding.embedDashboard(options)
             self.dashboard.on('error', this.onError)
@@ -105,7 +106,7 @@ export default {
 <style scoped>
   .dashboard {
     height: 100%;
-    width: 100%;
+    /*width: 100%;*/
     position: relative;
   }
   iframe {
