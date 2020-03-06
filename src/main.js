@@ -189,6 +189,7 @@ export const vm = new Vue({
   el: '#app',
   data: function() {
     return {
+      loading: false,
       loadingRoutes: false,
       routeMinDate: Vue.moment().startOf('day').toDate(),
       routeMaxDate: new Date(),

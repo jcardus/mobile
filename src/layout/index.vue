@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <navbar />
     <div class="row">
       <side-bar />
@@ -14,6 +14,7 @@ import AppMain from './components/AppMain'
 import SideBar from './components/SideBar'
 import Navbar from './components/Navbar'
 import * as notifications from '../utils/notifications'
+import { vm } from '../main'
 
 export default {
   name: 'Layout',
@@ -31,6 +32,9 @@ export default {
   computed: {
     devices() {
       return this.$root.$data.devices
+    },
+    loading() {
+      return vm.$data.loading
     }
   },
   beforeDestroy() {

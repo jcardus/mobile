@@ -59,6 +59,14 @@ export default {
   },
   // eslint-disable-next-line vue/order-in-components
   computed: {
+    loading: {
+      get() {
+        return vm.$data.loading
+      },
+      set(value) {
+        vm.$data.loading = value
+      }
+    },
     ...mapGetters([
       'sidebar',
       'avatar',
@@ -85,7 +93,9 @@ export default {
   },
   methods: {
     async logout() {
+      this.loading = true
       await this.$store.dispatch('user/logout')
+      this.loading = false
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }

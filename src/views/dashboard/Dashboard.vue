@@ -22,9 +22,8 @@ export default {
       loading: true,
       dashboard: null,
       parameters: {
-        StartDate: this.$moment().subtract(6, 'month').startOf('day').format(),
-        EndDate: this.$moment().subtract(1, 'day').endOf('day').format(),
-        Vehicles: '[ALL]'
+        Inicio: this.$moment().subtract(6, 'month').startOf('day').format(),
+        Fim: this.$moment().subtract(1, 'day').endOf('day').format()
       }
     }
   },
@@ -50,7 +49,7 @@ export default {
         return
       }
       if (this.dashboardLoaded) {
-        this.$log.debug('dashboard already lodade, skip loading')
+        this.$log.debug('dashboard already loaded, skip loading')
         return
       }
       const self = this
