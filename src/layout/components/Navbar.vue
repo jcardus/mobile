@@ -106,7 +106,7 @@ export default {
   @import '../../styles/element-variables.scss';
   .navbar {
     height: 50px;
-    width: calc(100vw - 70px);
+    width: calc(100vw - 90px);
     position: absolute;
     left: 64px;
     background: rgba(0, 0, 0, 0);
