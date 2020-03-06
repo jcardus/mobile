@@ -60,7 +60,7 @@ export default {
           .then(json => {
             const containerDiv = document.getElementById('quicksightContainer')
             let url = json.EmbedUrl
-            if (isMobile() && this.$f7 && this.$f7.device.iphone) {
+            if (isMobile()) {
               url = url.replace('us-east-1.quicksight.aws.amazon.com', partner.getQuicksightHostName())
             }
             const options = {
