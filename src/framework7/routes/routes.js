@@ -5,6 +5,7 @@ import VehiclesSettingsPage from '../pages/settings/vehicles'
 import VehicleDetailsPage from '../pages/settings/vehicleDetails'
 import POISSettingsPage from '../pages/settings/pois'
 import GeofencesSettingsPage from '../pages/settings/geofences'
+import GroupsSettingsPage from '../pages/settings/groups'
 import AlertsSettingsPage from '../pages/settings/alerts'
 import AboutPage from '../pages/settings/about'
 import Viewer from '../pages/viewer'
@@ -43,6 +44,10 @@ const routes = [
   {
     path: '/settings/geofences',
     component: GeofencesSettingsPage
+  },
+  {
+    path: '/settings/groups',
+    component: GroupsSettingsPage
   },
   {
     path: '/settings/alerts',
