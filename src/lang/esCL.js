@@ -192,7 +192,10 @@ export default {
     group_delete_title: 'Apagar Grupo',
     group_edit_confirm: 'Confirmar',
     group_edit_cancel: 'Cancelar',
-    group_created: 'Grupo creado con éxito!'
+    group_created: 'Grupo creado con éxito!',
+    pois_title: 'PDIs',
+    edit: 'Editar',
+    delete: 'Apagar'
   },
   geofence: {
     showGeofences: 'Mostrat Geocercas',

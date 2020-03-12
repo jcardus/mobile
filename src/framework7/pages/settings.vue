@@ -10,6 +10,11 @@
           <f7-button fill large raised style="font-size:15px" href="/settings/pois"><i class="fas fa-map-marker-alt"></i> {{ $t('settings.pois') }}</f7-button>
         </f7-col>
       </f7-row>
+      <f7-row tag="p">
+        <f7-col>
+          <f7-button fill large raised style="font-size:15px" href="/settings/groups"><i class="fas fa-grip-horizontal"></i> {{ $t('settings.groups') }}</f7-button>
+        </f7-col>
+      </f7-row>
       <!-- <f7-row tag="p">
         <f7-col>
           <f7-button fill large raised style="font-size:20px" href="/settings/geofences"><i class="fas fa-draw-polygon"></i> Geofences</f7-button>

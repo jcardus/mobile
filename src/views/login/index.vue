@@ -13,6 +13,7 @@
             type="text"
             tabindex="1"
             autocomplete="on"
+            :class="cssName"
           />
         </el-form-item>
         <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
@@ -26,6 +27,7 @@
               name="password"
               tabindex="2"
               autocomplete="on"
+              :class="cssName"
               @keyup.native="checkCapslock"
               @blur="capsTooltip = false"
               @keyup.enter.native="handleLogin"
@@ -33,7 +35,7 @@
           </el-form-item>
         </el-tooltip>
         <div>
-          <el-button :loading="loading" type="primary" style="margin-bottom:30px" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
+          <el-button :loading="loading" type="primary" :style="'margin-bottom:30px; background-color: '+themeColor+'; border-color: '+themeColor" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
         </div>
         <div>
           <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
@@ -81,6 +83,12 @@ export default {
   computed: {
     logoImage: function() {
       return partner.getLogo()
+    },
+    themeColor: function() {
+      return partner.getThemeColor()
+    },
+    cssName: function() {
+      return partner.getCSSName()
     },
     version() {
       let v = this.$store.state.app.packageVersion
@@ -189,7 +197,7 @@ export default {
       overflow: hidden;
 
       .login-form {
-        padding: 150px 50px;
+        padding: 200px 150px;
       }
 
       .tips {
@@ -227,6 +235,24 @@ export default {
           font-size: 18px;
           right: 0;
           cursor: pointer;
+        }
+      }
+
+      .wuizy {
+        input {
+          border-color: #91D400;
+        }
+      }
+
+      .fleetrack {
+        input {
+          border-color: #055AE5;
+        }
+      }
+
+      .able-on {
+        input {
+          border-color: #055AE5;
         }
       }
 

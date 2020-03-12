@@ -197,7 +197,10 @@ export default {
     group_delete_title: 'Apagar Grupo',
     group_edit_confirm: 'Confirmar',
     group_edit_cancel: 'Cancelar',
-    group_created: 'Grupo criado com sucesso!'
+    group_created: 'Grupo criado com sucesso!',
+    pois_title: 'POIs',
+    edit: 'Editar',
+    delete: 'Apagar'
   },
   geofence: {
     showGeofences: 'Ver Balizas',
