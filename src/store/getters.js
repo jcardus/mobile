@@ -5,7 +5,8 @@ const getters = {
   name: state => state.user.name,
   map: state => state.map,
   devices: state => state.devices,
-  commandPending: state => state.devices.commandPending
+  commandPending: state => state.devices.commandPending,
+  loading: state => state.app.loading
 }
 
 export default getters

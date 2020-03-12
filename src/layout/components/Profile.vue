@@ -26,6 +26,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { appOffline } from '../../utils/utils'
+import { vm } from '../../main'
 
 export default {
   name: 'Profile',
@@ -37,11 +38,19 @@ export default {
       return appOffline()
     }
   },
+  loading: {
+    get() {
+      return vm.$data.loading
+    },
+    set(value) {
+      vm.$data.loading = value
+    }
+  },
   methods: {
     async logout() {
-      this.loading = true
+      await this.$store.dispatch('app/setLoading', true)
       await this.$store.dispatch('user/logout')
-      this.loading = false
+      await this.$store.dispatch('app/setLoading', false)
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }

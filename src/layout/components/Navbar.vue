@@ -1,6 +1,5 @@
 <template>
   <div v-if="showNavBar" class="navbar">
-
     <div class="left">
       <span>{{ title }}</span>
     </div>
@@ -10,7 +9,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import * as lnglat from '../../utils/lnglat'
-import { vm } from '../../main'
 import Vue from 'vue'
 
 export default {
@@ -26,14 +24,6 @@ export default {
       return !this.$route.path.includes('map') &&
         !this.$route.path.includes('dashboard')
     },
-    loading: {
-      get() {
-        return vm.$data.loading
-      },
-      set(value) {
-        vm.$data.loading = value
-      }
-    },
     ...mapGetters([
       'sidebar',
       'avatar',
@@ -44,10 +34,6 @@ export default {
     },
     isMobile() {
       return lnglat.isMobile()
-    },
-
-    deviceSelected() {
-      return vm.$data.currentDevice != null
     }
   }
 }
@@ -71,5 +57,4 @@ export default {
     opacity: 0.5;
     font-weight: bold;
   }
-
 </style>
