@@ -1,6 +1,7 @@
 <template>
   <div v-loading="loading">
     <navbar />
+    <profile></profile>
     <div class="row">
       <side-bar />
       <app-main class="divMain" />
@@ -13,6 +14,7 @@
 import AppMain from './components/AppMain'
 import SideBar from './components/SideBar'
 import Navbar from './components/Navbar'
+import Profile from './components/Profile'
 import * as notifications from '../utils/notifications'
 import { vm } from '../main'
 
@@ -21,7 +23,8 @@ export default {
   components: {
     AppMain,
     Navbar,
-    SideBar
+    SideBar,
+    Profile
   },
   data() {
     return {
