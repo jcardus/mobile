@@ -77,12 +77,12 @@ export default {
             self.dashboard.on('load', this.onDashboardLoad)
           }).catch((e) => {
             self.$log.error(e)
-            self.loading = false
+            self.stopLoading()
             serverBus.$emit('message', e)
           })
       } catch (e) {
         self.$log.error(e)
-        self.loading = false
+        self.stopLoading()
         TrackJS.track('DASHBOARD')
       }
     },
