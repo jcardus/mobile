@@ -16,7 +16,7 @@ import SideBar from './components/SideBar'
 import Navbar from './components/Navbar'
 import Profile from './components/Profile'
 import * as notifications from '../utils/notifications'
-import { vm } from '../main'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Layout',
@@ -33,11 +33,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'loading'
+    ]),
     devices() {
       return this.$root.$data.devices
-    },
-    loading() {
-      return vm.$data.loading
     }
   },
   beforeDestroy() {

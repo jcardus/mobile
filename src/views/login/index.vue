@@ -22,7 +22,7 @@
               :key="passwordType"
               ref="password"
               v-model="loginForm.password"
-              show-password="true"
+              :show-password="true"
               :type="passwordType"
               name="password"
               tabindex="2"
@@ -263,9 +263,9 @@ export default {
 
         input {
           background: transparent;
-          border-right-width: 0px;
-          border-left-width: 0px;
-          border-top-width: 0px;
+          border-right-width: 0;
+          border-left-width: 0;
+          border-top-width: 0;
           border-bottom-width: 2px;
           -webkit-appearance: none;
           border-radius: 0;
@@ -274,7 +274,7 @@ export default {
           height: 40px;
           caret-color: $cursor;
           font-size: 15px;
-          font-family: "Open Sans";
+          font-family: "Open Sans",serif;
 
           &:-webkit-autofill {
             box-shadow: 0 0 0 1000px $bg inset !important;
@@ -296,7 +296,7 @@ export default {
         height: 25px;
         color: $dark_gray;
         font-size: 13px;
-        font-family: "Open Sans";
+        font-family: "Open Sans",serif;
       }
 
       .show-pwd {
@@ -312,7 +312,7 @@ export default {
       .el-button {
         width: 50%;
         alignment: right;
-        font-family: "Open Sans";
+        font-family: "Open Sans",serif;
       }
 
       .thirdparty-button {
