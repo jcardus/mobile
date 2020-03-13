@@ -1,7 +1,13 @@
 <template>
   <div>
     <f7-page>
-      <f7-fab slot="fixed" :style="iphone?'padding-top: 15px':''" position="top-left" color="gray" @click="$f7.panel.open('left')">
+      <f7-fab
+        slot="fixed"
+        :style="iphone?'padding-top: 20px':''"
+        color="gray"
+        position="left-top"
+        @click="$f7.panel.open('left')"
+      >
         <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
       </f7-fab>
       <div style="height: 100%">
