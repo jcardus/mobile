@@ -9,7 +9,7 @@ import GroupsSettingsPage from '../pages/settings/groups'
 import AlertsSettingsPage from '../pages/settings/alerts'
 import AboutPage from '../pages/settings/about'
 import Viewer from '../pages/viewer'
-import MapMobileContainer from '../../views/map/MapMobileContainer'
+import MapMobileContainer from '../pages/MapMobileContainer'
 import DashboardPage from '../pages/dashboard'
 
 const routes = [
