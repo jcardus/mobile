@@ -7,31 +7,33 @@
         inactive-text=""
       ></el-switch>
     </div>
-    <el-table
-      id="geofenceTable"
-      style="padding: 10px"
-      highlight-current-row
-      :data="filteredGeofences"
-      :show-header="false"
-      :height="height"
-      @current-change="geofenceSelected"
-    >
-      <el-table-column
-        prop="name"
+    <div class="mobileScroll">
+      <el-table
+        id="geofenceTable"
+        style="padding: 10px"
+        highlight-current-row
+        :data="filteredGeofences"
+        :show-header="false"
+        :height="height"
+        @current-change="geofenceSelected"
       >
-      </el-table-column>
-      <el-table-column label="" width="50">
-        <template slot-scope="scope">
-          <el-dropdown>
-            <i class="fas fa-ellipsis-v"></i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('geofence.edit_geofence') }}</el-dropdown-item>
-              <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('geofence.delete_geofence') }}</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          prop="name"
+        >
+        </el-table-column>
+        <el-table-column label="" width="50">
+          <template slot-scope="scope">
+            <el-dropdown>
+              <i class="fas fa-ellipsis-v"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('geofence.edit_geofence') }}</el-dropdown-item>
+                <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('geofence.delete_geofence') }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -155,5 +157,25 @@ export default {
 <style scoped>
   .header {
     padding: 10px;
+  }
+  .mobileScroll {
+    -webkit-overflow-scrolling: touch;
+  }
+</style>
+<style>
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 5px;
   }
 </style>

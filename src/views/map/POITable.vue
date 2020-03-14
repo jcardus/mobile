@@ -7,31 +7,33 @@
         inactive-text=""
       ></el-switch>
     </div>
-    <el-table
-      id="poiTable"
-      style="padding: 10px"
-      highlight-current-row
-      :data="filteredPOIs"
-      :show-header="false"
-      :height="height"
-      @current-change="poiSelected"
-    >
-      <el-table-column
-        prop="name"
+    <div class="mobileScroll">
+      <el-table
+        id="poiTable"
+        style="padding: 10px"
+        highlight-current-row
+        :data="filteredPOIs"
+        :show-header="false"
+        :height="height"
+        @current-change="poiSelected"
       >
-      </el-table-column>
-      <el-table-column label="" width="50">
-        <template slot-scope="scope">
-          <el-dropdown>
-            <i class="fas fa-ellipsis-v"></i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('poiTable.edit_poi') }}</el-dropdown-item>
-              <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('poiTable.delete_poi') }}</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          prop="name"
+        >
+        </el-table-column>
+        <el-table-column label="" width="50">
+          <template slot-scope="scope">
+            <el-dropdown>
+              <i class="fas fa-ellipsis-v"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('poiTable.edit_poi') }}</el-dropdown-item>
+                <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('poiTable.delete_poi') }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -148,5 +150,25 @@ export default {
 <style lang="scss" scoped>
   .header {
     padding: 10px;
+  }
+  .mobileScroll {
+    -webkit-overflow-scrolling: touch;
+  }
+</style>
+<style>
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 5px;
   }
 </style>
