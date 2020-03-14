@@ -5,6 +5,7 @@
     <f7-list
       media-list
       virtual-list
+      inset
     >
       <ul>
         <f7-list-item
