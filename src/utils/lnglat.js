@@ -12,7 +12,7 @@ let markersOnScreen = {}
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
-const gray = ['any', ['>', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], true]]
+const gray = ['any', ['>', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], true], ['==', ['get', 'ignition'], null]]
 const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
 const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
 const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2], ['==', ['get', 'outdated'], false]]
