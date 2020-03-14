@@ -40,7 +40,7 @@
             <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: blue"></i> {{ getPOIName(scope.row.poi) }}</span>
           </div>
           <div v-else style="line-height: normal">
-            <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: rebeccapurple"></i> {{ scope.row.address }}</span>
+            <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: darkblue"></i> {{ scope.row.address }}</span>
           </div>
           <div style="padding-top: 6px;float:left">
             <timeago

@@ -33,7 +33,7 @@
         placeholder="Please choose..."
         @input="selectedCategory = $event.target.value"
       >
-        <option v-for="(opt) in categories" :key="opt.value" :value="selectedCategory" :selected="(opt.value === selectedCategory)">{{ opt.text }}</option>
+        <option v-for="(opt) in categories" :key="opt.value" :value="opt.value" :selected="(opt.value === selectedCategory)">{{ opt.text }}</option>
       </f7-list-input>
       <f7-list-input
         :label="$t('settings.vehicle_form_total_kms')"
@@ -137,9 +137,6 @@ export default {
   methods: {
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
-    },
-    onVehicleGroupChanged(value) {
-      alert(value)
     },
     handleSubmitVehicleForm() {
       const vehicle = this.selectedVehicle
