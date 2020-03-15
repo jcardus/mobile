@@ -439,7 +439,7 @@ export default {
         return
       }
 
-      if (!this.show) {
+      if (!this.showRoutes) {
         Vue.$log.warn('ignoring layer ', this.routeSpeedSource, ', history mode off...')
         return
       }
