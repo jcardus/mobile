@@ -60,7 +60,21 @@
       </div>
     </transition>
     <el-card>
-      <el-table :data="devices" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
+      <el-input
+        v-model="search"
+        style="width: 300px"
+        placeholder="Pesquisa"
+      />
+      <el-table
+        :data="devices.filter(data => !search
+          || data.name.toLowerCase().includes(search.toLowerCase())
+          || (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(search.toLowerCase()))
+          || (data.model && data.model.toLowerCase().includes(search.toLowerCase())))"
+        height="450"
+        style="width: 100%"
+        :row-style="tableRowStyle"
+        :header-cell-style="tableHeaderStyle"
+      >
         <el-table-column
           :label="$t('settings.vehicle_name')"
           prop="name"
@@ -77,6 +91,8 @@
           :formatter="groupRenderer"
           prop="groupId"
           sortable
+          :filters="groupsFilter"
+          :filter-method="filterHandler"
         ></el-table-column>
         <el-table-column
           v-if="!isMobile"
@@ -92,22 +108,15 @@
           sortable
         >
         </el-table-column>
-        <el-table-column label="" :min-width="isMobile ? '15px' : '50px'">
+        <el-table-column label="" width="100px">
           <template slot-scope="scope">
             <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
               <el-button
-                v-if="!isMobile"
                 size="small"
                 class="formButton"
                 @click="handleEdit(scope.row)"
               ><i class="fas fa-edit"></i></el-button>
             </el-tooltip>
-            <el-dropdown v-if="isMobile">
-              <i class="fas fa-ellipsis-v"></i>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.vehicle_edit') }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -120,6 +129,7 @@
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
+import Vue from 'vue'
 
 export default {
   name: 'Vehicles',
@@ -132,7 +142,8 @@ export default {
       vehicleSpeedLimit: 0,
       vehicleTotalKms: 0,
       selectedGroup: null,
-      selectedCategory: null
+      selectedCategory: null,
+      search: ''
     }
   },
   computed: {
@@ -144,6 +155,14 @@ export default {
     },
     groups: function() {
       return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+    },
+    groupsFilter: function() {
+      const teste = vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1).map(g => {
+        const a = { text: g.name, value: g.id }
+        return a
+      })
+      Vue.$log.debug(teste)
+      return teste
     },
     categories: function() {
       const categoryType = [
@@ -165,6 +184,10 @@ export default {
     }
   },
   methods: {
+    filterHandler(value, row, column) {
+      const property = column['property']
+      return row[property] === value
+    },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
