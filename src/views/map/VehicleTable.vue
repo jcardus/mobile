@@ -34,13 +34,13 @@
             <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
           <div style="line-height: normal;padding-top: 2px">
             <span v-if="scope.row.currentFeature" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
-            <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: green"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
+            <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
           </div>
           <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
-            <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: blue"></i> {{ getPOIName(scope.row.poi) }}</span>
+            <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.poi) }}</span>
           </div>
           <div v-else style="line-height: normal">
-            <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: darkblue"></i> {{ scope.row.address }}</span>
+            <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.address }}</span>
           </div>
           <div style="padding-top: 6px;float:left">
             <timeago
@@ -81,7 +81,9 @@ export default {
       return Math.round(value)
     },
     capitalize: function(value) {
-      if (!value) return ''
+      if (!value) {
+        return ''
+      }
       value = value.toString()
       return value.charAt(0).toUpperCase() + value.slice(1)
     },
