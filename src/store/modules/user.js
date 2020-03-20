@@ -5,8 +5,6 @@ import { traccar } from '../../api/traccar-api'
 import { setLanguage } from '../../lang/index'
 import { vm, serverBus } from '../../main'
 import { TrackJS } from 'trackjs'
-import { API, graphqlOperation, ServiceWorker } from 'aws-amplify'
-import * as gqlMutations from '../../graphql/mutations'
 import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
 import store from '../index'
@@ -57,9 +55,6 @@ function initPushNotification() {
           email: getToken().email
         }
         Vue.$log.warn('creating subscription ', newSub)
-        API.graphql(graphqlOperation(gqlMutations.createWebSubs, { input: newSub })).catch((e) => {
-          Vue.$log.error('error on graphql operation', e)
-        })
       }).catch((e) => {
         Vue.$log.error('error on enablePush', e)
       })

@@ -16,9 +16,6 @@ import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
 import { getToken } from './utils/auth'
-import Amplify, * as AmplifyModules from 'aws-amplify'
-import { AmplifyPlugin } from 'aws-amplify-vue'
-import { ServiceWorker } from 'aws-amplify'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
@@ -142,20 +139,6 @@ Vue.use(VueI18nFilter)
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
-
-import Analytics from '@aws-amplify/analytics'
-import awsconfig from './aws-exports'
-
-Amplify.configure(awsconfig)
-
-Analytics.record('applicationStart').then(() => {})
-
-Analytics.autoTrack('session', {
-  enable: true,
-  provider: 'AWSPinpoint'
-})
-
-Vue.use(AmplifyPlugin, AmplifyModules)
 
 import VueTimers from 'vue-timers'
 
