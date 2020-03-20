@@ -80,7 +80,7 @@ export let regServiceWorker
 
 if ('serviceWorker' in navigator) {
   Vue.$log.debug('registering service worker...')
-  new ServiceWorker().register().then(reg => {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
     regServiceWorker = reg
     reg.addEventListener('updatefound', () => {
       Vue.$log.debug('A wild service worker has appeared in reg.installing!')
