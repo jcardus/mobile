@@ -223,7 +223,7 @@ export default {
   methods: {
     toggleChanged: function() {
       vm.$store.dispatch('app/toggleHistoryMode')
-      setTimeout(window.dispatchEvent, 500, new Event('resize'))
+      setTimeout(serverBus.$emit('mapShown'), 500)
     },
     showRoutesClick: function() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)

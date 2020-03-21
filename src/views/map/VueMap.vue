@@ -231,6 +231,8 @@ export default {
       if (this.map) {
         this.$log.debug('map.resize')
         this.map.resize()
+        this.$log.debug('map.repaint')
+        this.map.triggerRepaint()
       } else {
         this.$log.error('mapResize received but theres no map instance: ', this.map)
         TrackJS.track('MAP')
