@@ -728,7 +728,7 @@ export default {
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            self.map.getZoom() > 11
+            self.map.getZoom() > 12
           ) {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
