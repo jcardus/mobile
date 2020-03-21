@@ -729,6 +729,7 @@ export default {
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers &&
+            !self.$store.state.app.historyMode &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             self.map.getZoom() > 12
           ) {

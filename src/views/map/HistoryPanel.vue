@@ -210,7 +210,7 @@ export default {
         const self = this
         this.positions.forEach(function(item, index) {
           item.index = index
-          self.indexArray[Vue.moment(item.fixTime).unix()] = item
+          self.indexArray[self.marks[index]] = item
         })
         this.fillGraphData()
         this.sliderPos = this.maxPos
