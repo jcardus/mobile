@@ -261,7 +261,9 @@ export default {
       this.selectedCategory = row.category
       this.vehicleName = row.name
       this.vehicleModel = row.model
-      this.vehicleTotalKms = p.properties.totalDistance / 1000
+      if (p) {
+        this.vehicleTotalKms = p.properties.totalDistance / 1000
+      }
       this.vehicleSpeedLimit = Math.round(row.attributes.speedLimit * 1.85200)
       this.isOpenVehicleForm = !this.isOpenVehicleForm
     },
