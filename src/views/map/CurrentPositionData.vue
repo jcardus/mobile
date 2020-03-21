@@ -223,7 +223,6 @@ export default {
   methods: {
     toggleChanged: function() {
       vm.$store.dispatch('app/toggleHistoryMode')
-      setTimeout(serverBus.$emit('mapShown'), 500)
     },
     showRoutesClick: function() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
@@ -434,6 +433,9 @@ export default {
       this.drawSpeedTrip()
     },
     drawSpeedTrip: function() {
+      if (!this.speedTrips[this.currentTrip]) {
+        return
+      }
       if (vm.$static.map.getSource(this.routeSpeedSource)) {
         Vue.$log.warn('ignoring layer ', this.routeSpeedSource, ', already exists...')
         return

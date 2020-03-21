@@ -735,7 +735,6 @@ export default {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
-            self.$log.debug('device ', feature.properties.text, ' off bounds')
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
           }
