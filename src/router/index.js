@@ -15,11 +15,6 @@ export const constantRoutes = [
     children: [{ path: '/redirect/:path*', component: () => import('../views/redirect/index') }]
   },
   {
-    path: '/amplogin',
-    component: () => import('../views/login/AmpLogin'),
-    hidden: true
-  },
-  {
     path: '/login',
     component: () => import('../views/login/index'),
     hidden: true
