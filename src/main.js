@@ -79,28 +79,23 @@ export let newServiceWorker
 export let regServiceWorker
 
 if ('serviceWorker' in navigator) {
-  Vue.$log.debug('registering service worker...')
-  navigator.serviceWorker.register('/sw.js').then(reg => {
-    regServiceWorker = reg
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        for (const reg of registrations) {
-          reg.addEventListener('updatefound', () => {
-            Vue.$log.debug('A wild service worker has appeared in reg.installing!')
-            newServiceWorker = reg.installing
-            newServiceWorker.addEventListener('statechange', () => {
-              // Has network.state changed?
-              if (newServiceWorker.state === 'installed') {
-                if (navigator.serviceWorker.controller) {
-                  serverBus.$emit('updateAvailable')
-                }
-              }
-            })
-          })
-        }
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const reg of registrations) {
+      reg.addEventListener('updatefound', () => {
+        Vue.$log.debug('A wild service worker has appeared in reg.installing!')
+        newServiceWorker = reg.installing
+        newServiceWorker.addEventListener('statechange', () => {
+          // Has network.state changed?
+          if (newServiceWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              serverBus.$emit('updateAvailable')
+            }
+          }
+        })
       })
     }
   })
+
   let refreshing
   navigator.serviceWorker.addEventListener('controllerchange', function() {
     if (refreshing) return
