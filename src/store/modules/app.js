@@ -18,6 +18,7 @@ const mutations = {
     state.historyMode = vm.$data.historyMode
     Vue.$log.debug('historyMode changed to ', vm.$data.historyMode, ' emitting event')
     serverBus.$emit('showRoutesChanged')
+    setTimeout(() => serverBus.$emit('mapShown'), 500)
   },
   TOGGLE_LOADING: () => {
     state.loading = !state.loading

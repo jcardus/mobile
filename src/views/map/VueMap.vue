@@ -231,6 +231,8 @@ export default {
       if (this.map) {
         this.$log.debug('map.resize')
         this.map.resize()
+        this.$log.debug('map.repaint')
+        this.map.triggerRepaint()
       } else {
         this.$log.error('mapResize received but theres no map instance: ', this.map)
         TrackJS.track('MAP')
@@ -728,12 +730,11 @@ export default {
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            self.map.getZoom() > 11
+            self.map.getZoom() > 12
           ) {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
-            self.$log.debug('device ', feature.properties.text, ' off bounds')
             feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
           }
