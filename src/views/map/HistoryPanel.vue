@@ -182,7 +182,7 @@ export default {
     },
     fillGraphData() {
       // const categories = this.positions.map(x => this.$moment(x.fixTime).format('YYYY-MM-DDThh:mm:ss'))
-      const categories = this.positions.map(x => this.$moment(x.fixTime).toDate())
+      const categories = this.positions.map(x => x.moment.toDate())
       // const categories = this.positions.map(x => x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime)
       const series = this.positions.map(x => x.speed * 1.852)
@@ -206,7 +206,10 @@ export default {
     },
     updateMinMax() {
       if (this.positions.length > 0) {
-        this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
+        this.marks = this.positions.map(x => {
+          x.moment = Vue.moment(x.fixTime)
+          return x.moment.unix()
+        })
         const self = this
         this.positions.forEach(function(item, index) {
           item.index = index
