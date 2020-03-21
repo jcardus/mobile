@@ -1,4 +1,4 @@
-import { vm, newServiceWorker, regServiceWorker } from '../main'
+import { vm, newServiceWorker } from '../main'
 import Vue from 'vue'
 
 export function getServerHost() {
@@ -67,12 +67,14 @@ export function reload() {
 }
 
 export function checkForUpdates() {
-  if (regServiceWorker) {
-    Vue.$log.debug('checking for updates...')
-    regServiceWorker.update()
-  } else {
-    Vue.$log.warn('no service worker.. thats not good...')
-  }
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    if (registrations.length === 0) {
+      Vue.$log.warn('no service worker.. thats not good...')
+    }
+    for (const reg of registrations) {
+      reg.update().then(() => Vue.$log.debug('done checking for updates...'))
+    }
+  })
 }
 
 export function appOffline() {
