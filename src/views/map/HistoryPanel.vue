@@ -3,22 +3,16 @@
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :labels="labels" :chart-data="chartData" />
     </div>
-    <div style="padding-left:57px; padding-right: 20px">
-      <vue-slider
-        v-model="sliderPos"
-        :tooltip-formatter="formatter"
-        :max="maxPos"
-        :min="minPos"
-        :tooltip="'always'"
-        :tooltip-placement="'bottom'"
-        :marks="marks"
-        :included="true"
-        :hide-label="true"
-        dot-size="35"
-        :disabled="isPlaying"
-        :adsorb="true"
-        :use-keyboard="true"
-      /></div>
+    <div style="padding-left:48px; padding-right:10px">
+      <label>
+        <input
+          v-model="sliderPos"
+          class="slider"
+          type="range"
+          :max="maxPos"
+          :min="minPos"
+        />
+      </label></div>
     <div style="padding-left: 10px">
       <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
       <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
@@ -33,12 +27,10 @@ import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
 import SpeedChart from './SpeedChart'
-import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/default.css'
 
 export default {
   name: 'HistoryPanel',
-  components: { SpeedChart, VueSlider },
+  components: { SpeedChart },
   data() {
     return {
       padding: 0,
@@ -46,7 +38,6 @@ export default {
       sliderPos: 0,
       currentPos: 0,
       currentPos_: 0,
-      formatter: v => `${this.formatDate(v)}`,
       dates: [],
       labels: [],
       chartData: [],
@@ -252,5 +243,35 @@ export default {
     padding-top: 15px;
     padding-right: 10px;
     font-size:40px;
+  }
+  .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+
+  .slider:hover {
+    opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
   }
 </style>
