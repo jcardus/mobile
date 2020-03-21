@@ -653,10 +653,11 @@ export default {
     getCategory(category) {
       if (!category) { return 'default' }
       switch (category) {
+        case 'motorcycle':
+          return 'moto'
         case 'helicopter':
         case 'bicycle':
         case 'person':
-        case 'motorcycle':
         case 'boat':
         case 'tractor':
         case 'bus':

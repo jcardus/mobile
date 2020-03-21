@@ -5,16 +5,12 @@ import { traccar } from '../../api/traccar-api'
 import { setLanguage } from '../../lang/index'
 import { vm, serverBus } from '../../main'
 import { TrackJS } from 'trackjs'
-import { API, graphqlOperation, ServiceWorker } from 'aws-amplify'
-import * as gqlMutations from '../../graphql/mutations'
 import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
 import store from '../index'
 import VueNativeSock from 'vue-native-websocket'
 import * as utils from '../../utils/utils'
 import { backEndHostName } from '../../utils/consts'
-
-const serviceWorker = new ServiceWorker()
 
 const state = {
   name: '',
@@ -43,31 +39,6 @@ const mutations = {
   },
   TOGGLE_CONNECTION_OK: () => {
     state.connectionOk = !state.connectionOk
-  }
-}
-
-function initPushNotification() {
-  try {
-    serviceWorker.register().then(() => {
-      serviceWorker.enablePush('BFvZh7RWWZQQ6F7uvf_C0kbSAhPw_MX2WuBKRzybEqP-ER4mgh-SM39P24-MY-qm_B6z970bqhsZshVv1sBNn2Y').then((subscription) => {
-        Vue.$log.warn('subscription ', subscription)
-        const newSub = {
-          id: 0,
-          subscription: JSON.stringify(subscription),
-          email: getToken().email
-        }
-        Vue.$log.warn('creating subscription ', newSub)
-        API.graphql(graphqlOperation(gqlMutations.createWebSubs, { input: newSub })).catch((e) => {
-          Vue.$log.error('error on graphql operation', e)
-        })
-      }).catch((e) => {
-        Vue.$log.error('error on enablePush', e)
-      })
-    }).catch((e) => {
-      Vue.$log.error('error on register', e)
-    })
-  } catch (err) {
-    Vue.$log.error('error on enablePush before then', err)
   }
 }
 
@@ -170,7 +141,6 @@ const actions = {
         setToken(response.data)
         context.dispatch('setUser').finally(() => {
           checkForUpdates()
-          initPushNotification()
           resolve()
         })
       }).catch(error => {

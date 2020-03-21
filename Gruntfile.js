@@ -35,6 +35,4 @@ module.exports = function(grunt) {
 
   // Load in `grunt-spritesmith`
   grunt.loadNpmTasks('grunt-spritesmith')
-  grunt.loadNpmTasks('grunt-convert-svg-to-png')
-  grunt.loadNpmTasks('grunt-move')
 }
