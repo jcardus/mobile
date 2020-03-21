@@ -9,16 +9,12 @@
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
-import { components } from 'aws-amplify-vue'
 import { serverBus, newServiceWorker } from './main'
 import { getToken } from './utils/auth'
 import Vue from 'vue'
 
 export default {
   name: 'App',
-  components: {
-    ...components
-  },
   data() {
     return {
       showUpdateDiv: false
