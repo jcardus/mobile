@@ -7,7 +7,6 @@
       <label>
         <input
           v-model="sliderPos"
-          class="slider"
           type="range"
           :max="maxPos"
           :min="minPos"
@@ -234,6 +233,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '../../styles/element-variables.scss';
   .historyPanel2 {
     font-size: 15px;
     margin: 0 !important;
@@ -244,34 +244,29 @@ export default {
     padding-right: 10px;
     font-size:40px;
   }
-  .slider {
+  input[type=range] {
     -webkit-appearance: none;
     width: 100%;
-    height: 25px;
-    background: #d3d3d3;
+  }
+
+  input[type=range]:focus {
     outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
   }
 
-  .slider:hover {
-    opacity: 1;
+  input[type=range]::-webkit-slider-runnable-track {
+    height:2px;
+    background: $--color-info;
   }
 
-  .slider::-webkit-slider-thumb {
+  input[type=range]::-webkit-slider-thumb {
+    box-shadow: 2px 2px 4px $--color-info;
+    background: $--background-color-base;
+    border: 2px solid $--border-base;
+    height: 35px;
+    width: 35px;
+    border-radius: 35px;
+    cursor: pointer;
     -webkit-appearance: none;
-    appearance: none;
-    width: 25px;
-    height: 25px;
-    background: #4CAF50;
-    cursor: pointer;
-  }
-
-  .slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
-    background: #4CAF50;
-    cursor: pointer;
+    margin-top: -16px;
   }
 </style>
