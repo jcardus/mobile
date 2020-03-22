@@ -61,7 +61,7 @@
 </template>
 <script>
 
-import { serverBus, vm } from '../../main'
+import { serverBus, vm, sharedData } from '../../main'
 import * as lnglat from '@/utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
@@ -151,7 +151,7 @@ export default {
       return this.devices.filter(d => this.getDeviceState(d) === 'Moving')
     },
     positions() {
-      return vm.$store.state.map.positions
+      return sharedData.getPositions()
     },
     map() {
       return vm.$data.map

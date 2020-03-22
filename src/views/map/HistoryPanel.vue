@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { serverBus, vm } from '../../main'
+import { serverBus, vm, sharedData } from '../../main'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
@@ -64,7 +64,7 @@ export default {
       set(value) { vm.$data.isPlaying = value }
     },
     positions: function() {
-      if (vm.$store.state.map.positions) { return vm.$store.state.map.positions }
+      if (sharedData.getPositions()) { return sharedData.getPositions() }
       return []
     },
     show() { return vm.$data.historyMode },
@@ -113,7 +113,7 @@ export default {
       }
       this.oldSliderPos = this.sliderPos
     },
-    currentPos: function() {
+    currentPos() {
       Vue.$log.debug('curPos changed to ', this.currentPos)
       if (this.isPlaying) {
         let i = this.currentPos - consts.routeSlotLength
@@ -252,16 +252,13 @@ export default {
     -webkit-appearance: none;
     width: 100%;
   }
-
   input[type=range]:focus {
     outline: none;
   }
-
   input[type=range]::-webkit-slider-runnable-track {
     height:2px;
     background: $--color-info;
   }
-
   input[type=range]::-webkit-slider-thumb {
     box-shadow: 2px 2px 4px $--color-info;
     background: $--background-color-base;

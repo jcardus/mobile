@@ -139,6 +139,7 @@ import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
 
 import VueTimers from 'vue-timers'
+import { SharedData } from './utils/utils'
 
 Vue.use(VueTimers)
 
@@ -165,6 +166,8 @@ if (lnglat.__isMobile()) {
 }
 
 Vue.$log.debug('starting main instance...', location.href)
+
+export const sharedData = new SharedData()
 
 export const vm = new Vue({
   el: '#app',
