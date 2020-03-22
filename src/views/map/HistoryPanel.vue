@@ -248,4 +248,29 @@ export default {
     padding-right: 10px;
     font-size:40px;
   }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+  }
+
+  input[type=range]:focus {
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    height:2px;
+    background: $--color-info;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    box-shadow: 2px 2px 4px $--color-info;
+    background: $--background-color-base;
+    border: 2px solid $--border-base;
+    height: 35px;
+    width: 35px;
+    border-radius: 35px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -16px;
+  }
 </style>
