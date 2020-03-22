@@ -35,6 +35,7 @@ export default {
       padding: 0,
       oldPos: 0,
       sliderPos: 0,
+      oldSliderPos: 0,
       currentPos: 0,
       currentPos_: 0,
       dates: [],
@@ -109,7 +110,19 @@ export default {
       const pos = this.indexArray[this.sliderPos]
       if (pos && pos.index > 0 && !this.isPlaying) {
         this.currentPos = pos.index
-      } else { Vue.$log.debug('no coordinate at pos ', this.sliderPos) }
+      } else {
+        let i = this.sliderPos
+        if (this.oldSliderPos < this.sliderPos) {
+          while (!this.indexArray[i] && i < this.maxPos) { i++ }
+        } else {
+          while (!this.indexArray[i] && i > this.minPos) { i-- }
+        }
+        this.$log.debug('slider moved from ', this.sliderPos, ' to ', i)
+        if (this.indexArray[i].index) {
+          this.currentPos = this.indexArray[i].index
+        } else { this.$log.warn('no latlon at index ', i) }
+      }
+      this.oldSliderPos = this.sliderPos
     },
     currentPos: function() {
       Vue.$log.debug('curPos changed to ', this.currentPos)
