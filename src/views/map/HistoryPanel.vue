@@ -64,7 +64,7 @@ export default {
       set(value) { vm.$data.isPlaying = value }
     },
     positions: function() {
-      if (vm.$static.positions) { return vm.$static.positions }
+      if (vm.$store.state.map.positions) { return vm.$store.state.map.positions }
       return []
     },
     show() { return vm.$data.historyMode },

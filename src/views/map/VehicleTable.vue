@@ -151,7 +151,7 @@ export default {
       return this.devices.filter(d => this.getDeviceState(d) === 'Moving')
     },
     positions() {
-      return vm.$static.positions
+      return vm.$store.state.map.positions
     },
     map() {
       return vm.$data.map

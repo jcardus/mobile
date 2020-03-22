@@ -168,7 +168,7 @@ Vue.$log.debug('starting main instance...', location.href)
 
 export const vm = new Vue({
   el: '#app',
-  data: function() {
+  data() {
     return {
       loading: false,
       loadingRoutes: false,
@@ -200,7 +200,6 @@ export const vm = new Vue({
   static() {
     return {
       markers: {},
-      positions: [],
       map: null,
       positionsSource: {
         'type': 'FeatureCollection',

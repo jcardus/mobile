@@ -114,7 +114,7 @@ export default {
       return 'allTrips-'
     },
     positions() {
-      return vm.$static.positions
+      return vm.$store.state.map.positions
     },
     isMobile() {
       return lnglat.isMobile()
@@ -256,7 +256,7 @@ export default {
         } else {
           this.drawTrip()
         }
-        vm.$static.positions = positions
+        vm.$store.state.map.positions = positions
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {

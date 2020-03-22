@@ -153,7 +153,7 @@ export default {
       return this.devicesOn.length
     },
     positions() {
-      return vm.$static.positions
+      return vm.$store.state.map.positions
     }
   },
   mounted() {
