@@ -153,7 +153,7 @@ export default {
       return this.devicesOn.length
     },
     positions() {
-      return vm.$data.positions
+      return vm.$static.positions
     }
   },
   mounted() {

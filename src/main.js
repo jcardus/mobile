@@ -176,7 +176,6 @@ export const vm = new Vue({
       routeMaxDate: new Date(),
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
-      positions: [],
       geofences: [],
       popUps: [],
       alerts: [],
@@ -201,6 +200,7 @@ export const vm = new Vue({
   static() {
     return {
       markers: {},
+      positions: [],
       map: null,
       positionsSource: {
         'type': 'FeatureCollection',

@@ -43,22 +43,12 @@ export default {
       chartData: [],
       indexArray: {},
       marks: [],
-      width: 'width:0px'
+      width: 'width:0px',
+      minPos: 0,
+      maxPos: 0
     }
   },
   computed: {
-    minPos() {
-      if (this.positions && this.positions[0]) {
-        return this.$moment(this.positions[0].fixTime).unix()
-      }
-      return 0
-    },
-    maxPos() {
-      if (this.positions.length > 0) {
-        return this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
-      }
-      return 0
-    },
     isMobile() {
       return lnglat.isMobile()
     },
@@ -74,7 +64,7 @@ export default {
       set(value) { vm.$data.isPlaying = value }
     },
     positions: function() {
-      if (vm.$data.positions) { return vm.$data.positions }
+      if (vm.$static.positions) { return vm.$static.positions }
       return []
     },
     show() { return vm.$data.historyMode },
@@ -102,7 +92,6 @@ export default {
           this.currentPos = 0
         }
       }
-      // lnglat.refreshMap()
       serverBus.$emit('routePlay')
     },
     sliderPos() {
@@ -185,7 +174,7 @@ export default {
     },
     fillGraphData() {
       // const categories = this.positions.map(x => this.$moment(x.fixTime).format('YYYY-MM-DDThh:mm:ss'))
-      const categories = this.positions.map(x => x.moment.toDate())
+      const categories = this.positions.map(x => Vue.moment(x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime)
       const series = this.positions.map(x => x.speed * 1.852)
@@ -208,15 +197,17 @@ export default {
       }
     },
     updateMinMax() {
+      if (this.positions && this.positions[0]) {
+        this.minPos = this.$moment(this.positions[0].fixTime).unix()
+      }
       if (this.positions.length > 0) {
-        this.marks = this.positions.map(x => {
-          x.moment = Vue.moment(x.fixTime)
-          return x.moment.unix()
-        })
+        this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
+      }
+      if (this.positions.length > 0) {
         const self = this
         this.positions.forEach(function(item, index) {
           item.index = index
-          self.indexArray[self.marks[index]] = item
+          self.indexArray[self.$moment(item.fixTime).unix()] = item
         })
         this.fillGraphData()
         this.sliderPos = this.maxPos

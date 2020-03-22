@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <span class="header">
       <el-row>
         <el-col :span="12">
@@ -22,7 +21,6 @@
           >
           </f7-toggle></el-col></el-row>
     </span>
-
     <el-row style="padding-top: 5px">
       <el-col :span="12">
 
@@ -86,7 +84,7 @@ export default {
       trips: [],
       speedTrips: [],
       speedMarkers: [],
-      startMarker: null,
+      startMaker: null,
       endMarker: null,
       elSwitchValue: true
     }
@@ -115,13 +113,8 @@ export default {
     allTripsSource() {
       return 'allTrips-'
     },
-    positions: {
-      get() {
-        return vm.$data.positions
-      },
-      set(value) {
-        vm.$data.positions = value
-      }
+    positions() {
+      return vm.$static.positions
     },
     isMobile() {
       return lnglat.isMobile()
@@ -242,7 +235,7 @@ export default {
       lnglat.hideLayers(this.showRoutes)
       animation.hideRouteLayer(!this.showRoutes)
     },
-    onPositions: function(positions) {
+    onPositions(positions) {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
       Vue.$log.debug('positions after filter ', positions)
@@ -263,7 +256,7 @@ export default {
         } else {
           this.drawTrip()
         }
-        this.positions = positions
+        vm.$static.positions = positions
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {
@@ -739,8 +732,6 @@ export default {
       animation.refreshFeature()
       animation.removeAddRouteLayer()
       serverBus.$emit('routeMatchFinished')
-    },
-    routePlayStopped() {
     },
     resizeDiv() {
       Vue.$log.debug('currentpositiondata')

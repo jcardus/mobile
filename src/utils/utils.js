@@ -19,9 +19,9 @@ export function getDate(dateString) {
 }
 
 export function formatDate(v) {
-  v = vm.$data.positions.findIndex(x => Vue.moment(x.fixTime).unix() === v)
-  const fixTime = vm.$data.positions[v] ? vm.$data.positions[v].fixTime : new Date()
-  const speed = vm.$data.positions[v] ? vm.$data.positions[v].speed : ''
+  v = vm.$static.positions.findIndex(x => Vue.moment(x.fixTime).unix() === v)
+  const fixTime = vm.$static.positions[v] ? vm.$static.positions[v].fixTime : new Date()
+  const speed = vm.$static.positions[v] ? vm.$static.positions[v].speed : ''
   let result = getDate(fixTime).format('YYYY-MM-DD HH:mm:ss')
   if (speed && speed > 0) {
     result += (' ' + ~~(speed * 1.852) + 'km/h')
@@ -30,7 +30,7 @@ export function formatDate(v) {
 }
 
 export function formatAddress(v) {
-  return vm.$data.positions[v] ? vm.$data.positions[v].address : ''
+  return vm.$static.positions[v] ? vm.$static.positions[v].address : ''
 }
 
 export function stopLoader() {

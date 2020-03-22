@@ -440,7 +440,6 @@ export default {
     },
     onMoveEnd: function() {
       if (!vm.$data.isPlaying) {
-        this.$log.debug('moveend storing cookie... isPlaying: ', vm.$data.isPlaying)
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
