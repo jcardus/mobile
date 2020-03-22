@@ -3,7 +3,8 @@ import { vm } from '../../main'
 
 const state = {
   showGeofences: VueCookies.get('showGeofences') === '1',
-  showPOIs: VueCookies.get('showPOIs') === '1'
+  showPOIs: VueCookies.get('showPOIs') === '1',
+  positions: null
 }
 
 const mutations = {
