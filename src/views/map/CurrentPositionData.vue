@@ -81,11 +81,6 @@ export default {
       oldPos: 0,
       width: 'width:0px',
       currentTrip: 0,
-      trips: [],
-      speedTrips: [],
-      speedMarkers: [],
-      startMaker: null,
-      endMarker: null,
       elSwitchValue: true
     }
   },
@@ -184,6 +179,11 @@ export default {
   },
   created() {
     Vue.$log.debug('CurrentPositionData created')
+    this.trips = []
+    this.speedTrips = []
+    this.speedMarkers = []
+    this.startMaker = null
+    this.endMarker = null
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
@@ -253,7 +253,7 @@ export default {
         } else {
           this.drawTrip()
         }
-        this.$store.dispatch('map/setPositions', positions)
+        sharedData.setPositions(positions)
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {

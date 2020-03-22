@@ -1,5 +1,5 @@
 import VueCookies from 'vue-cookies'
-import { vm, sharedData } from '../../main'
+import { vm } from '../../main'
 
 const state = {
   showGeofences: VueCookies.get('showGeofences') === '1',
@@ -18,9 +18,6 @@ const mutations = {
 }
 
 const actions = {
-  setPositions({ commit }, positions) {
-    sharedData.setPositions(positions)
-  },
   toggleGeofences({ commit }) {
     commit('TOGGLE_GEOFENCES')
   },
