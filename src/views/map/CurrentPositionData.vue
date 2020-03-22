@@ -256,7 +256,7 @@ export default {
         } else {
           this.drawTrip()
         }
-        vm.$store.state.map.positions = positions
+        this.$store.dispatch('map/setPositions', positions)
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {

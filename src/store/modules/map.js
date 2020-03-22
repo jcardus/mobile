@@ -8,6 +8,9 @@ const state = {
 }
 
 const mutations = {
+  SET_POSITIONS(state, positions) {
+    state.positions = Object.freeze(positions)
+  },
   TOGGLE_GEOFENCES: state => {
     state.showGeofences = !state.showGeofences
     VueCookies.set('showGeofences', state.showGeofences ? '1' : '0')
@@ -19,6 +22,9 @@ const mutations = {
 }
 
 const actions = {
+  setPositions({ commit }, positions) {
+    commit('SET_POSITIONS', positions)
+  },
   toggleGeofences({ commit }) {
     commit('TOGGLE_GEOFENCES')
   },
