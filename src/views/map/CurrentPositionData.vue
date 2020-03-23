@@ -766,28 +766,28 @@ export default {
           i += consts.routeSlotLength
           const lineString = {
             type: 'LineString',
-            coordinates: this.positions.slice(j, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
+            coordinates: sharedData.getPositions().slice(j, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
           }
           dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
-        } while (i < this.positions.length - consts.routeSlotLength && i > consts.routeSlotLength && dist < consts.minDistanceForMatch)
-        if (i < this.positions.length - skipRoutePositions) {
+        } while (i < sharedData.getPositions().length - consts.routeSlotLength && i > consts.routeSlotLength && dist < consts.minDistanceForMatch)
+        if (i < sharedData.getPositions().length - skipRoutePositions) {
           animation.cacheMatch(
-            this.positions.slice(j, i + skipRoutePositions + 1)
+            sharedData.getPositions().slice(j, i + skipRoutePositions + 1)
               .map(x => [x.longitude, x.latitude]),
-            this.positions.slice(j, i + skipRoutePositions + 1)
+            sharedData.getPositions().slice(j, i + skipRoutePositions + 1)
               .map(x => this.$moment(x.fixTime).unix())
           )
         }
-        if (JSON.stringify(this.positions[origin]) === JSON.stringify(this.positions[newPos])) {
+        if (JSON.stringify(sharedData.getPositions()[origin]) === JSON.stringify(sharedData.getPositions()[newPos])) {
           Vue.$log.debug('routeMatchFinished origin equals destination')
           serverBus.$emit('routeMatchFinished')
         } else {
           animation.animate(this.feature,
-            this.positions.slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
-            this.positions.slice(origin, newPos + 1).map(x => Vue.moment(x.fixTime).unix())
+            sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
+            sharedData.getPositions().slice(origin, newPos + 1).map(x => Vue.moment(x.fixTime).unix())
           )
         }
-        if (newPos === this.positions.length - 1) {
+        if (newPos === sharedData.getPositions().length - 1) {
           this.isPlaying = false
         }
       } else {
