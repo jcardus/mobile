@@ -1,4 +1,5 @@
 <template>
+
   <div v-show="show" v-loading="loadingRoutes" class="historyPanel2" :style="width">
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :labels="labels" :chart-data="chartData" />
@@ -18,6 +19,7 @@
       <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
     </div>
   </div>
+
 </template>
 
 <script>

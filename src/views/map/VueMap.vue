@@ -930,8 +930,6 @@ export default {
 </script>
 
 <style lang="scss" >
-  @import '../../styles/element-variables';
-
   .app-main {
     padding:0 !important;
   }

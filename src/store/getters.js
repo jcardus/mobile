@@ -6,7 +6,8 @@ const getters = {
   map: state => state.map,
   devices: state => state.devices,
   commandPending: state => state.devices.commandPending,
-  loading: state => state.app.loading
+  loading: state => state.app.loading,
+  historyMode: state => state.app.historyMode
 }
 
 export default getters
