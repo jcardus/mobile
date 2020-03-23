@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.466",
+  "version": "1.0.475",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -44,6 +44,7 @@
     "puppeteer": "^2.1.1",
     "serve": "^11.3.0",
     "svgexport": "^0.4.0",
+    "trackjs": "latest",
     "vue": "2.6.10",
     "vue-cookies": "^1.7.0",
     "vue-i18n": "^8.15.5",
@@ -53,7 +54,6 @@
     "vue-odometer": "latest",
     "vue-plugin-load-script": "latest",
     "vue-router": "3.0.2",
-    "vue-slider-component": "^3.1.1",
     "vue-static": "latest",
     "vue-timeago": "latest",
     "vue-timers": "latest",
@@ -97,7 +97,6 @@
     "serve-static": "^1.13.2",
     "svg-sprite-loader": "4.1.3",
     "svgo": "1.2.0",
-    "trackjs": "^3.7.3",
     "vue-template-compiler": "2.6.10"
   },
   "browserslist": [

@@ -231,8 +231,6 @@ export default {
       if (this.map) {
         this.$log.debug('map.resize')
         this.map.resize()
-        this.$log.debug('map.repaint')
-        this.map.triggerRepaint()
       } else {
         this.$log.error('mapResize received but theres no map instance: ', this.map)
         TrackJS.track('MAP')
@@ -440,7 +438,6 @@ export default {
     },
     onMoveEnd: function() {
       if (!vm.$data.isPlaying) {
-        this.$log.debug('moveend storing cookie... isPlaying: ', vm.$data.isPlaying)
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
@@ -729,6 +726,7 @@ export default {
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
           if (settings.animateMarkers &&
+            !self.$store.state.app.historyMode &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             self.map.getZoom() > 12
           ) {
