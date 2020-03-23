@@ -2,17 +2,9 @@
 
   <div v-show="show" v-loading="loadingRoutes" class="historyPanel2" :style="width">
     <div style="position: relative; height:80px; padding-right: 20px">
-      <speed-chart :labels="labels" :chart-data="chartData" />
+      <speed-chart :update="updateChart" />
     </div>
-    <div style="padding-left:48px; padding-right:10px">
-      <label>
-        <input
-          v-model="sliderPos"
-          type="range"
-          :max="maxPos"
-          :min="minPos"
-        />
-      </label></div>
+
     <div style="padding-left: 10px">
       <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
       <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
@@ -28,19 +20,19 @@ import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
 import SpeedChart from './SpeedChart'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'HistoryPanel',
   components: { SpeedChart },
   data() {
     return {
-      sliderPos: 0,
       currentPos: 0,
-      minPos: 0,
-      maxPos: 0
+      updateChart: false
     }
   },
   computed: {
+    ...mapGetters(['minPos', 'maxPos']),
     isMobile() {
       return lnglat.isMobile()
     },
@@ -54,10 +46,6 @@ export default {
     isPlaying: {
       get() { return vm.$data.isPlaying },
       set(value) { vm.$data.isPlaying = value }
-    },
-    positions: function() {
-      if (sharedData.getPositions()) { return sharedData.getPositions() }
-      return []
     },
     show() { return vm.$data.historyMode },
     minDate: {
@@ -86,25 +74,6 @@ export default {
       }
       serverBus.$emit('routePlay')
     },
-    sliderPos() {
-      Vue.$log.debug('slider changed to ', this.sliderPos)
-      const pos = this.indexArray[this.sliderPos]
-      if (pos && pos.index > 0 && !this.isPlaying) {
-        this.currentPos = pos.index
-      } else {
-        let i = this.sliderPos
-        if (this.oldSliderPos < this.sliderPos) {
-          while (!this.indexArray[i] && i < this.maxPos) { i++ }
-        } else {
-          while (!this.indexArray[i] && i > this.minPos) { i-- }
-        }
-        this.$log.debug('slider moved from ', this.sliderPos, ' to ', i)
-        if (this.indexArray[i].index) {
-          this.currentPos = this.indexArray[i].index
-        } else { this.$log.warn('no latlon at index ', i) }
-      }
-      this.oldSliderPos = this.sliderPos
-    },
     currentPos() {
       Vue.$log.debug('curPos changed to ', this.currentPos)
       if (this.isPlaying) {
@@ -131,6 +100,7 @@ export default {
     }
   },
   created() {
+    this.positions = null
     this.currentPos_ = 0
     this.padding = 0
     this.oldPos = 0
@@ -141,6 +111,7 @@ export default {
     this.width = 'width:0px'
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
+    serverBus.$on('sliderChanged', this.sliderPos)
     window.addEventListener('resize', this.resizeDiv)
   },
   beforeDestroy() {
@@ -153,6 +124,23 @@ export default {
     this.resizeDiv()
   },
   methods: {
+    sliderPos(newValue) {
+      const pos = this.indexArray[newValue]
+      if (pos && pos.index > 0 && !this.isPlaying) {
+        this.currentPos = pos.index
+      } else {
+        let i = newValue
+        if (this.oldSliderPos < newValue) {
+          while (!this.indexArray[i] && i < this.maxPos) { i++ }
+        } else {
+          while (!this.indexArray[i] && i > this.minPos) { i-- }
+        }
+        if (this.indexArray[i].index) {
+          this.currentPos = this.indexArray[i].index
+        } else { this.$log.warn('no latlon at index ', i) }
+      }
+      this.oldSliderPos = newValue
+    },
     resizeDiv: function() {
       Vue.$log.debug('resizeDiv')
       if (document.getElementById('map')) {
@@ -173,15 +161,12 @@ export default {
       return result
     },
     fillGraphData() {
-      // const categories = this.positions.map(x => this.$moment(x.fixTime).format('YYYY-MM-DDThh:mm:ss'))
-      const categories = this.positions.map(x => Vue.moment(x.fixTime).toDate())
-      // const categories = this.positions.map(x => x.fixTime).toDate())
-      // const categories = this.positions.map(x => x.fixTime)
-      const series = this.positions.map(x => x.speed * 1.852)
-      // Vue.$log.debug('categories: ', categories)
-      // Vue.$log.debug('series: ', series)
-      this.labels = categories
-      this.chartData = series
+      this.$log.debug('HistoryPanel ', sharedData.getPositions())
+      const categories = sharedData.getPositions().map(x => this.$moment(x.fixTime).toDate())
+      const series = sharedData.getPositions().map(x => x.speed * 1.852)
+      sharedData.setChartLabels(categories)
+      sharedData.setChartData(series)
+      this.updateChart = !this.updateChart
     },
     click: function() {
       this.isPlaying = !this.isPlaying
@@ -197,22 +182,31 @@ export default {
       }
     },
     updateMinMax() {
-      if (this.positions && this.positions[0]) {
-        this.minPos = this.$moment(this.positions[0].fixTime).unix()
-      }
-      if (this.positions.length > 0) {
-        this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
-      }
-      if (this.positions.length > 0) {
-        const self = this
-        this.positions.forEach(function(item, index) {
-          item.index = index
-          self.indexArray[self.$moment(item.fixTime).unix()] = item
+      const self = this
+      this.positions = sharedData.getPositions()
+      const positions = this.positions
+      if (positions && positions[0] && positions.length > 0) {
+        this.$store.dispatch(
+          'map/setMinPos',
+          this.$moment(positions[0].fixTime).unix()
+        ).then(() => {
+          this.$store.dispatch('map/setMaxPos',
+            this.$moment(positions[positions.length - 1].fixTime).unix()
+          ).then(() => {
+            if (positions.length > 0) {
+              positions.forEach(function(item, index) {
+                item.index = index
+                self.indexArray[self.$moment(item.fixTime).unix()] = item
+              })
+              self.fillGraphData()
+              self.sliderPos = self.maxPos
+            } else {
+              Vue.$log.debug('no positions: ', sharedData.getPositions())
+            }
+            this.loadingRoutes = false
+          })
         })
-        this.fillGraphData()
-        this.sliderPos = this.maxPos
       }
-      this.loadingRoutes = false
     },
     playNext() {
       if (this.isPlaying) {
@@ -248,26 +242,29 @@ export default {
     padding-right: 10px;
     font-size:40px;
   }
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-  }
-  input[type=range]:focus {
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-runnable-track {
-    height:2px;
-    background: $--color-info;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    box-shadow: 2px 2px 4px $--color-info;
-    background: $--background-color-base;
-    border: 2px solid $--border-base;
-    height: 35px;
-    width: 35px;
-    border-radius: 35px;
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -16px;
+
+  @media only screen and (min-width: 768px) {
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 2px;
+      background: $--color-info;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      box-shadow: 2px 2px 4px $--color-info;
+      background: $--background-color-base;
+      border: 2px solid $--border-base;
+      height: 35px;
+      width: 35px;
+      border-radius: 35px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -16px;
+    }
   }
 </style>

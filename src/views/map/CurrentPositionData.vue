@@ -182,7 +182,6 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
-    serverBus.$on('routePlayStopped', this.routePlayStopped)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData before destroy')

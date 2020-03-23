@@ -3,6 +3,20 @@ import Vue from 'vue'
 
 export class SharedData {
   positions = null
+  chartLabels = null
+  chartData = null
+  setChartLabels(labels) {
+    this.chartLabels = labels
+  }
+  setChartData(data) {
+    this.chartData = data
+  }
+  getChartLabels() {
+    return this.chartLabels
+  }
+  getChartData() {
+    return this.chartData
+  }
   setPositions(positions) {
     Vue.$log.debug('setting ', positions.length, ' positions...')
     this.positions = positions

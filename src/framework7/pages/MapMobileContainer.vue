@@ -10,10 +10,16 @@
       >
         <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
       </f7-fab>
-      <div style="height: 100%">
+      <div style="height: calc(100% - 90px)">
         <VueMap></VueMap>
-      </div>
-    </f7-page>
+        <f7-range
+          v-if="showSlider"
+          :value="sliderPos"
+          :max="MPos"
+          :min="mPos"
+          @range:change="sliderChanged"
+        />
+      </div></f7-page>
     <f7-menu v-if="offline" class="offline">
       <f7-menu-item icon-f7="wifi_slash" class="offlineIcon" @click="clickOffline"></f7-menu-item>
     </f7-menu>
@@ -25,11 +31,21 @@ import VueMap from '../../views/map/VueMap'
 import { serverBus } from '../../main'
 import { appOffline } from '../../utils/utils'
 import { getToken } from '../../utils/auth'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MapMobileContainer',
   components: { VueMap },
+  data() {
+    return {
+      sliderPos: 0,
+      showSlider: false,
+      mPos: 0,
+      MPos: 0
+    }
+  },
   computed: {
+    ...mapGetters(['minPos', 'maxPos']),
     userLoggedIn() {
       return this.$store.state.user.name !== '' && getToken() !== null
     },
@@ -38,6 +54,17 @@ export default {
     },
     iphone() {
       return this.$device.iphone
+    }
+  },
+  watch: {
+    minPos(newValue, oldValue) {
+      console.log(`updating minPos from ${oldValue} to ${newValue}`)
+      this.mPos = newValue
+    },
+    maxPos(newValue, oldValue) {
+      console.log(`updating maxPos from ${oldValue} to ${newValue}`)
+      this.MPos = newValue
+      this.showSlider = true
     }
   },
   created() {
@@ -54,6 +81,9 @@ export default {
     this.$log.debug('destroying MapMobileContainer')
   },
   methods: {
+    sliderChanged(newValue) {
+      serverBus.$emit('sliderChanged', newValue)
+    },
     clickOffline() {
       this.$log.warn('clicked offline icon, reloading...')
       location.reload()
