@@ -1,16 +1,5 @@
-import { vm, newServiceWorker, sharedData } from '../main'
+import { vm, newServiceWorker } from '../main'
 import Vue from 'vue'
-
-export class SharedData {
-  positions = null
-  setPositions(positions) {
-    Vue.$log.debug('setting ', positions.length, ' positions...')
-    this.positions = positions
-  }
-  getPositions() {
-    return this.positions
-  }
-}
 
 export function getServerHost() {
   const hostName = window.location.hostname
@@ -30,9 +19,9 @@ export function getDate(dateString) {
 }
 
 export function formatDate(v) {
-  v = sharedData.getPositions().findIndex(x => Vue.moment(x.fixTime).unix() === v)
-  const fixTime = sharedData.getPositions()[v] ? sharedData.getPositions()[v].fixTime : new Date()
-  const speed = sharedData.getPositions()[v] ? sharedData.getPositions()[v].speed : ''
+  v = vm.$data.positions.findIndex(x => Vue.moment(x.fixTime).unix() === v)
+  const fixTime = vm.$data.positions[v] ? vm.$data.positions[v].fixTime : new Date()
+  const speed = vm.$data.positions[v] ? vm.$data.positions[v].speed : ''
   let result = getDate(fixTime).format('YYYY-MM-DD HH:mm:ss')
   if (speed && speed > 0) {
     result += (' ' + ~~(speed * 1.852) + 'km/h')
@@ -41,7 +30,7 @@ export function formatDate(v) {
 }
 
 export function formatAddress(v) {
-  return (sharedData.getPositions() && sharedData.getPositions()[v]) ? sharedData.getPositions()[v].address : ''
+  return vm.$data.positions[v] ? vm.$data.positions[v].address : ''
 }
 
 export function stopLoader() {

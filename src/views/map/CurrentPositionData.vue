@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <span class="header">
       <el-row>
         <el-col :span="12">
@@ -21,6 +22,7 @@
           >
           </f7-toggle></el-col></el-row>
     </span>
+
     <el-row style="padding-top: 5px">
       <el-col :span="12">
 
@@ -62,7 +64,7 @@
 
 <script>
 
-import { vm, serverBus, sharedData } from '../../main'
+import { vm, serverBus } from '../../main'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
@@ -81,6 +83,11 @@ export default {
       oldPos: 0,
       width: 'width:0px',
       currentTrip: 0,
+      trips: [],
+      speedTrips: [],
+      speedMarkers: [],
+      startMarker: null,
+      endMarker: null,
       elSwitchValue: true
     }
   },
@@ -107,6 +114,14 @@ export default {
     },
     allTripsSource() {
       return 'allTrips-'
+    },
+    positions: {
+      get() {
+        return vm.$data.positions
+      },
+      set(value) {
+        vm.$data.positions = value
+      }
     },
     isMobile() {
       return lnglat.isMobile()
@@ -179,11 +194,6 @@ export default {
   },
   created() {
     Vue.$log.debug('CurrentPositionData created')
-    this.trips = []
-    this.speedTrips = []
-    this.speedMarkers = []
-    this.startMaker = null
-    this.endMarker = null
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
@@ -232,7 +242,7 @@ export default {
       lnglat.hideLayers(this.showRoutes)
       animation.hideRouteLayer(!this.showRoutes)
     },
-    onPositions(positions) {
+    onPositions: function(positions) {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
       Vue.$log.debug('positions after filter ', positions)
@@ -253,7 +263,7 @@ export default {
         } else {
           this.drawTrip()
         }
-        sharedData.setPositions(positions)
+        this.positions = positions
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {
@@ -730,6 +740,8 @@ export default {
       animation.removeAddRouteLayer()
       serverBus.$emit('routeMatchFinished')
     },
+    routePlayStopped() {
+    },
     resizeDiv() {
       Vue.$log.debug('currentpositiondata')
       if (document.getElementById('map')) {
@@ -739,7 +751,6 @@ export default {
       }
     },
     onPosChanged(newPos) {
-      const positions = sharedData.getPositions()
       Vue.$log.debug('onPosChanged to ', newPos)
       this.currentPos = newPos
       const skipRoutePositions = consts.routeSlotLength
@@ -751,7 +762,7 @@ export default {
         Vue.$log.debug('ignoring onPosChanged, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
         return
       }
-      if (newPos >= positions.length) {
+      if (newPos >= this.positions.length) {
         Vue.$log.warn('ignoring onPosChanged, newPos out of array: ', newPos)
         return
       }
@@ -796,13 +807,13 @@ export default {
           return
         }
 
-        if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
+        if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
           vm.$static.map.panTo(
-            { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
+            { lng: this.positions[newPos].longitude, lat: this.positions[newPos].latitude }
           )
         }
 
-        const newDate = utils.getDate(positions[newPos].fixTime)
+        const newDate = utils.getDate(this.positions[newPos].fixTime)
         const oldTrip = this.currentTrip
 
         while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()) {
@@ -819,20 +830,20 @@ export default {
           this.drawTrip()
           this.drawSpeedTrip()
 
-          if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
+          if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
             vm.$static.map.panTo(
-              { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
+              { lng: this.positions[newPos].longitude, lat: this.positions[newPos].latitude }
             )
           }
         }
 
-        this.feature.properties.speed = positions[newPos].speed
-        this.feature.properties.course = positions[newPos].course
-        this.feature.geometry.coordinates = [positions[newPos].longitude, positions[newPos].latitude]
-        this.feature.properties.address = positions[newPos].address
+        this.feature.properties.speed = this.positions[newPos].speed
+        this.feature.properties.course = this.positions[newPos].course
+        this.feature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
+        this.feature.properties.address = this.positions[newPos].address
         animation.refreshFeature()
       }
-      if (newPos < positions.length - 1) {
+      if (newPos < this.positions.length - 1) {
         Vue.$log.debug('oldPos: ', this.oldPos)
         this.oldPos = newPos
         Vue.$log.debug('oldPos: ', this.oldPos)

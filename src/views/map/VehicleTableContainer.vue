@@ -100,7 +100,7 @@ import * as lnglat from '../../utils/lnglat'
 import GeofenceTable from './GeofenceTable'
 import POITable from './POITable'
 import VehicleTable from './VehicleTable'
-import { vm, sharedData } from '@/main'
+import { vm } from '@/main'
 import * as partner from '../../utils/partner'
 import LogoSvg from '../../layout/components/LogoSvg'
 import Vue from 'vue'
@@ -153,7 +153,7 @@ export default {
       return this.devicesOn.length
     },
     positions() {
-      return sharedData.getPositions()
+      return vm.$data.positions
     }
   },
   mounted() {

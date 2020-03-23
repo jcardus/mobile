@@ -11,22 +11,16 @@
       </f7-list-item>
       <f7-list-item :title="$t('login.login_user')" :after="$store.state.user.email">
       </f7-list-item>
-      <f7-list-item title="Url" :after="host">
-      </f7-list-item>
     </f7-list>
   </f7-page>
 </template>
 
 <script>
 import { appOffline } from '../../../utils/utils'
-import { hostname } from '../../../utils/partner'
 
 export default {
   name: 'About',
   computed: {
-    host() {
-      return hostname
-    },
     lastUpdate() {
       return this.$moment(this.$store.state.lastUpdate)
     },

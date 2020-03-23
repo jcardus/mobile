@@ -1,4 +1,4 @@
-export const hostname = window.location.hostname.replace('dev.', '')
+const hostname = window.location.hostname.replace('dev.', '')
 
 export function getFavIcon() {
   return '/img/favicon/' + hostname + '.png'

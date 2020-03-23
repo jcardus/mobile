@@ -3,15 +3,22 @@
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :labels="labels" :chart-data="chartData" />
     </div>
-    <div style="padding-left:48px; padding-right:10px">
-      <label>
-        <input
-          v-model="sliderPos"
-          type="range"
-          :max="maxPos"
-          :min="minPos"
-        />
-      </label></div>
+    <div style="padding-left:57px; padding-right: 20px">
+      <vue-slider
+        v-model="sliderPos"
+        :tooltip-formatter="formatter"
+        :max="maxPos"
+        :min="minPos"
+        :tooltip="'always'"
+        :tooltip-placement="'bottom'"
+        :marks="marks"
+        :included="true"
+        :hide-label="true"
+        dot-size="35"
+        :disabled="isPlaying"
+        :adsorb="true"
+        :use-keyboard="true"
+      /></div>
     <div style="padding-left: 10px">
       <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
       <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
@@ -21,34 +28,46 @@
 </template>
 
 <script>
-import { serverBus, vm, sharedData } from '../../main'
+import { serverBus, vm } from '../../main'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
 import SpeedChart from './SpeedChart'
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
 
 export default {
   name: 'HistoryPanel',
-  components: { SpeedChart },
+  components: { SpeedChart, VueSlider },
   data() {
     return {
       padding: 0,
       oldPos: 0,
       sliderPos: 0,
-      oldSliderPos: 0,
       currentPos: 0,
       currentPos_: 0,
+      formatter: v => `${this.formatDate(v)}`,
       dates: [],
       labels: [],
       chartData: [],
       indexArray: {},
       marks: [],
-      width: 'width:0px',
-      minPos: 0,
-      maxPos: 0
+      width: 'width:0px'
     }
   },
   computed: {
+    minPos() {
+      if (this.positions && this.positions[0]) {
+        return this.$moment(this.positions[0].fixTime).unix()
+      }
+      return 0
+    },
+    maxPos() {
+      if (this.positions.length > 0) {
+        return this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
+      }
+      return 0
+    },
     isMobile() {
       return lnglat.isMobile()
     },
@@ -64,7 +83,7 @@ export default {
       set(value) { vm.$data.isPlaying = value }
     },
     positions: function() {
-      if (sharedData.getPositions()) { return sharedData.getPositions() }
+      if (vm.$data.positions) { return vm.$data.positions }
       return []
     },
     show() { return vm.$data.historyMode },
@@ -92,6 +111,7 @@ export default {
           this.currentPos = 0
         }
       }
+      // lnglat.refreshMap()
       serverBus.$emit('routePlay')
     },
     sliderPos() {
@@ -99,21 +119,9 @@ export default {
       const pos = this.indexArray[this.sliderPos]
       if (pos && pos.index > 0 && !this.isPlaying) {
         this.currentPos = pos.index
-      } else {
-        let i = this.sliderPos
-        if (this.oldSliderPos < this.sliderPos) {
-          while (!this.indexArray[i] && i < this.maxPos) { i++ }
-        } else {
-          while (!this.indexArray[i] && i > this.minPos) { i-- }
-        }
-        this.$log.debug('slider moved from ', this.sliderPos, ' to ', i)
-        if (this.indexArray[i].index) {
-          this.currentPos = this.indexArray[i].index
-        } else { this.$log.warn('no latlon at index ', i) }
-      }
-      this.oldSliderPos = this.sliderPos
+      } else { Vue.$log.debug('no coordinate at pos ', this.sliderPos) }
     },
-    currentPos() {
+    currentPos: function() {
       Vue.$log.debug('curPos changed to ', this.currentPos)
       if (this.isPlaying) {
         let i = this.currentPos - consts.routeSlotLength
@@ -174,7 +182,7 @@ export default {
     },
     fillGraphData() {
       // const categories = this.positions.map(x => this.$moment(x.fixTime).format('YYYY-MM-DDThh:mm:ss'))
-      const categories = this.positions.map(x => Vue.moment(x.fixTime).toDate())
+      const categories = this.positions.map(x => this.$moment(x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime).toDate())
       // const categories = this.positions.map(x => x.fixTime)
       const series = this.positions.map(x => x.speed * 1.852)
@@ -197,17 +205,12 @@ export default {
       }
     },
     updateMinMax() {
-      if (this.positions && this.positions[0]) {
-        this.minPos = this.$moment(this.positions[0].fixTime).unix()
-      }
       if (this.positions.length > 0) {
-        this.maxPos = this.$moment(this.positions[this.positions.length - 1].fixTime).unix()
-      }
-      if (this.positions.length > 0) {
+        this.marks = this.positions.map(x => Vue.moment(x.fixTime).unix())
         const self = this
         this.positions.forEach(function(item, index) {
           item.index = index
-          self.indexArray[self.$moment(item.fixTime).unix()] = item
+          self.indexArray[Vue.moment(item.fixTime).unix()] = item
         })
         this.fillGraphData()
         this.sliderPos = this.maxPos
@@ -237,7 +240,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import '../../styles/element-variables.scss';
   .historyPanel2 {
     font-size: 15px;
     margin: 0 !important;
@@ -247,27 +249,5 @@ export default {
     padding-top: 15px;
     padding-right: 10px;
     font-size:40px;
-  }
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-  }
-  input[type=range]:focus {
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-runnable-track {
-    height:2px;
-    background: $--color-info;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    box-shadow: 2px 2px 4px $--color-info;
-    background: $--background-color-base;
-    border: 2px solid $--border-base;
-    height: 35px;
-    width: 35px;
-    border-radius: 35px;
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -16px;
   }
 </style>
