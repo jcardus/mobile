@@ -717,6 +717,7 @@ export default {
         if (!feature) {
           if (!device) {
             Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position)
+            this.$store.dispatch('user/logout').then(() => location.reload())
             return
           }
           feature = self.positionToFeature(position, device)

@@ -81,7 +81,8 @@ export default {
       oldPos: 0,
       width: 'width:0px',
       currentTrip: 0,
-      elSwitchValue: true
+      elSwitchValue: true,
+      totalDistance: 0
     }
   },
   computed: {
@@ -114,12 +115,6 @@ export default {
     tripDistance: {
       get() { return vm.$data.distance },
       set(value) { vm.$data.distance = value }
-    },
-    totalDistance: function() {
-      if (this.positions && this.positions.length > 0) {
-        return Math.round(lnglat.arrayDistance(this.positions.map(x => [x.longitude, x.latitude])))
-      }
-      return 0
     },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
@@ -254,6 +249,7 @@ export default {
           this.drawTrip()
         }
         sharedData.setPositions(positions)
+        this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {

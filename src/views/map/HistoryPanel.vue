@@ -32,18 +32,8 @@ export default {
   components: { SpeedChart },
   data() {
     return {
-      padding: 0,
-      oldPos: 0,
       sliderPos: 0,
-      oldSliderPos: 0,
       currentPos: 0,
-      currentPos_: 0,
-      dates: [],
-      labels: [],
-      chartData: [],
-      indexArray: {},
-      marks: [],
-      width: 'width:0px',
       minPos: 0,
       maxPos: 0
     }
@@ -139,6 +129,14 @@ export default {
     }
   },
   created() {
+    this.currentPos_ = 0
+    this.padding = 0
+    this.oldPos = 0
+    this.oldSliderPos = 0
+    this.labels = []
+    this.chartData = []
+    this.indexArray = {}
+    this.width = 'width:0px'
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
     window.addEventListener('resize', this.resizeDiv)
