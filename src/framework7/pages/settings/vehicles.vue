@@ -1,8 +1,23 @@
 <template>
   <f7-page name="Vehicles">
-    <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
-    <f7-block-title style="font-size: 20px"><i class="fas fa-car-alt"></i> {{ $t('settings.vehicles') }}</f7-block-title>
+    <f7-navbar back-link>
+      <i class="fas fa-car-alt" style="padding-right: 10px"></i>{{ $t('settings.vehicles') }}
+      <f7-nav-right>
+        <f7-link class="searchbar-enable" icon-ios="f7:search" icon-aurora="f7:search" icon-md="material:search"></f7-link>
+      </f7-nav-right>
+      <f7-searchbar
+        expandable
+        :placeholder="$t('vehicleList.search')"
+        search-container=".search-list"
+        search-in=".item-title,.item-subtitle"
+        :disable-button="!$theme.aurora"
+      ></f7-searchbar>
+    </f7-navbar>
+    <f7-list class="searchbar-not-found">
+      <f7-list-item :title="$t('vehicleList.empty_list')"></f7-list-item>
+    </f7-list>
     <f7-list
+      class="search-list searchbar-found"
       media-list
       inset
     >

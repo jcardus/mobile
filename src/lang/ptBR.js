@@ -29,6 +29,7 @@ export default {
   vehicleList: {
     title: 'Veículos',
     search: 'Pesquisar...',
+    empty_list: 'Sem resultados',
     column_name: 'Nome',
     column_speed: 'Km/h',
     column_lastUpdate: 'Última Actualização',
