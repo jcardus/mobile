@@ -3,11 +3,11 @@
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
-    <!--div style="padding-left: 10px">
+    <div v-if="!isMobile" style="padding-left: 10px">
       <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
       <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
       <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
-    </div-->
+    </div>
   </div>
 </template>
 
@@ -97,22 +97,27 @@ export default {
     }
   },
   created() {
-    this.positions = null
     this.currentPos_ = 0
     this.padding = 0
     this.oldPos = 0
     this.oldSliderPos = 0
     this.labels = []
     this.chartData = []
-    this.indexArray = {}
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
     serverBus.$on('sliderChanged', this.sliderPos)
+    serverBus.$on('clickPlay', this.click)
+    serverBus.$on('clickBack', this.clickBackward)
+    serverBus.$on('clickForward', this.clickForward)
     window.addEventListener('resize', this.resizeDiv)
   },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)
     serverBus.$off('routeMatchFinished', this.playNext)
+    serverBus.$off('sliderChanged', this.sliderPos)
+    serverBus.$off('clickPlay', this.click)
+    serverBus.$off('clickBack', this.clickBackward)
+    serverBus.$off('clickForward', this.clickForward)
     window.removeEventListener('resize', this.resizeDiv)
     if (this.unsubscribe) { this.unsubscribe() }
   },
@@ -121,21 +126,22 @@ export default {
   },
   methods: {
     sliderPos(newValue) {
-      const pos = this.indexArray[newValue]
+      const indexArray = sharedData.getPositionIndex()
+      const pos = indexArray[newValue]
       if (pos && pos.index > 0 && !this.isPlaying) {
         this.currentPos = pos.index
       } else {
         let i = newValue
-        if (this.oldSliderPos < newValue) {
-          while (!this.indexArray[i] && i < this.maxPos) { i++ }
-        } else {
-          while (!this.indexArray[i] && i > this.minPos) { i-- }
-        }
-        if (this.indexArray[i].index) {
-          this.currentPos = this.indexArray[i].index
+        while (!indexArray[i] && i < this.maxPos) { i++ }
+        const nextRight = i
+        i = newValue
+        while (!indexArray[i] && i > this.minPos) { i-- }
+        const nextLeft = i
+        i = (nextRight - newValue > newValue - nextLeft) ? nextLeft : nextRight
+        if (indexArray[i]) {
+          this.currentPos = indexArray[i].index
         } else { this.$log.warn('no latlon at index ', i) }
       }
-      this.oldSliderPos = newValue
     },
     resizeDiv: function() {
       Vue.$log.debug('resizeDiv')
@@ -144,17 +150,6 @@ export default {
       } else {
         Vue.$log.warn('resizing div but no map on dom...')
       }
-    },
-    formatDate(v) {
-      let result = Vue.moment.unix(v).format('YYYY-MM-DD HH:mm:ss')
-      if (this.indexArray[v]) {
-        v = this.indexArray[v].index
-        const speed = this.positions[v] ? this.positions[v].speed : ''
-        if (speed && speed > 0) {
-          result += (' ' + ~~(speed * 1.852) + 'km/h')
-        }
-      }
-      return result
     },
     fillGraphData() {
       this.$log.debug('HistoryPanel ', sharedData.getPositions())
@@ -177,6 +172,16 @@ export default {
         this.sliderPos = Vue.moment(this.positions[--this.currentPos].fixTime).unix()
       }
     },
+    initIndexArray() {
+      const indexArray = {}
+      const positions = sharedData.getPositions()
+      const self = this
+      positions.forEach(function(item, index) {
+        item.index = index
+        indexArray[self.$moment(item.fixTime).unix()] = item
+      })
+      sharedData.setPositionIndex(indexArray)
+    },
     updateMinMax() {
       const self = this
       this.positions = sharedData.getPositions()
@@ -190,10 +195,7 @@ export default {
             this.$moment(positions[positions.length - 1].fixTime).unix()
           ).then(() => {
             if (positions.length > 0) {
-              positions.forEach(function(item, index) {
-                item.index = index
-                self.indexArray[self.$moment(item.fixTime).unix()] = item
-              })
+              self.initIndexArray()
               self.fillGraphData()
               self.sliderPos = self.maxPos
             } else {

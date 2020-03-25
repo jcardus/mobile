@@ -11,7 +11,7 @@
     </f7-fab>
     <div :style="'height: calc(100% - ' + height + 'px)'">
       <VueMap></VueMap>
-      <f7-row style="padding-left: 50px; padding-right: 40px"><f7-col>
+      <f7-row style="padding-left: 45px; padding-right: 40px"><f7-col>
         <f7-range
           v-if="showSlider"
           style="padding-left: 20px"
@@ -23,9 +23,9 @@
       </f7-row>
       <f7-row>
         <f7-col>
-          <f7-icon f7="backward_fill"></f7-icon>
-          <f7-icon f7="play_fill" style="padding-left: 5px"></f7-icon>
-          <f7-icon f7="forward_fill"></f7-icon>
+          <f7-link icon-f7="backward_fill" @click="onClickBack"></f7-link>
+          <f7-link icon-f7="play_fill" style="padding-left: 10px; padding-right: 5px" @click="onClickPlay"></f7-link>
+          <f7-link icon-f7="forward_fill" @click="onClickForward"></f7-link>
         </f7-col>
       </f7-row>
     </div>
@@ -65,18 +65,19 @@ export default {
       return this.$device.iphone
     },
     height() {
-      return this.historyMode ? 50 : 0
+      return this.historyMode ? 70 : 0
     }
   },
   watch: {
     minPos(newValue, oldValue) {
       console.log(`updating minPos from ${oldValue} to ${newValue}`)
       this.mPos = newValue
+      this.reloadSlider()
     },
     maxPos(newValue, oldValue) {
       console.log(`updating maxPos from ${oldValue} to ${newValue}`)
       this.MPos = newValue
-      this.showSlider = true
+      this.reloadSlider()
     }
   },
   created() {
@@ -93,6 +94,20 @@ export default {
     this.$log.debug('destroying MapMobileContainer')
   },
   methods: {
+    onClickBack() {
+      serverBus.$emit('clickBack')
+    },
+    onClickForward() {
+      serverBus.$emit('clickForward')
+    },
+    onClickPlay() {
+      serverBus.$emit('clickPlay')
+    },
+    reloadSlider() {
+      this.showSlider = false
+      const self = this
+      setTimeout(function() { self.showSlider = true }, 100)
+    },
     sliderChanged(newValue) {
       serverBus.$emit('sliderChanged', newValue)
     },

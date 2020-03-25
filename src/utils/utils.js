@@ -5,6 +5,13 @@ export class SharedData {
   positions = null
   chartLabels = null
   chartData = null
+  positionIndex = null
+  setPositionIndex(arr) {
+    this.positionIndex = arr
+  }
+  getPositionIndex() {
+    return this.positionIndex
+  }
   setChartLabels(labels) {
     this.chartLabels = labels
   }
