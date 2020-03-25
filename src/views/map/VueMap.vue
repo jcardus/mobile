@@ -257,6 +257,15 @@ export default {
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
+    deviceChanged: function(device) {
+      this.$log.debug('VueMap deviceChanged')
+      const feature = this.findFeatureByDeviceId(device.id)
+      if (feature && feature.properties.category !== device.category) {
+        feature.properties.category = this.getCategory(device.category)
+        device.currentFeature = feature
+        this.refreshMap()
+      }
+    },
     deviceSelected: function(device) {
       this.$log.debug('VueMap deviceSelected')
       this.selected = device
@@ -469,6 +478,7 @@ export default {
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
+      serverBus.$on('deviceChanged', this.deviceChanged)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'app/TOGGLE_SIDEBAR':
@@ -499,6 +509,7 @@ export default {
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
       this.$static.map.off('data', this.onData)
+      serverBus.$off('deviceChanged', this.deviceChanged)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
