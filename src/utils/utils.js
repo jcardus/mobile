@@ -58,11 +58,6 @@ export function formatAddress(v) {
   return (sharedData.getPositions() && sharedData.getPositions()[v]) ? sharedData.getPositions()[v].address : ''
 }
 
-export function stopLoader() {
-  Vue.$log.debug('stopping loader...')
-  document.getElementById('loader').style.display = 'none'
-}
-
 export function filterPositions(positions) {
   const firstPos = positions.findIndex(position => position.attributes.ignition || position.attributes.motion)
   if (firstPos > 0) {
