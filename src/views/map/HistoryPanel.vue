@@ -3,6 +3,15 @@
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
+    <div v-if="!isMobile" style="padding-left:48px; padding-right:10px">
+      <label>
+        <input
+          v-model="embeddedSliderPos"
+          type="range"
+          :max="maxPos"
+          :min="minPos"
+        />
+      </label></div>
     <div v-if="!isMobile" style="padding-left: 10px">
       <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
       <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
@@ -25,7 +34,8 @@ export default {
   data() {
     return {
       currentPos: 0,
-      updateChart: false
+      updateChart: false,
+      embeddedSliderPos: 0
     }
   },
   computed: {
@@ -59,10 +69,13 @@ export default {
     }
   },
   watch: {
+    embeddedSliderPos(newValue) {
+      this.sliderPos(newValue)
+    },
     isPlaying(newValue) {
       this.$log.debug('isPlayng changed to ', newValue, this.isPlaying)
       if (this.isPlaying) {
-        if (this.sliderPos === this.maxPos) {
+        if (this.currentPos === this.maxPos) {
           this.currentPos = 0
         }
       }
@@ -87,7 +100,7 @@ export default {
         if (i > this.currentPos) {
           Vue.$log.debug('fast forwarding to ', i)
           this.currentPos_ = i
-          this.sliderPos = Vue.moment(this.positions[i].fixTime).unix()
+          this.currentPos = Vue.moment(this.positions[i].fixTime).unix()
         }
         serverBus.$emit('posChanged', Math.max(this.currentPos, this.currentPos_))
       } else { serverBus.$emit('posChanged', this.currentPos) }
@@ -166,7 +179,7 @@ export default {
       } else { Vue.$log.debug('ignoring forward sliderPos: ', this.currentPos) }
     },
     clickBackward: function() {
-      if (this.sliderPos > this.minPos) {
+      if (this.currentPos > this.minPos) {
         serverBus.$emit('autoSliderChange', Vue.moment(this.positions[--this.currentPos].fixTime).unix())
       }
     },
@@ -195,7 +208,7 @@ export default {
             if (positions.length > 0) {
               self.initIndexArray()
               self.fillGraphData()
-              self.sliderPos = self.maxPos
+              self.currentPos = self.maxPos
             } else {
               Vue.$log.debug('no positions: ', sharedData.getPositions())
             }
@@ -207,7 +220,7 @@ export default {
     playNext() {
       this.$log.debug('HistoryPanel ', this.isPlaying)
       if (this.isPlaying) {
-        if (this.sliderPos <= this.maxPos) {
+        if (this.currentPos <= this.maxPos) {
           this.currentPos_ = Math.max(this.currentPos_, this.currentPos)
           if ((this.currentPos_ + consts.routeSlotLength) < this.positions.length) {
             this.currentPos += consts.routeSlotLength
