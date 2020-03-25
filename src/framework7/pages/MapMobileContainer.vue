@@ -11,7 +11,7 @@
     </f7-fab>
     <div :style="'height: calc(100% - ' + height + 'px)'">
       <VueMap></VueMap>
-      <f7-row style="padding-left: 50px; padding-right: 40px"><f7-col>
+      <f7-row style="padding-left: 45px; padding-right: 40px"><f7-col>
         <f7-range
           v-if="showSlider"
           style="padding-left: 20px"
@@ -23,9 +23,9 @@
       </f7-row>
       <f7-row>
         <f7-col>
-          <f7-icon f7="backward_fill"></f7-icon>
-          <f7-icon f7="play_fill" style="padding-left: 5px"></f7-icon>
-          <f7-icon f7="forward_fill"></f7-icon>
+          <f7-icon f7="backward_fill" size="40px"></f7-icon>
+          <f7-icon f7="play_fill" size="40px" style="padding-left: 5px"></f7-icon>
+          <f7-icon f7="forward_fill" size="40px"></f7-icon>
         </f7-col>
       </f7-row>
     </div>
@@ -65,7 +65,7 @@ export default {
       return this.$device.iphone
     },
     height() {
-      return this.historyMode ? 50 : 0
+      return this.historyMode ? 70 : 0
     }
   },
   watch: {
