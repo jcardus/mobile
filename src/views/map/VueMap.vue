@@ -272,7 +272,7 @@ export default {
             })
             this.flyToDevice(feature, device)
           } else { this.showPopup(feature, device) }
-          vm.$data.currentFeature = feature
+          vm.$store.dispatch('map/setCurrentFeature', feature).then(() => Vue.$log.debug('dispatched current feature'))
         }
       }
     },

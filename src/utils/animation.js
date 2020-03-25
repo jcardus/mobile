@@ -18,7 +18,7 @@ export function hideRouteLayer(hide) {
 }
 export function refreshFeature() {
   const data = {
-    type: 'FeatureCollection', features: [vm.$data.currentFeature]
+    type: 'FeatureCollection', features: [vm.$store.state.map.currentFeature]
   }
   if (!vm.$static.map.getLayer(routePlayLayer)) {
     vm.$static.map.addSource(routePlayLayer, {
@@ -83,6 +83,7 @@ function getHashCode(route) {
     Math.floor(dest[1] * multi)
 }
 export function animateRoute(route, feature) {
+  Vue.$log.debug('animation', route, feature)
   if (nextKey === getHashCode(route)) {
     Vue.$log.debug('got match from cache:', getHashCode(route))
     route.geometry.coordinates = nextMatch
@@ -145,7 +146,7 @@ export function animateMatched(route, feature) {
     }
     if (counter < feature.route.length) {
       counter = counter + 1
-      if (vm.$data.isPlaying) {
+      if (vm.$store.state.map.isPlaying) {
         setTimeout(_animate, consts.refreshRate)
       } else {
         feature.animating = false

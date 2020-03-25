@@ -71,6 +71,7 @@ import * as consts from '../../utils/consts'
 import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'CurrentPositionData',
@@ -87,17 +88,7 @@ export default {
     }
   },
   computed: {
-    isPlaying: {
-      get() {
-        return vm.$data.isPlaying
-      },
-      set(value) {
-        vm.$data.isPlaying = value
-      }
-    },
-    feature() {
-      return vm.$data.currentFeature
-    },
+    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'feature']),
     map() {
       return vm.$static.map
     },
@@ -719,6 +710,7 @@ export default {
       lnglat.hideLayers(true)
       animation.refreshFeature()
       animation.removeAddRouteLayer()
+      this.$log.debug('CurrentPositionData emit routeMatchFinished')
       serverBus.$emit('routeMatchFinished')
     },
     resizeDiv() {
@@ -790,7 +782,7 @@ export default {
           )
         }
         if (newPos === sharedData.getPositions().length - 1) {
-          this.isPlaying = false
+          this.$store.dispatch('map/togglePlaying')
         }
       } else {
         if (!this.trips[this.currentTrip]) {

@@ -287,8 +287,9 @@ export default {
           this.selected = device.id
           this.selectedDevice = device
           Vue.$log.debug('device=', device)
-          vm.$data.isPlaying = false
-          serverBus.$emit('deviceSelected', device)
+          vm.$store.dispatch('map/togglePlaying').then(() =>
+            serverBus.$emit('deviceSelected', device)
+          )
         }
       }
     },

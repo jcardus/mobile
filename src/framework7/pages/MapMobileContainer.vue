@@ -14,6 +14,7 @@
       <f7-row style="padding-left: 45px; padding-right: 40px"><f7-col>
         <f7-range
           v-if="showSlider"
+          id="range"
           style="padding-left: 20px"
           :value="sliderPos"
           :max="MPos"
@@ -23,9 +24,9 @@
       </f7-row>
       <f7-row>
         <f7-col>
-          <f7-link icon-f7="backward_fill" @click="onClickBack"></f7-link>
-          <f7-link icon-f7="play_fill" style="padding-left: 10px; padding-right: 5px" @click="onClickPlay"></f7-link>
-          <f7-link icon-f7="forward_fill" @click="onClickForward"></f7-link>
+          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="backward_fill" @click="onClickBack"></f7-link>
+          <f7-link :icon-f7="(isPlaying ? 'pause' : 'play') + '_fill'" style="padding-left: 10px; padding-right: 5px" @click="onClickPlay"></f7-link>
+          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="forward_fill" @click="onClickForward"></f7-link>
         </f7-col>
       </f7-row>
     </div>
@@ -54,7 +55,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos', 'historyMode']),
+    ...mapGetters(['minPos', 'maxPos', 'historyMode', 'isPlaying']),
     userLoggedIn() {
       return this.$store.state.user.name !== '' && getToken() !== null
     },
@@ -83,6 +84,7 @@ export default {
   created() {
     this.$log.debug('created VueMap mobile, user loggedin: ', this.userLoggedIn)
     serverBus.$on('deviceSelected', this.deviceSelected)
+    serverBus.$on('autoSliderChange', this.autoSliderChange)
   },
   mounted() {
     this.$log.debug('mounted VueMap mobile, user loggedin: ', this.userLoggedIn)
@@ -92,8 +94,13 @@ export default {
   },
   beforeDestroy() {
     this.$log.debug('destroying MapMobileContainer')
+    serverBus.$off('deviceSelected', this.deviceSelected)
+    serverBus.$off('autoSliderChange', this.autoSliderChange)
   },
   methods: {
+    autoSliderChange(value) {
+      this.$f7.range.setValue('#range', value)
+    },
     onClickBack() {
       serverBus.$emit('clickBack')
     },

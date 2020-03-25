@@ -29,7 +29,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos']),
+    ...mapGetters(['minPos', 'maxPos', 'isPlaying']),
     isMobile() {
       return lnglat.isMobile()
     },
@@ -39,10 +39,6 @@ export default {
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
-    },
-    isPlaying: {
-      get() { return vm.$data.isPlaying },
-      set(value) { vm.$data.isPlaying = value }
     },
     show() { return vm.$data.historyMode },
     minDate: {
@@ -63,7 +59,8 @@ export default {
     }
   },
   watch: {
-    isPlaying() {
+    isPlaying(newValue) {
+      this.$log.debug('isPlayng changed to ', newValue, this.isPlaying)
       if (this.isPlaying) {
         if (this.sliderPos === this.maxPos) {
           this.currentPos = 0
@@ -72,7 +69,7 @@ export default {
       serverBus.$emit('routePlay')
     },
     currentPos() {
-      Vue.$log.debug('curPos changed to ', this.currentPos)
+      Vue.$log.debug('curPos changed to ', this.currentPos, this.isPlaying)
       if (this.isPlaying) {
         let i = this.currentPos - consts.routeSlotLength
         let dist = 0
@@ -106,6 +103,7 @@ export default {
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
     serverBus.$on('sliderChanged', this.sliderPos)
+    serverBus.$on('autoSliderChange', this.sliderPos)
     serverBus.$on('clickPlay', this.click)
     serverBus.$on('clickBack', this.clickBackward)
     serverBus.$on('clickForward', this.clickForward)
@@ -115,11 +113,11 @@ export default {
     serverBus.$off('routeFetched', this.updateMinMax)
     serverBus.$off('routeMatchFinished', this.playNext)
     serverBus.$off('sliderChanged', this.sliderPos)
+    serverBus.$off('autoSliderChange', this.sliderPos)
     serverBus.$off('clickPlay', this.click)
     serverBus.$off('clickBack', this.clickBackward)
     serverBus.$off('clickForward', this.clickForward)
     window.removeEventListener('resize', this.resizeDiv)
-    if (this.unsubscribe) { this.unsubscribe() }
   },
   mounted() {
     this.resizeDiv()
@@ -160,16 +158,16 @@ export default {
       this.updateChart = !this.updateChart
     },
     click: function() {
-      this.isPlaying = !this.isPlaying
+      this.$store.dispatch('map/togglePlaying')
     },
     clickForward: function() {
-      if (this.sliderPos < this.maxPos) {
-        this.sliderPos = Vue.moment(this.positions[++this.currentPos].fixTime).unix()
-      } else { Vue.$log.debug('ignoring forward sliderPos: ', this.sliderPos) }
+      if (this.currentPos < this.maxPos) {
+        serverBus.$emit('autoSliderChange', Vue.moment(this.positions[++this.currentPos].fixTime).unix())
+      } else { Vue.$log.debug('ignoring forward sliderPos: ', this.currentPos) }
     },
     clickBackward: function() {
       if (this.sliderPos > this.minPos) {
-        this.sliderPos = Vue.moment(this.positions[--this.currentPos].fixTime).unix()
+        serverBus.$emit('autoSliderChange', Vue.moment(this.positions[--this.currentPos].fixTime).unix())
       }
     },
     initIndexArray() {
@@ -207,6 +205,7 @@ export default {
       }
     },
     playNext() {
+      this.$log.debug('HistoryPanel ', this.isPlaying)
       if (this.isPlaying) {
         if (this.sliderPos <= this.maxPos) {
           this.currentPos_ = Math.max(this.currentPos_, this.currentPos)
@@ -218,9 +217,9 @@ export default {
             Vue.$log.debug('new currentPos: ', this.currentPos)
           }
           Vue.$log.debug('currentPos:', this.currentPos, ', positions length: ', this.positions.length)
-          this.sliderPos = Vue.moment(this.positions[this.currentPos].fixTime).unix()
+          serverBus.$emit('autoSliderChange', Vue.moment(this.positions[this.currentPos].fixTime).unix())
         } else {
-          this.sliderPos = Vue.moment(this.positions[0].fixTime).unix()
+          serverBus.$emit('autoSliderChange', Vue.moment(this.positions[0].fixTime).unix())
         }
       }
     }

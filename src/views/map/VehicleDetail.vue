@@ -104,14 +104,6 @@ export default {
     },
     isMobile() {
       return lnglat.isMobile()
-    },
-    isPlaying: {
-      get() {
-        return vm.$data.isPlaying
-      },
-      set(value) {
-        vm.$data.isPlaying = value
-      }
     }
   },
   beforeDestroy() {
