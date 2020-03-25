@@ -39,6 +39,7 @@ export default {
   vehicleList: {
     title: 'Veículos',
     search: 'Pesquisar...',
+    empty_list: 'Sem resultados',
     column_name: 'Nome',
     column_speed: 'Km/h',
     column_lastUpdate: 'Última Actualização',
@@ -101,6 +102,8 @@ export default {
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   settings: {
+    search: 'Pesquisar...',
+    empty_list: 'Sem resultados',
     refresh: 'Recarregar',
     version: 'Versão',
     connected: 'Ligado',
@@ -199,6 +202,7 @@ export default {
     group_edit_cancel: 'Cancelar',
     group_created: 'Grupo criado com sucesso!',
     pois_title: 'POIs',
+    geofences_title: 'Balizas',
     edit: 'Editar',
     delete: 'Apagar'
   },

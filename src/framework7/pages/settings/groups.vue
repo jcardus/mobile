@@ -1,15 +1,30 @@
 <template>
   <f7-page name="Groups">
-    <f7-navbar back-link></f7-navbar>
-    <f7-block-title style="font-size: 20px; padding-bottom: 20px"><i class="fas fa-grip-horizontal"></i> {{ $t('settings.groups') }}</f7-block-title>
+    <f7-navbar back-link>
+      <i class="fas fa-grip-horizontal" style="padding-right: 10px"></i> {{ $t('settings.groups') }}
+      <f7-nav-right>
+        <f7-link class="searchbar-enable" icon-ios="f7:search" icon-aurora="f7:search" icon-md="material:search"></f7-link>
+      </f7-nav-right>
+      <f7-searchbar
+        expandable
+        :placeholder="$t('settings.search')"
+        search-container=".search-list"
+        search-in=".item-title"
+        :disable-button="!$theme.aurora"
+      ></f7-searchbar>
+    </f7-navbar>
     <f7-fab slot="fixed" position="right-top" color="gray" @click="onGroupAdd">
       <f7-icon ios="f7:plus" aurora="f7:plus" md="material:add"></f7-icon>
       <f7-icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></f7-icon>
     </f7-fab>
+    <f7-list class="searchbar-not-found">
+      <f7-list-item :title="$t('settings.empty_list')"></f7-list-item>
+    </f7-list>
     <f7-list
+      class="search-list searchbar-found"
+      style="padding-top: 45px;"
       media-list
       inset
-      virtual-list
       :virtual-list-params="{ items }"
     >
       <ul>
@@ -105,8 +120,4 @@ export default {
 </script>
 
 <style>
-.md {
-  --f7-fab-size: 45px;
-  --f7-fab-size: 45px;
-}
 </style>

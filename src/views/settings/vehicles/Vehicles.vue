@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
+import { serverBus, vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import Vue from 'vue'
@@ -157,15 +157,14 @@ export default {
       return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     groupsFilter: function() {
-      const teste = vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1).map(g => {
-        const a = { text: g.name, value: g.id }
-        return a
+      const groupsName = vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1).map(g => {
+        return { text: g.name, value: g.id }
       })
-      Vue.$log.debug(teste)
-      return teste
+      Vue.$log.debug(groupsName)
+      return groupsName
     },
     categories: function() {
-      const categoryType = [
+      return [
         { value: 'car', text: this.$t('settings.vehicle_icon_car') },
         { value: 'truck', text: this.$t('settings.vehicle_icon_truck') },
         { value: 'van', text: this.$t('settings.vehicle_icon_van') },
@@ -180,7 +179,6 @@ export default {
         { value: 'boat', text: this.$t('settings.vehicle_icon_boat') },
         { value: 'pickup', text: this.$t('settings.vehicle_icon_pickup') }
       ]
-      return categoryType
     }
   },
   methods: {
@@ -244,14 +242,15 @@ export default {
 
       this.isOpenVehicleForm = false
     },
-    accumulatorUpdated: function() {
+    accumulatorUpdated: function(data) {
 
     },
-    vehicleUpdated: function() {
+    vehicleUpdated: function(device) {
       this.$message({
         type: 'success',
         message: this.$t('settings.vehicle_updated')
       })
+      serverBus.$emit('deviceChanged', device)
       this.clearFormData()
     },
     handleEdit(row) {
@@ -346,10 +345,6 @@ export default {
 
   .el-table .tomobile td:last-child {
     font-size: 12px
-  }
-
-  .el-form-item {
-    margin-bottom: 10px
   }
 
   .el-input-number-fix {
