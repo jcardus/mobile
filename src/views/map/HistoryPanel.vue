@@ -3,19 +3,21 @@
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
-    <div v-if="!isMobile" style="padding-left:48px; padding-right:10px">
-      <label>
-        <input
-          v-model="embeddedSliderPos"
-          type="range"
-          :max="maxPos"
-          :min="minPos"
-        />
-      </label></div>
-    <div v-if="!isMobile" style="padding-left: 10px">
-      <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
-      <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
-      <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
+    <div v-if="!isMobile">
+      <div style="padding-left:48px; padding-right:10px">
+        <label>
+          <input
+            v-model="embeddedSliderPos"
+            type="range"
+            :max="maxPos"
+            :min="minPos"
+          />
+        </label></div>
+      <div style="padding-left: 10px">
+        <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
+        <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
+        <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
+      </div>
     </div>
   </div>
 </template>

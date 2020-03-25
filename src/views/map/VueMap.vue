@@ -40,7 +40,7 @@ import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
 
-const historyPanelHeight = 310
+const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
 // match anything which looks like a decimal degrees coordinate pair
   const matches = query.match(
