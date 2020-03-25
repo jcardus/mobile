@@ -82,7 +82,8 @@ export default {
       width: 'width:0px',
       currentTrip: 0,
       elSwitchValue: true,
-      totalDistance: 0
+      totalDistance: 0,
+      formattedDate: ''
     }
   },
   computed: {
@@ -128,11 +129,6 @@ export default {
     },
     device() {
       return vm.$data.currentDevice
-    },
-    formattedDate: function() {
-      if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
-        return Vue.moment(this.positions[this.currentPos].fixTime).format('YYYY-MM-DD HH:mm:ss')
-      } else { return '' }
     },
     formatAddress: function() {
       return utils.formatAddress(this.currentPos)
@@ -733,9 +729,32 @@ export default {
         this.$log.warn('currentposition, no map element...')
       }
     },
+    formatDate(v) {
+      let result = Vue.moment.unix(v).format('YYYY-MM-DD HH:mm:ss')
+      this.indexArray = sharedData.getPositionIndex()
+      if (this.indexArray[v]) {
+        v = this.indexArray[v].index
+        const speed = this.positions[v] ? this.positions[v].speed : ''
+        if (speed && speed > 0) {
+          result += (' ' + ~~(speed * 1.852) + 'km/h')
+        }
+      }
+      return result
+    },
+    updateDate() {
+      this.positions = sharedData.getPositions()
+      if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
+        const pos = this.positions[this.currentPos]
+        this.formattedDate = this.$moment(pos.fixTime).format('YYYY-MM-DD HH:mm:ss')
+        if (pos.speed && pos.speed > 0) {
+          this.formattedDate += (' ' + ~~(pos.speed * 1.852) + 'km/h')
+        }
+      } else {
+        this.formattedDate = ''
+      }
+    },
     onPosChanged(newPos) {
       const positions = sharedData.getPositions()
-      Vue.$log.debug('onPosChanged to ', newPos)
       this.currentPos = newPos
       const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {
@@ -751,8 +770,7 @@ export default {
         return
       }
       const origin = this.oldPos
-      Vue.$log.debug('origin: ', origin)
-
+      this.updateDate()
       if (this.isPlaying) {
         let i = newPos - consts.routeSlotLength
         const j = newPos

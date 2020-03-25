@@ -72,11 +72,12 @@ export default {
     minPos(newValue, oldValue) {
       console.log(`updating minPos from ${oldValue} to ${newValue}`)
       this.mPos = newValue
+      this.reloadSlider()
     },
     maxPos(newValue, oldValue) {
       console.log(`updating maxPos from ${oldValue} to ${newValue}`)
       this.MPos = newValue
-      this.showSlider = true
+      this.reloadSlider()
     }
   },
   created() {
@@ -93,6 +94,11 @@ export default {
     this.$log.debug('destroying MapMobileContainer')
   },
   methods: {
+    reloadSlider() {
+      this.showSlider = false
+      const self = this
+      setTimeout(function() { self.showSlider = true }, 100)
+    },
     sliderChanged(newValue) {
       serverBus.$emit('sliderChanged', newValue)
     },
