@@ -23,9 +23,9 @@
       </f7-row>
       <f7-row>
         <f7-col>
-          <f7-icon f7="backward_fill" size="40px"></f7-icon>
-          <f7-icon f7="play_fill" size="40px" style="padding-left: 5px"></f7-icon>
-          <f7-icon f7="forward_fill" size="40px"></f7-icon>
+          <f7-link icon-f7="backward_fill" @click="onClickBack"></f7-link>
+          <f7-link icon-f7="play_fill" style="padding-left: 10px; padding-right: 5px" @click="onClickPlay"></f7-link>
+          <f7-link icon-f7="forward_fill" @click="onClickForward"></f7-link>
         </f7-col>
       </f7-row>
     </div>
@@ -94,6 +94,15 @@ export default {
     this.$log.debug('destroying MapMobileContainer')
   },
   methods: {
+    onClickBack() {
+      serverBus.$emit('clickBack')
+    },
+    onClickForward() {
+      serverBus.$emit('clickForward')
+    },
+    onClickPlay() {
+      serverBus.$emit('clickPlay')
+    },
     reloadSlider() {
       this.showSlider = false
       const self = this

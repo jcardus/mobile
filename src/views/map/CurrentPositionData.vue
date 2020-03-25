@@ -729,18 +729,6 @@ export default {
         this.$log.warn('currentposition, no map element...')
       }
     },
-    formatDate(v) {
-      let result = Vue.moment.unix(v).format('YYYY-MM-DD HH:mm:ss')
-      this.indexArray = sharedData.getPositionIndex()
-      if (this.indexArray[v]) {
-        v = this.indexArray[v].index
-        const speed = this.positions[v] ? this.positions[v].speed : ''
-        if (speed && speed > 0) {
-          result += (' ' + ~~(speed * 1.852) + 'km/h')
-        }
-      }
-      return result
-    },
     updateDate() {
       this.positions = sharedData.getPositions()
       if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
@@ -755,6 +743,7 @@ export default {
     },
     onPosChanged(newPos) {
       const positions = sharedData.getPositions()
+      this.positions = positions
       this.currentPos = newPos
       const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {

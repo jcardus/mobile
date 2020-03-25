@@ -3,11 +3,11 @@
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
-    <!--div style="padding-left: 10px">
+    <div v-if="!isMobile" style="padding-left: 10px">
       <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
       <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
       <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
-    </div-->
+    </div>
   </div>
 </template>
 
@@ -106,11 +106,18 @@ export default {
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
     serverBus.$on('sliderChanged', this.sliderPos)
+    serverBus.$on('clickPlay', this.click)
+    serverBus.$on('clickBack', this.clickBackward)
+    serverBus.$on('clickForward', this.clickForward)
     window.addEventListener('resize', this.resizeDiv)
   },
   beforeDestroy() {
     serverBus.$off('routeFetched', this.updateMinMax)
     serverBus.$off('routeMatchFinished', this.playNext)
+    serverBus.$off('sliderChanged', this.sliderPos)
+    serverBus.$off('clickPlay', this.click)
+    serverBus.$off('clickBack', this.clickBackward)
+    serverBus.$off('clickForward', this.clickForward)
     window.removeEventListener('resize', this.resizeDiv)
     if (this.unsubscribe) { this.unsubscribe() }
   },
@@ -177,7 +184,8 @@ export default {
     },
     updateMinMax() {
       const self = this
-      const positions = sharedData.getPositions()
+      this.positions = sharedData.getPositions()
+      const positions = this.positions
       if (positions && positions[0] && positions.length > 0) {
         this.$store.dispatch(
           'map/setMinPos',
