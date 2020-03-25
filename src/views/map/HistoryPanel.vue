@@ -1,17 +1,14 @@
 <template>
-
-  <div v-show="show" v-loading="loadingRoutes" class="historyPanel2" :style="width">
+  <div v-show="show" v-loading="loadingRoutes" class="historyPanel2">
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
-
-    <div style="padding-left: 10px">
+    <!--div style="padding-left: 10px">
       <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
       <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
       <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
-    </div>
+    </div-->
   </div>
-
 </template>
 
 <script>
@@ -108,7 +105,6 @@ export default {
     this.labels = []
     this.chartData = []
     this.indexArray = {}
-    this.width = 'width:0px'
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
     serverBus.$on('sliderChanged', this.sliderPos)
@@ -231,7 +227,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import '../../styles/element-variables.scss';
+
   .historyPanel2 {
     font-size: 15px;
     margin: 0 !important;
@@ -244,6 +240,7 @@ export default {
   }
 
   @media only screen and (min-width: 768px) {
+    @import '../../styles/element-variables.scss';
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;

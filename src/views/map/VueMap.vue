@@ -30,7 +30,6 @@ import along from '@turf/along'
 import bbox from '@turf/bbox'
 import bearing from '@turf/bearing'
 import HistoryPanel from './HistoryPanel'
-import * as utils from '../../utils/utils'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
@@ -41,7 +40,7 @@ import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
 
-const historyPanelHeight = 310
+const historyPanelHeight = 210
 const coordinatesGeocoder = function(query) {
 // match anything which looks like a decimal degrees coordinate pair
   const matches = query.match(
@@ -223,6 +222,7 @@ export default {
       if (++this.loadingCount === 3) {
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
+        this.$log.warn('finished loading, count = ', this.loadingCount)
       } else {
         this.$log.warn('not finishing loading, count = ', this.loadingCount)
       }
@@ -361,9 +361,6 @@ export default {
         this.origin = center
         this.$static.map.setCenter(center)
       }
-    },
-    stopLoader: function() {
-      utils.stopLoader()
     },
     showHideDevices: function(show) {
       if (!show) { this.$static.map.setLayoutProperty('unclustered-point', 'visibility', 'none') } else { this.$static.map.setLayoutProperty('unclustered-point', 'visibility', 'visible') }
