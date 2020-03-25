@@ -101,6 +101,8 @@ export default {
     user_password_lengh: 'The password can not be less than 6 digits'
   },
   settings: {
+    search: 'Search...',
+    empty_list: 'Nothing found',
     refresh: 'Recarregar aplicação',
     version: 'Version',
     connected: 'Ligado',

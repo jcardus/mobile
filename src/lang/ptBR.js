@@ -89,6 +89,9 @@ export default {
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   settings: {
+    search: 'Pesquisar...',
+    empty_list: 'Sem resultados',
+    refresh: 'Recarregar',
     version: 'Versão',
     connected: 'Ligado',
     disconnected: 'Desligado',

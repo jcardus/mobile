@@ -7,14 +7,14 @@
       </f7-nav-right>
       <f7-searchbar
         expandable
-        :placeholder="$t('vehicleList.search')"
+        :placeholder="$t('settings.search')"
         search-container=".search-list"
         search-in=".item-title,.item-subtitle"
         :disable-button="!$theme.aurora"
       ></f7-searchbar>
     </f7-navbar>
     <f7-list class="searchbar-not-found">
-      <f7-list-item :title="$t('vehicleList.empty_list')"></f7-list-item>
+      <f7-list-item :title="$t('settings.empty_list')"></f7-list-item>
     </f7-list>
     <f7-list
       class="search-list searchbar-found"
