@@ -10,16 +10,47 @@
       >
         <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
       </f7-fab>
-      <div style="height: calc(100% - 90px)">
+      <f7-block-title>Columns with gap</f7-block-title>
+      <f7-block>
+        <f7-row>
+          <f7-col>50% (.col)</f7-col>
+          <f7-col>50% (.col)</f7-col>
+        </f7-row>
+      </f7-block>
+      <f7-block>
+        <f7-row>
+
+          <f7-col width="100">
+            <f7-icon f7="play_fill"></f7-icon>
+            <f7-icon f7="backward_fill" style="padding-right: 5px"></f7-icon>
+            <f7-icon f7="forward_fill"></f7-icon>
+          </f7-col>
+        </f7-row>
+      </f7-block>
+      <div :style="'height: calc(100% - ' + height + 'px)'">
         <VueMap></VueMap>
-        <f7-range
-          v-if="showSlider"
-          :value="sliderPos"
-          :max="MPos"
-          :min="mPos"
-          @range:change="sliderChanged"
-        />
-      </div></f7-page>
+
+        <f7-row style="padding-left: 50px; padding-right: 20px;">
+          <f7-range
+            v-if="showSlider"
+            style="padding-left: 20px"
+            :value="sliderPos"
+            :max="MPos"
+            :min="mPos"
+            @range:change="sliderChanged"
+          />
+        </f7-row>
+        <f7-row>
+          <f7-col width="30"></f7-col>
+          <f7-col width="40">
+            <f7-icon f7="play_fill"></f7-icon>
+            <f7-icon f7="backward_fill" style="padding-right: 5px"></f7-icon>
+            <f7-icon f7="forward_fill"></f7-icon>
+          </f7-col>
+          <f7-col width="30"></f7-col>
+        </f7-row>
+      </div>
+    </f7-page>
     <f7-menu v-if="offline" class="offline">
       <f7-menu-item icon-f7="wifi_slash" class="offlineIcon" @click="clickOffline"></f7-menu-item>
     </f7-menu>
@@ -45,7 +76,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos']),
+    ...mapGetters(['minPos', 'maxPos', 'historyMode']),
     userLoggedIn() {
       return this.$store.state.user.name !== '' && getToken() !== null
     },
@@ -54,6 +85,9 @@ export default {
     },
     iphone() {
       return this.$device.iphone
+    },
+    height() {
+      return this.historyMode ? 50 : 0
     }
   },
   watch: {
