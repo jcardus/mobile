@@ -64,7 +64,7 @@
 
 <script>
 
-import { vm, serverBus } from '../../main'
+import { vm, serverBus, sharedData } from '../../main'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
@@ -89,8 +89,25 @@ export default {
       formattedDate: ''
     }
   },
+  static() {
+    return {
+      trips: [],
+      speedTrips: [],
+      speedMarkers: [],
+      startMaker: null,
+      endMarker: null
+    }
+  },
   computed: {
     ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'feature', 'historyMode']),
+    trips: {
+      get() { return this.$static.trips },
+      set(value) { this.$static.trips = value }
+    },
+    speedMarkers: {
+      get() { return this.$static.speedMarkers },
+      set(value) { this.$static.speedMarkers = value }
+    },
     map() {
       return vm.$static.map
     },
@@ -739,27 +756,31 @@ export default {
       }
     },
     onPosChanged(newPos) {
-
       const positions = sharedData.getPositions()
       this.positions = positions
-
       this.currentPos = newPos
       const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {
-        Vue.$log.debug('ignoring onPosChanged, no device...')
+        Vue.$log.debug('CurrentPositionData, ignoring, no device...')
         return
       }
       if (this.device.id !== vm.$data.currentDevice.id) {
-        Vue.$log.debug('ignoring onPosChanged, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
+        Vue.$log.debug('CurrentPositionData ignoring, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
         return
       }
       if (newPos >= this.positions.length) {
-        Vue.$log.warn('ignoring onPosChanged, newPos out of array: ', newPos)
+        Vue.$log.warn('CurrentPositionData ignoring, newPos out of array: ', newPos)
         return
       }
       const origin = this.oldPos
       this.updateDate()
       if (this.isPlaying) {
+        if (newPos < this.oldPos) {
+          this.$log.debug('ignoring animation, end of route ', newPos, this.oldPos)
+          this.oldPos = newPos
+          serverBus.$emit('routeMatchFinished')
+          return
+        }
         let i = newPos - consts.routeSlotLength
         const j = newPos
         let dist = 0
@@ -780,9 +801,10 @@ export default {
           )
         }
         if (JSON.stringify(sharedData.getPositions()[origin]) === JSON.stringify(sharedData.getPositions()[newPos])) {
-          Vue.$log.debug('routeMatchFinished origin equals destination')
+          this.$log.debug('routeMatchFinished origin equals destination')
           serverBus.$emit('routeMatchFinished')
         } else {
+          this.$log.debug('animating from ', origin, ' to ', newPos + 1)
           animation.animate(this.feature,
             sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
             sharedData.getPositions().slice(origin, newPos + 1).map(x => Vue.moment(x.fixTime).unix())
