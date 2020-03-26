@@ -174,7 +174,7 @@ export default {
       if (this.device && this.device.id !== device.id) {
         Vue.$log.debug('removing layers on deviceid, ', this.device.id)
         if (this.historyMode) {
-          this.$store.dispatch('map/toggleHistoryMode')
+          vm.$store.dispatch('map/toggleHistoryMode')
         }
       } else {
         Vue.$log.debug('not removing layers on deviceid, ', this.device.id)

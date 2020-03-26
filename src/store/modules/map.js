@@ -7,14 +7,10 @@ const state = {
   minPos: 0,
   maxPos: 1000,
   isPlaying: false,
-  currentFeature: null,
   historyMode: false
 }
 
 const mutations = {
-  SET_CURRENT_FEATURE(state, value) {
-    state.currentFeature = value
-  },
   SET_MIN_POS(state, value) {
     state.minPos = value
   },
@@ -49,9 +45,6 @@ const actions = {
   },
   setPlaying({ commit }, value) {
     commit('SET_PLAYING', value)
-  },
-  setCurrentFeature({ commit }, feature) {
-    commit('SET_CURRENT_FEATURE', feature)
   },
   setMinPos({ commit }, min) {
     commit('SET_MIN_POS', min)

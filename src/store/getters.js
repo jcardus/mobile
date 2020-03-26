@@ -10,8 +10,7 @@ const getters = {
   historyMode: state => state.map.historyMode,
   minPos: state => state.map.minPos,
   maxPos: state => state.map.maxPos,
-  isPlaying: state => state.map.isPlaying,
-  feature: state => state.map.currentFeature
+  isPlaying: state => state.map.isPlaying
 }
 
 export default getters

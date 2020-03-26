@@ -282,7 +282,7 @@ export default {
             })
             this.flyToDevice(feature, device)
           } else { this.showPopup(feature, device) }
-          vm.$store.dispatch('map/setCurrentFeature', feature).then(() => Vue.$log.debug('dispatched current feature'))
+          vm.$static.currentFeature = feature
         }
       }
     },
@@ -736,7 +736,7 @@ export default {
           if (!device) return
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
-          if (settings.animateMarkers &&
+          if (settings.animateMarkers && !self.historyMode &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             self.map.getZoom() > 12
           ) {

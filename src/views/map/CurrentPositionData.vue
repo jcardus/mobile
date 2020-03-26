@@ -69,7 +69,6 @@ import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
-import * as consts from '../../utils/consts'
 import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
@@ -99,7 +98,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'feature', 'historyMode']),
+    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'historyMode']),
+    feature() {
+      return vm.$static.currentFeature
+    },
     trips: {
       get() { return this.$static.trips },
       set(value) { this.$static.trips = value }
@@ -730,7 +732,7 @@ export default {
       lnglat.hideLayers(true)
       animation.refreshFeature()
       animation.removeAddRouteLayer()
-      this.$log.debug('CurrentPositionData emit routeMatchFinished')
+      this.$log.info('CurrentPositionData emit routeMatchFinished')
       serverBus.$emit('routeMatchFinished')
     },
     routePlayStopped() {
@@ -756,10 +758,10 @@ export default {
       }
     },
     onPosChanged(newPos) {
+      this.$log.info('CurrentPositionData', newPos)
       const positions = sharedData.getPositions()
       this.positions = positions
       this.currentPos = newPos
-      const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {
         Vue.$log.debug('CurrentPositionData, ignoring, no device...')
         return
@@ -776,39 +778,18 @@ export default {
       this.updateDate()
       if (this.isPlaying) {
         if (newPos < this.oldPos) {
-          this.$log.debug('ignoring animation, end of route ', newPos, this.oldPos)
+          this.$log.info('ignoring animation, end of route ', newPos, this.oldPos)
           this.oldPos = newPos
           serverBus.$emit('routeMatchFinished')
           return
         }
-        let i = newPos - consts.routeSlotLength
-        const j = newPos
-        let dist = 0
-        do {
-          i += consts.routeSlotLength
-          const lineString = {
-            type: 'LineString',
-            coordinates: sharedData.getPositions().slice(j, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
-          }
-          dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
-        } while (i < sharedData.getPositions().length - consts.routeSlotLength && i > consts.routeSlotLength && dist < consts.minDistanceForMatch)
-        if (i < sharedData.getPositions().length - skipRoutePositions) {
-          animation.cacheMatch(
-            sharedData.getPositions().slice(j, i + skipRoutePositions + 1)
-              .map(x => [x.longitude, x.latitude]),
-            sharedData.getPositions().slice(j, i + skipRoutePositions + 1)
-              .map(x => this.$moment(x.fixTime).unix())
-          )
-        }
         if (JSON.stringify(sharedData.getPositions()[origin]) === JSON.stringify(sharedData.getPositions()[newPos])) {
-          this.$log.debug('routeMatchFinished origin equals destination')
+          this.$log.info('CurrentPositionData emit routeMatchFinished origin equals destination', origin, newPos)
           serverBus.$emit('routeMatchFinished')
         } else {
-          this.$log.debug('animating from ', origin, ' to ', newPos + 1)
+          this.$log.info('animating from ', origin, ' to ', newPos + 1)
           animation.animate(this.feature,
-            sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
-            sharedData.getPositions().slice(origin, newPos + 1).map(x => Vue.moment(x.fixTime).unix())
-          )
+            sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
         }
         if (newPos === sharedData.getPositions().length - 1) {
           this.$store.dispatch('map/togglePlaying')

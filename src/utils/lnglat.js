@@ -375,8 +375,8 @@ export function fitBounds(devices) {
 }
 export function contains(lngLatBounds, position) {
   return (
-    (lngLatBounds.getWest() < position.longitude && position.longitude < lngLatBounds.getEast()) &&
-    (lngLatBounds.getSouth() < position.latitude && position.latitude < lngLatBounds.getNorth())
+    (lngLatBounds.getWest() + 0.01 < position.longitude && position.longitude < lngLatBounds.getEast() - 0.01) &&
+    (lngLatBounds.getSouth() + 0.01 < position.latitude && position.latitude < lngLatBounds.getNorth() - 0.01)
   )
 }
 export function refreshGeofences() {

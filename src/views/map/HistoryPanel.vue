@@ -80,33 +80,17 @@ export default {
       if (newValue) {
         if (this.currentPos === sharedData.getPositions().length - 1) {
           this.$log.debug('setting currentPos to 0')
+          this.currentPos_ = 0
           serverBus.$emit('autoSliderChange', this.minPos)
         }
       }
       serverBus.$emit('routePlay')
     },
-    currentPos() {
+    currentPos(newPos) {
       if (this.isPlaying) {
-        let i = this.currentPos - consts.routeSlotLength
-        let dist = 0
-        const j = this.currentPos - consts.routeSlotLength
-        do {
-          i += consts.routeSlotLength
-          const lineString = {
-            type: 'LineString',
-            coordinates: this.positions.slice(j, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
-          }
-          dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
-        } while (i < this.positions.length - consts.routeSlotLength &&
-                i > consts.routeSlotLength &&
-                dist < consts.minDistanceForMatch)
-        if (i > this.currentPos) {
-          Vue.$log.debug('fast forwarding to ', i)
-          this.currentPos_ = i
-          this.currentPos = Vue.moment(this.positions[i].fixTime).unix()
-        }
-        serverBus.$emit('posChanged', Math.max(this.currentPos, this.currentPos_))
-      } else { serverBus.$emit('posChanged', this.currentPos) }
+        this.$log.info('HistoryPanel emit posChanged', newPos)
+        serverBus.$emit('posChanged', newPos)
+      } else { serverBus.$emit('posChanged', newPos) }
     }
   },
   created() {
@@ -220,15 +204,11 @@ export default {
           this.currentPos_ = Math.max(this.currentPos_, this.currentPos)
           if ((this.currentPos_ + consts.routeSlotLength) < this.positions.length) {
             this.currentPos += consts.routeSlotLength
-            Vue.$log.debug('new currentPos: ', this.currentPos)
           } else if (this.currentPos < (this.positions.length - 1)) {
             this.currentPos = this.positions.length - 1
-            Vue.$log.debug('new currentPos: ', this.currentPos)
           }
-          Vue.$log.debug('currentPos:', this.currentPos, ', positions length: ', this.positions.length)
+          this.$log.info('HistoryPanel emit autoSliderChange ', this.currentPos, this.positions[this.currentPos].fixTime)
           serverBus.$emit('autoSliderChange', Vue.moment(this.positions[this.currentPos].fixTime).unix())
-        } else {
-          serverBus.$emit('autoSliderChange', this.minPos)
         }
       }
     }

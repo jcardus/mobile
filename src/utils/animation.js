@@ -1,7 +1,7 @@
 import * as lnglat from './lnglat'
 import along from '@turf/along'
 import bearing from '@turf/bearing'
-import { serverBus, vm } from '../main'
+import { serverBus, vm, settings } from '../main'
 import Vue from 'vue'
 import * as angles from 'angles'
 import * as consts from './consts'
@@ -18,7 +18,7 @@ export function hideRouteLayer(hide) {
 }
 export function refreshFeature() {
   const data = {
-    type: 'FeatureCollection', features: [vm.$store.state.map.currentFeature]
+    type: 'FeatureCollection', features: [vm.$static.currentFeature]
   }
   if (!vm.$static.map.getLayer(routePlayLayer)) {
     vm.$static.map.addSource(routePlayLayer, {
@@ -38,7 +38,9 @@ export function removeAddRouteLayer() {
     Vue.$log.warn('removeAddRouteLayer called but there is no layer!')
   }
 }
-export function animate(feature, coordinates, timestamps) {
+
+let changeColor = 0
+export function animate(feature, coordinates) {
   const route = {
     type: 'Feature',
     geometry: {
@@ -46,7 +48,24 @@ export function animate(feature, coordinates, timestamps) {
       coordinates: coordinates
     }
   }
-  animateRoute(route, feature, timestamps)
+  if (settings.debugRoutes) {
+    const id = Date.now() + ''
+    vm.$static.map.addSource(id, {
+      type: 'geojson',
+      data: route
+    })
+    vm.$static.map.addLayer({
+      id: id,
+      type: 'line',
+      source: id,
+      paint: {
+        'line-color': changeColor++ % 2 ? 'red' : 'green',
+        'line-width': 5
+      }
+    })
+  }
+
+  animateRoute(route, feature)
 }
 export function cacheMatch(coordinates, timestamps) {
   const route = {
@@ -61,14 +80,12 @@ export function cacheMatch(coordinates, timestamps) {
     Vue.$log.debug('ignoring match, distance: ', lineDistance)
     return
   }
-  Vue.$log.debug('getting match for ', getHashCode(route))
   lnglat.matchRoute(route.geometry.coordinates, route.geometry.coordinates.map(function() { return 25 }), timestamps, function(r) {
     if (r.data.matchings && r.data.matchings.length > 0) {
       const matched = r.data.matchings[0].geometry
       if (matched && matched.coordinates.length > 1) {
         nextKey = getHashCode(route)
         nextMatch = matched.coordinates
-        Vue.$log.debug('setting cache ', getHashCode(route), ', ', matched.coordinates.length, ' coords')
       }
     }
   })
@@ -83,7 +100,6 @@ function getHashCode(route) {
     Math.floor(dest[1] * multi)
 }
 export function animateRoute(route, feature) {
-  Vue.$log.debug('animation', route, feature)
   if (nextKey === getHashCode(route)) {
     Vue.$log.debug('got match from cache:', getHashCode(route))
     route.geometry.coordinates = nextMatch
@@ -93,18 +109,17 @@ export function animateRoute(route, feature) {
     animateMatched(route, feature)
   }
 }
-
 export function animateMatched(route, feature) {
   const lineDistance = lnglat.lineDistance(route)
   let counter = 0
   const arc = []
-  const speed = (24 - vm.$static.map.getZoom()) * (22 / vm.$static.map.getZoom()) * consts.routePlaySpeed
-  for (let i = 0; i < lineDistance; i += speed) {
+  // const speed = (24 - vm.$static.map.getZoom()) * (22 / vm.$static.map.getZoom()) * consts.routePlaySpeed
+  for (let i = 0; i < lineDistance; i += 0.005) {
     const segment = along(route, i, { units: 'kilometers' })
     arc.push(segment.geometry.coordinates)
   }
-  feature.route = arc
 
+  feature.route = arc
   const step = consts.rotateStep
   let endRotation = 0
 
@@ -124,37 +139,39 @@ export function animateMatched(route, feature) {
     if (coordinates) {
       feature.properties.speed = 10 // just to become  green...
       feature.geometry.coordinates = coordinates
-      if (!lnglat.contains(vm.$static.map.getBounds(), { longitude: coordinates[0], latitude: coordinates[1] })) {
+      if (!lnglat.contains(vm.$static.map.getBounds(),
+        { longitude: coordinates[0], latitude: coordinates[1] })) {
         vm.$static.map.panTo(
-          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }
+          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }, { essential: true, duration: 200 }
         )
-        vm.$static.map.once('moveend', function() {
-          Vue.$log.debug('panning ended')
-        })
       }
       const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
       const p2 = feature.route[counter === feature.route.length - 1 ? counter : counter + 1]
       if (p1 && p2) {
         endRotation = angles.normalize(bearing(p1, p2))
       }
-      if (_animateRotation() > 25) {
-        setTimeout(_animate, consts.refreshRate)
-        refreshFeature()
+      if (_animateRotation() > 15) {
+        requestAnimationFrame(_animate)
         return
       }
       refreshFeature()
     }
-    if (counter < feature.route.length) {
+    if (counter < feature.route.length + 1) {
       counter = counter + 1
       if (vm.$store.state.map.isPlaying) {
-        setTimeout(_animate, consts.refreshRate)
+        if (!vm.$static.map.isMoving()) {
+          requestAnimationFrame(_animate)
+        } else {
+          // map has priority
+          setTimeout(_animate, 20)
+        }
       } else {
         feature.animating = false
       }
     } else {
       refreshFeature()
       feature.animating = false
-      Vue.$log.debug('finished animating ', feature.route.length, ' coords refreshRate ', consts.refreshRate)
+      Vue.$log.info('emit routeMatchFinished ', feature.route.length, ' coords refreshRate ', consts.refreshRate)
       serverBus.$emit('routeMatchFinished')
     }
   }
@@ -165,6 +182,7 @@ export function animateMatched(route, feature) {
     _animate()
   } else {
     Vue.$log.debug('ignoring ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions')
+    Vue.$log.info('emit routeMatchFinished')
     serverBus.$emit('routeMatchFinished')
   }
 }
