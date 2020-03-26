@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { serverBus, vm } from '../../main'
+import { serverBus, vm, sharedData } from '../../main'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
@@ -33,7 +33,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'HistoryPanel',
-  components: { SpeedChart, VueSlider },
+  components: { SpeedChart },
   data() {
     return {
       currentPos: 0,
