@@ -23,16 +23,17 @@
 </template>
 
 <script>
-import { serverBus, vm, sharedData } from '../../main'
+import { serverBus, vm } from '../../main'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
 import SpeedChart from './SpeedChart'
+
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'HistoryPanel',
-  components: { SpeedChart },
+  components: { SpeedChart, VueSlider },
   data() {
     return {
       currentPos: 0,
@@ -236,7 +237,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
   .historyPanel2 {
     font-size: 15px;
     margin: 0 !important;
@@ -247,7 +247,6 @@ export default {
     padding-right: 10px;
     font-size:40px;
   }
-
   @media only screen and (min-width: 768px) {
     @import '../../styles/element-variables.scss';
     input[type=range] {
