@@ -227,7 +227,7 @@ function donutSegment(start, end, r, r0, color) {
     '" fill="' + color + '" />'].join(' ')
 }
 export function updateMarkers() {
-  if (vm.$data.historyMode) return
+  if (vm.$store.state.map.historyMode) return
   const newMarkers = {}
   const features = vm.$static.map.querySourceFeatures(source)
 

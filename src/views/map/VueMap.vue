@@ -39,6 +39,7 @@ import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
+import { mapGetters } from 'vuex'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -106,11 +107,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['historyMode']),
     userLoggedIn() {
       return this.$store.state.user.name !== '' && getToken() !== null
-    },
-    historyMode() {
-      return vm.$data.historyMode
     },
     heightMap() {
       return this.historyMode ? 'height: calc(100% - ' + historyPanelHeight + 'px)' : 'height:100%'

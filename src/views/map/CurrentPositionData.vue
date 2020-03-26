@@ -88,7 +88,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'feature']),
+    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'feature', 'historyMode']),
     map() {
       return vm.$static.map
     },
@@ -124,9 +124,8 @@ export default {
     formatAddress: function() {
       return utils.formatAddress(this.currentPos)
     },
-    showRoutes: {
-      get() { return vm.$data.historyMode },
-      set(value) { vm.$data.historyMode = value }
+    showRoutes() {
+      return this.historyMode
     },
     _minDate: {
       get() {
@@ -193,7 +192,7 @@ export default {
   },
   methods: {
     toggleChanged: function() {
-      vm.$store.dispatch('app/toggleHistoryMode')
+      vm.$store.dispatch('map/toggleHistoryMode')
     },
     showRoutesClick: function() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)

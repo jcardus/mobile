@@ -1,5 +1,5 @@
 import VueCookies from 'vue-cookies'
-import { vm } from '../../main'
+import { serverBus, vm } from '../../main'
 
 const state = {
   showGeofences: VueCookies.get('showGeofences') === '1',
@@ -7,7 +7,8 @@ const state = {
   minPos: 0,
   maxPos: 1000,
   isPlaying: false,
-  currentFeature: null
+  currentFeature: null,
+  historyMode: false
 }
 
 const mutations = {
@@ -30,10 +31,25 @@ const mutations = {
   },
   TOGGLE_PLAY(state) {
     state.isPlaying = !state.isPlaying
+  },
+  SET_PLAYING(state, value) {
+    state.isPlaying = value
+  },
+  TOGGLE_HISTORYMODE: () => {
+    state.historyMode = !state.historyMode
+    serverBus.$emit('showRoutesChanged')
+    setTimeout(() => serverBus.$emit('mapShown'), 500)
   }
 }
 
 const actions = {
+  toggleHistoryMode(context) {
+    context.commit('TOGGLE_HISTORYMODE')
+    context.commit('SET_PLAYING', false)
+  },
+  setPlaying({ commit }, value) {
+    commit('SET_PLAYING', value)
+  },
   setCurrentFeature({ commit }, feature) {
     commit('SET_CURRENT_FEATURE', feature)
   },

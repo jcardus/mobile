@@ -181,7 +181,6 @@ export const vm = new Vue({
       devices: [],
       geofences: [],
       alerts: [],
-      historyMode: false,
       currentDevice: null,
       lazyLoad: false,
       distance: 0,
@@ -190,11 +189,6 @@ export const vm = new Vue({
       loggedIn: false,
       loadingMap: true,
       reportData: []
-    }
-  },
-  watch: {
-    historyMode() {
-      store.state.app.historyMode = this.historyMode
     }
   },
   static() {

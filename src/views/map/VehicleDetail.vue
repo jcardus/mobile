@@ -78,14 +78,13 @@ export default {
     }
   },
   computed: {
+    historyMode() {
+      return vm.$store.state.map.historyMode
+    },
     totalDistance() {
       let result = this.feature.properties.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
       return result
-    },
-    showRoutes: {
-      get() { return this.historyMode },
-      set(value) { this.historyMode = value }
     },
     tripDistance: {
       get() { return vm.$data.distance },
@@ -94,10 +93,6 @@ export default {
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
-    },
-    historyMode: {
-      get() { return vm.$data.historyMode },
-      set(value) { vm.$data.historyMode = value }
     },
     map() {
       return vm.$static.map
@@ -178,14 +173,15 @@ export default {
       Vue.$log.debug('device selected ', device.id)
       if (this.device && this.device.id !== device.id) {
         Vue.$log.debug('removing layers on deviceid, ', this.device.id)
-        this.showRoutes = false
+        if (this.historyMode) {
+          this.$store.dispatch('map/toggleHistoryMode')
+        }
       } else {
         Vue.$log.debug('not removing layers on deviceid, ', this.device.id)
       }
     },
     showRoutesChanged() {
-      Vue.$log.debug('showRoutesChanged was ', this.showRoutes)
-      vm.$store.dispatch('app/toggleHistoryMode')
+      vm.$store.dispatch('map/toggleHistoryMode')
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" v-loading="loadingRoutes" class="historyPanel2">
+  <div v-show="historyMode" v-loading="loadingRoutes" class="historyPanel2">
     <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
@@ -42,7 +42,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos', 'isPlaying']),
+    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'historyMode']),
     isMobile() {
       return lnglat.isMobile()
     },
@@ -53,7 +53,6 @@ export default {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
     },
-    show() { return vm.$data.historyMode },
     minDate: {
       get() {
         return this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD')

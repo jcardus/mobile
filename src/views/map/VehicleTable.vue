@@ -124,7 +124,7 @@ export default {
   },
   computed: {
     historyMode() {
-      return this.$store.state.app.historyMode
+      return this.$store.state.map.historyMode
     },
     height() {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
@@ -278,8 +278,7 @@ export default {
     },
     vehicleSelected: function(device) {
       if (this.$store.state.app.historyMode) {
-        vm.$store.dispatch('app/toggleHistoryMode')
-        vm.$data.historyMode = false
+        vm.$store.dispatch('map/toggleHistoryMode')
         Vue.$log.info('VehicleTable emit showRoutesChanged')
         serverBus.$emit('showRoutesChanged')
       } else {
