@@ -113,7 +113,6 @@ export function animateMatched(route, feature) {
   const lineDistance = lnglat.lineDistance(route)
   let counter = 0
   const arc = []
-  // const speed = (24 - vm.$static.map.getZoom()) * (22 / vm.$static.map.getZoom()) * consts.routePlaySpeed
   for (let i = 0; i < lineDistance; i += 0.005) {
     const segment = along(route, i, { units: 'kilometers' })
     arc.push(segment.geometry.coordinates)

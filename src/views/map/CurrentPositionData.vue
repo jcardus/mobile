@@ -99,9 +99,6 @@ export default {
   },
   computed: {
     ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'historyMode']),
-    feature() {
-      return vm.$static.currentFeature
-    },
     trips: {
       get() { return this.$static.trips },
       set(value) { this.$static.trips = value }
@@ -788,7 +785,7 @@ export default {
           serverBus.$emit('routeMatchFinished')
         } else {
           this.$log.info('animating from ', origin, ' to ', newPos + 1)
-          animation.animate(this.feature,
+          animation.animate(vm.$static.currentFeature,
             sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
         }
         if (newPos === sharedData.getPositions().length - 1) {
@@ -830,10 +827,10 @@ export default {
           }
         }
 
-        this.feature.properties.speed = this.positions[newPos].speed
-        this.feature.properties.course = this.positions[newPos].course
-        this.feature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
-        this.feature.properties.address = this.positions[newPos].address
+        vm.$static.currentFeature.properties.speed = this.positions[newPos].speed
+        vm.$static.currentFeature.properties.course = this.positions[newPos].course
+        vm.$static.currentFeature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
+        vm.$static.currentFeature.properties.address = this.positions[newPos].address
         animation.refreshFeature()
       }
       if (newPos < positions.length - 1) {
