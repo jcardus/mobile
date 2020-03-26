@@ -64,15 +64,15 @@
 
 <script>
 
-import { vm, serverBus } from '../../main'
+import { vm, serverBus, sharedData } from '../../main'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
-import * as consts from '../../utils/consts'
 import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'CurrentPositionData',
@@ -83,25 +83,29 @@ export default {
       oldPos: 0,
       width: 'width:0px',
       currentTrip: 0,
+      elSwitchValue: true,
+      totalDistance: 0,
+      formattedDate: ''
+    }
+  },
+  static() {
+    return {
       trips: [],
       speedTrips: [],
       speedMarkers: [],
-      startMarker: null,
-      endMarker: null,
-      elSwitchValue: true
+      startMaker: null,
+      endMarker: null
     }
   },
   computed: {
-    isPlaying: {
-      get() {
-        return vm.$data.isPlaying
-      },
-      set(value) {
-        vm.$data.isPlaying = value
-      }
+    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'historyMode']),
+    trips: {
+      get() { return this.$static.trips },
+      set(value) { this.$static.trips = value }
     },
-    feature() {
-      return vm.$data.currentFeature
+    speedMarkers: {
+      get() { return this.$static.speedMarkers },
+      set(value) { this.$static.speedMarkers = value }
     },
     map() {
       return vm.$static.map
@@ -130,12 +134,6 @@ export default {
       get() { return vm.$data.distance },
       set(value) { vm.$data.distance = value }
     },
-    totalDistance: function() {
-      if (this.positions && this.positions.length > 0) {
-        return Math.round(lnglat.arrayDistance(this.positions.map(x => [x.longitude, x.latitude])))
-      }
-      return 0
-    },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
@@ -149,17 +147,11 @@ export default {
     device() {
       return vm.$data.currentDevice
     },
-    formattedDate: function() {
-      if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
-        return Vue.moment(this.positions[this.currentPos].fixTime).format('YYYY-MM-DD HH:mm:ss')
-      } else { return '' }
-    },
     formatAddress: function() {
       return utils.formatAddress(this.currentPos)
     },
-    showRoutes: {
-      get() { return vm.$data.historyMode },
-      set(value) { vm.$data.historyMode = value }
+    showRoutes() {
+      return this.historyMode
     },
     _minDate: {
       get() {
@@ -197,22 +189,21 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
-    serverBus.$on('routePlayStopped', this.routePlayStopped)
   },
   beforeDestroy() {
-    Vue.$log.info('CurrentPositionData before destroy')
+    Vue.$log.info('CurrentPositionData')
+    window.removeEventListener('resize', this.resizeDiv)
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('routePlay', this.routePlay)
-    serverBus.$off('routePlayStopped', this.routePlayStopped)
     this.removeLayers()
     lnglat.hideLayers(this.showRoutes)
     animation.hideRouteLayer(!this.showRoutes)
   },
   mounted() {
-    Vue.$log.debug('CurrentPositionData mounted')
-    if (this.device && vm.$data.popUps[this.device.id]) {
-      Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
-      vm.$data.popUps[this.device.id].remove()
+    Vue.$log.debug('CurrentPositionData')
+    if (this.device && vm.$static.popUps[this.device.id]) {
+      Vue.$log.debug('removing popup', vm.$static.popUps[this.device.id])
+      vm.$static.popUps[this.device.id].remove()
     }
     this.loadingRoutes = true
     this.getRoute(this.minDate, this.maxDate)
@@ -222,13 +213,13 @@ export default {
   },
   methods: {
     toggleChanged: function() {
-      vm.$store.dispatch('app/toggleHistoryMode')
+      vm.$store.dispatch('map/toggleHistoryMode')
     },
     showRoutesClick: function() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
-      if (this.device && vm.$data.popUps[this.device.id]) {
-        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
-        vm.$data.popUps[this.device.id].remove()
+      if (this.device && vm.$static.popUps[this.device.id]) {
+        Vue.$log.debug('removing popup', vm.$static.popUps[this.device.id])
+        vm.$static.popUps[this.device.id].remove()
       }
       if (this.showRoutes) {
         traccar.stopReceiving()
@@ -263,7 +254,9 @@ export default {
         } else {
           this.drawTrip()
         }
-        this.positions = positions
+
+        sharedData.setPositions(positions)
+        this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
         Vue.$log.debug('emit routeFetched')
         serverBus.$emit('routeFetched')
       } else {
@@ -530,8 +523,6 @@ export default {
         const coordinates = this.trips[this.currentTrip].map(p => [p.longitude, p.latitude])
 
         this.drawRoute(coordinates)
-        const bounds = lnglat.getBounds(coordinates)
-        vm.$static.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
       }
       animation.removeAddRouteLayer()
     },
@@ -600,10 +591,10 @@ export default {
     drawAll: function(positions) {
       if (positions && positions.length > 0) {
         this.map.resize()
-        const bounds = lnglat.getBounds(positions.map(p => [p.longitude, p.latitude]))
-        this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
-        const lineString = { type: 'LineString', coordinates: positions.map(p => [p.longitude, p.latitude]) }
-        const routeGeoJSON = this.getGeoJSON(lineString)
+        const coords = positions.map(p => [p.longitude, p.latitude])
+        const bounds = lnglat.getBounds(coords)
+        this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70 })
+        const routeGeoJSON = this.getGeoJSON({ type: 'LineString', coordinates: coords })
         this.createAllTripsLayer(routeGeoJSON)
       }
     },
@@ -738,6 +729,7 @@ export default {
       lnglat.hideLayers(true)
       animation.refreshFeature()
       animation.removeAddRouteLayer()
+      this.$log.info('CurrentPositionData emit routeMatchFinished')
       serverBus.$emit('routeMatchFinished')
     },
     routePlayStopped() {
@@ -750,56 +742,54 @@ export default {
         this.$log.warn('currentposition, no map element...')
       }
     },
+    updateDate() {
+      this.positions = sharedData.getPositions()
+      if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
+        const pos = this.positions[this.currentPos]
+        this.formattedDate = this.$moment(pos.fixTime).format('YYYY-MM-DD HH:mm:ss')
+        if (pos.speed && pos.speed > 0) {
+          this.formattedDate += (' ' + ~~(pos.speed * 1.852) + 'km/h')
+        }
+      } else {
+        this.formattedDate = ''
+      }
+    },
     onPosChanged(newPos) {
-      Vue.$log.debug('onPosChanged to ', newPos)
+      this.$log.info('CurrentPositionData', newPos)
+      const positions = sharedData.getPositions()
+      this.positions = positions
       this.currentPos = newPos
-      const skipRoutePositions = consts.routeSlotLength
       if (!this.device) {
-        Vue.$log.debug('ignoring onPosChanged, no device...')
+        Vue.$log.debug('CurrentPositionData, ignoring, no device...')
         return
       }
       if (this.device.id !== vm.$data.currentDevice.id) {
-        Vue.$log.debug('ignoring onPosChanged, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
+        Vue.$log.debug('CurrentPositionData ignoring, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
         return
       }
       if (newPos >= this.positions.length) {
-        Vue.$log.warn('ignoring onPosChanged, newPos out of array: ', newPos)
+        Vue.$log.warn('CurrentPositionData ignoring, newPos out of array: ', newPos)
         return
       }
       const origin = this.oldPos
-      Vue.$log.debug('origin: ', origin)
-
+      this.updateDate()
       if (this.isPlaying) {
-        let i = newPos - consts.routeSlotLength
-        const j = newPos
-        let dist = 0
-        do {
-          i += consts.routeSlotLength
-          const lineString = {
-            type: 'LineString',
-            coordinates: this.positions.slice(j, i + consts.routeSlotLength + 1).map(p => [p.longitude, p.latitude])
-          }
-          dist = lnglat.lineDistance(lnglat.getGeoJSON(lineString))
-        } while (i < this.positions.length - consts.routeSlotLength && i > consts.routeSlotLength && dist < consts.minDistanceForMatch)
-        if (i < this.positions.length - skipRoutePositions) {
-          animation.cacheMatch(
-            this.positions.slice(j, i + skipRoutePositions + 1)
-              .map(x => [x.longitude, x.latitude]),
-            this.positions.slice(j, i + skipRoutePositions + 1)
-              .map(x => this.$moment(x.fixTime).unix())
-          )
+        if (newPos < this.oldPos) {
+          this.$log.info('ignoring animation, end of route ', newPos, this.oldPos)
+          this.oldPos = newPos
+          serverBus.$emit('routeMatchFinished')
+          return
         }
-        if (JSON.stringify(this.positions[origin]) === JSON.stringify(this.positions[newPos])) {
-          Vue.$log.debug('routeMatchFinished origin equals destination')
+        if (JSON.stringify(sharedData.getPositions()[origin]) === JSON.stringify(sharedData.getPositions()[newPos])) {
+          this.$log.info('CurrentPositionData emit routeMatchFinished origin equals destination', origin, newPos)
           serverBus.$emit('routeMatchFinished')
         } else {
-          animation.animate(this.feature,
-            this.positions.slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
-            this.positions.slice(origin, newPos + 1).map(x => Vue.moment(x.fixTime).unix())
-          )
+          this.$log.info('animating from ', origin, ' to ', newPos + 1)
+          animation.animate(vm.$static.currentFeature,
+            sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
         }
-        if (newPos === this.positions.length - 1) {
-          this.isPlaying = false
+        if (newPos === sharedData.getPositions().length - 1) {
+          this.$store.dispatch('map/togglePlaying')
         }
       } else {
         if (!this.trips[this.currentTrip]) {
@@ -837,16 +827,14 @@ export default {
           }
         }
 
-        this.feature.properties.speed = this.positions[newPos].speed
-        this.feature.properties.course = this.positions[newPos].course
-        this.feature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
-        this.feature.properties.address = this.positions[newPos].address
+        vm.$static.currentFeature.properties.speed = this.positions[newPos].speed
+        vm.$static.currentFeature.properties.course = this.positions[newPos].course
+        vm.$static.currentFeature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
+        vm.$static.currentFeature.properties.address = this.positions[newPos].address
         animation.refreshFeature()
       }
-      if (newPos < this.positions.length - 1) {
-        Vue.$log.debug('oldPos: ', this.oldPos)
+      if (newPos < positions.length - 1) {
         this.oldPos = newPos
-        Vue.$log.debug('oldPos: ', this.oldPos)
       }
     },
     datesChanged() {

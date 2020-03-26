@@ -6,7 +6,11 @@ const getters = {
   map: state => state.map,
   devices: state => state.devices,
   commandPending: state => state.devices.commandPending,
-  loading: state => state.app.loading
+  loading: state => state.app.loading,
+  historyMode: state => state.map.historyMode,
+  minPos: state => state.map.minPos,
+  maxPos: state => state.map.maxPos,
+  isPlaying: state => state.map.isPlaying
 }
 
 export default getters

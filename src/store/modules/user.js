@@ -75,7 +75,7 @@ function initData(commit) {
           }
         })
       })
-      traccar.groups(state.userId, function(groups) {
+      traccar.groups(state.userId, (groups) => {
         state.groups = groups
         vm.$data.groups = groups
         traccar.devices(function(devices) {
@@ -103,7 +103,12 @@ function initData(commit) {
           Vue.$log.debug('emit dataLoaded')
           serverBus.$emit('dataLoaded')
           resolve()
+        }, (error) => {
+          Vue.$log.error(error)
+          resolve()
         })
+      }, (error) => {
+        Vue.$log.error(error)
       })
     }, (e) => {
       Vue.$log.error(e)

@@ -50,7 +50,7 @@ Vue.use(LoadScript)
 const isProduction = process.env.NODE_ENV === 'production'
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? 'debug' : 'debug',
+  logLevel: isProduction ? 'info' : 'info',
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,
@@ -72,7 +72,8 @@ export const settings = {
   showSlider: true,
   truck3d: false,
   show3dBuildings: true,
-  experiment: true
+  experiment: true,
+  debugRoutes: false
 }
 
 export let newServiceWorker
@@ -139,6 +140,7 @@ import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
 
 import VueTimers from 'vue-timers'
+import { SharedData } from './utils/utils'
 
 Vue.use(VueTimers)
 
@@ -165,10 +167,11 @@ if (lnglat.__isMobile()) {
 }
 
 Vue.$log.debug('starting main instance...', location.href)
+export const sharedData = new SharedData()
 
 export const vm = new Vue({
   el: '#app',
-  data: function() {
+  data() {
     return {
       loading: false,
       loadingRoutes: false,
@@ -176,14 +179,9 @@ export const vm = new Vue({
       routeMaxDate: new Date(),
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
-      positions: [],
       geofences: [],
-      popUps: [],
       alerts: [],
-      historyMode: false,
       currentDevice: null,
-      currentFeature: null,
-      isPlaying: false,
       lazyLoad: false,
       distance: 0,
       vehiclePanel: null,
@@ -193,13 +191,9 @@ export const vm = new Vue({
       reportData: []
     }
   },
-  watch: {
-    historyMode() {
-      store.state.app.historyMode = this.historyMode
-    }
-  },
   static() {
     return {
+      currentFeature: null,
       markers: {},
       map: null,
       positionsSource: {
@@ -209,7 +203,8 @@ export const vm = new Vue({
       geofencesSource: {
         'type': 'FeatureCollection',
         'features': []
-      }
+      },
+      popUps: []
     }
   },
   methods: {

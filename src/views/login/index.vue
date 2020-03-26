@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div :class="backgroungImage">
     <div class="loginFormDiv">
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
         <div class="title-container">
@@ -83,6 +83,9 @@ export default {
   computed: {
     logoImage: function() {
       return partner.getLogo()
+    },
+    backgroungImage: function() {
+      return 'login-container login-' + Math.floor(Math.random() * 10 + 1)
     },
     themeColor: function() {
       return partner.getThemeColor()
@@ -179,6 +182,38 @@ export default {
   $light_gray:#fff;
   $cursor: #202020;
   $darkest_gray:#202020;
+  $cdnUrl: 'https://d2alv66jwtleln.cloudfront.net';
+
+  .login-1 {
+    background-image: url($cdnUrl + '/images/login_1.png');
+  }
+  .login-2 {
+    background-image: url($cdnUrl + '/images/login_2.png');
+  }
+  .login-3 {
+    background-image: url($cdnUrl + '/images/login_3.png');
+  }
+  .login-4 {
+    background-image: url($cdnUrl + '/images/login_4.png');
+  }
+  .login-5 {
+    background-image: url($cdnUrl + '/images/login_5.png');
+  }
+  .login-6 {
+    background-image: url($cdnUrl + '/images/login_6.png');
+  }
+  .login-7 {
+    background-image: url($cdnUrl + '/images/login_7.png');
+  }
+  .login-8 {
+    background-image: url($cdnUrl + '/images/login_8.png');
+  }
+  .login-9 {
+    background-image: url($cdnUrl + '/images/login_9.png');
+  }
+  .login-10 {
+    background-image: url($cdnUrl + '/images/login_10.png');
+  }
 
   .login-container {
     min-height: 100%;
@@ -186,7 +221,6 @@ export default {
     width: 100%;
     background-color: $bg;
     overflow: hidden;
-    background-image: url('../../../public/img/login/login.png');
     background-repeat: no-repeat;
     background-size: 60% 100%;
 

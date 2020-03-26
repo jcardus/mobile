@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
+import { serverBus, vm } from '../../../main'
 import * as lnglat from '../../../utils/lnglat'
 import { traccar } from '../../../api/traccar-api'
 
@@ -104,7 +104,7 @@ export default {
       return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     categories: function() {
-      const categoryType = [
+      return [
         { value: 'car', text: this.$t('settings.vehicle_icon_car') },
         { value: 'truck', text: this.$t('settings.vehicle_icon_truck') },
         { value: 'van', text: this.$t('settings.vehicle_icon_van') },
@@ -119,7 +119,6 @@ export default {
         { value: 'boat', text: this.$t('settings.vehicle_icon_boat') },
         { value: 'pickup', text: this.$t('settings.vehicle_icon_pickup') }
       ]
-      return categoryType
     }
   },
   mounted() {
@@ -171,8 +170,12 @@ export default {
       traccar.updateDeviceAccumulators(vehicle.id, accumulator, this.accumulatorUpdated)
       traccar.updateDevice(vehicle.id, v, this.vehicleUpdated)
     },
-    vehicleUpdated: function() {
+    accumulatorUpdated: function(data) {
+
+    },
+    vehicleUpdated: function(device) {
       this.$f7.dialog.alert(this.$t('settings.vehicle_updated'), this.$t('settings.vehicle_edit'))
+      serverBus.$emit('deviceChanged', device)
       this.clearFormData()
       this.$f7router.back()
     },

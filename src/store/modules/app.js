@@ -1,6 +1,3 @@
-import { vm, serverBus } from '../../main'
-import Vue from 'vue'
-
 const state = {
   packageVersion: process.env.PACKAGE_VERSION || '0',
   stiLoaded: false,
@@ -13,13 +10,7 @@ const mutations = {
   SET_REPORT_DATA: (data) => {
     state.elementReportData = data
   },
-  TOGGLE_HISTORYMODE: () => {
-    vm.$data.historyMode = !vm.$data.historyMode
-    state.historyMode = vm.$data.historyMode
-    Vue.$log.debug('historyMode changed to ', vm.$data.historyMode, ' emitting event')
-    serverBus.$emit('showRoutesChanged')
-    setTimeout(() => serverBus.$emit('mapShown'), 500)
-  },
+
   TOGGLE_LOADING: () => {
     state.loading = !state.loading
   }
@@ -30,9 +21,6 @@ const actions = {
     if (loading !== state.loading) {
       commit('TOGGLE_LOADING')
     }
-  },
-  toggleHistoryMode({ commit }) {
-    commit('TOGGLE_HISTORYMODE')
   },
   setReportData({ commit }, data) {
     commit('SET_REPORT_DATA', data)

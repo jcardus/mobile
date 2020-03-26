@@ -1,7 +1,7 @@
 <template>
   <f7-page name="dashboard">
     <f7-navbar :title="$t('route.dashboard')"></f7-navbar>
-    <Dashboard></Dashboard>
+    <Dashboard v-if="showDashboard"></Dashboard>
   </f7-page>
 </template>
 <script>
@@ -9,6 +9,11 @@ import Dashboard from '../../views/dashboard/Dashboard'
 export default {
   name: 'DashboardMobile',
   components: { Dashboard },
+  data() {
+    return {
+      showDashboard: false
+    }
+  },
   created() {
     this.$log.debug('DashboardMobile')
   }

@@ -30,7 +30,6 @@ import along from '@turf/along'
 import bbox from '@turf/bbox'
 import bearing from '@turf/bearing'
 import HistoryPanel from './HistoryPanel'
-import * as utils from '../../utils/utils'
 import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
@@ -40,8 +39,9 @@ import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
+import { mapGetters } from 'vuex'
 
-const historyPanelHeight = 310
+const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
 // match anything which looks like a decimal degrees coordinate pair
   const matches = query.match(
@@ -107,11 +107,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['historyMode']),
     userLoggedIn() {
       return this.$store.state.user.name !== '' && getToken() !== null
-    },
-    historyMode() {
-      return vm.$data.historyMode
     },
     heightMap() {
       return this.historyMode ? 'height: calc(100% - ' + historyPanelHeight + 'px)' : 'height:100%'
@@ -129,10 +127,10 @@ export default {
     },
     popUps: {
       get: function() {
-        return vm.$data.popUps
+        return vm.$static.popUps
       },
       set: function(value) {
-        vm.$data.popUps = value
+        vm.$static.popUps = value
       }
     },
     isMobile() { return lnglat.isMobile() },
@@ -223,6 +221,7 @@ export default {
       if (++this.loadingCount === 3) {
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
+        this.$log.warn('finished loading, count = ', this.loadingCount)
       } else {
         this.$log.warn('not finishing loading, count = ', this.loadingCount)
       }
@@ -259,6 +258,15 @@ export default {
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
+    deviceChanged: function(device) {
+      this.$log.debug('VueMap deviceChanged')
+      const feature = this.findFeatureByDeviceId(device.id)
+      if (feature && feature.properties.category !== device.category) {
+        feature.properties.category = this.getCategory(device.category)
+        device.currentFeature = feature
+        this.refreshMap()
+      }
+    },
     deviceSelected: function(device) {
       this.$log.debug('VueMap deviceSelected')
       this.selected = device
@@ -274,7 +282,7 @@ export default {
             })
             this.flyToDevice(feature, device)
           } else { this.showPopup(feature, device) }
-          vm.$data.currentFeature = feature
+          vm.$static.currentFeature = feature
         }
       }
     },
@@ -363,9 +371,6 @@ export default {
         this.origin = center
         this.$static.map.setCenter(center)
       }
-    },
-    stopLoader: function() {
-      utils.stopLoader()
     },
     showHideDevices: function(show) {
       if (!show) { this.$static.map.setLayoutProperty('unclustered-point', 'visibility', 'none') } else { this.$static.map.setLayoutProperty('unclustered-point', 'visibility', 'visible') }
@@ -475,6 +480,7 @@ export default {
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
+      serverBus.$on('deviceChanged', this.deviceChanged)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'app/TOGGLE_SIDEBAR':
@@ -505,6 +511,7 @@ export default {
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
       this.$static.map.off('data', this.onData)
+      serverBus.$off('deviceChanged', this.deviceChanged)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
@@ -720,6 +727,7 @@ export default {
         if (!feature) {
           if (!device) {
             Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position)
+            this.$store.dispatch('user/logout').then(() => location.reload())
             return
           }
           feature = self.positionToFeature(position, device)
@@ -728,7 +736,7 @@ export default {
           if (!device) return
           const oldFixTime = feature.properties.fixTime
           self.updateFeature(feature, device, position)
-          if (settings.animateMarkers &&
+          if (settings.animateMarkers && !self.historyMode &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             self.map.getZoom() > 12
           ) {
@@ -931,8 +939,6 @@ export default {
 </script>
 
 <style lang="scss" >
-  @import '../../styles/element-variables';
-
   .app-main {
     padding:0 !important;
   }

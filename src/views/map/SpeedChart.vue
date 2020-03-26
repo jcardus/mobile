@@ -5,16 +5,13 @@
 <script>
 import { Chart } from 'chart.js'
 import Vue from 'vue'
+import { sharedData } from '../../main'
 export default {
   name: 'SpeedChart',
   props: {
-    labels: {
-      type: Array,
-      default() { return [] }
-    },
-    chartData: {
-      type: Array,
-      default() { return [] }
+    update: {
+      type: Boolean,
+      default() { return false }
     }
   },
   data() {
@@ -23,15 +20,14 @@ export default {
     }
   },
   watch: {
-    labels() {
+    update() {
       if (this.chart) {
-        this.chart.data.labels = this.labels
-        this.chart.update()
-      }
-    },
-    chartData() {
-      if (this.chart && this.chart.data && this.chart.data.datasets[0]) {
-        this.chart.data.datasets[0].data = this.chartData
+        if (this.chart.data) {
+          this.chart.data.labels = sharedData.getChartLabels()
+        }
+        if (this.chart.data && this.chart.data.datasets[0]) {
+          this.chart.data.datasets[0].data = sharedData.getChartData()
+        }
         this.chart.update()
       }
     }
