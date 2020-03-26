@@ -171,16 +171,16 @@ export default {
     serverBus.$on('routePlay', this.routePlay)
   },
   beforeDestroy() {
-    Vue.$log.info('CurrentPositionData before destroy')
+    Vue.$log.info('CurrentPositionData')
+    window.removeEventListener('resize', this.resizeDiv)
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off('routePlay', this.routePlay)
-    serverBus.$off('routePlayStopped', this.routePlayStopped)
     this.removeLayers()
     lnglat.hideLayers(this.showRoutes)
     animation.hideRouteLayer(!this.showRoutes)
   },
   mounted() {
-    Vue.$log.debug('CurrentPositionData mounted')
+    Vue.$log.debug('CurrentPositionData')
     if (this.device && vm.$data.popUps[this.device.id]) {
       Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
       vm.$data.popUps[this.device.id].remove()
@@ -502,8 +502,6 @@ export default {
         const coordinates = this.trips[this.currentTrip].map(p => [p.longitude, p.latitude])
 
         this.drawRoute(coordinates)
-        const bounds = lnglat.getBounds(coordinates)
-        vm.$static.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
       }
       animation.removeAddRouteLayer()
     },
@@ -572,10 +570,10 @@ export default {
     drawAll: function(positions) {
       if (positions && positions.length > 0) {
         this.map.resize()
-        const bounds = lnglat.getBounds(positions.map(p => [p.longitude, p.latitude]))
-        this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 30 })
-        const lineString = { type: 'LineString', coordinates: positions.map(p => [p.longitude, p.latitude]) }
-        const routeGeoJSON = this.getGeoJSON(lineString)
+        const coords = positions.map(p => [p.longitude, p.latitude])
+        const bounds = lnglat.getBounds(coords)
+        this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70 })
+        const routeGeoJSON = this.getGeoJSON({ type: 'LineString', coordinates: coords })
         this.createAllTripsLayer(routeGeoJSON)
       }
     },

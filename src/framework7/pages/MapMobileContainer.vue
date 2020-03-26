@@ -11,7 +11,7 @@
     </f7-fab>
     <div :style="'height: calc(100% - ' + height + 'px)'">
       <VueMap></VueMap>
-      <f7-row style="padding-left: 45px; padding-right: 40px"><f7-col>
+      <f7-row style="padding-left: 50px; padding-right: 40px"><f7-col>
         <f7-range
           v-if="showSlider"
           id="range"
@@ -19,14 +19,15 @@
           :value="sliderPos"
           :max="MPos"
           :min="mPos"
+          :disabled="isPlaying"
           @range:change="sliderChanged"
         /></f7-col>
       </f7-row>
       <f7-row>
         <f7-col>
-          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="backward_fill" @click="onClickBack"></f7-link>
-          <f7-link :icon-f7="(isPlaying ? 'pause' : 'play') + '_fill'" style="padding-left: 10px; padding-right: 5px" @click="onClickPlay"></f7-link>
-          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="forward_fill" @click="onClickForward"></f7-link>
+          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="backward_fill" icon-size="40" @click="onClickBack"></f7-link>
+          <f7-link :icon-f7="(isPlaying ? 'pause' : 'play') + '_fill'" style="padding-left: 10px; padding-right: 5px" icon-size="40" @click="onClickPlay"></f7-link>
+          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="forward_fill" icon-size="40" @click="onClickForward"></f7-link>
         </f7-col>
       </f7-row>
     </div>
@@ -70,15 +71,18 @@ export default {
     }
   },
   watch: {
-    minPos(newValue, oldValue) {
-      console.log(`updating minPos from ${oldValue} to ${newValue}`)
+    minPos(newValue) {
       this.mPos = newValue
       this.reloadSlider()
     },
-    maxPos(newValue, oldValue) {
-      console.log(`updating maxPos from ${oldValue} to ${newValue}`)
+    maxPos(newValue) {
       this.MPos = newValue
       this.reloadSlider()
+    },
+    historyMode(newValue) {
+      if (!newValue) {
+        this.showSlider = false
+      }
     }
   },
   created() {
@@ -99,6 +103,7 @@ export default {
   },
   methods: {
     autoSliderChange(value) {
+      this.$log.debug('setting slider to ', value)
       this.$f7.range.setValue('#range', value)
     },
     onClickBack() {

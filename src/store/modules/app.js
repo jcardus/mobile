@@ -1,5 +1,4 @@
 import { vm, serverBus } from '../../main'
-import Vue from 'vue'
 
 const state = {
   packageVersion: process.env.PACKAGE_VERSION || '0',
@@ -16,7 +15,6 @@ const mutations = {
   TOGGLE_HISTORYMODE: () => {
     vm.$data.historyMode = !vm.$data.historyMode
     state.historyMode = vm.$data.historyMode
-    Vue.$log.debug('historyMode changed to ', vm.$data.historyMode, ' emitting event')
     serverBus.$emit('showRoutesChanged')
     setTimeout(() => serverBus.$emit('mapShown'), 500)
   },

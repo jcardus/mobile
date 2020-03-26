@@ -37,7 +37,8 @@ export default {
     return {
       currentPos: 0,
       updateChart: false,
-      embeddedSliderPos: 0
+      embeddedSliderPos: 0,
+      currentPos_: 0
     }
   },
   computed: {
@@ -75,10 +76,11 @@ export default {
       this.sliderPos(newValue)
     },
     isPlaying(newValue) {
-      this.$log.debug('isPlayng changed to ', newValue, this.isPlaying)
-      if (this.isPlaying) {
-        if (this.currentPos === this.maxPos) {
-          this.currentPos = 0
+      this.$log.debug('isPlaying changed to ', newValue, this.currentPos, sharedData.getPositions().length - 1)
+      if (newValue) {
+        if (this.currentPos === sharedData.getPositions().length - 1) {
+          this.$log.debug('setting currentPos to 0')
+          serverBus.$emit('autoSliderChange', this.minPos)
         }
       }
       serverBus.$emit('routePlay')
@@ -109,12 +111,6 @@ export default {
     }
   },
   created() {
-    this.currentPos_ = 0
-    this.padding = 0
-    this.oldPos = 0
-    this.oldSliderPos = 0
-    this.labels = []
-    this.chartData = []
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
     serverBus.$on('sliderChanged', this.sliderPos)
@@ -159,13 +155,12 @@ export default {
     resizeDiv: function() {
       Vue.$log.debug('resizeDiv')
       if (document.getElementById('map')) {
-        this.width = 'z-index=10000; width:' + (document.getElementById('map').clientWidth - this.padding) + 'px'
+        this.width = 'z-index=10000; width:' + (document.getElementById('map').clientWidth) + 'px'
       } else {
         Vue.$log.warn('resizing div but no map on dom...')
       }
     },
     fillGraphData() {
-      this.$log.debug('HistoryPanel ', sharedData.getPositions())
       const categories = sharedData.getPositions().map(x => this.$moment(x.fixTime).toDate())
       const series = sharedData.getPositions().map(x => x.speed * 1.852)
       sharedData.setChartLabels(categories)
@@ -176,12 +171,12 @@ export default {
       this.$store.dispatch('map/togglePlaying')
     },
     clickForward: function() {
-      if (this.currentPos < this.maxPos) {
+      if (this.currentPos < this.positions.length - 1) {
         serverBus.$emit('autoSliderChange', Vue.moment(this.positions[++this.currentPos].fixTime).unix())
       } else { Vue.$log.debug('ignoring forward sliderPos: ', this.currentPos) }
     },
     clickBackward: function() {
-      if (this.currentPos > this.minPos) {
+      if (this.currentPos > 0) {
         serverBus.$emit('autoSliderChange', Vue.moment(this.positions[--this.currentPos].fixTime).unix())
       }
     },
@@ -210,7 +205,7 @@ export default {
             if (positions.length > 0) {
               self.initIndexArray()
               self.fillGraphData()
-              self.currentPos = self.maxPos
+              setTimeout(() => serverBus.$emit('autoSliderChange', self.maxPos), 200)
             } else {
               Vue.$log.debug('no positions: ', sharedData.getPositions())
             }
@@ -220,9 +215,9 @@ export default {
       }
     },
     playNext() {
-      this.$log.debug('HistoryPanel ', this.isPlaying)
+      this.$log.debug('HistoryPanel ', this.isPlaying, this.currentPos, this.positions.length, this.currentPos_)
       if (this.isPlaying) {
-        if (this.currentPos <= this.maxPos) {
+        if (this.currentPos < this.positions.length - 1) {
           this.currentPos_ = Math.max(this.currentPos_, this.currentPos)
           if ((this.currentPos_ + consts.routeSlotLength) < this.positions.length) {
             this.currentPos += consts.routeSlotLength
@@ -234,7 +229,7 @@ export default {
           Vue.$log.debug('currentPos:', this.currentPos, ', positions length: ', this.positions.length)
           serverBus.$emit('autoSliderChange', Vue.moment(this.positions[this.currentPos].fixTime).unix())
         } else {
-          serverBus.$emit('autoSliderChange', Vue.moment(this.positions[0].fixTime).unix())
+          serverBus.$emit('autoSliderChange', this.minPos)
         }
       }
     }
