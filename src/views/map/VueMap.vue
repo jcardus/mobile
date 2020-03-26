@@ -128,10 +128,10 @@ export default {
     },
     popUps: {
       get: function() {
-        return vm.$data.popUps
+        return vm.$static.popUps
       },
       set: function(value) {
-        vm.$data.popUps = value
+        vm.$static.popUps = value
       }
     },
     isMobile() { return lnglat.isMobile() },

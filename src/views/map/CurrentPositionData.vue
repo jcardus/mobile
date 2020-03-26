@@ -181,9 +181,9 @@ export default {
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData')
-    if (this.device && vm.$data.popUps[this.device.id]) {
-      Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
-      vm.$data.popUps[this.device.id].remove()
+    if (this.device && vm.$static.popUps[this.device.id]) {
+      Vue.$log.debug('removing popup', vm.$static.popUps[this.device.id])
+      vm.$static.popUps[this.device.id].remove()
     }
     this.loadingRoutes = true
     this.getRoute(this.minDate, this.maxDate)
@@ -197,9 +197,9 @@ export default {
     },
     showRoutesClick: function() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
-      if (this.device && vm.$data.popUps[this.device.id]) {
-        Vue.$log.debug('removing popup', vm.$data.popUps[this.device.id])
-        vm.$data.popUps[this.device.id].remove()
+      if (this.device && vm.$static.popUps[this.device.id]) {
+        Vue.$log.debug('removing popup', vm.$static.popUps[this.device.id])
+        vm.$static.popUps[this.device.id].remove()
       }
       if (this.showRoutes) {
         traccar.stopReceiving()
@@ -825,9 +825,7 @@ export default {
         animation.refreshFeature()
       }
       if (newPos < positions.length - 1) {
-        Vue.$log.debug('oldPos: ', this.oldPos)
         this.oldPos = newPos
-        Vue.$log.debug('oldPos: ', this.oldPos)
       }
     },
     datesChanged() {

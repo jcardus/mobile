@@ -86,7 +86,6 @@ export default {
       serverBus.$emit('routePlay')
     },
     currentPos() {
-      Vue.$log.debug('curPos changed to ', this.currentPos, this.isPlaying)
       if (this.isPlaying) {
         let i = this.currentPos - consts.routeSlotLength
         let dist = 0

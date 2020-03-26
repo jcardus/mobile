@@ -180,7 +180,6 @@ export const vm = new Vue({
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
       geofences: [],
-      popUps: [],
       alerts: [],
       historyMode: false,
       currentDevice: null,
@@ -209,7 +208,8 @@ export const vm = new Vue({
       geofencesSource: {
         'type': 'FeatureCollection',
         'features': []
-      }
+      },
+      popUps: []
     }
   },
   methods: {
