@@ -6,6 +6,7 @@
 </template>
 <script>
 import Dashboard from '../../views/dashboard/Dashboard'
+import { serverBus } from '../../main'
 export default {
   name: 'DashboardMobile',
   components: { Dashboard },
@@ -16,6 +17,7 @@ export default {
   },
   created() {
     this.$log.debug('DashboardMobile')
+    serverBus.$on('dashboardActive', () => { this.showDashboard = true })
   }
 }
 </script>
