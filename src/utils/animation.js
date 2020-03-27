@@ -117,7 +117,7 @@ export function animateMatched(route, feature) {
     const segment = along(route, i, { units: 'kilometers' })
     arc.push(segment.geometry.coordinates)
   }
-
+  Vue.$log.info('animateMatched', route, feature)
   feature.route = arc
   const step = consts.rotateStep
   let endRotation = 0

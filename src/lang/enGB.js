@@ -16,7 +16,8 @@ export default {
     report_tolls: 'Relatório de Portagens',
     settings: 'Settings',
     duration: 'Duration',
-    nodata: 'Não existem dados para o período seleccionado.'
+    nodata: 'Não existem dados para o período seleccionado.',
+    alerts: 'Alertas'
   },
   map: {
     geofence_create_error: 'Erro a criar baliza',
