@@ -107,9 +107,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name']),
     userLoggedIn() {
-      return this.$store.state.user.name !== '' && getToken() !== null
+      return this.name !== '' && getToken() !== null
     },
     heightMap() {
       return this.historyMode ? 'height: calc(100% - ' + historyPanelHeight + 'px)' : 'height:100%'
@@ -212,6 +212,7 @@ export default {
         self.processPositions(pos)
         self.geofencesSource.features = self.processGeofences(vm.$data.geofences)
         self.refreshGeofences()
+        Vue.$log.info('VueMap initData done finishLoading')
         self.finishLoading()
         NProgress.done()
         this.initialized = true
@@ -244,15 +245,16 @@ export default {
         this.map.dragRotate.disable()
         this.map.touchZoomRotate.disableRotation()
       }
-      this.$log.info('VueMap')
+
       NProgress.done()
-      if (this.$store.state.user.dataLoaded && this.userLoggedIn && !this.initialized) {
-        this.$log.debug('userData is loaded and not initialized, initializing...')
+      if (this.dataLoaded && this.userLoggedIn && !this.initialized) {
+        this.$log.info('userData is loaded and not initialized, initializing...')
         this.initData()
       } else {
-        this.$log.debug('userDataLoaded: ', this.$store.state.user.dataLoaded, ', initialized: ', this.initialized)
-        this.$log.debug('hopefully we\'ll receive an event...')
+        this.$log.info('userDataLoaded: ', this.dataLoaded, ', initialized: ', this.initialized)
+        this.$log.info('hopefully we\'ll receive an event...')
       }
+      this.$log.info('VueMap finishLoading')
       this.finishLoading()
     },
     findFeatureByDeviceId(deviceId) {
@@ -532,7 +534,7 @@ export default {
       } else {
         this.$log.debug('adding layers...')
         lnglat.addLayers(vm.$static.map)
-        this.$log.debug('done adding layers')
+        this.$log.info('done adding layers finishLoading')
         this.finishLoading()
       }
     },
@@ -727,7 +729,7 @@ export default {
         if (!feature) {
           if (!device) {
             Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position)
-            this.$store.dispatch('user/logout').then(() => location.reload())
+            self.$store.dispatch('user/logout').then(() => location.reload())
             return
           }
           feature = self.positionToFeature(position, device)

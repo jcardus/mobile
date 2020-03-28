@@ -170,11 +170,11 @@ const actions = {
   },
   connectionOk(context, data) {
     if (state.connectionOk !== data.state) {
-      Vue.$log.debug('toggle connection ok...')
+      Vue.$log.info('toggle connection ok...')
       context.commit('TOGGLE_CONNECTION_OK')
       if (data.state) {
         context.dispatch('setUser').then(() => {
-          Vue.$log.debug('connectionOk done')
+          Vue.$log.info('connectionOk done')
         })
       }
     }
@@ -185,19 +185,67 @@ const actions = {
   setAlerts({ commit }, alerts) {
     commit('SET_ALERTS', alerts)
   },
-  fetchEvents({ commit }) {
-    return traccar.report_events(
-      Vue.moment().subtract(1, 'day').toDate().toISOString(),
-      new Date().toISOString(),
-      vm.$data.devices.map(d => d.id),
-      state.alerts.map(a => a.notification.type),
-      (events) => {
+  fetchEvents({ commit }, start, end) {
+    function getNotificationContent(notification) {
+      if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
+        const geofence = this.geofences.find(g => g.id === notification.geofenceId)
+
+        return ' >> ' + geofence.name
+      }
+      if (notification.type === 'deviceOverspeed') {
+        return ' >> ' + Math.round(notification.attributes.speed * 1.85200) + ' Km/h'
+      }
+      return ''
+    }
+    function getNotificationImage(type) {
+      if (type === 'ignitionOn' || type === 'ignitionOff') {
+        return 'fas fa-key'
+      }
+      if (type === 'geofenceEnter' || type === 'geofenceExit') {
+        return 'fas fa-draw-polygon'
+      }
+      if (type === 'deviceOverspeed') {
+        return 'fas fa-shipping-fast'
+      }
+
+      return ''
+    }
+    function getNotificationColor(type) {
+      if (type === 'ignitionOn' || type === 'geofenceEnter') {
+        return 'green'
+      }
+      if (type === 'ignitionOff' || type === 'geofenceExit') {
+        return 'red'
+      }
+      return 'black'
+    }
+    return new Promise((resolve, reject) => {
+      traccar.report_events(
+        start.toISOString(),
+        end.toISOString(),
+        vm.$data.devices.map(d => d.id),
+        state.alerts.map(a => a.notification.type)
+      ).then((events) => {
         events.forEach(e => {
           e.device = vm.$data.devices.find(d => d.id === e.deviceId)
         })
-        events.sort(function(a, b) { return Date.parse(b.serverTime) - Date.parse(a.serverTime) })
-        commit('SET_EVENTS', events)
-      })
+        events.sort(function(a, b) {
+          return Date.parse(b.serverTime) - Date.parse(a.serverTime)
+        })
+      }).then((data) => {
+        commit('SET_EVENTS', data.map(a => {
+          return {
+            timestamp: a.serverTime,
+            title: vm.$data.devices.find(d => d.id === a.deviceId).name,
+            content: getNotificationContent(a),
+            type: this.$t('settings.alert_' + a.type),
+            image: getNotificationImage(a.type),
+            color: getNotificationColor(a.type)
+          }
+        }))
+        resolve()
+      }).catch((e) => reject(e))
+    })
   },
   fetchAlerts({ commit, state }) {
     return traccar.alerts(function(alerts) {
