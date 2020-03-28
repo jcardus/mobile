@@ -11,8 +11,13 @@ import AboutPage from '../pages/settings/about'
 import Viewer from '../pages/viewer'
 import MapMobileContainer from '../pages/MapMobileContainer'
 import DashboardPage from '../pages/dashboard'
+import alerts from '../pages/alerts'
 
 const routes = [
+  {
+    path: '/alerts',
+    component: alerts
+  },
   {
     path: '/map',
     component: MapMobileContainer

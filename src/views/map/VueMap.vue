@@ -162,7 +162,7 @@ export default {
     }
   },
   created() {
-    this.$log.info('created VueMap, userLoggedIn: ', this.userLoggedIn)
+    this.$log.debug('VueMap, userLoggedIn: ', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
     if (this.isMobile) {
@@ -183,7 +183,7 @@ export default {
     this.unsubscribeEvents()
   },
   mounted() {
-    this.$log.info('VueMap mounted')
+    this.$log.debug('VueMap')
     NProgress.start()
     this.parentHeight = this.$parent.$el.clientHeight
     mapboxgl.accessToken = this.accessToken
@@ -530,9 +530,9 @@ export default {
         style.sprite = consts.spriteUrl
         this.map.setStyle(style)
       } else {
-        this.$log.info('adding layers...')
+        this.$log.debug('adding layers...')
         lnglat.addLayers(vm.$static.map)
-        this.$log.info('done adding layers')
+        this.$log.debug('done adding layers')
         this.finishLoading()
       }
     },

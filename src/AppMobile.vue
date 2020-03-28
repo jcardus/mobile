@@ -9,11 +9,29 @@
         <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" :text="$t('route.reports')"></f7-link>
         <f7-link tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-ios="f7:rectangle_grid_2x2" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
+        <f7-link
+          tab-link="#view-alerts"
+          icon-ios="f7:bell_fill"
+          icon-aurora="f7:bell_fill"
+          icon-md="material:notifications"
+          :text="$t('route.alerts')"
+          badge="5"
+          badge-color="red"
+        >
+        </f7-link>
       </f7-toolbar>
-      <f7-view id="view-map" main tab tab-active url="/map" @tab:show="mapShow"></f7-view>
-      <f7-view id="view-reports" name="reports" tab url="/reports" @tab:show="reportsShow"></f7-view>
-      <f7-view id="view-dashboard" name="dashboard" tab url="/dashboard" @tab:show="dashboardShow"></f7-view>
+      <f7-view
+        id="view-map"
+        main
+        tab
+        tab-active
+        url="/map"
+        @tab:show="emitEvent('mapActive')"
+      ></f7-view>
+      <f7-view id="view-reports" name="reports" tab url="/reports"></f7-view>
+      <f7-view id="view-dashboard" name="dashboard" tab url="/dashboard" @tab:show="emitEvent('dashboardActive')"></f7-view>
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
+      <f7-view id="view-alerts" name="alerts" tab url="/alerts" @tab:show="emitEvent('eventsActive')"></f7-view>
       <f7-view id="view-login" name="login" url="/login"></f7-view>
     </f7-views>
     <f7-login-screen id="loginScreen">
@@ -78,9 +96,6 @@ export default {
     }
   },
   computed: {
-    dashboardUrl() {
-      return 'https://' + this.domain + ':' + window.location.port + '/#/iosdashboard'
-    },
     domain() {
       return window.location.hostname
     },
@@ -152,8 +167,8 @@ export default {
           }).open()
         })
     },
-    mapShow() {
-      serverBus.$emit('mapShown')
+    emitEvent(event) {
+      serverBus.$emit(event)
     },
     message(message) {
       this.$f7.notification.create({
@@ -167,7 +182,6 @@ export default {
     },
     dashboardShow() {
       Vue.$log.debug('emit dashboardActive')
-      serverBus.$emit('dashboardActive')
     },
     reportsShow() {
       Vue.$log.debug('emit reportsActive')

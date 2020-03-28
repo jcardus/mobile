@@ -14,15 +14,10 @@
         <f7-col>
           <f7-button fill large raised style="font-size:15px" href="/settings/groups"><i class="fas fa-grip-horizontal"></i> {{ $t('settings.groups') }}</f7-button>
         </f7-col>
+        <f7-col>
+          <f7-button fill large raised style="font-size:15px" href="/settings/alerts"><i class="fas fa-bell"></i> {{ $t('settings.alerts') }}</f7-button>
+        </f7-col>
       </f7-row>
-      <!-- <f7-row tag="p">
-        <f7-col>
-          <f7-button fill large raised style="font-size:20px" href="/settings/geofences"><i class="fas fa-draw-polygon"></i> Geofences</f7-button>
-        </f7-col>
-        <f7-col>
-          <f7-button fill large raised style="font-size:20px" href="/settings/alerts"><i class="fas fa-bell"></i> Alerts</f7-button>
-        </f7-col>
-      </f7-row>-->
       <f7-row tag="p">
         <f7-col>
           <f7-button fill large raised style="font-size:15px" href="/settings/map"><i class="fas fa-map"></i> {{ $t('settings.map') }}</f7-button>

@@ -23,24 +23,28 @@ const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaw
 
 function invokeApi(url, onFulfill, onError) {
   try {
-    cookie = VueCookies.get('user-info')
-    axios.get(url, {
-      withCredentials: false,
-      auth: { username: VueCookies.get('user-info').email, password: VueCookies.get('user-info').password }
+    return new Promise((resolve, reject) => {
+      cookie = VueCookies.get('user-info')
+      axios.get(url, {
+        withCredentials: false,
+        auth: { username: VueCookies.get('user-info').email, password: VueCookies.get('user-info').password }
+      })
+        .then(response => {
+          vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
+            onFulfill(response.data)
+            resolve(response.data)
+          })
+        })
+        .catch(reason => {
+          vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
+            Vue.$log.error(reason)
+            if (onError) {
+              onError(reason)
+            }
+            reject(onError)
+          })
+        })
     })
-      .then(response => {
-        vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
-          onFulfill(response.data)
-        })
-      })
-      .catch(reason => {
-        vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
-          Vue.$log.error(reason)
-          if (onError) {
-            onError(reason)
-          }
-        })
-      })
   } catch (e) {
     onError(e)
   }
@@ -102,7 +106,7 @@ export const traccar = {
   report_events(from, to, deviceIds, types, onFulfill) {
     deviceIds = deviceIds.map(d => 'deviceId=' + d).join('&')
     types = types.map(n => 'type=' + encodeURI(n)).join('&')
-    invokeApi(`${events}?${deviceIds}&${types}&from=${from}&to=${to}`, onFulfill)
+    return invokeApi(`${events}?${deviceIds}&${types}&from=${from}&to=${to}`, onFulfill)
   },
   devices: function(onFulfill, onError) {
     invokeApi(devices, onFulfill, onError)

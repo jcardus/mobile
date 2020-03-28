@@ -18,27 +18,44 @@ const state = {
   avatar: '',
   userId: 0,
   dataLoaded: false,
-  connectionOk: true
+  connectionOk: true,
+  alerts: [],
+  events: [],
+  devices: [],
+  groups: []
 }
 
 const mutations = {
-  SET_USER: (state, token) => {
+  SET_DEVICES(state, devices) {
+    state.devices = devices
+  },
+  SET_EVENTS(state, events) {
+    Vue.$log.info(events)
+    state.events = events
+  },
+  SET_USER(state, token) {
     state.name = token.name
     state.userId = token.id
     state.email = token.email
     state.avatar = getAvatar(token.name)
   },
-  REMOVE_USER: (state) => {
+  REMOVE_USER(state) {
     state.name = ''
     state.userId = 0
     state.email = ''
     state.avatar = ''
   },
-  SET_DATA_LOADED: (state, loaded) => {
+  SET_DATA_LOADED(state, loaded) {
     state.dataLoaded = loaded
   },
   TOGGLE_CONNECTION_OK: () => {
     state.connectionOk = !state.connectionOk
+  },
+  SET_ALERTS(state, alerts) {
+    state.alerts = alerts
+  },
+  SET_GROUPS(state, groups) {
+    state.groups = groups
   }
 }
 
@@ -47,7 +64,7 @@ function getAvatar(name) {
   return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
 }
 
-function initData(commit) {
+function initData(commit, state) {
   return new Promise((resolve, reject) => {
     traccar.geofences(function(geofences) {
       vm.$data.geofences = geofences
@@ -98,9 +115,7 @@ function initData(commit) {
             const group = groups.find((g) => g.id === d.groupId)
             d.groupName = group && group.name
           })
-          traccar.startReceiving()
           commit('SET_DATA_LOADED', true)
-          Vue.$log.debug('emit dataLoaded')
           serverBus.$emit('dataLoaded')
           resolve()
         }, (error) => {
@@ -118,11 +133,11 @@ function initData(commit) {
 }
 
 const actions = {
-  setUser({ commit }) {
+  setUser({ commit, state }) {
     return new Promise((resolve) => {
       const newToken = getToken()
       commit('SET_USER', newToken)
-      initData(commit).finally(() => {
+      initData(commit, state).finally(() => {
         TrackJS.addMetadata('user', state.name)
         setLanguage(newToken.attributes.lang)
         const hostName = utils.getServerHost()
@@ -189,9 +204,25 @@ const actions = {
   },
   connect({ commit }) {
     commit('CONNECT')
+  },
+  setAlerts({ commit }, alerts) {
+    commit('SET_ALERTS', alerts)
+  },
+  fetchEvents({ commit }) {
+    return traccar.report_events(
+      Vue.moment().subtract(1, 'day').toDate().toISOString(),
+      new Date().toISOString(),
+      vm.$data.devices.map(d => d.id),
+      vm.$data.alerts.map(a => a.notification.type),
+      (events) => {
+        events.forEach(e => {
+          e.device = vm.$data.devices.find(d => d.id === e.deviceId)
+        })
+        events.sort(function(a, b) { return Date.parse(b.serverTime) - Date.parse(a.serverTime) })
+        commit('SET_EVENTS', events)
+      })
   }
 }
-
 export default {
   namespaced: true,
   state,
