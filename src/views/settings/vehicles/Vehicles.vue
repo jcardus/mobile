@@ -129,7 +129,6 @@
 import { serverBus, vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
-import Vue from 'vue'
 
 export default {
   name: 'Vehicles',
@@ -157,11 +156,12 @@ export default {
       return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     groupsFilter: function() {
-      const groupsName = vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1).map(g => {
-        return { text: g.name, value: g.id }
-      })
-      Vue.$log.debug(groupsName)
-      return groupsName
+      if (vm.$data.groups) {
+        return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1).map(g => {
+          return { text: g.name, value: g.id }
+        })
+      }
+      return []
     },
     categories: function() {
       return [
