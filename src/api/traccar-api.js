@@ -36,7 +36,9 @@ function invokeApi(url, onFulfill, onError) {
       .catch(reason => {
         vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
           Vue.$log.error(reason)
-          onError(reason)
+          if (onError) {
+            onError(reason)
+          }
         })
       })
   } catch (e) {
@@ -97,26 +99,10 @@ export const traccar = {
       .then(() => ok(report_id))
       .catch(reason => nok(report_id, reason))
   },
-  report_events: function(from, to, deviceIds, notificationType, onFulfill) {
-    let devices = ''
-    let type = ''
-    deviceIds.forEach(d => {
-      devices = devices + 'deviceId=' + d + '&'
-      return devices
-    })
-    notificationType.forEach(n => {
-      type = type + 'type=' + n + '&'
-      return type
-    })
-    axios.get(events + '?' + devices + type + 'from=' + from + '&to=' + to,
-      { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
-  },
-  startReceiving: function() {
-    // vm.$connect()
+  report_events(from, to, deviceIds, types, onFulfill) {
+    deviceIds = deviceIds.map(d => 'deviceId=' + d).join('&')
+    types = types.map(n => 'type=' + encodeURI(n)).join('&')
+    invokeApi(`${events}?${deviceIds}&${types}&from=${from}&to=${to}`, onFulfill)
   },
   devices: function(onFulfill, onError) {
     invokeApi(devices, onFulfill, onError)
@@ -221,14 +207,8 @@ export const traccar = {
         })
     })
   },
-  alerts: function(onFulfill) {
-    return new Promise((resolve, reject) => {
-      axios.get(alerts, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-        .then(response => onFulfill(response.data))
-        .catch(error => {
-          reject(error)
-        })
-    })
+  alerts(resolve) {
+    return invokeApi(alerts, resolve)
   },
   newAlert: function(alert, onFulfill) {
     Vue.$log.debug(alert)
