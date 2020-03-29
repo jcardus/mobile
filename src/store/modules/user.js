@@ -185,7 +185,7 @@ const actions = {
   setAlerts({ commit }, alerts) {
     commit('SET_ALERTS', alerts)
   },
-  fetchEvents({ commit }, start, end) {
+  fetchEvents({ commit }, { start, end }) {
     function getNotificationContent(notification) {
       if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
         const geofence = this.geofences.find(g => g.id === notification.geofenceId)
@@ -219,13 +219,12 @@ const actions = {
       }
       return 'black'
     }
-    return new Promise((resolve, reject) => {
-      traccar.report_events(
-        start.toISOString(),
-        end.toISOString(),
-        vm.$data.devices.map(d => d.id),
-        state.alerts.map(a => a.notification.type)
-      ).then((events) => {
+    traccar.report_events(
+      start.toISOString(),
+      end.toISOString(),
+      vm.$data.devices.map(d => d.id),
+      state.alerts.map(a => a.notification.type),
+      (events) => {
         events.forEach(e => {
           e.device = vm.$data.devices.find(d => d.id === e.deviceId)
         })
@@ -233,19 +232,17 @@ const actions = {
           return Date.parse(b.serverTime) - Date.parse(a.serverTime)
         })
       }).then((data) => {
-        commit('SET_EVENTS', data.map(a => {
-          return {
-            timestamp: a.serverTime,
-            title: vm.$data.devices.find(d => d.id === a.deviceId).name,
-            content: getNotificationContent(a),
-            type: this.$t('settings.alert_' + a.type),
-            image: getNotificationImage(a.type),
-            color: getNotificationColor(a.type)
-          }
-        }))
-        resolve()
-      }).catch((e) => reject(e))
-    })
+      commit('SET_EVENTS', data.map(a => {
+        return {
+          timestamp: a.serverTime,
+          title: vm.$data.devices.find(d => d.id === a.deviceId).name,
+          content: getNotificationContent(a),
+          type: vm.$t('settings.alert_' + a.type),
+          image: getNotificationImage(a.type),
+          color: getNotificationColor(a.type)
+        }
+      }))
+    }).catch((e) => Vue.$log.error(e))
   },
   fetchAlerts({ commit, state }) {
     return traccar.alerts(function(alerts) {

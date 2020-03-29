@@ -59,11 +59,11 @@
 <script>
 import { traccar } from '../../api/traccar-api'
 import { vm } from '../../main'
+import { mapGetters } from 'vuex'
 
 export default {
   data() {
     return {
-      timeline: [],
       selectedAlertsType: [],
       selectedDevices: [],
       selectedNotifications: [],
@@ -112,10 +112,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['events']),
     devices: function() { return vm.$data.devices },
     geofences: function() { return vm.$data.geofences },
     sortedItems: function() {
-      return this.timeline.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      return this.events.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     }
   },
   mounted() {
@@ -179,7 +180,7 @@ export default {
     },
     getAlertNotifications() {
       if (this.dateRange.length > 0) {
-        this.$store.dispatch('user/fetchEvents', this.start, this.end)
+        this.$store.dispatch('user/fetchEvents', { start: this.dateRange[0], end: this.dateRange[1] })
       }
     }
   }

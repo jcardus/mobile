@@ -6,10 +6,10 @@
         v-for="item in events"
         :key="item.id"
         link="#"
-        :title="item.type"
-        :after="item.serverTime | moment('calendar')"
-        :subtitle="item.serverTime"
-        :text="item.device.groupName"
+        :title="item.title"
+        :after="item.timestamp | moment('calendar')"
+        :subtitle="item.type"
+        :text="item.content"
       />
     </f7-list>
   </f7-page>
@@ -30,9 +30,11 @@ export default {
     pageShown() {
       this.$log.info('alerts', this.events)
       if (this.events.length === 0) {
-        this.$store.dispatch('user/fetchEvents').then(() => {
-          this.$log.info('alerts', this.events)
-        })
+        this.$store.dispatch('user/fetchEvents',
+          { start: this.$moment().subtract(1, 'day').toDate(), end: new Date() })
+          .then(() => {
+            this.$log.info('alerts', this.events)
+          })
       }
     }
   }
