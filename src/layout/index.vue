@@ -17,6 +17,7 @@ import Navbar from './components/Navbar'
 import Profile from './components/Profile'
 import * as notifications from '../utils/notifications'
 import { mapGetters } from 'vuex'
+import { serverBus } from '../main'
 
 export default {
   name: 'Layout',
@@ -41,36 +42,30 @@ export default {
     }
   },
   beforeDestroy() {
-    if (this.unsubscribe) this.unsubscribe()
+    serverBus.$off('event', this.onEvent)
   },
   created: function() {
-    this.$log.debug('layout created')
-    const self = this
-    this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
-      if (mutation.type === 'SOCKET_ONMESSAGE') {
-        if (state.socket.message.events) {
-          const events = state.socket.message.events
-          for (let i = 0; i < events.length; i++) {
-            const event = events[i]
-            self.$notify({
-              title: this.$t('layout.' + event.type),
-              message: notifications.getMessage(event),
-              type: 'info',
-              duration: 5000
-            })
-            try {
-              if (self.serviceWorker) {
-                self.serviceWorker.postMessage(notifications.getMessage(event))
-              } else {
-                self.$log.warn('serviceWorker is null...')
-              }
-            } catch (e) {
-              self.$log.error(e)
-            }
-          }
+    this.$log.info('layout')
+    serverBus.$on('event', this.onEvent)
+  },
+  methods: {
+    onEvent(event) {
+      this.$notify({
+        title: this.$t('layout.' + event.type),
+        message: notifications.getMessage(event),
+        type: 'info',
+        duration: 5000
+      })
+      try {
+        if (this.serviceWorker) {
+          this.serviceWorker.postMessage(notifications.getMessage(event))
+        } else {
+          this.$log.warn('serviceWorker is null...')
         }
+      } catch (e) {
+        this.$log.error(e)
       }
-    })
+    }
   }
 }
 </script>

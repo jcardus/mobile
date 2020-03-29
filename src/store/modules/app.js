@@ -3,7 +3,8 @@ const state = {
   stiLoaded: false,
   historyMode: false,
   elementReportData: [],
-  loading: false
+  loading: false,
+  unreadItems: 0
 }
 
 const mutations = {

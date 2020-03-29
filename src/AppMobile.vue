@@ -15,7 +15,7 @@
           icon-aurora="f7:bell_fill"
           icon-md="material:notifications"
           :text="$t('route.alerts')"
-          badge="5"
+          :badge="unreadItems"
           badge-color="red"
         >
         </f7-link>
@@ -79,6 +79,7 @@ import { serverBus } from './main'
 import { reload } from './utils/utils'
 import * as partner from './utils/partner'
 import { appOffline } from './utils/utils'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'AppMobile',
@@ -96,6 +97,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['unreadItems']),
     domain() {
       return window.location.hostname
     },
@@ -114,9 +116,14 @@ export default {
       return appOffline()
     }
   },
+  beforeDestroy() {
+    serverBus.$off('event', this.showNotifications)
+    serverBus.$off('updateAvailable', this.updateAvailable)
+    serverBus.$off('message', this.message)
+  },
   created() {
-    Vue.$log.debug('created AppMobile')
-    this.$root.$store.subscribe(this.showNotifications)
+    Vue.$log.info('AppMobile offline:', this.offline)
+    serverBus.$on('event', this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('message', this.message)
   },
@@ -187,23 +194,15 @@ export default {
       Vue.$log.debug('emit reportsActive')
       serverBus.$emit('reportsActive')
     },
-    showNotifications(mutation, state) {
-      if (mutation.type === 'SOCKET_ONMESSAGE') {
-        if (state.socket.message.events) {
-          const events = state.socket.message.events
-          for (let i = 0; i < events.length; i++) {
-            const event = events[i]
-            this.$f7.notification.create({
-              icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '" alt=""/>',
-              titleRightText: '',
-              title: this.$t('layout.' + event.type),
-              text: notifications.getMessage(event),
-              closeTimeout: 5000,
-              subtitle: partner.getTitle()
-            }).open()
-          }
-        }
-      }
+    showNotifications(event) {
+      this.$f7.notification.create({
+        icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '" alt=""/>',
+        titleRightText: '',
+        title: event.type && this.$t('layout.' + event.type),
+        text: notifications.getMessage(event),
+        closeTimeout: 5000,
+        subtitle: partner.getTitle()
+      }).open()
     },
     panelClosed() {
       Vue.$log.debug('panelClosed')

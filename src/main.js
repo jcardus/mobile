@@ -190,6 +190,9 @@ export const vm = new Vue({
       reportData: []
     }
   },
+  created() {
+    serverBus.$on('event', () => { store.dispatch('incUnreadItems') })
+  },
   static() {
     return {
       currentFeature: null,

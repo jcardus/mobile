@@ -14,7 +14,8 @@ const getters = {
   alerts: state => state.user.alerts,
   events: state => state.user.events,
   dataLoaded: state => state.user.dataLoaded,
-  groups: state => state.user.groups
+  groups: state => state.user.groups,
+  unreadItems: state => state.unreadItems
 }
 
 export default getters
