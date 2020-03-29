@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import getters from './getters'
 import { TrackJS } from 'trackjs'
 import { removeToken } from '../utils/auth'
+import { serverBus } from '../main'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 
 const store = new Vuex.Store({
   state: {
+    unreadItems: 0,
     selectedDevice: null,
     socket: {
       isConnected: false,
@@ -28,7 +30,15 @@ const store = new Vuex.Store({
     },
     lastUpdate: null
   },
+  actions: {
+    incUnreadItems({ commit }) {
+      commit('INC_UNREAD_ITEMS')
+    }
+  },
   mutations: {
+    INC_UNREAD_ITEMS(state) {
+      state.unreadItems++
+    },
     SOCKET_ONOPEN(state, event) {
       state.socket.isConnected = true
       Vue.$log.warn(state)
@@ -49,6 +59,13 @@ const store = new Vuex.Store({
     SOCKET_ONMESSAGE(state, message) {
       state.socket.message = message
       state.lastUpdate = Date.now()
+
+      if (state.socket.message.events) {
+        const events = state.socket.message.events
+        for (let i = 0; i < events.length; i++) {
+          serverBus.$emit('event', events[i])
+        }
+      }
     },
     SOCKET_RECONNECT(state, count) {
       if (count === 4) {

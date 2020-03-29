@@ -59,11 +59,11 @@
 <script>
 import { traccar } from '../../api/traccar-api'
 import { vm } from '../../main'
+import { mapGetters } from 'vuex'
 
 export default {
   data() {
     return {
-      timeline: [],
       selectedAlertsType: [],
       selectedDevices: [],
       selectedNotifications: [],
@@ -112,10 +112,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['events']),
     devices: function() { return vm.$data.devices },
     geofences: function() { return vm.$data.geofences },
     sortedItems: function() {
-      return this.timeline.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      return this.events.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     }
   },
   mounted() {
@@ -177,78 +178,11 @@ export default {
         }
       })
     },
-    getAlertNotifications(a) {
+    getAlertNotifications() {
       if (this.dateRange.length > 0) {
-        const start = this.dateRange[0].toISOString().replace(' ', 'T').substring(0, 19) + 'Z'
-        const end = this.dateRange[1].toISOString().replace(' ', 'T').substring(0, 19) + 'Z'
-        this.$log.debug(a)
-        const devices = a.devices.map(d => d.data.id)
-        this.$log.debug(devices)
-
-        traccar.report_events(start, end, devices, [a.notification.type], this.notificationReceived)
+        this.$store.dispatch('user/fetchEvents', { start: this.dateRange[0], end: this.dateRange[1] })
       }
-    },
-    notificationReceived: function(data) {
-      const self = this
-      // const result = []
-      // data =  data.sort("serverTime", "asc");
-      data.forEach(function(notification) {
-        var vehicle = vm.$data.devices.filter(d => d.id === notification.deviceId)[0]
-        var entry = {
-          timestamp: notification.serverTime.substring(0, 19).replace('T', ' '),
-          title: vehicle.name,
-          content: self.getNotificationContent(notification),
-          type: self.$t('settings.alert_' + notification.type),
-          image: self.getNotificationImage(notification.type),
-          color: self.getNotificationColor(notification.type)
-        }
-        self.timeline.push(entry)
-      })
-      // this.timeline = result
-    },
-    getNotificationImage: function(type) {
-      if (type === 'ignitionOn' || type === 'ignitionOff') {
-        return 'fas fa-key'
-      }
-      if (type === 'geofenceEnter' || type === 'geofenceExit') {
-        return 'fas fa-draw-polygon'
-      }
-      if (type === 'deviceOverspeed') {
-        return 'fas fa-shipping-fast'
-      }
-
-      return ''
-    },
-    getNotificationColor: function(type) {
-      if (type === 'ignitionOn' || type === 'geofenceEnter') {
-        return 'green'
-      }
-      if (type === 'ignitionOff' || type === 'geofenceExit') {
-        return 'red'
-      }
-      return 'black'
-    },
-    getNotificationContent: function(notification) {
-      if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
-        const geofence = this.geofences.find(g => g.id === notification.geofenceId)
-
-        return ' >> ' + geofence.name
-      }
-      if (notification.type === 'deviceOverspeed') {
-        return ' >> ' + Math.round(notification.attributes.speed * 1.85200) + ' Km/h'
-      }
-      return ''
     }
   }
 }
 </script>
-<style>
-  .el-card__body{
-    padding: 10px;
-  }
-  .el-timeline-item__node--large {
-    width: 18px;
-    height: 18px;
-  }
-</style>
-

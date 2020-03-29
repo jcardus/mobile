@@ -180,7 +180,6 @@ export const vm = new Vue({
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
       geofences: [],
-      alerts: [],
       currentDevice: null,
       lazyLoad: false,
       distance: 0,
@@ -190,6 +189,9 @@ export const vm = new Vue({
       loadingMap: true,
       reportData: []
     }
+  },
+  created() {
+    serverBus.$on('event', () => { store.dispatch('incUnreadItems') })
   },
   static() {
     return {

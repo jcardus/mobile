@@ -18,27 +18,44 @@ const state = {
   avatar: '',
   userId: 0,
   dataLoaded: false,
-  connectionOk: true
+  connectionOk: true,
+  alerts: [],
+  events: [],
+  devices: [],
+  groups: []
 }
 
 const mutations = {
-  SET_USER: (state, token) => {
+  SET_DEVICES(state, devices) {
+    state.devices = devices
+  },
+  SET_EVENTS(state, events) {
+    Vue.$log.info(events)
+    state.events = events
+  },
+  SET_USER(state, token) {
     state.name = token.name
     state.userId = token.id
     state.email = token.email
     state.avatar = getAvatar(token.name)
   },
-  REMOVE_USER: (state) => {
+  REMOVE_USER(state) {
     state.name = ''
     state.userId = 0
     state.email = ''
     state.avatar = ''
   },
-  SET_DATA_LOADED: (state, loaded) => {
+  SET_DATA_LOADED(state, loaded) {
     state.dataLoaded = loaded
   },
   TOGGLE_CONNECTION_OK: () => {
     state.connectionOk = !state.connectionOk
+  },
+  SET_ALERTS(state, alerts) {
+    state.alerts = alerts
+  },
+  SET_GROUPS(state, groups) {
+    state.groups = groups
   }
 }
 
@@ -47,34 +64,11 @@ function getAvatar(name) {
   return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
 }
 
-function initData(commit) {
+function initData(commit, state, dispatch) {
   return new Promise((resolve, reject) => {
     traccar.geofences(function(geofences) {
       vm.$data.geofences = geofences
-      traccar.alerts(function(alerts) {
-        const result = []
-        alerts.forEach(a => {
-          const alert_data = {
-            notification: a,
-            devices: []
-          }
-          result.push(alert_data)
-        })
-        vm.$data.alerts = result
-        vm.$data.alerts.forEach(a => {
-          if (a.notification.always === true) {
-            vm.$data.devices.forEach(d => {
-              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                traccar.geofencesByDevice(d.id, function(geofences) {
-                  a.devices.push({ data: d, geofences: geofences })
-                })
-              } else {
-                a.devices.push({ data: d })
-              }
-            })
-          }
-        })
-      })
+      dispatch('fetchAlerts')
       traccar.groups(state.userId, (groups) => {
         state.groups = groups
         vm.$data.groups = groups
@@ -83,7 +77,7 @@ function initData(commit) {
           vm.$data.devices.forEach(d => {
             traccar.alertsByDevice(d.id, function(alerts) {
               alerts.forEach(a => {
-                const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
+                const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
                 if (a.always === false) {
                   if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
                     traccar.geofencesByDevice(d.id, function(geofences) {
@@ -98,9 +92,7 @@ function initData(commit) {
             const group = groups.find((g) => g.id === d.groupId)
             d.groupName = group && group.name
           })
-          traccar.startReceiving()
           commit('SET_DATA_LOADED', true)
-          Vue.$log.debug('emit dataLoaded')
           serverBus.$emit('dataLoaded')
           resolve()
         }, (error) => {
@@ -118,11 +110,11 @@ function initData(commit) {
 }
 
 const actions = {
-  setUser({ commit }) {
+  setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {
       const newToken = getToken()
       commit('SET_USER', newToken)
-      initData(commit).finally(() => {
+      initData(commit, state, dispatch).finally(() => {
         TrackJS.addMetadata('user', state.name)
         setLanguage(newToken.attributes.lang)
         const hostName = utils.getServerHost()
@@ -178,20 +170,125 @@ const actions = {
   },
   connectionOk(context, data) {
     if (state.connectionOk !== data.state) {
-      Vue.$log.debug('toggle connection ok...')
+      Vue.$log.info('toggle connection ok...')
       context.commit('TOGGLE_CONNECTION_OK')
       if (data.state) {
         context.dispatch('setUser').then(() => {
-          Vue.$log.debug('connectionOk done')
+          Vue.$log.info('connectionOk done')
         })
       }
     }
   },
   connect({ commit }) {
     commit('CONNECT')
+  },
+  setAlerts({ commit }, alerts) {
+    commit('SET_ALERTS', alerts)
+  },
+  fetchEvents({ commit }, { start, end }) {
+    function getNotificationContent(notification) {
+      if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
+        const geofence = this.geofences.find(g => g.id === notification.geofenceId)
+
+        return ' >> ' + geofence.name
+      }
+      if (notification.type === 'deviceOverspeed') {
+        return ' >> ' + Math.round(notification.attributes.speed * 1.85200) + ' Km/h'
+      }
+      return ''
+    }
+    function getNotificationImage(type) {
+      if (type === 'ignitionOn' || type === 'ignitionOff') {
+        return 'fas fa-key'
+      }
+      if (type === 'geofenceEnter' || type === 'geofenceExit') {
+        return 'fas fa-draw-polygon'
+      }
+      if (type === 'deviceOverspeed') {
+        return 'fas fa-shipping-fast'
+      }
+
+      return ''
+    }
+    function getNotificationColor(type) {
+      if (type === 'ignitionOn' || type === 'geofenceEnter') {
+        return 'green'
+      }
+      if (type === 'ignitionOff' || type === 'geofenceExit') {
+        return 'red'
+      }
+      return 'black'
+    }
+    traccar.report_events(
+      start.toISOString(),
+      end.toISOString(),
+      vm.$data.devices.map(d => d.id),
+      state.alerts.map(a => a.notification.type),
+      (events) => {
+        events.forEach(e => {
+          e.device = vm.$data.devices.find(d => d.id === e.deviceId)
+        })
+        events.sort(function(a, b) {
+          return Date.parse(b.serverTime) - Date.parse(a.serverTime)
+        })
+      }).then((data) => {
+      commit('SET_EVENTS', data.map(a => {
+        return {
+          timestamp: a.serverTime,
+          title: vm.$data.devices.find(d => d.id === a.deviceId).name,
+          content: getNotificationContent(a),
+          type: vm.$t('settings.alert_' + a.type),
+          image: getNotificationImage(a.type),
+          color: getNotificationColor(a.type)
+        }
+      }))
+    }).catch((e) => Vue.$log.error(e))
+  },
+  fetchAlerts({ commit, state }) {
+    return traccar.alerts(function(alerts) {
+      const result = []
+      alerts.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
+        const alarm_data = {
+          notification: a,
+          devices: []
+        }
+        result.push(alarm_data)
+      })
+      commit('SET_ALERTS', result)
+
+      vm.$data.devices.forEach(d => {
+        traccar.alertsByDevice(d.id, function(alerts) {
+          alerts.forEach(a => {
+            const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
+            if (a.always === false) {
+              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                traccar.geofencesByDevice(d.id, function(geofences) {
+                  alert.devices.push({ data: d, geofences: geofences })
+                })
+              } else {
+                alert.devices.push({ data: d })
+              }
+            }
+          })
+        })
+      })
+
+      state.alerts.forEach(a => {
+        if (a.notification.always === true) {
+          vm.$data.devices.forEach(d => {
+            if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+              traccar.geofencesByDevice(d.id, function(geofences) {
+                a.devices.push({ data: d, geofences: geofences })
+              })
+            } else {
+              a.devices.push({ data: d })
+            }
+          })
+        }
+      })
+    })
   }
 }
-
 export default {
   namespaced: true,
   state,

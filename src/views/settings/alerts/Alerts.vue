@@ -19,7 +19,7 @@
                 </el-checkbox-group>
                 <el-select
                   v-model="selectedDevices"
-                  :disabled="allVehicles.length == 1"
+                  :disabled="allVehicles.length === 1"
                   style="width: 100%; height: 35px"
                   multiple
                   :placeholder="$t('settings.alert_form_vehicles_placeholder')"
@@ -238,6 +238,7 @@
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Alerts',
@@ -264,10 +265,8 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['alerts']),
     isMobile() { return lnglat.isMobile() },
-    alerts: function() {
-      return vm.$data.alerts
-    },
     devices: function() {
       return vm.$data.devices.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
@@ -291,49 +290,6 @@ export default {
     isInorOutGeofence: function(row) {
       return row.notification.type === 'geofenceExit' || row.notification.type === 'geofenceEnter'
     },
-    loadAlerts: function(alerts) {
-      const result = []
-      alerts.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
-        const alarm_data = {
-          notification: a,
-          devices: []
-        }
-        result.push(alarm_data)
-      })
-
-      vm.$data.alerts = result
-
-      this.devices.forEach(d => {
-        traccar.alertsByDevice(d.id, function(alerts) {
-          alerts.forEach(a => {
-            const alert = vm.$data.alerts.find(a_data => a_data.notification.id === a.id)
-            if (a.always === false) {
-              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                traccar.geofencesByDevice(d.id, function(geofences) {
-                  alert.devices.push({ data: d, geofences: geofences })
-                })
-              } else {
-                alert.devices.push({ data: d })
-              }
-            }
-          })
-        })
-      })
-
-      vm.$data.alerts.forEach(a => {
-        if (a.notification.always === true) {
-          this.devices.forEach(d => {
-            if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-              traccar.geofencesByDevice(d.id, function(geofences) {
-                a.devices.push({ data: d, geofences: geofences })
-              })
-            } else {
-              a.devices.push({ data: d })
-            }
-          })
-        }
-      })
-    },
     alertTypeRenderer(row, column, cellValue) {
       return this.$t('settings.alert_' + cellValue)
     },
@@ -351,7 +307,7 @@ export default {
         return cellValue.length
       }
     },
-    alertGeofencesRenderer(row, column, cellValue, index) {
+    alertGeofencesRenderer(row, column, cellValue) {
       this.$log.debug(row)
       let description = cellValue.length + ' ' + this.$t('settings.alert_form_geofences')
       if (cellValue.length > 0) {
@@ -478,7 +434,7 @@ export default {
         message: this.$t('settings.alert_created')
       })
       this.clearFormData()
-      traccar.alerts(this.loadAlerts)
+      this.$store.dispatch('user/fetchAlerts')
     },
     updatedCreated: function(updatedAlert) {
       if (updatedAlert.always === false) {
@@ -524,7 +480,7 @@ export default {
     },
     handleAllVehiclesSelect() {
       if (this.allVehicles.length === 1) {
-        this.selectedDevices.clear()
+        this.selectedDevices = []
       }
     },
     handleDelete(row) {
@@ -543,17 +499,16 @@ export default {
         type: 'success',
         duration: 5 * 1000
       })
-
-      vm.$data.alerts = vm.$data.alerts.filter((e) => e.notification.id !== id)
+      this.$store.dispatch('user/setAlerts', this.alerts.filter((e) => e.notification.id !== id))
     },
-    tableRowStyle({ row, rowIndex }) {
+    tableRowStyle() {
       if (this.isMobile) {
         return 'font-size: 12px'
       } else {
         return 'font-size: 14px'
       }
     },
-    tableHeaderStyle({ row, column, rowIndex, columnIndex }) {
+    tableHeaderStyle() {
       if (this.isMobile) {
         return 'font-size: 12px'
       } else {
