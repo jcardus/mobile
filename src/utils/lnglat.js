@@ -373,10 +373,10 @@ export function fitBounds(devices) {
     updateMarkers()
   }
 }
-export function contains(lngLatBounds, position) {
+export function contains(lngLatBounds, position, padding = 0) {
   return (
-    (lngLatBounds.getWest() + 0.01 < position.longitude && position.longitude < lngLatBounds.getEast() - 0.01) &&
-    (lngLatBounds.getSouth() + 0.01 < position.latitude && position.latitude < lngLatBounds.getNorth() - 0.01)
+    (lngLatBounds.getWest() + padding < position.longitude && position.longitude < lngLatBounds.getEast() - padding) &&
+    (lngLatBounds.getSouth() + padding < position.latitude && position.latitude < lngLatBounds.getNorth() - padding)
   )
 }
 export function refreshGeofences() {

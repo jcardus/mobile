@@ -23,7 +23,7 @@ export function check_if_online(report_id, renderReport) {
         renderReport(report_id, null)
       } else {
         Vue.$log.debug('Still offline... :(')
-        setTimeout(check_if_online, 2000, report_id)
+        setTimeout(check_if_online, 2000, report_id, renderReport)
       }
     }
   }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 const state = {
-  commandPending: []
+  commandPending: {}
 }
 
 const mutations = {

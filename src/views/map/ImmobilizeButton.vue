@@ -42,8 +42,12 @@ export default {
     getIcon() {
       return this.immobilizationActive ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
     },
-    commandPending() {
-      return vm.$store.state.devices.commandPending
+    commandPending: {
+      get() {
+        return vm.$store.state.devices.commandPending
+      }, set(value) {
+        vm.$store.dispatch('devices/setCommandPending', value)
+      }
     }
   },
   mounted() {
