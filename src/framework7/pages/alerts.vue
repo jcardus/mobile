@@ -21,7 +21,7 @@ import { serverBus } from '../../main'
 
 export default {
   computed: {
-    ...mapGetters(['events'])
+    ...mapGetters(['events', 'alerts'])
   },
   created() {
     serverBus.$on('eventsActive', this.pageShown)
@@ -31,11 +31,16 @@ export default {
       this.$log.info('alerts', this.events)
       if (this.events.length === 0) {
         this.$store.dispatch('user/fetchEvents',
-          { start: this.$moment().subtract(1, 'day').toDate(), end: new Date() })
+          {
+            start: this.$moment().subtract(1, 'day').toDate(),
+            end: new Date(),
+            types: this.alerts
+          })
           .then(() => {
             this.$log.info('alerts', this.events)
           })
       }
+      this.$store.dispatch('resetUnreadItems')
     }
   }
 }

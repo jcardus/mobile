@@ -185,7 +185,7 @@ const actions = {
   setAlerts({ commit }, alerts) {
     commit('SET_ALERTS', alerts)
   },
-  fetchEvents({ commit }, { start, end }) {
+  fetchEvents({ commit }, { start, end, types }) {
     function getNotificationContent(notification) {
       if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
         const geofence = this.geofences.find(g => g.id === notification.geofenceId)
@@ -223,7 +223,7 @@ const actions = {
       start.toISOString(),
       end.toISOString(),
       vm.$data.devices.map(d => d.id),
-      state.alerts.map(a => a.notification.type),
+      types.map(a => a.notification.type),
       (events) => {
         events.forEach(e => {
           e.device = vm.$data.devices.find(d => d.id === e.deviceId)
