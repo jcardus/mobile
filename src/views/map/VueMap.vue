@@ -473,6 +473,8 @@ export default {
       this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
+      this.$static.map.on('click', 'pois', this.onClickTouchPois)
+      this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
@@ -484,14 +486,10 @@ export default {
       serverBus.$on('areaSelected', this.areaSelected)
       serverBus.$on('deviceChanged', this.deviceChanged)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
-        switch (mutation.type) {
-          case 'app/TOGGLE_SIDEBAR':
-            setTimeout(function() { self.mapResize() }, 500)
-            break
-          case 'SOCKET_ONMESSAGE':
-            if (state.socket.message.positions) {
-              self.updateMarkers(self.map)
-            }
+        if (mutation.type === 'SOCKET_ONMESSAGE') {
+          if (state.socket.message.positions) {
+            self.updateMarkers(self.map)
+          }
         }
       })
       window.addEventListener('resize', this.mapResize)
@@ -518,7 +516,6 @@ export default {
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
       serverBus.$off('mapShown', this.mapResize)
-
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
@@ -935,6 +932,9 @@ export default {
     },
     onMove() {
       lnglat.updateMarkers()
+    },
+    onClickTouchPois() {
+
     }
   }
 }
