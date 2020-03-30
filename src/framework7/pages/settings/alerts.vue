@@ -5,12 +5,10 @@
       <f7-list-item
         v-for="item in alerts"
         :key="item.id"
-        :title="item.type"
-        link="#"
-        :subtitle="item.attributes"
-        :after="item.always"
-      >
-      </f7-list-item>
+        :title="$t('settings.alert_' + item.notification.type)"
+        :subtitle="item.notification.notificators"
+        :after="item.notification.always ? 'Todos' : item.devices.join(', ')"
+      />
     </f7-list>
   </f7-page>
 </template>
