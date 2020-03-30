@@ -57,7 +57,6 @@
 </template>
 
 <script>
-import { traccar } from '../../api/traccar-api'
 import { vm } from '../../main'
 import { mapGetters } from 'vuex'
 
@@ -67,7 +66,6 @@ export default {
       selectedAlertsType: [],
       selectedDevices: [],
       selectedNotifications: [],
-      alerts: [],
       pickerOptions: {
         shortcuts: [{
           text: 'Today',
@@ -112,7 +110,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['events']),
+    ...mapGetters(['events', 'alerts']),
     devices: function() { return vm.$data.devices },
     geofences: function() { return vm.$data.geofences },
     sortedItems: function() {
@@ -120,10 +118,6 @@ export default {
     }
   },
   mounted() {
-    if (this.alerts.length === 0) {
-      traccar.alerts(this.loadAlerts)
-    }
-
     const end = new Date()
     const start = new Date()
     end.setHours(23)
@@ -136,39 +130,6 @@ export default {
     this.selectedDevices = vm.$data.devices.map(d => d.id)
   },
   methods: {
-    loadAlerts: function(alerts) {
-      const self = this
-      const result = []
-      alerts.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
-        const alarm_data = {
-          notification: a,
-          devices: []
-        }
-        result.push(alarm_data)
-      })
-      this.alerts = result
-
-      this.devices.forEach(d => {
-        traccar.alertsByDevice(d.id, function(alerts) {
-          alerts.forEach(a => {
-            const alert = self.alerts.find(a_data => a_data.notification.id === a.id)
-            if (a.always === false) {
-              alert.devices.push({ data: d })
-            }
-          })
-        })
-      })
-
-      this.alerts.forEach(a => {
-        if (a.notification.always === true) {
-          self.devices.forEach(d => {
-            a.devices.push({ data: d })
-          })
-        }
-      })
-
-      this.getNotifications()
-    },
     getNotifications() {
       this.timeline = []
       this.alerts.forEach(a => {
@@ -180,7 +141,11 @@ export default {
     },
     getAlertNotifications() {
       if (this.dateRange.length > 0) {
-        this.$store.dispatch('user/fetchEvents', { start: this.dateRange[0], end: this.dateRange[1] })
+        this.$store.dispatch('user/fetchEvents', {
+          start: this.dateRange[0],
+          end: this.dateRange[1],
+          types: this.alerts.filter(a => this.selectedAlertsType.find(e => e === a.notification.id))
+        })
       }
     }
   }

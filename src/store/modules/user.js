@@ -92,9 +92,15 @@ function initData(commit, state, dispatch) {
             const group = groups.find((g) => g.id === d.groupId)
             d.groupName = group && group.name
           })
-          commit('SET_DATA_LOADED', true)
-          serverBus.$emit('dataLoaded')
-          resolve()
+          dispatch('fetchEvents', {
+            start: Vue.moment().subtract(1, 'day').toDate(),
+            end: new Date(),
+            types: state.alerts
+          }).finally(() => {
+            commit('SET_DATA_LOADED', true)
+            serverBus.$emit('dataLoaded')
+            resolve()
+          })
         }, (error) => {
           Vue.$log.error(error)
           resolve()
@@ -185,7 +191,7 @@ const actions = {
   setAlerts({ commit }, alerts) {
     commit('SET_ALERTS', alerts)
   },
-  fetchEvents({ commit }, { start, end }) {
+  fetchEvents({ commit }, { start, end, types }) {
     function getNotificationContent(notification) {
       if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
         const geofence = this.geofences.find(g => g.id === notification.geofenceId)
@@ -223,7 +229,7 @@ const actions = {
       start.toISOString(),
       end.toISOString(),
       vm.$data.devices.map(d => d.id),
-      state.alerts.map(a => a.notification.type),
+      types.map(a => a.notification.type),
       (events) => {
         events.forEach(e => {
           e.device = vm.$data.devices.find(d => d.id === e.deviceId)
@@ -234,6 +240,7 @@ const actions = {
       }).then((data) => {
       commit('SET_EVENTS', data.map(a => {
         return {
+          positionId: a.positionId,
           timestamp: a.serverTime,
           title: vm.$data.devices.find(d => d.id === a.deviceId).name,
           content: getNotificationContent(a),

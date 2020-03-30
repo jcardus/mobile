@@ -3,13 +3,12 @@
     <f7-navbar :title="$t('route.alerts')"></f7-navbar>
     <f7-list media-list>
       <f7-list-item
-        v-for="item in events"
-        :key="item.id"
-        link="#"
+        v-for="(item, index) in events"
+        :key="index"
+        :link="'/alertDetail/' + index"
         :title="item.title"
         :after="item.timestamp | moment('calendar')"
         :subtitle="item.type"
-        :text="item.content"
       />
     </f7-list>
   </f7-page>
@@ -17,25 +16,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { serverBus } from '../../main'
+import { serverBus } from '../../../main'
 
 export default {
   computed: {
-    ...mapGetters(['events'])
+    ...mapGetters(['events', 'alerts'])
   },
   created() {
     serverBus.$on('eventsActive', this.pageShown)
   },
   methods: {
     pageShown() {
-      this.$log.info('alerts', this.events)
-      if (this.events.length === 0) {
-        this.$store.dispatch('user/fetchEvents',
-          { start: this.$moment().subtract(1, 'day').toDate(), end: new Date() })
-          .then(() => {
-            this.$log.info('alerts', this.events)
-          })
-      }
+      this.$store.dispatch('resetUnreadItems')
     }
   }
 }

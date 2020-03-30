@@ -4,6 +4,11 @@ import getters from './getters'
 import { TrackJS } from 'trackjs'
 import { removeToken } from '../utils/auth'
 import { serverBus } from '../main'
+import { VuexPersistence } from 'vuex-persist'
+
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage
+})
 
 Vue.use(Vuex)
 
@@ -20,6 +25,7 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 }, {})
 
 const store = new Vuex.Store({
+  plugins: [vuexLocal.plugin],
   state: {
     unreadItems: 0,
     selectedDevice: null,
@@ -33,9 +39,15 @@ const store = new Vuex.Store({
   actions: {
     incUnreadItems({ commit }) {
       commit('INC_UNREAD_ITEMS')
+    },
+    resetUnreadItems({ commit }) {
+      commit('RESET_UNREAD_ITEMS')
     }
   },
   mutations: {
+    RESET_UNREAD_ITEMS(state) {
+      state.unreadItems = 0
+    },
     INC_UNREAD_ITEMS(state) {
       state.unreadItems++
     },

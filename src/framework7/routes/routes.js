@@ -12,8 +12,13 @@ import Viewer from '../pages/viewer'
 import MapMobileContainer from '../pages/MapMobileContainer'
 import DashboardPage from '../pages/dashboard'
 import alerts from '../pages/alerts'
+import AlertDetail from '../pages/alerts/AlertDetail'
 
 const routes = [
+  {
+    path: '/alertdetail/:alertId',
+    component: AlertDetail
+  },
   {
     path: '/alerts',
     component: alerts
