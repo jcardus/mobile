@@ -40,6 +40,7 @@ import { TrackJS } from 'trackjs'
 import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
+import PoiPopUp from './PoiPopUp'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -937,8 +938,17 @@ export default {
     onClickTouchPois(e) {
       new mapboxgl.Popup()
         .setLngLat(e.lngLat)
-        .setHTML(e.features[0].properties.name)
+        .setHTML('<div id="vue-poi-popup"></div>')
         .addTo(this.map)
+      const PP = Vue.extend(PoiPopUp)
+      const vm = new PP({
+        i18n: i18n,
+        data: {
+          properties: e.features[0].properties,
+          lngLat: e.features[0].geometry.coordinates
+        }
+      })
+      vm.$mount('#vue-poi-popup')
     }
   }
 }

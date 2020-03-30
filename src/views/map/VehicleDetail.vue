@@ -51,8 +51,7 @@ import { serverBus, vm } from '../../main'
 import ImmobilizeButton from './ImmobilizeButton'
 import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
-
-const mlyClientId = 'NEI1OEdYTllURG12UndVQ3RfU0VaUToxMDVhMWIxZmQ4MWUxOWRj'
+import { clientId } from '../../utils/mapillary'
 
 export default {
   name: 'VehicleDetail',
@@ -128,7 +127,7 @@ export default {
       const oldCoords = this.oldPosition || this.feature.geometry.coordinates
       return 'https://a.mapillary.com/v3/images/?closeto=' + oldCoords.join(',') +
               '&per_page=1&lookat=' + this.feature.geometry.coordinates.join(',') +
-              '&client_id=' + mlyClientId +
+              '&client_id=' + clientId +
         (this.sequenceKey ? '&sequence_keys=' + this.sequenceKey : '')
     },
     handleLoad(e, img) {
