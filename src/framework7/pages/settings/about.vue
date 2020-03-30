@@ -3,7 +3,7 @@
     <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
     <f7-block-title style="font-size: 20px"><i class="fas fa-info-circle"></i> {{ $t('settings.about') }}</f7-block-title>
     <f7-list>
-      <f7-list-item :title="$t('settings.version')" :after="$store.state.app.packageVersion">
+      <f7-list-item :title="$t('settings.version')" :after="version">
       </f7-list-item>
       <f7-list-item :title="$t('vehicleList.column_lastUpdate')" :after="lastUpdate.format('LLL')">
       </f7-list-item>
@@ -35,6 +35,9 @@ export default {
     },
     connected() {
       return this.offline ? this.$t('settings.disconnected') : this.$t('settings.connected')
+    },
+    version() {
+      return process.env.PACKAGE_VERSION
     }
   },
   methods: {
