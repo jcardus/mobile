@@ -41,7 +41,7 @@ export default {
   mounted() {
     this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()
-    document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
+    document.getElementById('title').innerHTML = partner.getTitle() + ' ' + process.env.PACKAGE_VERSION
   },
   methods: {
     message(message, type) {
