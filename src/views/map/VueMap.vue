@@ -457,12 +457,6 @@ export default {
       this.showHideDevices(this.$static.map.getPitch() === 0)
       this.truck.visible = (this.$static.map.getPitch() !== 0)
     },
-    onEnterUnclustered: function() {
-      this.map.getCanvas().style.cursor = 'pointer'
-    },
-    onLeaveUnclustered: function() {
-      this.map.getCanvas().style.cursor = ''
-    },
     subscribeEvents() {
       const self = this
       this.$static.map.on('load', this.onMapLoad)
@@ -470,11 +464,15 @@ export default {
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
-      this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
+      this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'pois', this.onClickTouchPois)
-      this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
+      this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
+      this.$static.map.on('mouseenter', 'unclustered-point', this.mouseEnter)
+      this.$static.map.on('mouseleave', 'unclustered-point', this.mouseLeave)
+      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
@@ -503,13 +501,12 @@ export default {
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
       this.$static.map.off('click', 'unclustered-point', this.onClickTouchUnclustered)
-      this.$static.map.off('mouseenter', 'unclustered-point', this.onEnterUnclustered)
-      this.$static.map.off('mouseleave', 'unclustered-point', this.onLeaveUnclustered)
+      this.$static.map.off('mouseenter', 'unclustered-point', this.mouseEnter)
+      this.$static.map.off('mouseleave', 'unclustered-point', this.mouseLeave)
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
-      this.$static.map.off('styleimagemissing', this.onStyleImageMissing)
       this.$static.map.off('data', this.onData)
       serverBus.$off('deviceChanged', this.deviceChanged)
       serverBus.$off('deviceSelected', this.deviceSelected)
@@ -519,7 +516,11 @@ export default {
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
-    onStyleImageMissing(e) {
+    mouseEnter() {
+      this.map.getCanvas().style.cursor = 'pointer'
+    },
+    mouseLeave() {
+      this.map.getCanvas().style.cursor = ''
     },
     onStyleLoad(e) {
       this.$log.debug('onStyleLoad ', e)
@@ -933,8 +934,11 @@ export default {
     onMove() {
       lnglat.updateMarkers()
     },
-    onClickTouchPois() {
-
+    onClickTouchPois(e) {
+      new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(e.features[0].properties.name)
+        .addTo(this.map)
     }
   }
 }
