@@ -1,9 +1,8 @@
-import VueCookies from 'vue-cookies'
 import { serverBus, vm } from '../../main'
 
 const state = {
-  showGeofences: VueCookies.get('showGeofences') === '1',
-  showPOIs: VueCookies.get('showPOIs') === '1',
+  showGeofences: false,
+  showPOIs: false,
   minPos: 0,
   maxPos: 1000,
   isPlaying: false,
@@ -19,11 +18,9 @@ const mutations = {
   },
   TOGGLE_GEOFENCES(state) {
     state.showGeofences = !state.showGeofences
-    VueCookies.set('showGeofences', state.showGeofences ? '1' : '0')
   },
   TOGGLE_POIS(state) {
     state.showPOIs = !state.showPOIs
-    VueCookies.set('showPOIs', state.showPOIs ? '1' : '0')
   },
   TOGGLE_PLAY(state) {
     state.isPlaying = !state.isPlaying
@@ -58,8 +55,8 @@ const actions = {
   toggleGeofences({ commit }) {
     commit('TOGGLE_GEOFENCES')
   },
-  togglePOIs(context) {
-    context.commit('TOGGLE_POIS')
+  togglePOIs({ commit, state }) {
+    commit('TOGGLE_POIS')
     vm.$static.map.setLayoutProperty('pois', 'visibility',
       state.showPOIs ? 'visible' : 'none')
     vm.$static.map.setLayoutProperty('pois-labels', 'visibility',
