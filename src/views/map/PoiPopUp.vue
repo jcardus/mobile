@@ -5,15 +5,7 @@
       {{ properties.title }}
     </div>
     <div class="right">
-      <p><a href="geo:50,10">Location 50/10</a></p>
-      <p><a href="geo:Vienna">Location Vienna</a></p>
-      <p><a href="geo:?z=5&q=New+York">Zoom 5, Search for New York</a></p>
-      <p><a href="geo:?q=San+Francisco&z=15">Zoom 15, Search for San Francisco</a></p>
-      <p><a href="google.navigation:q=San+Francisco">Navigation to San Francisco</a></p>
-      <p><a href="google.navigation:q=50,10">Navigation to 50/10</a></p>
-      <p><a href="http://maps.google.com/maps?saddr=New+York&daddr=San+Francisco">Route New York --> San Francisco</a></p>
-      <p><a href="http://maps.google.com/maps?saddr=50,10&daddr=50,20">Route 50/10 --> 50/20</a></p>
-
+      <a href="" @click="navigateTo">navegar</a>
     </div>
   </div>
 </template>
@@ -36,6 +28,15 @@ export default {
   },
   beforeDestroy() {
     Vue.$log.debug('destroying PoiPopUp', this.properties)
+  },
+  methods: {
+    navigateTo() {
+      const lat = this.lngLat[1].toFixed(6)
+      const lon = this.lngLat[0].toFixed(6)
+      const ll = `${lat},${lon}`
+      const start = (this.$device && this.$device.ios) ? 'maps' : 'https'
+      window.open(`${start}://maps.google.com/maps?daddr=${ll}`)
+    }
   }
 }
 </script>
