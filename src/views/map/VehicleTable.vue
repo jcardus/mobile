@@ -277,7 +277,7 @@ export default {
       })
     },
     vehicleSelected: function(device) {
-      if (this.$store.state.app.historyMode) {
+      if (this.$store.state.map.historyMode) {
         vm.$store.dispatch('map/toggleHistoryMode')
         Vue.$log.info('VehicleTable emit showRoutesChanged')
         serverBus.$emit('showRoutesChanged')

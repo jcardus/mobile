@@ -183,13 +183,6 @@ export default {
         subtitle: partner.getTitle()
       }).open()
     },
-    dashboardShow() {
-      Vue.$log.debug('emit dashboardActive')
-    },
-    reportsShow() {
-      Vue.$log.debug('emit reportsActive')
-      serverBus.$emit('reportsActive')
-    },
     showNotifications(event) {
       this.$f7.notification.create({
         icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '" alt=""/>',
