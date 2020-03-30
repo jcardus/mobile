@@ -32,12 +32,12 @@ export default {
   mounted() {
     getImage(this.lngLat).then((url) => {
       this.imageUrl = url
-      const lat = this.lngLat[1].toFixed(6)
-      const lon = this.lngLat[0].toFixed(6)
-      const ll = `${lat},${lon}`
-      const start = (this.isMobile && this.$device.ios) ? 'maps' : 'https'
-      this.navigateUrl = `${start}://maps.google.com/maps?daddr=${ll}`
     })
+    const lat = this.lngLat[1].toFixed(6)
+    const lon = this.lngLat[0].toFixed(6)
+    const ll = `${lat},${lon}`
+    const start = (this.isMobile && this.$device.ios) ? 'maps' : 'https'
+    this.navigateUrl = `${start}://maps.google.com/maps?daddr=${ll}`
   },
   beforeDestroy() {
     Vue.$log.debug('destroying PoiPopUp', this.properties)
