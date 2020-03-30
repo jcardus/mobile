@@ -161,7 +161,7 @@ function fetchGeofences(map) {
       type: 'circle',
       source: 'geofences',
       paint: {
-        'circle-radius': 5,
+        'circle-radius': 10,
         'circle-color': '#B42222'
       },
       layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
