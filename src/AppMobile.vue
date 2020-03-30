@@ -98,9 +98,7 @@ export default {
       return window.location.hostname
     },
     version() {
-      if (process.env.NODE_ENV === 'development') {
-        return new Date()
-      } else { return this.$store.state.app.packageVersion }
+      return process.env.PACKAGE_VERSION
     },
     logo() {
       return partner.getLogo()
@@ -127,7 +125,7 @@ export default {
     try {
       this.$log.debug('mounted App mobile')
       document.getElementById('favicon').href = partner.getFavIcon()
-      document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.$store.state.app.packageVersion
+      document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
       this.toastNewVersion = this.$f7.toast.create({
         text: this.$t('layout.newVersion'),
         closeButton: true,

@@ -94,7 +94,7 @@ export default {
       return partner.getCSSName()
     },
     version() {
-      let v = this.$store.state.app.packageVersion
+      let v = process.env.PACKAGE_VERSION
       if (process.env.NODE_ENV === 'development') {
         v += '-dev'
       }
