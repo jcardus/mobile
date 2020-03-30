@@ -31,7 +31,7 @@ const mutations = {
   SET_PLAYING(state, value) {
     state.isPlaying = value
   },
-  TOGGLE_HISTORYMODE: () => {
+  TOGGLE_HISTORYMODE: (state) => {
     state.historyMode = !state.historyMode
     serverBus.$emit('showRoutesChanged')
     setTimeout(() => serverBus.$emit('mapShown'), 500)

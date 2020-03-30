@@ -1,7 +1,6 @@
 const state = {
   packageVersion: process.env.PACKAGE_VERSION || '0',
   stiLoaded: false,
-  historyMode: false,
   elementReportData: [],
   loading: false,
   unreadItems: 0
