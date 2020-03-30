@@ -24,19 +24,9 @@ export default {
   },
   created() {
     serverBus.$on('eventsActive', this.pageShown)
-    this.$store.dispatch('user/fetchEvents',
-      {
-        start: this.$moment().subtract(1, 'day').toDate(),
-        end: new Date(),
-        types: this.alerts
-      })
-      .then(() => {
-        this.$log.info('alerts', this.events)
-      })
   },
   methods: {
     pageShown() {
-      this.$log.info('alerts', this.events)
       this.$store.dispatch('resetUnreadItems')
     }
   }

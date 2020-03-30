@@ -92,9 +92,15 @@ function initData(commit, state, dispatch) {
             const group = groups.find((g) => g.id === d.groupId)
             d.groupName = group && group.name
           })
-          commit('SET_DATA_LOADED', true)
-          serverBus.$emit('dataLoaded')
-          resolve()
+          dispatch('fetchEvents', {
+            start: Vue.moment().subtract(1, 'day').toDate(),
+            end: new Date(),
+            types: state.alerts
+          }).finally(() => {
+            commit('SET_DATA_LOADED', true)
+            serverBus.$emit('dataLoaded')
+            resolve()
+          })
         }, (error) => {
           Vue.$log.error(error)
           resolve()
@@ -234,6 +240,7 @@ const actions = {
       }).then((data) => {
       commit('SET_EVENTS', data.map(a => {
         return {
+          positionId: a.positionId,
           timestamp: a.serverTime,
           title: vm.$data.devices.find(d => d.id === a.deviceId).name,
           content: getNotificationContent(a),

@@ -7,16 +7,31 @@
 import mapboxgl from 'mapbox-gl'
 export default {
   name: 'SimpleMap',
+  props: {
+    position: {
+      type: Object,
+      default: null
+    }
+  },
+  watch: {
+    position() {
+      const latlon = [this.position.longitude, this.position.latitude]
+      this.simpleMap.setCenter(latlon)
+      new mapboxgl.Marker()
+        .setLngLat(latlon)
+        .addTo(this.simpleMap)
+    }
+  },
   static() {
     return {
       simpleMap: null
     }
   },
   mounted() {
-    this.$static.simpleMap = new mapboxgl.Map({
+    this.simpleMap = new mapboxgl.Map({
       container: 'simpleMap',
-      center: [-74.5, 40], // starting position [lng, lat]
-      style: 'mapbox://styles/mapbox/streets-v11'
+      style: 'mapbox://styles/mapbox/streets-v11',
+      zoom: 10
     })
   }
 }

@@ -31,7 +31,9 @@ function invokeApi(url, onFulfill, onError) {
       })
         .then(response => {
           vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
-            onFulfill(response.data)
+            if (onFulfill) {
+              onFulfill(response.data)
+            }
             resolve(response.data)
           })
         })
@@ -149,12 +151,16 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  positions: function(onFulfill) {
-    axios.get(positions, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+  positions: function(onFulfill, positionId) {
+    if (positionId) {
+      return invokeApi(positions + '?id=' + positionId)
+    } else {
+      axios.get(positions, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+        .then(response => onFulfill(response.data))
+        .catch(reason => {
+          Vue.$log.error(reason)
+        })
+    }
   },
   trips: function(devices, from, to, onFulfill) {
     const yesterday = new Date()
