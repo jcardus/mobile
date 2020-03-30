@@ -112,7 +112,7 @@ export default {
   computed: {
     ...mapGetters(['events', 'alerts']),
     devices: function() { return vm.$data.devices },
-    geofences: function() { return vm.$data.geofences },
+    geofences: function() { return vm.$store.state.user.geofences },
     sortedItems: function() {
       return this.events.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     }

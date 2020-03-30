@@ -174,7 +174,7 @@ export default {
       return devices
     },
     geofences() {
-      return vm.$data.geofences
+      return vm.$store.state.user.geofences
     },
     isMobile() { return lnglat.isMobile() }
   },

@@ -62,7 +62,7 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     pois: function() {
-      return vm.$data.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+      return vm.$store.state.user.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredPOIs: function() {
@@ -131,7 +131,7 @@ export default {
       })
     },
     geofenceDeleted(geofenceId) {
-      vm.$data.geofences = vm.$data.geofences.filter((e) => e && e.id !== geofenceId)
+      vm.$store.state.user.geofences = vm.$store.state.user.geofences.filter((e) => e && e.id !== geofenceId)
       this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== geofenceId)
       lnglat.refreshGeofences()
       this.$message({
