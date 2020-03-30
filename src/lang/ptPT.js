@@ -14,7 +14,7 @@ export default {
     report_speeding: 'Relatório de excessos de velocidade',
     report_speeding_beta: 'Relatórios de excexsos de velocidade BETA',
     report_tolls: 'Relatório de Portagens',
-    settings: 'Configurações',
+    settings: 'Definições',
     settings_map: 'Mapa',
     duration: 'Duração',
     nodata: 'Não existem dados para o período seleccionado.'
