@@ -55,7 +55,7 @@ export default {
   computed:
   {
     pois: function() {
-      return vm.$data.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+      return vm.$store.state.user.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
     geofencesSource() { return this.$root.$static.geofencesSource }
   },
@@ -75,14 +75,14 @@ export default {
       traccar.editGeofence(this.selectedPoi.id, this.selectedPoi, this.poiEdited())
       this.selectedPoi.name = value
     },
-    cancelEdit(value) {
+    cancelEdit() {
       this.selectedPoi = null
     },
     poiEdited: function() {
       this.$f7.dialog.alert(this.$t('geofence.poi_edited'), this.$t('geofence.poi_edit_title'))
     },
     geofenceDeleted(geofenceId) {
-      vm.$data.geofences = vm.$data.geofences.filter((e) => e && e.id !== geofenceId)
+      vm.$store.state.user.geofences = vm.$store.state.user.geofences.filter((e) => e && e.id !== geofenceId)
       this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== geofenceId)
       lnglat.refreshGeofences()
       this.$f7.dialog.alert(this.$t('geofence.poi_deleted'), this.$t('geofence.poi_delete_title'))

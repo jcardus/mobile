@@ -210,7 +210,7 @@ export default {
       const self = this
       traccar.positions((pos) => {
         self.processPositions(pos)
-        self.geofencesSource.features = self.processGeofences(vm.$data.geofences)
+        self.geofencesSource.features = self.processGeofences(vm.$store.state.user.geofences)
         self.refreshGeofences()
         Vue.$log.info('VueMap initData done finishLoading')
         self.finishLoading()
@@ -863,7 +863,7 @@ export default {
       return geojson
     },
     featureCreated: function(feature) {
-      vm.$data.geofences.push(feature)
+      vm.$store.state.user.geofences.push(feature)
       this.$static.draw.deleteAll()
       const featureGeojson = this.getFeatureGeojson(feature)
       this.geofencesSource.features.push(featureGeojson)

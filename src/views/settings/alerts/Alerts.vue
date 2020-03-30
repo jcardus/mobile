@@ -271,10 +271,10 @@ export default {
       return vm.$data.devices.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     geofences: function() {
-      return vm.$data.geofences.filter(g => g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING'))
+      return vm.$store.state.user.geofences.filter(g => g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING'))
     },
     pois: function() {
-      return vm.$data.geofences.filter(g => g.area.startsWith('CIRCLE'))
+      return vm.$store.state.user.geofences.filter(g => g.area.startsWith('CIRCLE'))
     }
   },
   mounted() {

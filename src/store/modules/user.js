@@ -22,7 +22,8 @@ const state = {
   alerts: [],
   events: [],
   devices: [],
-  groups: []
+  groups: [],
+  geofences: []
 }
 
 const mutations = {
@@ -67,7 +68,7 @@ function getAvatar(name) {
 function initData(commit, state, dispatch) {
   return new Promise((resolve, reject) => {
     traccar.geofences(function(geofences) {
-      vm.$data.geofences = geofences
+      vm.$store.state.user.geofences = geofences
       dispatch('fetchAlerts')
       traccar.groups(state.userId, (groups) => {
         state.groups = groups

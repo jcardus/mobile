@@ -62,7 +62,7 @@ export default {
     },
     map: function() { return vm.$static.map },
     geofences: function() {
-      return vm.$data.geofences.filter(g => g && (g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING')))
+      return vm.$store.state.user.geofences.filter(g => g && (g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING')))
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredGeofences: function() {
@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     loadGeofences: function(geofences) {
-      vm.$data.geofences = geofences
+      vm.$store.state.user.geofences = geofences
     },
     geofenceSelected: function(geofence) {
       if (geofence && this.showGeofenceLayer) {
@@ -141,7 +141,7 @@ export default {
       })
     },
     geofenceDeleted(geofenceId) {
-      vm.$data.geofences = vm.$data.geofences.filter((e) => e.id !== geofenceId)
+      vm.$store.state.user.geofences = vm.$store.state.user.geofences.filter((e) => e.id !== geofenceId)
       this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== geofenceId)
       lnglat.refreshGeofences()
       this.$message({
