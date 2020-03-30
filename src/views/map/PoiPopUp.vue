@@ -5,7 +5,8 @@
       {{ properties.title }}
     </div>
     <div class="right">
-      <a href="" @click="navigateTo">navegar</a>
+      <f7-link v-if="isMobile" :href="navigateUrl" :external="true">Navegar</f7-link>
+      <el-link v-else :href="navigateUrl" target="_blank">Navegar</el-link>
     </div>
   </div>
 </template>
@@ -13,30 +14,33 @@
 <script>
 import Vue from 'vue'
 import { getImage } from '../../utils/mapillary'
+import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'PoiPopUp',
   data: function() {
     return {
-      imageUrl: ''
+      imageUrl: '',
+      navigateUrl: ''
+    }
+  },
+  computed: {
+    isMobile() {
+      return lnglat.isMobile()
     }
   },
   created() {
     getImage(this.lngLat).then((url) => {
       this.imageUrl = url
-    })
-  },
-  beforeDestroy() {
-    Vue.$log.debug('destroying PoiPopUp', this.properties)
-  },
-  methods: {
-    navigateTo() {
       const lat = this.lngLat[1].toFixed(6)
       const lon = this.lngLat[0].toFixed(6)
       const ll = `${lat},${lon}`
       const start = (this.$device && this.$device.ios) ? 'maps' : 'https'
-      window.open(`${start}://maps.google.com/maps?daddr=${ll}`)
-    }
+      this.navigateUrl = `${start}://maps.google.com/maps?daddr=${ll}`
+    })
+  },
+  beforeDestroy() {
+    Vue.$log.debug('destroying PoiPopUp', this.properties)
   }
 }
 </script>
