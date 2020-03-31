@@ -16,6 +16,7 @@ const getters = {
   events: state => state.user.events,
   dataLoaded: state => state.user.dataLoaded,
   groups: state => state.user.groups,
+  geofences: state => state.user.geofences,
   unreadItems: state => state.unreadItems
 }
 

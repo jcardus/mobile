@@ -20,16 +20,21 @@
       </f7-row>
       <f7-row tag="p">
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/map"><i class="fas fa-map"></i> {{ $t('settings.map') }}</f7-button>
+          <f7-button fill large raised style="font-size:15px" href="/settings/geofences"><i class="fas fa-draw-polygon"></i> {{ $t('settings.geofences') }}</f7-button>
         </f7-col>
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/about"><i class="fas fa-info-circle"></i> {{ $t('settings.about') }}</f7-button>
+          <f7-button fill large raised style="font-size:15px" href="/settings/map"><i class="fas fa-map"></i> {{ $t('settings.map') }}</f7-button>
         </f7-col>
       </f7-row>
       <f7-row tag="p">
         <f7-col>
+          <f7-button fill large raised style="font-size:15px" href="/settings/about"><i class="fas fa-info-circle"></i> {{ $t('settings.about') }}</f7-button>
+        </f7-col>
+        <f7-col>
           <f7-button fill large raised style="font-size:15px" @click="refreshApp"><i class="fas fa-redo"></i> {{ $t('settings.refresh') }}</f7-button>
         </f7-col>
+      </f7-row>
+      <f7-row tag="p">
         <f7-col>
           <f7-button fill large raised style="font-size:15px" @click="logout"><i class="fas fa-sign-out-alt"></i> {{ $t('settings.logout') }}</f7-button>
         </f7-col>
