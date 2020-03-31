@@ -114,6 +114,7 @@ export default {
     logout: 'Sair',
     vehicles: 'Veículos',
     pois: 'POIs',
+    geofences: 'Balizas',
     title: 'Configurações',
     route_history: 'Histórico de Rota',
     route_match: 'Rota na estrada',
