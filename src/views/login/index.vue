@@ -1,47 +1,60 @@
 <template>
-  <div class="login-container" :style="'background-image: url(' + imageSrc + ')'">
-    <div class="loginFormDiv">
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-        <div class="title-container">
-          <img class="logo" :src="logoImage" alt="">
+  <div>
+    <el-row class="login-container">
+      <el-col :span="16" style="height: 100%">
+        <el-image
+          :src="imageSrc"
+          fit="cover"
+          style="height: 100%; width: 100%;"
+        />
+      </el-col>
+      <el-col :span="8" style="height: 100%">
+        <div class="parentDiv">
+          <div class="loginFormDiv">
+            <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+              <div class="title-container">
+                <img class="logo" :src="logoImage" alt="">
+              </div>
+              <el-form-item prop="username" :label="$t('login.login_user')">
+                <el-input
+                  ref="username"
+                  v-model="loginForm.username"
+                  name="username"
+                  type="text"
+                  tabindex="1"
+                  autocomplete="on"
+                  :class="cssName"
+                />
+              </el-form-item>
+              <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+                <el-form-item prop="password" :label="$t('login.login_password')">
+                  <el-input
+                    :key="passwordType"
+                    ref="password"
+                    v-model="loginForm.password"
+                    :show-password="true"
+                    :type="passwordType"
+                    name="password"
+                    tabindex="2"
+                    autocomplete="on"
+                    :class="cssName"
+                    @keyup.native="checkCapslock"
+                    @blur="capsTooltip = false"
+                    @keyup.enter.native="handleLogin"
+                  />
+                </el-form-item>
+              </el-tooltip>
+              <div>
+                <el-button :loading="loading" type="primary" :style="'margin-bottom:30px; background-color: '+themeColor+'; border-color: '+themeColor" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
+              </div>
+              <div>
+                <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
+              </div>
+            </el-form>
+          </div>
         </div>
-        <el-form-item prop="username" :label="$t('login.login_user')">
-          <el-input
-            ref="username"
-            v-model="loginForm.username"
-            name="username"
-            type="text"
-            tabindex="1"
-            autocomplete="on"
-            :class="cssName"
-          />
-        </el-form-item>
-        <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-          <el-form-item prop="password" :label="$t('login.login_password')">
-            <el-input
-              :key="passwordType"
-              ref="password"
-              v-model="loginForm.password"
-              :show-password="true"
-              :type="passwordType"
-              name="password"
-              tabindex="2"
-              autocomplete="on"
-              :class="cssName"
-              @keyup.native="checkCapslock"
-              @blur="capsTooltip = false"
-              @keyup.enter.native="handleLogin"
-            />
-          </el-form-item>
-        </el-tooltip>
-        <div>
-          <el-button :loading="loading" type="primary" :style="'margin-bottom:30px; background-color: '+themeColor+'; border-color: '+themeColor" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
-        </div>
-        <div>
-          <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
-        </div>
-      </el-form>
-    </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -183,140 +196,136 @@ export default {
   $light_gray:#fff;
   $cursor: #202020;
   $darkest_gray:#202020;
-  $cdnUrl: 'https://d2alv66jwtleln.cloudfront.net';
 
   .login-container {
-    min-height: 100%;
     height: 100vh;
-    width: 100%;
-    background-color: $bg;
-    overflow: hidden;
-    background-repeat: no-repeat;
-    background-size: 60% 100%;
-
-    .loginFormDiv {
+    .parentDiv {
+      height: 100%;
+      width: 100%;
       position: relative;
-      width: 40%;
-      float: right;
-      overflow: hidden;
-
-      .login-form {
-        padding: 200px 150px;
-      }
-
-      .tips {
-        font-size: 14px;
-        color: #fff;
-        margin-bottom: 10px;
-
-        span {
-          &:first-of-type {
-            margin-right: 16px;
-          }
-        }
-      }
-
-      .svg-container {
-        padding: 6px 5px 6px 15px;
-        color: $dark_gray;
-        vertical-align: middle;
-        width: 30px;
-        display: inline-block;
-      }
-
-      .title-container {
-        position: relative;
-
-        .logo {
-          margin: 0 auto 20px auto;
-          max-width: 200px;
-        }
-
-        .set-language {
-          color: #fff;
-          position: absolute;
-          top: 3px;
-          font-size: 18px;
-          right: 0;
-          cursor: pointer;
-        }
-      }
-
-      .wuizy {
-        input {
-          border-color: #91D400;
-        }
-      }
-
-      .fleetrack {
-        input {
-          border-color: #055AE5;
-        }
-      }
-
-      .able-on {
-        input {
-          border-color: #055AE5;
-        }
-      }
-
-      .el-input {
-        display: inline-block;
-        height: 47px;
+      .loginFormDiv {
         width: 100%;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        .login-form {
+          padding: 50px;
+        }
 
-        input {
-          background: transparent;
-          border-right-width: 0;
-          border-left-width: 0;
-          border-top-width: 0;
-          border-bottom-width: 2px;
-          -webkit-appearance: none;
-          border-radius: 0;
-          padding: 12px 5px 12px 15px;
-          color: $darkest_gray;
-          height: 40px;
-          caret-color: $cursor;
-          font-size: 15px;
-          font-family: "Open Sans",serif;
+        .tips {
+          font-size: 14px;
+          color: #fff;
+          margin-bottom: 10px;
 
-          &:-webkit-autofill {
-            box-shadow: 0 0 0 1000px $bg inset !important;
-            -webkit-text-fill-color: $cursor !important;
+          span {
+            &:first-of-type {
+              margin-right: 16px;
+            }
           }
         }
-      }
 
-      .el-button-login {
-        width: 100px;
-      }
+        .svg-container {
+          padding: 6px 5px 6px 15px;
+          color: $dark_gray;
+          vertical-align: middle;
+          width: 30px;
+          display: inline-block;
+        }
 
-      .el-form-item {
-        border-radius: 5px;
-        color: #454545;
-      }
+        .title-container {
+          width: 100%;
+          text-align: center;
+          .logo {
+            padding: 10px;
+            max-width: 200px;
+          }
 
-      .el-form-item__label{
-        height: 25px;
-        color: $dark_gray;
-        font-size: 13px;
-        font-family: "Open Sans",serif;
-      }
+          .set-language {
+            color: #fff;
+            position: absolute;
+            top: 3px;
+            font-size: 18px;
+            right: 0;
+            cursor: pointer;
+          }
+        }
 
-      .show-pwd {
-        position: absolute;
-        right: 10px;
-        top: 7px;
-        font-size: 16px;
-        color: $darkest_gray;
-        cursor: pointer;
-        user-select: none;
-      }
+        .wuizy {
+          input {
+            border-color: #91D400;
+          }
+        }
 
-      .el-button {
-        width: 50%;
-        alignment: right;
-        font-family: "Open Sans",serif;
+        .fleetrack {
+          input {
+            border-color: #055AE5;
+          }
+        }
+
+        .able-on {
+          input {
+            border-color: #055AE5;
+          }
+        }
+
+        .el-input {
+          display: inline-block;
+          height: 47px;
+          width: 100%;
+
+          input {
+            background: transparent;
+            border-right-width: 0;
+            border-left-width: 0;
+            border-top-width: 0;
+            border-bottom-width: 2px;
+            -webkit-appearance: none;
+            border-radius: 0;
+            padding: 12px 5px 12px 15px;
+            color: $darkest_gray;
+            height: 40px;
+            caret-color: $cursor;
+            font-size: 15px;
+            font-family: "Open Sans", serif;
+
+            &:-webkit-autofill {
+              box-shadow: 0 0 0 1000px $bg inset !important;
+              -webkit-text-fill-color: $cursor !important;
+            }
+          }
+        }
+
+        .el-button-login {
+          width: 100px;
+        }
+
+        .el-form-item {
+          border-radius: 5px;
+          color: #454545;
+        }
+
+        .el-form-item__label {
+          height: 25px;
+          color: $dark_gray;
+          font-size: 13px;
+          font-family: "Open Sans", serif;
+        }
+
+        .show-pwd {
+          position: absolute;
+          right: 10px;
+          top: 7px;
+          font-size: 16px;
+          color: $darkest_gray;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .el-button {
+          width: 50%;
+          alignment: right;
+          font-family: "Open Sans", serif;
+        }
       }
     }
   }
