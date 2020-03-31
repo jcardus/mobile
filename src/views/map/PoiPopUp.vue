@@ -5,7 +5,7 @@
       {{ properties.title }}
     </div>
     <div class="right">
-      <f7-link v-if="isMobile" :href="navigateUrl" :external="true">Navegar</f7-link>
+      <f7-link v-if="isMobile" href="#" @click="navigateTo">Navegar</f7-link>
       <el-link v-else :href="navigateUrl" target="_blank">Navegar</el-link>
     </div>
   </div>
@@ -41,6 +41,12 @@ export default {
   },
   beforeDestroy() {
     Vue.$log.debug('destroying PoiPopUp', this.properties)
+  },
+  methods: {
+    navigateTo() {
+      const win = window.open(this.navigateUrl, '_top')
+      return win.focus()
+    }
   }
 }
 </script>
