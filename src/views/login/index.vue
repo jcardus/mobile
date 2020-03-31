@@ -1,5 +1,5 @@
 <template>
-  <div :class="backgroungImage">
+  <div class="login-container" :style="'background-image: url(' + imageSrc + ')'">
     <div class="loginFormDiv">
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
         <div class="title-container">
@@ -48,7 +48,8 @@
 <script>
 
 import Vue from 'vue'
-import * as partner from '@/utils/partner'
+import * as partner from '../../utils/partner'
+import { cdnUrl } from '../../utils/consts'
 
 export default {
   name: 'Login',
@@ -81,11 +82,11 @@ export default {
     }
   },
   computed: {
-    logoImage: function() {
+    logoImage() {
       return partner.getLogo()
     },
-    backgroungImage: function() {
-      return 'login-container login-' + Math.floor(Math.random() * 10 + 1)
+    imageSrc() {
+      return `${cdnUrl}/images/login_${Math.floor(Math.random() * 10 + 1)}.jpg`
     },
     themeColor: function() {
       return partner.getThemeColor()
@@ -114,9 +115,9 @@ export default {
     }
   },
   mounted() {
-    if (this.loginForm.username === '') {
+    if (this.$refs.username && this.loginForm.username === '') {
       this.$refs.username.focus()
-    } else if (this.loginForm.password === '') {
+    } else if (this.loginForm.password && this.loginForm.password === '') {
       this.$refs.password.focus()
     }
   },
@@ -183,37 +184,6 @@ export default {
   $cursor: #202020;
   $darkest_gray:#202020;
   $cdnUrl: 'https://d2alv66jwtleln.cloudfront.net';
-
-  .login-1 {
-    background-image: url($cdnUrl + '/images/login_1.png');
-  }
-  .login-2 {
-    background-image: url($cdnUrl + '/images/login_2.png');
-  }
-  .login-3 {
-    background-image: url($cdnUrl + '/images/login_3.png');
-  }
-  .login-4 {
-    background-image: url($cdnUrl + '/images/login_4.png');
-  }
-  .login-5 {
-    background-image: url($cdnUrl + '/images/login_5.png');
-  }
-  .login-6 {
-    background-image: url($cdnUrl + '/images/login_6.png');
-  }
-  .login-7 {
-    background-image: url($cdnUrl + '/images/login_7.png');
-  }
-  .login-8 {
-    background-image: url($cdnUrl + '/images/login_8.png');
-  }
-  .login-9 {
-    background-image: url($cdnUrl + '/images/login_9.png');
-  }
-  .login-10 {
-    background-image: url($cdnUrl + '/images/login_10.png');
-  }
 
   .login-container {
     min-height: 100%;

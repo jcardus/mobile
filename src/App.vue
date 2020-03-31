@@ -1,17 +1,18 @@
 <template>
   <div id="app">
     <router-view />
-    <div v-if="showUpdateDiv" id="snackbar" class="show"><a id="reload" href="" @click="reload()">{{ $t('layout.newVersion') }}</a></div>
+    <div v-if="showUpdateDiv" id="snackbar" class="show">
+      <a id="reload" href="" @click="reload()">{{ $t('layout.newVersion') }}</a>
+    </div>
   </div>
 </template>
 
 <script>
-import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
 import { serverBus, newServiceWorker } from './main'
-import { getToken } from './utils/auth'
 import Vue from 'vue'
+import { traccar } from './api/traccar-api'
 
 export default {
   name: 'App',
@@ -23,16 +24,16 @@ export default {
   created() {
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('message', this.message)
-    if (getToken()) {
-      this.$log.debug('App created with cookie dispatching setUser')
+    traccar.getSession().then((s) => {
+      this.$log.info('App created with session dispatching setUser', s)
       this.$store.dispatch('user/setUser').then(() => {
         Vue.$log.debug('user/setUser done')
       }).catch((e) => {
         this.$log.error(e)
       })
-    } else {
-      this.$log.debug('App created without cookie, should go to login')
-    }
+    }).catch((e) => {
+      this.$log.info('App created without session, should go to login', e)
+    })
   },
   beforeDestroy() {
     serverBus.$off('updateAvailable', this.updateAvailable)

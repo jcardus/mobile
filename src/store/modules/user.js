@@ -1,5 +1,4 @@
 import { login, logout } from '../../api/user'
-import { getToken, setToken, removeToken } from '../../utils/auth'
 import { resetRouter } from '../../router'
 import { traccar } from '../../api/traccar-api'
 import { setLanguage } from '../../lang/index'
@@ -23,7 +22,8 @@ const state = {
   events: [],
   devices: [],
   groups: [],
-  geofences: []
+  geofences: [],
+  attributes: null
 }
 
 const mutations = {
@@ -39,6 +39,7 @@ const mutations = {
     state.userId = token.id
     state.email = token.email
     state.avatar = getAvatar(token.name)
+    state.attributes = token.attributes
   },
   REMOVE_USER(state) {
     state.name = ''
@@ -119,11 +120,9 @@ function initData(commit, state, dispatch) {
 const actions = {
   setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {
-      const newToken = getToken()
-      commit('SET_USER', newToken)
       initData(commit, state, dispatch).finally(() => {
         TrackJS.addMetadata('user', state.name)
-        setLanguage(newToken.attributes.lang)
+        setLanguage(state.lang)
         const hostName = utils.getServerHost()
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
           store: store,
@@ -135,32 +134,30 @@ const actions = {
       })
     })
   },
-  login(context, userInfo) {
-    Vue.$log.debug(context)
+  login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const data = response.data
-        data.password = password
-        setToken(response.data)
-        context.dispatch('setUser').finally(() => {
+        commit('SET_USER', response.data)
+        dispatch('setUser').finally(() => {
           checkForUpdates()
           resolve()
         })
-      }).catch(error => {
-        reject(error)
+      }).catch(e => {
+        Vue.$log.error(e)
+        commit('SET_USER', null)
+        reject(e)
       })
     })
   },
   logout({ commit }) {
     return new Promise((resolve) => {
-      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id + '&deleteData=true')
+      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true')
         .catch(e => { Vue.$log.error(e) })
         .finally(
           () => {
             logout(state.token).then(() => {
               resetRouter()
-              removeToken()
               commit('REMOVE_USER')
               vm.reset()
               state.token = null
@@ -168,7 +165,6 @@ const actions = {
             }).catch((e) => {
               Vue.$log.error(e)
               resetRouter()
-              removeToken()
               resolve()
               state.token = null
             })

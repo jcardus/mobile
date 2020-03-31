@@ -1,9 +1,9 @@
 import router from './router'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
 import Vue from 'vue'
 import * as lnglat from './utils/lnglat'
+import store from './store'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -11,7 +11,8 @@ const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
 export async function routerBeforeEach(next, to) {
 // determine whether the user has logged in
-  const hasToken = getToken()
+  const hasToken = store.state.user.name !== ''
+
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page

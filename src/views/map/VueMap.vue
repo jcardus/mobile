@@ -37,7 +37,6 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
-import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
@@ -110,7 +109,7 @@ export default {
   computed: {
     ...mapGetters(['historyMode', 'dataLoaded', 'name']),
     userLoggedIn() {
-      return this.name !== '' && getToken() !== null
+      return this.name !== ''
     },
     heightMap() {
       return this.historyMode ? 'height: calc(100% - ' + historyPanelHeight + 'px)' : 'height:100%'

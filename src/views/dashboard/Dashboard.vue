@@ -4,7 +4,6 @@
 
 <script>
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
-import { getToken } from '../../utils/auth'
 import { getLanguageI18n } from '../../lang'
 import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
@@ -13,6 +12,7 @@ import { TrackJS } from 'trackjs'
 import { isMobile } from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
 import { serverBus } from '../../main'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
@@ -28,6 +28,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     isMobile() {
       return isMobile()
     }
@@ -36,7 +37,7 @@ export default {
     serverBus.$on('dashboardActive', this.load)
   },
   mounted() {
-    this.$log.debug('mounting dashboard')
+    this.$log.info('dashboard')
     this.load()
   },
   beforeDestroy() {
@@ -44,7 +45,7 @@ export default {
   },
   methods: {
     load() {
-      if (getToken() === null) {
+      if (this.user.name === '') {
         this.$log.debug('no cookie, skip loading dashboard')
         return
       }
@@ -55,7 +56,7 @@ export default {
       const self = this
       NProgress.start()
       try {
-        fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id)
+        fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.userId)
           .then(response => response.json())
           .then(json => {
             const containerDiv = document.getElementById('quicksightContainer')

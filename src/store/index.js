@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
 import { TrackJS } from 'trackjs'
-import { removeToken } from '../utils/auth'
 import { serverBus } from '../main'
 import { VuexPersistence } from 'vuex-persist'
 
@@ -83,7 +82,6 @@ const store = new Vuex.Store({
       if (count === 4) {
         Vue.$log.warn('count = 4, logging out')
         TrackJS.track('LOGOUT')
-        removeToken()
         location.reload()
       }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)

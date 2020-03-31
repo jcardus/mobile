@@ -15,7 +15,6 @@ import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
-import { getToken } from './utils/auth'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
@@ -26,7 +25,6 @@ TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
   version: store.state.app.packageVersion
 })
-TrackJS.addMetadata('user', getToken() ? getToken().name : 'none')
 
 Vue.config.errorHandler = (err, vm, info) => {
   // Log properties passed to the component if there are any

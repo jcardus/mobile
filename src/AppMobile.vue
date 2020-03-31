@@ -68,7 +68,6 @@
 import routes from './framework7/routes/routes'
 import VehicleTableContainer from './views/map/VehicleTableContainer'
 import Vue from 'vue'
-import { getToken } from './utils/auth'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
 import { serverBus } from './main'
@@ -93,7 +92,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['unreadItems']),
+    ...mapGetters(['unreadItems', 'user']),
     domain() {
       return window.location.hostname
     },
@@ -134,8 +133,7 @@ export default {
           close: reload
         }
       })
-      const cookie = getToken()
-      if (cookie !== null) {
+      if (this.user.name === '') {
         this.$log.debug('closing login screen...', this.$f7.loginScreen)
         this.$f7.loginScreen.close('#loginScreen', false)
         this.$log.debug('App mobile created with cookie dispatching setUser')
