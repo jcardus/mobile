@@ -318,18 +318,6 @@ export default {
         alignment: right;
         font-family: "Open Sans",serif;
       }
-
-      .thirdparty-button {
-        position: absolute;
-        right: 0;
-        bottom: 6px;
-      }
-
-      @media only screen and (max-width: 470px) {
-        .thirdparty-button {
-          display: none;
-        }
-      }
     }
   }
 </style>
