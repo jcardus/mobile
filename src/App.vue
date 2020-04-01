@@ -75,8 +75,7 @@ export default {
   a:visited {
     color: white;
   }
-
-  body {
+  html, body {
     height: 100%;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;

@@ -282,7 +282,6 @@ export default {
     }
   },
   methods: {
-
     isDeviceOverspeed: function(row) {
       return row.notification.type === 'deviceOverspeed'
     },
@@ -315,10 +314,6 @@ export default {
         })
       }
       return description
-    },
-    toogleExpand(row) {
-      const $table = this.$refs.table
-      $table.toggleRowExpansion(row)
     },
     handleAddAlert() {
       this.isNewAlert = true
