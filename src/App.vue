@@ -33,6 +33,7 @@ export default {
         this.$log.error(e)
       })
     }).catch((e) => {
+      this.$store.dispatch('user/logout')
       this.$log.info('App created without session, should go to login', e)
     })
   },
