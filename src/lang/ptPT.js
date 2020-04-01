@@ -86,7 +86,9 @@ export default {
     login_password: 'Palavra-chave',
     login_button: 'Entrar',
     login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos',
-    login_user: 'Utilizador'
+    login_user: 'Utilizador',
+    login_user_password_invalid: 'Não existe nenhuma conta com o utilizador ou password indicados. Por favor verifique as credenciais e tente novamente.',
+    login_user_disabled: 'O utilizador encontra-se bloqueado.'
   },
   profile: {
     user_account: 'Utilizador',
