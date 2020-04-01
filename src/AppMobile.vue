@@ -122,7 +122,7 @@ export default {
   },
   mounted() {
     try {
-      this.$log.debug('mounted App mobile')
+      this.$log.info('AppMobile', this.user)
       document.getElementById('favicon').href = partner.getFavIcon()
       document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
       this.toastNewVersion = this.$f7.toast.create({
@@ -133,7 +133,7 @@ export default {
           close: reload
         }
       })
-      if (this.user.name === '') {
+      if (this.user.name !== '') {
         this.$log.debug('closing login screen...', this.$f7.loginScreen)
         this.$f7.loginScreen.close('#loginScreen', false)
         this.$log.debug('App mobile created with cookie dispatching setUser')

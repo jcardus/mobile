@@ -209,7 +209,7 @@ export default {
         top: 50%;
         transform: translateY(-50%);
         .login-form {
-          padding: 50px;
+          padding: 40px;
         }
 
         .tips {
