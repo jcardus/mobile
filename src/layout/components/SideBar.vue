@@ -1,6 +1,6 @@
 <template>
-  <div style="width:64px">
-    <el-menu collapse style="height:100vh" default-active="1" router>
+  <div style="width:64px; height:100%">
+    <el-menu style="height: 100%" collapse default-active="1" router>
       <el-menu-item index="/map">
         <i class="el-icon-place" :style="iconStyle"></i>
         <span slot="title">{{ $t('route.map') }}</span>
@@ -44,5 +44,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-</style>

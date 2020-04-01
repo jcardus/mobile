@@ -1,47 +1,11 @@
 <template>
   <div class="app-container">
+    <div style="height: 10px"></div>
     <el-tabs
+      type="border-card"
       active-tab-color="#9b59b6"
       active-text-color="white"
-      :stretch="true"
     >
-      <el-tab-pane>
-        <span slot="label">
-          <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
-        </span>
-        <el-card>
-          <h3>{{ $t('settings.route_history') }}</h3>
-          <div>
-            <el-switch
-              v-model="matchRoutes"
-              :active-text="$t('settings.route_match')"
-              inactive-text=""
-            >
-            </el-switch>
-          </div>
-          <div style="margin-top: 20px">
-            <el-switch
-              v-model="viewSpeedAlerts"
-              :active-text="$t('settings.view_speed_alerts')"
-              inactive-text=""
-            >
-            </el-switch>
-          </div>
-          <el-form :disabled="!viewSpeedAlerts" style="padding-left: 25px; margin-top: 10px">
-            <el-radio-group :value="radioValue" @input="changeMaxSpeedType">
-              <div style="margin-top: 20px">
-                <el-radio label="road">{{ $t('settings.use_route_speed_limit') }}</el-radio>
-              </div>
-              <div style="margin-top: 10px">
-                <el-radio label="vehicle">{{ $t('settings.use_vehicle_speed_limit') }}</el-radio>
-              </div>
-            </el-radio-group>
-            <div style="margin-top: 20px">
-              <span class="text_max_speed">{{ $t('settings.max_speed_threshold') }}<el-input v-model="speedThreshold" type="number" min="0" style="margin-left: 5px; width: 100px;" @change="changeSpeedThreshold" /></span>
-            </div>
-          </el-form>
-        </el-card>
-      </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
           <i class="fas fa-car"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.vehicles') }}</span>
@@ -59,6 +23,43 @@
           <i class="fas fa-bell"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.alerts') }}</span>
         </span>
         <alerts></alerts>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
+          <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
+        </span>
+
+        <h3>{{ $t('settings.route_history') }}</h3>
+        <div>
+          <el-switch
+            v-model="matchRoutes"
+            :active-text="$t('settings.route_match')"
+            inactive-text=""
+          >
+          </el-switch>
+        </div>
+        <div style="margin-top: 20px">
+          <el-switch
+            v-model="viewSpeedAlerts"
+            :active-text="$t('settings.view_speed_alerts')"
+            inactive-text=""
+          >
+          </el-switch>
+        </div>
+        <el-form :disabled="!viewSpeedAlerts" style="padding-left: 25px; margin-top: 10px">
+          <el-radio-group :value="radioValue" @input="changeMaxSpeedType">
+            <div style="margin-top: 20px">
+              <el-radio label="road">{{ $t('settings.use_route_speed_limit') }}</el-radio>
+            </div>
+            <div style="margin-top: 10px">
+              <el-radio label="vehicle">{{ $t('settings.use_vehicle_speed_limit') }}</el-radio>
+            </div>
+          </el-radio-group>
+          <div style="margin-top: 20px">
+            <span class="text_max_speed">{{ $t('settings.max_speed_threshold') }}<el-input v-model="speedThreshold" type="number" min="0" style="margin-left: 5px; width: 100px;" @change="changeSpeedThreshold" /></span>
+          </div>
+        </el-form>
+
       </el-tab-pane>
     </el-tabs>
   </div>

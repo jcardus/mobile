@@ -27,60 +27,60 @@
         </div>
       </div>
     </transition>
-    <el-card>
-      <div slot="header" class="clearfix">
-        <span>{{ $t('settings.groups') }}</span>
-        <el-tooltip content="Adicionar Grupo" placement="top">
-          <el-button
-            class="formButton"
-            size="small"
-            @click="handleAddGroup"
-          ><i class="fas fa-plus"></i></el-button>
-        </el-tooltip>
-      </div>
-      <el-table :data="groups" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
-        <el-table-column
-          :label="$t('settings.group_name')"
-          prop="name"
-          sortable
-        >
-        </el-table-column>
-        <el-table-column
-          label="Nº Veículos"
-          :formatter="totalVehiclesRederer"
-          prop="id"
-        >
-        </el-table-column>
-        <el-table-column label="" :min-width="isMobile ? '15px' : '50px'">
-          <template slot-scope="scope">
-            <el-tooltip :content="$t('settings.group_edit')" placement="top">
-              <el-button
-                v-if="!isMobile"
-                size="small"
-                class="formButton"
-                @click="handleEdit(scope.row)"
-              ><i class="fas fa-edit"></i></el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('settings.group_delete')" placement="top">
-              <el-button
-                v-if="!isMobile"
-                class="formButton"
-                size="small"
-                type="danger"
-                @click="handleDelete(scope.row)"
-              ><i class="fas fa-trash-alt"></i></el-button>
-            </el-tooltip>
-            <el-dropdown v-if="isMobile">
-              <i class="fas fa-ellipsis-v"></i>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.group_edit') }}</el-dropdown-item>
-                <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.group_delete') }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+
+    <div slot="header" class="clearfix">
+      <span>{{ $t('settings.groups') }}</span>
+      <el-tooltip content="Adicionar Grupo" placement="top">
+        <el-button
+          class="formButton"
+          size="small"
+          @click="handleAddGroup"
+        ><i class="fas fa-plus"></i></el-button>
+      </el-tooltip>
+    </div>
+    <el-table :data="groups" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
+      <el-table-column
+        :label="$t('settings.group_name')"
+        prop="name"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column
+        label="Nº Veículos"
+        :formatter="totalVehiclesRederer"
+        prop="id"
+      >
+      </el-table-column>
+      <el-table-column label="" :min-width="isMobile ? '15px' : '50px'">
+        <template slot-scope="scope">
+          <el-tooltip :content="$t('settings.group_edit')" placement="top">
+            <el-button
+              v-if="!isMobile"
+              size="small"
+              class="formButton"
+              @click="handleEdit(scope.row)"
+            ><i class="fas fa-edit"></i></el-button>
+          </el-tooltip>
+          <el-tooltip :content="$t('settings.group_delete')" placement="top">
+            <el-button
+              v-if="!isMobile"
+              class="formButton"
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            ><i class="fas fa-trash-alt"></i></el-button>
+          </el-tooltip>
+          <el-dropdown v-if="isMobile">
+            <i class="fas fa-ellipsis-v"></i>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.group_edit') }}</el-dropdown-item>
+              <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.group_delete') }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </el-table-column>
+    </el-table>
+
   </div>
 </template>
 
@@ -108,8 +108,8 @@ export default {
       return []
     },
     groups: function() {
-      if (vm.$data.groups) {
-        return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      if (vm.$store.state.user.groups) {
+        return vm.$store.state.user.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
       }
       return []
     },
@@ -153,7 +153,7 @@ export default {
         message: this.$t('settings.group_created')
       })
       this.clearFormData()
-      vm.$data.groups.push(newGroup)
+      vm.$store.state.user.groups.push(newGroup)
     },
     groupUpdated: function() {
       this.$message({
@@ -209,8 +209,8 @@ export default {
         type: 'success',
         duration: 5 * 1000
       })
-      const groupDeleted = vm.$data.groups.find(g => g.id === id)
-      vm.$data.groups.splice(vm.$data.groups.indexOf(groupDeleted), 1)
+      const groupDeleted = vm.$store.state.user.groups.find(g => g.id === id)
+      vm.$store.state.user.groups.splice(vm.$store.state.user.groups.indexOf(groupDeleted), 1)
     },
     clearFormData() {
       this.groupName = ''

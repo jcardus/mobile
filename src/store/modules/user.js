@@ -76,7 +76,7 @@ function initData(commit, state, dispatch) {
       dispatch('fetchAlerts')
       traccar.groups(state.userId, (groups) => {
         state.groups = groups
-        vm.$data.groups = groups
+        vm.$store.state.user.groups = groups
         traccar.devices(function(devices) {
           vm.$data.devices = devices
           vm.$data.devices.forEach(d => {

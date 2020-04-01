@@ -101,7 +101,7 @@ export default {
       return vm.$data.devices
     },
     groups: function() {
-      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return vm.$store.state.user.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     categories: function() {
       return [

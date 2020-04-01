@@ -96,141 +96,140 @@
         </div>
       </div>
     </transition>
-    <el-card>
-      <div slot="header" class="clearfix">
-        <span>{{ $t('settings.alerts') }}</span>
-        <el-tooltip content="Adicionar Alerta" placement="top">
-          <el-button
-            class="alertFormButton"
-            size="small"
-            @click="handleAddAlert"
-          ><i class="fas fa-plus"></i></el-button>
-        </el-tooltip>
-      </div>
-      <el-table
-        :data="alerts"
-        :row-style="tableRowStyle"
-        :header-cell-style="tableHeaderStyle"
-      >
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-table
-              highlight-current-row
-              :data="props.row.devices"
-              :show-header="false"
+
+    <div slot="header" class="clearfix">
+      <span>{{ $t('settings.alerts') }}</span>
+      <el-tooltip content="Adicionar Alerta" placement="top">
+        <el-button
+          class="alertFormButton"
+          size="small"
+          @click="handleAddAlert"
+        ><i class="fas fa-plus"></i></el-button>
+      </el-tooltip>
+    </div>
+    <el-table
+      :data="alerts"
+      :row-style="tableRowStyle"
+      :header-cell-style="tableHeaderStyle"
+    >
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-table
+            highlight-current-row
+            :data="props.row.devices"
+            :show-header="false"
+          >
+            <el-table-column
+              v-if="isInorOutGeofence(props.row)"
+              prop="geofences"
+              sortable=""
+              width="50"
             >
-              <el-table-column
-                v-if="isInorOutGeofence(props.row)"
-                prop="geofences"
-                sortable=""
-                width="50"
-              >
-                <template slot-scope="scope">
-                  <el-tooltip :content="$t('settings.alert_geofences_warning')" placement="top">
-                    <i v-if="scope.row.geofences.length === 0" class="fas fa-exclamation-triangle"></i></el-tooltip>
-                </template>
-              </el-table-column>
-              <el-table-column
-                v-if="isDeviceOverspeed(props.row)"
-                prop="data.attributes.speedLimit"
-                sortable=""
-                width="50"
-              >
-                <template slot-scope="scope">
-                  <el-tooltip :content="$t('settings.alert_overspeed_warning')" placement="top">
-                    <i v-if="scope.row.data.attributes.speedLimit === 0 || !scope.row.data.attributes.speedLimit" class="fas fa-exclamation-triangle"></i></el-tooltip>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="data.name"
-                label="Vehicles"
-                sortable=""
-              >
-              </el-table-column>
-              <el-table-column
-                v-if="isDeviceOverspeed(props.row)"
-                prop="data.attributes.speedLimit"
-                :formatter="alertSpeedRenderer"
-                sortable=""
-              >
-              </el-table-column>
-              <el-table-column
-                v-if="isInorOutGeofence(props.row)"
-                prop="geofences"
-                sortable=""
-                :formatter="alertGeofencesRenderer"
-              >
-              </el-table-column>
-              <el-table-column v-if="isInorOutGeofence(props.row)" label="">
-                <template slot-scope="scope">
-                  <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
-                    <el-button
-                      size="small"
-                      class="alertFormButton"
-                      type="primary"
-                      @click="handleAssociateGeofences(false, scope.row)"
-                    ><i class="fas fa-draw-polygon"></i></el-button>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
-        </el-table-column>
-        <el-table-column
-          :label="$t('settings.alerts_type')"
-          :formatter="alertTypeRenderer"
-          prop="notification.type"
-        >
-        </el-table-column>
-        <el-table-column
-          v-if="!isMobile"
-          :label="$t('settings.alerts_notificators')"
-          prop="notification.notificators"
-        >
-        </el-table-column>
-        <el-table-column
-          label="Veículos"
-          prop="devices"
-          :formatter="devicesRenderer"
-        >
-        </el-table-column>
-        <el-table-column label="" :min-width="isMobile ? '15px' : '80px'">
-          <template slot-scope="scope">
-            <el-tooltip :content="$t('settings.alert_edit')" placement="top">
-              <el-button
-                v-if="!isMobile"
-                size="small"
-                @click="handleEdit(scope.row)"
-              ><i class="fas fa-edit"></i></el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('settings.alert_delete')" placement="top">
-              <el-button
-                v-if="!isMobile"
-                size="small"
-                type="danger"
-                @click="handleDelete(scope.row)"
-              ><i class="fas fa-trash-alt"></i></el-button>
-            </el-tooltip>
-            <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
-              <el-button
-                v-if="isInorOutGeofence(scope.row) && !isMobile"
-                size="small"
-                type="primary"
-                @click="handleAssociateGeofences(true, scope.row)"
-              ><i class="fas fa-draw-polygon"></i></el-button>
-            </el-tooltip>
-            <el-dropdown v-if="isMobile">
-              <i class="fas fa-ellipsis-v"></i>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.alert_edit') }}</el-dropdown-item>
-                <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.alert_delete') }}</el-dropdown-item>
-                <el-dropdown-item v-if="isInorOutGeofence(scope.row)" @click.native="handleAssociateGeofences(true, scope.row)">{{ $t('settings.alert_associate_geofences') }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+              <template slot-scope="scope">
+                <el-tooltip :content="$t('settings.alert_geofences_warning')" placement="top">
+                  <i v-if="scope.row.geofences.length === 0" class="fas fa-exclamation-triangle"></i></el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if="isDeviceOverspeed(props.row)"
+              prop="data.attributes.speedLimit"
+              sortable=""
+              width="50"
+            >
+              <template slot-scope="scope">
+                <el-tooltip :content="$t('settings.alert_overspeed_warning')" placement="top">
+                  <i v-if="scope.row.data.attributes.speedLimit === 0 || !scope.row.data.attributes.speedLimit" class="fas fa-exclamation-triangle"></i></el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="data.name"
+              label="Vehicles"
+              sortable=""
+            >
+            </el-table-column>
+            <el-table-column
+              v-if="isDeviceOverspeed(props.row)"
+              prop="data.attributes.speedLimit"
+              :formatter="alertSpeedRenderer"
+              sortable=""
+            >
+            </el-table-column>
+            <el-table-column
+              v-if="isInorOutGeofence(props.row)"
+              prop="geofences"
+              sortable=""
+              :formatter="alertGeofencesRenderer"
+            >
+            </el-table-column>
+            <el-table-column v-if="isInorOutGeofence(props.row)" label="">
+              <template slot-scope="scope">
+                <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
+                  <el-button
+                    size="small"
+                    class="alertFormButton"
+                    type="primary"
+                    @click="handleAssociateGeofences(false, scope.row)"
+                  ><i class="fas fa-draw-polygon"></i></el-button>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column
+        :label="$t('settings.alerts_type')"
+        :formatter="alertTypeRenderer"
+        prop="notification.type"
+      >
+      </el-table-column>
+      <el-table-column
+        v-if="!isMobile"
+        :label="$t('settings.alerts_notificators')"
+        prop="notification.notificators"
+      >
+      </el-table-column>
+      <el-table-column
+        label="Veículos"
+        prop="devices"
+        :formatter="devicesRenderer"
+      >
+      </el-table-column>
+      <el-table-column label="" :min-width="isMobile ? '15px' : '80px'">
+        <template slot-scope="scope">
+          <el-tooltip :content="$t('settings.alert_edit')" placement="top">
+            <el-button
+              v-if="!isMobile"
+              size="small"
+              @click="handleEdit(scope.row)"
+            ><i class="fas fa-edit"></i></el-button>
+          </el-tooltip>
+          <el-tooltip :content="$t('settings.alert_delete')" placement="top">
+            <el-button
+              v-if="!isMobile"
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.row)"
+            ><i class="fas fa-trash-alt"></i></el-button>
+          </el-tooltip>
+          <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
+            <el-button
+              v-if="isInorOutGeofence(scope.row) && !isMobile"
+              size="small"
+              type="primary"
+              @click="handleAssociateGeofences(true, scope.row)"
+            ><i class="fas fa-draw-polygon"></i></el-button>
+          </el-tooltip>
+          <el-dropdown v-if="isMobile">
+            <i class="fas fa-ellipsis-v"></i>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.alert_edit') }}</el-dropdown-item>
+              <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.alert_delete') }}</el-dropdown-item>
+              <el-dropdown-item v-if="isInorOutGeofence(scope.row)" @click.native="handleAssociateGeofences(true, scope.row)">{{ $t('settings.alert_associate_geofences') }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 

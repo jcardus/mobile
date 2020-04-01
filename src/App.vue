@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="height: 100%">
     <router-view />
     <div v-if="showUpdateDiv" id="snackbar" class="show">
       <a id="reload" href="" @click="reload()">{{ $t('layout.newVersion') }}</a>
