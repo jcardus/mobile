@@ -227,7 +227,7 @@ export default {
             padding: 10px;
             max-width: 200px;
             height: 100px;
-            width: 200px
+            width: 100%;
           }
 
         }
