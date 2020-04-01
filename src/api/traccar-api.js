@@ -33,7 +33,6 @@ function invokeApi(url, onFulfill, onError) {
         })
         .catch(reason => {
           vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
-            Vue.$log.error(reason)
             if (onError) {
               onError(reason)
             }

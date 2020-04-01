@@ -9,6 +9,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
+let firstLoad = true
+
 export async function routerBeforeEach(next, to) {
 // determine whether the user has logged in
   const hasToken = store.state.user.name !== ''
@@ -36,6 +38,10 @@ export async function routerBeforeEach(next, to) {
 
 if (!lnglat.__isMobile()) {
   router.beforeEach(async(to, from, next) => {
+    if (firstLoad) {
+      await store.dispatch('user/checkSession')
+      firstLoad = false
+    }
     // start progress bar
     NProgress.start()
     await routerBeforeEach(next, to)

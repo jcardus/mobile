@@ -88,6 +88,7 @@
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Groups',
@@ -100,6 +101,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['dataLoaded']),
     isMobile() { return lnglat.isMobile() },
     devices: function() {
       if (vm.$data.devices) {
@@ -112,12 +114,7 @@ export default {
         return vm.$store.state.user.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
       }
       return []
-    },
-    dataLoaded: function() {
-      return this.$store.state.user.dataLoaded
     }
-  },
-  mounted() {
   },
   methods: {
     handleCancelGroupForm() {

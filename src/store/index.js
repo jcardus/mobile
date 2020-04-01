@@ -5,8 +5,12 @@ import { TrackJS } from 'trackjs'
 import { serverBus } from '../main'
 import { VuexPersistence } from 'vuex-persist'
 
+const excludedMudations = ['TOGGLE_HISTORYMODE']
+
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage
+  storage: window.localStorage,
+  filter: mutation => (excludedMudations.indexOf(mutation.type) === -1),
+  modules: ['app', 'devices', 'map', 'settings', 'user']
 })
 
 Vue.use(Vuex)

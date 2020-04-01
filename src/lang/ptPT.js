@@ -4,6 +4,7 @@ export default {
     reconnect: 'Deseja restabelecer a ligação ao servidor?'
   },
   route: {
+    alerts: 'Alertas',
     map: 'Mapa',
     dashboard: 'Dashboard',
     reports: 'Relatórios',

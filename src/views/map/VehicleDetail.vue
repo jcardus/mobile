@@ -52,6 +52,7 @@ import ImmobilizeButton from './ImmobilizeButton'
 import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
 import { clientId } from '../../utils/mapillary'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'VehicleDetail',
@@ -77,9 +78,7 @@ export default {
     }
   },
   computed: {
-    historyMode() {
-      return vm.$store.state.map.historyMode
-    },
+    ...mapGetters['historyMode'],
     totalDistance() {
       let result = this.feature.properties.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
@@ -173,14 +172,14 @@ export default {
       if (this.device && this.device.id !== device.id) {
         Vue.$log.debug('removing layers on deviceid, ', this.device.id)
         if (this.historyMode) {
-          vm.$store.dispatch('map/toggleHistoryMode')
+          vm.$store.dispatch('transient/toggleHistoryMode')
         }
       } else {
         Vue.$log.debug('not removing layers on deviceid, ', this.device.id)
       }
     },
     showRoutesChanged() {
-      vm.$store.dispatch('map/toggleHistoryMode')
+      vm.$store.dispatch('transient/toggleHistoryMode')
     }
   }
 }

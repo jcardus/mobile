@@ -17,7 +17,6 @@ const state = {
   phone: '',
   avatar: '',
   userId: 0,
-  dataLoaded: false,
   connectionOk: true,
   alerts: [],
   events: [],
@@ -32,7 +31,7 @@ const mutations = {
     state.devices = devices
   },
   SET_EVENTS(state, events) {
-    Vue.$log.info(events)
+    Vue.$log.debug(events)
     state.events = events
   },
   SET_USER(state, token) {
@@ -49,9 +48,6 @@ const mutations = {
     state.email = ''
     state.phone = ''
     state.avatar = ''
-  },
-  SET_DATA_LOADED(state, loaded) {
-    state.dataLoaded = loaded
   },
   TOGGLE_CONNECTION_OK: () => {
     state.connectionOk = !state.connectionOk
@@ -102,7 +98,8 @@ function initData(commit, state, dispatch) {
             end: new Date(),
             types: state.alerts
           }).finally(() => {
-            commit('SET_DATA_LOADED', true)
+            dispatch('transient/setDataLoaded', null, { root: true })
+            Vue.$log.info('emit dataLoaded')
             serverBus.$emit('dataLoaded')
             resolve()
           })
@@ -121,13 +118,17 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
-  checkSession({ dispatch }) {
-    traccar.getSession().then((s) => {
-      Vue.$log.info('Detected user session dispatching setUser', s)
-      return dispatch('setUser')
-    }).catch((e) => {
-      Vue.$log.warn('no session, should go to login', e)
-      return dispatch('removeUser')
+  checkSession({ dispatch, commit }) {
+    return new Promise((resolve) => {
+      Vue.$log.info('user/checkSession')
+      traccar.getSession().then((s) => {
+        commit('SET_USER', s)
+        resolve()
+        dispatch('setUser')
+      }).catch((e) => {
+        Vue.$log.warn('no session, should go to login', e)
+        dispatch('removeUser').then(() => resolve())
+      })
     })
   },
   setUser({ commit, state, dispatch }) {
@@ -187,11 +188,6 @@ const actions = {
     if (state.connectionOk !== data.state) {
       Vue.$log.info('toggle connection ok to', data.state)
       context.commit('TOGGLE_CONNECTION_OK')
-      if (data.state) {
-        context.dispatch('setUser').then(() => {
-          Vue.$log.info('connectionOk done')
-        })
-      }
     }
   },
   connect({ commit }) {
@@ -305,7 +301,10 @@ const actions = {
     })
   },
   removeUser({ commit }) {
-    return new Promise(() => commit('REMOVE_USER'))
+    return new Promise((resolve) => {
+      commit('REMOVE_USER')
+      resolve()
+    })
   }
 }
 export default {

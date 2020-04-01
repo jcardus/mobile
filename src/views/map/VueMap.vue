@@ -224,9 +224,9 @@ export default {
       if (++this.loadingCount === 3) {
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
-        this.$log.warn('finished loading, count = ', this.loadingCount)
+        this.$log.info('finished loading', this.loadingCount)
       } else {
-        this.$log.warn('not finishing loading, count = ', this.loadingCount)
+        this.$log.warn('not finishing loading', this.loadingCount)
       }
     },
     mapResize: function() {
@@ -250,13 +250,13 @@ export default {
 
       NProgress.done()
       if (this.dataLoaded && this.userLoggedIn && !this.initialized) {
-        this.$log.info('userData is loaded and not initialized, initializing...')
+        this.$log.info('dataLoaded', this.dataLoaded, 'userLoggedIn', this.userLoggedIn, 'initialized', this.initialized)
+        this.$log.info('initializing...')
         this.initData()
       } else {
-        this.$log.info('userDataLoaded: ', this.dataLoaded, ', initialized: ', this.initialized)
-        this.$log.info('hopefully we\'ll receive an event...')
+        this.$log.info('dataLoaded', this.dataLoaded, 'userLoggedIn', this.userLoggedIn, 'initialized', this.initialized, 'waiting for event')
       }
-      this.$log.info('VueMap finishLoading')
+      this.$log.debug('VueMap finishLoading')
       this.finishLoading()
     },
     findFeatureByDeviceId(deviceId) {
@@ -534,7 +534,7 @@ export default {
       } else {
         this.$log.debug('adding layers...')
         lnglat.addLayers(vm.$static.map)
-        this.$log.info('done adding layers finishLoading')
+        this.$log.debug('done adding layers finishLoading')
         this.finishLoading()
       }
     },
