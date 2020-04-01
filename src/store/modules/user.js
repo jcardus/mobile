@@ -151,22 +151,19 @@ const actions = {
     })
   },
   logout({ commit }) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true')
         .catch(e => { Vue.$log.error(e) })
         .finally(
           () => {
-            logout().then(() => {
+            logout().finally(() => {
               resetRouter()
               commit('REMOVE_USER')
               vm.reset()
-              state.token = null
               resolve()
             }).catch((e) => {
               Vue.$log.error(e)
-              resetRouter()
-              resolve()
-              state.token = null
+              reject(e)
             })
           })
     })
