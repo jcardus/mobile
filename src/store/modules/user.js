@@ -14,6 +14,7 @@ import { backEndHostName } from '../../utils/consts'
 const state = {
   name: '',
   email: '',
+  phone: '',
   avatar: '',
   userId: 0,
   dataLoaded: false,
@@ -38,6 +39,7 @@ const mutations = {
     state.name = token.name
     state.userId = token.id
     state.email = token.email
+    state.phone = token.phone
     state.avatar = getAvatar(token.name)
     state.attributes = token.attributes
   },
@@ -45,6 +47,7 @@ const mutations = {
     state.name = ''
     state.userId = 0
     state.email = ''
+    state.phone = ''
     state.avatar = ''
   },
   SET_DATA_LOADED(state, loaded) {
@@ -122,7 +125,7 @@ const actions = {
     return new Promise((resolve) => {
       initData(commit, state, dispatch).finally(() => {
         TrackJS.addMetadata('user', state.name)
-        setLanguage(state.lang)
+        setLanguage(state.attributes.lang)
         const hostName = utils.getServerHost()
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
           store: store,
