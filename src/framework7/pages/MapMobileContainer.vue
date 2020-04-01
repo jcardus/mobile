@@ -55,9 +55,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos', 'historyMode', 'isPlaying']),
+    ...mapGetters(['minPos', 'maxPos', 'historyMode', 'isPlaying', 'name']),
     userLoggedIn() {
-      return this.$store.state.user.name !== ''
+      return this.name !== ''
     },
     offline() {
       return appOffline()
@@ -92,7 +92,7 @@ export default {
   mounted() {
     this.$log.debug('mounted VueMap mobile, user loggedin: ', this.userLoggedIn)
     if (this.userLoggedIn) {
-      this.$f7.preloader.show()
+      // this.$f7.preloader.show()
     }
   },
   beforeDestroy() {
