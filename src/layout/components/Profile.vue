@@ -61,8 +61,8 @@ export default {
   @import '../../styles/element-variables.scss';
   .el-avatar {
     color:$--color-text-regular;
-    background-color:white;
-    opacity: 0.9;
+    background-color:$--color-info-lighter;
+    opacity: 0.8;
     font-weight: bold;
   }
   a:link {

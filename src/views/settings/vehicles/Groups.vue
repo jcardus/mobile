@@ -102,10 +102,16 @@ export default {
   computed: {
     isMobile() { return lnglat.isMobile() },
     devices: function() {
-      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      if (vm.$data.devices) {
+        return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      }
+      return []
     },
     groups: function() {
-      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      if (vm.$data.groups) {
+        return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      }
+      return []
     },
     dataLoaded: function() {
       return this.$store.state.user.dataLoaded
