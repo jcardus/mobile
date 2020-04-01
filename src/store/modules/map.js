@@ -1,12 +1,11 @@
-import { serverBus, vm } from '../../main'
+import { vm } from '../../main'
 
 const state = {
   showGeofences: false,
   showPOIs: false,
   minPos: 0,
   maxPos: 1000,
-  isPlaying: false,
-  historyMode: false
+  isPlaying: false
 }
 
 const mutations = {
@@ -27,19 +26,10 @@ const mutations = {
   },
   SET_PLAYING(state, value) {
     state.isPlaying = value
-  },
-  TOGGLE_HISTORYMODE: (state) => {
-    state.historyMode = !state.historyMode
-    serverBus.$emit('showRoutesChanged')
-    setTimeout(() => serverBus.$emit('mapShown'), 500)
   }
 }
 
 const actions = {
-  toggleHistoryMode(context) {
-    context.commit('TOGGLE_HISTORYMODE')
-    context.commit('SET_PLAYING', false)
-  },
   setPlaying({ commit }, value) {
     commit('SET_PLAYING', value)
   },

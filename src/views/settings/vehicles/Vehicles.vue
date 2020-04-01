@@ -59,76 +59,76 @@
         </div>
       </div>
     </transition>
-    <el-card>
-      <el-input
-        v-model="search"
-        style="width: 300px"
-        placeholder="Pesquisa"
-      />
-      <el-table
-        :data="devices.filter(data => !search
-          || data.name.toLowerCase().includes(search.toLowerCase())
-          || (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(search.toLowerCase()))
-          || (data.model && data.model.toLowerCase().includes(search.toLowerCase())))"
-        height="450"
-        style="width: 100%"
-        :row-style="tableRowStyle"
-        :header-cell-style="tableHeaderStyle"
-      >
-        <el-table-column
-          :label="$t('settings.vehicle_name')"
-          prop="name"
-          sortable
-        >
-        </el-table-column>
-        <el-table-column
-          :label="$t('settings.vehicle_licenseplate')"
-          prop="attributes.license_plate"
-        >
-        </el-table-column>
-        <el-table-column
-          :label="$t('settings.vehicle_group')"
-          :formatter="groupRenderer"
-          prop="groupId"
-          sortable
-          :filters="groupsFilter"
-          :filter-method="filterHandler"
-        ></el-table-column>
-        <el-table-column
-          v-if="!isMobile"
-          :label="$t('settings.vehicle_model')"
-          prop="model"
-        >
-        </el-table-column>
-        <el-table-column
-          v-if="!isMobile"
-          :label="$t('settings.vehicle_speed_limit')"
-          :formatter="alertSpeedRenderer"
-          prop="attributes.speedLimit"
-          sortable
-        >
-        </el-table-column>
-        <el-table-column label="" width="100px">
-          <template slot-scope="scope">
-            <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
-              <el-button
-                size="small"
-                class="formButton"
-                @click="handleEdit(scope.row)"
-              ><i class="fas fa-edit"></i></el-button>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
-  </div>
 
+    <el-input
+      v-model="search"
+      style="width: 300px"
+      placeholder="Pesquisa"
+    />
+    <el-table
+      :data="devices.filter(data => !search
+        || data.name.toLowerCase().includes(search.toLowerCase())
+        || (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(search.toLowerCase()))
+        || (data.model && data.model.toLowerCase().includes(search.toLowerCase())))"
+
+      :row-style="tableRowStyle"
+      :header-cell-style="tableHeaderStyle"
+    >
+      <el-table-column
+        :label="$t('settings.vehicle_name')"
+        prop="name"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column
+        :label="$t('settings.vehicle_licenseplate')"
+        prop="attributes.license_plate"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column
+        :label="$t('settings.vehicle_group')"
+        :formatter="groupRenderer"
+        prop="groupId"
+        sortable
+        :filters="groupsFilter"
+        :filter-method="filterHandler"
+      ></el-table-column>
+      <el-table-column
+        v-if="!isMobile"
+        :label="$t('settings.vehicle_model')"
+        prop="model"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column
+        v-if="!isMobile"
+        :label="$t('settings.vehicle_speed_limit')"
+        :formatter="alertSpeedRenderer"
+        prop="attributes.speedLimit"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column label="" width="100px">
+        <template slot-scope="scope">
+          <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
+            <el-button
+              size="small"
+              class="formButton"
+              @click="handleEdit(scope.row)"
+            ><i class="fas fa-edit"></i></el-button>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
 import { serverBus, vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Vehicles',
@@ -142,26 +142,17 @@ export default {
       vehicleTotalKms: 0,
       selectedGroup: null,
       selectedCategory: null,
-      search: ''
+      search: '',
+      groupsFilter: null
     }
   },
   computed: {
+    ...mapGetters(['groups']),
     isMobile() {
       return lnglat.isMobile()
     },
     devices: function() {
       return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
-    },
-    groups: function() {
-      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
-    },
-    groupsFilter: function() {
-      if (vm.$data.groups) {
-        return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1).map(g => {
-          return { text: g.name, value: g.id }
-        })
-      }
-      return []
     },
     categories: function() {
       return [
@@ -180,6 +171,11 @@ export default {
         { value: 'pickup', text: this.$t('settings.vehicle_icon_pickup') }
       ]
     }
+  },
+  created() {
+    this.groupsFilter = this.groups.map(g => {
+      return { text: g.name, value: g.id }
+    })
   },
   methods: {
     filterHandler(value, row, column) {
@@ -275,7 +271,7 @@ export default {
     },
     groupRenderer(row, column, cellValue) {
       if (cellValue) {
-        const group = vm.$data.groups.find((g) => g.id === cellValue)
+        const group = vm.$store.state.user.groups.find((g) => g.id === cellValue)
         return group && group.name
       } else {
         return ''
@@ -343,7 +339,7 @@ export default {
     transition: opacity 0.2s ease;
   }
 
-  .el-table .tomobile td:last-child {
+  .el-table  td:last-child {
     font-size: 12px
   }
 

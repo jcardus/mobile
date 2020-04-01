@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <div v-loading="loading" style="height:100%">
     <navbar />
     <profile></profile>
     <div class="row">
@@ -70,12 +70,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .row {
     display: flex;
+    height: 100%;
   }
   .divMain {
     width: 100%;
-    height: 100vh;
+    height: 100%;
   }
 </style>

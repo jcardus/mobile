@@ -45,9 +45,7 @@
 
 <script>
 import { traccar } from '../../../api/traccar-api'
-import { setToken, getToken } from '@/utils/auth' // get token from cookie
 import { setLanguage } from '../../../lang'
-var token = getToken()
 
 export default {
   props: {
@@ -101,15 +99,14 @@ export default {
     submit() {
       this.$refs.user.validate(valid => {
         if (valid) {
-          var newUser = token
+          const newUser = { id: this.user.userId }
           newUser.name = this.user.name
           newUser.email = this.user.email
           newUser.password = this.user.password
           newUser.phone = this.user.phone
           newUser.attributes.lang = this.selectedLang
           newUser.attributes.timezone = this.selectedTimezone
-
-          traccar.updateUser(token.id, newUser, this.userUpdated)
+          traccar.updateUser(newUser.id, newUser, this.userUpdated)
         }
       })
     },
@@ -124,7 +121,6 @@ export default {
       })
     },
     userUpdated: function(user) {
-      setToken(user)
       setLanguage(user.attributes.lang)
       this.$message({
         message: this.$t('profile.user_updated'),

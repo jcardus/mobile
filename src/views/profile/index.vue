@@ -12,7 +12,7 @@
 
 <script>
 import Account from './components/Account'
-import { getToken } from '@/utils/auth' // get token from cookie
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Profile',
@@ -23,6 +23,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     top() {
       if (('standalone' in window.navigator) && window.navigator.standalone) {
         return 'padding-top:100px;'
@@ -35,15 +36,13 @@ export default {
   },
   methods: {
     getUser() {
-      const token = getToken()
       this.user = {
-        name: token.name,
-        email: token.email,
-        password: token.password,
-        isAdmin: token.administrator,
-        phone: token.phone,
-        timezone: token.attributes.timezone,
-        language: token.attributes.lang
+        name: this.user.name,
+        email: this.user.email,
+        password: this.user.password,
+        phone: this.user.phone,
+        timezone: this.user.attributes.timezone,
+        language: this.user.attributes.lang
       }
     }
   }

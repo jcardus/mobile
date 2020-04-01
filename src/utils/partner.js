@@ -1,3 +1,4 @@
+import styles from '../styles/element-variables.scss'
 export const hostname = window.location.hostname.replace('dev.', '')
 
 export function getFavIcon() {
@@ -8,10 +9,10 @@ export function getLogo() {
 }
 
 export function getThemeColor() {
-  if (hostname === 'wuizy.co.ao') { return '#91D400' }
-  if (hostname === 'web.fleetrack.cl') { return '#055AE5' }
-  if (hostname === 'map.able-on.mobi') { return '#055AE5' }
-  return '#91D400'
+  if (hostname === 'wuizy.co.ao') { return styles.success }
+  if (hostname === 'web.fleetrack.cl') { return styles.primary }
+  if (hostname === 'map.able-on.mobi') { return styles.primary }
+  return styles.success
 }
 
 export function getCSSName() {

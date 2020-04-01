@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
-    <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
+    <div v-if="userLoggedIn" id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data v-if="historyMode" class="currentPositionData"></current-position-data>
       <div v-if="historyMode" style="height: 10px"></div>
       <history-panel v-if="historyMode" class="historyPanel"></history-panel>
@@ -37,7 +37,6 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
-import { getToken } from '../../utils/auth'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
@@ -110,7 +109,7 @@ export default {
   computed: {
     ...mapGetters(['historyMode', 'dataLoaded', 'name']),
     userLoggedIn() {
-      return this.name !== '' && getToken() !== null
+      return this.name !== ''
     },
     heightMap() {
       return this.historyMode ? 'height: calc(100% - ' + historyPanelHeight + 'px)' : 'height:100%'
@@ -163,7 +162,7 @@ export default {
     }
   },
   created() {
-    this.$log.debug('VueMap, userLoggedIn: ', this.userLoggedIn)
+    this.$log.info('VueMap', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
     if (this.isMobile) {
@@ -200,10 +199,12 @@ export default {
   },
   methods: {
     ping() {
-      traccar.ping(() => {}, () => {
-        vm.$data.loadingMap = false
-        NProgress.done()
-      })
+      if (this.userLoggedIn) {
+        traccar.ping(() => {}, () => {
+          vm.$data.loadingMap = false
+          NProgress.done()
+        })
+      }
       checkForUpdates()
     },
     initData() {
@@ -223,9 +224,9 @@ export default {
       if (++this.loadingCount === 3) {
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
-        this.$log.warn('finished loading, count = ', this.loadingCount)
+        this.$log.info('finished loading', this.loadingCount)
       } else {
-        this.$log.warn('not finishing loading, count = ', this.loadingCount)
+        this.$log.warn('not finishing loading', this.loadingCount)
       }
     },
     mapResize: function() {
@@ -249,13 +250,13 @@ export default {
 
       NProgress.done()
       if (this.dataLoaded && this.userLoggedIn && !this.initialized) {
-        this.$log.info('userData is loaded and not initialized, initializing...')
+        this.$log.info('dataLoaded', this.dataLoaded, 'userLoggedIn', this.userLoggedIn, 'initialized', this.initialized)
+        this.$log.info('initializing...')
         this.initData()
       } else {
-        this.$log.info('userDataLoaded: ', this.dataLoaded, ', initialized: ', this.initialized)
-        this.$log.info('hopefully we\'ll receive an event...')
+        this.$log.info('dataLoaded', this.dataLoaded, 'userLoggedIn', this.userLoggedIn, 'initialized', this.initialized, 'waiting for event')
       }
-      this.$log.info('VueMap finishLoading')
+      this.$log.debug('VueMap finishLoading')
       this.finishLoading()
     },
     findFeatureByDeviceId(deviceId) {
@@ -533,7 +534,7 @@ export default {
       } else {
         this.$log.debug('adding layers...')
         lnglat.addLayers(vm.$static.map)
-        this.$log.info('done adding layers finishLoading')
+        this.$log.debug('done adding layers finishLoading')
         this.finishLoading()
       }
     },

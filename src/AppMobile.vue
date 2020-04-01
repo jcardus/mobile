@@ -46,6 +46,7 @@
             @input="username = $event.target.value"
           ></f7-list-input>
           <f7-list-input
+            autocomplete="on"
             name="password"
             :label="$t('login.login_password')"
             type="password"
@@ -68,7 +69,6 @@
 import routes from './framework7/routes/routes'
 import VehicleTableContainer from './views/map/VehicleTableContainer'
 import Vue from 'vue'
-import { getToken } from './utils/auth'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
 import { serverBus } from './main'
@@ -93,7 +93,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['unreadItems']),
+    ...mapGetters(['unreadItems', 'user']),
     domain() {
       return window.location.hostname
     },
@@ -116,14 +116,14 @@ export default {
     serverBus.$off('message', this.message)
   },
   created() {
-    Vue.$log.info('AppMobile offline:', this.offline)
+    Vue.$log.info('AppMobile', this.offline)
     serverBus.$on('event', this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('message', this.message)
   },
   mounted() {
     try {
-      this.$log.debug('mounted App mobile')
+      this.$log.debug('AppMobile', this.user)
       document.getElementById('favicon').href = partner.getFavIcon()
       document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
       this.toastNewVersion = this.$f7.toast.create({
@@ -134,16 +134,15 @@ export default {
           close: reload
         }
       })
-      const cookie = getToken()
-      if (cookie !== null) {
-        this.$log.debug('closing login screen...', this.$f7.loginScreen)
-        this.$f7.loginScreen.close('#loginScreen', false)
-        this.$log.debug('App mobile created with cookie dispatching setUser')
-        this.$store.dispatch('user/setUser')
-      } else {
-        this.$log.debug('opening login screen...', this.$f7.loginScreen)
-        this.$f7.loginScreen.open('#loginScreen', false)
-      }
+      this.$store.dispatch('user/checkSession').then(() => {
+        if (this.user.name !== '') {
+          this.$log.info('closing login screen...', this.user)
+          this.$f7.loginScreen.close('#loginScreen', false)
+        } else {
+          this.$log.debug('opening login screen...', this.$f7.loginScreen)
+          this.$f7.loginScreen.open('#loginScreen', false)
+        }
+      })
     } catch (e) {
       Vue.$log.error(e)
     }

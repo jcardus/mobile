@@ -4,6 +4,7 @@ export default {
     reconnect: 'Deseja restabelecer a ligação ao servidor?'
   },
   route: {
+    alerts: 'Alertas',
     map: 'Mapa',
     dashboard: 'Dashboard',
     reports: 'Relatórios',
@@ -114,6 +115,7 @@ export default {
     logout: 'Sair',
     vehicles: 'Veículos',
     pois: 'POIs',
+    geofences: 'Balizas',
     title: 'Configurações',
     route_history: 'Histórico de Rota',
     route_match: 'Rota na estrada',

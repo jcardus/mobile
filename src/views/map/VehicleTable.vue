@@ -66,6 +66,7 @@ import * as lnglat from '@/utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
 import styles from '../../styles/element-variables.scss'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'VehicleTable',
@@ -123,9 +124,7 @@ export default {
     }
   },
   computed: {
-    historyMode() {
-      return this.$store.state.map.historyMode
-    },
+    ...mapGetters(['historyMode']),
     height() {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
@@ -277,8 +276,8 @@ export default {
       })
     },
     vehicleSelected: function(device) {
-      if (this.$store.state.map.historyMode) {
-        vm.$store.dispatch('map/toggleHistoryMode')
+      if (this.historyMode) {
+        vm.$store.dispatch('transient/toggleHistoryMode')
         Vue.$log.info('VehicleTable emit showRoutesChanged')
         serverBus.$emit('showRoutesChanged')
       } else {

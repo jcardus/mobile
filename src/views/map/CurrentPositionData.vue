@@ -213,7 +213,7 @@ export default {
   },
   methods: {
     toggleChanged: function() {
-      vm.$store.dispatch('map/toggleHistoryMode')
+      vm.$store.dispatch('transient/toggleHistoryMode')
     },
     showRoutesClick: function() {
       Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
@@ -755,7 +755,7 @@ export default {
       }
     },
     onPosChanged(newPos) {
-      this.$log.info('CurrentPositionData', newPos)
+      this.$log.debug('CurrentPositionData', newPos)
       const positions = sharedData.getPositions()
       this.positions = positions
       this.currentPos = newPos

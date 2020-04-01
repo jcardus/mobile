@@ -41,7 +41,6 @@
 import VueMap from '../../views/map/VueMap'
 import { serverBus } from '../../main'
 import { appOffline } from '../../utils/utils'
-import { getToken } from '../../utils/auth'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -58,7 +57,7 @@ export default {
   computed: {
     ...mapGetters(['minPos', 'maxPos', 'historyMode', 'isPlaying']),
     userLoggedIn() {
-      return this.$store.state.user.name !== '' && getToken() !== null
+      return this.$store.state.user.name !== ''
     },
     offline() {
       return appOffline()

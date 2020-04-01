@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
 import { vm } from '../main.js'
-import VueCookies from 'vue-cookies'
 import * as utils from '../utils/utils'
 
 const serverHost = utils.getServerHost()
@@ -17,18 +16,13 @@ const permissions = baseUrl + 'permissions'
 const groups = baseUrl + 'groups'
 const users = baseUrl + 'users'
 const server = baseUrl + 'server'
-let cookie = VueCookies.get('user-info')
 const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
 const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaws.com/default/api_helper'
 
 function invokeApi(url, onFulfill, onError) {
   try {
     return new Promise((resolve, reject) => {
-      cookie = VueCookies.get('user-info')
-      axios.get(url, {
-        withCredentials: false,
-        auth: { username: VueCookies.get('user-info').email, password: VueCookies.get('user-info').password }
-      })
+      axios.get(url, { withCredentials: true }) // send cookies when cross-domain requests)
         .then(response => {
           vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
             if (onFulfill) {
@@ -39,11 +33,12 @@ function invokeApi(url, onFulfill, onError) {
         })
         .catch(reason => {
           vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
-            Vue.$log.error(reason)
             if (onError) {
               onError(reason)
             }
-            reject(onError)
+            if (reject) {
+              reject(reason)
+            }
           })
         })
     })
@@ -54,8 +49,7 @@ function invokeApi(url, onFulfill, onError) {
 
 function invokeApiPost(url, body, onFulfill, onError) {
   try {
-    cookie = VueCookies.get('user-info')
-    axios.post(url, body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.post(url, body, { withCredentials: true })
       .then(response => vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
         onFulfill(response.data)
       }))
@@ -70,7 +64,7 @@ function invokeApiPost(url, body, onFulfill, onError) {
 
 function invokeDeleteApi(url, id, onFulfill) {
   return new Promise((resolve, reject) => {
-    axios.delete(url + '/' + id, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.delete(url + '/' + id, { withCredentials: true })
       .then(onFulfill(id))
       .catch(error => {
         reject(error)
@@ -99,7 +93,7 @@ export const traccar = {
         headers: {
           'Content-Type': 'application/json'
         },
-        timeout: 29000 // Maximum timeour for the Lambda API Gateway
+        timeout: 29000 // Maximum timeout for the Lambda API Gateway
       }
     )
       .then(() => ok(report_id))
@@ -115,7 +109,7 @@ export const traccar = {
   },
   updateDevice: function(deviceId, device, onFulfill) {
     Vue.$log.debug(device)
-    axios.put(devices + '/' + deviceId, device, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.put(devices + '/' + deviceId, device, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -128,7 +122,7 @@ export const traccar = {
       hours: accumulators.hours
     }
     Vue.$log.debug(body)
-    axios.put(devices + '/' + deviceId + '/accumulators', body, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.put(devices + '/' + deviceId + '/accumulators', body, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -136,7 +130,7 @@ export const traccar = {
   },
   updateUser: function(userid, user, onFulfill) {
     axios.put(users + '/' + userid, user,
-      { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      { withCredentials: true })
       .then(() => onFulfill(user))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -145,7 +139,7 @@ export const traccar = {
   route: function(deviceId, from, to, onFulfill) {
     from = Vue.moment(from).startOf('day').toDate()
     to = Vue.moment(to).endOf('day').toDate()
-    axios.get(route + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.get(route + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -155,18 +149,14 @@ export const traccar = {
     if (positionId) {
       return invokeApi(positions + '?id=' + positionId)
     } else {
-      axios.get(positions, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
-        .then(response => onFulfill(response.data))
-        .catch(reason => {
-          Vue.$log.error(reason)
-        })
+      return invokeApi(positions, onFulfill)
     }
   },
   trips: function(devices, from, to, onFulfill) {
     const yesterday = new Date()
     yesterday.setDate(new Date().getDate() - 1)
     axios.get(trips + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
-      { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -189,7 +179,7 @@ export const traccar = {
     invokeApiPost(geoFences, body, onFulfill, onError)
   },
   editGeofence: function(geofenceId, geofence, onFulfill) {
-    axios.put(geoFences + '/' + geofenceId, geofence, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.put(geoFences + '/' + geofenceId, geofence, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -203,14 +193,16 @@ export const traccar = {
   },
   geofencesByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
-      axios.get(geoFences + '?deviceId=' + deviceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      axios.get(geoFences + '?deviceId=' + deviceId, { withCredentials: true })
         .then(response => onFulfill(response.data))
-        .catch(error => { reject(error) })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   alertsByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
-      axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+      axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true })
         .then(response => onFulfill(response.data))
         .catch(error => {
           reject(error)
@@ -222,7 +214,7 @@ export const traccar = {
   },
   newAlert: function(alert, onFulfill) {
     Vue.$log.debug(alert)
-    axios.post(alerts, alert, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.post(alerts, alert, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -230,7 +222,7 @@ export const traccar = {
   },
   updateAlert: function(alertId, alert, onFulfill) {
     Vue.$log.debug(alert)
-    axios.put(alerts + '/' + alertId, alert, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.put(alerts + '/' + alertId, alert, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -243,7 +235,7 @@ export const traccar = {
   },
   addPermission: function(permission, onFulfill) {
     Vue.$log.debug(permission)
-    axios.post(permissions, permission, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.post(permissions, permission, { withCredentials: true })
       .then(response => {
         Vue.$log.debug(response.data)
         onFulfill(response.data)
@@ -254,7 +246,7 @@ export const traccar = {
   },
   deletePermission: function(permission, onFulfill) {
     Vue.$log.debug(permission)
-    axios.delete(permissions, { data: permission, withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.delete(permissions, { data: permission, withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -265,7 +257,7 @@ export const traccar = {
   },
   editGroup: function(groupId, group, onFulfill) {
     Vue.$log.debug(group)
-    axios.put(groups + '/' + groupId, group, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.put(groups + '/' + groupId, group, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -276,7 +268,7 @@ export const traccar = {
   },
   newGroup: function(group, onFulfill) {
     Vue.$log.debug(group)
-    axios.post(groups, group, { withCredentials: true, auth: { username: cookie.email, password: cookie.password }})
+    axios.post(groups, group, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -284,5 +276,8 @@ export const traccar = {
   },
   ping: function(onFulfill, onError) {
     invokeApi(server, onFulfill, onError)
+  },
+  getSession() {
+    return invokeApi(baseUrl + 'session')
   }
 }

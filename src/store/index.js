@@ -2,12 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
 import { TrackJS } from 'trackjs'
-import { removeToken } from '../utils/auth'
 import { serverBus } from '../main'
 import { VuexPersistence } from 'vuex-persist'
 
+const excludedMudations = ['TOGGLE_HISTORYMODE']
+
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage
+  storage: window.localStorage,
+  filter: mutation => (excludedMudations.indexOf(mutation.type) === -1),
+  modules: ['app', 'devices', 'map', 'settings', 'user']
 })
 
 Vue.use(Vuex)
@@ -83,7 +86,6 @@ const store = new Vuex.Store({
       if (count === 4) {
         Vue.$log.warn('count = 4, logging out')
         TrackJS.track('LOGOUT')
-        removeToken()
         location.reload()
       }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)

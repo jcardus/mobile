@@ -1,28 +1,30 @@
 import router from './router'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
 import Vue from 'vue'
 import * as lnglat from './utils/lnglat'
+import store from './store'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
+let firstLoad = true
+
 export async function routerBeforeEach(next, to) {
 // determine whether the user has logged in
-  const hasToken = getToken()
+  const hasToken = store.state.user.name !== ''
+
   if (hasToken) {
     if (to.path === '/login') {
-      // if is logged in, redirect to the home page
-      Vue.$log.debug('redirecting to /')
+      Vue.$log.info('redirecting to /')
       next({ path: '/' })
       NProgress.done()
     } else {
       next()
     }
   } else {
-    Vue.$log.warn('no token, redirecting')
+    Vue.$log.warn('no token, redirecting', to, store.state)
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()
@@ -36,6 +38,10 @@ export async function routerBeforeEach(next, to) {
 
 if (!lnglat.__isMobile()) {
   router.beforeEach(async(to, from, next) => {
+    if (firstLoad) {
+      await store.dispatch('user/checkSession')
+      firstLoad = false
+    }
     // start progress bar
     NProgress.start()
     await routerBeforeEach(next, to)

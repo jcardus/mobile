@@ -1,5 +1,4 @@
 import { login, logout } from '../../api/user'
-import { getToken, setToken, removeToken } from '../../utils/auth'
 import { resetRouter } from '../../router'
 import { traccar } from '../../api/traccar-api'
 import { setLanguage } from '../../lang/index'
@@ -15,15 +14,16 @@ import { backEndHostName } from '../../utils/consts'
 const state = {
   name: '',
   email: '',
+  phone: '',
   avatar: '',
   userId: 0,
-  dataLoaded: false,
   connectionOk: true,
   alerts: [],
   events: [],
   devices: [],
   groups: [],
-  geofences: []
+  geofences: [],
+  attributes: null
 }
 
 const mutations = {
@@ -31,23 +31,23 @@ const mutations = {
     state.devices = devices
   },
   SET_EVENTS(state, events) {
-    Vue.$log.info(events)
+    Vue.$log.debug(events)
     state.events = events
   },
   SET_USER(state, token) {
     state.name = token.name
     state.userId = token.id
     state.email = token.email
+    state.phone = token.phone
     state.avatar = getAvatar(token.name)
+    state.attributes = token.attributes
   },
   REMOVE_USER(state) {
     state.name = ''
     state.userId = 0
     state.email = ''
+    state.phone = ''
     state.avatar = ''
-  },
-  SET_DATA_LOADED(state, loaded) {
-    state.dataLoaded = loaded
   },
   TOGGLE_CONNECTION_OK: () => {
     state.connectionOk = !state.connectionOk
@@ -72,7 +72,7 @@ function initData(commit, state, dispatch) {
       dispatch('fetchAlerts')
       traccar.groups(state.userId, (groups) => {
         state.groups = groups
-        vm.$data.groups = groups
+        vm.$store.state.user.groups = groups
         traccar.devices(function(devices) {
           vm.$data.devices = devices
           vm.$data.devices.forEach(d => {
@@ -98,7 +98,8 @@ function initData(commit, state, dispatch) {
             end: new Date(),
             types: state.alerts
           }).finally(() => {
-            commit('SET_DATA_LOADED', true)
+            dispatch('transient/setDataLoaded', null, { root: true })
+            Vue.$log.info('emit dataLoaded')
             serverBus.$emit('dataLoaded')
             resolve()
           })
@@ -117,14 +118,28 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
+  checkSession({ dispatch, commit }) {
+    return new Promise((resolve) => {
+      Vue.$log.info('user/checkSession')
+      traccar.getSession().then((s) => {
+        commit('SET_USER', s)
+        resolve()
+        dispatch('setUser')
+      }).catch((e) => {
+        Vue.$log.warn('no session, should go to login', e)
+        dispatch('removeUser').then(() => resolve())
+      })
+    })
+  },
   setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {
-      const newToken = getToken()
-      commit('SET_USER', newToken)
       initData(commit, state, dispatch).finally(() => {
         TrackJS.addMetadata('user', state.name)
-        setLanguage(newToken.attributes.lang)
+        if (state.attributes) {
+          setLanguage(state.attributes.lang)
+        }
         const hostName = utils.getServerHost()
+        Vue.$log.info('opening websocket ', state)
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
           store: store,
           format: 'json',
@@ -135,55 +150,44 @@ const actions = {
       })
     })
   },
-  login(context, userInfo) {
-    Vue.$log.debug(context)
+  login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const data = response.data
-        data.password = password
-        setToken(response.data)
-        context.dispatch('setUser').finally(() => {
+        commit('SET_USER', response.data)
+        dispatch('setUser').finally(() => {
           checkForUpdates()
           resolve()
         })
-      }).catch(error => {
-        reject(error)
+      }).catch(e => {
+        Vue.$log.error(e)
+        commit('REMOVE_USER')
+        reject(e)
       })
     })
   },
   logout({ commit }) {
-    return new Promise((resolve) => {
-      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + getToken().email + '&userid=' + getToken().id + '&deleteData=true')
+    return new Promise((resolve, reject) => {
+      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true')
         .catch(e => { Vue.$log.error(e) })
         .finally(
           () => {
-            logout(state.token).then(() => {
+            logout().finally(() => {
               resetRouter()
-              removeToken()
               commit('REMOVE_USER')
               vm.reset()
-              state.token = null
               resolve()
             }).catch((e) => {
               Vue.$log.error(e)
-              resetRouter()
-              removeToken()
-              resolve()
-              state.token = null
+              reject(e)
             })
           })
     })
   },
   connectionOk(context, data) {
     if (state.connectionOk !== data.state) {
-      Vue.$log.info('toggle connection ok...')
+      Vue.$log.info('toggle connection ok to', data.state)
       context.commit('TOGGLE_CONNECTION_OK')
-      if (data.state) {
-        context.dispatch('setUser').then(() => {
-          Vue.$log.info('connectionOk done')
-        })
-      }
     }
   },
   connect({ commit }) {
@@ -294,6 +298,12 @@ const actions = {
           })
         }
       })
+    })
+  },
+  removeUser({ commit }) {
+    return new Promise((resolve) => {
+      commit('REMOVE_USER')
+      resolve()
     })
   }
 }

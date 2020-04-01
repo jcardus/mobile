@@ -61,14 +61,14 @@ export default {
   computed:
   {
     groups: function() {
-      return vm.$data.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return vm.$store.state.user.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     devices: function() {
       return vm.$data.devices
     }
   },
   mounted() {
-    this.items = vm.$data.groups
+    this.items = vm.$store.state.user.groups
   },
   methods: {
     onGroupDelete(groupId) {
@@ -101,7 +101,7 @@ export default {
     },
     cancelAdd(value) {
     },
-    cancelEdit(value) {
+    cancelEdit() {
       this.selectedGroup = null
     },
     groupCreated: function(newGroup) {
@@ -112,7 +112,7 @@ export default {
       this.$f7.dialog.alert(this.$t('settings.group_updated'), this.$t('settings.group_edit'))
     },
     groupDeleted: function(groupId) {
-      vm.$data.groups = vm.$data.groups.filter((e) => e && e.id !== groupId)
+      vm.$store.state.user.groups = vm.$store.state.user.groups.filter((e) => e && e.id !== groupId)
       this.$f7.dialog.alert(this.$t('settings.group_deleted'), this.$t('settings.group_delete_title'))
     }
   }

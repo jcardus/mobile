@@ -53,8 +53,7 @@ export default {
     padding: 10px;
     float: left;
     font-size: larger;
-    color: $--color-primary;
-    opacity: 0.5;
+    //opacity: 0.5;
     font-weight: bold;
   }
 </style>
