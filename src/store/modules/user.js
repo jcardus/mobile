@@ -145,7 +145,7 @@ const actions = {
         })
       }).catch(e => {
         Vue.$log.error(e)
-        commit('SET_USER', null)
+        commit('REMOVE_USER')
         reject(e)
       })
     })

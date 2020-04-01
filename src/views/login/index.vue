@@ -13,7 +13,8 @@
           <div class="loginFormDiv">
             <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
               <div class="title-container">
-                <img class="logo" :src="logoImage" alt="">
+                <logo-svg v-if="hasSVG" class="logo"></logo-svg>
+                <img v-else class="logo" :src="logoImage" alt="">
               </div>
               <el-form-item prop="username" :label="$t('login.login_user')">
                 <el-input
@@ -45,7 +46,12 @@
                 </el-form-item>
               </el-tooltip>
               <div>
-                <el-button :loading="loading" type="primary" :style="'margin-bottom:30px; background-color: '+themeColor+'; border-color: '+themeColor" @click.native.prevent="handleLogin">{{ $t('login.login_button') }}</el-button>
+                <el-button
+                  :loading="loading"
+                  type="primary"
+                  style="margin-bottom:20px"
+                  @click.native.prevent="handleLogin"
+                >{{ $t('login.login_button') }}</el-button>
               </div>
               <div>
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
@@ -61,11 +67,13 @@
 <script>
 
 import Vue from 'vue'
-import * as partner from '../../utils/partner'
+import { hasSVG, getLogo, getThemeColor, getCSSName } from '../../utils/partner'
 import { cdnUrl } from '../../utils/consts'
+import LogoSvg from '../../layout/components/LogoSvg'
 
 export default {
   name: 'Login',
+  components: { LogoSvg },
   data() {
     const validateUsername = (rule, value, callback) => {
       callback()
@@ -95,17 +103,20 @@ export default {
     }
   },
   computed: {
+    hasSVG() {
+      return hasSVG()
+    },
     logoImage() {
-      return partner.getLogo()
+      return getLogo()
     },
     imageSrc() {
       return `${cdnUrl}/images/login_${Math.floor(Math.random() * 10 + 1)}.jpg`
     },
     themeColor: function() {
-      return partner.getThemeColor()
+      return getThemeColor()
     },
     cssName: function() {
-      return partner.getCSSName()
+      return getCSSName()
     },
     version() {
       let v = process.env.PACKAGE_VERSION
@@ -190,46 +201,23 @@ export default {
 </script>
 
 <style lang="scss">
-
-  $bg:#ffffff;
-  $dark_gray:#889aa4;
-  $light_gray:#fff;
-  $cursor: #202020;
-  $darkest_gray:#202020;
+  @import '../../styles/element-variables.scss';
 
   .login-container {
     height: 100vh;
+
     .parentDiv {
       height: 100%;
       width: 100%;
       position: relative;
+
       .loginFormDiv {
         width: 100%;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
         .login-form {
-          padding: 40px;
-        }
-
-        .tips {
-          font-size: 14px;
-          color: #fff;
-          margin-bottom: 10px;
-
-          span {
-            &:first-of-type {
-              margin-right: 16px;
-            }
-          }
-        }
-
-        .svg-container {
-          padding: 6px 5px 6px 15px;
-          color: $dark_gray;
-          vertical-align: middle;
-          width: 30px;
-          display: inline-block;
+          padding: 10%;
         }
 
         .title-container {
@@ -238,34 +226,10 @@ export default {
           .logo {
             padding: 10px;
             max-width: 200px;
+            height: 100px;
+            width: 200px
           }
 
-          .set-language {
-            color: #fff;
-            position: absolute;
-            top: 3px;
-            font-size: 18px;
-            right: 0;
-            cursor: pointer;
-          }
-        }
-
-        .wuizy {
-          input {
-            border-color: #91D400;
-          }
-        }
-
-        .fleetrack {
-          input {
-            border-color: #055AE5;
-          }
-        }
-
-        .able-on {
-          input {
-            border-color: #055AE5;
-          }
         }
 
         .el-input {
@@ -275,6 +239,7 @@ export default {
 
           input {
             background: transparent;
+            border-color: $--color-success;
             border-right-width: 0;
             border-left-width: 0;
             border-top-width: 0;
@@ -282,15 +247,13 @@ export default {
             -webkit-appearance: none;
             border-radius: 0;
             padding: 12px 5px 12px 15px;
-            color: $darkest_gray;
+            color: $--color-info;
             height: 40px;
-            caret-color: $cursor;
             font-size: 15px;
             font-family: "Open Sans", serif;
 
             &:-webkit-autofill {
-              box-shadow: 0 0 0 1000px $bg inset !important;
-              -webkit-text-fill-color: $cursor !important;
+              box-shadow: 0 0 0 1000px $--background-color-base inset !important;
             }
           }
         }
@@ -306,7 +269,7 @@ export default {
 
         .el-form-item__label {
           height: 25px;
-          color: $dark_gray;
+          color: $--color-info;
           font-size: 13px;
           font-family: "Open Sans", serif;
         }
@@ -316,7 +279,7 @@ export default {
           right: 10px;
           top: 7px;
           font-size: 16px;
-          color: $darkest_gray;
+          color: $--color-info;
           cursor: pointer;
           user-select: none;
         }
