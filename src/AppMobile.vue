@@ -141,6 +141,7 @@ export default {
         } else {
           this.$log.debug('opening login screen...', this.$f7.loginScreen)
           this.$f7.loginScreen.open('#loginScreen', false)
+          this.$f7.preloader.hide()
         }
       })
     } catch (e) {

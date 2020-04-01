@@ -38,10 +38,12 @@
 
 <script>
 import { vm } from '../../../main'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Vehicles',
   computed: {
+    ...mapGetters(['groups']),
     devices: function() {
       return vm.$data.devices
     }
@@ -49,7 +51,7 @@ export default {
   methods: {
     groupName: function(groupId) {
       if (groupId) {
-        const group = vm.$data.groups.find((g) => g.id === groupId)
+        const group = this.groups.find((g) => g.id === groupId)
         return group && group.name
       } else {
         return ''
