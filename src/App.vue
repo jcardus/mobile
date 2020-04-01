@@ -11,8 +11,6 @@
 import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
 import { serverBus, newServiceWorker } from './main'
-import Vue from 'vue'
-import { traccar } from './api/traccar-api'
 
 export default {
   name: 'App',
@@ -24,18 +22,6 @@ export default {
   created() {
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('message', this.message)
-    traccar.getSession().then((s) => {
-      this.$log.info('App created with session dispatching setUser', s)
-      this.$store.dispatch('user/setUser').then(() => {
-        Vue.$log.debug('user/setUser done')
-      }).catch((e) => {
-        this.$log.error(e)
-      })
-    }).catch((e) => {
-      this.$store.dispatch('user/logout').then(() => {
-        this.$log.info('App created without session, should go to login', e)
-      })
-    })
   },
   beforeDestroy() {
     serverBus.$off('updateAvailable', this.updateAvailable)

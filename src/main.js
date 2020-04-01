@@ -167,6 +167,8 @@ if (lnglat.__isMobile()) {
 Vue.$log.debug('starting main instance...', location.href)
 export const sharedData = new SharedData()
 
+store.dispatch('user/checkSession')
+
 export const vm = new Vue({
   el: '#app',
   data() {

@@ -6,10 +6,10 @@ const { sidebarLogo } = defaultSettings
 
 const state = {
   sidebarLogo: sidebarLogo,
-  matchRoutes: VueCookies.get('settings.matchRoutes') ? !!+VueCookies.get('settings.matchRoutes') : false,
-  viewSpeedAlerts: VueCookies.get('settings.viewSpeedAlerts') ? !!+VueCookies.get('settings.viewSpeedAlerts') : true,
-  maxSpeedType: VueCookies.get('settings.maxSpeedType') ? VueCookies.get('settings.maxSpeedType') : 'vehicle',
-  speedThreshold: VueCookies.get('settings.speedThreshold') ? VueCookies.get('settings.speedThreshold') : '0'
+  matchRoutes: false,
+  viewSpeedAlerts: true,
+  maxSpeedType: 'vehicle',
+  speedThreshold: '0'
 }
 
 const mutations = {

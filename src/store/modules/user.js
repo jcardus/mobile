@@ -121,6 +121,15 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
+  checkSession({ dispatch }) {
+    traccar.getSession().then((s) => {
+      Vue.$log.info('Detected user session dispatching setUser', s)
+      return dispatch('setUser')
+    }).catch((e) => {
+      Vue.$log.warn('no session, should go to login', e)
+      return dispatch('removeUser')
+    })
+  },
   setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {
       initData(commit, state, dispatch).finally(() => {
@@ -129,6 +138,7 @@ const actions = {
           setLanguage(state.attributes.lang)
         }
         const hostName = utils.getServerHost()
+        Vue.$log.info('opening websocket ', state)
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
           store: store,
           format: 'json',
@@ -293,6 +303,9 @@ const actions = {
         }
       })
     })
+  },
+  removeUser({ commit }) {
+    return new Promise(() => commit('REMOVE_USER'))
   }
 }
 export default {

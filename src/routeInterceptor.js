@@ -15,15 +15,14 @@ export async function routerBeforeEach(next, to) {
 
   if (hasToken) {
     if (to.path === '/login') {
-      // if is logged in, redirect to the home page
-      Vue.$log.debug('redirecting to /')
+      Vue.$log.info('redirecting to /')
       next({ path: '/' })
       NProgress.done()
     } else {
       next()
     }
   } else {
-    Vue.$log.warn('no token, redirecting')
+    Vue.$log.warn('no token, redirecting', to, store.state)
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

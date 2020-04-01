@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
-    <div id="historyMode" :style="heightHistoryPanel" class="historyPanel">
+    <div v-if="userLoggedIn" id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data v-if="historyMode" class="currentPositionData"></current-position-data>
       <div v-if="historyMode" style="height: 10px"></div>
       <history-panel v-if="historyMode" class="historyPanel"></history-panel>
@@ -162,7 +162,7 @@ export default {
     }
   },
   created() {
-    this.$log.debug('VueMap, userLoggedIn: ', this.userLoggedIn)
+    this.$log.info('VueMap', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     vm.$data.loadingMap = true
     if (this.isMobile) {
@@ -199,10 +199,12 @@ export default {
   },
   methods: {
     ping() {
-      traccar.ping(() => {}, () => {
-        vm.$data.loadingMap = false
-        NProgress.done()
-      })
+      if (this.userLoggedIn) {
+        traccar.ping(() => {}, () => {
+          vm.$data.loadingMap = false
+          NProgress.done()
+        })
+      }
       checkForUpdates()
     },
     initData() {
