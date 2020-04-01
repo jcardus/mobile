@@ -156,7 +156,7 @@ const actions = {
         .catch(e => { Vue.$log.error(e) })
         .finally(
           () => {
-            logout(state.token).then(() => {
+            logout().then(() => {
               resetRouter()
               commit('REMOVE_USER')
               vm.reset()
