@@ -224,10 +224,8 @@ export default {
           width: 100%;
           text-align: center;
           .logo {
-            padding: 10px;
-            max-width: 200px;
-            height: 100px;
-            width: 200px
+            width:100%;
+            min-height: 100px;
           }
 
         }
