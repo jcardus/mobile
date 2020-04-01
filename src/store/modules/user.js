@@ -125,7 +125,9 @@ const actions = {
     return new Promise((resolve) => {
       initData(commit, state, dispatch).finally(() => {
         TrackJS.addMetadata('user', state.name)
-        setLanguage(state.attributes.lang)
+        if (state.attributes) {
+          setLanguage(state.attributes.lang)
+        }
         const hostName = utils.getServerHost()
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
           store: store,
@@ -173,7 +175,7 @@ const actions = {
   },
   connectionOk(context, data) {
     if (state.connectionOk !== data.state) {
-      Vue.$log.info('toggle connection ok...')
+      Vue.$log.info('toggle connection ok to', data.state)
       context.commit('TOGGLE_CONNECTION_OK')
       if (data.state) {
         context.dispatch('setUser').then(() => {

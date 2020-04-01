@@ -194,7 +194,7 @@
         :formatter="devicesRenderer"
       >
       </el-table-column>
-      <el-table-column label="" :min-width="isMobile ? '15px' : '80px'">
+      <el-table-column label="" min-width="isMobile ? '15px' : '80px'">
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.alert_edit')" placement="top">
             <el-button
