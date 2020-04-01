@@ -1,10 +1,11 @@
 <template>
   <f7-page name="AlertDetail">
     <f7-navbar back-link="" :title="$t('route.alerts')"></f7-navbar>
-    <f7-block-title medium>{{ events[alertId].title }}</f7-block-title>
+    <f7-block-title medium>{{ alert.type }}</f7-block-title>
     <f7-block>
       <f7-list v-if="alert">
-        <f7-list-item :title="alert.type" :after="events[alertId].timestamp | moment('LLLL')" />
+        <f7-list-item :title="alert.title" :after="alert.timestamp | moment('calendar')" />
+        <f7-list-item :after="alert.content" />
       </f7-list>
       <div style="height: 500px">
         <simple-map
