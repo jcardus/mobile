@@ -29,6 +29,7 @@ export default {
       this.$store.dispatch('user/setUser').then(() => {
         Vue.$log.debug('user/setUser done')
       }).catch((e) => {
+        this.$store.dispatch('user/logout')
         this.$log.error(e)
       })
     }).catch((e) => {
