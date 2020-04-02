@@ -21,7 +21,6 @@ import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'ImmobilizeButton',
@@ -36,7 +35,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user']),
+    user() {
+      return vm.$store.state.user
+    },
     isMobile() {
       return lnglat.isMobile()
     },
