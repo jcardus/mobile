@@ -19,9 +19,9 @@
 import Vue from 'vue'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
-import VueCookies from 'vue-cookies'
 import * as lnglat from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ImmobilizeButton',
@@ -36,6 +36,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     isMobile() {
       return lnglat.isMobile()
     },
@@ -59,18 +60,16 @@ export default {
   methods: {
     sendImmobilizationCommand() {
       const self = this
-      vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true }).then(() => {
-        traccar.api_helper(
-          {
-            'username': VueCookies.get('user-info').email,
-            'password': VueCookies.get('user-info').password,
-            'command': 'immobilization',
-            'deviceid': self.selectedDevice.id,
-            'value': !self.immobilizationActive
-          },
-          self.commandImmobilizeOk,
-          self.commandImmobilizeNok)
-      })
+      traccar.api_helper(
+        {
+          'username': this.user.email,
+          'password': '',
+          'command': 'immobilization',
+          'deviceid': self.selectedDevice.id,
+          'value': !self.immobilizationActive
+        },
+        self.commandImmobilizeOk,
+        self.commandImmobilizeNok)
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
@@ -100,6 +99,7 @@ export default {
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result:', response.data)
       if (response.data.success) {
+        vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true })
         if (this.isMobile) {
           this.$f7.notification.create({
             icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',

@@ -6,7 +6,6 @@ const getters = {
   name: state => state.user.name,
   map: state => state.map,
   devices: state => state.user.devices,
-  commandPending: state => state.devices.commandPending,
   loading: state => state.app.loading,
   historyMode: state => state.transient.historyMode,
   minPos: state => state.map.minPos,

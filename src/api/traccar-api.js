@@ -17,7 +17,7 @@ const groups = baseUrl + 'groups'
 const users = baseUrl + 'users'
 const server = baseUrl + 'server'
 const s3_report_lambda_url = 'https://' + serverHost + '/api_reports'
-const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaws.com/default/api_helper'
+const api_helper_lambda_url = 'https://' + serverHost + '/api_helper'
 
 function invokeApi(url, onFulfill, onError) {
   try {
@@ -81,6 +81,7 @@ export const traccar = {
         headers: {
           'Content-Type': 'application/json'
         },
+        withCredentials: true,
         timeout: 5000
       })
       .then(response => ok(response))
