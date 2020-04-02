@@ -60,18 +60,16 @@ export default {
   methods: {
     sendImmobilizationCommand() {
       const self = this
-      vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true }).then(() => {
-        traccar.api_helper(
-          {
-            'username': this.user.email,
-            'password': '',
-            'command': 'immobilization',
-            'deviceid': self.selectedDevice.id,
-            'value': !self.immobilizationActive
-          },
-          self.commandImmobilizeOk,
-          self.commandImmobilizeNok)
-      })
+      traccar.api_helper(
+        {
+          'username': this.user.email,
+          'password': '',
+          'command': 'immobilization',
+          'deviceid': self.selectedDevice.id,
+          'value': !self.immobilizationActive
+        },
+        self.commandImmobilizeOk,
+        self.commandImmobilizeNok)
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
@@ -101,6 +99,7 @@ export default {
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result:', response.data)
       if (response.data.success) {
+        vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true })
         if (this.isMobile) {
           this.$f7.notification.create({
             icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
