@@ -19,9 +19,9 @@
 import Vue from 'vue'
 import { vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
-import VueCookies from 'vue-cookies'
 import * as lnglat from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ImmobilizeButton',
@@ -36,6 +36,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     isMobile() {
       return lnglat.isMobile()
     },
@@ -62,8 +63,8 @@ export default {
       vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true }).then(() => {
         traccar.api_helper(
           {
-            'username': VueCookies.get('user-info').email,
-            'password': VueCookies.get('user-info').password,
+            'username': this.user.email,
+            'password': '',
             'command': 'immobilization',
             'deviceid': self.selectedDevice.id,
             'value': !self.immobilizationActive
