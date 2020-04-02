@@ -9,7 +9,7 @@
       style="float:right"
       :src="getIcon"
       width="38"
-      :style="commandPending[selectedDevice.id]?'opacity: 0.2':''"
+      :style="deviceCommandPending?'opacity: 0.2':''"
       @click="commandImmobilize"
     >
   </el-tooltip>
@@ -35,6 +35,9 @@ export default {
     }
   },
   computed: {
+    deviceCommandPending() {
+      return this.selectedDevice.id && this.commandPending
+    },
     user() {
       return vm.$store.state.user
     },
@@ -46,36 +49,33 @@ export default {
     },
     commandPending: {
       get() {
-        return vm.$store.state.devices.commandPending
-      }, set(value) {
-        vm.$store.dispatch('devices/setCommandPending', value)
+        return vm.$store.state.devices.commandPending[this.selectedDevice.id]
       }
     }
   },
-  mounted() {
-    // Vue.$log.debug('mounted immobilizeButton for device ', this.selectedDevice.name)
-  },
   beforeDestroy() {
-    Vue.$log.debug('destroying immobilizeButton, device ', this.selectedDevice)
+    Vue.$log.info('ImmobilizeButton', this.selectedDevice)
   },
   methods: {
     sendImmobilizationCommand() {
       const self = this
-      traccar.api_helper(
-        {
-          'username': this.user.email,
-          'password': '',
-          'command': 'immobilization',
-          'deviceid': self.selectedDevice.id,
-          'value': !self.immobilizationActive
-        },
-        self.commandImmobilizeOk,
-        self.commandImmobilizeNok)
+      vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true }).then(() => {
+        traccar.api_helper(
+          {
+            'username': this.user.email,
+            'password': '',
+            'command': 'immobilization',
+            'deviceid': self.selectedDevice.id,
+            'value': !self.immobilizationActive
+          },
+          self.commandImmobilizeOk,
+          self.commandImmobilizeNok)
+      })
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
-      const commandPending = this.commandPending[this.selectedDevice.id]
-      Vue.$log.debug('Immobilization ' + this.immobilizationActive + ' for device ', this.selectedDevice.id, ' pending ', commandPending)
+      const commandPending = this.deviceCommandPending
+      Vue.$log.info('Immobilization', this.immobilizationActive, 'for device', this.selectedDevice.id, 'pending', commandPending)
       if (commandPending) {
         const msg = this.$t('vehicleTable.immo_pending')
         if (this.isMobile) {
@@ -125,7 +125,7 @@ export default {
       }
     },
     commandImmobilizeNok: function(reason) {
-      this.commandPending = false
+      vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: false })
       Vue.$log.debug('Immobilization error: ', reason)
       this.$alert('Error: ' + reason)
     }

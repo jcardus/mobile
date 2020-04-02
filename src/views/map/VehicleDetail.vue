@@ -26,7 +26,7 @@
             </div><div style="float: left">
               <immobilize-button
                 :selected-device="device"
-                :immobilization-active="device.currentFeature ? device.currentFeature.properties.immobilization_active : false"
+                :immobilization-active="device.currentFeature && device.currentFeature.properties.immobilization_active"
               ></immobilize-button></div>
           </div>
           <div style="float:right; padding: 3px 0">
