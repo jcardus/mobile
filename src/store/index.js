@@ -10,7 +10,7 @@ const excludedMudations = ['TOGGLE_HISTORYMODE']
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
   filter: mutation => (excludedMudations.indexOf(mutation.type) === -1),
-  modules: ['app', 'devices', 'map', 'settings', 'user']
+  modules: ['app', 'map', 'settings', 'user']
 })
 
 Vue.use(Vuex)
