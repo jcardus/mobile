@@ -1,5 +1,4 @@
 import { login, logout } from '../../api/user'
-import { resetRouter } from '../../router'
 import { traccar } from '../../api/traccar-api'
 import { setLanguage } from '../../lang/index'
 import { vm, serverBus } from '../../main'
@@ -166,22 +165,18 @@ const actions = {
       })
     })
   },
-  logout({ commit }) {
+  logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true')
-        .catch(e => { Vue.$log.error(e) })
-        .finally(
-          () => {
-            logout().finally(() => {
-              resetRouter()
-              commit('REMOVE_USER')
-              vm.reset()
-              resolve()
-            }).catch((e) => {
-              Vue.$log.error(e)
-              reject(e)
-            })
-          })
+        .then(() => { Vue.$log.info('done logout quicksight') })
+      logout().catch((e) => {
+        Vue.$log.error(e)
+        reject(e)
+      }).finally(() => {
+        commit('REMOVE_USER')
+        vm.reset()
+        resolve()
+      })
     })
   },
   connectionOk(context, data) {
