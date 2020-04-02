@@ -82,6 +82,8 @@ export default {
             self.$log.error(e)
             self.stopLoading()
             serverBus.$emit('message', e)
+          }).finally(() => {
+            self.stopLoading()
           })
       } catch (e) {
         self.$log.error(e)
@@ -94,7 +96,7 @@ export default {
       this.loading = false
     },
     onDashboardLoad() {
-      this.$log.debug('onDashboardLoad')
+      this.$log.info('onDashboardLoad')
       this.stopLoading()
       this.dashboardLoaded = true
     },
