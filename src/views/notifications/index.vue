@@ -17,9 +17,9 @@ export default {
   computed: {
     top() {
       if (('standalone' in window.navigator) && window.navigator.standalone) {
-        return 'padding-top:95px;'
+        return 'padding-top:70px;'
       }
-      return 'padding-top:60px;'
+      return 'padding-top:30px;'
     }
   },
   created() {

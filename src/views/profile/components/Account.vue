@@ -1,20 +1,20 @@
 <template>
   <el-card style="margin-bottom:20px;">
     <div slot="header" class="clearfix">
-      <span>{{ $t('profile.user_account') }} <span v-if="user.isAdmin">(Administrator)</span> </span>
+      <span>{{ $t('profile.user_account') }} <span v-if="userForm.isAdmin">(Administrator)</span> </span>
     </div>
-    <el-form ref="user" :model="user" :rules="rules" label-width="120px">
+    <el-form ref="user" :model="userForm" :rules="rules" label-width="120px">
       <el-form-item :label="$t('profile.user_name')" prop="name">
-        <el-input v-model="user.name" />
+        <el-input v-model="userForm.name" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_email')" prop="email">
-        <el-input v-model="user.email" />
+        <el-input v-model="userForm.email" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_password')" prop="password">
         <el-input
           ref="password"
           :key="passwordType"
-          v-model="user.password"
+          v-model="userForm.password"
           name="password"
           :type="passwordType"
         />
@@ -24,7 +24,7 @@
 
       </el-form-item>
       <el-form-item :label="$t('profile.user_phone')">
-        <el-input v-model="user.phone" />
+        <el-input v-model="userForm.phone" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_timezone')">
         <el-select v-model="selectedTimezone">
@@ -46,27 +46,22 @@
 <script>
 import { traccar } from '../../../api/traccar-api'
 import { setLanguage } from '../../../lang'
+import { mapGetters } from 'vuex'
 
 export default {
-  props: {
-    user: {
-      type: Object,
-      default: () => {
-        return {
-          name: '',
-          email: '',
-          password: '',
-          phone: '',
-          isAdmin: '',
-          timezone: '',
-          language: ''
-        }
-      }
-    }
-  },
+  name: 'Account',
   data() {
     return {
-      selectedLang: this.user.language,
+      userForm: {
+        name: '',
+        email: '',
+        password: '',
+        isAdmin: false,
+        phone: '',
+        lang: '',
+        timezone: ''
+      },
+      selectedLang: '',
       languages: [
         { value: 'en-GB', text: 'English (UK)' },
         { value: 'fr-FR', text: 'Française (Frace)' },
@@ -74,7 +69,7 @@ export default {
         { value: 'pt-PT', text: 'Português (PT)' },
         { value: 'pt-BR', text: 'Português (BR)' }
       ],
-      selectedTimezone: this.user.timezone,
+      selectedTimezone: '',
       timezones: [
         { value: 'Europe/Lisbon', text: 'Europe/Lisbon' },
         { value: 'America/Santiago', text: 'America/Santiago' },
@@ -95,17 +90,29 @@ export default {
       passwordType: 'password'
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  created() {
+    this.userForm.name = this.user.name
+    this.userForm.email = this.user.email
+    this.userForm.phone = this.user.phone
+    this.selectedLang = this.user.attributes.lang
+    this.selectedTimezone = this.user.attributes.timezone
+  },
   methods: {
     submit() {
       this.$refs.user.validate(valid => {
         if (valid) {
           const newUser = { id: this.user.userId }
-          newUser.name = this.user.name
-          newUser.email = this.user.email
-          newUser.password = this.user.password
-          newUser.phone = this.user.phone
-          newUser.attributes.lang = this.selectedLang
-          newUser.attributes.timezone = this.selectedTimezone
+          newUser.name = this.userForm.name
+          newUser.email = this.userForm.email
+          newUser.password = this.userForm.password
+          newUser.phone = this.userForm.phone
+          newUser.attributes = {
+            timezone: this.selectedTimezone,
+            lang: this.selectedLang
+          }
           traccar.updateUser(newUser.id, newUser, this.userUpdated)
         }
       })
