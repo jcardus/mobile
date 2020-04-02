@@ -16,7 +16,7 @@ const permissions = baseUrl + 'permissions'
 const groups = baseUrl + 'groups'
 const users = baseUrl + 'users'
 const server = baseUrl + 'server'
-const s3_report_lambda_url = 'https://bw0tup4a94.execute-api.us-east-1.amazonaws.com/default/reports'
+const s3_report_lambda_url = 'https://' + serverHost + '/api_reports'
 const api_helper_lambda_url = 'https://2eili4mmue.execute-api.us-east-1.amazonaws.com/default/api_helper'
 
 function invokeApi(url, onFulfill, onError) {
@@ -93,6 +93,7 @@ export const traccar = {
         headers: {
           'Content-Type': 'application/json'
         },
+        withCredentials: true,
         timeout: 29000 // Maximum timeout for the Lambda API Gateway
       }
     )

@@ -55,6 +55,7 @@ import VueCookies from 'vue-cookies'
 import * as utils from '../../views/reports/utils/utils'
 import Vue from 'vue'
 import { traccar } from '../../api/traccar-api'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Reports',
@@ -71,6 +72,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     devices() {
       return vm.$data.devices.sort(function(a, b) {
         a = a.name.toLowerCase()
@@ -115,11 +117,10 @@ export default {
       }
       this.$log.debug('mobile reports submit')
       this.$f7.dialog.preloader(this.$t('map.loading'))
-      const cookie = VueCookies.get('user-info')
-      const report_id = cookie.email + '_' + utils.generate_token(40)
+      const report_id = this.user.email + '_' + utils.generate_token(40)
       const body = {
-        username: cookie.email,
-        password: cookie.password,
+        username: this.user.email,
+        password: VueCookies.get('JSESSIONID'),
         report: this.reportType,
         report_id: report_id,
         selected_devices: this.selectedDevices,
