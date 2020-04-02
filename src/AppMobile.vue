@@ -24,7 +24,7 @@
         url="/map"
         @tab:show="emitEvent('mapActive')"
       ></f7-view>
-      <f7-view id="view-reports" name="reports" tab url="/reports"></f7-view>
+      <f7-view id="view-reports" name="reports" tab url="/reports" @tab:show="emitEvent('reportsActive')"></f7-view>
       <f7-view id="view-dashboard" name="dashboard" tab url="/dashboard" @tab:show="emitEvent('dashboardActive')"></f7-view>
       <f7-view id="view-settings" name="settings" tab url="/settings"></f7-view>
       <f7-view id="view-alerts" name="alerts" tab url="/alerts" @tab:show="emitEvent('eventsActive')"></f7-view>
