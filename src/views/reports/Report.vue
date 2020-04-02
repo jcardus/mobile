@@ -72,6 +72,7 @@ import VueCookies from 'vue-cookies'
 import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
 import * as utils from './utils/utils'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Report',
@@ -154,6 +155,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     title() {
       return vm.$t('route.' + this.$route.meta.title)
     },
@@ -200,12 +202,11 @@ export default {
         if (this.dateRange.length > 0) {
           this.$log.debug('Triggering report generation')
           this.loadingReport = true
-          const cookie = VueCookies.get('user-info')
 
-          const report_id = cookie.email + '_' + utils.generate_token(40)
+          const report_id = this.user.email + '_' + utils.generate_token(40)
           const body = {
-            username: cookie.email,
-            password: cookie.password,
+            username: this.user.email,
+            password: VueCookies.get('JSESSIONID'),
             report: this.reportType,
             report_id: report_id,
             selected_devices: this.selectedDevices,
