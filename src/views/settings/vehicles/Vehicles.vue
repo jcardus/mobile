@@ -60,18 +60,12 @@
       </div>
     </transition>
 
-    <el-input
-      v-model="search"
-      style="width: 300px"
-      placeholder="Pesquisa"
-    />
-    <div style="height: 10px"></div>
     <el-table
       :data="devices.filter(data => !search
         || data.name.toLowerCase().includes(search.toLowerCase())
         || (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(search.toLowerCase()))
         || (data.model && data.model.toLowerCase().includes(search.toLowerCase())))"
-      height="calc(100vh - 170px)"
+      height="calc(100vh - 125px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
@@ -110,7 +104,13 @@
         sortable
       >
       </el-table-column>
-      <el-table-column label="" width="100px">
+      <el-table-column label="" width="300px" align="right">
+        <template slot="header">
+          <el-input
+            v-model="search"
+            placeholder="Pesquisa"
+          />
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
             <el-button
