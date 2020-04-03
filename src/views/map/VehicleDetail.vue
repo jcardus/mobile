@@ -48,7 +48,7 @@
         </div>
       </div>
     </div>
-    <f7-popup :opened="popupOpened" @popup:closed="popupOpened = false">
+    <f7-popup v-if="isMobile" :opened="popupOpened" @popup:closed="popupOpened = false">
       <messages></messages>
     </f7-popup>
   </div>
