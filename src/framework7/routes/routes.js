@@ -13,8 +13,13 @@ import MapMobileContainer from '../pages/MapMobileContainer'
 import DashboardPage from '../pages/dashboard'
 import alerts from '../pages/alerts'
 import AlertDetail from '../pages/alerts/AlertDetail'
+import Messages from '../pages/messages'
 
 const routes = [
+  {
+    path: '/messages',
+    component: Messages
+  },
   {
     path: '/alertdetail/:alertId',
     component: AlertDetail

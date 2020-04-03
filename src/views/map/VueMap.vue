@@ -315,7 +315,8 @@ export default {
         data: {
           device: device,
           feature: feature
-        }
+        },
+        store: this.$store
       })
       vm.$mount('#vue-vehicle-popup')
 

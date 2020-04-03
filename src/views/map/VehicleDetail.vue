@@ -48,7 +48,12 @@
         </div>
       </div>
     </div>
-  </div></template>
+    <f7-popup :opened="popupOpened" @popup:closed="popupOpened = false">
+      <messages></messages>
+    </f7-popup>
+  </div>
+</template>
+
 <script>
 
 import axios from 'axios'
@@ -60,10 +65,11 @@ import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
 import { clientId } from '../../utils/mapillary'
 import { mapGetters } from 'vuex'
+import Messages from '../../framework7/pages/messages'
 
 export default {
   name: 'VehicleDetail',
-  components: { IOdometer, ImmobilizeButton },
+  components: { IOdometer, ImmobilizeButton, Messages },
   static() {
     return {
       mly: null
@@ -81,7 +87,8 @@ export default {
       lastImageUpdate: new Date(0),
       oldPosition: null,
       fetching: false,
-      sequenceKey: null
+      sequenceKey: null,
+      popupOpened: false
     }
   },
   computed: {
@@ -127,7 +134,7 @@ export default {
   },
   methods: {
     clickDriver() {
-
+      this.popupOpened = true
     },
     loaded() {
       Vue.$log.debug('loaded')
