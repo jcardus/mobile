@@ -27,7 +27,6 @@
         </div>
       </div>
     </transition>
-
     <div slot="header" class="clearfix">
       <span>{{ $t('settings.groups') }}</span>
       <el-tooltip content="Adicionar Grupo" placement="top">
@@ -38,7 +37,9 @@
         ><i class="fas fa-plus"></i></el-button>
       </el-tooltip>
     </div>
+
     <el-table :data="groups" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
+
       <el-table-column
         :label="$t('settings.group_name')"
         prop="name"

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%">
     <transition name="modal">
       <div v-if="isOpenVehicleForm">
         <div class="overlay">
@@ -71,7 +71,7 @@
         || data.name.toLowerCase().includes(search.toLowerCase())
         || (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(search.toLowerCase()))
         || (data.model && data.model.toLowerCase().includes(search.toLowerCase())))"
-
+      height="calc(100vh - 170px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
