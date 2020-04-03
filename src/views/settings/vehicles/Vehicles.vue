@@ -72,20 +72,20 @@
       <el-table-column
         :label="$t('settings.vehicle_name')"
         prop="name"
-        sortable
+        sortable=""
       >
       </el-table-column>
       <el-table-column
         :label="$t('settings.vehicle_licenseplate')"
         prop="attributes.license_plate"
-        sortable
+        sortable=""
       >
       </el-table-column>
       <el-table-column
         :label="$t('settings.vehicle_group')"
         :formatter="groupRenderer"
         prop="groupId"
-        sortable
+        sortable=""
         :filters="groupsFilter"
         :filter-method="filterHandler"
       ></el-table-column>
@@ -93,7 +93,7 @@
         v-if="!isMobile"
         :label="$t('settings.vehicle_model')"
         prop="model"
-        sortable
+        sortable=""
       >
       </el-table-column>
       <el-table-column
@@ -101,10 +101,10 @@
         :label="$t('settings.vehicle_speed_limit')"
         :formatter="alertSpeedRenderer"
         prop="attributes.speedLimit"
-        sortable
+        sortable=""
       >
       </el-table-column>
-      <el-table-column label="" width="300px" align="right">
+      <el-table-column label="" width="200px" align="right">
         <template slot="header">
           <el-input
             v-model="search"

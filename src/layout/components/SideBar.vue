@@ -2,7 +2,7 @@
   <div style="width:64px; height:100%">
     <el-menu style="height: 100%" collapse default-active="1" router>
       <el-menu-item index="/map">
-        <i class="el-icon-place" :style="iconStyle"></i>
+        <i class="el-icon-place"></i>
         <span slot="title">{{ $t('route.map') }}</span>
       </el-menu-item>
       <el-menu-item index="/dashboard/index">
@@ -35,9 +35,6 @@ import * as partner from '../../utils/partner'
 
 export default {
   computed: {
-    iconStyle() {
-      return '' // return 'color:' + styles.primary + ';opacity:0.6'
-    },
     tollsReport() {
       return partner.hasTolls()
     }

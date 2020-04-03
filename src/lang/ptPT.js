@@ -164,7 +164,7 @@ export default {
     vehicle_name: 'Nome',
     vehicle_licenseplate: 'Matrícula',
     vehicle_model: 'Modelo',
-    vehicle_speed_limit: 'Limite de Velocidade',
+    vehicle_speed_limit: 'Limite',
     vehicle_form_cancel: 'Cancelar',
     vehicle_form_confirm: 'Guardar',
     vehicle_form_name: 'Nome',
