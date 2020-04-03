@@ -5,6 +5,11 @@
       <div class="title">
         <span>{{ device.name }}</span>
       </div>
+      <el-button
+        icon="el-icon-chat-line-square"
+        style="float:right"
+        @click="clickDriver"
+      >{{ device.contact }}</el-button>
       <div class="content">
         {{ feature.properties.address }}
         <div style="padding-top: 5px;">
@@ -33,8 +38,6 @@
             <el-button
               icon="el-icon-video-play"
               style="float:right"
-              type="text"
-              size="mini"
               @click="showRoutesChanged"
             >{{ $t('vehicleDetail.show_route') }}</el-button>
           </div>
@@ -186,6 +189,7 @@ export default {
 </script>
 
 <style lang="scss">
+  @import '../../styles/element-variables';
   .vehicleDetail {
     padding: 0;
     z-index:999 ;
@@ -211,10 +215,9 @@ export default {
       background: #991907;
   }
   .speed span {
-    border:solid 4px;
     background: #fff;
     color:#000000;
-    border-color: #ff0000;
+    border: 4px solid #ff0000;
     width: 35px;
     height: 35px;
   }
@@ -230,14 +233,22 @@ export default {
     font-style: normal;
     font-weight: bold;
     font-size: 22px;
-    color: #32325D;
+    padding-bottom: 10px;
+    padding-top: 1px;
+    overflow: auto;
+  }
+  .driver {
+    float:right;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
     padding-bottom: 10px;
     padding-top: 1px;
     overflow: auto;
   }
   .content {
     font-size: 13px;
-    color: #8898AA;
+    color: $--color-info;
     float:left;
     width: 100%;
     overflow: auto;
