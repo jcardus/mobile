@@ -2,14 +2,17 @@
   <div class="vehicleDetail">
     <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
-      <div class="title">
-        <span>{{ device.name }}</span>
-      </div>
-      <el-button
-        icon="el-icon-chat-line-square"
-        style="float:right"
-        @click="clickDriver"
-      >{{ device.contact }}</el-button>
+      <el-row style="vertical-align: center"><el-col :span="12">
+        <div class="title">
+          {{ device.name }}
+        </div></el-col><el-col :span="12">
+        <el-button
+          icon="el-icon-chat-line-square"
+          style="float:right"
+          type="text"
+          @click="clickDriver"
+        >{{ device.contact }}</el-button></el-col>
+      </el-row>
       <div class="content">
         {{ feature.properties.address }}
         <div style="padding-top: 5px;">
@@ -38,6 +41,7 @@
             <el-button
               icon="el-icon-video-play"
               style="float:right"
+              type="text"
               @click="showRoutesChanged"
             >{{ $t('vehicleDetail.show_route') }}</el-button>
           </div>
@@ -122,6 +126,9 @@ export default {
     }
   },
   methods: {
+    clickDriver() {
+
+    },
     loaded() {
       Vue.$log.debug('loaded')
     },
@@ -232,19 +239,12 @@ export default {
     float:left;
     font-style: normal;
     font-weight: bold;
-    font-size: 22px;
-    padding-bottom: 10px;
-    padding-top: 1px;
-    overflow: auto;
+    font-size: large;
+    vertical-align: center;
   }
   .driver {
     float:right;
-    font-style: normal;
     font-weight: normal;
-    font-size: 12px;
-    padding-bottom: 10px;
-    padding-top: 1px;
-    overflow: auto;
   }
   .content {
     font-size: 13px;

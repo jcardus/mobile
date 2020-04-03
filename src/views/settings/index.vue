@@ -2,7 +2,6 @@
   <div class="app-container">
     <div style="height: 10px"></div>
     <el-tabs
-      type="border-card"
       active-tab-color="#9b59b6"
       active-text-color="white"
     >
