@@ -65,6 +65,7 @@
       style="width: 300px"
       placeholder="Pesquisa"
     />
+    <div style="height: 10px"></div>
     <el-table
       :data="devices.filter(data => !search
         || data.name.toLowerCase().includes(search.toLowerCase())
