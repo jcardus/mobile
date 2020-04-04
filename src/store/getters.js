@@ -17,6 +17,7 @@ const getters = {
   groups: state => state.user.groups,
   geofences: state => state.user.geofences,
   unreadItems: state => state.unreadItems
+
 }
 
 export default getters

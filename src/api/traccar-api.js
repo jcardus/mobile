@@ -16,6 +16,7 @@ const permissions = baseUrl + 'permissions'
 const groups = baseUrl + 'groups'
 const users = baseUrl + 'users'
 const server = baseUrl + 'server'
+const drivers = baseUrl + 'drivers'
 const s3_report_lambda_url = 'https://' + serverHost + '/api_reports'
 const api_helper_lambda_url = 'https://' + serverHost + '/api_helper'
 
@@ -41,6 +42,32 @@ function invokeApi(url, onFulfill, onError) {
             }
           })
         })
+    })
+  } catch (e) {
+    onError(e)
+  }
+}
+
+function invokeApiMultiple(urls, onFulfill, onError) {
+  try {
+    return new Promise((resolve, reject) => {
+      axios.all(urls).then(axios.spread((...responses) => {
+        vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
+          if (onFulfill) {
+            onFulfill(responses)
+          }
+          resolve(responses)
+        })
+      })).catch(reason => {
+        vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
+          if (onError) {
+            onError(reason)
+          }
+          if (reject) {
+            reject(reason)
+          }
+        })
+      })
     })
   } catch (e) {
     onError(e)
@@ -276,10 +303,25 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
+  drivers: function(userId, onFulfill, onError) {
+    invokeApi(drivers + '?userId=' + userId, onFulfill, onError)
+  },
   ping: function(onFulfill, onError) {
     invokeApi(server, onFulfill, onError)
   },
   getSession() {
     return invokeApi(baseUrl + 'session')
+  },
+  getInitData: function(userId, onFulfill, onError) {
+    const requestDevices = axios.get(devices, { withCredentials: true })
+    const requestGeofences = axios.get(geoFences, { withCredentials: true })
+    const requestGroups = axios.get(groups + '?userId=' + userId, { withCredentials: true })
+    const requestDrivers = axios.get(drivers + '?userId=' + userId, { withCredentials: true })
+
+    invokeApiMultiple([requestDevices, requestGeofences, requestGroups, requestDrivers],
+      function(responses) {
+        onFulfill(responses[0].data, responses[1].data, responses[2].data, responses[3].data)
+      },
+      onError)
   }
 }
