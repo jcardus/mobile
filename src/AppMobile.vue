@@ -1,7 +1,7 @@
 <template>
   <f7-app :params="f7params">
     <f7-panel left cover theme-dark style="min-width: 300px" @panel:closed="panelClosed">
-      <vehicle-table-container></vehicle-table-container>
+      <data-container></data-container>
     </f7-panel>
     <f7-views tabs class="safe-areas">
       <f7-toolbar :bottom="true" labels tabbar>
@@ -67,7 +67,7 @@
 
 <script>
 import routes from './framework7/routes/routes'
-import VehicleTableContainer from './views/map/VehicleTableContainer'
+import DataContainer from './views/map/DataContainer'
 import Vue from 'vue'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
@@ -79,7 +79,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'AppMobile',
-  components: { VehicleTableContainer },
+  components: { DataContainer },
   data() {
     return {
       username: '',

@@ -1,7 +1,7 @@
 <template>
   <div class="row">
-    <div class="divVehicles">
-      <vehicle-table-container></vehicle-table-container>
+    <div class="divData">
+      <data-container></data-container>
     </div>
     <div class="divMap">
       <vue-map></vue-map>
@@ -10,18 +10,19 @@
 </template>
 
 <script>
-import VehicleTableContainer from './VehicleTableContainer'
+import DataContainer from './DataContainer'
 import VueMap from './VueMap'
+
 export default {
   name: 'MapView',
-  components: { VehicleTableContainer, VueMap }
+  components: { DataContainer, VueMap }
 }
 </script>
 <style>
   .row {
     display: flex;
   }
-  .divVehicles {
+  .divData {
     min-width: 300px;
     max-width: 300px;
     -webkit-box-shadow: 0 0 32px rgba(136, 152, 170, 0.4);
