@@ -108,6 +108,7 @@
       </el-tooltip>
     </div>
     <el-table
+      height="calc(100vh - 125px)"
       :data="alerts"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"

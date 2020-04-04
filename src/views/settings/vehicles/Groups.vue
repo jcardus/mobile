@@ -38,8 +38,12 @@
       </el-tooltip>
     </div>
 
-    <el-table :data="groups" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
-
+    <el-table
+      height="calc(100vh - 125px)"
+      :data="groups"
+      :row-style="tableRowStyle"
+      :header-cell-style="tableHeaderStyle"
+    >
       <el-table-column
         :label="$t('settings.group_name')"
         prop="name"
