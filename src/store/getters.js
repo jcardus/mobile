@@ -15,6 +15,7 @@ const getters = {
   events: state => state.user.events,
   dataLoaded: state => state.transient.dataLoaded,
   groups: state => state.user.groups,
+  drivers: state => state.user.drivers,
   geofences: state => state.user.geofences,
   unreadItems: state => state.unreadItems
 

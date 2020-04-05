@@ -19,6 +19,12 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
+          <i class="fas fa-address-card"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.drivers') }}</span>
+        </span>
+        <drivers></drivers>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
           <i class="fas fa-bell"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.alerts') }}</span>
         </span>
         <alerts></alerts>
@@ -67,13 +73,14 @@
 <script>
 import { vm } from '../../main'
 import Alerts from './alerts/Alerts'
+import Drivers from './drivers/Drivers'
 import Vehicles from './vehicles/Vehicles'
 import Groups from './vehicles/Groups'
 import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'Settings',
-  components: { Alerts, Vehicles, Groups },
+  components: { Alerts, Vehicles, Groups, Drivers },
   data() {
     return {
       radioValue: 'road',

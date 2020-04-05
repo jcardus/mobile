@@ -258,9 +258,7 @@ export const traccar = {
       })
   },
   deleteAlert: function(alertId, onFulfill) {
-    return new Promise(() => {
-      invokeDeleteApi(alerts, alertId, onFulfill)
-    })
+    invokeDeleteApi(alerts, alertId, onFulfill)
   },
   addPermission: function(permission, onFulfill) {
     Vue.$log.debug(permission)
@@ -305,6 +303,24 @@ export const traccar = {
   },
   drivers: function(userId, onFulfill, onError) {
     invokeApi(drivers + '?userId=' + userId, onFulfill, onError)
+  },
+  addDriver: function(driver, onFulfill) {
+    axios.post(drivers, driver, { withCredentials: true })
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  deleteDriver: function(driverId, onFulfill) {
+    invokeDeleteApi(drivers, driverId, onFulfill)
+  },
+  updateDriver: function(driverId, driver, onFulfill) {
+    Vue.$log.debug(driver)
+    axios.put(drivers + '/' + driverId, driver, { withCredentials: true })
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
   },
   ping: function(onFulfill, onError) {
     invokeApi(server, onFulfill, onError)
