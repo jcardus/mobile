@@ -223,7 +223,10 @@ export default {
     pois_title: 'POIs',
     geofences_title: 'Balizas',
     edit: 'Editar',
-    delete: 'Apagar'
+    delete: 'Apagar',
+    name_required: 'O campo nome é obrigatório',
+    email_format_invalid: 'Por favor indique um e-mail válido',
+    email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.'
   },
   geofence: {
     showGeofences: 'Ver Balizas',

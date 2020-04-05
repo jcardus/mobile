@@ -216,7 +216,10 @@ export default {
     driver_updated: 'Driver updated sucessfully!',
     pois_title: 'POIs',
     edit: 'Edit',
-    delete: 'Delete'
+    delete: 'Delete',
+    name_required: 'Name field is required',
+    email_format_invalid: 'Please input a valid email',
+    email_or_phone_required: 'At least one of these fields must have a valid value.'
   },
   geofence: {
     showGeofences: 'Show Geofences',

@@ -6,15 +6,15 @@
           <div class="modal">
             <h2 v-if="isNewDriver">{{ $t('settings.driver_add') }}</h2>
             <h2 v-else>{{ $t('settings.driver_edit_title') }}</h2>
-            <el-form>
-              <el-form-item :label="$t('settings.driver_name')">
-                <el-input v-model="driverName" />
+            <el-form ref="driver" :model="driverForm" :rules="rules">
+              <el-form-item :label="$t('settings.driver_name')" prop="name">
+                <el-input v-model="driverForm.name" />
               </el-form-item>
-              <el-form-item :label="$t('settings.driver_email')">
-                <el-input v-model="driverEmail" />
+              <el-form-item :label="$t('settings.driver_email')" prop="email">
+                <el-input v-model="driverForm.email" />
               </el-form-item>
-              <el-form-item :label="$t('settings.driver_phone')">
-                <el-input v-model="driverPhone" />
+              <el-form-item :label="$t('settings.driver_phone')" prop="phone">
+                <el-input v-model="driverForm.phone" type="number" />
               </el-form-item>
             </el-form>
             <el-button
@@ -95,15 +95,41 @@ import { traccar } from '../../../api/traccar-api'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'DriversVue',
+  name: 'Drivers',
   data() {
+    const checkEmailRequired = (rule, value, callback) => {
+      if ((!value || value.length === 0) && this.driverForm.phone.length === 0) {
+        return callback(new Error())
+      }
+      callback()
+    }
+    const checkPhoneRequired = (rule, value, callback) => {
+      if ((!value || value.length === 0) && this.driverForm.email.length === 0) {
+        return callback(new Error())
+      }
+      callback()
+    }
     return {
       isOpenDriverForm: false,
       isNewDriver: true,
       selectedDriver: null,
-      driverName: '',
-      driverEmail: '',
-      driverPhone: ''
+      driverForm: {
+        name: '',
+        email: '',
+        phone: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: this.$t('settings.name_required'), trigger: 'blur' }
+        ],
+        email: [
+          { type: 'email', message: this.$t('settings.email_format_invalid'), trigger: 'blur' },
+          { validator: checkEmailRequired, message: this.$t('settings.email_or_phone_required'), trigger: 'blur' }
+        ],
+        phone: [
+          { validator: checkPhoneRequired, message: this.$t('settings.email_or_phone_required'), trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -124,9 +150,9 @@ export default {
       this.isNewDriver = false
       this.selectedDriver = row
 
-      this.driverName = row.name
-      this.driverEmail = row.attributes.email
-      this.driverPhone = row.attributes.phone
+      this.driverForm.name = row.name
+      this.driverForm.email = row.attributes.email
+      this.driverForm.phone = row.attributes.phone
 
       this.isOpenDriverForm = !this.isOpenDriverForm
     },
@@ -155,38 +181,43 @@ export default {
       this.clearFormData()
     },
     handleSubmitDriverForm() {
-      if (this.isNewDriver) {
-        const newDriver = {
-          name: this.driverName,
-          attributes: {
-            email: this.driverEmail,
-            phone: this.driverPhone
+      this.$refs.driver.validate(valid => {
+        if (valid) {
+          if (this.isNewDriver) {
+            const newDriver = {
+              name: this.driverForm.name,
+              uniqueId: this.driverForm.phone.length > 0 ? this.driverForm.phone : this.driverForm.email,
+              attributes: {
+                email: this.driverForm.email,
+                phone: this.driverForm.phone
+              }
+            }
+            traccar.addDriver(newDriver, this.driverCreated)
+          } else {
+            this.$log.debug(this.selectedGroup)
+
+            const driver = this.selectedDriver
+            driver.name = this.driverForm.name
+            driver.attributes.email = this.driverForm.email
+            driver.attributes.phone = this.driverForm.phone
+
+            const d = {
+              id: driver.id,
+              name: this.driverForm.name,
+              uniqueId: driver.uniqueId,
+              attributes: {
+                email: this.driverForm.email,
+                phone: this.driverForm.phone
+              }
+            }
+
+            traccar.updateDriver(driver.id, d, this.driverUpdated)
           }
+
+          this.isOpenDriverForm = false
+          this.clearFormData()
         }
-        traccar.addDriver(newDriver, this.driverCreated)
-      } else {
-        this.$log.debug(this.selectedGroup)
-
-        const driver = this.selectedDriver
-        driver.name = this.driverName
-        driver.attributes.email = this.driverEmail
-        driver.attributes.phone = this.driverPhone
-
-        const d = {
-          id: driver.id,
-          name: this.driverName,
-          uniqueId: driver.uniqueId,
-          attributes: {
-            email: this.driverEmail,
-            phone: this.driverPhone
-          }
-        }
-
-        traccar.updateDriver(driver.id, d, this.driverUpdated)
-      }
-
-      this.isOpenDriverForm = false
-      this.clearFormData()
+      })
     },
     driverCreated: function(newDriver) {
       this.$message({
@@ -194,7 +225,7 @@ export default {
         message: this.$t('settings.driver_created')
       })
       this.clearFormData()
-      vm.$store.state.user.groups.push(newDriver)
+      vm.$store.state.user.drivers.push(newDriver)
     },
     driverUpdated: function() {
       this.$message({
@@ -205,9 +236,9 @@ export default {
     },
     clearFormData() {
       this.selectedDriver = null
-      this.driverName = ''
-      this.driverEmail = ''
-      this.driverPhone = ''
+      this.driverForm.name = ''
+      this.driverForm.email = ''
+      this.driverForm.phone = ''
     }
   }
 }
