@@ -121,6 +121,7 @@ export default {
       const body = {
         username: this.user.email,
         password: VueCookies.get('JSESSIONID'),
+        platform: 'mobile',
         report: this.reportType,
         report_id: report_id,
         selected_devices: this.selectedDevices,
