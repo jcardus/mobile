@@ -90,6 +90,10 @@ export default {
     login_user_password_invalid: 'Não existe nenhuma conta com o utilizador ou password indicados. Por favor verifique as credenciais e tente novamente.',
     login_user_disabled: 'O utilizador encontra-se bloqueado.'
   },
+  alerts: {
+    title: 'Alertas',
+    get_alerts: 'Obter Notificações'
+  },
   profile: {
     user_account: 'Utilizador',
     user_name: 'Nome',

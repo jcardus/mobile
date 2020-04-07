@@ -2,7 +2,7 @@
   <div class="block">
     <el-card>
       <div slot="header" class="clearfix">
-        <span>Notificações</span>
+        <span>{{ $t('alerts.title') }}</span>
       </div>
       <el-row :gutter="20">
         <el-col style="padding-bottom: 5px" :span="16">
@@ -10,7 +10,7 @@
             v-model="selectedAlertsType"
             style="width: 100%; height: 35px"
             multiple
-            placeholder="Alertas"
+            :placeholder="$t('alerts.title')"
             value=""
           >
             <el-option v-for="item in alerts" :key="item.notification.id" :label="$t('settings.alert_'+item.notification.type)" :value="item.notification.id" />
@@ -18,7 +18,7 @@
         </el-col>
         <el-col :span="2">
           <div class="grid-content">
-            <el-tooltip content="Obter Notificações" placement="bottom">
+            <el-tooltip :content="$t('alerts.get_alerts')" placement="bottom">
               <el-button type="primary" icon="el-icon-caret-right" circle @click="getNotifications" />
             </el-tooltip>
           </div>
