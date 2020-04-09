@@ -4,7 +4,7 @@
       <div v-if="isOpenDriverForm">
         <div class="overlay">
           <div class="modal">
-            <h2 v-if="isNewDriver">{{ $t('settings.driver_add') }}</h2>
+            <h2 v-if="isNewDriver">{{ $t('settings.driver_add_title') }}</h2>
             <h2 v-else>{{ $t('settings.driver_edit_title') }}</h2>
             <el-form ref="driver" :model="driverForm" :rules="rules">
               <el-form-item :label="$t('settings.driver_name')" prop="name">
