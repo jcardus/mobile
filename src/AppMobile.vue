@@ -31,35 +31,42 @@
       <f7-view id="view-login" name="login" url="/login"></f7-view>
     </f7-views>
     <f7-login-screen id="loginScreen">
-      <f7-page login-screen>
-        <f7-login-screen-title>
-          <div class="title-container">
-            <img class="logo" :src="logo" alt="">
-          </div>
-        </f7-login-screen-title>
-        <f7-list form>
-          <f7-list-input
-            name="username"
-            :label="$t('login.login_user')"
-            type="text"
-            :value="username"
-            @input="username = $event.target.value"
-          ></f7-list-input>
-          <f7-list-input
-            autocomplete="on"
-            name="password"
-            :label="$t('login.login_password')"
-            type="password"
-            :value="password"
-            @input="password = $event.target.value"
-          ></f7-list-input>
-        </f7-list>
-        <f7-list>
-          <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
-          <f7-block-footer>
-            {{ version }} {{ domain }}
-          </f7-block-footer>
-        </f7-list>
+      <f7-page login-screen :style="'background-size: cover;background-image: url(\'' + imageSrc + '\')'">
+        <div class="login_form">
+          <f7-login-screen-title>
+            <div class="title-container">
+              <img class="logo" :src="logo" alt="">
+            </div>
+          </f7-login-screen-title>
+          <f7-list form>
+            <f7-list-input
+              name="username"
+              :placeholder="$t('login.login_user')"
+              type="text"
+              :value="username"
+              @input="username = $event.target.value"
+            >
+              <f7-icon slot="media" icon="fas fa-user" style="font-size:20px"></f7-icon>
+
+            </f7-list-input>
+            <f7-list-input
+              autocomplete="on"
+              name="password"
+              :placeholder="$t('login.login_password')"
+              type="password"
+              :value="password"
+              @input="password = $event.target.value"
+            >
+              <f7-icon slot="media" icon="fas fa-unlock-alt" style="font-size:20px"></f7-icon>
+            </f7-list-input>
+          </f7-list>
+          <f7-list>
+            <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
+            <f7-block-footer>
+              {{ version }} {{ domain }}
+            </f7-block-footer>
+          </f7-list>
+        </div>
       </f7-page>
     </f7-login-screen>
   </f7-app>
@@ -76,6 +83,7 @@ import { reload } from './utils/utils'
 import * as partner from './utils/partner'
 import { appOffline } from './utils/utils'
 import { mapGetters } from 'vuex'
+import { cdnUrl } from './utils/consts'
 
 export default {
   name: 'AppMobile',
@@ -108,6 +116,9 @@ export default {
     },
     offline() {
       return appOffline()
+    },
+    imageSrc() {
+      return `${cdnUrl}/images/login_1.jpg`
     }
   },
   beforeDestroy() {
@@ -202,9 +213,70 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import './framework7/css/framework7.bundle.min.css';
   @import './framework7/css/icons.css';
+
+  :root {
+    --f7-login-screen-content-bg-color: #fff0;
+    --f7-label-font-size: 18px;
+    --f7-input-font-size: 14px;
+    --f7-list-item-padding-horizontal: 20px;
+    --f7-input-text-color: black;
+    --f7-login-screen-list-button-text-color: white;
+    --f7-list-item-padding-horizontal: 15px;
+    --f7-list-item-media-margin: 8px;
+  }
+
+  .login-screen-page .login-screen-content,
+  .login-screen-page .page-content,
+  .login-screen>.page .login-screen-content,
+  .login-screen>.page .page-content,
+  .login-screen>.view>.page
+  .login-screen-content,
+  .login-screen>.view>.page .page-content {
+    margin-top: 60px;
+    margin-bottom: 0px;
+    height: 100%;
+    width: 100%;
+  }
+
+  .list-button {
+    background-color: #055AE5;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 20px;
+    color: white;
+    border-radius: 20px;
+  }
+
+  .login_form {
+    margin-left:40px;
+    margin-right:40px;
+    background:  #fff;
+    opacity: 0.8;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    position: center;
+    border-radius: 20px;
+  }
+
+  .md .item-input .item-media {
+    align-self: normal;
+  }
+
+  .md .list .item-media {
+    min-width: 20px;
+  }
+
+  .item-input {
+    margin-bottom: 10px;
+  }
+
+  .item-title{
+    font-size: 20px;
+  }
+
   .logo {
     margin: 0 auto 40px auto;
     display: block;

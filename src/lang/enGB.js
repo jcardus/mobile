@@ -82,7 +82,7 @@ export default {
     logout: 'Log Out'
   },
   login: {
-    login_user: 'Email',
+    login_user: 'E-mail',
     login_password: 'Password',
     login_button: 'Login',
     login_password_warn: 'The password can not be less than 6 digits',
