@@ -15,6 +15,7 @@ import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
+import './amplify'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')

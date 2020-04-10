@@ -7,31 +7,30 @@ import store from './store'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/googlelogin/'] // no redirect whitelist
 
 let firstLoad = true
 
 export async function routerBeforeEach(next, to) {
-// determine whether the user has logged in
   const hasToken = store.state.user.name !== ''
 
   if (hasToken) {
     if (to.path === '/login') {
       Vue.$log.info('redirecting to /')
       next({ path: '/' })
-      NProgress.done()
     } else {
       next()
     }
   } else {
-    Vue.$log.warn('no token, redirecting', to, store.state)
     if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
+      Vue.$log.info('skipping auth', to.path)
       next()
+    } else if (whiteList.indexOf(window.location.pathname) !== -1) {
+      Vue.$log.info('forcing pathname', to.path, window.location.pathname)
+      next(window.location.pathname)
     } else {
-      // other pages that do not have permission to access are redirected to the login page.
+      Vue.$log.info('redirecting to login', to.path)
       next(`/login?redirect=${to.path}`)
-      NProgress.done()
     }
   }
 }
@@ -42,13 +41,11 @@ if (!lnglat.__isMobile()) {
       await store.dispatch('user/checkSession')
       firstLoad = false
     }
-    // start progress bar
     NProgress.start()
     await routerBeforeEach(next, to)
   })
 
   router.afterEach(() => {
-    // finish progress bar
     NProgress.done()
   })
 }

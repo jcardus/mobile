@@ -26,6 +26,7 @@
     "@turf/length": "latest",
     "amazon-quicksight-embedding-sdk": "latest",
     "angles": "latest",
+    "aws-amplify": "^3.0.7",
     "aws-sdk": "^2.639.0",
     "axios": "0.18.1",
     "chart.js": "^2.9.3",

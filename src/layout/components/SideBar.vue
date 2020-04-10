@@ -23,7 +23,7 @@
       </el-submenu>
 
       <el-menu-item index="/settings/index">
-        <i class="el-icon-setting" :style="iconStyle"></i>
+        <i class="el-icon-setting"></i>
         <span slot="title">{{ $t('route.settings') }}</span>
       </el-menu-item>
     </el-menu>

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import * as lnglat from '../utils/lnglat'
-import Dashboard from '../views/dashboard/Dashboard'
+import GoogleLogin from '../views/login/GoogleLogin'
 
 Vue.use(Router)
 
@@ -20,8 +20,8 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/iosdashboard',
-    component: Dashboard,
+    path: '/googlelogin',
+    component: GoogleLogin,
     hidden: true
   },
   {
