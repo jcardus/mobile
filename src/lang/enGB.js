@@ -82,7 +82,7 @@ export default {
     logout: 'Log Out'
   },
   login: {
-    login_user: 'Email',
+    login_user: 'E-mail',
     login_password: 'Password',
     login_button: 'Login',
     login_password_warn: 'The password can not be less than 6 digits',
@@ -207,7 +207,8 @@ export default {
     driver_name: 'Name',
     driver_email: 'E-Mail',
     driver_phone: 'Phone',
-    driver_add: 'Add Driver',
+    driver_add: 'Add',
+    driver_add_title: 'Add Driver',
     driver_edit: 'Edit',
     driver_edit_title: 'Edit Driver',
     driver_delete: 'Delete',

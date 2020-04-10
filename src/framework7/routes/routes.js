@@ -7,6 +7,8 @@ import POISSettingsPage from '../pages/settings/pois'
 import GeofencesSettingsPage from '../pages/settings/geofences'
 import GroupsSettingsPage from '../pages/settings/groups'
 import AlertsSettingsPage from '../pages/settings/alerts'
+import DriversSettingsPage from '../pages/settings/drivers'
+import DriverDetailsPage from '../pages/settings/driverDetails'
 import AboutPage from '../pages/settings/about'
 import Viewer from '../pages/viewer'
 import MapMobileContainer from '../pages/MapMobileContainer'
@@ -71,6 +73,14 @@ const routes = [
   {
     path: '/settings/about',
     component: AboutPage
+  },
+  {
+    path: '/settings/drivers',
+    component: DriversSettingsPage
+  },
+  {
+    path: '/settings/driverDetails/:driverId',
+    component: DriverDetailsPage
   },
   {
     path: '/viewer',
