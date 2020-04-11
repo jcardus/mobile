@@ -132,13 +132,11 @@ module.exports = {
   pages: {
     index: {
       entry: 'src/main.js',
-      template: 'public/index.html',
-      chunks: ['chunk-vendors', 'chunk-common', 'index']
+      template: 'public/index.html'
     },
-    googlelogin: {
+    'googlelogin/index': {
       entry: 'src/googlelogin/main.js',
-      template: 'public/index.html',
-      chunks: ['chunk-vendors', 'chunk-common', 'googlelogin']
+      template: 'public/index.html'
     }
   }
 }
