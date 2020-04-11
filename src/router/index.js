@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import * as lnglat from '../utils/lnglat'
+import GoogleLogin from '../views/login/GoogleLogin'
 
 Vue.use(Router)
 
@@ -12,6 +13,11 @@ export const constantRoutes = [
     component: Layout,
     hidden: true,
     children: [{ path: '/redirect/:path*', component: () => import('../views/redirect/index') }]
+  },
+  {
+    path: '/googlelogin',
+    component: GoogleLogin,
+    hidden: true
   },
   {
     path: '/login',

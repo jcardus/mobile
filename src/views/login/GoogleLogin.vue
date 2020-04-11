@@ -4,8 +4,8 @@
 
 <script>
 import { Auth, Hub } from 'aws-amplify'
-import api from '../api/backend'
-import * as traccar from '../api/user'
+import api from '../../api/backend'
+import * as traccar from '../../api/user'
 
 export default {
   data() {
