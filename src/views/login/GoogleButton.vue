@@ -9,15 +9,9 @@
   </a>
 </template>
 <script>
-import { googleSignin } from '../../utils/consts'
 import { Auth } from 'aws-amplify'
 export default {
   name: 'GoogleButton',
-  computed: {
-    url() {
-      return googleSignin
-    }
-  },
   methods: {
     authenticate() {
       Auth.federatedSignIn()
