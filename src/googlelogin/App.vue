@@ -4,9 +4,10 @@
 
 <script>
 import { Auth, Hub } from 'aws-amplify'
-import api from '../../api/backend'
+import api from '../api/backend'
+import * as traccar from '../api/user'
+import { getServerHost } from '../api'
 import VueCookies from 'vue-cookies'
-import { getServerHost } from '../../utils/utils'
 
 export default {
   data() {
@@ -33,12 +34,14 @@ export default {
       this.$log.info(VueCookies.remove('JSESSIONID'))
       api.getJSessionId(data.attributes.email)
         .then(() => {
-          this.$store.dispatch('user/checkSession').then(() => {
-            window.location.href = '/'
+          traccar.getSession().then((s) => {
+            this.$log.info(s)
+            this.$log.info('redirecting to /')
+            // window.location.href = '/'
           })
         })
     },
-    getUser: function() {
+    getUser: async function() {
       Auth.currentAuthenticatedUser()
         .then((data) => this.getUserData(data))
         .catch((e) => {

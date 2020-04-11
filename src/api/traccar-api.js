@@ -1,9 +1,8 @@
-import Vue from 'vue'
 import axios from 'axios'
-import { vm } from '../main.js'
-import * as utils from '../utils/utils'
-
-const serverHost = utils.getServerHost()
+import { getServerHost } from './index'
+import store from '../store'
+import Vue from 'vue'
+const serverHost = getServerHost()
 const baseUrl = 'https://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
 const route = baseUrl + 'reports/route'
@@ -25,7 +24,7 @@ function invokeApi(url, onFulfill, onError) {
     return new Promise((resolve, reject) => {
       axios.get(url, { withCredentials: true }) // send cookies when cross-domain requests)
         .then(response => {
-          vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
+          store.dispatch('user/connectionOk', { state: true }).then(() => {
             if (onFulfill) {
               onFulfill(response.data)
             }
@@ -33,7 +32,7 @@ function invokeApi(url, onFulfill, onError) {
           })
         })
         .catch(reason => {
-          vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
+          store.dispatch('user/connectionOk', { state: false }).then(() => {
             if (onError) {
               onError(reason)
             }
@@ -52,14 +51,14 @@ function invokeApiMultiple(urls, onFulfill, onError) {
   try {
     return new Promise((resolve, reject) => {
       axios.all(urls).then(axios.spread((...responses) => {
-        vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
+        store.dispatch('user/connectionOk', { state: true }).then(() => {
           if (onFulfill) {
             onFulfill(responses)
           }
           resolve(responses)
         })
       })).catch(reason => {
-        vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
+        store.dispatch('user/connectionOk', { state: false }).then(() => {
           if (onError) {
             onError(reason)
           }
@@ -77,10 +76,10 @@ function invokeApiMultiple(urls, onFulfill, onError) {
 function invokeApiPost(url, body, onFulfill, onError) {
   try {
     axios.post(url, body, { withCredentials: true })
-      .then(response => vm.$store.dispatch('user/connectionOk', { state: true }).then(() => {
+      .then(response => store.dispatch('user/connectionOk', { state: true }).then(() => {
         onFulfill(response.data)
       }))
-      .catch(reason => vm.$store.dispatch('user/connectionOk', { state: false }).then(() => {
+      .catch(reason => store.dispatch('user/connectionOk', { state: false }).then(() => {
         Vue.$log.error(reason)
         onError(reason)
       }))

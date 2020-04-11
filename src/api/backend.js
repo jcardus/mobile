@@ -1,7 +1,6 @@
-import * as utils from '../utils/utils'
+import { getServerHost } from './index'
 import axios from 'axios'
-const serverHost = utils.getServerHost()
-const url = 'https://' + serverHost + '/backend'
+const url = 'https://' + getServerHost() + '/backend'
 
 export default {
   getJSessionId(email) {

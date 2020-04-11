@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import * as lnglat from '../utils/lnglat'
-import GoogleLogin from '../views/login/GoogleLogin'
 
 Vue.use(Router)
 
@@ -17,11 +16,6 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('../views/login/index'),
-    hidden: true
-  },
-  {
-    path: '/googlelogin',
-    component: GoogleLogin,
     hidden: true
   },
   {
