@@ -71,7 +71,10 @@ module.exports = {
       'start_url': '/index.html',
       'display': 'standalone',
       'background_color': '#F8F9FE',
-      'theme_color': '#F8F9FE'
+      'theme_color': '#F8F9FE',
+      'permissions': [
+        'cookies'
+      ]
     }
   },
 

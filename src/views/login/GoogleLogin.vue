@@ -1,14 +1,19 @@
 <template>
-  <a @click="signOut">
-    <div>loading...</div>
-  </a>
+  <div></div>
 </template>
 
 <script>
 import { Auth, Hub } from 'aws-amplify'
 import api from '../../api/backend'
+import VueCookies from 'vue-cookies'
+import { getServerHost } from '../../utils/utils'
 
 export default {
+  data() {
+    return {
+      loading: true
+    }
+  },
   created() {
     this.$log.info('GoogleLogin')
     Hub.listen('auth', ({ payload: { event, data }}) => {
@@ -20,16 +25,17 @@ export default {
     this.getUser()
   },
   methods: {
-    signOut() {
-      Auth.signOut()
-    },
     getUserData(data) {
       if (data && data.attributes) {
         this.$log.info('userLoggedIn', data.attributes)
       }
+      this.$log.info(VueCookies.remove('JSESSIONID', '/', getServerHost()))
+      this.$log.info(VueCookies.remove('JSESSIONID'))
       api.getJSessionId(data.attributes.email)
-        .then((data) => {
-          this.$log.info(data)
+        .then(() => {
+          this.$store.dispatch('user/checkSession').then(() => {
+            window.location.href = '/'
+          })
         })
     },
     getUser: function() {
