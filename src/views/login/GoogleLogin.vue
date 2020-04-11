@@ -17,11 +17,6 @@ export default {
         this.getUser()
       }
     })
-    Auth.currentAuthenticatedUser()
-      .then((data) => this.getUserData(data))
-      .catch((e) => {
-        this.$log.error(e)
-      })
     this.getUser()
   },
   methods: {
@@ -32,7 +27,10 @@ export default {
       if (data && data.attributes) {
         this.$log.info('userLoggedIn', data.attributes)
       }
-      api.getJSessionId().then((data) => this.$log.info(data))
+      api.getJSessionId(data.attributes.email)
+        .then((data) => {
+          this.$log.info(data)
+        })
     },
     getUser: function() {
       Auth.currentAuthenticatedUser()
