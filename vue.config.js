@@ -134,7 +134,7 @@ module.exports = {
       entry: 'src/main.js',
       template: 'public/index.html'
     },
-    'googlelogin/index': {
+    googlelogin: {
       entry: 'src/googlelogin/main.js',
       template: 'public/index.html'
     }
