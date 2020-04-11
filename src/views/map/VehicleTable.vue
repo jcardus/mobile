@@ -176,7 +176,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode']),
+    ...mapGetters(['historyMode', 'geofences']),
     buttonRound() {
       return !this.isMobile
     },
@@ -264,7 +264,7 @@ export default {
       return devices
     },
     pois: function() {
-      return this.$root.$data.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+      return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     }
   },
   mounted() {
