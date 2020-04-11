@@ -107,7 +107,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -141,9 +141,6 @@ export default {
     },
     devices() {
       return this.$root.$data.devices
-    },
-    geofences() {
-      return this.$root.$data.geofences
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
