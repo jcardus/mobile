@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <span class="header">
       <el-row>
         <el-col :span="12">
@@ -64,7 +63,7 @@
 
 <script>
 
-import { vm, serverBus, sharedData } from '../../main'
+import { vm, serverBus, sharedData, settings } from '../../main'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
@@ -611,10 +610,9 @@ export default {
     drawRoute(positions, timestamps) {
       const lineString = { type: 'LineString', coordinates: positions }
 
-      if (!vm.$store.state.settings.matchRoutes) {
+      if (!settings.animateMarkers) {
         const routeGeoJSON = this.getGeoJSON(lineString)
         Vue.$log.debug('Positions Route ', routeGeoJSON)
-
         this.createLayers(routeGeoJSON)
       } else {
         lnglat.matchRoute(positions, positions.map(() => [25]), timestamps, this.onRouteMatch)
