@@ -15,13 +15,13 @@ export const constantRoutes = [
     children: [{ path: '/redirect/:path*', component: () => import('../views/redirect/index') }]
   },
   {
-    path: '/login',
-    component: () => import('../views/login/index'),
+    path: '/googlelogin',
+    component: GoogleLogin,
     hidden: true
   },
   {
-    path: '/googlelogin',
-    component: GoogleLogin,
+    path: '/login',
+    component: () => import('../views/login/index'),
     hidden: true
   },
   {
