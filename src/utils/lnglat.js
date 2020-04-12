@@ -157,29 +157,23 @@ function fetchGeofences(map) {
       filter: ['==', '$type', 'LineString']
     })
     map.addLayer({
-      id: 'pois',
-      type: 'circle',
-      source: 'geofences',
-      paint: {
-        'circle-radius': 10,
-        'circle-color': '#B42222'
-      },
-      layout: { visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none' },
-      filter: ['==', '$type', 'Point']
-    })
-    map.addLayer({
-      id: 'pois-labels',
+      id: 'pois_marker',
       type: 'symbol',
       source: 'geofences',
       layout: {
         'text-field': '{title}',
         visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
         'text-size': 12,
-        'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
         'text-justify': 'auto',
-        'text-radial-offset': 0.8
+        'text-offset': [0, 0.8],
+        'icon-image': 'marker',
+        'icon-offset': {
+          stops: [
+            [13, [0, -10]]
+          ]
+        }
       },
-      filter: ['==', '$type', 'Point']
+      filter: ['all', ['==', '$type', 'Point'], ['==', 'icon', 'marker']]
     })
   }
 }

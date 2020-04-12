@@ -47,9 +47,7 @@ const actions = {
   },
   togglePOIs({ commit, state }) {
     commit('TOGGLE_POIS')
-    vm.$static.map.setLayoutProperty('pois', 'visibility',
-      state.showPOIs ? 'visible' : 'none')
-    vm.$static.map.setLayoutProperty('pois-labels', 'visibility',
+    vm.$static.map.setLayoutProperty('pois_marker', 'visibility',
       state.showPOIs ? 'visible' : 'none')
   }
 }

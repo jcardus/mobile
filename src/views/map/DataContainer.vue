@@ -26,7 +26,7 @@
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">
-            <i class="fas fa-male"></i>
+            <i class="fas fa-address-card"></i>
           </span>
           <driver-table :filter-key="filterKey"></driver-table>
         </el-tab-pane>
