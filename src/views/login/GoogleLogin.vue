@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div v-loading.fullscreen.lock="true"></div>
 </template>
 
 <script>
