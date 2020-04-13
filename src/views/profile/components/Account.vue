@@ -17,11 +17,8 @@
           v-model="userForm.password"
           name="password"
           :type="passwordType"
+          :show-password="true"
         />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-
       </el-form-item>
       <el-form-item :label="$t('profile.user_phone')">
         <el-input v-model="userForm.phone" />
