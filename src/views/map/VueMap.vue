@@ -107,7 +107,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -141,9 +141,6 @@ export default {
     },
     devices() {
       return this.$root.$data.devices
-    },
-    geofences() {
-      return this.$root.$data.geofences
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -248,6 +245,12 @@ export default {
         this.map.touchZoomRotate.disableRotation()
       }
 
+      const self = this.map
+      this.map.loadImage('./img/icons/pois/marker.png', function(error, image) {
+        if (error) throw error
+        self.addImage('marker', image)
+      })
+
       NProgress.done()
       if (this.dataLoaded && this.userLoggedIn && !this.initialized) {
         this.$log.info('dataLoaded', this.dataLoaded, 'userLoggedIn', this.userLoggedIn, 'initialized', this.initialized)
@@ -315,7 +318,8 @@ export default {
         data: {
           device: device,
           feature: feature
-        }
+        },
+        store: this.$store
       })
       vm.$mount('#vue-vehicle-popup')
 
@@ -819,7 +823,8 @@ export default {
           },
           properties: {
             id: item.id,
-            title: item.name
+            title: item.name,
+            icon: ''
           }
         }
         const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
@@ -837,7 +842,8 @@ export default {
           },
           properties: {
             id: item.id,
-            title: item.name
+            title: item.name,
+            icon: ''
           }
         }
         const str = wkt.substring('LINESTRING('.length + 1, wkt.length - 1)
@@ -855,7 +861,8 @@ export default {
           },
           properties: {
             id: item.id,
-            title: item.name
+            title: item.name,
+            icon: item.icon ? item.icon : 'marker'
           }
         }
         const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))

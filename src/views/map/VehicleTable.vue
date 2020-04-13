@@ -1,62 +1,117 @@
 <template>
-  <div class="mobileScroll">
-    <el-table
-      id="vehicleTable"
-      v-loading.fullscreen.lock="loading"
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.8)"
-      :element-loading-text="$t('map.loading')"
-      :cell-style="cellStyle"
-      :data="filteredVehicles"
-      row-key="id"
-      :height="height"
-      :show-header="false"
-      highlight-current-row
-      stripe
-      @row-click="vehicleSelected"
-    >
-      <el-table-column
-        prop=""
-        label=""
-        width="10"
-        heigth="10"
+  <div>
+    <div style="margin-bottom: 15px;">
+      <el-row type="flex" justify="space-around">
+        <el-col :span="4">
+          <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
+            <el-button
+              id="btnAll"
+              :round="buttonRound"
+              :size="buttonSize"
+              @click="handleFilterState(null)"
+            >{{ devices.length }}</el-button>
+          </el-tooltip></el-col>
+        <el-col :span="4">
+          <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="bottom">
+            <el-button
+              id="btnMoving"
+              type="success"
+              :round="buttonRound"
+              :size="buttonSize"
+              @click="handleFilterState('Moving')"
+            >{{ devicesOnCount }}</el-button>
+          </el-tooltip></el-col>
+        <el-col :span="4">
+          <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
+            <el-button
+              id="btnIdle"
+              :round="buttonRound"
+              type="warning"
+              :size="buttonSize"
+              @click="handleFilterState('Idle')"
+            >{{ devicesIdle.length }}</el-button>
+          </el-tooltip></el-col>
+        <el-col :span="4">
+          <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
+            <el-button
+              id="btnOff"
+              :round="buttonRound"
+              :size="buttonSize"
+              type="danger"
+              @click="handleFilterState('Stopped')"
+            >{{ devicesOff.length }}</el-button>
+          </el-tooltip></el-col>
+        <el-col :span="4">
+          <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
+            <el-button
+              id="btnUnknown"
+              :round="buttonRound"
+              :size="buttonSize"
+              type="info"
+              @click="handleFilterState('Disconnected')"
+            >{{ devicesDisconnected.length }}</el-button>
+          </el-tooltip></el-col>
+      </el-row>
+    </div>
+    <div class="mobileScroll">
+      <el-table
+        id="vehicleTable"
+        v-loading.fullscreen.lock="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+        :element-loading-text="$t('map.loading')"
+        :cell-style="cellStyle"
+        :data="filteredVehicles"
+        row-key="id"
+        :height="height"
+        :show-header="false"
+        highlight-current-row
+        stripe
+        @row-click="vehicleSelected"
       >
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="Vehicles"
-        sortable=""
-        heigth="1"
-      >
-        <template slot-scope="scope">
-          <div style="padding: 3px 0 0;">
-            <span style="font-weight: bold">{{ scope.row.name }} </span>
-            <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
-          <div style="line-height: normal;padding-top: 2px">
-            <span v-if="scope.row.currentFeature" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
-            <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
-          </div>
-          <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
-            <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.poi) }}</span>
-          </div>
-          <div v-else style="line-height: normal">
-            <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.address }}</span>
-          </div>
-          <div style="padding-top: 6px;float:left">
-            <timeago
-              :datetime="scope.row.lastUpdate"
-              :auto-update="60"
-              :locale="$i18n.locale.substring(0,2)"
-            ></timeago></div>
-          <div style="float: right">
-            <immobilize-button
-              style="padding:0"
-              :selected-device="scope.row"
-              :immobilization-active="scope.row.currentFeature ? scope.row.currentFeature.properties.immobilization_active : false"
-            /></div>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          prop=""
+          label=""
+          width="10"
+          heigth="10"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="Vehicles"
+          sortable=""
+          heigth="1"
+        >
+          <template slot-scope="scope">
+            <div style="padding: 3px 0 0;">
+              <span style="font-weight: bold">{{ scope.row.name }} </span>
+              <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
+            <div style="line-height: normal;padding-top: 2px">
+              <span v-if="scope.row.currentFeature" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
+              <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
+            </div>
+            <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
+              <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.poi) }}</span>
+            </div>
+            <div v-else style="line-height: normal">
+              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.address }}</span>
+            </div>
+            <div style="padding-top: 6px;float:left">
+              <timeago
+                :datetime="scope.row.lastUpdate"
+                :auto-update="60"
+                :locale="$i18n.locale.substring(0,2)"
+              ></timeago></div>
+            <div style="float: right">
+              <immobilize-button
+                style="padding:0"
+                :selected-device="scope.row"
+                :immobilization-active="scope.row.currentFeature ? scope.row.currentFeature.properties.immobilization_active : false"
+              /></div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -96,10 +151,6 @@ export default {
     }
   },
   props: {
-    filterState: {
-      default: '',
-      type: String
-    },
     filterKey: {
       default: '',
       type: String
@@ -120,11 +171,18 @@ export default {
       propagate: true,
       lastUpdate: new Date(),
       sortColumns: {},
-      sortKey: 'name'
+      sortKey: 'name',
+      filterState: null
     }
   },
   computed: {
-    ...mapGetters(['historyMode']),
+    ...mapGetters(['historyMode', 'geofences']),
+    buttonRound() {
+      return !this.isMobile
+    },
+    buttonSize() {
+      return this.isMobile ? 'large' : 'mini'
+    },
     height() {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
@@ -136,6 +194,9 @@ export default {
     },
     devices() {
       return vm.$data.devices
+    },
+    devicesOnCount() {
+      return this.devicesOn.length
     },
     devicesDisconnected() {
       return this.devices.filter(d => this.getDeviceState(d) === 'Disconnected')
@@ -203,10 +264,15 @@ export default {
       return devices
     },
     pois: function() {
-      return this.$root.$data.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+      return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     }
   },
   mounted() {
+    document.getElementById('btnMoving').addEventListener('touchstart', this.filterStateOn)
+    document.getElementById('btnOff').addEventListener('touchstart', this.filterStateOff)
+    document.getElementById('btnIdle').addEventListener('touchstart', this.filterStateIdle)
+    document.getElementById('btnAll').addEventListener('touchstart', this.filterStateAll)
+    document.getElementById('btnUnknown').addEventListener('touchstart', this.filterStateUnknown)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelectedOnMap)
     if (!this.isMobile) {
       serverBus.$on('showRoutesChanged', this.showRoutesChanged)
@@ -291,8 +357,30 @@ export default {
         }
       }
     },
+    filterStateOn() {
+      this.handleFilterState('Moving')
+    },
+    filterStateAll() {
+      this.handleFilterState(null)
+    },
+    filterStateIdle() {
+      this.handleFilterState('Idle')
+    },
+    filterStateUnknown() {
+      this.handleFilterState('Disconnected')
+    },
+    filterStateOff() {
+      this.handleFilterState('Stopped')
+    },
     handleFilterState: function(state) {
+      Vue.$log.debug('state is', state)
+      let devices = this.devices
       this.filterState = state
+      if (state != null) {
+        this.filterState = state
+        devices = this.devices.filter(d => this.getDeviceState(d) === state)
+      }
+      lnglat.fitBounds(devices)
     },
     deviceSelectedOnMap(device) {
       this.selected = device.id

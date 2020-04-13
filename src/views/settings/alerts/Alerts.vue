@@ -96,18 +96,8 @@
         </div>
       </div>
     </transition>
-
-    <div slot="header" class="clearfix">
-      <span>{{ $t('settings.alerts') }}</span>
-      <el-tooltip content="Adicionar Alerta" placement="top">
-        <el-button
-          class="alertFormButton"
-          size="small"
-          @click="handleAddAlert"
-        ><i class="fas fa-plus"></i></el-button>
-      </el-tooltip>
-    </div>
     <el-table
+      height="calc(100vh - 125px)"
       :data="alerts"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
@@ -195,6 +185,15 @@
       >
       </el-table-column>
       <el-table-column label="" min-width="isMobile ? '15px' : '80px'">
+        <template slot="header">
+          <el-tooltip content="Adicionar Alerta" placement="top">
+            <el-button
+              class="alertFormButton"
+              size="small"
+              @click="handleAddAlert"
+            ><i class="fas fa-plus"></i></el-button>
+          </el-tooltip>
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.alert_edit')" placement="top">
             <el-button

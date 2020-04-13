@@ -2,9 +2,17 @@
   <div class="vehicleDetail">
     <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
-      <div class="title">
-        <span>{{ device.name }}</span>
-      </div>
+      <el-row style="vertical-align: center"><el-col :span="12">
+        <div class="title">
+          {{ device.name }}
+        </div></el-col><el-col :span="12">
+        <el-button
+          icon="el-icon-chat-line-square"
+          style="float:right"
+          type="text"
+          @click="clickDriver"
+        >{{ device.contact }}</el-button></el-col>
+      </el-row>
       <div class="content">
         {{ feature.properties.address }}
         <div style="padding-top: 5px;">
@@ -34,14 +42,18 @@
               icon="el-icon-video-play"
               style="float:right"
               type="text"
-              size="mini"
               @click="showRoutesChanged"
             >{{ $t('vehicleDetail.show_route') }}</el-button>
           </div>
         </div>
       </div>
     </div>
-  </div></template>
+    <f7-popup v-if="isMobile" :opened="popupOpened" @popup:closed="popupOpened = false">
+      <messages></messages>
+    </f7-popup>
+  </div>
+</template>
+
 <script>
 
 import axios from 'axios'
@@ -53,10 +65,11 @@ import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
 import { clientId } from '../../utils/mapillary'
 import { mapGetters } from 'vuex'
+import Messages from '../../framework7/pages/messages'
 
 export default {
   name: 'VehicleDetail',
-  components: { IOdometer, ImmobilizeButton },
+  components: { IOdometer, ImmobilizeButton, Messages },
   static() {
     return {
       mly: null
@@ -74,7 +87,8 @@ export default {
       lastImageUpdate: new Date(0),
       oldPosition: null,
       fetching: false,
-      sequenceKey: null
+      sequenceKey: null,
+      popupOpened: false
     }
   },
   computed: {
@@ -119,6 +133,9 @@ export default {
     }
   },
   methods: {
+    clickDriver() {
+      this.popupOpened = true
+    },
     loaded() {
       Vue.$log.debug('loaded')
     },
@@ -186,6 +203,7 @@ export default {
 </script>
 
 <style lang="scss">
+  @import '../../styles/element-variables';
   .vehicleDetail {
     padding: 0;
     z-index:999 ;
@@ -211,10 +229,9 @@ export default {
       background: #991907;
   }
   .speed span {
-    border:solid 4px;
     background: #fff;
     color:#000000;
-    border-color: #ff0000;
+    border: 4px solid #ff0000;
     width: 35px;
     height: 35px;
   }
@@ -229,15 +246,16 @@ export default {
     float:left;
     font-style: normal;
     font-weight: bold;
-    font-size: 22px;
-    color: #32325D;
-    padding-bottom: 10px;
-    padding-top: 1px;
-    overflow: auto;
+    font-size: large;
+    vertical-align: center;
+  }
+  .driver {
+    float:right;
+    font-weight: normal;
   }
   .content {
     font-size: 13px;
-    color: #8898AA;
+    color: $--color-info;
     float:left;
     width: 100%;
     overflow: auto;

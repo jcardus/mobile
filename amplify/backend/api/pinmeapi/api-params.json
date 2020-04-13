@@ -1,0 +1,41 @@
+{
+    "paths": [
+        {
+            "name": "/pinmeapi",
+            "lambdaFunction": "pinmeapi",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
+        }
+    ],
+    "resourceName": "pinmeapi",
+    "apiName": "pinmeapi",
+    "functionArns": [
+        {
+            "lambdaFunction": "pinmeapi"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 0,
+        "authRoleName": "amplify-driver-dev-214530-authRole",
+        "unAuthRoleName": "amplify-driver-dev-214530-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "pinmeapi",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

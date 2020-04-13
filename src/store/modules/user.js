@@ -7,8 +7,8 @@ import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
 import store from '../index'
 import VueNativeSock from 'vue-native-websocket'
-import * as utils from '../../utils/utils'
 import { backEndHostName } from '../../utils/consts'
+import { getServerHost } from '../../api'
 
 const state = {
   name: '',
@@ -22,6 +22,7 @@ const state = {
   devices: [],
   groups: [],
   geofences: [],
+  drivers: [],
   attributes: null
 }
 
@@ -56,6 +57,9 @@ const mutations = {
   },
   SET_GROUPS(state, groups) {
     state.groups = groups
+  },
+  SET_DRIVERS(state, drivers) {
+    state.drivers = drivers
   }
 }
 
@@ -66,48 +70,22 @@ function getAvatar(name) {
 
 function initData(commit, state, dispatch) {
   return new Promise((resolve, reject) => {
-    traccar.geofences(function(geofences) {
+    traccar.getInitData(state.userId, function(devices, geofences, groups, drivers) {
       vm.$store.state.user.geofences = geofences
-      dispatch('fetchAlerts')
-      traccar.groups(state.userId, (groups) => {
-        state.groups = groups
-        vm.$store.state.user.groups = groups
-        traccar.devices(function(devices) {
-          vm.$data.devices = devices
-          vm.$data.devices.forEach(d => {
-            traccar.alertsByDevice(d.id, function(alerts) {
-              alerts.forEach(a => {
-                const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
-                if (a.always === false) {
-                  if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                    traccar.geofencesByDevice(d.id, function(geofences) {
-                      alert.devices.push({ data: d, geofences: geofences })
-                    })
-                  } else {
-                    alert.devices.push({ data: d })
-                  }
-                }
-              })
-            }).catch(e => Vue.$log.error(e))
-            const group = groups.find((g) => g.id === d.groupId)
-            d.groupName = group && group.name
-          })
-          dispatch('fetchEvents', {
-            start: Vue.moment().subtract(1, 'day').toDate(),
-            end: new Date(),
-            types: state.alerts
-          }).finally(() => {
-            dispatch('transient/setDataLoaded', null, { root: true })
-            Vue.$log.info('emit dataLoaded')
-            serverBus.$emit('dataLoaded')
-            resolve()
-          })
-        }, (error) => {
-          Vue.$log.error(error)
+      vm.$store.state.user.groups = groups
+      vm.$store.state.user.drivers = drivers
+      vm.$data.devices = devices
+      dispatch('fetchAlerts').finally(() => {
+        dispatch('fetchEvents', {
+          start: Vue.moment().subtract(1, 'day').toDate(),
+          end: new Date(),
+          types: state.alerts
+        }).finally(() => {
+          dispatch('transient/setDataLoaded', null, { root: true })
+          Vue.$log.info('emit dataLoaded')
+          serverBus.$emit('dataLoaded')
           resolve()
         })
-      }, (error) => {
-        Vue.$log.error(error)
       })
     }, (e) => {
       Vue.$log.error(e)
@@ -137,7 +115,7 @@ const actions = {
         if (state.attributes) {
           setLanguage(state.attributes.lang)
         }
-        const hostName = utils.getServerHost()
+        const hostName = getServerHost()
         Vue.$log.info('opening websocket ', state)
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
           store: store,

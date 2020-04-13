@@ -71,7 +71,10 @@ module.exports = {
       'start_url': '/index.html',
       'display': 'standalone',
       'background_color': '#F8F9FE',
-      'theme_color': '#F8F9FE'
+      'theme_color': '#F8F9FE',
+      'permissions': [
+        'cookies'
+      ]
     }
   },
 
@@ -125,5 +128,17 @@ module.exports = {
           config.devtool('source-map')
         }
       )
+  },
+  pages: {
+    index: {
+      entry: 'src/main.js',
+      template: 'public/index.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'index']
+    },
+    'googlelogin/index': {
+      entry: 'src/main.js',
+      template: 'public/index.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'index']
+    }
   }
 }

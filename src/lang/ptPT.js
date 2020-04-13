@@ -90,6 +90,10 @@ export default {
     login_user_password_invalid: 'Não existe nenhuma conta com o utilizador ou password indicados. Por favor verifique as credenciais e tente novamente.',
     login_user_disabled: 'O utilizador encontra-se bloqueado.'
   },
+  alerts: {
+    title: 'Alertas',
+    get_alerts: 'Obter Notificações'
+  },
   profile: {
     user_account: 'Utilizador',
     user_name: 'Nome',
@@ -164,7 +168,7 @@ export default {
     vehicle_name: 'Nome',
     vehicle_licenseplate: 'Matrícula',
     vehicle_model: 'Modelo',
-    vehicle_speed_limit: 'Limite de Velocidade',
+    vehicle_speed_limit: 'Limite',
     vehicle_form_cancel: 'Cancelar',
     vehicle_form_confirm: 'Guardar',
     vehicle_form_name: 'Nome',
@@ -205,10 +209,29 @@ export default {
     group_edit_confirm: 'Confirmar',
     group_edit_cancel: 'Cancelar',
     group_created: 'Grupo criado com sucesso!',
+    drivers: 'Motoristas',
+    driver_name: 'Nome',
+    driver_email: 'E-Mail',
+    driver_phone: 'Telemóvel',
+    driver_add: 'Adicionar',
+    driver_add_title: 'Adicionar Motorista',
+    driver_edit: 'Editar',
+    driver_edit_title: 'Editar Motorista',
+    driver_delete: 'Apagar',
+    driver_form_cancel: 'Cancelar',
+    driver_form_confirm: 'Confirmar',
+    driver_deleted: 'O Motorista foi apagado.',
+    driver_delete_info: 'Pretende apagar o motorista ',
+    driver_delete_title: 'Apagar Motorista',
+    driver_created: 'Motorista criado com sucesso!',
+    driver_updated: 'Motorista actualizado com sucesso!',
     pois_title: 'POIs',
     geofences_title: 'Balizas',
     edit: 'Editar',
-    delete: 'Apagar'
+    delete: 'Apagar',
+    name_required: 'O campo nome é obrigatório',
+    email_format_invalid: 'Por favor indique um e-mail válido',
+    email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.'
   },
   geofence: {
     showGeofences: 'Ver Balizas',

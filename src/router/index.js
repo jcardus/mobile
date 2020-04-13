@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import * as lnglat from '../utils/lnglat'
-import Dashboard from '../views/dashboard/Dashboard'
+import GoogleLogin from '../views/login/GoogleLogin'
 
 Vue.use(Router)
 
@@ -15,13 +15,13 @@ export const constantRoutes = [
     children: [{ path: '/redirect/:path*', component: () => import('../views/redirect/index') }]
   },
   {
-    path: '/login',
-    component: () => import('../views/login/index'),
+    path: '/googlelogin',
+    component: GoogleLogin,
     hidden: true
   },
   {
-    path: '/iosdashboard',
-    component: Dashboard,
+    path: '/login',
+    component: () => import('../views/login/index'),
     hidden: true
   },
   {

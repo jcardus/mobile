@@ -37,7 +37,7 @@ export default {
     serverBus.$on('dashboardActive', this.load)
   },
   mounted() {
-    this.$log.info('dashboard')
+    this.$log.info('Dashboard')
     this.load()
   },
   beforeDestroy() {
@@ -46,11 +46,11 @@ export default {
   methods: {
     load() {
       if (this.user.name === '') {
-        this.$log.debug('no cookie, skip loading dashboard')
+        this.$log.info('no cookie, skip loading dashboard')
         return
       }
       if (this.dashboardLoaded) {
-        this.$log.debug('dashboard already loaded, skip loading')
+        this.$log.info('dashboard already loaded, skip loading')
         return
       }
       const self = this

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%">
     <transition name="modal">
       <div v-if="isOpenVehicleForm">
         <div class="overlay">
@@ -60,37 +60,32 @@
       </div>
     </transition>
 
-    <el-input
-      v-model="search"
-      style="width: 300px"
-      placeholder="Pesquisa"
-    />
     <el-table
       :data="devices.filter(data => !search
         || data.name.toLowerCase().includes(search.toLowerCase())
         || (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(search.toLowerCase()))
         || (data.model && data.model.toLowerCase().includes(search.toLowerCase())))"
-
+      height="calc(100vh - 125px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
       <el-table-column
         :label="$t('settings.vehicle_name')"
         prop="name"
-        sortable
+        sortable=""
       >
       </el-table-column>
       <el-table-column
         :label="$t('settings.vehicle_licenseplate')"
         prop="attributes.license_plate"
-        sortable
+        sortable=""
       >
       </el-table-column>
       <el-table-column
         :label="$t('settings.vehicle_group')"
         :formatter="groupRenderer"
         prop="groupId"
-        sortable
+        sortable=""
         :filters="groupsFilter"
         :filter-method="filterHandler"
       ></el-table-column>
@@ -98,7 +93,7 @@
         v-if="!isMobile"
         :label="$t('settings.vehicle_model')"
         prop="model"
-        sortable
+        sortable=""
       >
       </el-table-column>
       <el-table-column
@@ -106,10 +101,16 @@
         :label="$t('settings.vehicle_speed_limit')"
         :formatter="alertSpeedRenderer"
         prop="attributes.speedLimit"
-        sortable
+        sortable=""
       >
       </el-table-column>
-      <el-table-column label="" width="100px">
+      <el-table-column label="" width="200px" align="right">
+        <template slot="header">
+          <el-input
+            v-model="search"
+            placeholder="Pesquisa"
+          />
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
             <el-button

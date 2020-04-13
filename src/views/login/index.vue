@@ -53,6 +53,7 @@
                   @click.native.prevent="handleLogin"
                 >{{ $t('login.login_button') }}</el-button>
               </div>
+              <google-button />
               <div>
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
               </div>
@@ -67,13 +68,14 @@
 <script>
 
 import Vue from 'vue'
-import { hasSVG, getLogo, getThemeColor, getCSSName } from '../../utils/partner'
+import { getCSSName, getLogo, getThemeColor, hasSVG } from '../../utils/partner'
 import { cdnUrl } from '../../utils/consts'
 import LogoSvg from '../../layout/components/LogoSvg'
+import GoogleButton from './GoogleButton'
 
 export default {
   name: 'Login',
-  components: { LogoSvg },
+  components: { GoogleButton, LogoSvg },
   data() {
     const validateUsername = (rule, value, callback) => {
       callback()

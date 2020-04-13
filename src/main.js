@@ -11,15 +11,15 @@ import VueTimeago from 'vue-timeago'
 import i18n from './lang'
 import { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
-import VueCookies from 'vue-cookies'
 import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
+import './amplify'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
 
-console.log('app starting...')
+console.log('app starting...', window.location)
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
@@ -59,13 +59,12 @@ const options = {
 Vue.use(VueLogger, options)
 Vue.config.lang = getLanguage().slice(2)
 Vue.use(ElementUI, {
-  size: VueCookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 })
 
 export const serverBus = new Vue()
 export const settings = {
-  animateMarkers: true,
+  animateMarkers: false,
   showVehicleList: true,
   showSlider: true,
   truck3d: false,

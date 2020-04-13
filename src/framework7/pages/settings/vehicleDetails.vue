@@ -1,7 +1,6 @@
 <template>
   <f7-page name="VehicleDetails">
-    <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
-    <f7-block-title style="font-size: 20px">{{ $t('settings.vehicle_edit') }}</f7-block-title>
+    <f7-navbar back-link :title="$t('settings.vehicle_edit')"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
         :label="$t('settings.vehicle_form_name')"

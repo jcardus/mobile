@@ -27,18 +27,12 @@
         </div>
       </div>
     </transition>
-
-    <div slot="header" class="clearfix">
-      <span>{{ $t('settings.groups') }}</span>
-      <el-tooltip content="Adicionar Grupo" placement="top">
-        <el-button
-          class="formButton"
-          size="small"
-          @click="handleAddGroup"
-        ><i class="fas fa-plus"></i></el-button>
-      </el-tooltip>
-    </div>
-    <el-table :data="groups" :row-style="tableRowStyle" :header-cell-style="tableHeaderStyle">
+    <el-table
+      height="calc(100vh - 125px)"
+      :data="groups"
+      :row-style="tableRowStyle"
+      :header-cell-style="tableHeaderStyle"
+    >
       <el-table-column
         :label="$t('settings.group_name')"
         prop="name"
@@ -51,16 +45,17 @@
         prop="id"
       >
       </el-table-column>
-      <el-table-column label="" :min-width="isMobile ? '15px' : '50px'">
-        <template slot-scope="scope">
-          <el-tooltip :content="$t('settings.group_edit')" placement="top">
+      <el-table-column label="" min-width="50px">
+        <template slot="header">
+          <el-tooltip content="Adicionar Grupo" placement="top">
             <el-button
-              v-if="!isMobile"
-              size="small"
               class="formButton"
-              @click="handleEdit(scope.row)"
-            ><i class="fas fa-edit"></i></el-button>
+              size="small"
+              @click="handleAddGroup"
+            ><i class="fas fa-plus"></i></el-button>
           </el-tooltip>
+        </template>
+        <template slot-scope="scope">
           <el-tooltip :content="$t('settings.group_delete')" placement="top">
             <el-button
               v-if="!isMobile"
@@ -70,17 +65,17 @@
               @click="handleDelete(scope.row)"
             ><i class="fas fa-trash-alt"></i></el-button>
           </el-tooltip>
-          <el-dropdown v-if="isMobile">
-            <i class="fas fa-ellipsis-v"></i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.group_edit') }}</el-dropdown-item>
-              <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.group_delete') }}</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <el-tooltip :content="$t('settings.group_edit')" placement="top">
+            <el-button
+              v-if="!isMobile"
+              size="small"
+              class="formButton"
+              @click="handleEdit(scope.row)"
+            ><i class="fas fa-edit"></i></el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
-
   </div>
 </template>
 
@@ -170,18 +165,10 @@ export default {
       this.isOpenGroupForm = !this.isOpenGroupForm
     },
     tableRowStyle() {
-      if (this.isMobile) {
-        return 'font-size: 12px'
-      } else {
-        return 'font-size: 14px'
-      }
+      return 'font-size: 14px'
     },
     tableHeaderStyle() {
-      if (this.isMobile) {
-        return 'font-size: 12px'
-      } else {
-        return 'font-size: 14px'
-      }
+      return 'font-size: 14px'
     },
     totalVehiclesRederer(row, column, cellValue) {
       if (cellValue) {

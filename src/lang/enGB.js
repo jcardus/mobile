@@ -11,17 +11,17 @@ export default {
     report_trip_title: 'Trip Report',
     report_location_title: 'Location Report',
     report_zone_crossing: 'Zone Report',
-    report_speeding: 'Relatório de Excessos de Velocidade',
+    report_speeding: 'Speeding Report',
     report_speeding_beta: 'Relatório de Excessos de Velocidade BETA',
     report_tolls: 'Relatório de Portagens',
     settings: 'Settings',
     duration: 'Duration',
     nodata: 'Não existem dados para o período seleccionado.',
-    alerts: 'Alertas'
+    alerts: 'Alerts'
   },
   map: {
-    geofence_create_error: 'Erro a criar baliza',
-    poi_create_error: 'Erro a criar POI',
+    geofence_create_error: 'Error creating geofence',
+    poi_create_error: 'Error creating POI',
     geofence_create_title: 'New geofence',
     geofence_create_name: 'Please enter the name of this geofence...',
     geofence_created: 'Geofence created sucessfully!',
@@ -33,8 +33,8 @@ export default {
     create_confirm: 'OK',
     create_cancel: 'Cancel',
     loading: 'Loading',
-    totalDistance: 'Distância total',
-    poi_click_on_map: 'Clique no ponto do mapa onde deseja criar o POI'
+    totalDistance: 'Total Distance',
+    poi_click_on_map: 'Click the point on the map where you want to create the POI'
   },
   vehicleList: {
     title: 'Vehicle',
@@ -43,10 +43,10 @@ export default {
     column_name: 'Name',
     column_speed: 'Km/h',
     column_lastUpdate: 'Last update',
-    order_by_status: 'Ordenar por Estado',
-    order_by_vehicle: 'Ordenar por Veículo',
-    order_by_group: 'Ordenar por Grupo',
-    order_by_last_update: 'Ordenar pela última actualização'
+    order_by_status: 'Order by State',
+    order_by_vehicle: 'Order by Vehicle',
+    order_by_group: 'Order by Group',
+    order_by_last_update: 'Order by Last Update'
   },
   vehicleTable: {
     immobilize: 'Immobilize',
@@ -58,7 +58,7 @@ export default {
     idle_vehicles: 'Idle',
     stopped_vehicles: 'Stopped',
     disconnected_vehicles: 'Disconnected',
-    immo_pending: 'Ya existe un comando de pendente para el vehículo. Por favor aguarde el resultado.'
+    immo_pending: 'There is already a pending command for this vehicle. Please wait for the result.'
   },
   vehicleDetail: {
     show_route: 'Show route'
@@ -82,12 +82,16 @@ export default {
     logout: 'Log Out'
   },
   login: {
-    login_user: 'Email',
+    login_user: 'E-mail',
     login_password: 'Password',
     login_button: 'Login',
     login_password_warn: 'The password can not be less than 6 digits',
     login_user_password_invalid: 'There is no account with that username or password you entered. Please check your credentials and try again.',
     login_user_disabled: 'Username is disabled'
+  },
+  alerts: {
+    title: 'Alerts',
+    get_alerts: 'Get Notifications'
   },
   profile: {
     user_account: 'Account',
@@ -108,9 +112,9 @@ export default {
     empty_list: 'Nothing found',
     refresh: 'Recarregar aplicação',
     version: 'Version',
-    connected: 'Ligado',
-    disconnected: 'Desligado',
-    connection: 'Ligação',
+    connected: 'Connected',
+    disconnected: 'Disconnected',
+    connection: 'Connection',
     map: 'Map',
     about: 'About',
     logout: 'Logout',
@@ -194,14 +198,33 @@ export default {
     group_form_name: 'Name',
     group_updated: 'Group updated sucessfully!',
     group_deleted: 'Group has been deleted.',
-    group_delete_info: 'Do you want to delete the grupo ',
+    group_delete_info: 'Do you want to delete the group ',
     group_delete_title: 'Delete Group',
     group_edit_confirm: 'Confirm',
     group_edit_cancel: 'Cancel',
     group_created: 'Group created sucessfully!',
+    drivers: 'Drivers',
+    driver_name: 'Name',
+    driver_email: 'E-Mail',
+    driver_phone: 'Phone',
+    driver_add: 'Add',
+    driver_add_title: 'Add Driver',
+    driver_edit: 'Edit',
+    driver_edit_title: 'Edit Driver',
+    driver_delete: 'Delete',
+    driver_form_cancel: 'Cancel',
+    driver_form_confirm: 'Confirm',
+    driver_deleted: 'Driver has been deleted.',
+    driver_delete_info: 'Do you want to delete the driver ',
+    driver_delete_title: 'Delete Driver',
+    driver_created: 'Driver created sucessfully!',
+    driver_updated: 'Driver updated sucessfully!',
     pois_title: 'POIs',
     edit: 'Edit',
-    delete: 'Delete'
+    delete: 'Delete',
+    name_required: 'Name field is required',
+    email_format_invalid: 'Please input a valid email',
+    email_or_phone_required: 'At least one of these fields must have a valid value.'
   },
   geofence: {
     showGeofences: 'Show Geofences',
@@ -237,8 +260,8 @@ export default {
     date_start: 'Start date',
     date_end: 'End date',
     generate_report: 'Generate report',
-    validate_period: 'Por favor seleccione o período',
-    select_all: 'Todos'
+    validate_period: 'Please select a period',
+    select_all: 'All'
   },
   layout: {
     deviceOnline: 'Device Online',
