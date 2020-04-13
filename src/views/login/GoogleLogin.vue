@@ -26,17 +26,17 @@ export default {
   methods: {
     getUserData(data) {
       if (data && data.attributes) {
-        this.$log.info('userLoggedIn', data.attributes)
-      }
-      api.getJSessionId(data.attributes.email)
-        .then(() => {
-          traccar.getSession().then((s) => {
-            this.$log.info(s)
-            const redirect = window.location.protocol + '//' + window.location.host
-            this.$log.info('redirecting to', redirect)
-            window.location.href = redirect
+        this.$log.info('userLoggedIn', data)
+        api.getJSessionId(data.username)
+          .then(() => {
+            traccar.getSession().then((s) => {
+              this.$log.info(s)
+              const redirect = window.location.protocol + '//' + window.location.host
+              this.$log.info('redirecting to', redirect)
+              window.location.href = redirect
+            })
           })
-        })
+      }
     },
     getUser: async function() {
       Auth.currentAuthenticatedUser()

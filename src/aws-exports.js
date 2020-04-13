@@ -15,13 +15,20 @@ const awsmobile = {
             "profile",
             "aws.cognito.signin.user.admin"
         ],
-        "redirectSignIn": "https://localhost:8080/googlelogin/",
+        "redirectSignIn": "https://fleetmap.io/",
         "redirectSignOut": "https://fleetmap.io/",
         "responseType": "code"
     },
     "federationTarget": "COGNITO_USER_POOLS",
     "aws_mobile_analytics_app_id": "d0e262fc9a03412288d362dbc836501b",
-    "aws_mobile_analytics_app_region": "us-east-1"
+    "aws_mobile_analytics_app_region": "us-east-1",
+    "aws_cloud_logic_custom": [
+        {
+            "name": "pinmeapi",
+            "endpoint": "https://k2wel5c410.execute-api.us-east-1.amazonaws.com/dev",
+            "region": "us-east-1"
+        }
+    ]
 };
 
 

@@ -1,0 +1,12 @@
+{
+    "permissions": {
+        "auth": {
+            "driver51fbb334": [
+                "create",
+                "read",
+                "update",
+                "delete"
+            ]
+        }
+    }
+}
