@@ -1,3 +1,7 @@
+export function getGoogleRedirect() {
+  return window.location.protocol + '//' + window.location.host + '/googlelogin/'
+}
+
 export function getServerHost() {
   const hostName = window.location.hostname
   if (hostName.includes('dev')) {

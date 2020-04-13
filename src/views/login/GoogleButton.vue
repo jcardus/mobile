@@ -1,6 +1,6 @@
 <template>
-  <a href="#">
-    <div class="google-btn" @click="authenticate">
+  <a :href="googleUrl">
+    <div class="google-btn">
       <div class="google-icon-wrapper">
         <img alt="" class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
       </div>
@@ -9,12 +9,13 @@
   </a>
 </template>
 <script>
-import { Auth } from 'aws-amplify'
+import { getGoogleRedirect } from '../../api'
+import awsConfig from '../../aws-exports'
 export default {
   name: 'GoogleButton',
-  methods: {
-    authenticate() {
-      Auth.federatedSignIn()
+  computed: {
+    googleUrl() {
+      return `https://${awsConfig.oauth.domain}/oauth2/authorize?identity_provider=Google&redirect_uri=${getGoogleRedirect()}&response_type=CODE&client_id=${awsConfig.aws_user_pools_web_client_id}`
     }
   }
 }

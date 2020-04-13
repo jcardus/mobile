@@ -7,8 +7,8 @@ import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
 import store from '../index'
 import VueNativeSock from 'vue-native-websocket'
-import * as utils from '../../utils/utils'
 import { backEndHostName } from '../../utils/consts'
+import { getServerHost } from '../../api'
 
 const state = {
   name: '',
@@ -115,7 +115,7 @@ const actions = {
         if (state.attributes) {
           setLanguage(state.attributes.lang)
         }
-        const hostName = utils.getServerHost()
+        const hostName = getServerHost()
         Vue.$log.info('opening websocket ', state)
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
           store: store,
