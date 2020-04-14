@@ -31,7 +31,11 @@
       <f7-view id="view-login" name="login" url="/login"></f7-view>
     </f7-views>
     <f7-login-screen id="loginScreen">
-      <f7-page login-screen :style="'background-size: cover;background-image: url(\'' + imageSrc + '\')'">
+      <f7-page
+        :no-toolbar="true"
+        login-screen
+        :style="'margin-top: 0 !important;background-size: cover;background-image: url(\'' + imageSrc + '\')'"
+      >
         <div class="login_form">
           <f7-login-screen-title>
             <div class="title-container">
@@ -62,10 +66,21 @@
           </f7-list>
           <f7-list>
             <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
-            <f7-block-footer>
-              {{ version }} {{ domain }}
-            </f7-block-footer>
+            <f7-list-item>
+              <f7-link
+                :href="googleLogin"
+                external
+                style="width: 50%;margin: 0 auto;"
+              ><google-button :with-link="false" @click="googleSignIn"></google-button></f7-link>
+            </f7-list-item>
           </f7-list>
+          <f7-block></f7-block>
+          <f7-list>
+            <f7-list-item></f7-list-item>
+          </f7-list>
+          <f7-block-footer>
+            {{ version }} {{ domain }}
+          </f7-block-footer>
         </div>
       </f7-page>
     </f7-login-screen>
@@ -84,10 +99,12 @@ import * as partner from './utils/partner'
 import { appOffline } from './utils/utils'
 import { mapGetters } from 'vuex'
 import { cdnUrl } from './utils/consts'
+import GoogleButton from './views/login/GoogleButton'
+import { getGoogleLogin } from './api'
 
 export default {
   name: 'AppMobile',
-  components: { DataContainer },
+  components: { GoogleButton, DataContainer },
   data() {
     return {
       username: '',
@@ -102,6 +119,9 @@ export default {
   },
   computed: {
     ...mapGetters(['unreadItems', 'user']),
+    googleLogin() {
+      return getGoogleLogin()
+    },
     domain() {
       return window.location.hostname
     },
@@ -160,6 +180,9 @@ export default {
     }
   },
   methods: {
+    googleSignIn() {
+      this.$f7.preloader.show()
+    },
     signIn() {
       const self = this
       this.$log.debug('dispatch user login ')
@@ -221,7 +244,6 @@ export default {
     --f7-login-screen-content-bg-color: #fff0;
     --f7-label-font-size: 18px;
     --f7-input-font-size: 14px;
-    --f7-list-item-padding-horizontal: 20px;
     --f7-input-text-color: black;
     --f7-login-screen-list-button-text-color: white;
     --f7-list-item-padding-horizontal: 15px;
@@ -232,11 +254,11 @@ export default {
   .login-screen-page .page-content,
   .login-screen>.page .login-screen-content,
   .login-screen>.page .page-content,
-  .login-screen>.view>.page
+  .login-screen>.view>.page,
   .login-screen-content,
   .login-screen>.view>.page .page-content {
-    margin-top: 60px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
     height: 100%;
     width: 100%;
   }
@@ -253,12 +275,15 @@ export default {
   .login_form {
     margin-left:40px;
     margin-right:40px;
+    margin-top:0 !important;
     background:  #fff;
     opacity: 0.8;
     padding-bottom: 20px;
     padding-top: 20px;
-    position: center;
+    position: absolute;
     border-radius: 20px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .md .item-input .item-media {
@@ -281,5 +306,8 @@ export default {
     margin: 0 auto 40px auto;
     display: block;
     width: 50%;
+  }
+  .login-screen-content {
+    margin-top: 0 !important;
   }
 </style>

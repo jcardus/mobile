@@ -66,7 +66,7 @@ export default {
       return this.$device.iphone
     },
     height() {
-      return this.historyMode ? 70 : 0
+      return this.historyMode ? 80 : 0
     }
   },
   watch: {
