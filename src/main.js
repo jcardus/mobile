@@ -15,9 +15,12 @@ import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
 import './amplify'
+import VueTimers from 'vue-timers'
+import { SharedData } from './utils/utils'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
+const GoogleLogin = () => import('./views/login/GoogleLogin')
 
 console.log('app starting...', window.location)
 
@@ -136,9 +139,6 @@ import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
 
-import VueTimers from 'vue-timers'
-import { SharedData } from './utils/utils'
-
 Vue.use(VueTimers)
 
 function askPermissionForNotifications() {
@@ -188,7 +188,9 @@ export const vm = new Vue({
     }
   },
   created() {
-    serverBus.$on('event', () => { store.dispatch('incUnreadItems') })
+    serverBus.$on('event', () => {
+      store.dispatch('incUnreadItems')
+    })
   },
   static() {
     return {
@@ -232,5 +234,6 @@ export const vm = new Vue({
   router: router,
   store,
   i18n,
-  render: h => h(lnglat.__isMobile() ? AppMobile : App)
+  render: h => h(lnglat.__isMobile() ? (window.location.pathname === '/googlelogin/' ? GoogleLogin : AppMobile) : App)
 })
+

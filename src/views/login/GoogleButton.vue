@@ -1,5 +1,5 @@
 <template>
-  <a :href="googleUrl">
+  <a v-if="withLink" :href="googleUrl">
     <div class="google-btn">
       <div class="google-icon-wrapper">
         <img alt="" class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
@@ -7,15 +7,27 @@
       <p class="btn-text"><b>Sign in with google</b></p>
     </div>
   </a>
+  <div v-else class="google-btn">
+    <div class="google-icon-wrapper">
+      <img alt="" class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
+    </div>
+    <p class="btn-text"><b>Sign in with google</b></p>
+  </div>
 </template>
 <script>
-import { getGoogleRedirect } from '../../api'
-import awsConfig from '../../aws-exports'
+import { getGoogleLogin } from '../../api'
+
 export default {
   name: 'GoogleButton',
+  props: {
+    withLink: {
+      default: true,
+      type: Boolean
+    }
+  },
   computed: {
     googleUrl() {
-      return `https://${awsConfig.oauth.domain}/oauth2/authorize?identity_provider=Google&redirect_uri=${getGoogleRedirect()}&response_type=CODE&client_id=${awsConfig.aws_user_pools_web_client_id}`
+      return getGoogleLogin()
     }
   }
 }
