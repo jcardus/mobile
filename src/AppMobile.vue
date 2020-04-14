@@ -70,7 +70,7 @@
               <f7-link
                 :href="googleLogin"
                 external
-                style="width: 50%;margin: 0 auto;"
+                style="margin: auto;"
               ><google-button :with-link="false" @click="googleSignIn"></google-button></f7-link>
             </f7-list-item>
           </f7-list>
@@ -273,13 +273,10 @@ export default {
   }
 
   .login_form {
-    margin-left:40px;
-    margin-right:40px;
-    margin-top:0 !important;
+    margin-left:20px;
+    margin-right:20px;
     background:  #fff;
     opacity: 0.8;
-    padding-bottom: 20px;
-    padding-top: 20px;
     position: absolute;
     border-radius: 20px;
     top: 50%;
@@ -306,8 +303,5 @@ export default {
     margin: 0 auto 40px auto;
     display: block;
     width: 50%;
-  }
-  .login-screen-content {
-    margin-top: 0 !important;
   }
 </style>

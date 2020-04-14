@@ -38,7 +38,6 @@ export default {
   $button-active-blue: #1669F2;
 
   .google-btn {
-    width: 184px;
     height: 42px;
     background-color: $google-blue;
     border-radius: 2px;
@@ -60,8 +59,9 @@ export default {
     height: 18px;
   }
   .btn-text {
-    float: right;
-    margin: 11px 11px 0 0;
+    padding-left: 50px;
+    padding-right: 10px;
+    margin-top: 11px;
     color: $white;
     font-size: 14px;
     letter-spacing: 0.2px;
