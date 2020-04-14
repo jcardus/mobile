@@ -223,6 +223,10 @@ export default {
         if (this.isMobile) { this.$f7.preloader.hide() }
         this.$log.info('finished loading', this.loadingCount)
       } else {
+        if (this.isMobile && this.userLoggedIn) {
+          this.$f7.preloader.show()
+        }
+        vm.$data.loadingMap = false
         this.$log.warn('not finishing loading', this.loadingCount)
       }
     },
