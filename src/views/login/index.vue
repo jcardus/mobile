@@ -45,16 +45,21 @@
                   />
                 </el-form-item>
               </el-tooltip>
-              <div>
+              <el-row>
                 <el-button
                   :loading="loading"
                   type="primary"
-                  style="margin-bottom:20px"
                   @click.native.prevent="handleLogin"
                 >{{ $t('login.login_button') }}</el-button>
-              </div>
-              <google-button />
+              </el-row>
+              <el-row style="margin-top: 15px;width:50%">
+                <google-button />
+              </el-row>
               <div>
+
+              </div>
+
+              <div style="padding-top: 15px">
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
               </div>
             </el-form>
@@ -228,7 +233,7 @@ export default {
         top: 50%;
         transform: translateY(-50%);
         .login-form {
-          padding: 10%;
+          padding: 8%;
         }
 
         .title-container {
