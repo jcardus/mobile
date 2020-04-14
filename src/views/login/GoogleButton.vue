@@ -59,9 +59,10 @@ export default {
     height: 18px;
   }
   .btn-text {
+    margin: auto;
     padding-left: 50px;
     padding-right: 10px;
-    margin-top: 11px;
+    padding-top: 11px;
     color: $white;
     font-size: 14px;
     letter-spacing: 0.2px;
