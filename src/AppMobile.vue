@@ -273,14 +273,15 @@ export default {
   }
 
   .login_form {
-    margin-left:20px;
-    margin-right:20px;
+    margin-left:30px;
+    margin-right:30px;
     background:  #fff;
     opacity: 0.8;
     position: absolute;
     border-radius: 20px;
     top: 50%;
     transform: translateY(-50%);
+    width: calc(100% - 60px);
   }
 
   .md .item-input .item-media {
@@ -300,7 +301,10 @@ export default {
   }
 
   .logo {
-    margin: 0 auto 40px auto;
+    margin-top: 0;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 40px;
     display: block;
     width: 50%;
   }
