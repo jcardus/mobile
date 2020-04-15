@@ -141,7 +141,7 @@ export default {
     },
     getAlertNotifications() {
       if (this.dateRange.length > 0) {
-        this.$store.dispatch('user/fetchEvents', {
+        this.$store.dispatch('transient/fetchEvents', {
           start: this.dateRange[0],
           end: this.dateRange[1],
           types: this.alerts.filter(a => this.selectedAlertsType.find(e => e === a.notification.id))
