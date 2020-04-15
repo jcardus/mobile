@@ -82,6 +82,7 @@ export let regServiceWorker
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
+    Vue.$log.info(registrations)
     for (const reg of registrations) {
       reg.addEventListener('updatefound', () => {
         Vue.$log.debug('A wild service worker has appeared in reg.installing!')
