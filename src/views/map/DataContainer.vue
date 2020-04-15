@@ -32,13 +32,7 @@
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">
-            <i class="fas fa-map-marker-alt"></i>
-          </span>
-          <p-o-i-table :filter-key="filterKey"></p-o-i-table>
-        </el-tab-pane>
-        <el-tab-pane>
-          <span slot="label">
-            <i class="fas fa-draw-polygon"></i>
+            <i class="fas fa-map-marked"></i>
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
@@ -51,14 +45,13 @@
 import * as lnglat from '../../utils/lnglat'
 import GeofenceTable from './GeofenceTable'
 import DriverTable from './DriverTable'
-import POITable from './POITable'
 import VehicleTable from './VehicleTable'
 import * as partner from '../../utils/partner'
 import LogoSvg from '../../layout/components/LogoSvg'
 
 export default {
   name: 'DataContainer',
-  components: { VehicleTable, GeofenceTable, DriverTable, POITable, LogoSvg },
+  components: { VehicleTable, GeofenceTable, DriverTable, LogoSvg },
   data() {
     return {
       orderedBy: 'orderByStatus',

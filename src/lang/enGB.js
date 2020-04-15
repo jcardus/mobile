@@ -247,6 +247,12 @@ export default {
     poi_edit_title: 'Edit POI',
     poi_edit_name: 'Please enter the name of this POI...',
     searchGeofence: 'Search geofence',
+    linegeofence_delete_info: 'Do you want to delete geofence line ',
+    linegeofence_delete_title: 'Delete Geofence Line',
+    linegeofence_edited: 'Geofence line edited sucessfully!',
+    linegeofence_deleted: 'Geofence line deleted',
+    linegeofence_edit_title: 'Edit Geofence Line',
+    linegeofence_edit_name: 'Please enter the name of this geofence line...',
     edit_geofence: 'Edit',
     delete_geofence: 'Delete'
   },

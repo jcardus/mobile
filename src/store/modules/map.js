@@ -3,6 +3,7 @@ import { vm } from '../../main'
 const state = {
   showGeofences: false,
   showPOIs: false,
+  showLineGeofences: false,
   minPos: 0,
   maxPos: 1000,
   isPlaying: false
@@ -20,6 +21,9 @@ const mutations = {
   },
   TOGGLE_POIS(state) {
     state.showPOIs = !state.showPOIs
+  },
+  TOGGLE_LINEGEOFENCES(state) {
+    state.showLineGeofences = !state.showLineGeofences
   },
   TOGGLE_PLAY(state) {
     state.isPlaying = !state.isPlaying
@@ -42,8 +46,19 @@ const actions = {
   togglePlaying({ commit }) {
     commit('TOGGLE_PLAY')
   },
-  toggleGeofences({ commit }) {
+  toggleGeofences({ commit, state }) {
     commit('TOGGLE_GEOFENCES')
+    vm.$static.map.setLayoutProperty('geofences', 'visibility',
+      state.showGeofences ? 'visible' : 'none')
+    vm.$static.map.setLayoutProperty('geofences-labels', 'visibility',
+      state.showGeofences ? 'visible' : 'none')
+  },
+  toggleLineGeofences({ commit, state }) {
+    commit('TOGGLE_LINEGEOFENCES')
+    vm.$static.map.setLayoutProperty('geofences-lines', 'visibility',
+      state.showLineGeofences ? 'visible' : 'none')
+    vm.$static.map.setLayoutProperty('geofences-lines-labels', 'visibility',
+      state.showLineGeofences ? 'visible' : 'none')
   },
   togglePOIs({ commit, state }) {
     commit('TOGGLE_POIS')
