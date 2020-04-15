@@ -37,6 +37,7 @@
     "moment": "latest",
     "nprogress": "latest",
     "odometer": "latest",
+    "trackjs": "latest",
     "vue": "2.6.10",
     "vue-cookies": "^1.7.0",
     "vue-i18n": "^8.15.5",
