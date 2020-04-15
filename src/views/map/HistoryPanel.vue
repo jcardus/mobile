@@ -1,10 +1,10 @@
 <template>
   <div v-show="historyMode" v-loading="loadingRoutes" class="historyPanel2">
-    <div style="position: relative; height:80px; padding-right: 20px">
+    <div style="position: relative; height:105px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
-      <div style="padding-left:48px; padding-right:10px">
+      <div style="padding-left:48px; padding-right:15px">
         <label>
           <input
             v-model="embeddedSliderPos"
@@ -224,7 +224,7 @@ export default {
     border-right:0;
   }
   .playButtons {
-    padding-top: 15px;
+    padding-top: 5px;
     padding-right: 20px;
     padding-left: 10px;
     color:$--color-primary;
