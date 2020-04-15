@@ -35,6 +35,7 @@
     "mapbox-gl": "latest",
     "mapbox-gl-controls": "latest",
     "moment": "latest",
+    "normalize.css": "latest",
     "nprogress": "latest",
     "odometer": "latest",
     "trackjs": "latest",
