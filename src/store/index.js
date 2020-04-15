@@ -58,18 +58,18 @@ const store = new Vuex.Store({
       state.socket.isConnected = true
       Vue.$log.warn(state)
       Vue.$log.warn(event)
-      TrackJS.track('SOCKET_ONOPEN')
+      // TrackJS.track('SOCKET_ONOPEN')
     },
     SOCKET_ONCLOSE(state, event) {
       state.socket.isConnected = false
       Vue.$log.warn(state)
       Vue.$log.warn(event)
-      TrackJS.track('SOCKET_ONCLOSE')
+      // TrackJS.track('SOCKET_ONCLOSE')
     },
     SOCKET_ONERROR(state, event) {
       Vue.$log.warn(state)
       Vue.$log.warn(event)
-      TrackJS.track('SOCKET_ONERROR')
+      // TrackJS.track('SOCKET_ONERROR')
     },
     SOCKET_ONMESSAGE(state, message) {
       state.socket.message = message

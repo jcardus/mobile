@@ -223,6 +223,10 @@ export default {
         if (this.isMobile) { this.$f7.preloader.hide() }
         this.$log.info('finished loading', this.loadingCount)
       } else {
+        if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
+          this.$f7.preloader.show()
+        }
+        vm.$data.loadingMap = false
         this.$log.warn('not finishing loading', this.loadingCount)
       }
     },
@@ -783,7 +787,7 @@ export default {
       const self = this
       const lineDistance = lnglat.lineDistance(route)
 
-      if (lineDistance > 0.03) {
+      if (lineDistance > 0.03 && settings.mapBoxRouteMatch) {
         lnglat.matchRoute(coordinates, radius, timestamps,
           function(r) {
             if (r.data.matchings && r.data.matchings.length > 0) {
