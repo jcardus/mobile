@@ -39,7 +39,7 @@ if (workbox) {
 
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
-    /^https:\/\/fonts\.googleapis\.com/,
+    new RegExp(/^https:\/\/fonts\.googleapis\.com/),
     // eslint-disable-next-line no-undef
     new workbox.strategies.CacheFirst({
       cacheName: 'googlefonts'
