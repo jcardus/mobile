@@ -228,6 +228,12 @@ export default {
     poi_deleted: 'POI  foi apagada',
     poi_edit_title: 'Editar POI',
     poi_edit_name: 'Por favor indique o nome do POI...',
+    linegeofence_delete_info: 'Pretende apagar o corredor ',
+    linegeofence_delete_title: 'Apagar Corredor',
+    linegeofence_edited: 'Corredor editado com sucesso!',
+    linegeofence_deleted: 'Corredor foi apagado',
+    linegeofence_edit_title: 'Editar Corredor',
+    linegeofence_edit_name: 'Por favor indique o nome do corredor...',
     searchGeofence: 'Procurar Cerca Eletrônica',
     edit_geofence: 'Editar',
     delete_geofence: 'Apagar'

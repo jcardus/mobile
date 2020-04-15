@@ -11,6 +11,7 @@
         {{ style.title }}
       </button>
       <button :class="geofencesVisible?'active':''" @click="toggleGeofences">Geofences</button>
+      <button :class="lineGeofencesVisible?'active':''" @click="toggleLineGeofences">Line</button>
       <button :class="poisVisible?'active':''" @click="togglePOIs">POIs</button>
     </div>
   </div>
@@ -39,7 +40,8 @@ export default {
   computed: {
     map: function() { return vm.$static.map },
     geofencesVisible: function() { return vm.$store.state.map.showGeofences },
-    poisVisible() { return vm.$store.state.map.showPOIs }
+    lineGeofencesVisible: function() { return vm.$store.state.map.showLineGeofences },
+    poisVisible: function() { return vm.$store.state.map.showPOIs }
   },
   mounted: function() {
     document.addEventListener('click', event => {
@@ -52,14 +54,9 @@ export default {
   methods: {
     toggleGeofences: function() {
       vm.$store.dispatch('map/toggleGeofences')
-      this.map.setLayoutProperty('geofences', 'visibility',
-        this.geofencesVisible ? 'visible' : 'none')
-      this.map.setLayoutProperty('geofences-labels', 'visibility',
-        this.geofencesVisible ? 'visible' : 'none')
-      this.map.setLayoutProperty('geofences-lines', 'visibility',
-        this.geofencesVisible ? 'visible' : 'none')
-      this.map.setLayoutProperty('geofences-lines-labels', 'visibility',
-        this.geofencesVisible ? 'visible' : 'none')
+    },
+    toggleLineGeofences: function() {
+      vm.$store.dispatch('map/toggleLineGeofences')
     },
     togglePOIs: function() {
       vm.$store.dispatch('map/togglePOIs')
