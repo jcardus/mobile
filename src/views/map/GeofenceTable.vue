@@ -1,11 +1,40 @@
 <template>
   <div>
-    <div class="header">
-      <el-switch
-        v-model="showGeofenceLayer"
-        :active-text="$t('geofence.showGeofences')"
-        inactive-text=""
-      ></el-switch>
+    <div style="margin-bottom: 5px;">
+      <el-row type="flex" justify="space-around">
+        <el-col :span="4">
+          <el-button
+            id="btnPOI"
+            :round="buttonRound"
+            :size="buttonSize"
+            :style="'border-width: 2px; border-color:' + isPOISelected"
+            @click="handleFilterType('POI')"
+          ><i class="fas fa-map-marker-alt" :style="'color:' + isPOISelected" /></el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button
+            id="btnGeofence"
+            :round="buttonRound"
+            :size="buttonSize"
+            :style="'border-width: 2px; border-color:' + isGeofenceSelected"
+            @click="handleFilterType('GEOFENCE')"
+          ><i class="fas fa-draw-polygon" :style="'color:' + isGeofenceSelected" /></el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button
+            id="btnLine"
+            :round="buttonRound"
+            :size="buttonSize"
+            :style="'border-width: 2px; border-color:' + isLineGeofenceSelected"
+            @click="handleFilterType('LINE')"
+          ><i class="fas fa-wave-square" :style="'color:' + isLineGeofenceSelected" /></el-button>
+        </el-col>
+      </el-row>
+      <!--<el-switch
+         v-model="showPOIsLayer"
+         :active-text="$t('poiTable.showPOIs')"
+         inactive-text=""
+       ></el-switch>-->
     </div>
     <div class="mobileScroll">
       <el-table
@@ -15,8 +44,13 @@
         :data="filteredGeofences"
         :show-header="false"
         :height="height"
-        @current-change="geofenceSelected"
+        @current-change="poiSelected"
       >
+        <el-table-column label="" width="40">
+          <template slot-scope="scope">
+            <i :class="geofenceImageType(scope.row)"></i>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="name"
         >
@@ -26,8 +60,8 @@
             <el-dropdown>
               <i class="fas fa-ellipsis-v"></i>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('geofence.edit_geofence') }}</el-dropdown-item>
-                <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('geofence.delete_geofence') }}</el-dropdown-item>
+                <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('poiTable.edit_poi') }}</el-dropdown-item>
+                <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('poiTable.delete_poi') }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -57,12 +91,24 @@ export default {
     }
   },
   computed: {
+    map: function() { return vm.$static.map },
+    buttonRound() {
+      return !this.isMobile
+    },
+    buttonSize() {
+      return this.isMobile ? 'large' : 'mini'
+    },
     height() {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
-    map: function() { return vm.$static.map },
     geofences: function() {
-      return vm.$store.state.user.geofences.filter(g => g && (g.area.startsWith('POLYGON') || g.area.startsWith('LINESTRING')))
+      return vm.$store.state.user.geofences.filter(g => g &&
+          (
+            (g.area.startsWith('POLYGON') && this.showGeofenceLayer) ||
+            (g.area.startsWith('CIRCLE') && this.showPOIsLayer) ||
+            (g.area.startsWith('LINESTRING') && this.showLineGeofenceLayer)
+          )
+      )
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredGeofences: function() {
@@ -76,47 +122,71 @@ export default {
         })
       }
       geofences = geofences.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
       return geofences
+    },
+    showPOIsLayer: {
+      get() { return !!vm.$store.state.map.showPOIs },
+      set() { this.togglePOIs() }
     },
     showGeofenceLayer: {
       get() { return !!vm.$store.state.map.showGeofences },
       set() { this.toggleGeofences() }
+    },
+    showLineGeofenceLayer: {
+      get() { return !!vm.$store.state.map.showLineGeofences },
+      set() { this.toggleLineGeofences() }
+    },
+    isPOISelected() {
+      return this.showPOIsLayer ? '#055AE5' : 'gray'
+    },
+    isGeofenceSelected() {
+      return this.showGeofenceLayer ? '#055AE5' : 'gray'
+    },
+    isLineGeofenceSelected() {
+      return this.showLineGeofenceLayer ? '#055AE5' : 'gray'
     }
   },
-  mounted() {
-    if (this.geofences.length === 0 && this.$store.state.user.token != null) { traccar.geofences(this.loadGeofences) }
-  },
   methods: {
-    loadGeofences: function(geofences) {
-      vm.$store.state.user.geofences = geofences
-    },
-    geofenceSelected: function(geofence) {
-      if (geofence && this.showGeofenceLayer) {
-        Vue.$log.debug('geofenceSelected=', geofence)
-        serverBus.$emit('areaSelected', geofence)
+    poiSelected: function(poi) {
+      if (poi && this.showPOIsLayer) {
+        Vue.$log.debug('poi=', poi)
+        serverBus.$emit('areaSelected', poi)
       }
+    },
+    togglePOIs: function() {
+      vm.$store.dispatch('map/togglePOIs')
     },
     toggleGeofences: function() {
       vm.$store.dispatch('map/toggleGeofences')
-      this.map.setLayoutProperty('geofences', 'visibility',
-        this.showGeofenceLayer ? 'visible' : 'none')
-      this.map.setLayoutProperty('geofences-labels', 'visibility',
-        this.showGeofenceLayer ? 'visible' : 'none')
-      this.map.setLayoutProperty('geofences-lines', 'visibility',
-        this.showGeofenceLayer ? 'visible' : 'none')
-      this.map.setLayoutProperty('geofences-lines-labels', 'visibility',
-        this.showGeofenceLayer ? 'visible' : 'none')
+    },
+    toggleLineGeofences: function() {
+      vm.$store.dispatch('map/toggleLineGeofences')
+    },
+    geofenceImageType(row) {
+      return row.area.startsWith('CIRCLE') ? 'fas fa-map-marker-alt' : (row.area.startsWith('LINE') ? 'fas fa-wave-square' : 'fas fa-draw-polygon')
+    },
+    handleFilterType: function(type) {
+      if (type === 'POI') {
+        this.togglePOIs()
+      }
+      if (type === 'GEOFENCE') {
+        this.toggleGeofences()
+      }
+      if (type === 'LINE') {
+        this.toggleLineGeofences()
+      }
     },
     handleEdit(row) {
-      this.$prompt(this.$t('geofence.geofence_edit_name'), this.$t('geofence.geofence_edit_title'), {
+      this.$prompt(this.$t('geofence.' + this.getType(row) + '_edit_name'), this.$t('geofence.' + this.getType(row) + '_edit_title'), {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
         cancelButtonText: this.$t('geofence.geofence_edit_cancel'),
         inputValue: row.name
       }).then(({ value }) => {
         var geofence = row
         geofence.name = value
-        traccar.editGeofence(row.id, geofence, this.geofenceEdited())
-        row.name = value
+        // row.name = value
+        traccar.editGeofence(row.id, geofence, this.geofenceEdited)
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -125,36 +195,39 @@ export default {
       })
     },
     handleDelete(row) {
-      this.$confirm(this.$t('geofence.geofence_delete_info') + row.name, this.$t('geofence.geofence_delete_title'), {
+      this.$confirm(this.$t('geofence.' + this.getType(row) + '_delete_info') + row.name, this.$t('geofence.' + this.getType(row) + '_delete_title'), {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
         cancelButtonText: this.$t('geofence.geofence_edit_cancel')
       }).then(() => {
         traccar.deleteGeofence(row.id, this.geofenceDeleted)
       }).catch(() => {
-        Vue.$log.error('Error deleting geofence', row)
       })
     },
-    geofenceEdited: function() {
+    geofenceEdited: function(row) {
       this.$message({
         type: 'success',
-        message: this.$t('geofence.geofence_edited')
+        message: this.$t('geofence.' + this.getType(row) + '_edited')
       })
     },
     geofenceDeleted(geofenceId) {
-      vm.$store.state.user.geofences = vm.$store.state.user.geofences.filter((e) => e.id !== geofenceId)
+      const geofence = vm.$store.state.user.geofences.find((e) => e && e.id !== geofenceId)
+      vm.$store.state.user.geofences = vm.$store.state.user.geofences.filter((e) => e && e.id !== geofenceId)
       this.geofencesSource.features = this.geofencesSource.features.filter((e) => e.properties.id !== geofenceId)
       lnglat.refreshGeofences()
       this.$message({
-        message: this.$t('geofence.geofence_deleted'),
+        message: this.$t('geofence.' + this.getType(geofence) + '_deleted'),
         type: 'success',
         duration: 5 * 1000
       })
+    },
+    getType(row) {
+      return row.area.startsWith('POLYGON') ? 'geofence' : (row.area.startsWith('LINESTRING') ? 'linegeofence' : 'poi')
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .header {
     padding: 10px;
   }

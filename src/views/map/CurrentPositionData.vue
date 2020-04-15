@@ -288,6 +288,7 @@ export default {
       if (!keepMain) {
         if (this.map.getLayer(this.allTripsSource)) {
           this.map.removeLayer(this.allTripsSource)
+          this.map.removeLayer(this.allTripsSource + 'arrows')
           this.map.removeSource(this.allTripsSource)
         }
       }
@@ -685,6 +686,7 @@ export default {
     createAllTripsLayer: function(routeGeoJSON) {
       if (vm.$static.map.getLayer(this.allTripsSource)) {
         this.map.removeLayer(this.allTripsSource)
+        this.map.removeLayer(this.allTripsSource + 'arrows')
         this.map.removeSource(this.allTripsSource)
       }
       Vue.$log.debug('adding source ', this.allTripsSource)
@@ -702,8 +704,37 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#6e6e6e',
+          'line-color': '#3887be',
           'line-width': 1
+        }
+      })
+      vm.$static.map.addLayer({
+        id: this.allTripsSource + 'arrows',
+        type: 'symbol',
+        source: this.allTripsSource,
+        layout: {
+          'symbol-placement': 'line',
+          'text-field': '▶',
+          'text-size': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            6, 12,
+            11, 15
+          ],
+          'symbol-spacing': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            6, 15,
+            11, 40
+          ],
+          'text-keep-upright': false
+        },
+        paint: {
+          'text-color': '#3887be',
+          'text-halo-color': 'hsl(55, 11%, 96%)',
+          'text-halo-width': 2
         }
       })
       vm.$static.map.getSource(this.allTripsSource).setData(routeGeoJSON)

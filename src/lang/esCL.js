@@ -236,6 +236,12 @@ export default {
     poi_deleted: 'PDI ha sido apagado',
     poi_edit_title: 'Editar PDI',
     poi_edit_name: 'Por favor indicar el nombre de PDI...',
+    linegeofence_delete_info: 'Pretende apagar o corredor ',
+    linegeofence_delete_title: 'Apagar Corredor',
+    linegeofence_edited: 'Corredor editado com sucesso!',
+    linegeofence_deleted: 'Corredor foi apagado',
+    linegeofence_edit_title: 'Editar Corredor',
+    linegeofence_edit_name: 'Por favor indique o nome do corredor...',
     searchGeofence: 'Procurar Geocerca',
     edit_geofence: 'Editar',
     delete_geofence: 'Apagar'

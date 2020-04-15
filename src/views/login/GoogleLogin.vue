@@ -22,8 +22,14 @@ export default {
       }
     })
     this.getUser()
+    setTimeout(this.redirect, 30000)
   },
   methods: {
+    redirect() {
+      const redirect = window.location.protocol + '//' + window.location.host
+      this.$log.info('redirecting to', redirect)
+      window.location.href = redirect
+    },
     getUserData(data) {
       if (data && data.attributes) {
         this.$log.info('userLoggedIn', data)
@@ -31,9 +37,7 @@ export default {
           .then(() => {
             traccar.getSession().then((s) => {
               this.$log.info(s)
-              const redirect = window.location.protocol + '//' + window.location.host
-              this.$log.info('redirecting to', redirect)
-              window.location.href = redirect
+              this.redirect()
             })
           })
       }

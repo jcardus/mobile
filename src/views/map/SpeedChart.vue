@@ -82,18 +82,24 @@ export default {
           },
           scales: {
             xAxes: [{
-              display: false,
+              display: true,
               gridLines: {
                 display: false
               },
               type: 'time',
               time: {
-              // parser: timeFormat,
+                minUnit: 'hour',
+                // parser: timeFormat,
                 round: 'second',
-                tooltipFormat: 'll HH:mm:ss'
+                tooltipFormat: 'll HH:mm:ss',
+                displayFormats: {
+                  minute: 'HH:mm',
+                  hour: 'HH:mm',
+                  day: 'D MMM'
+                }
               },
               scaleLabel: {
-                display: true,
+                display: false,
                 labelString: 'Date'
               }
             }],
@@ -117,6 +123,3 @@ export default {
   }
 }
 </script>
-<style>
-
-</style>

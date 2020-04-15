@@ -1,5 +1,5 @@
+import 'normalize.css/normalize.css'
 import Vue from 'vue'
-import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import store from './store'
 import router from './router'
@@ -82,6 +82,7 @@ export let regServiceWorker
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
+    Vue.$log.info(registrations)
     for (const reg of registrations) {
       reg.addEventListener('updatefound', () => {
         Vue.$log.debug('A wild service worker has appeared in reg.installing!')
@@ -142,22 +143,15 @@ Framework7.use(Framework7Vue)
 
 Vue.use(VueTimers)
 
-function askPermissionForNotifications() {
-  return new Promise(function(resolve, reject) {
-    const permissionResult = Notification.requestPermission(function(result) {
-      resolve(result)
-    })
-    if (permissionResult) {
-      permissionResult.then(resolve, reject)
-    }
-  }).then(function(permissionResult) {
-    if (permissionResult !== 'granted') {
-      console.error('user blocked notifications: ', permissionResult)
-    }
+if (!('Notification' in window)) {
+  Vue.$log.warn('no notifications in this browser... Buuuu...')
+} else if (Notification.permission === 'granted') {
+  Vue.$log.info('notifications ok')
+} else if (Notification.permission !== 'denied') {
+  Notification.requestPermission().then(function(permission) {
+    Vue.$log.info('notification permissions', permission)
   })
 }
-
-askPermissionForNotifications().then()
 
 if (lnglat.__isMobile()) {
   Vue.$log.debug('loading inobounce...')

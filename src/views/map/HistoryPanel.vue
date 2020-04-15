@@ -1,10 +1,10 @@
 <template>
   <div v-show="historyMode" v-loading="loadingRoutes" class="historyPanel2">
-    <div style="position: relative; height:80px; padding-right: 20px">
+    <div style="position: relative; height:105px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
-      <div style="padding-left:48px; padding-right:10px">
+      <div style="padding-left:48px; padding-right:15px">
         <label>
           <input
             v-model="embeddedSliderPos"
@@ -13,10 +13,10 @@
             :min="minPos"
           />
         </label></div>
-      <div style="padding-left: 10px">
-        <i :class="(isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play') + ' playButton'" @click="click"></i>
-        <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="playButton el-icon-d-arrow-left" @click="clickBackward"></i>
-        <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="playButton el-icon-d-arrow-right" @click="clickForward"></i>
+      <div class="playButtons">
+        <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="fas fa-backward" @click="clickBackward"></i>
+        <i :class="'fas fa-' + (isPlaying ? 'pause' : 'play')" style="padding-left: 10px; padding-right: 10px" @click="click"></i>
+        <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="fas fa-forward" @click="clickForward"></i>
       </div>
     </div>
   </div>
@@ -144,9 +144,9 @@ export default {
       }
     },
     fillGraphData() {
-      const categories = sharedData.getPositions().map(x => this.$moment(x.fixTime).toDate())
-      const series = sharedData.getPositions().map(x => x.speed * 1.852)
-      sharedData.setChartLabels(categories)
+      const series = sharedData.getPositions().map(x => {
+        return { y: x.speed * 1.852, x: this.$moment(x.fixTime).toDate() }
+      })
       sharedData.setChartData(series)
       this.updateChart = !this.updateChart
     },
@@ -217,18 +217,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '../../styles/element-variables.scss';
   .historyPanel2 {
     font-size: 15px;
     margin: 0 !important;
     border-right:0;
   }
-  .playButton {
-    padding-top: 15px;
-    padding-right: 10px;
-    font-size:40px;
+  .playButtons {
+    padding-top: 5px;
+    padding-right: 20px;
+    padding-left: 10px;
+    color:$--color-primary;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    font-size:20px;
   }
+
   @media only screen and (min-width: 768px) {
-    @import '../../styles/element-variables.scss';
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;
@@ -244,12 +250,12 @@ export default {
       box-shadow: 2px 2px 4px $--color-info;
       background: $--background-color-base;
       border: 2px solid $--border-base;
-      height: 35px;
-      width: 35px;
-      border-radius: 35px;
+      height: 20px;
+      width: 20px;
+      border-radius: 10px;
       cursor: pointer;
       -webkit-appearance: none;
-      margin-top: -16px;
+      margin-top: -10px;
     }
   }
 </style>

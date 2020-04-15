@@ -16,7 +16,7 @@ if (workbox) {
 
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
-    /^https:\/\/kit-free\.fontawesome\.com/,
+    new RegExp('https:\/\/kit-free\.fontawesome\.com/.*'),
     // eslint-disable-next-line no-undef
     new workbox.strategies.CacheFirst({
       cacheName: 'fontawesome'
@@ -39,7 +39,7 @@ if (workbox) {
 
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
-    /^https:\/\/fonts\.googleapis\.com/,
+    new RegExp(/^https:\/\/fonts\.googleapis\.com/),
     // eslint-disable-next-line no-undef
     new workbox.strategies.CacheFirst({
       cacheName: 'googlefonts'
@@ -47,8 +47,6 @@ if (workbox) {
   )
 
   // eslint-disable-next-line no-inner-declarations
-
-  // This code listens for the user's confirmation to update the app.
   self.addEventListener('message', (e) => {
     console.log('received ', e)
     if (!e.data) {
@@ -61,8 +59,6 @@ if (workbox) {
       console.log('skip waiting done')
     }
   })
-
-  // Listen to Push
   self.addEventListener('push', (e) => {
     let data
     if (e.data) {
