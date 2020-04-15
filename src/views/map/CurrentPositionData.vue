@@ -465,6 +465,7 @@ export default {
         },
         paint: {
           'line-color': '#FF0000',
+          'line-opacity': 0.6,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -641,6 +642,7 @@ export default {
           'line-cap': 'round'
         },
         paint: {
+          'line-opacity': 0.6,
           'line-color': '#3887be',
           'line-width': [
             'interpolate',
