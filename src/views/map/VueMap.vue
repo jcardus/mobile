@@ -787,7 +787,7 @@ export default {
       const self = this
       const lineDistance = lnglat.lineDistance(route)
 
-      if (lineDistance > 0.03) {
+      if (lineDistance > 0.03 && settings.mapBoxRouteMatch) {
         lnglat.matchRoute(coordinates, radius, timestamps,
           function(r) {
             if (r.data.matchings && r.data.matchings.length > 0) {
