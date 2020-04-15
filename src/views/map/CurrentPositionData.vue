@@ -610,7 +610,7 @@ export default {
     drawRoute(positions, timestamps) {
       const lineString = { type: 'LineString', coordinates: positions }
 
-      if (!settings.animateMarkers) {
+      if (!settings.mapBoxRouteMatch) {
         const routeGeoJSON = this.getGeoJSON(lineString)
         Vue.$log.debug('Positions Route ', routeGeoJSON)
         this.createLayers(routeGeoJSON)
