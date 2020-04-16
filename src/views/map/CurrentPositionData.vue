@@ -716,6 +716,8 @@ export default {
         source: this.allTripsSource,
         layout: {
           'symbol-placement': 'line',
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
           'text-field': '▶',
           'text-size': [
             'interpolate',
