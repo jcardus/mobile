@@ -221,6 +221,7 @@ export default {
       if (++this.loadingCount === 3) {
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
+        lnglat.updateMarkers()
         this.$log.info('finished loading', this.loadingCount)
       } else {
         if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {

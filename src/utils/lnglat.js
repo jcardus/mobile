@@ -358,16 +358,6 @@ export function addLayers(map) {
     fetchGeofences(map)
   }
 }
-export function fitBounds(devices) {
-  const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
-  if (features.length > 1) {
-    const coords = features.map(f => f.geometry.coordinates)
-    const box = bbox(helpers.lineString(coords))
-    const bounds = [[box[0], box[1]], [box[2], box[3]]]
-    vm.$static.map.fitBounds(bounds, { padding: 30 })
-    updateMarkers()
-  }
-}
 export function contains(lngLatBounds, position, padding = 0) {
   return (
     (lngLatBounds.getWest() + padding < position.longitude && position.longitude < lngLatBounds.getEast() - padding) &&
