@@ -17,8 +17,8 @@ const getters = {
   groups: state => state.user.groups,
   drivers: state => state.user.drivers,
   geofences: state => state.user.geofences,
-  unreadItems: state => state.unreadItems
-
+  unreadItems: state => state.unreadItems,
+  showLabels: state => state.settings.showLabels
 }
 
 export default getters

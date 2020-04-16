@@ -6,7 +6,9 @@ import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm } from '../main'
-import styles from '@/styles/element-variables.scss'
+import styles from '../styles/element-variables.scss'
+import * as consts from './consts'
+import store from '../store'
 
 let markersOnScreen = {}
 
@@ -21,6 +23,12 @@ const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-str
 
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
+
+export function refreshMap() {
+  if (vm.$static.map.getSource('positions')) {
+    vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+  }
+}
 
 export function __isMobile() {
   const rect = body.getBoundingClientRect()
@@ -282,7 +290,6 @@ export function addVehiclesLayer(layer, source) {
         ], '00', colorFormula],
       'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 14.4]], 14.4]], 1],
       'icon-allow-overlap': true,
-      'text-allow-overlap': true,
       'icon-size': {
         stops: [
           [1, 0.6],
@@ -293,7 +300,43 @@ export function addVehiclesLayer(layer, source) {
       }
     }
   })
+  vm.$static.map.addLayer({
+    id: layer + 'labels',
+    type: 'symbol',
+    source: source,
+    filter: ['!=', 'cluster', true],
+    layout: {
+      'text-size': 13,
+      'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
+      'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
+      'text-justify': 'auto',
+      'text-field': ['get', 'text'],
+      'text-transform': 'uppercase',
+      'text-optional': true
+    },
+    paint: {
+      // 'text-color': ['case', gray, styles.info, green, styles.success, yellow, styles.warning, styles.danger],
+      // 'text-halo-width': 20
+    }
+  })
+  showVehicleLabels(store.state.settings.showLabels)
 }
+
+export function showVehicleLabels(show) {
+  vm.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', show ? 'visible' : 'none')
+}
+
+export function fitBounds(devices) {
+  const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
+  if (features.length > 1) {
+    const coords = features.map(f => f.geometry.coordinates)
+    const box = bbox(helpers.lineString(coords))
+    const bounds = [[box[0], box[1]], [box[2], box[3]]]
+    vm.$static.map.fitBounds(bounds, { padding: 30 })
+    updateMarkers()
+  }
+}
+
 export function addLayers(map) {
   if (!map.getSource(source)) {
     map.addSource(source, {
@@ -334,10 +377,10 @@ export function addLayers(map) {
       }
     })
   }
-  if (!map.getLayer('unclustered-point')) {
-    addVehiclesLayer('unclustered-point', source)
+  if (!map.getLayer(consts.vehiclesLayer)) {
+    addVehiclesLayer(consts.vehiclesLayer, source)
   } else {
-    Vue.$log.warn('layer unclustered-point already exists...')
+    Vue.$log.warn('vehiclesLayer already exists...')
   }
   if (!map.getLayer('clusters')) {
     map.addLayer({
@@ -380,7 +423,8 @@ export function hideLayers(hide) {
   if (!isMobile()) {
     hideLayer('3d-buildings', hide)
   }
-  hideLayer('unclustered-point', hide)
+  hideLayer(consts.vehiclesLayer, hide)
+  hideLayer(consts.vehiclesLayer + 'labels', hide)
   if (hide) { removeMarkers() }
   refreshGeofences()
 }

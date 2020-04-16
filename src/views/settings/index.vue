@@ -33,7 +33,14 @@
         <span slot="label">
           <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
         </span>
-
+        <div>
+          <el-switch
+            v-model="showLabels"
+            :active-text="$t('settings.showLabels')"
+            inactive-text=""
+          >
+          </el-switch>
+        </div>
         <h3>{{ $t('settings.route_history') }}</h3>
         <div>
           <el-switch
@@ -88,6 +95,12 @@ export default {
     }
   },
   computed: {
+    showLabels: {
+      get() { return this.$store.state.settings.showLabels },
+      set(value) {
+        this.$store.dispatch('settings/setShowLabels', value)
+      }
+    },
     top() {
       if (('standalone' in window.navigator) && window.navigator.standalone) {
         return 'padding-top:100px;'

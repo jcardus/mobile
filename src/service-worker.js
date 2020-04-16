@@ -4,8 +4,6 @@ if (workbox) {
   // be imported using importScripts (as is workbox itself) and we can
   // precache this. This is all we need for precaching
   // eslint-disable-next-line no-undef
-  // self.__precacheManifest = self.__precacheManifest.filter(x => !x.url.startsWith('/static/js/runtime'))
-  // eslint-disable-next-line no-undef
   workbox.precaching.precacheAndRoute(self.__precacheManifest)
 
   // Make sure to return a specific response for all navigation requests.
@@ -22,7 +20,14 @@ if (workbox) {
       cacheName: 'fontawesome'
     })
   )
-
+  // eslint-disable-next-line no-undef
+  workbox.routing.registerRoute(
+    new RegExp('https://.*\\.cloudfront.net/.*'),
+    // eslint-disable-next-line no-undef
+    new workbox.strategies.CacheFirst({
+      cacheName: 'cloudfront'
+    })
+  )
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
     new RegExp('https://.*\\.amazonaws\\.com/v1/.*'),
@@ -39,7 +44,7 @@ if (workbox) {
 
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
-    new RegExp(/^https:\/\/fonts\.googleapis\.com/),
+    new RegExp('https:\/\/fonts\.googleapis\.com/.*'),
     // eslint-disable-next-line no-undef
     new workbox.strategies.CacheFirst({
       cacheName: 'googlefonts'
