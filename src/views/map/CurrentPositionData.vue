@@ -426,7 +426,7 @@ export default {
       this.drawSpeedTrip()
     },
     drawSpeedTrip: function() {
-      if (!this.speedTrips[this.currentTrip]) {
+      if (!this.speedTrips || !this.speedTrips[this.currentTrip]) {
         return
       }
       if (vm.$static.map.getSource(this.routeSpeedSource)) {
@@ -801,7 +801,7 @@ export default {
         return
       }
       if (newPos >= this.positions.length) {
-        Vue.$log.warn('CurrentPositionData ignoring, newPos out of array: ', newPos)
+        Vue.$log.warn('CurrentPositionData ignoring, newPos out of array: ', newPos, this.positions.length)
         return
       }
       const origin = this.oldPos
