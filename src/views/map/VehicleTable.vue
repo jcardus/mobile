@@ -1,5 +1,16 @@
 <template>
   <div>
+    <div>
+      <el-select v-if="!isMobile" v-model="orderedBy" style="margin-bottom: 10px; width: 100%">
+        <el-option
+          v-for="item in orderBy"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+    </div>
     <div style="margin-bottom: 15px;">
       <el-row type="flex" justify="space-around">
         <el-col :span="4">
@@ -154,10 +165,6 @@ export default {
     filterKey: {
       default: '',
       type: String
-    },
-    orderedBy: {
-      default: '',
-      type: String
     }
   },
   data() {
@@ -172,13 +179,27 @@ export default {
       lastUpdate: new Date(),
       sortColumns: {},
       sortKey: 'name',
-      filterState: null
+      filterState: null,
+      orderedBy: 'orderByStatus',
+      orderBy: [{
+        value: 'orderByStatus',
+        label: this.$t('vehicleList.order_by_status')
+      }, {
+        value: 'order_by_vehicle',
+        label: this.$t('vehicleList.order_by_vehicle')
+      }, {
+        value: 'order_by_group',
+        label: this.$t('vehicleList.order_by_group')
+      }, {
+        value: 'order_by_last_update',
+        label: this.$t('vehicleList.order_by_last_update')
+      }]
     }
   },
   computed: {
     ...mapGetters(['historyMode', 'geofences']),
     buttonRound() {
-      return !this.isMobile
+      return true
     },
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
@@ -401,6 +422,9 @@ export default {
   }
 </style>
 <style>
+  .el-button.is-round {
+    padding: 10px 10px;
+  }
   ::-webkit-scrollbar {
     width: 5px;
   }

@@ -1,19 +1,9 @@
 <template>
   <div class="mainContainer">
     <div class="dd-body-inner">
-      <div v-if="isMobile" style="height:25px"></div>
-      <logo-svg v-if="hasSVG" class="logo"></logo-svg>
-      <img v-else class="logo" height="44" :src="logoImage" alt="">
+      <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType()"></logo-svg>
+      <img v-else :class="'logo ' + logoClassType" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
-      <el-select v-if="!isMobile" v-model="orderedBy" style="width: 100%">
-        <el-option
-          v-for="item in orderBy"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
       <el-tabs stretch>
         <el-tab-pane>
           <span slot="label">
@@ -21,7 +11,6 @@
           </span>
           <vehicle-table
             :filter-key="filterKey"
-            :ordered-by="orderedBy"
           />
         </el-tab-pane>
         <el-tab-pane>
@@ -54,32 +43,23 @@ export default {
   components: { VehicleTable, GeofenceTable, DriverTable, LogoSvg },
   data() {
     return {
-      orderedBy: 'orderByStatus',
-      filterKey: '',
-      orderBy: [{
-        value: 'orderByStatus',
-        label: this.$t('vehicleList.order_by_status')
-      }, {
-        value: 'order_by_vehicle',
-        label: this.$t('vehicleList.order_by_vehicle')
-      }, {
-        value: 'order_by_group',
-        label: this.$t('vehicleList.order_by_group')
-      }, {
-        value: 'order_by_last_update',
-        label: this.$t('vehicleList.order_by_last_update')
-      }]
+      filterKey: ''
     }
   },
   computed: {
     hasSVG() {
       return partner.hasSVG()
     },
-    logoImage: function() {
-      return partner.getLogo()
-    },
     isMobile() {
       return lnglat.isMobile()
+    }
+  },
+  methods: {
+    logoImage() {
+      return partner.getLogo()
+    },
+    logoClassType() {
+      return this.isMobile ? 'logoMobile' : 'logoDesktop'
     }
   }
 }
@@ -94,9 +74,15 @@ export default {
     margin-left: auto;
     margin-right: auto;
   }
+  .logoMobile {
+    margin-top: 25px;
+    margin-bottom: 0px;
+  }
+  .logoDesktop {
+    margin-bottom: 5px;
+  }
   .input {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
     color: #979797;
   }
 
