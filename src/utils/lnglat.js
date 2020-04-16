@@ -319,7 +319,11 @@ export function addVehiclesLayer(layer, source) {
       // 'text-halo-width': 20
     }
   })
-  store.dispatch('settings.setShowLabels', store.state.settings.showLabels)
+  showVehicleLabels(store.state.settings.showLabels)
+}
+
+export function showVehicleLabels(show) {
+  vm.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', show ? 'visible' : 'none')
 }
 
 export function fitBounds(devices) {
