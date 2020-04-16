@@ -790,7 +790,6 @@ export default {
     onPosChanged(newPos) {
       this.$log.debug('CurrentPositionData', newPos)
       const positions = sharedData.getPositions()
-      this.positions = positions
       this.currentPos = newPos
       if (!this.device) {
         Vue.$log.debug('CurrentPositionData, ignoring, no device...')
@@ -800,8 +799,8 @@ export default {
         Vue.$log.debug('CurrentPositionData ignoring, my device:', this.device.name, ' selected: ', vm.$data.currentDevice.name)
         return
       }
-      if (newPos >= this.positions.length) {
-        Vue.$log.warn('CurrentPositionData ignoring, newPos out of array: ', newPos, this.positions.length)
+      if (newPos >= positions.length) {
+        Vue.$log.warn('CurrentPositionData ignoring, newPos out of array: ', newPos, positions.length)
         return
       }
       const origin = this.oldPos
@@ -830,13 +829,13 @@ export default {
           return
         }
 
-        if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
+        if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
           vm.$static.map.panTo(
-            { lng: this.positions[newPos].longitude, lat: this.positions[newPos].latitude }
+            { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
           )
         }
 
-        const newDate = utils.getDate(this.positions[newPos].fixTime)
+        const newDate = utils.getDate(positions[newPos].fixTime)
         const oldTrip = this.currentTrip
 
         while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()) {
@@ -853,17 +852,17 @@ export default {
           this.drawTrip()
           this.drawSpeedTrip()
 
-          if (!lnglat.contains(vm.$static.map.getBounds(), this.positions[newPos])) {
+          if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
             vm.$static.map.panTo(
-              { lng: this.positions[newPos].longitude, lat: this.positions[newPos].latitude }
+              { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
             )
           }
         }
 
-        vm.$static.currentFeature.properties.speed = this.positions[newPos].speed
-        vm.$static.currentFeature.properties.course = this.positions[newPos].course
-        vm.$static.currentFeature.geometry.coordinates = [this.positions[newPos].longitude, this.positions[newPos].latitude]
-        vm.$static.currentFeature.properties.address = this.positions[newPos].address
+        vm.$static.currentFeature.properties.speed = positions[newPos].speed
+        vm.$static.currentFeature.properties.course = positions[newPos].course
+        vm.$static.currentFeature.geometry.coordinates = [positions[newPos].longitude, positions[newPos].latitude]
+        vm.$static.currentFeature.properties.address = positions[newPos].address
         animation.refreshFeature()
       }
       if (newPos < positions.length - 1) {
