@@ -1,12 +1,23 @@
 <template>
   <div>
+    <div>
+      <el-select v-if="!isMobile" v-model="orderedBy" style="margin-bottom: 10px; width: 100%">
+        <el-option
+          v-for="item in orderBy"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+    </div>
     <div style="margin-bottom: 15px;">
       <el-row type="flex" justify="space-around">
         <el-col :span="4">
           <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
             <el-button
               id="btnAll"
-              :round="buttonRound"
+              round="true"
               :size="buttonSize"
               @click="handleFilterState(null)"
             >{{ devices.length }}</el-button>
@@ -16,7 +27,7 @@
             <el-button
               id="btnMoving"
               type="success"
-              :round="buttonRound"
+              round="true"
               :size="buttonSize"
               @click="handleFilterState('Moving')"
             >{{ devicesOnCount }}</el-button>
@@ -25,8 +36,8 @@
           <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
             <el-button
               id="btnIdle"
-              :round="buttonRound"
               type="warning"
+              round="true"
               :size="buttonSize"
               @click="handleFilterState('Idle')"
             >{{ devicesIdle.length }}</el-button>
@@ -35,9 +46,9 @@
           <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
             <el-button
               id="btnOff"
-              :round="buttonRound"
-              :size="buttonSize"
               type="danger"
+              round="true"
+              :size="buttonSize"
               @click="handleFilterState('Stopped')"
             >{{ devicesOff.length }}</el-button>
           </el-tooltip></el-col>
@@ -45,9 +56,9 @@
           <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
             <el-button
               id="btnUnknown"
-              :round="buttonRound"
-              :size="buttonSize"
               type="info"
+              round="true"
+              :size="buttonSize"
               @click="handleFilterState('Disconnected')"
             >{{ devicesDisconnected.length }}</el-button>
           </el-tooltip></el-col>
@@ -154,10 +165,6 @@ export default {
     filterKey: {
       default: '',
       type: String
-    },
-    orderedBy: {
-      default: '',
-      type: String
     }
   },
   data() {
@@ -172,14 +179,25 @@ export default {
       lastUpdate: new Date(),
       sortColumns: {},
       sortKey: 'name',
-      filterState: null
+      filterState: null,
+      orderedBy: 'orderByStatus',
+      orderBy: [{
+        value: 'orderByStatus',
+        label: this.$t('vehicleList.order_by_status')
+      }, {
+        value: 'order_by_vehicle',
+        label: this.$t('vehicleList.order_by_vehicle')
+      }, {
+        value: 'order_by_group',
+        label: this.$t('vehicleList.order_by_group')
+      }, {
+        value: 'order_by_last_update',
+        label: this.$t('vehicleList.order_by_last_update')
+      }]
     }
   },
   computed: {
     ...mapGetters(['historyMode', 'geofences']),
-    buttonRound() {
-      return !this.isMobile
-    },
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },
@@ -401,6 +419,9 @@ export default {
   }
 </style>
 <style>
+  .el-button.is-round {
+    padding: 7px 15px;
+  }
   ::-webkit-scrollbar {
     width: 5px;
   }
