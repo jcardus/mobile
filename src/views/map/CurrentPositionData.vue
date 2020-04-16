@@ -706,7 +706,7 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#3887be',
+          'line-color': '#000000',
           'line-width': 1
         }
       })
@@ -734,7 +734,7 @@ export default {
           'text-keep-upright': false
         },
         paint: {
-          'text-color': '#3887be',
+          'text-color': '#000000',
           'text-halo-color': 'hsl(55, 11%, 96%)',
           'text-halo-width': 2
         }
