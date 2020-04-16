@@ -768,9 +768,9 @@ export default {
       }
     },
     updateDate() {
-      this.positions = sharedData.getPositions()
-      if (this.positions && this.positions.length > 0 && this.positions[this.currentPos]) {
-        const pos = this.positions[this.currentPos]
+      const positions = sharedData.getPositions()
+      if (positions && positions.length > 0 && positions[this.currentPos]) {
+        const pos = positions[this.currentPos]
         this.formattedDate = this.$moment(pos.fixTime).format('YYYY-MM-DD HH:mm:ss')
         if (pos.speed && pos.speed > 0) {
           this.formattedDate += (' ' + ~~(pos.speed * 1.852) + 'km/h')
