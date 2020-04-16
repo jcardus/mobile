@@ -269,6 +269,7 @@ export function addVehiclesLayer(layer, source) {
       ]
     },
     layout: {
+      'symbol-z-order': 'source',
       'icon-keep-upright': true,
       'icon-pitch-alignment': 'map',
       'icon-rotation-alignment': 'map',

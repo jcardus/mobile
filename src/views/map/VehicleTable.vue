@@ -17,7 +17,7 @@
           <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
             <el-button
               id="btnAll"
-              round="true"
+              :round="true"
               :size="buttonSize"
               @click="handleFilterState(null)"
             >{{ devices.length }}</el-button>
@@ -27,7 +27,7 @@
             <el-button
               id="btnMoving"
               type="success"
-              round="true"
+              :round="true"
               :size="buttonSize"
               @click="handleFilterState('Moving')"
             >{{ devicesOnCount }}</el-button>
@@ -37,7 +37,7 @@
             <el-button
               id="btnIdle"
               type="warning"
-              round="true"
+              :round="true"
               :size="buttonSize"
               @click="handleFilterState('Idle')"
             >{{ devicesIdle.length }}</el-button>
@@ -47,7 +47,7 @@
             <el-button
               id="btnOff"
               type="danger"
-              round="true"
+              :round="true"
               :size="buttonSize"
               @click="handleFilterState('Stopped')"
             >{{ devicesOff.length }}</el-button>
@@ -57,7 +57,7 @@
             <el-button
               id="btnUnknown"
               type="info"
-              round="true"
+              :round="true"
               :size="buttonSize"
               @click="handleFilterState('Disconnected')"
             >{{ devicesDisconnected.length }}</el-button>
@@ -419,9 +419,6 @@ export default {
   }
 </style>
 <style>
-  .el-button.is-round {
-    padding: 7px 15px;
-  }
   ::-webkit-scrollbar {
     width: 5px;
   }
