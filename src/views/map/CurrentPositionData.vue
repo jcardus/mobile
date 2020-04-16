@@ -642,13 +642,13 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-opacity': 0.6,
+          'line-opacity': 0.7,
           'line-color': '#3887be',
           'line-width': [
             'interpolate',
             ['linear'],
             ['zoom'],
-            12, 3,
+            12, 6,
             22, 12
           ]
         }
@@ -664,15 +664,15 @@ export default {
             'interpolate',
             ['linear'],
             ['zoom'],
-            12, 24,
+            12, 30,
             22, 60
           ],
           'symbol-spacing': [
             'interpolate',
             ['linear'],
             ['zoom'],
-            12, 30,
-            22, 160
+            12, 20,
+            22, 100
           ],
           'text-keep-upright': false
         },
@@ -682,7 +682,6 @@ export default {
           'text-halo-width': 3
         }
       })
-
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
     createAllTripsLayer: function(routeGeoJSON) {
@@ -706,8 +705,9 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#000000',
-          'line-width': 1
+          'line-color': 'darkslategrey',
+          'line-width': 2,
+          'line-opacity': 0.8
         }
       })
       vm.$static.map.addLayer({
@@ -716,29 +716,28 @@ export default {
         source: this.allTripsSource,
         layout: {
           'symbol-placement': 'line',
-          'text-allow-overlap': true,
-          'text-ignore-placement': true,
           'text-field': '▶',
           'text-size': [
             'interpolate',
             ['linear'],
             ['zoom'],
-            6, 12,
-            11, 15
+            6, 13,
+            11, 19
           ],
           'symbol-spacing': [
             'interpolate',
             ['linear'],
             ['zoom'],
-            6, 15,
-            11, 40
+            6, 6,
+            11, 12
           ],
           'text-keep-upright': false
         },
         paint: {
-          'text-color': '#000000',
+          'text-color': 'darkslategrey',
           'text-halo-color': 'hsl(55, 11%, 96%)',
-          'text-halo-width': 2
+          'text-halo-width': 1,
+          'text-opacity': 0.8
         }
       })
       vm.$static.map.getSource(this.allTripsSource).setData(routeGeoJSON)
