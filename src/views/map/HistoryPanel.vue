@@ -1,6 +1,6 @@
 <template>
   <div v-show="historyMode" v-loading="loadingRoutes" class="historyPanel2">
-    <div style="position: relative; height:105px; padding-right: 20px">
+    <div style="position: relative; height:80px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
@@ -78,7 +78,7 @@ export default {
     isPlaying(newValue) {
       this.$log.debug('isPlaying changed to ', newValue, this.currentPos, sharedData.getPositions().length - 1)
       if (newValue) {
-        if (this.currentPos === sharedData.getPositions().length - 1) {
+        if (sharedData.getPositions() && this.currentPos === sharedData.getPositions().length - 1) {
           this.$log.debug('setting currentPos to 0')
           this.currentPos_ = 0
           serverBus.$emit('autoSliderChange', this.minPos)

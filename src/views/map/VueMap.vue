@@ -40,6 +40,7 @@ import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
+import { getLanguageI18n } from '../../lang'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -221,6 +222,7 @@ export default {
       if (++this.loadingCount === 3) {
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
+        lnglat.updateMarkers()
         this.$log.info('finished loading', this.loadingCount)
       } else {
         if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
@@ -426,8 +428,10 @@ export default {
         map.addControl(new MapboxGeocoder({
           accessToken: mapboxgl.accessToken,
           mapboxgl: mapboxgl,
+          collapsed: true,
+          language: getLanguageI18n(),
           localGeocoder: coordinatesGeocoder
-        }), 'bottom-right')
+        }), 'top-left')
         map.addControl(new RulerControl(), 'bottom-right')
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
       }

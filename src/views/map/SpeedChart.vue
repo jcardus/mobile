@@ -6,6 +6,7 @@
 import { Chart } from 'chart.js'
 import Vue from 'vue'
 import { sharedData } from '../../main'
+import * as lnglat from '../../utils/lnglat'
 export default {
   name: 'SpeedChart',
   props: {
@@ -82,7 +83,7 @@ export default {
           },
           scales: {
             xAxes: [{
-              display: true,
+              display: !lnglat.isMobile(),
               gridLines: {
                 display: false
               },

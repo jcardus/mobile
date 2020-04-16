@@ -42,6 +42,7 @@ import VueMap from '../../views/map/VueMap'
 import { serverBus } from '../../main'
 import { appOffline } from '../../utils/utils'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 
 export default {
   name: 'MapMobileContainer',
@@ -66,7 +67,7 @@ export default {
       return this.$device.iphone
     },
     height() {
-      return this.historyMode ? 80 : 0
+      return this.historyMode ? 70 : 0
     }
   },
   watch: {
@@ -79,6 +80,7 @@ export default {
       this.reloadSlider()
     },
     historyMode(newValue) {
+      Vue.$log.info(newValue)
       if (!newValue) {
         this.showSlider = false
       }
@@ -115,6 +117,7 @@ export default {
       serverBus.$emit('clickPlay')
     },
     reloadSlider() {
+      Vue.$log.info('set showSlider false')
       this.showSlider = false
       const self = this
       setTimeout(function() { self.showSlider = true }, 100)
