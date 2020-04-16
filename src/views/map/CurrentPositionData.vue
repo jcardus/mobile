@@ -465,6 +465,7 @@ export default {
         },
         paint: {
           'line-color': '#FF0000',
+          'line-opacity': 0.6,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -641,6 +642,7 @@ export default {
           'line-cap': 'round'
         },
         paint: {
+          'line-opacity': 0.6,
           'line-color': '#3887be',
           'line-width': [
             'interpolate',
@@ -704,7 +706,7 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#3887be',
+          'line-color': '#000000',
           'line-width': 1
         }
       })
@@ -714,6 +716,8 @@ export default {
         source: this.allTripsSource,
         layout: {
           'symbol-placement': 'line',
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
           'text-field': '▶',
           'text-size': [
             'interpolate',
@@ -732,7 +736,7 @@ export default {
           'text-keep-upright': false
         },
         paint: {
-          'text-color': '#3887be',
+          'text-color': '#000000',
           'text-halo-color': 'hsl(55, 11%, 96%)',
           'text-halo-width': 2
         }
