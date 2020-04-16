@@ -108,7 +108,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -253,8 +253,9 @@ export default {
 
       const self = this.map
       this.map.loadImage('./img/icons/pois/marker.png', function(error, image) {
-        if (error) throw error
-        self.addImage('marker', image)
+        if (!error) {
+          self.addImage('marker', image)
+        }
       })
 
       NProgress.done()
@@ -360,9 +361,7 @@ export default {
       }
     },
     refreshMap() {
-      if (this.$static.map.getSource('positions')) {
-        this.$static.map.getSource('positions').setData(this.positionsSource)
-      }
+      lnglat.refreshMap()
     },
     refreshGeofences() {
       // Geofences ... POIs ... Lines
@@ -387,7 +386,15 @@ export default {
       }
     },
     showHideDevices: function(show) {
-      if (!show) { this.$static.map.setLayoutProperty('unclustered-point', 'visibility', 'none') } else { this.$static.map.setLayoutProperty('unclustered-point', 'visibility', 'visible') }
+      if (!show) {
+        this.$static.map.setLayoutProperty(consts.vehiclesLayer, 'visibility', 'none')
+        this.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', 'none')
+      } else {
+        this.$static.map.setLayoutProperty(consts.vehiclesLayer, 'visibility', 'visible')
+        if (this.showLabels) {
+          this.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', 'visible')
+        }
+      }
     },
     addLayers: function() {
       const self = this
@@ -478,14 +485,14 @@ export default {
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
-      this.$static.map.on('touchstart', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
-      this.$static.map.on('click', 'unclustered-point', this.onClickTouchUnclustered)
+      this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'pois', this.onClickTouchPois)
       this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
-      this.$static.map.on('mouseenter', 'unclustered-point', this.mouseEnter)
-      this.$static.map.on('mouseleave', 'unclustered-point', this.mouseLeave)
+      this.$static.map.on('mouseenter', consts.vehiclesLayer, this.mouseEnter)
+      this.$static.map.on('mouseleave', consts.vehiclesLayer, this.mouseLeave)
       this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
@@ -508,15 +515,15 @@ export default {
     },
     unsubscribeEvents() {
       this.$static.map.off('load', this.onMapLoad)
-      this.$static.map.off('touchstart', 'unclustered-point', this.onTouchUnclustered)
+      this.$static.map.off('touchstart', consts.vehiclesLayer, this.onTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
-      this.$static.map.off('click', 'unclustered-point', this.onClickTouchUnclustered)
-      this.$static.map.off('mouseenter', 'unclustered-point', this.mouseEnter)
-      this.$static.map.off('mouseleave', 'unclustered-point', this.mouseLeave)
+      this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
+      this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
+      this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
