@@ -17,7 +17,7 @@
           <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
             <el-button
               id="btnAll"
-              :round="buttonRound"
+              round="true"
               :size="buttonSize"
               @click="handleFilterState(null)"
             >{{ devices.length }}</el-button>
@@ -27,7 +27,7 @@
             <el-button
               id="btnMoving"
               type="success"
-              :round="buttonRound"
+              round="true"
               :size="buttonSize"
               @click="handleFilterState('Moving')"
             >{{ devicesOnCount }}</el-button>
@@ -36,8 +36,8 @@
           <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
             <el-button
               id="btnIdle"
-              :round="buttonRound"
               type="warning"
+              round="true"
               :size="buttonSize"
               @click="handleFilterState('Idle')"
             >{{ devicesIdle.length }}</el-button>
@@ -46,9 +46,9 @@
           <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
             <el-button
               id="btnOff"
-              :round="buttonRound"
-              :size="buttonSize"
               type="danger"
+              round="true"
+              :size="buttonSize"
               @click="handleFilterState('Stopped')"
             >{{ devicesOff.length }}</el-button>
           </el-tooltip></el-col>
@@ -56,9 +56,9 @@
           <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
             <el-button
               id="btnUnknown"
-              :round="buttonRound"
-              :size="buttonSize"
               type="info"
+              round="true"
+              :size="buttonSize"
               @click="handleFilterState('Disconnected')"
             >{{ devicesDisconnected.length }}</el-button>
           </el-tooltip></el-col>
@@ -198,9 +198,6 @@ export default {
   },
   computed: {
     ...mapGetters(['historyMode', 'geofences']),
-    buttonRound() {
-      return true
-    },
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },
@@ -423,7 +420,7 @@ export default {
 </style>
 <style>
   .el-button.is-round {
-    padding: 10px 10px;
+    padding: 7px 15px;
   }
   ::-webkit-scrollbar {
     width: 5px;
