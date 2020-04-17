@@ -313,10 +313,10 @@ export function addVehiclesLayer(layer, source) {
         'text-justify': 'auto',
         'text-field': ['get', 'text'],
         'text-transform': 'uppercase',
-        'text-optional': true,
-        'text-color': 'darkslategrey'
+        'text-optional': true
       },
       paint: {
+        'text-color': 'darkslategrey'
         // 'text-color': ['case', gray, styles.info, green, styles.success, yellow, styles.warning, styles.danger],
         // 'text-halo-width': 20
       }
