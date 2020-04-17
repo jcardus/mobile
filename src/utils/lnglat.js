@@ -300,25 +300,28 @@ export function addVehiclesLayer(layer, source) {
       }
     }
   })
-  vm.$static.map.addLayer({
-    id: layer + 'labels',
-    type: 'symbol',
-    source: source,
-    filter: ['!=', 'cluster', true],
-    layout: {
-      'text-size': 13,
-      'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
-      'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
-      'text-justify': 'auto',
-      'text-field': ['get', 'text'],
-      'text-transform': 'uppercase',
-      'text-optional': true
-    },
-    paint: {
-      // 'text-color': ['case', gray, styles.info, green, styles.success, yellow, styles.warning, styles.danger],
-      // 'text-halo-width': 20
-    }
-  })
+  if (layer === consts.vehiclesLayer) {
+    vm.$static.map.addLayer({
+      id: layer + 'labels',
+      type: 'symbol',
+      source: source,
+      filter: ['!=', 'cluster', true],
+      layout: {
+        'text-size': 13,
+        'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
+        'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
+        'text-justify': 'auto',
+        'text-field': ['get', 'text'],
+        'text-transform': 'uppercase',
+        'text-optional': true,
+        'text-color': 'darkslategrey'
+      },
+      paint: {
+        // 'text-color': ['case', gray, styles.info, green, styles.success, yellow, styles.warning, styles.danger],
+        // 'text-halo-width': 20
+      }
+    })
+  }
   showVehicleLabels(store.state.settings.showLabels)
 }
 
