@@ -6,6 +6,7 @@
       <side-bar />
       <app-main class="divMain" />
     </div>
+    <chat></chat>
   </div>
 </template>
 
@@ -18,6 +19,7 @@ import Profile from './components/Profile'
 import * as notifications from '../utils/notifications'
 import { mapGetters } from 'vuex'
 import { serverBus } from '../main'
+import Chat from '../components/ChatWindow'
 
 export default {
   name: 'Layout',
@@ -25,7 +27,8 @@ export default {
     AppMain,
     Navbar,
     SideBar,
-    Profile
+    Profile,
+    Chat
   },
   data() {
     return {
@@ -35,7 +38,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'loading'
+      'loading', 'drivers'
     ]),
     devices() {
       return this.$root.$data.devices

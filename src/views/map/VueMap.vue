@@ -187,7 +187,8 @@ export default {
     mapboxgl.accessToken = this.accessToken
     this.$root.$static.map = new mapboxgl.Map({
       container: 'map',
-      style: this.$root.$data.mapStyle
+      style: this.$root.$data.mapStyle,
+      attributionControl: false
     })
     this.setZoomAndCenter()
     this.subscribeEvents()
@@ -452,19 +453,18 @@ export default {
         },
         touchEnabled: false
       })
-      map.addControl(this.$static.draw, 'bottom-right')
+      map.addControl(this.$static.draw, 'bottom-left')
       map.addControl(new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
         },
-        trackUserLocation: true
-      }), 'bottom-right')
-      map.addControl(new MapboxTraffic(), 'bottom-right')
-      map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
+        trackUserLocation: true }), 'bottom-left')
+      map.addControl(new MapboxTraffic(), 'bottom-left')
+      map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-left')
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
-      map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
+      map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
     onMoveEnd: function() {
       if (!vm.$data.isPlaying) {
