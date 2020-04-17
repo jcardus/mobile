@@ -18,6 +18,7 @@ export function getThemeColor() {
 export function getCSSName() {
   if (hostname === 'wuizy.co.ao') { return 'wuizy' }
   if (hostname === 'web.fleetrack.cl') { return 'fleetrack' }
+  if (hostname === 'www.fleetrackchile.com') { return 'fleetrack' }
   if (hostname === 'map.able-on.mobi') { return 'able-on' }
   return 'wuizy'
 }
@@ -25,6 +26,7 @@ export function getCSSName() {
 export function getTitle() {
   if (hostname === 'wuizy.co.ao') { return 'WuizyGo' }
   if (hostname === 'web.fleetrack.cl') { return 'Fleetrack' }
+  if (hostname === 'www.fleetrackchile.com') { return 'Fleetrack' }
   if (hostname === 'map.able-on.mobi') { return 'able-on' }
   return 'Pinme'
 }
