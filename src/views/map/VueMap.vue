@@ -439,8 +439,8 @@ export default {
           language: getLanguageI18n(),
           localGeocoder: coordinatesGeocoder
         }), 'top-left')
-        map.addControl(new RulerControl(), 'bottom-right')
-        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
+        map.addControl(new mapboxgl.NavigationControl(), 'top-left')
+        map.addControl(new RulerControl(), 'top-left')
       }
       this.$static.draw = new MapboxDraw({
         displayControlsDefault: false,

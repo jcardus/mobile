@@ -31,7 +31,6 @@ export function getTitle() {
 
 export function hasSVG() {
   return hostname === 'wuizy.co.ao' ||
-    hostname.includes('pinme.io') ||
     hostname.includes('localhost') ||
     hostname.includes('macp.pinme.io')
 }
