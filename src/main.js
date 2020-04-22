@@ -145,16 +145,6 @@ Framework7.use(Framework7Vue)
 
 Vue.use(VueTimers)
 
-if (!('Notification' in window)) {
-  Vue.$log.warn('no notifications in this browser... Buuuu...')
-} else if (Notification.permission === 'granted') {
-  Vue.$log.info('notifications ok')
-} else if (Notification.permission !== 'denied') {
-  Notification.requestPermission().then(function(permission) {
-    Vue.$log.info('notification permissions', permission)
-  })
-}
-
 if (lnglat.__isMobile()) {
   Vue.$log.debug('loading inobounce...')
   Vue.loadScript('/lib/inobounce.min.js')
