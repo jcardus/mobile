@@ -22,7 +22,7 @@
           <div v-if="feature.properties.ignition || device.speed > 5" style="color:#32325D;">
             {{ Math.round(device.speed * 1.852) }} km/h,
           </div>
-          <timeago :datetime="device.lastUpdate" :auto-update="60" :locale="$i18n.locale.substring(0,2)"></timeago>
+          <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
         </div>
         <div style="padding-top: 5px">
           <div style="float:left;padding-right: 10px; width:55%">
@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters['historyMode'],
+    ...mapGetters(['historyMode', 'currentTime']),
     totalDistance() {
       let result = this.feature.properties.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
