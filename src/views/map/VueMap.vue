@@ -194,9 +194,13 @@ export default {
     this.subscribeEvents()
   },
   timers: {
-    ping: { time: 30000, autostart: true, repeat: true }
+    ping: { time: 30000, autostart: true, repeat: true },
+    setTime: { time: 2000, autostart: true, repeat: true }
   },
   methods: {
+    setTime() {
+      this.$store.dispatch('setTime')
+    },
     ping() {
       if (this.userLoggedIn) {
         traccar.ping(() => {}, () => {

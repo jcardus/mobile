@@ -108,11 +108,7 @@
               <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.address }}</span>
             </div>
             <div style="padding-top: 6px;float:left">
-              <timeago
-                :datetime="scope.row.lastUpdate"
-                :auto-update="60"
-                :locale="$i18n.locale.substring(0,2)"
-              ></timeago></div>
+              <span>{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
             <div style="float: right">
               <immobilize-button
                 style="padding:0"
@@ -197,7 +193,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'geofences']),
+    ...mapGetters(['historyMode', 'geofences', 'currentTime']),
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },

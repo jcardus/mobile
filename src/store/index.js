@@ -37,7 +37,8 @@ const store = new Vuex.Store({
       message: '',
       reconnectError: false
     },
-    lastUpdate: null
+    lastUpdate: null,
+    currentTime: new Date()
   },
   actions: {
     incUnreadItems({ commit }) {
@@ -45,9 +46,15 @@ const store = new Vuex.Store({
     },
     resetUnreadItems({ commit }) {
       commit('RESET_UNREAD_ITEMS')
+    },
+    setTime({ commit }) {
+      commit('SET_TIME')
     }
   },
   mutations: {
+    SET_TIME(state) {
+      state.currentTime = new Date()
+    },
     RESET_UNREAD_ITEMS(state) {
       state.unreadItems = 0
     },

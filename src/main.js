@@ -7,7 +7,6 @@ import './routeInterceptor'
 import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
-import VueTimeago from 'vue-timeago'
 import i18n from './lang'
 import { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
@@ -127,16 +126,6 @@ Vue.use(VueStatic, {
   namespaced: true
 })
 
-Vue.use(VueTimeago, {
-  name: 'Timeago',
-  locale: 'en', // Default locale
-  locales: {
-    'pt': require('date-fns/locale/pt'),
-    'es': require('date-fns/locale/es'),
-    'fr': require('date-fns/locale/fr')
-  }
-})
-
 Vue.use(VueI18nFilter)
 
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
@@ -176,7 +165,7 @@ export const vm = new Vue({
   },
   created() {
     serverBus.$on('event', () => {
-      store.dispatch('incUnreadItems')
+      store.dispatch('incUnreadItems').then(() => {})
     })
   },
   static() {

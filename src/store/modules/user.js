@@ -1,6 +1,5 @@
 import { login, logout } from '../../api/user'
 import { traccar } from '../../api/traccar-api'
-import { setLanguage } from '../../lang/index'
 import { vm, serverBus } from '../../main'
 import { TrackJS } from 'trackjs'
 import Vue from 'vue'
@@ -107,9 +106,6 @@ const actions = {
     return new Promise((resolve) => {
       initData(commit, state, dispatch).finally(() => {
         TrackJS.addMetadata('user', state.name)
-        if (state.attributes) {
-          setLanguage(state.attributes.lang)
-        }
         const hostName = getServerHost()
         Vue.$log.info('opening websocket ', state)
         Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
