@@ -33,6 +33,7 @@
         <span slot="label">
           <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
         </span>
+        <h3>{{ $t('settings.vehicles') }}</h3>
         <div>
           <el-switch
             v-model="showLabels"
