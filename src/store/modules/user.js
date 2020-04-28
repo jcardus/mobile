@@ -1,6 +1,6 @@
 import { login, logout } from '../../api/user'
 import { traccar } from '../../api/traccar-api'
-import { vm, serverBus } from '../../main'
+import { serverBus, vm } from '../../main'
 import { TrackJS } from 'trackjs'
 import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
@@ -69,16 +69,18 @@ function initData(commit, state, dispatch) {
       vm.$store.state.user.groups = groups
       vm.$store.state.user.drivers = drivers
       vm.$data.devices = devices
-      dispatch('fetchAlerts').finally(() => {
-        dispatch('transient/fetchEvents', {
-          start: Vue.moment().subtract(1, 'day').toDate(),
-          end: new Date(),
-          types: state.alerts
-        }, { root: true }).finally(() => {
-          dispatch('transient/setDataLoaded', null, { root: true })
-          Vue.$log.info('emit dataLoaded')
-          serverBus.$emit('dataLoaded')
-          resolve()
+      dispatch('processGroups').finally(() => {
+        dispatch('fetchAlerts').finally(() => {
+          dispatch('transient/fetchEvents', {
+            start: Vue.moment().subtract(1, 'day').toDate(),
+            end: new Date(),
+            types: state.alerts
+          }, { root: true }).finally(() => {
+            dispatch('transient/setDataLoaded', null, { root: true })
+            Vue.$log.info('emit dataLoaded')
+            serverBus.$emit('dataLoaded')
+            resolve()
+          })
         })
       })
     }, (e) => {
@@ -201,6 +203,36 @@ const actions = {
             }
           })
         }
+      })
+    })
+  },
+  processGroups({ commit, state }) {
+    new Promise((resolve, reject) => {
+      traccar.geofencesByGroup(state.groups.map(g => g.id), function(results) {
+        results.forEach(result => {
+          state.groups[results.indexOf(result)].geofences =
+            {
+              geofences: result.filter(g => g.area.startsWith('POLYGON')).map(g => g.id),
+              pois: result.filter(g => g.area.startsWith('CIRCLE')).map(g => g.id),
+              linegeofences: result.filter(g => g.area.startsWith('LINESTRING')).map(g => g.id)
+            }
+        })
+        resolve()
+      }, (e) => {
+        Vue.$log.error(e)
+        reject(e)
+      })
+    })
+
+    new Promise((resolve, reject) => {
+      traccar.driversByGroup(state.groups.map(g => g.id), function(results) {
+        results.forEach(result => {
+          state.groups[results.indexOf(result)].drivers = result.map(g => g.id)
+        })
+        resolve()
+      }, (e) => {
+        Vue.$log.error(e)
+        reject(e)
       })
     })
   },

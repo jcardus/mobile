@@ -2,6 +2,7 @@ import axios from 'axios'
 import { getServerHost } from './index'
 import store from '../store'
 import Vue from 'vue'
+
 const serverHost = getServerHost()
 const baseUrl = 'https://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
@@ -219,6 +220,17 @@ export const traccar = {
   geofences: function(onFulfill, onError) {
     invokeApi(geoFences, onFulfill, onError)
   },
+  geofencesByGroup: function(groups, onFulfill, onError) {
+    Vue.$log.debug('geofencesByGroup')
+    const groupsUrl = groups.map(groupId => axios.get(geoFences + '?groupId=' + groupId, { withCredentials: true }))
+
+    invokeApiMultiple(groupsUrl,
+      function(responses) {
+        const resultData = responses.map(r => r.data)
+        onFulfill(resultData)
+      },
+      onError)
+  },
   geofencesByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
       axios.get(geoFences + '?deviceId=' + deviceId, { withCredentials: true })
@@ -302,6 +314,17 @@ export const traccar = {
   },
   drivers: function(userId, onFulfill, onError) {
     invokeApi(drivers + '?userId=' + userId, onFulfill, onError)
+  },
+  driversByGroup: function(groups, onFulfill, onError) {
+    Vue.$log.debug('driversByGroup')
+    const groupsUrl = groups.map(groupId => axios.get(drivers + '?groupId=' + groupId, { withCredentials: true }))
+
+    invokeApiMultiple(groupsUrl,
+      function(responses) {
+        const resultData = responses.map(r => r.data)
+        onFulfill(resultData)
+      },
+      onError)
   },
   addDriver: function(driver, onFulfill) {
     axios.post(drivers, driver, { withCredentials: true })

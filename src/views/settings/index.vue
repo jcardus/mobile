@@ -83,7 +83,7 @@ import { vm } from '../../main'
 import Alerts from './alerts/Alerts'
 import Drivers from './drivers/Drivers'
 import Vehicles from './vehicles/Vehicles'
-import Groups from './vehicles/Groups'
+import Groups from './groups/Groups'
 import * as lnglat from '../../utils/lnglat'
 
 export default {
