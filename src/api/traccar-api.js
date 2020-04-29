@@ -282,6 +282,18 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
+  addAllPermissions: function(permissionsToAdd, onFulfill, onError) {
+    Vue.$log.debug(permissionsToAdd)
+
+    const permissionsUrls = permissionsToAdd.map(permission => axios.post(permissions, permission, { withCredentials: true }))
+
+    invokeApiMultiple(permissionsUrls,
+      function(responses) {
+        const resultData = responses.map(r => r.data)
+        onFulfill(resultData)
+      },
+      onError)
+  },
   deletePermission: function(permission, onFulfill) {
     Vue.$log.debug(permission)
     axios.delete(permissions, { data: permission, withCredentials: true })
@@ -289,6 +301,18 @@ export const traccar = {
       .catch(reason => {
         Vue.$log.error(reason)
       })
+  },
+  deleteAllPermissions: function(permissionsToDelete, onFulfill, onError) {
+    Vue.$log.debug(permissionsToDelete)
+
+    const permissionsUrls = permissionsToDelete.map(permission => axios.delete(permissions, { data: permission, withCredentials: true }))
+
+    invokeApiMultiple(permissionsUrls,
+      function(responses) {
+        const resultData = responses.map(r => r.data)
+        onFulfill(resultData)
+      },
+      onError)
   },
   groups: function(userId, onFulfill, onError) {
     invokeApi(groups + '?userId=' + userId, onFulfill, onError)

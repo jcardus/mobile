@@ -210,6 +210,11 @@ const actions = {
     new Promise((resolve, reject) => {
       traccar.geofencesByGroup(state.groups.map(g => g.id), function(results) {
         results.forEach(result => {
+          result.forEach(g_data => {
+            if (!state.geofences.find(g => g.id === g_data.id)) {
+              state.geofences.push(g_data)
+            }
+          })
           state.groups[results.indexOf(result)].geofences =
             {
               geofences: result.filter(g => g.area.startsWith('POLYGON')).map(g => g.id),
@@ -227,6 +232,11 @@ const actions = {
     new Promise((resolve, reject) => {
       traccar.driversByGroup(state.groups.map(g => g.id), function(results) {
         results.forEach(result => {
+          result.forEach(d_data => {
+            if (!state.drivers.find(d => d.id === d_data.id)) {
+              state.drivers.push(d_data)
+            }
+          })
           state.groups[results.indexOf(result)].drivers = result.map(g => g.id)
         })
         resolve()

@@ -3,14 +3,14 @@
     <transition name="modal">
       <div v-if="isOpenGroupForm">
         <div class="overlay">
-          <div class="modal">
+          <div class="modal" :style="'height:'+isNewGroup ? '200px' : '500px'">
             <h2 v-if="isNewGroup">{{ $t('settings.group_add') }}</h2>
             <h2 v-else>{{ $t('settings.group_edit') }}</h2>
             <el-form>
               <el-form-item :label="$t('settings.group_form_name')">
                 <el-input v-model="groupName" />
               </el-form-item>
-              <el-tabs style="height:325px" stretch>
+              <el-tabs v-if="!isNewGroup" style="height:325px" stretch>
                 <el-tab-pane>
                   <span slot="label">
                     <i class="fas fa-car"></i>
@@ -175,6 +175,7 @@
       </div>
     </transition>
     <el-table
+      :key="alertTableKey"
       height="calc(100vh - 125px)"
       :data="groups"
       :row-style="tableRowStyle"
@@ -205,7 +206,7 @@
       <el-table-column
         label="Zonas"
         align="center"
-        prop="id"
+        prop="geofences"
       >
         <template slot-scope="scope">
           {{ scope.row.geofences.geofences.length }}<i class="fas fa-draw-polygon" style="padding-left: 5px; padding-right: 25px"></i>
@@ -217,7 +218,7 @@
         <template slot="header">
           <el-tooltip content="Adicionar Grupo" placement="top">
             <el-button
-              class="formButton"
+              class="tableButton"
               size="small"
               @click="handleAddGroup"
             ><i class="fas fa-plus"></i></el-button>
@@ -227,7 +228,7 @@
           <el-tooltip :content="$t('settings.group_delete')" placement="top">
             <el-button
               v-if="!isMobile"
-              class="formButton"
+              class="tableButton"
               size="small"
               type="danger"
               @click="handleDelete(scope.row)"
@@ -237,7 +238,7 @@
             <el-button
               v-if="!isMobile"
               size="small"
-              class="formButton"
+              class="tableButton"
               @click="handleEdit(scope.row)"
             ><i class="fas fa-edit"></i></el-button>
           </el-tooltip>
@@ -252,11 +253,14 @@ import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 
 export default {
   name: 'Groups',
   data() {
     return {
+
+      alertTableKey: 0,
       isOpenGroupForm: false,
       isNewGroup: true,
       selectedGroup: null,
@@ -269,16 +273,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['dataLoaded', 'geofences', 'drivers']),
+    ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'groups']),
     isMobile() { return lnglat.isMobile() },
     devices: function() {
       return vm.$data.devices
-    },
-    groups: function() {
-      if (vm.$store.state.user.groups) {
-        return vm.$store.state.user.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
-      }
-      return []
     },
     areaGeofences: function() {
       return this.geofences.filter(g => g.area.startsWith('POLYGON'))
@@ -341,21 +339,153 @@ export default {
         }
         traccar.newGroup(newGroup, this.groupCreated)
       } else {
-        this.$log.debug(this.selectedGroup)
+        const self = this
 
-        const group = this.selectedGroup
-        group.name = this.groupName
-
-        const g = {
-          id: group.id,
+        const groupData = {
+          id: this.selectedGroup.id,
           attributes: {},
-          groupId: group.groupId,
-          name: group.name
+          groupId: this.selectedGroup.groupId,
+          name: this.groupName
         }
 
-        traccar.editGroup(group.id, g, this.groupUpdated)
+        this.updateGroupPermissions()
+
+        Vue.$log.debug(this.groups)
+        this.groups.forEach(g => {
+          if (g.id === self.selectedGroup.id) {
+            g.drivers = self.selectedDrivers
+            g.geofences = {
+              geofences: self.selectedGeofences,
+              pois: self.selectedPOIs,
+              linegeofences: self.selectedLineGeofences
+            }
+          }
+        })
+
+        Vue.$log.debug(this.groups)
+
+        // Change table key to force table refresh
+        this.alertTableKey = this.alertTableKey + 1
+
+        traccar.editGroup(this.selectedGroup.id, groupData, this.groupUpdated)
       }
       this.isOpenGroupForm = false
+    },
+    updateGroupPermissions() {
+      const self = this
+      const originalDevices = this.devices.filter(d => d.groupId === self.selectedGroup.id).map(d => d.id)
+
+      const devicesToRemove = originalDevices.filter(x => !self.selectedDevices.includes(x))
+      const devicesToAdd = this.selectedDevices.filter(x => !originalDevices.includes(x))
+
+      devicesToRemove.forEach(d_Id => {
+        const vehicle = self.devices.filter(d => d.id === d_Id)
+        vehicle.groupId = 0
+
+        const v = {
+          id: vehicle.id,
+          name: vehicle.name,
+          groupId: vehicle.groupId,
+          attributes: {
+            speedLimit: vehicle.attributes.speedLimit,
+            license_plate: vehicle.attributes.license_plate,
+            'decoder.timezone': vehicle.attributes['decoder.timezone'],
+            has_immobilization: vehicle.attributes.has_immobilization
+          },
+          uniqueId: vehicle.uniqueId,
+          phone: vehicle.phone,
+          model: vehicle.model,
+          contact: vehicle.contact,
+          category: vehicle.category
+        }
+
+        traccar.updateDevice(vehicle.id, v, function() { })
+      })
+
+      devicesToAdd.forEach(d_Id => {
+        const vehicle = self.devices.find(d => d.id === d_Id)
+        vehicle.groupId = self.selectedGroup.id
+
+        const v = {
+          id: vehicle.id,
+          name: vehicle.name,
+          groupId: vehicle.groupId,
+          attributes: {
+            speedLimit: vehicle.attributes.speedLimit,
+            license_plate: vehicle.attributes.license_plate,
+            'decoder.timezone': vehicle.attributes['decoder.timezone'],
+            has_immobilization: vehicle.attributes.has_immobilization
+          },
+          uniqueId: vehicle.uniqueId,
+          phone: vehicle.phone,
+          model: vehicle.model,
+          contact: vehicle.contact,
+          category: vehicle.category
+        }
+        Vue.$log.debug(v)
+        traccar.updateDevice(vehicle.id, v, function() { })
+      })
+
+      const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))
+      const driversToAdd = this.selectedDrivers.filter(x => !self.selectedGroup.drivers.includes(x))
+
+      const driverPermissionsToRemove = driversToRemove.map(d => {
+        const p = {
+          groupId: self.selectedGroup.id,
+          driverId: d
+        }
+        return p
+      })
+      const driverPermissionsToAdd = driversToAdd.map(d => {
+        const p = {
+          groupId: self.selectedGroup.id,
+          driverId: d
+        }
+        return p
+      })
+
+      traccar.deleteAllPermissions(driverPermissionsToRemove
+        , function() {}
+        , (e) => {
+          Vue.$log.error(e)
+        })
+      traccar.addAllPermissions(driverPermissionsToAdd
+        , function() {}
+        , (e) => {
+          Vue.$log.error(e)
+        })
+
+      const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
+      const allOriginalGeofences = self.selectedGroup.geofences.geofences.concat(self.selectedGroup.geofences.pois.concat(self.selectedGroup.geofences.linegeofences))
+
+      const geofencesToRemove = allOriginalGeofences.filter(x => !allGeofences.includes(x))
+      const geofencesToAdd = allGeofences.filter(x => !allOriginalGeofences.includes(x))
+
+      const geofencePermissionsToRemove = geofencesToRemove.map(g => {
+        const p = {
+          groupId: self.selectedGroup.id,
+          geofenceId: g
+        }
+        return p
+      })
+      const geofencePermissionsToAdd = geofencesToAdd.map(g => {
+        const p = {
+          groupId: self.selectedGroup.id,
+          geofenceId: g
+        }
+        return p
+      })
+
+      traccar.deleteAllPermissions(geofencePermissionsToRemove
+        , function() {}
+        , (e) => {
+          Vue.$log.error(e)
+        })
+      traccar.addAllPermissions(geofencePermissionsToAdd
+        , function() {}
+        , (e) => {
+          Vue.$log.error(e)
+        })
     },
     groupCreated: function(newGroup) {
       this.$message({
@@ -380,7 +510,7 @@ export default {
       this.isNewGroup = false
       this.selectedGroup = row
       this.selectedDevices = this.devices.filter(d => d.groupId === row.id).map(d => d.id)
-      this.selectedDrivers = row.drives
+      this.selectedDrivers = row.drivers
       this.selectedGeofences = row.geofences.geofences
       this.selectedPOIs = row.geofences.pois
       this.selectedLineGeofences = row.geofences.linegeofences
@@ -429,11 +559,15 @@ export default {
 <style scoped>
   .formButton {
     float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+  .tableButton {
+    float: right;
     margin-right: 10px;
   }
   .modal {
     width: 500px;
-    height: 500px;
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;

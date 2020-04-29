@@ -432,9 +432,6 @@ export default {
           traccar.addPermission(permission, function() { })
         })
 
-        self.$log.debug(device)
-        self.$log.debug(self.selectedAlert)
-
         const deviceGeofences = self.geofences.filter(g => allGeofences.includes(g.id))
 
         self.alerts.forEach(a => {
