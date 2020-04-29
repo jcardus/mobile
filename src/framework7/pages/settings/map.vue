@@ -2,8 +2,14 @@
   <f7-page name="MapSettings">
     <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
     <f7-block-title style="font-size: 20px"><i class="fas fa-map"></i> {{ $t('settings.map') }}</f7-block-title>
+    <f7-block-title style="font-size: 15px">{{ $t('settings.vehicles') }}</f7-block-title>
+    <f7-list no-hairlines-md>
+      <f7-list-item>
+        {{ $t('settings.showLabels') }}<f7-toggle :checked="showLabels" @change="saveShowLabels($event.target.checked)"></f7-toggle>
+      </f7-list-item>
+    </f7-list>
     <f7-block-title style="font-size: 15px">{{ $t('settings.route_history') }}</f7-block-title>
-    <f7-list title="Histórico de Rota" no-hairlines-md>
+    <f7-list no-hairlines-md>
       <f7-list-item>
         {{ $t('settings.route_match') }}<f7-toggle :checked="matchRoutes" @change="saveMatchRoutes($event.target.checked)"></f7-toggle>
       </f7-list-item>
@@ -34,6 +40,7 @@ export default {
   name: 'MapSettings',
   data: function() {
     return {
+      showLabels: false,
       matchRoutes: false,
       speedAlerts: false,
       useRoadLimit: 'road',
@@ -41,6 +48,7 @@ export default {
     }
   },
   mounted() {
+    this.showLabels = this.$store.state.settings.showLabels
     this.matchRoutes = this.$store.state.settings.matchRoutes
     this.speedAlerts = this.$store.state.settings.viewSpeedAlerts
     this.useRoadLimit = this.$store.state.settings.maxSpeedType
@@ -49,30 +57,28 @@ export default {
   methods: {
     saveSpeedAlerts(value) {
       this.speedAlerts = value
-      this.$store.dispatch('settings/changeSetting', {
-        key: 'viewSpeedAlerts',
-        value: value
-      })
+      this.changeSettings('viewSpeedAlerts', value)
+    },
+    saveShowLabels(value) {
+      this.showLabels = value
+      this.$store.dispatch('settings/setShowLabels', value)
     },
     saveMatchRoutes(value) {
       this.matchRoutes = value
-      this.$store.dispatch('settings/changeSetting', {
-        key: 'matchRoutes',
-        value: value
-      })
+      this.changeSettings('matchRoutes', value)
     },
-    changeMaxSpeedType(data) {
-      this.useRoadLimit = data
-      this.$store.dispatch('settings/changeSetting', {
-        key: 'maxSpeedType',
-        value: data
-      })
+    changeMaxSpeedType(value) {
+      this.useRoadLimit = value
+      this.changeSettings('maxSpeedType', value)
     },
     changeSpeedThreshold(value) {
       this.speedThreshold = value
+      this.changeSettings('speedThreshold', value)
+    },
+    changeSettings(key, value) {
       this.$store.dispatch('settings/changeSetting', {
-        key: 'speedThreshold',
-        value: this.speedThreshold
+        key: key,
+        value: value
       })
     }
   }

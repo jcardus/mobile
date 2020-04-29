@@ -6,5 +6,6 @@ module.exports = {
    */
   matchRoutes: false,
   viewSpeedAlerts: true,
-  maxSpeedType: 'road'
+  maxSpeedType: 'road',
+  showLabels: false
 }
