@@ -6,7 +6,7 @@
       <side-bar />
       <app-main class="divMain" />
     </div>
-    <chat v-if="settings.driverChatEnabled"></chat>
+    <chat v-if="driverChatEnabled"></chat>
   </div>
 </template>
 
@@ -20,6 +20,7 @@ import * as notifications from '../utils/notifications'
 import { mapGetters } from 'vuex'
 import { serverBus } from '../main'
 import Chat from '../components/ChatWindow'
+import settings from '../settings'
 
 export default {
   name: 'Layout',
@@ -42,6 +43,9 @@ export default {
     ]),
     devices() {
       return this.$root.$data.devices
+    },
+    driverChatEnabled() {
+      return settings.driverChatEnabled
     }
   },
   beforeDestroy() {
