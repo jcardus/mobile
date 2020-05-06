@@ -20,17 +20,17 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { serverBus, settings, vm } from '../../main'
+import * as lnglat from '../../utils/lnglat'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
 import VueCookies from 'vue-cookies'
 import { traccar } from '../../api/traccar-api'
 import VehicleDetail from './VehicleDetail'
-import * as lnglat from '../../utils/lnglat'
 import along from '@turf/along'
 import bbox from '@turf/bbox'
 import bearing from '@turf/bearing'
 import HistoryPanel from './HistoryPanel'
-import i18n from '../../lang'
+import i18n, { getLanguageI18n } from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
@@ -40,7 +40,6 @@ import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
-import { getLanguageI18n } from '../../lang'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -187,15 +186,20 @@ export default {
     mapboxgl.accessToken = this.accessToken
     this.$root.$static.map = new mapboxgl.Map({
       container: 'map',
-      style: this.$root.$data.mapStyle
+      style: this.$root.$data.mapStyle,
+      attributionControl: false
     })
     this.setZoomAndCenter()
     this.subscribeEvents()
   },
   timers: {
-    ping: { time: 30000, autostart: true, repeat: true }
+    ping: { time: 30000, autostart: true, repeat: true },
+    setTime: { time: 2000, autostart: true, repeat: true }
   },
   methods: {
+    setTime() {
+      this.$store.dispatch('setTime')
+    },
     ping() {
       if (this.userLoggedIn) {
         traccar.ping(() => {}, () => {
@@ -452,19 +456,18 @@ export default {
         },
         touchEnabled: false
       })
-      map.addControl(this.$static.draw, 'bottom-right')
+      map.addControl(this.$static.draw, 'bottom-left')
       map.addControl(new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
         },
-        trackUserLocation: true
-      }), 'bottom-right')
-      map.addControl(new MapboxTraffic(), 'bottom-right')
-      map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-right')
+        trackUserLocation: true }), 'bottom-left')
+      map.addControl(new MapboxTraffic(), 'bottom-left')
+      map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-left')
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n })
       _vm.$mount('#style-switcher-div')
-      map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right')
+      map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
     onMoveEnd: function() {
       if (!vm.$data.isPlaying) {
@@ -486,14 +489,14 @@ export default {
       this.$static.map.on('moveend', this.onMoveEnd)
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
-      this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
+      this.$static.map.on('touchstart', 'pois_marker', this.onClickTouchPois)
       this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
-      this.$static.map.on('click', 'pois', this.onClickTouchPois)
-      this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
+      this.$static.map.on('click', 'pois_marker', this.onClickTouchPois)
+      this.$static.map.on('mouseenter', 'pois_marker', this.mouseEnter)
       this.$static.map.on('mouseenter', consts.vehiclesLayer, this.mouseEnter)
       this.$static.map.on('mouseleave', consts.vehiclesLayer, this.mouseLeave)
-      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
+      this.$static.map.on('mouseleave', 'pois_marker', this.mouseLeave)
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
@@ -517,13 +520,17 @@ export default {
       this.$static.map.off('load', this.onMapLoad)
       this.$static.map.off('touchstart', consts.vehiclesLayer, this.onTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
+      this.$static.map.off('touchstart', 'pois_marker', this.onClickTouchPois)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
       this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
+      this.$static.map.off('click', 'pois_marker', this.onClickTouchPois)
       this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
       this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
+      this.$static.map.off('mouseenter', 'pois_marker', this.mouseEnter)
+      this.$static.map.off('mouseleave', 'pois_marker', this.mouseLeave)
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)

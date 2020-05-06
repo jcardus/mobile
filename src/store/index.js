@@ -37,7 +37,8 @@ const store = new Vuex.Store({
       message: '',
       reconnectError: false
     },
-    lastUpdate: null
+    lastUpdate: null,
+    currentTime: new Date()
   },
   actions: {
     incUnreadItems({ commit }) {
@@ -45,9 +46,15 @@ const store = new Vuex.Store({
     },
     resetUnreadItems({ commit }) {
       commit('RESET_UNREAD_ITEMS')
+    },
+    setTime({ commit }) {
+      commit('SET_TIME')
     }
   },
   mutations: {
+    SET_TIME(state) {
+      state.currentTime = new Date()
+    },
     RESET_UNREAD_ITEMS(state) {
       state.unreadItems = 0
     },
@@ -85,8 +92,7 @@ const store = new Vuex.Store({
     SOCKET_RECONNECT(state, count) {
       if (count === 4) {
         Vue.$log.warn('count = 4, logging out')
-        TrackJS.track('LOGOUT')
-        location.reload()
+        serverBus.$emit('forceLogout')
       }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
       TrackJS.track('SOCKET_RECONNECT')

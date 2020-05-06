@@ -33,6 +33,7 @@
         <span slot="label">
           <i class="far fa-map"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.map') }}</span>
         </span>
+        <h3>{{ $t('settings.vehicles') }}</h3>
         <div>
           <el-switch
             v-model="showLabels"
@@ -82,7 +83,7 @@ import { vm } from '../../main'
 import Alerts from './alerts/Alerts'
 import Drivers from './drivers/Drivers'
 import Vehicles from './vehicles/Vehicles'
-import Groups from './vehicles/Groups'
+import Groups from './groups/Groups'
 import * as lnglat from '../../utils/lnglat'
 
 export default {

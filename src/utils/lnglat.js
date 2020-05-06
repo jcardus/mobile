@@ -307,7 +307,7 @@ export function addVehiclesLayer(layer, source) {
       source: source,
       filter: ['!=', 'cluster', true],
       layout: {
-        'text-size': 13,
+        'text-size': 11,
         'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
         'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
         'text-justify': 'auto',

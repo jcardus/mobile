@@ -185,7 +185,7 @@ export default {
             })
             .catch(exception => {
               Vue.$log.error(exception)
-              var message = this.$t('login.login_user_password_invalid')
+              let message = this.$t('login.login_user_password_invalid')
               if (exception.response.status === 400) {
                 message = this.$t('login.login_user_disabled')
               }
