@@ -7,5 +7,6 @@ module.exports = {
   matchRoutes: false,
   viewSpeedAlerts: true,
   maxSpeedType: 'road',
-  showLabels: false
+  showLabels: false,
+  driverChatEnabled: false
 }

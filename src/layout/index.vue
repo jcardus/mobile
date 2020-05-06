@@ -6,7 +6,7 @@
       <side-bar />
       <app-main class="divMain" />
     </div>
-    <chat></chat>
+    <chat v-if="settings.driverChatEnabled"></chat>
   </div>
 </template>
 
