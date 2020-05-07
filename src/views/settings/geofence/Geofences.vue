@@ -189,9 +189,10 @@ export default {
       var feature = lnglat.findFeatureById(row.id)
       if (this.getType(row) === 'poi') {
         feature.properties.icon = row.attributes.icon
-        feature.properties.color = row.attributes.color
-        feature.properties.title = row.name
       }
+      feature.properties.color = row.attributes.color
+      feature.properties.title = row.name
+
       lnglat.refreshGeofences()
       this.$message({
         type: 'success',
