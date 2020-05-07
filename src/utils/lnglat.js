@@ -166,29 +166,26 @@ function fetchGeofences(map) {
       },
       filter: ['==', '$type', 'LineString']
     })
-    getMarkerType().map(
-      type => {
-        map.addLayer({
-          id: 'pois_' + type,
-          type: 'symbol',
-          source: 'geofences',
-          layout: {
-            'text-field': '{title}',
-            visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
-            'text-size': 11,
-            'text-justify': 'auto',
-            'text-offset': [0, 0.8],
-            'icon-image': type + '-blue',
-            'icon-offset': {
-              stops: [
-                [13, [0, -10]]
-              ]
-            }
-          },
-          filter: ['all', ['==', '$type', 'Point'], ['==', 'icon', type]]
-        })
-      }
-    )
+
+    map.addLayer({
+      id: 'pois',
+      type: 'symbol',
+      source: 'geofences',
+      layout: {
+        'text-field': '{title}',
+        visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
+        'text-size': 11,
+        'text-justify': 'auto',
+        'text-offset': [0, 0.8],
+        'icon-image': ['concat', ['get', 'icon'], '-blue'],
+        'icon-offset': {
+          stops: [
+            [13, [0, -10]]
+          ]
+        }
+      },
+      filter: ['all', ['==', '$type', 'Point']]
+    })
   }
 }
 function createDonutChart(props) {
@@ -441,8 +438,8 @@ export function hideLayers(hide) {
 }
 export function getMarkerType() {
   return ['airport', 'aquarium', 'attraction', 'barrier', 'building-alt1',
-    'building', 'car-rental', 'car-repair', 'castle', 'cemetery', 'charging-station',
-    'city', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
+    'building', 'car-rental', 'car-repair', 'castle', 'cemetery', 'charging-station', 'circle',
+    'city', 'embassy', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
     'parking', 'parking-garage', 'ranger-station', 'recycling', 'residential-community',
     'star', 'town', 'town-hall', 'village', 'warehouse', 'waste-basket', 'windmill']
 }
