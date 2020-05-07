@@ -258,7 +258,7 @@ export default {
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
-    border-radius: 2px;
+    border-radius: 10px;
     box-shadow: 0 2px 8px 3px;
     transition: all 0.2s ease-in;
     font-family: Helvetica, Arial, sans-serif;
