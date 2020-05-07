@@ -846,7 +846,8 @@ export default {
           properties: {
             id: item.id,
             title: item.name,
-            icon: ''
+            icon: '',
+            color: item.attributes.color ? item.attributes.color : '#3232b4'
           }
         }
         const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
@@ -865,7 +866,8 @@ export default {
           properties: {
             id: item.id,
             title: item.name,
-            icon: ''
+            icon: '',
+            color: item.attributes.color ? item.attributes.color : '#3232b4'
           }
         }
         const str = wkt.substring('LINESTRING('.length + 1, wkt.length - 1)
@@ -884,7 +886,8 @@ export default {
           properties: {
             id: item.id,
             title: item.name,
-            icon: item.attributes.icon ? item.attributes.icon : 'marker'
+            icon: item.attributes.icon ? item.attributes.icon : 'marker',
+            color: item.attributes.color ? item.attributes.color : '#3232b4'
           }
         }
         const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))

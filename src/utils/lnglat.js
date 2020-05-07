@@ -122,7 +122,7 @@ function fetchGeofences(map) {
       type: 'fill',
       source: 'geofences',
       paint: {
-        'fill-color': '#B42222',
+        'fill-color': ['get', 'color'],
         'fill-opacity': 0.4
       },
       layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
@@ -144,7 +144,7 @@ function fetchGeofences(map) {
       type: 'line',
       source: 'geofences',
       paint: {
-        'line-color': '#B42222',
+        'line-color': ['get', 'color'],
         'line-width': 4,
         'line-opacity': 0.4
       },
