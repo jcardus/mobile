@@ -1,4 +1,5 @@
 import { vm } from '../../main'
+import { getMarkerType } from '../../utils/lnglat'
 
 const state = {
   showGeofences: false,
@@ -62,8 +63,12 @@ const actions = {
   },
   togglePOIs({ commit, state }) {
     commit('TOGGLE_POIS')
-    vm.$static.map.setLayoutProperty('pois_marker', 'visibility',
-      state.showPOIs ? 'visible' : 'none')
+    getMarkerType().map(
+      type => {
+        vm.$static.map.setLayoutProperty('pois_' + type, 'visibility',
+          state.showPOIs ? 'visible' : 'none')
+      }
+    )
   }
 }
 

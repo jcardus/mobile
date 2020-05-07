@@ -48,7 +48,8 @@
       >
         <el-table-column label="" width="40">
           <template slot-scope="scope">
-            <i :class="geofenceImageType(scope.row)"></i>
+            <i v-if="!(getType(scope.row)==='poi')" :class="geofenceImageType(scope.row)"></i>
+            <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.png'">
           </template>
         </el-table-column>
         <el-table-column
@@ -164,7 +165,7 @@ export default {
       vm.$store.dispatch('map/toggleLineGeofences')
     },
     geofenceImageType(row) {
-      return row.area.startsWith('CIRCLE') ? 'fas fa-map-marker-alt' : (row.area.startsWith('LINE') ? 'fas fa-wave-square' : 'fas fa-draw-polygon')
+      return row.area.startsWith('CIRCLE') ? 'fas fa-map-marker-alt' : (row.area.startsWith('LINE') ? 'iconGeofence fas fa-wave-square' : 'iconGeofence fas fa-draw-polygon')
     },
     handleFilterType: function(type) {
       if (type === 'POI') {
@@ -250,5 +251,8 @@ export default {
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
     border-radius: 5px;
+  }
+  .iconGeofence {
+    padding-left:6px
   }
 </style>

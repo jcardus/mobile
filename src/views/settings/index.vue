@@ -25,6 +25,12 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
+          <i class="fas fa-map-marked"></i><span v-if="!isMobile" style="margin-left: 10px">Zonas</span>
+        </span>
+        <geofences></geofences>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
           <i class="fas fa-bell"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.alerts') }}</span>
         </span>
         <alerts></alerts>
@@ -82,13 +88,14 @@
 import { vm } from '../../main'
 import Alerts from './alerts/Alerts'
 import Drivers from './drivers/Drivers'
+import Geofences from './geofence/Geofences'
 import Vehicles from './vehicles/Vehicles'
 import Groups from './groups/Groups'
 import * as lnglat from '../../utils/lnglat'
 
 export default {
   name: 'Settings',
-  components: { Alerts, Vehicles, Groups, Drivers },
+  components: { Alerts, Vehicles, Groups, Drivers, Geofences },
   data() {
     return {
       radioValue: 'road',
