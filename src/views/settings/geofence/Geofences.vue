@@ -4,32 +4,39 @@
       <div v-if="isOpenGeofenceForm">
         <div class="overlay">
           <div class="modal">
-            <h2>Editar Zona</h2>
+            <h2>{{ $t('settings.geofence_edit_title') }}</h2>
             <el-form>
               <div class="form-item-block">
                 <div class="form-item-row">
-                  <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-left" label="Icon">
-                    <img style="vertical-align:middle" :src="'img/icons/pois/'+geofenceIcon+'-blue.png'">
+                  <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-left" :label="$t('settings.geofence_form_icon')">
+                    <img style="vertical-align:middle" :src="'img/icons/pois/'+geofenceIcon+'-blue.svg'">
                   </el-form-item>
                   <el-form-item class="form-item-block-right" :label="$t('settings.group_form_name')">
                     <el-input v-model="geofenceName" />
                   </el-form-item>
                 </div>
               </div>
-              <el-form-item v-if="getType(selectedGeofence)==='poi'" label="Opções">
-                <el-row>
-                  <el-col v-for="type in markerTypes" :key="type" :span="3">
-                    <el-tooltip :content="$t('settings.geofence_icon_'+type.replace('-', '_'))" placement="top">
-                      <el-button
-                        size="small"
-                        style="border-style: none"
-                        @click="handleChangeIcon(type)"
-                      >
-                        <img :src="'img/icons/pois/'+type+'-blue.png'"></el-button>
-                    </el-tooltip>
-                  </el-col>
-                </el-row>
-              </el-form-item>
+              <div class="form-item-block">
+                <div class="form-item-row">
+                  <el-form-item class="form-item-block-left" :label="$t('settings.geofence_form_color')">
+                    <el-color-picker v-model="geofenceColor" :value="geofenceColor"></el-color-picker>
+                  </el-form-item>
+                  <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-right" :label="$t('settings.geofence_form_options')">
+                    <el-row>
+                      <el-col v-for="type in markerTypes" :key="type" :span="3">
+                        <el-tooltip :content="$t('settings.geofence_icon_'+type.replace('-', '_'))" placement="top">
+                          <el-button
+                            size="small"
+                            style="border-style: none"
+                            @click="handleChangeIcon(type)"
+                          >
+                            <img :src="getImageSrc(type)"></el-button>
+                        </el-tooltip>
+                      </el-col>
+                    </el-row>
+                  </el-form-item>
+                </div>
+              </div>
             </el-form>
             <el-button
               type="info"
@@ -93,6 +100,7 @@ import { mapGetters } from 'vuex'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import { vm } from '../../../main'
+import image from '../../../icons/pois/airport-blue.svg'
 
 export default {
   name: 'Geofences',
@@ -102,7 +110,9 @@ export default {
       isNewGeofence: true,
       selectedGeofence: null,
       geofenceName: '',
-      geofenceIcon: ''
+      geofenceColor: '',
+      geofenceIcon: '',
+      image: image
     }
   },
   computed: {
@@ -121,6 +131,9 @@ export default {
     }
   },
   methods: {
+    getImageSrc(imgType) {
+      return './img/icons/pois/' + imgType + '-blue.svg'
+    },
     handleDelete(row) {
       this.$confirm(this.$t('geofence.' + this.getType(row) + '_delete_info') + row.name, this.$t('geofence.' + this.getType(row) + '_delete_title'), {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
@@ -146,6 +159,7 @@ export default {
       this.selectedGeofence = row
       this.geofenceName = row.name
       this.geofenceIcon = row.attributes.icon ? row.attributes.icon : 'marker'
+      this.geofenceColor = row.attributes.color ? row.attributes.color : '#3232b4'
       this.isOpenGeofenceForm = !this.isOpenGeofenceForm
     },
     handleChangeIcon(value) {
@@ -160,7 +174,12 @@ export default {
       geofence.name = this.geofenceName
       if (this.getType(this.selectedGeofence) === 'poi') {
         geofence.attributes = {
-          icon: this.geofenceIcon
+          icon: this.geofenceIcon,
+          color: this.geofenceColor
+        }
+      } else {
+        geofence.attributes = {
+          color: this.geofenceColor
         }
       }
       traccar.editGeofence(this.selectedGeofence.id, geofence, this.geofenceEdited)
@@ -170,6 +189,7 @@ export default {
       var feature = lnglat.findFeatureById(row.id)
       if (this.getType(row) === 'poi') {
         feature.properties.icon = row.attributes.icon
+        feature.properties.color = row.attributes.color
         feature.properties.title = row.name
       }
       lnglat.refreshGeofences()
@@ -193,6 +213,7 @@ export default {
     clearFormData() {
       this.geofenceName = ''
       this.geofenceIcon = ''
+      this.geofenceColor = ''
     }
   }
 }
@@ -261,10 +282,14 @@ export default {
     display: table-cell;
     width: 50px;
     padding-right: 10px;
+
+    padding-bottom: 20px;
   }
   .form-item-block-right{
     width: 400px;
     display: table-cell;
+
+    padding-bottom: 20px;
   }
 
   .iconGeofence {

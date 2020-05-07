@@ -166,29 +166,26 @@ function fetchGeofences(map) {
       },
       filter: ['==', '$type', 'LineString']
     })
-    getMarkerType().map(
-      type => {
-        map.addLayer({
-          id: 'pois_' + type,
-          type: 'symbol',
-          source: 'geofences',
-          layout: {
-            'text-field': '{title}',
-            visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
-            'text-size': 11,
-            'text-justify': 'auto',
-            'text-offset': [0, 0.8],
-            'icon-image': type + '-blue',
-            'icon-offset': {
-              stops: [
-                [13, [0, -10]]
-              ]
-            }
-          },
-          filter: ['all', ['==', '$type', 'Point'], ['==', 'icon', type]]
-        })
-      }
-    )
+
+    map.addLayer({
+      id: 'pois',
+      type: 'symbol',
+      source: 'geofences',
+      layout: {
+        'text-field': '{title}',
+        visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
+        'text-size': 11,
+        'text-justify': 'auto',
+        'text-offset': [0, 0.8],
+        'icon-image': ['concat', ['get', 'icon'], '-blue'],
+        'icon-offset': {
+          stops: [
+            [13, [0, -10]]
+          ]
+        }
+      },
+      filter: ['all', ['==', '$type', 'Point']]
+    })
   }
 }
 function createDonutChart(props) {
