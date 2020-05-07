@@ -48,6 +48,8 @@ const actions = {
   },
   toggleGeofences({ commit, state }) {
     commit('TOGGLE_GEOFENCES')
+    vm.$static.map.setLayoutProperty('geofences-fill', 'visibility',
+      state.showGeofences ? 'visible' : 'none')
     vm.$static.map.setLayoutProperty('geofences', 'visibility',
       state.showGeofences ? 'visible' : 'none')
     vm.$static.map.setLayoutProperty('geofences-labels', 'visibility',
