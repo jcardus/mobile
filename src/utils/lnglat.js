@@ -133,6 +133,7 @@ function fetchGeofences(map) {
       type: 'symbol',
       source: 'geofences',
       layout: {
+        'text-size': 11,
         'text-field': '{title}',
         visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
       },
@@ -159,30 +160,35 @@ function fetchGeofences(map) {
       type: 'symbol',
       source: 'geofences',
       layout: {
+        'text-size': 11,
         'text-field': '{title}',
         visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
       },
       filter: ['==', '$type', 'LineString']
     })
-    map.addLayer({
-      id: 'pois_marker',
-      type: 'symbol',
-      source: 'geofences',
-      layout: {
-        'text-field': '{title}',
-        visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
-        'text-size': 12,
-        'text-justify': 'auto',
-        'text-offset': [0, 0.8],
-        'icon-image': 'marker',
-        'icon-offset': {
-          stops: [
-            [13, [0, -10]]
-          ]
-        }
-      },
-      filter: ['all', ['==', '$type', 'Point'], ['==', 'icon', 'marker']]
-    })
+    getMarkerType().map(
+      type => {
+        map.addLayer({
+          id: 'pois_' + type,
+          type: 'symbol',
+          source: 'geofences',
+          layout: {
+            'text-field': '{title}',
+            visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
+            'text-size': 11,
+            'text-justify': 'auto',
+            'text-offset': [0, 0.8],
+            'icon-image': type + '-blue',
+            'icon-offset': {
+              stops: [
+                [13, [0, -10]]
+              ]
+            }
+          },
+          filter: ['all', ['==', '$type', 'Point'], ['==', 'icon', type]]
+        })
+      }
+    )
   }
 }
 function createDonutChart(props) {
@@ -411,7 +417,9 @@ export function contains(lngLatBounds, position, padding = 0) {
   )
 }
 export function refreshGeofences() {
-  if (vm.$static.map.getSource('geofences')) {
+  if (vm.$static.map && vm.$static.map.getSource('geofences')) {
+    Vue.$log.debug(vm.$static.geofencesSource)
+
     vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
   }
 }
@@ -430,6 +438,13 @@ export function hideLayers(hide) {
   hideLayer(consts.vehiclesLayer + 'labels', hide)
   if (hide) { removeMarkers() }
   refreshGeofences()
+}
+export function getMarkerType() {
+  return ['airport', 'aquarium', 'attraction', 'barrier', 'building-alt1',
+    'building', 'car-rental', 'car-repair', 'castle', 'cemetery', 'charging-station',
+    'city', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
+    'parking', 'parking-garage', 'ranger-station', 'recycling', 'residential-community',
+    'star', 'town', 'town-hall', 'village', 'warehouse', 'waste-basket', 'windmill']
 }
 function removeMarkers() {
   for (const id in markersOnScreen) {
