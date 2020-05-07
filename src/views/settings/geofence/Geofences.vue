@@ -16,208 +16,18 @@
                   </el-form-item>
                 </div>
               </div>
-              <el-form-item v-if="getType(selectedGeofence)==='poi'" label="Opções" align="center">
+              <el-form-item v-if="getType(selectedGeofence)==='poi'" label="Opções">
                 <el-row>
-                  <el-col :span="3">
-                    <el-button
-                      size="small"
-                      style="border-style: none"
-                      @click="handleChangeIcon('airport')"
-                    >
-                      <img src="img/icons/pois/airport-blue.png"></el-button>
+                  <el-col v-for="type in markerTypes" :key="type" :span="3">
+                    <el-tooltip :content="$t('settings.geofence_icon_'+type.replace('-', '_'))" placement="top">
+                      <el-button
+                        size="small"
+                        style="border-style: none"
+                        @click="handleChangeIcon(type)"
+                      >
+                        <img :src="'img/icons/pois/'+type+'-blue.png'"></el-button>
+                    </el-tooltip>
                   </el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('aquarium')"
-                  >
-                    <img src="img/icons/pois/aquarium-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('attraction')"
-                  >
-                    <img src="img/icons/pois/attraction-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('barrier')"
-                  >
-                    <img src="img/icons/pois/barrier-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('building-alt1')"
-                  >
-                    <img src="img/icons/pois/building-alt1-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('building')"
-                  >
-                    <img src="img/icons/pois/building-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('car-rental')"
-                  >
-                    <img src="img/icons/pois/car-rental-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('car-repair')"
-                  >
-                    <img src="img/icons/pois/car-repair-blue.png" rel="preload"></el-button></el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('castle')"
-                  >
-                    <img src="img/icons/pois/castle-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('cemetery')"
-                  >
-                    <img src="img/icons/pois/cemetery-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('charging-station')"
-                  >
-                    <img src="img/icons/pois/charging-station-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('city')"
-                  >
-                    <img src="img/icons/pois/city-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('fuel')"
-                  >
-                    <img src="img/icons/pois/fuel-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('home')"
-                  >
-                    <img src="img/icons/pois/home-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('industry')"
-                  >
-                    <img src="img/icons/pois/industry-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('information')"
-                  >
-                    <img src="img/icons/pois/information-blue.png"></el-button></el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('marker')"
-                  >
-                    <img src="img/icons/pois/marker-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('marker-stroked')"
-                  >
-                    <img src="img/icons/pois/marker-stroked-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('parking')"
-                  >
-                    <img src="img/icons/pois/parking-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('parking-garage')"
-                  >
-                    <img src="img/icons/pois/parking-garage-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('/ranger-station')"
-                  >
-                    <img src="img/icons/pois/ranger-station-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('recycling')"
-                  >
-                    <img src="img/icons/pois/recycling-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('residential-community')"
-                  >
-                    <img src="img/icons/pois/residential-community-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('star')"
-                  >
-                    <img src="img/icons/pois/star-blue.png"></el-button></el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('town')"
-                  >
-                    <img src="img/icons/pois/town-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('town-hall')"
-                  >
-                    <img src="img/icons/pois/town-hall-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('village')"
-                  >
-                    <img src="img/icons/pois/village-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('warehouse')"
-                  >
-                    <img src="img/icons/pois/warehouse-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('waste-basket')"
-                  >
-                    <img src="img/icons/pois/waste-basket-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('windmill')"
-                  >
-                    <img src="img/icons/pois/windmill-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('waste-basket')"
-                  >
-                    <img src="img/icons/pois/waste-basket-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('windmill')"
-                  >
-                    <img src="img/icons/pois/windmill-blue.png"></el-button></el-col>
                 </el-row>
               </el-form-item>
             </el-form>
@@ -305,6 +115,9 @@ export default {
     },
     lineGeofences: function() {
       return this.geofences.filter(g => g.area.startsWith('LINESTRING'))
+    },
+    markerTypes: function() {
+      return lnglat.getMarkerType()
     }
   },
   methods: {

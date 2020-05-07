@@ -441,8 +441,8 @@ export function hideLayers(hide) {
 }
 export function getMarkerType() {
   return ['airport', 'aquarium', 'attraction', 'barrier', 'building-alt1',
-    'building', 'car-rental', 'car-repair', 'castle', 'cemetery', 'charging-station',
-    'city', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
+    'building', 'car-rental', 'car-repair', 'castle', 'cemetery', 'charging-station', 'circle',
+    'city', 'embassy', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
     'parking', 'parking-garage', 'ranger-station', 'recycling', 'residential-community',
     'star', 'town', 'town-hall', 'village', 'warehouse', 'waste-basket', 'windmill']
 }
