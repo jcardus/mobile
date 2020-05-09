@@ -2,7 +2,7 @@
   <f7-page name="settings">
     <f7-navbar :title="$t('route.settings')"></f7-navbar>
     <f7-block inset>
-      <f7-row tag="p">
+      <f7-row>
         <f7-col>
           <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/vehicles">
             <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-car-alt"></i></div>
@@ -15,7 +15,7 @@
             <div style="font-size:10px; height: 10px">{{ $t('settings.zone') }}</div></f7-button>
         </f7-col>
       </f7-row>
-      <f7-row tag="p">
+      <f7-row>
         <f7-col>
           <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/groups">
             <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-grip-horizontal"></i></div>
@@ -29,7 +29,7 @@
           </f7-button>
         </f7-col>
       </f7-row>
-      <f7-row tag="p">
+      <f7-row>
         <f7-col>
           <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/drivers">
             <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-address-card"></i></div>
@@ -43,7 +43,7 @@
           </f7-button>
         </f7-col>
       </f7-row>
-      <f7-row tag="p">
+      <f7-row>
         <f7-col>
           <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 80px; width: 80px" href="/settings/about">
             <div style="padding-bottom: 5px"><i style="font-size: 35px" class="fas fa-info-circle"></i></div>
@@ -108,7 +108,6 @@ export default {
 
 <style>
   div[class*="col"] {
-    background: #fff;
     text-align: center;
     color: #000;
     display: flex;
