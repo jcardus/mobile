@@ -118,15 +118,31 @@ function fetchGeofences(map) {
   }
   if (!map.getLayer('geofences')) {
     map.addLayer({
-      id: 'geofences',
+      id: 'geofences-fill',
       type: 'fill',
       source: 'geofences',
       paint: {
-        'fill-color': '#B42222',
+        'fill-color': ['get', 'color'],
         'fill-opacity': 0.4
       },
       layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
-      filter: ['==', '$type', 'Polygon']
+      filter: ['all', ['==', '$type', 'Polygon'], ['==', 'fill', true]]
+    })
+    map.addLayer({
+      id: 'geofences',
+      type: 'line',
+      source: 'geofences',
+      paint: {
+        'line-color': ['get', 'color'],
+        'line-width': 4,
+        'line-opacity': 0.4
+      },
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round',
+        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      },
+      filter: ['all', ['==', '$type', 'Polygon'], ['==', 'fill', false]]
     })
     map.addLayer({
       id: 'geofences-labels',
@@ -144,7 +160,7 @@ function fetchGeofences(map) {
       type: 'line',
       source: 'geofences',
       paint: {
-        'line-color': '#B42222',
+        'line-color': ['get', 'color'],
         'line-width': 4,
         'line-opacity': 0.4
       },

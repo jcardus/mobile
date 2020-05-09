@@ -21,6 +21,9 @@
                   <el-form-item class="form-item-block-left" :label="$t('settings.geofence_form_color')">
                     <el-color-picker v-model="geofenceColor" :value="geofenceColor"></el-color-picker>
                   </el-form-item>
+                  <el-form-item v-if="getType(selectedGeofence)==='geofence'" label="Área" class="form-item-block-left">
+                    <el-checkbox v-model="geofenceFill">Com preenchimento</el-checkbox>
+                  </el-form-item>
                   <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-right" :label="$t('settings.geofence_form_options')">
                     <el-row>
                       <el-col v-for="type in markerTypes" :key="type" :span="3">
@@ -62,7 +65,7 @@
     >
       <el-table-column label="" width="60">
         <template slot-scope="scope">
-          <i v-if="!(getType(scope.row)==='poi')" :class="geofenceImageType(scope.row)"></i>
+          <i v-if="!(getType(scope.row)==='poi')" :style="'color: '+(scope.row.attributes.color ? scope.row.attributes.color : '#3232b4')" :class="geofenceImageType(scope.row)"></i>
           <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.png'" rel="preload">
         </template>
       </el-table-column>
@@ -112,6 +115,7 @@ export default {
       geofenceName: '',
       geofenceColor: '',
       geofenceIcon: '',
+      geofenceFill: false,
       image: image
     }
   },
@@ -160,6 +164,7 @@ export default {
       this.geofenceName = row.name
       this.geofenceIcon = row.attributes.icon ? row.attributes.icon : 'marker'
       this.geofenceColor = row.attributes.color ? row.attributes.color : '#3232b4'
+      this.geofenceFill = row.attributes.fill != null ? row.attributes.fill : true
       this.isOpenGeofenceForm = !this.isOpenGeofenceForm
     },
     handleChangeIcon(value) {
@@ -177,6 +182,12 @@ export default {
           icon: this.geofenceIcon,
           color: this.geofenceColor
         }
+      }
+      if (this.getType(this.selectedGeofence) === 'geofence') {
+        geofence.attributes = {
+          color: this.geofenceColor,
+          fill: this.geofenceFill
+        }
       } else {
         geofence.attributes = {
           color: this.geofenceColor
@@ -189,9 +200,13 @@ export default {
       var feature = lnglat.findFeatureById(row.id)
       if (this.getType(row) === 'poi') {
         feature.properties.icon = row.attributes.icon
-        feature.properties.color = row.attributes.color
-        feature.properties.title = row.name
       }
+      if (this.getType(row) === 'geofence') {
+        feature.properties.fill = row.attributes.fill
+      }
+      feature.properties.color = row.attributes.color
+      feature.properties.title = row.name
+
       lnglat.refreshGeofences()
       this.$message({
         type: 'success',

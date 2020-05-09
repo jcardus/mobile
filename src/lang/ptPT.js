@@ -236,6 +236,7 @@ export default {
     geofence_form_icon: 'Icon',
     geofence_form_color: 'Cor',
     geofence_form_options: 'Opções',
+    zone: 'Zonas',
     groups: 'Grupos',
     group_name: 'Nome',
     group_add: 'Adicionar Grupo',
