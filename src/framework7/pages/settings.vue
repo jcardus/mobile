@@ -4,42 +4,63 @@
     <f7-block inset>
       <f7-row tag="p">
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/vehicles"><i class="fas fa-car-alt"></i> {{ $t('settings.vehicles') }}</f7-button>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/vehicles">
+            <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-car-alt"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.vehicles') }}</div>
+          </f7-button>
         </f7-col>
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/pois"><i class="fas fa-map-marker-alt"></i> {{ $t('settings.pois') }}</f7-button>
-        </f7-col>
-      </f7-row>
-      <f7-row tag="p">
-        <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/groups"><i class="fas fa-grip-horizontal"></i> {{ $t('settings.groups') }}</f7-button>
-        </f7-col>
-        <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/alerts"><i class="fas fa-bell"></i> {{ $t('settings.alerts') }}</f7-button>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/pois">
+            <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-map-marked"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.zone') }}</div></f7-button>
         </f7-col>
       </f7-row>
       <f7-row tag="p">
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/drivers"><i class="fas fa-address-card"></i> {{ $t('settings.drivers') }}</f7-button>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/groups">
+            <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-grip-horizontal"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.groups') }}</div>
+          </f7-button>
         </f7-col>
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/geofences"><i class="fas fa-draw-polygon"></i> {{ $t('settings.geofences') }}</f7-button>
-        </f7-col>
-      </f7-row>
-      <f7-row tag="p">
-        <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/map"><i class="fas fa-map"></i> {{ $t('settings.map') }}</f7-button>
-        </f7-col>
-        <f7-col>
-          <f7-button fill large raised style="font-size:15px" href="/settings/about"><i class="fas fa-info-circle"></i> {{ $t('settings.about') }}</f7-button>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/alerts">
+            <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-bell"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.alerts') }}</div>
+          </f7-button>
         </f7-col>
       </f7-row>
       <f7-row tag="p">
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" @click="refreshApp"><i class="fas fa-redo"></i> {{ $t('settings.refresh') }}</f7-button>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/drivers">
+            <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-address-card"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.drivers') }}</div>
+          </f7-button>
         </f7-col>
         <f7-col>
-          <f7-button fill large raised style="font-size:15px" @click="logout"><i class="fas fa-sign-out-alt"></i> {{ $t('settings.logout') }}</f7-button>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 100px; width: 100px" href="/settings/map">
+            <div style="padding-bottom: 5px"><i style="font-size: 40px" class="fas fa-map"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.map') }}</div>
+          </f7-button>
+        </f7-col>
+      </f7-row>
+      <f7-row tag="p">
+        <f7-col>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 80px; width: 80px" href="/settings/about">
+            <div style="padding-bottom: 5px"><i style="font-size: 35px" class="fas fa-info-circle"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.about') }}</div>
+          </f7-button>
+        </f7-col>
+        <f7-col>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 80px; width: 80px" @click="refreshApp">
+            <div style="padding-bottom: 5px"><i style="font-size: 35px" class="fas fa-redo"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.refresh') }}</div>
+          </f7-button>
+        </f7-col>
+        <f7-col>
+          <f7-button class="elevation-10" fill large raised style="text-transform: none; padding-top:20px; line-height: normal; height: 80px; width: 80px" @click="logout">
+            <div style="padding-bottom: 5px"><i style="font-size: 35px" class="fas fa-sign-out-alt"></i></div>
+            <div style="font-size:10px; height: 10px">{{ $t('settings.logout') }}</div>
+          </f7-button>
         </f7-col>
       </f7-row>
     </f7-block>
@@ -84,3 +105,17 @@ export default {
   }
 }
 </script>
+
+<style>
+  div[class*="col"] {
+    background: #fff;
+    text-align: center;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+</style>
