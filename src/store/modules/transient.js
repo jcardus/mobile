@@ -5,7 +5,8 @@ import Vue from 'vue'
 const state = {
   dataLoaded: false,
   historyMode: false,
-  events: []
+  events: [],
+  stiLoaded: false
 }
 
 const mutations = {

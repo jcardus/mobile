@@ -181,7 +181,7 @@ export default {
     isMobile() { return lnglat.isMobile() }
   },
   created() {
-    if (!this.$store.state.app.stiLoaded) {
+    if (!this.$store.state.transient.stiLoaded) {
       Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js')
       Vue.loadScript('stimulsoft/stimulsoft.viewer.pack.js')
     }
