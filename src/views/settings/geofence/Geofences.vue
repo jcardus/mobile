@@ -4,222 +4,42 @@
       <div v-if="isOpenGeofenceForm">
         <div class="overlay">
           <div class="modal">
-            <h2>Editar Zona</h2>
+            <h2>{{ $t('settings.geofence_edit_title') }}</h2>
             <el-form>
               <div class="form-item-block">
                 <div class="form-item-row">
-                  <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-left" label="Icon">
-                    <img style="vertical-align:middle" :src="'img/icons/pois/'+geofenceIcon+'-blue.png'">
+                  <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-left" :label="$t('settings.geofence_form_icon')">
+                    <img style="vertical-align:middle" :src="'img/icons/pois/'+geofenceIcon+'-blue.svg'">
                   </el-form-item>
                   <el-form-item class="form-item-block-right" :label="$t('settings.group_form_name')">
                     <el-input v-model="geofenceName" />
                   </el-form-item>
                 </div>
               </div>
-              <el-form-item v-if="getType(selectedGeofence)==='poi'" label="Opções" align="center">
-                <el-row>
-                  <el-col :span="3">
-                    <el-button
-                      size="small"
-                      style="border-style: none"
-                      @click="handleChangeIcon('airport')"
-                    >
-                      <img src="img/icons/pois/airport-blue.png"></el-button>
-                  </el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('aquarium')"
-                  >
-                    <img src="img/icons/pois/aquarium-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('attraction')"
-                  >
-                    <img src="img/icons/pois/attraction-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('barrier')"
-                  >
-                    <img src="img/icons/pois/barrier-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('building-alt1')"
-                  >
-                    <img src="img/icons/pois/building-alt1-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('building')"
-                  >
-                    <img src="img/icons/pois/building-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('car-rental')"
-                  >
-                    <img src="img/icons/pois/car-rental-blue.png" rel="preload"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('car-repair')"
-                  >
-                    <img src="img/icons/pois/car-repair-blue.png" rel="preload"></el-button></el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('castle')"
-                  >
-                    <img src="img/icons/pois/castle-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('cemetery')"
-                  >
-                    <img src="img/icons/pois/cemetery-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('charging-station')"
-                  >
-                    <img src="img/icons/pois/charging-station-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('city')"
-                  >
-                    <img src="img/icons/pois/city-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('fuel')"
-                  >
-                    <img src="img/icons/pois/fuel-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('home')"
-                  >
-                    <img src="img/icons/pois/home-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('industry')"
-                  >
-                    <img src="img/icons/pois/industry-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('information')"
-                  >
-                    <img src="img/icons/pois/information-blue.png"></el-button></el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('marker')"
-                  >
-                    <img src="img/icons/pois/marker-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('marker-stroked')"
-                  >
-                    <img src="img/icons/pois/marker-stroked-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('parking')"
-                  >
-                    <img src="img/icons/pois/parking-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('parking-garage')"
-                  >
-                    <img src="img/icons/pois/parking-garage-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('/ranger-station')"
-                  >
-                    <img src="img/icons/pois/ranger-station-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('recycling')"
-                  >
-                    <img src="img/icons/pois/recycling-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('residential-community')"
-                  >
-                    <img src="img/icons/pois/residential-community-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('star')"
-                  >
-                    <img src="img/icons/pois/star-blue.png"></el-button></el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('town')"
-                  >
-                    <img src="img/icons/pois/town-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('town-hall')"
-                  >
-                    <img src="img/icons/pois/town-hall-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('village')"
-                  >
-                    <img src="img/icons/pois/village-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('warehouse')"
-                  >
-                    <img src="img/icons/pois/warehouse-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('waste-basket')"
-                  >
-                    <img src="img/icons/pois/waste-basket-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('windmill')"
-                  >
-                    <img src="img/icons/pois/windmill-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('waste-basket')"
-                  >
-                    <img src="img/icons/pois/waste-basket-blue.png"></el-button></el-col>
-                  <el-col :span="3"><el-button
-                    size="small"
-                    style="border-style: none"
-                    @click="handleChangeIcon('windmill')"
-                  >
-                    <img src="img/icons/pois/windmill-blue.png"></el-button></el-col>
-                </el-row>
-              </el-form-item>
+              <div class="form-item-block">
+                <div class="form-item-row">
+                  <el-form-item class="form-item-block-left" :label="$t('settings.geofence_form_color')">
+                    <el-color-picker v-model="geofenceColor" :value="geofenceColor"></el-color-picker>
+                  </el-form-item>
+                  <el-form-item v-if="getType(selectedGeofence)==='geofence'" label="Área" class="form-item-block-left">
+                    <el-checkbox v-model="geofenceFill">Com preenchimento</el-checkbox>
+                  </el-form-item>
+                  <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-right" :label="$t('settings.geofence_form_options')">
+                    <el-row>
+                      <el-col v-for="type in markerTypes" :key="type" :span="3">
+                        <el-tooltip :content="$t('settings.geofence_icon_'+type.replace('-', '_'))" placement="top">
+                          <el-button
+                            size="small"
+                            style="border-style: none"
+                            @click="handleChangeIcon(type)"
+                          >
+                            <img :src="getImageSrc(type)"></el-button>
+                        </el-tooltip>
+                      </el-col>
+                    </el-row>
+                  </el-form-item>
+                </div>
+              </div>
             </el-form>
             <el-button
               type="info"
@@ -245,7 +65,7 @@
     >
       <el-table-column label="" width="60">
         <template slot-scope="scope">
-          <i v-if="!(getType(scope.row)==='poi')" :class="geofenceImageType(scope.row)"></i>
+          <i v-if="!(getType(scope.row)==='poi')" :style="'color: '+(scope.row.attributes.color ? scope.row.attributes.color : '#3232b4')" :class="geofenceImageType(scope.row)"></i>
           <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.png'" rel="preload">
         </template>
       </el-table-column>
@@ -283,6 +103,7 @@ import { mapGetters } from 'vuex'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import { vm } from '../../../main'
+import image from '../../../icons/pois/airport-blue.svg'
 
 export default {
   name: 'Geofences',
@@ -292,7 +113,10 @@ export default {
       isNewGeofence: true,
       selectedGeofence: null,
       geofenceName: '',
-      geofenceIcon: ''
+      geofenceColor: '',
+      geofenceIcon: '',
+      geofenceFill: false,
+      image: image
     }
   },
   computed: {
@@ -305,9 +129,15 @@ export default {
     },
     lineGeofences: function() {
       return this.geofences.filter(g => g.area.startsWith('LINESTRING'))
+    },
+    markerTypes: function() {
+      return lnglat.getMarkerType()
     }
   },
   methods: {
+    getImageSrc(imgType) {
+      return './img/icons/pois/' + imgType + '-blue.svg'
+    },
     handleDelete(row) {
       this.$confirm(this.$t('geofence.' + this.getType(row) + '_delete_info') + row.name, this.$t('geofence.' + this.getType(row) + '_delete_title'), {
         confirmButtonText: this.$t('geofence.geofence_edit_confirm'),
@@ -333,6 +163,8 @@ export default {
       this.selectedGeofence = row
       this.geofenceName = row.name
       this.geofenceIcon = row.attributes.icon ? row.attributes.icon : 'marker'
+      this.geofenceColor = row.attributes.color ? row.attributes.color : '#3232b4'
+      this.geofenceFill = row.attributes.fill != null ? row.attributes.fill : true
       this.isOpenGeofenceForm = !this.isOpenGeofenceForm
     },
     handleChangeIcon(value) {
@@ -347,7 +179,18 @@ export default {
       geofence.name = this.geofenceName
       if (this.getType(this.selectedGeofence) === 'poi') {
         geofence.attributes = {
-          icon: this.geofenceIcon
+          icon: this.geofenceIcon,
+          color: this.geofenceColor
+        }
+      }
+      if (this.getType(this.selectedGeofence) === 'geofence') {
+        geofence.attributes = {
+          color: this.geofenceColor,
+          fill: this.geofenceFill
+        }
+      } else {
+        geofence.attributes = {
+          color: this.geofenceColor
         }
       }
       traccar.editGeofence(this.selectedGeofence.id, geofence, this.geofenceEdited)
@@ -357,8 +200,13 @@ export default {
       var feature = lnglat.findFeatureById(row.id)
       if (this.getType(row) === 'poi') {
         feature.properties.icon = row.attributes.icon
-        feature.properties.title = row.name
       }
+      if (this.getType(row) === 'geofence') {
+        feature.properties.fill = row.attributes.fill
+      }
+      feature.properties.color = row.attributes.color
+      feature.properties.title = row.name
+
       lnglat.refreshGeofences()
       this.$message({
         type: 'success',
@@ -380,6 +228,7 @@ export default {
     clearFormData() {
       this.geofenceName = ''
       this.geofenceIcon = ''
+      this.geofenceColor = ''
     }
   }
 }
@@ -448,10 +297,14 @@ export default {
     display: table-cell;
     width: 50px;
     padding-right: 10px;
+
+    padding-bottom: 20px;
   }
   .form-item-block-right{
     width: 400px;
     display: table-cell;
+
+    padding-bottom: 20px;
   }
 
   .iconGeofence {

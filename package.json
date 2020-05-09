@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.569",
+  "version": "1.0.571",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -10,7 +10,6 @@
     "dev": "vue-cli-service serve",
     "new": "plop",
     "preview": "node build/index.js --preview  --report",
-    "sprite": "svgexport -f src/icons/svg --config=src/icons/svgo.yml",
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {

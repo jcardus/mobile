@@ -1,5 +1,4 @@
 const state = {
-  stiLoaded: false,
   elementReportData: [],
   loading: false,
   unreadItems: 0

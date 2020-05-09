@@ -26,12 +26,12 @@ export default {
   },
   mounted() {
     const self = this
-    if (!vm.$store.state.app.stiLoaded) {
+    if (!vm.$store.state.transient.stiLoaded) {
       Vue.loadScript('stimulsoft/stimulsoft.reports.pack.js').then(() => {
         Vue.loadScript('stimulsoft/stimulsoft.viewer.pack.js').then(() => {
           sUtil.load(this.mrt, this.reportId)
           self.$f7.dialog.close()
-          vm.$store.state.app.stiLoaded = true
+          vm.$store.state.transient.stiLoaded = true
         })
       })
     } else {

@@ -21,7 +21,7 @@ import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { serverBus, settings, vm } from '../../main'
 import * as lnglat from '../../utils/lnglat'
-import { getMarkerType, MapboxCustomControl } from '../../utils/lnglat'
+import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
 import VueCookies from 'vue-cookies'
 import { traccar } from '../../api/traccar-api'
@@ -491,13 +491,10 @@ export default {
       this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.on('click', 'clusters', this.onClickTouch)
-      getMarkerType().map(
-        type => {
-          this.$static.map.on('touchstart', 'pois_' + type, this.onClickTouchPois)
-          this.$static.map.on('click', 'pois_' + type, this.onClickTouchPois)
-          this.$static.map.on('mouseenter', 'pois_' + type, this.mouseEnter)
-          this.$static.map.on('mouseleave', 'pois_' + type, this.mouseLeave)
-        })
+      this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
+      this.$static.map.on('click', 'pois', this.onClickTouchPois)
+      this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
+      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.on('mouseenter', consts.vehiclesLayer, this.mouseEnter)
       this.$static.map.on('mouseleave', consts.vehiclesLayer, this.mouseLeave)
       this.$static.map.on('draw.create', this.drawCreate)
@@ -530,13 +527,10 @@ export default {
       this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
       this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
-      getMarkerType().map(
-        type => {
-          this.$static.map.off('touchstart', 'pois_' + type, this.onClickTouchPois)
-          this.$static.map.off('click', 'pois_' + type, this.onClickTouchPois)
-          this.$static.map.off('mouseenter', 'pois_' + type, this.mouseEnter)
-          this.$static.map.off('mouseleave', 'pois_' + type, this.mouseLeave)
-        })
+      this.$static.map.off('touchstart', 'pois', this.onClickTouchPois)
+      this.$static.map.off('click', 'pois', this.onClickTouchPois)
+      this.$static.map.off('mouseenter', 'pois', this.mouseEnter)
+      this.$static.map.off('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
@@ -852,7 +846,9 @@ export default {
           properties: {
             id: item.id,
             title: item.name,
-            icon: ''
+            icon: '',
+            color: item.attributes.color ? item.attributes.color : '#3232b4',
+            fill: item.attributes.fill != null ? item.attributes.fill : true
           }
         }
         const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
@@ -871,7 +867,9 @@ export default {
           properties: {
             id: item.id,
             title: item.name,
-            icon: ''
+            icon: '',
+            color: item.attributes.color ? item.attributes.color : '#3232b4',
+            fill: false
           }
         }
         const str = wkt.substring('LINESTRING('.length + 1, wkt.length - 1)
@@ -890,7 +888,9 @@ export default {
           properties: {
             id: item.id,
             title: item.name,
-            icon: item.attributes.icon ? item.attributes.icon : 'marker'
+            icon: item.attributes.icon ? item.attributes.icon : 'marker',
+            color: item.attributes.color ? item.attributes.color : '#3232b4',
+            fill: ''
           }
         }
         const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))
