@@ -66,7 +66,7 @@
       <el-table-column label="" width="60">
         <template slot-scope="scope">
           <i v-if="!(getType(scope.row)==='poi')" :style="'color: '+(scope.row.attributes.color ? scope.row.attributes.color : '#3232b4')" :class="geofenceImageType(scope.row)"></i>
-          <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.png'" rel="preload">
+          <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.svg'" rel="preload">
         </template>
       </el-table-column>
       <el-table-column
