@@ -1,7 +1,6 @@
 <template>
   <f7-page name="MapSettings">
-    <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
-    <f7-block-title style="font-size: 20px"><i class="fas fa-map"></i> {{ $t('settings.map') }}</f7-block-title>
+    <f7-navbar back-link style="align-items: start"><i class="fas fa-map" style="padding-right: 10px"></i> {{ $t('settings.map') }}</f7-navbar>
     <f7-block-title style="font-size: 15px">{{ $t('settings.vehicles') }}</f7-block-title>
     <f7-list no-hairlines-md>
       <f7-list-item>

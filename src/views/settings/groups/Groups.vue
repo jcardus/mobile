@@ -487,6 +487,12 @@ export default {
         })
     },
     groupCreated: function(newGroup) {
+      newGroup.drivers = []
+      newGroup.geofences = {
+        geofences: [],
+        pois: [],
+        linegeofences: []
+      }
       this.$message({
         type: 'success',
         message: this.$t('settings.group_created')
