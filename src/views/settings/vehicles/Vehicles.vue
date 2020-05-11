@@ -104,11 +104,12 @@
         sortable=""
       >
       </el-table-column>
-      <el-table-column label="" width="200px" align="right">
-        <template slot="header">
+      <el-table-column label="" width="250px" align="right">
+        <template slot="header" slot-scope="scope">
           <el-input
             v-model="search"
             placeholder="Pesquisa"
+            @chage="doNothing(scope)"
           />
         </template>
         <template slot-scope="scope">
@@ -285,6 +286,10 @@ export default {
       this.vehicleModel = ''
       this.vehicleSpeedLimit = 0
       this.vehicleTotalKms = 0
+    },
+    doNothing(scope) {
+      /* this method is here because we need the attribute 'slot-scope = "scope"' on the template
+       for search box to work, but to be able to commit the variable 'scope' it must be used*/
     }
   }
 }
