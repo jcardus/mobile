@@ -67,16 +67,6 @@ Vue.use(ElementUI, {
 })
 
 export const serverBus = new Vue()
-export const settings = {
-  animateMarkers: true,
-  showVehicleList: true,
-  showSlider: true,
-  truck3d: false,
-  show3dBuildings: true,
-  experiment: true,
-  debugRoutes: false,
-  mapBoxRouteMatch: false
-}
 
 export let newServiceWorker
 export let regServiceWorker

@@ -69,21 +69,24 @@ function initData(commit, state, dispatch) {
       vm.$store.state.user.groups = groups
       vm.$store.state.user.drivers = drivers
       vm.$data.devices = devices
-      dispatch('processGroups').finally(() => {
-        dispatch('fetchAlerts').finally(() => {
-          dispatch('transient/fetchEvents', {
-            start: Vue.moment().subtract(1, 'day').toDate(),
-            end: new Date(),
-            types: state.alerts
-          }, { root: true }).finally(() => {
-            dispatch('transient/setDataLoaded', null, { root: true })
-            Vue.$log.info('emit dataLoaded')
-            serverBus.$emit('dataLoaded')
-            resolve()
+      dispatch('processDevices').finally(() => {
+        dispatch('processGroups').finally(() => {
+          dispatch('fetchAlerts').finally(() => {
+            dispatch('transient/fetchEvents', {
+              start: Vue.moment().subtract(1, 'day').toDate(),
+              end: new Date(),
+              types: state.alerts
+            }, { root: true }).finally(() => {
+              dispatch('transient/setDataLoaded', null, { root: true })
+              Vue.$log.info('emit dataLoaded')
+              serverBus.$emit('dataLoaded')
+              resolve()
+            })
           })
         })
       })
-    }, (e) => {
+    },
+    (e) => {
       Vue.$log.error(e)
       reject(e)
     })
@@ -206,7 +209,7 @@ const actions = {
       })
     })
   },
-  processGroups({ commit, state }) {
+  processGroups({ state }) {
     new Promise((resolve, reject) => {
       traccar.geofencesByGroup(state.groups.map(g => g.id), function(results) {
         results.forEach(result => {
@@ -251,6 +254,8 @@ const actions = {
       commit('REMOVE_USER')
       resolve()
     })
+  },
+  processDevices() {
   }
 }
 export default {

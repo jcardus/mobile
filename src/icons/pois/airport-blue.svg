@@ -3,7 +3,7 @@
   <title>airport-15.svg</title>
   <rect fill="none" x="0" y="0" width="27" height="27"></rect>
 
-  <rect x="1" y="1" rx="12.5" ry="12.5" width="25" height="25" stroke="blue" stroke-opacity="0.25"
+  <rect x="1" y="1" rx="12.5" ry="12.5" width="25" height="25" stroke="blue" stroke-opacity="0.1" fill="none"
         style="stroke-linejoin:round;stroke-miterlimit:4;" stroke-width="2"></rect>
 
   <rect x="1" y="1" width="25" height="25" rx="12.5" ry="12.5" fill="blue" fill-opacity="0.1"></rect>

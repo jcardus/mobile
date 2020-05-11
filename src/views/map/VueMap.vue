@@ -19,7 +19,8 @@ import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
-import { serverBus, settings, vm } from '../../main'
+import { serverBus, vm } from '../../main'
+import settings from '../../settings'
 import * as lnglat from '../../utils/lnglat'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -401,35 +402,6 @@ export default {
       }
     },
     addLayers: function() {
-      const self = this
-      if (settings.truck3d) {
-        this.$static.map.addLayer({
-          id: 'custom_layer',
-          type: 'custom',
-          renderingMode: '3d',
-          onAdd: function(map, mbxContext) {
-            // eslint-disable-next-line no-undef
-            window.tb = new Threebox(
-              map,
-              mbxContext,
-              { defaultLights: true }
-            )
-            const options = {
-              obj: 'img/Truck.obj',
-              mtl: 'img/Truck.mtl',
-              scale: 10
-            }
-            window.tb.loadObj(options, function(model) {
-              self.truck = model.setCoords(self.origin)
-              self.truck.visible = false
-              window.tb.add(self.truck)
-            })
-          },
-          render: function() {
-            window.tb.update()
-          }
-        })
-      }
       lnglat.addLayers(this.$static.map)
     },
     addControls: function() {
@@ -502,6 +474,7 @@ export default {
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('draw.modechange', this.drawModeChange)
       this.$static.map.on('data', this.onData)
+      this.$static.map.on('styleimagemissing', this.styleImageMissing)
       serverBus.$on('dataLoaded', this.initData)
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
@@ -730,7 +703,10 @@ export default {
     updateFeature(feature, device, position) {
       feature.properties.course = position.course
       feature.properties.outdated = device.outdated = position.outdated
-      feature.properties.ignition = device.ignition = position.attributes.ignition
+      if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
+        feature.properties.ignition = device.ignition = position.attributes.ignition
+        device.lastUpdate = position.fixTime
+      }
       feature.properties.motion = device.motion = position.attributes.motion
       feature.properties.speed = device.speed = position.speed
       feature.properties.address = position.address
@@ -744,7 +720,6 @@ export default {
         this.$store.dispatch('devices/setCommandPending', { device: device.id, pending: false }).then(() => {})
       }
       device.address = position.address
-      device.lastUpdate = position.fixTime
       device.poi = this.findNearestPOI(position)
     },
     processPositions: function(positions) {
@@ -985,6 +960,9 @@ export default {
         }
       })
       vm.$mount('#vue-poi-popup')
+    },
+    styleImageMissing(e) {
+      console.log('A styleimagemissing event occurred.', e)
     }
   }
 }
