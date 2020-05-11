@@ -154,7 +154,7 @@ export default {
       return lnglat.isMobile()
     },
     devices: function() {
-      return vm.$data.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return vm.$store.getters.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     categories: function() {
       return [

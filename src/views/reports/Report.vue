@@ -164,7 +164,7 @@ export default {
     },
     devices() {
       const sortKey = 'name'
-      let devices = vm.$data.devices
+      let devices = vm.$store.getters.devices
       if (sortKey) {
         devices = devices.slice().sort(function(a, b) {
           a = a[sortKey]
@@ -187,11 +187,6 @@ export default {
     }
   },
   mounted() {
-    if (this.devices.length === 0) {
-      traccar.devices(function(data) {
-        vm.$data.devices = data
-      })
-    }
     if (this.geofences.length === 0) {
       Vue.$log.error('geofences should be loaded!')
     } else { Vue.$log.debug(this.geofences.length, ' geofences already loaded') }

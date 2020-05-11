@@ -74,7 +74,7 @@ export default {
   computed: {
     ...mapGetters(['user']),
     devices() {
-      return vm.$data.devices.sort(function(a, b) {
+      return vm.$store.getters.devices.sort(function(a, b) {
         a = a.name.toLowerCase()
         b = b.name.toLowerCase()
         return (a === b ? 0 : a > b ? 1 : -1)

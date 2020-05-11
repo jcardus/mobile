@@ -108,7 +108,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels', 'devices']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -139,9 +139,6 @@ export default {
     geofencesSource() { return this.$root.$static.geofencesSource },
     positions() {
       return this.$root.$store.state.socket.message.positions
-    },
-    devices() {
-      return this.$root.$data.devices
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -697,6 +694,9 @@ export default {
           'coordinates': [position.longitude, position.latitude]
         }
       }
+      if (!position.attributes.ignition) {
+        // position.lastUpdate = devices.lastIgnOff(position.deviceId)
+      }
       this.updateFeature(feature, device, position)
       return feature
     },
@@ -713,7 +713,12 @@ export default {
       feature.properties.fixTime = position.fixTime
       feature.properties.totalDistance = position.attributes.totalDistance
       feature.properties.hours = position.attributes.hours
-      feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
+      if (device.lastUpdate) {
+        device.fixDays = feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
+      } else {
+        Vue.$log.warn(device.lastUpdate, 'setting fixDays to 100...')
+        feature.properties.fixDays = 100
+      }
       const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
       if (immoValue !== feature.properties.immobilization_active) {
         feature.properties.immobilization_active = immoValue
@@ -729,8 +734,7 @@ export default {
         const device = self.devices.find(e => e.id === position.deviceId)
         if (!feature) {
           if (!device) {
-            Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position)
-            self.$store.dispatch('user/logout').then(() => location.reload())
+            Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position, 'devices', self.devices)
             return
           }
           feature = self.positionToFeature(position, device)

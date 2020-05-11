@@ -110,8 +110,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['events', 'alerts']),
-    devices: function() { return vm.$data.devices },
+    ...mapGetters(['events', 'alerts', 'devices']),
     geofences: function() { return vm.$store.state.user.geofences },
     sortedItems: function() {
       return this.events.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
@@ -127,7 +126,7 @@ export default {
     start.setMinutes(0)
     start.setSeconds(0)
     this.dateRange = [start, end]
-    this.selectedDevices = vm.$data.devices.map(d => d.id)
+    this.selectedDevices = this.$store.getters.devices.map(d => d.id)
   },
   methods: {
     getNotifications() {

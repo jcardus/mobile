@@ -37,16 +37,12 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Vehicles',
   computed: {
-    ...mapGetters(['groups']),
-    devices: function() {
-      return vm.$data.devices
-    }
+    ...mapGetters(['groups', 'devices'])
   },
   methods: {
     groupName: function(groupId) {

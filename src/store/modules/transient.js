@@ -33,7 +33,7 @@ const actions = {
     commit('SET_DATA_LOADED')
   },
 
-  fetchEvents({ commit }, { start, end, types }) {
+  fetchEvents({ commit, rootGetters }, { start, end, types }) {
     function getNotificationContent(notification) {
       if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
         const geofence = this.geofences.find(g => g.id === notification.geofenceId)
@@ -55,7 +55,6 @@ const actions = {
       if (type === 'deviceOverspeed') {
         return 'fas fa-shipping-fast'
       }
-
       return ''
     }
     function getNotificationColor(type) {
@@ -70,21 +69,20 @@ const actions = {
     traccar.report_events(
       start.toISOString(),
       end.toISOString(),
-      vm.$data.devices.map(d => d.id),
-      types.map(a => a.notification.type),
-      (events) => {
-        events.forEach(e => {
-          e.device = vm.$data.devices.find(d => d.id === e.deviceId)
-        })
-        events.sort(function(a, b) {
-          return Date.parse(b.serverTime) - Date.parse(a.serverTime)
-        })
-      }).then((data) => {
+      rootGetters.devices.map(d => d.id),
+      types.map(a => a.notification.type)
+    ).then(({ data }) => {
+      data.forEach(e => {
+        e.device = rootGetters.devices.find(d => d.id === e.deviceId)
+      })
+      data.sort(function(a, b) {
+        return Date.parse(b.serverTime) - Date.parse(a.serverTime)
+      })
       commit('SET_EVENTS', data.map(a => {
         return {
           positionId: a.positionId,
           timestamp: a.serverTime,
-          title: vm.$data.devices.find(d => d.id === a.deviceId).name,
+          title: rootGetters.devices.find(d => d.id === a.deviceId).name,
           content: getNotificationContent(a),
           type: vm.$t('settings.alert_' + a.type),
           image: getNotificationImage(a.type),

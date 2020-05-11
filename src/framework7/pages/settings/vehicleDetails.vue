@@ -80,6 +80,7 @@
 import { serverBus, vm } from '../../../main'
 import * as lnglat from '../../../utils/lnglat'
 import { traccar } from '../../../api/traccar-api'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'VehicleDetails',
@@ -96,9 +97,7 @@ export default {
     }
   },
   computed: {
-    devices: function() {
-      return vm.$data.devices
-    },
+    ...mapGetters(['devices']),
     groups: function() {
       return vm.$store.state.user.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },

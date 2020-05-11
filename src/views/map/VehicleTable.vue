@@ -108,7 +108,7 @@
               <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.address }}</span>
             </div>
             <div style="padding-top: 6px;float:left">
-              <span>{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
+              <span v-if="scope.row.lastUpdate">{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
             <div style="float: right">
               <immobilize-button
                 style="padding:0"
@@ -207,7 +207,7 @@ export default {
       return lnglat.isMobile()
     },
     devices() {
-      return vm.$data.devices
+      return vm.$store.getters.devices
     },
     devicesOnCount() {
       return this.devicesOn.length
@@ -318,8 +318,7 @@ export default {
       return styles.danger
     },
     getDeviceState: function(device) {
-      if (device.outdated ||
-        (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5)) {
+      if (device.fixDays > 5) {
         return 'Disconnected'
       }
       if (device.speed > 2 && !device.outdated) {

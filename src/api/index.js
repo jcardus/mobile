@@ -1,6 +1,6 @@
 import awsConfig from '../aws-exports'
 
-const backendProd = 'xmjth8acs5.'
+const backendProd = 'xmjth8acs5'
 const backendDev = 'wd5b3zc65f'
 const backendUrl = 'execute-api.us-east-1.amazonaws.com'
 
