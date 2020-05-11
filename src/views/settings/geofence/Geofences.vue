@@ -59,7 +59,8 @@
     </transition>
     <el-table
       height="calc(100vh - 125px)"
-      :data="geofences"
+      :data="geofences.filter(data => !search
+        || data.name.toLowerCase().includes(search.toLowerCase()))"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
@@ -76,6 +77,13 @@
       >
       </el-table-column>
       <el-table-column label="" min-width="50px">
+        <template slot="header" slot-scope="scope">
+          <el-input
+            v-model="search"
+            placeholder="Pesquisa"
+            @chage="doNothing(scope)"
+          />
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.group_delete')" placement="top">
             <el-button
@@ -116,7 +124,8 @@ export default {
       geofenceColor: '',
       geofenceIcon: '',
       geofenceFill: false,
-      image: image
+      image: image,
+      search: ''
     }
   },
   computed: {
@@ -229,6 +238,10 @@ export default {
       this.geofenceName = ''
       this.geofenceIcon = ''
       this.geofenceColor = ''
+    },
+    doNothing(scope) {
+      /* this method is here because we need the attribute 'slot-scope = "scope"' on the template
+       for search box to work, but to be able to commit the variable 'scope' it must be used*/
     }
   }
 }
