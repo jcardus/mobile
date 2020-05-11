@@ -98,6 +98,9 @@ export default {
     user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos'
   },
   settings: {
+    showLabels: 'Mostrar nombre del vehículo',
+    search: 'Procurar...',
+    empty_list: 'Nada Encontrado',
     refresh: 'Recargar la aplicación',
     version: 'Versión',
     connected: 'Conectado',

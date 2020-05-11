@@ -169,7 +169,6 @@ export default {
       animating: false,
       data: [],
       selectedDevice: null,
-      selected: -1,
       devicesBackup: this.devices,
       propagate: true,
       lastUpdate: new Date(),
@@ -253,6 +252,11 @@ export default {
           })
         })
       }
+      if (self.selectedDevice != null && self.historyMode) {
+        devices = devices.filter(function(row) {
+          return row.id === self.selectedDevice.id
+        })
+      }
       devices = devices.slice().sort(function(a, b) {
         switch (self.orderedBy) {
           case 'orderByStatus':
@@ -298,11 +302,9 @@ export default {
   },
   methods: {
     showRoutesChanged() {
-      if (this.historyMode) {
-        if (this.selectedDevice) {
-          this.filterKey = this.selectedDevice.name
-        }
-      } else { this.filterKey = '' }
+      if (!this.historyMode) {
+        this.selectedDevice = null
+      }
     },
     getBgColor: function(device) {
       if (this.getDeviceState(device) === 'Disconnected') {
@@ -361,7 +363,6 @@ export default {
         serverBus.$emit('showRoutesChanged')
       } else {
         if (device) {
-          this.selected = device.id
           this.selectedDevice = device
           Vue.$log.debug('device=', device)
           vm.$store.dispatch('map/togglePlaying').then(() =>
@@ -396,7 +397,7 @@ export default {
       lnglat.fitBounds(devices)
     },
     deviceSelectedOnMap(device) {
-      this.selected = device.id
+      this.selectedDevice = device
     },
     hasNearestPOI(device) {
       return device.poi
