@@ -161,8 +161,11 @@ const actions = {
   },
   logout({ commit, state }) {
     return new Promise((resolve) => {
-      fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true')
-        .then(() => { Vue.$log.info('done logout quicksight') })
+      const qsUrl = 'https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true'
+      Vue.$log.warn(qsUrl)
+      fetch(qsUrl)
+        .then(() => Vue.$log.info('done logout quicksight'))
+        .catch(e => Vue.$log.error(qsUrl, e))
       logout().catch((e) => {
         Vue.$log.error(e)
       }).finally(() => {

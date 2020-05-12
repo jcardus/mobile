@@ -10,7 +10,7 @@ vm.$on('forceLogout', () => {
   TrackJS.track('LOGOUT')
   store.dispatch('user/logout').then(() => {
     location.reload()
-  })
+  }).catch((e) => Vue.$log.error('error on logout', e))
 })
 
 if (!('Notification' in window)) {

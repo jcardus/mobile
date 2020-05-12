@@ -6,7 +6,6 @@ export function login(data) {
   const body = 'email=' + encodeURIComponent(data.username) + '&password=' + encodeURIComponent(data.password)
   return axios({
     withCredentials: true, // send cookies when cross-domain requests
-    timeout: 5000,
     url: session,
     method: 'post',
     headers: {
