@@ -327,7 +327,7 @@ export default {
         },
         store: this.$store
       })
-      vm.$mount('#vue-vehicle-popup')
+      this.lastPopup.$mount('#vue-vehicle-popup')
 
       if (settings.truck3d) { this.truck.setCoords(coordinates) }
     },
