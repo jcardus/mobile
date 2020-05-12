@@ -52,7 +52,7 @@ Vue.use(Chat)
 const isProduction = process.env.NODE_ENV === 'production'
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? 'info' : 'debug',
+  logLevel: isProduction ? 'info' : 'info',
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,
@@ -141,6 +141,7 @@ export const vm = new Vue({
       routeMinDate: Vue.moment().startOf('day').toDate(),
       routeMaxDate: new Date(),
       mapStyle: 'mapbox://styles/mapbox/streets-v11',
+      devices: [],
       geofences: [],
       currentDevice: null,
       lazyLoad: false,
@@ -160,6 +161,7 @@ export const vm = new Vue({
   static() {
     return {
       currentFeature: null,
+      markers: {},
       map: null,
       positionsSource: {
         'type': 'FeatureCollection',
@@ -169,8 +171,7 @@ export const vm = new Vue({
         'type': 'FeatureCollection',
         'features': []
       },
-      popUps: [],
-      devices: []
+      popUps: []
     }
   },
   methods: {
@@ -178,7 +179,15 @@ export const vm = new Vue({
       return this.devices.find(e => e.id === deviceId)
     },
     reset: function() {
-      lnglat.resetMarkers()
+      for (const i in this.$static.markers) {
+        // noinspection JSUnfilteredForInLoop
+        console.log('deleting static marker ', this.$static.markers[i])
+        // noinspection JSUnfilteredForInLoop
+        this.$static.markers[i].remove()
+        // noinspection JSUnfilteredForInLoop
+        delete this.$static.markers[i]
+      }
+      this.$static.markers = {}
       this.$log.warn('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
