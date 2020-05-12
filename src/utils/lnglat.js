@@ -10,8 +10,6 @@ import styles from '../styles/element-variables.scss'
 import * as consts from './consts'
 import store from '../store'
 
-let markers = {}
-
 let markersOnScreen = {}
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
@@ -207,29 +205,12 @@ function fetchGeofences(map) {
   }
 }
 function createDonutChart(props) {
-  // this shouldn't happen, but it does with thousands of markers, don't know why...
-  if (props.gray == null || props.gray === 'null') {
-    Vue.$log.warn('found invalid props', props)
-    props.gray = 0
-  }
-  if (props.green == null || props.green === 'null') {
-    props.green = 0
-  }
-  if (props.red == null || props.red === 'null') {
-    props.red = 0
-  }
-  if (props.yellow == null || props.yellow === 'null') {
-    props.yellow = 0
-  }
   const offsets = []
   const counts = [props.gray, props.green, props.yellow, props.red]
   let total = 0
   for (let i = 0; i < counts.length; i++) {
     offsets.push(total)
     total += counts[i]
-  }
-  if (total === 0) {
-    return null
   }
   const fontSize = total >= 30 ? 20 : total >= 15 ? 16 : total >= 10 ? 15 : 14
   const r = total >= 30 ? 22 : total >= 24 ? 20 : total >= 10 ? 18 : 16
@@ -239,11 +220,7 @@ function createDonutChart(props) {
   let html = `<svg width="${w}" height="${w}" viewBox="0 0 ${w} ${w}" text-anchor="middle" style="font: ${fontSize}px sans-serif">`
 
   for (let i = 0; i < counts.length; i++) {
-    if (isNaN(offsets[i]) || isNaN(total) || isNaN(counts[i]) || isNaN(r) || isNaN(r0)) {
-      Vue.$log.error('NaN', counts, r, r0, colors, total, offsets)
-    } else {
-      html += donutSegment(offsets[i] / total, (offsets[i] + counts[i]) / total, r, r0, colors[i])
-    }
+    html += donutSegment(offsets[i] / total, (offsets[i] + counts[i]) / total, r, r0, colors[i])
   }
   html += '<circle cx="' + r + '" cy="' + r + '" r="' + r0 +
     '" fill="#f5f5f5" /><text dominant-baseline="central" transform="translate(' +
@@ -251,12 +228,7 @@ function createDonutChart(props) {
 
   const el = document.createElement('div')
 
-  try {
-    el.innerHTML = html
-  } catch (e) {
-    Vue.$log.error(e, counts)
-    return null
-  }
+  el.innerHTML = html
   return el
 }
 function donutSegment(start, end, r, r0, color) {
@@ -288,15 +260,14 @@ export function updateMarkers() {
     if (!props.cluster) continue
     const id = props.cluster_id
 
-    let marker = markers[id]
+    let marker = vm.$static.markers[id]
     if (!marker) {
       const el = createDonutChart(props)
-      if (el) {
-        marker = markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
-        newMarkers[id] = marker
-      }
+      marker = vm.$static.markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
     }
-    if (!markersOnScreen[id] && marker) { marker.addTo(vm.$static.map) }
+    newMarkers[id] = marker
+
+    if (!markersOnScreen[id]) { marker.addTo(vm.$static.map) }
   }
   for (
     // for every marker we've added previously, remove those that are no longer visible
@@ -394,9 +365,9 @@ export function addLayers(map) {
       type: 'geojson',
       data: vm.$static.positionsSource,
       cluster: true,
-      clusterMaxZoom: 8, // Max zoom to cluster points on
+      clusterMaxZoom: 10, // Max zoom to cluster points on
       clusterRadius: 20,
-      clusterProperties: { // keep separate counts for each state in a cluster
+      clusterProperties: { // keep separate counts for each magnitude category in a cluster
         'gray': ['+', ['case', gray, 1, 0]],
         'green': ['+', ['case', green, 1, 0]],
         'yellow': ['+', ['case', yellow, 1, 0]],
@@ -495,16 +466,4 @@ function removeMarkers() {
       remove.remove()
     }
   }
-}
-
-export function resetMarkers() {
-  for (const i in markers) {
-    // noinspection JSUnfilteredForInLoop
-    console.log('deleting static marker ', markers[i])
-    // noinspection JSUnfilteredForInLoop
-    markers[i].remove()
-    // noinspection JSUnfilteredForInLoop
-    delete markers[i]
-  }
-  markers = {}
 }
