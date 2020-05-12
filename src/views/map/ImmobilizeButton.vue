@@ -54,7 +54,7 @@ export default {
     }
   },
   beforeDestroy() {
-    Vue.$log.info('ImmobilizeButton', this.selectedDevice)
+    Vue.$log.debug('ImmobilizeButton', this.selectedDevice)
   },
   methods: {
     sendImmobilizationCommand() {

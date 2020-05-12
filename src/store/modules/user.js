@@ -25,8 +25,14 @@ const state = {
 }
 
 const mutations = {
+  SET_GEOFENCES(state, geofences) {
+    console.log('SET_GEOFENCES', geofences)
+    state.geofences = geofences
+  },
   SET_DEVICES(state, devices) {
-    state.devices = devices
+    console.log('SET_DEVICES', devices)
+    // vm.$static.devices = devices
+    state.devices = Object.freeze(devices)
   },
   SET_USER(state, token) {
     state.name = token.name
@@ -64,33 +70,50 @@ function getAvatar(name) {
 
 function initData(commit, state, dispatch) {
   return new Promise((resolve, reject) => {
-    traccar.getInitData(state.userId, function(devices, geofences, groups, drivers) {
-      vm.$store.state.user.geofences = geofences
-      vm.$store.state.user.groups = groups
-      vm.$store.state.user.drivers = drivers
-      vm.$data.devices = devices
-      dispatch('processGroups').finally(() => {
-        dispatch('fetchAlerts').finally(() => {
-          dispatch('transient/fetchEvents', {
-            start: Vue.moment().subtract(1, 'day').toDate(),
-            end: new Date(),
-            types: state.alerts
-          }, { root: true }).finally(() => {
-            dispatch('transient/setDataLoaded', null, { root: true })
-            Vue.$log.info('emit dataLoaded')
-            serverBus.$emit('dataLoaded')
-            resolve()
+    traccar.getInitData(state.userId)
+      .then(responses => {
+        dispatch('setGeofences', responses[1].data).then(() => {
+          state.groups = responses[2].data
+          state.drivers = responses[3].data
+          dispatch('setDevices', responses[0].data).then(() => {
+            dispatch('processDevices').then(() => {
+              dispatch('processGroups')
+                .then(() => {
+                  if (state.devices.length < 100) {
+                    dispatch('fetchAlerts').then(() => {
+                      dispatch('transient/fetchEvents', {
+                        start: Vue.moment().subtract(1, 'day').toDate(),
+                        end: new Date(),
+                        types: state.alerts
+                      }, { root: true })
+                        .catch(e => Vue.$log.warn(e, 'moving on...'))
+                    })
+                  }
+                })
+                .finally(() => {
+                  dispatch('transient/setDataLoaded', null, { root: true })
+                  Vue.$log.info('emit dataLoaded')
+                  serverBus.$emit('dataLoaded')
+                  resolve()
+                })
+            })
           })
         })
       })
-    }, (e) => {
-      Vue.$log.error(e)
-      reject(e)
-    })
+      .catch((e) => {
+        Vue.$log.error(e)
+        reject(e)
+      })
   })
 }
 
 const actions = {
+  setGeofences({ commit }, geofences) {
+    commit('SET_GEOFENCES', geofences)
+  },
+  setDevices({ commit }, devices) {
+    commit('SET_DEVICES', devices)
+  },
   checkSession({ dispatch, commit }) {
     return new Promise((resolve) => {
       Vue.$log.info('user/checkSession')
@@ -106,18 +129,20 @@ const actions = {
   },
   setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {
-      initData(commit, state, dispatch).finally(() => {
-        TrackJS.addMetadata('user', state.name)
-        const hostName = getServerHost()
-        Vue.$log.info('opening websocket ', state)
-        Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
-          store: store,
-          format: 'json',
-          reconnection: true,
-          reconnectionDelay: 6000
+      initData(commit, state, dispatch)
+        .catch(e => console.error('initData', e))
+        .finally(() => {
+          TrackJS.addMetadata('user', state.name)
+          const hostName = getServerHost()
+          Vue.$log.info('opening websocket ', state)
+          Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
+            store: store,
+            format: 'json',
+            reconnection: true,
+            reconnectionDelay: 6000
+          })
+          resolve()
         })
-        resolve()
-      })
     })
   },
   login({ commit, dispatch }, userInfo) {
@@ -137,12 +162,11 @@ const actions = {
     })
   },
   logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true')
         .then(() => { Vue.$log.info('done logout quicksight') })
       logout().catch((e) => {
         Vue.$log.error(e)
-        reject(e)
       }).finally(() => {
         commit('REMOVE_USER')
         vm.reset()
@@ -162,7 +186,7 @@ const actions = {
   setAlerts({ commit }, alerts) {
     commit('SET_ALERTS', alerts)
   },
-  fetchAlerts({ commit, state }) {
+  fetchAlerts({ commit, state, getters }) {
     return traccar.alerts(function(alerts) {
       const result = []
       alerts.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
@@ -174,26 +198,28 @@ const actions = {
       })
       commit('SET_ALERTS', result)
 
-      vm.$data.devices.forEach(d => {
-        traccar.alertsByDevice(d.id, function(alerts) {
-          alerts.forEach(a => {
-            const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
-            if (a.always === false) {
-              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                traccar.geofencesByDevice(d.id, function(geofences) {
-                  alert.devices.push({ data: d, geofences: geofences })
-                })
-              } else {
-                alert.devices.push({ data: d })
+      getters.devices.forEach(d => {
+        traccar.alertsByDevice(d.id)
+          .then(({ data }) => {
+            data.forEach(a => {
+              const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
+              if (a.always === false) {
+                if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                  traccar.geofencesByDevice(d.id, function(geofences) {
+                    alert.devices.push({ data: d, geofences: geofences })
+                  })
+                } else {
+                  alert.devices.push({ data: d })
+                }
               }
-            }
+            })
           })
-        })
+          .catch(e => Vue.$log.error(e, d, 'moving on...'))
       })
 
       state.alerts.forEach(a => {
         if (a.notification.always === true) {
-          vm.$data.devices.forEach(d => {
+          getters.devices.forEach(d => {
             if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
               traccar.geofencesByDevice(d.id, function(geofences) {
                 a.devices.push({ data: d, geofences: geofences })
@@ -206,7 +232,7 @@ const actions = {
       })
     })
   },
-  processGroups({ commit, state }) {
+  processGroups({ state }) {
     new Promise((resolve, reject) => {
       traccar.geofencesByGroup(state.groups.map(g => g.id), function(results) {
         results.forEach(result => {
@@ -244,6 +270,8 @@ const actions = {
         Vue.$log.error(e)
         reject(e)
       })
+    }).then(r => {
+      Vue.$log.debug(r)
     })
   },
   removeUser({ commit }) {
@@ -251,6 +279,8 @@ const actions = {
       commit('REMOVE_USER')
       resolve()
     })
+  },
+  processDevices() {
   }
 }
 export default {

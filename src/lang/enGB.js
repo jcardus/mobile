@@ -108,7 +108,7 @@ export default {
     user_password_lengh: 'The password can not be less than 6 digits'
   },
   settings: {
-    showLabels: 'Mostrar nombre del vehículo',
+    showLabels: 'Show vehicles name',
     search: 'Search...',
     empty_list: 'Nothing found',
     refresh: 'Recarregar aplicação',

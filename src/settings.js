@@ -8,5 +8,14 @@ module.exports = {
   viewSpeedAlerts: true,
   maxSpeedType: 'road',
   showLabels: false,
-  driverChatEnabled: false
+  driverChatEnabled: false,
+  fabricateIgnition: true,
+  animateMarkers: true,
+  showVehicleList: true,
+  showSlider: true,
+  truck3d: false,
+  show3dBuildings: true,
+  experiment: true,
+  debugRoutes: false,
+  mapBoxRouteMatch: false
 }

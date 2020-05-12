@@ -331,7 +331,7 @@ export default {
     ...mapGetters(['alerts', 'geofences']),
     isMobile() { return lnglat.isMobile() },
     devices: function() {
-      return vm.$data.devices.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)
+      return vm.$store.getters.devices.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     areaGeofences: function() {
       return this.geofences.filter(g => g.area.startsWith('POLYGON'))

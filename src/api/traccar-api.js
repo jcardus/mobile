@@ -21,44 +21,17 @@ const s3_report_lambda_url = 'https://' + serverHost + '/api_reports'
 const api_helper_lambda_url = 'https://' + serverHost + '/api_helper'
 
 function invokeApi(url, onFulfill, onError) {
-  try {
-    return new Promise((resolve, reject) => {
-      axios.get(url, { withCredentials: true }) // send cookies when cross-domain requests)
-        .then(response => {
-          store.dispatch('user/connectionOk', { state: true }).then(() => {
-            if (onFulfill) {
-              onFulfill(response.data)
-            }
-            resolve(response.data)
-          })
-        })
-        .catch(reason => {
-          store.dispatch('user/connectionOk', { state: false }).then(() => {
-            if (onError) {
-              onError(reason)
-            }
-            if (reject) {
-              reject(reason)
-            }
-          })
-        })
-    })
-  } catch (e) {
-    onError(e)
-  }
-}
-
-function invokeApiMultiple(urls, onFulfill, onError) {
-  try {
-    return new Promise((resolve, reject) => {
-      axios.all(urls).then(axios.spread((...responses) => {
+  return new Promise((resolve, reject) => {
+    axios.get(url, { withCredentials: true }) // send cookies when cross-domain requests)
+      .then(response => {
         store.dispatch('user/connectionOk', { state: true }).then(() => {
           if (onFulfill) {
-            onFulfill(responses)
+            onFulfill(response.data)
           }
-          resolve(responses)
+          resolve(response.data)
         })
-      })).catch(reason => {
+      })
+      .catch(reason => {
         store.dispatch('user/connectionOk', { state: false }).then(() => {
           if (onError) {
             onError(reason)
@@ -68,10 +41,7 @@ function invokeApiMultiple(urls, onFulfill, onError) {
           }
         })
       })
-    })
-  } catch (e) {
-    onError(e)
-  }
+  })
 }
 
 function invokeApiPost(url, body, onFulfill, onError) {
@@ -95,6 +65,19 @@ function invokeDeleteApi(url, id, onFulfill) {
       .then(onFulfill(id))
       .catch(error => {
         reject(error)
+      })
+  })
+}
+
+function invokeApiMultiple(urls) {
+  return new Promise((resolve, reject) => {
+    axios.all(urls)
+      .then(axios.spread((...responses) => {
+        resolve(responses.map(r => r.data))
+      }))
+      .catch(e => {
+        Vue.$log.error(e)
+        reject(e)
       })
   })
 }
@@ -128,10 +111,10 @@ export const traccar = {
       .then(() => ok(report_id))
       .catch(reason => nok(report_id, reason))
   },
-  report_events(from, to, deviceIds, types, onFulfill) {
+  report_events(from, to, deviceIds, types) {
     deviceIds = deviceIds.map(d => 'deviceId=' + d).join('&')
     types = types.map(n => 'type=' + encodeURI(n)).join('&')
-    return invokeApi(`${events}?${deviceIds}&${types}&from=${from}&to=${to}`, onFulfill)
+    return axios.get(`${events}?${deviceIds}&${types}&from=${from}&to=${to}`, { withCredentials: true }) // send cookies when cross-domain requests)
   },
   devices: function(onFulfill, onError) {
     invokeApi(devices, onFulfill, onError)
@@ -220,16 +203,10 @@ export const traccar = {
   geofences: function(onFulfill, onError) {
     invokeApi(geoFences, onFulfill, onError)
   },
-  geofencesByGroup: function(groups, onFulfill, onError) {
+  geofencesByGroup: function(groups) {
     Vue.$log.debug('geofencesByGroup')
     const groupsUrl = groups.map(groupId => axios.get(geoFences + '?groupId=' + groupId, { withCredentials: true }))
-
-    invokeApiMultiple(groupsUrl,
-      function(responses) {
-        const resultData = responses.map(r => r.data)
-        onFulfill(resultData)
-      },
-      onError)
+    return invokeApiMultiple(groupsUrl)
   },
   geofencesByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
@@ -240,14 +217,8 @@ export const traccar = {
         })
     })
   },
-  alertsByDevice: function(deviceId, onFulfill) {
-    return new Promise((resolve, reject) => {
-      axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true })
-        .then(response => onFulfill(response.data))
-        .catch(error => {
-          reject(error)
-        })
-    })
+  alertsByDevice: function(deviceId) {
+    return axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true })
   },
   alerts(resolve) {
     return invokeApi(alerts, resolve)
@@ -282,17 +253,10 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  addAllPermissions: function(permissionsToAdd, onFulfill, onError) {
+  addAllPermissions: function(permissionsToAdd) {
     Vue.$log.debug(permissionsToAdd)
-
     const permissionsUrls = permissionsToAdd.map(permission => axios.post(permissions, permission, { withCredentials: true }))
-
-    invokeApiMultiple(permissionsUrls,
-      function(responses) {
-        const resultData = responses.map(r => r.data)
-        onFulfill(resultData)
-      },
-      onError)
+    return invokeApiMultiple(permissionsUrls)
   },
   deletePermission: function(permission, onFulfill) {
     Vue.$log.debug(permission)
@@ -302,17 +266,10 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  deleteAllPermissions: function(permissionsToDelete, onFulfill, onError) {
+  deleteAllPermissions: function(permissionsToDelete) {
     Vue.$log.debug(permissionsToDelete)
-
     const permissionsUrls = permissionsToDelete.map(permission => axios.delete(permissions, { data: permission, withCredentials: true }))
-
-    invokeApiMultiple(permissionsUrls,
-      function(responses) {
-        const resultData = responses.map(r => r.data)
-        onFulfill(resultData)
-      },
-      onError)
+    return invokeApiMultiple(permissionsUrls)
   },
   groups: function(userId, onFulfill, onError) {
     invokeApi(groups + '?userId=' + userId, onFulfill, onError)
@@ -339,16 +296,10 @@ export const traccar = {
   drivers: function(userId, onFulfill, onError) {
     invokeApi(drivers + '?userId=' + userId, onFulfill, onError)
   },
-  driversByGroup: function(groups, onFulfill, onError) {
+  driversByGroup: function(groups) {
     Vue.$log.debug('driversByGroup')
     const groupsUrl = groups.map(groupId => axios.get(drivers + '?groupId=' + groupId, { withCredentials: true }))
-
-    invokeApiMultiple(groupsUrl,
-      function(responses) {
-        const resultData = responses.map(r => r.data)
-        onFulfill(resultData)
-      },
-      onError)
+    return invokeApiMultiple(groupsUrl)
   },
   addDriver: function(driver, onFulfill) {
     axios.post(drivers, driver, { withCredentials: true })
@@ -374,16 +325,19 @@ export const traccar = {
   getSession() {
     return invokeApi(baseUrl + 'session')
   },
-  getInitData: function(userId, onFulfill, onError) {
+  getInitData: function(userId) {
     const requestDevices = axios.get(devices, { withCredentials: true })
     const requestGeofences = axios.get(geoFences, { withCredentials: true })
     const requestGroups = axios.get(groups + '?userId=' + userId, { withCredentials: true })
     const requestDrivers = axios.get(drivers + '?userId=' + userId, { withCredentials: true })
-
-    invokeApiMultiple([requestDevices, requestGeofences, requestGroups, requestDrivers],
-      function(responses) {
-        onFulfill(responses[0].data, responses[1].data, responses[2].data, responses[3].data)
-      },
-      onError)
+    return new Promise(resolve => {
+      axios.all([requestDevices, requestGeofences, requestGroups, requestDrivers])
+        .then(axios.spread((...responses) => {
+          resolve(responses)
+        }))
+        .catch(e => {
+          Vue.$log.error(e)
+        })
+    })
   }
 }

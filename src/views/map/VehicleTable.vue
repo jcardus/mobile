@@ -108,7 +108,7 @@
               <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.address }}</span>
             </div>
             <div style="padding-top: 6px;float:left">
-              <span>{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
+              <span v-if="scope.row.lastUpdate">{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
             <div style="float: right">
               <immobilize-button
                 style="padding:0"
@@ -169,7 +169,6 @@ export default {
       animating: false,
       data: [],
       selectedDevice: null,
-      selected: -1,
       devicesBackup: this.devices,
       propagate: true,
       lastUpdate: new Date(),
@@ -207,7 +206,7 @@ export default {
       return lnglat.isMobile()
     },
     devices() {
-      return vm.$data.devices
+      return vm.$store.getters.devices
     },
     devicesOnCount() {
       return this.devicesOn.length
@@ -251,6 +250,11 @@ export default {
           return Object.keys(row).some(function(key) {
             return String(row[key]).toLowerCase().indexOf(filterKey) > -1
           })
+        })
+      }
+      if (self.selectedDevice != null && self.historyMode) {
+        devices = devices.filter(function(row) {
+          return row.id === self.selectedDevice.id
         })
       }
       devices = devices.slice().sort(function(a, b) {
@@ -298,11 +302,9 @@ export default {
   },
   methods: {
     showRoutesChanged() {
-      if (this.historyMode) {
-        if (this.selectedDevice) {
-          this.filterKey = this.selectedDevice.name
-        }
-      } else { this.filterKey = '' }
+      if (!this.historyMode) {
+        this.selectedDevice = null
+      }
     },
     getBgColor: function(device) {
       if (this.getDeviceState(device) === 'Disconnected') {
@@ -318,8 +320,7 @@ export default {
       return styles.danger
     },
     getDeviceState: function(device) {
-      if (device.outdated ||
-        (!device.lastUpdate || this.$moment().diff(this.$moment(device.lastUpdate), 'days') > 5)) {
+      if (device.fixDays > 5) {
         return 'Disconnected'
       }
       if (device.speed > 2 && !device.outdated) {
@@ -362,7 +363,6 @@ export default {
         serverBus.$emit('showRoutesChanged')
       } else {
         if (device) {
-          this.selected = device.id
           this.selectedDevice = device
           Vue.$log.debug('device=', device)
           vm.$store.dispatch('map/togglePlaying').then(() =>
@@ -397,7 +397,7 @@ export default {
       lnglat.fitBounds(devices)
     },
     deviceSelectedOnMap(device) {
-      this.selected = device.id
+      this.selectedDevice = device
     },
     hasNearestPOI(device) {
       return device.poi

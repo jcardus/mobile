@@ -63,7 +63,8 @@
 
 <script>
 
-import { vm, serverBus, sharedData, settings } from '../../main'
+import { vm, serverBus, sharedData } from '../../main'
+import settings from '../../settings'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'

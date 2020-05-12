@@ -365,8 +365,8 @@ export function addLayers(map) {
       type: 'geojson',
       data: vm.$static.positionsSource,
       cluster: true,
-      clusterMaxZoom: 10, // Max zoom to cluster points on
-      clusterRadius: 20,
+      clusterMaxZoom: 15, // Max zoom to cluster points on
+      clusterRadius: 50,
       clusterProperties: { // keep separate counts for each magnitude category in a cluster
         'gray': ['+', ['case', gray, 1, 0]],
         'green': ['+', ['case', green, 1, 0]],
@@ -408,14 +408,12 @@ export function addLayers(map) {
     map.addLayer({
       'id': 'clusters',
       'source': source,
-      'type': 'symbol',
+      'type': 'circle',
       filter: ['has', 'point_count'],
-      layout: {
-        'icon-allow-overlap': true,
-        'icon-image': 'reddefault0000'
-      },
       paint: {
-        'icon-opacity': 0
+        'circle-radius': 30,
+        'circle-color': 'white',
+        'circle-opacity': 0.1
       }
     })
   } else { Vue.$log.warn('layer clusters already exists...') }

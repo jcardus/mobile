@@ -19,7 +19,8 @@ import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
-import { serverBus, settings, vm } from '../../main'
+import { serverBus, vm } from '../../main'
+import settings from '../../settings'
 import * as lnglat from '../../utils/lnglat'
 import { MapboxCustomControl } from '../../utils/lnglat'
 import Vue from 'vue'
@@ -107,7 +108,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels', 'devices', 'isPlaying']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -138,9 +139,6 @@ export default {
     geofencesSource() { return this.$root.$static.geofencesSource },
     positions() {
       return this.$root.$store.state.socket.message.positions
-    },
-    devices() {
-      return this.$root.$data.devices
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -194,7 +192,7 @@ export default {
   },
   timers: {
     ping: { time: 30000, autostart: true, repeat: true },
-    setTime: { time: 2000, autostart: true, repeat: true }
+    setTime: { time: 5000, autostart: true, repeat: true }
   },
   methods: {
     setTime() {
@@ -401,35 +399,6 @@ export default {
       }
     },
     addLayers: function() {
-      const self = this
-      if (settings.truck3d) {
-        this.$static.map.addLayer({
-          id: 'custom_layer',
-          type: 'custom',
-          renderingMode: '3d',
-          onAdd: function(map, mbxContext) {
-            // eslint-disable-next-line no-undef
-            window.tb = new Threebox(
-              map,
-              mbxContext,
-              { defaultLights: true }
-            )
-            const options = {
-              obj: 'img/Truck.obj',
-              mtl: 'img/Truck.mtl',
-              scale: 10
-            }
-            window.tb.loadObj(options, function(model) {
-              self.truck = model.setCoords(self.origin)
-              self.truck.visible = false
-              window.tb.add(self.truck)
-            })
-          },
-          render: function() {
-            window.tb.update()
-          }
-        })
-      }
       lnglat.addLayers(this.$static.map)
     },
     addControls: function() {
@@ -470,8 +439,9 @@ export default {
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
     onMoveEnd: function() {
-      if (!vm.$data.isPlaying) {
-        this.$log.debug('moveend storing cookie... isPlaying: ', vm.$data.isPlaying)
+      this.$log.info('moveend', this.isPlaying)
+      if (!this.isPlaying) {
+        this.$log.debug('moveend storing cookie... isPlaying: ', this.isPlaying)
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
@@ -487,21 +457,29 @@ export default {
       this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
+
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
-      this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
-      this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
-      this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
+      this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
+
+      this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'pois', this.onClickTouchPois)
+      this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
+
+      this.$static.map.on('mouseenter', 'clusters', this.mouseEnter)
       this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
-      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.on('mouseenter', consts.vehiclesLayer, this.mouseEnter)
+
+      this.$static.map.on('mouseleave', 'clusters', this.mouseLeave)
+      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.on('mouseleave', consts.vehiclesLayer, this.mouseLeave)
+
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
       this.$static.map.on('draw.modechange', this.drawModeChange)
       this.$static.map.on('data', this.onData)
+      this.$static.map.on('styleimagemissing', this.styleImageMissing)
       serverBus.$on('dataLoaded', this.initData)
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
@@ -519,12 +497,12 @@ export default {
     unsubscribeEvents() {
       this.$static.map.off('load', this.onMapLoad)
       this.$static.map.off('touchstart', consts.vehiclesLayer, this.onTouchUnclustered)
+      this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
-      this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
       this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
       this.$static.map.off('touchstart', 'pois', this.onClickTouchPois)
@@ -564,12 +542,25 @@ export default {
         this.finishLoading()
       }
     },
-    onData() {
+    onData(e) {
+      if (e.sourceId !== lnglat.source || !e.isSourceLoaded) return
       lnglat.updateMarkers()
     },
     onTouchUnclustered: function(e) {
       this.$log.debug('touchUnclustered', e)
       this.onClickTouchUnclustered(e)
+    },
+    onClickTouch(e) {
+      this.$log.warn('clickTouchClustered', e)
+      const features = vm.$static.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
+      const clusterId = features[0].properties.cluster_id
+      vm.$static.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
+        if (err) { return }
+        vm.$static.map.easeTo({
+          center: features[0].geometry.coordinates,
+          zoom: zoom + 1
+        })
+      })
     },
     onClickTouchUnclustered: function(e) {
       this.$log.debug('clickUnclustered', e)
@@ -579,18 +570,6 @@ export default {
         this.deviceSelected(device)
         serverBus.$emit('deviceSelectedOnMap', device)
       }
-    },
-    onClickTouch: function(e) {
-      Vue.$log.debug('clickTouch')
-      const features = vm.$static.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
-      const clusterId = features[0].properties.cluster_id
-      this.$static.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
-        if (err) { return }
-        vm.$static.map.easeTo({
-          center: features[0].geometry.coordinates,
-          zoom: zoom + 1
-        })
-      })
     },
     truckFollowPath: function(coordinates, destination, distance) {
       const options = {
@@ -724,27 +703,37 @@ export default {
           'coordinates': [position.longitude, position.latitude]
         }
       }
+      if (!position.attributes.ignition) {
+        // position.lastUpdate = devices.lastIgnOff(position.deviceId)
+      }
       this.updateFeature(feature, device, position)
       return feature
     },
     updateFeature(feature, device, position) {
       feature.properties.course = position.course
       feature.properties.outdated = device.outdated = position.outdated
-      feature.properties.ignition = device.ignition = position.attributes.ignition
+      if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
+        feature.properties.ignition = device.ignition = position.attributes.ignition
+        device.lastUpdate = position.fixTime
+      }
       feature.properties.motion = device.motion = position.attributes.motion
       feature.properties.speed = device.speed = position.speed
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
       feature.properties.totalDistance = position.attributes.totalDistance
       feature.properties.hours = position.attributes.hours
-      feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
+      if (device.lastUpdate) {
+        device.fixDays = feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
+      } else {
+        Vue.$log.warn(device.lastUpdate, 'setting fixDays to 100...')
+        feature.properties.fixDays = 100
+      }
       const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
       if (immoValue !== feature.properties.immobilization_active) {
         feature.properties.immobilization_active = immoValue
         this.$store.dispatch('devices/setCommandPending', { device: device.id, pending: false }).then(() => {})
       }
       device.address = position.address
-      device.lastUpdate = position.fixTime
       device.poi = this.findNearestPOI(position)
     },
     processPositions: function(positions) {
@@ -754,8 +743,7 @@ export default {
         const device = self.devices.find(e => e.id === position.deviceId)
         if (!feature) {
           if (!device) {
-            Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position)
-            self.$store.dispatch('user/logout').then(() => location.reload())
+            Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position, 'devices', self.devices)
             return
           }
           feature = self.positionToFeature(position, device)
@@ -985,6 +973,9 @@ export default {
         }
       })
       vm.$mount('#vue-poi-popup')
+    },
+    styleImageMissing(e) {
+      console.log('A styleimagemissing event occurred.', e)
     }
   }
 }

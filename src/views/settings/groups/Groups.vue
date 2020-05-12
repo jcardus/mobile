@@ -275,7 +275,7 @@ export default {
     ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'groups']),
     isMobile() { return lnglat.isMobile() },
     devices: function() {
-      return vm.$data.devices
+      return vm.$store.getters.devices
     },
     areaGeofences: function() {
       return this.geofences.filter(g => g.area.startsWith('POLYGON'))
@@ -429,18 +429,16 @@ export default {
       const driversToAdd = this.selectedDrivers.filter(x => !self.selectedGroup.drivers.includes(x))
 
       const driverPermissionsToRemove = driversToRemove.map(d => {
-        const p = {
+        return {
           groupId: self.selectedGroup.id,
           driverId: d
         }
-        return p
       })
       const driverPermissionsToAdd = driversToAdd.map(d => {
-        const p = {
+        return {
           groupId: self.selectedGroup.id,
           driverId: d
         }
-        return p
       })
 
       traccar.deleteAllPermissions(driverPermissionsToRemove
@@ -461,18 +459,16 @@ export default {
       const geofencesToAdd = allGeofences.filter(x => !allOriginalGeofences.includes(x))
 
       const geofencePermissionsToRemove = geofencesToRemove.map(g => {
-        const p = {
+        return {
           groupId: self.selectedGroup.id,
           geofenceId: g
         }
-        return p
       })
       const geofencePermissionsToAdd = geofencesToAdd.map(g => {
-        const p = {
+        return {
           groupId: self.selectedGroup.id,
           geofenceId: g
         }
-        return p
       })
 
       traccar.deleteAllPermissions(geofencePermissionsToRemove
@@ -530,7 +526,7 @@ export default {
     },
     totalVehiclesRederer(row, column, cellValue) {
       if (cellValue) {
-        return vm.$data.devices.filter(d => d.groupId === cellValue).length
+        return vm.$store.getters.devices.filter(d => d.groupId === cellValue).length
       } else {
         return ''
       }
