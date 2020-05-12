@@ -30,9 +30,7 @@ const mutations = {
     state.geofences = geofences
   },
   SET_DEVICES(state, devices) {
-    console.log('SET_DEVICES', devices)
-    // vm.$static.devices = devices
-    state.devices = Object.freeze(devices)
+    state.devices = devices
   },
   SET_USER(state, token) {
     state.name = token.name
