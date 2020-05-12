@@ -169,7 +169,8 @@ export default {
     return {
       map: vm.$static.map,
       draw: null,
-      truck: null
+      truck: null,
+      lastPopup: null
     }
   },
   beforeDestroy() {
@@ -311,18 +312,14 @@ export default {
     showPopup: function(feature, device) {
       const coordinates = feature.geometry.coordinates.slice()
       const description = feature.properties.description
-      this.popUps.forEach(function(v, i, a) {
-        if (a[i] && i !== device.id) { a[i].remove() }
-      })
-      if (this.popUps[device.id]) {
-        this.popUps[device.id].remove()
-      }
+      this.popUps.forEach(p => p.remove())
+      if (this.lastPopup) { this.lastPopup.$destroy() }
       this.popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
         .setLngLat(coordinates)
         .setHTML(description)
         .addTo(this.$static.map)
       const VD = Vue.extend(VehicleDetail)
-      const vm = new VD({
+      this.lastPopup = new VD({
         i18n: i18n,
         data: {
           device: device,
@@ -330,7 +327,7 @@ export default {
         },
         store: this.$store
       })
-      vm.$mount('#vue-vehicle-popup')
+      this.lastPopup.$mount('#vue-vehicle-popup')
 
       if (settings.truck3d) { this.truck.setCoords(coordinates) }
     },

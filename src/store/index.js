@@ -91,7 +91,7 @@ const store = new Vuex.Store({
     },
     SOCKET_RECONNECT(state, count) {
       if (count === 4) {
-        Vue.$log.warn('count = 4, logging out')
+        Vue.$log.warn('count = 8, logging out')
         serverBus.$emit('forceLogout')
       }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
