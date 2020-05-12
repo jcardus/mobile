@@ -52,7 +52,6 @@
       </div>
     </div>
     <f7-popup v-if="isMobile" :opened="popupOpened" @popup:closed="popupOpened = false">
-      <messages></messages>
     </f7-popup>
   </div>
 </template>
@@ -68,11 +67,10 @@ import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
 import { clientId } from '../../utils/mapillary'
 import { mapGetters } from 'vuex'
-import Messages from '../../framework7/pages/messages'
 
 export default {
   name: 'VehicleDetail',
-  components: { IOdometer, ImmobilizeButton, Messages },
+  components: { IOdometer, ImmobilizeButton },
   static() {
     return {
       mly: null
