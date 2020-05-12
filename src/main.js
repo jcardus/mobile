@@ -52,7 +52,7 @@ Vue.use(Chat)
 const isProduction = process.env.NODE_ENV === 'production'
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? 'info' : 'info',
+  logLevel: isProduction ? 'info' : 'debug',
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,

@@ -108,7 +108,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels', 'devices']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels', 'devices', 'isPlaying']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -439,8 +439,9 @@ export default {
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
     onMoveEnd: function() {
-      if (!vm.$data.isPlaying) {
-        this.$log.debug('moveend storing cookie... isPlaying: ', vm.$data.isPlaying)
+      this.$log.info('moveend', this.isPlaying)
+      if (!this.isPlaying) {
+        this.$log.debug('moveend storing cookie... isPlaying: ', this.isPlaying)
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
@@ -456,16 +457,23 @@ export default {
       this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
+
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
-      this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
-      this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
-      this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
+      this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
+
+      this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'pois', this.onClickTouchPois)
+      this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
+
+      this.$static.map.on('mouseenter', 'clusters', this.mouseEnter)
       this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
-      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.on('mouseenter', consts.vehiclesLayer, this.mouseEnter)
+
+      this.$static.map.on('mouseleave', 'clusters', this.mouseLeave)
+      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.on('mouseleave', consts.vehiclesLayer, this.mouseLeave)
+
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)
@@ -489,12 +497,12 @@ export default {
     unsubscribeEvents() {
       this.$static.map.off('load', this.onMapLoad)
       this.$static.map.off('touchstart', consts.vehiclesLayer, this.onTouchUnclustered)
+      this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
       this.$static.map.off('pitch', this.onPitch)
-      this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
       this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
       this.$static.map.off('touchstart', 'pois', this.onClickTouchPois)
@@ -534,12 +542,25 @@ export default {
         this.finishLoading()
       }
     },
-    onData() {
+    onData(e) {
+      if (e.sourceId !== lnglat.source || !e.isSourceLoaded) return
       lnglat.updateMarkers()
     },
     onTouchUnclustered: function(e) {
       this.$log.debug('touchUnclustered', e)
       this.onClickTouchUnclustered(e)
+    },
+    onClickTouch(e) {
+      this.$log.warn('clickTouchClustered', e)
+      const features = vm.$static.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
+      const clusterId = features[0].properties.cluster_id
+      vm.$static.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
+        if (err) { return }
+        vm.$static.map.easeTo({
+          center: features[0].geometry.coordinates,
+          zoom: zoom + 1
+        })
+      })
     },
     onClickTouchUnclustered: function(e) {
       this.$log.debug('clickUnclustered', e)
@@ -549,18 +570,6 @@ export default {
         this.deviceSelected(device)
         serverBus.$emit('deviceSelectedOnMap', device)
       }
-    },
-    onClickTouch: function(e) {
-      Vue.$log.debug('clickTouch')
-      const features = vm.$static.map.queryRenderedFeatures(e.point, { layers: ['clusters'] })
-      const clusterId = features[0].properties.cluster_id
-      this.$static.map.getSource('positions').getClusterExpansionZoom(clusterId, function(err, zoom) {
-        if (err) { return }
-        vm.$static.map.easeTo({
-          center: features[0].geometry.coordinates,
-          zoom: zoom + 1
-        })
-      })
     },
     truckFollowPath: function(coordinates, destination, distance) {
       const options = {
