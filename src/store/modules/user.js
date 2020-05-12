@@ -8,6 +8,7 @@ import store from '../index'
 import VueNativeSock from 'vue-native-websocket'
 import { backEndHostName } from '../../utils/consts'
 import { getServerHost } from '../../api'
+import settings from '../../settings'
 
 const state = {
   name: '',
@@ -31,6 +32,10 @@ const mutations = {
   },
   SET_DEVICES(state, devices) {
     state.devices = devices
+    if (devices.length > settings.maxMarkersForAnimation) {
+      Vue.$log.debug(devices.length, 'devices > ', settings.maxMarkersForAnimation, 'disabling marker animation')
+      settings.animateMarkers = false
+    }
   },
   SET_USER(state, token) {
     state.name = token.name

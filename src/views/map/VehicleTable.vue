@@ -272,8 +272,8 @@ export default {
             b = b['groupName'] ? b['groupName'] : 'z'
             break
           case 'order_by_last_update':
-            a = self.$moment(a['lastUpdate'])
-            b = self.$moment(b['lastUpdate'])
+            a = a['lastUpdate']
+            b = b['lastUpdate']
             return (a === b ? 0 : a > b ? -1 : 1)
         }
         return (a === b ? 0 : a > b ? 1 : -1)
