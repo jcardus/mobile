@@ -2,20 +2,9 @@
   <div class="vehicleDetail">
     <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
-      <el-row style="vertical-align: center">
-        <el-col :span="24">
-          <div class="title">
-            {{ device.name }}
-          </div>
-        </el-col>
-        <el-col :span="0">
-          <el-button
-            icon="el-icon-chat-line-square"
-            style="float:right"
-            type="text"
-            @click="clickDriver"
-          >{{ device.contact }}</el-button></el-col>
-      </el-row>
+      <div class="title">
+        {{ device.name }}
+      </div>
       <div class="content">
         {{ feature.properties.address }}
         <div style="padding-top: 5px;">
@@ -51,8 +40,6 @@
         </div>
       </div>
     </div>
-    <f7-popup v-if="isMobile" :opened="popupOpened" @popup:closed="popupOpened = false">
-    </f7-popup>
   </div>
 </template>
 
