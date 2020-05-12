@@ -192,7 +192,7 @@ export default {
   },
   timers: {
     ping: { time: 30000, autostart: true, repeat: true },
-    setTime: { time: 2000, autostart: true, repeat: true }
+    setTime: { time: 5000, autostart: true, repeat: true }
   },
   methods: {
     setTime() {
