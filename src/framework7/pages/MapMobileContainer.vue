@@ -11,7 +11,7 @@
     </f7-fab>
     <div :style="'height: calc(100% - ' + height + 'px)'">
       <VueMap></VueMap>
-      <f7-row style="padding-left: 55px; padding-right: 40px"><f7-col>
+      <f7-row style="padding-left: 50px; padding-right: 35px; height: 20px"><f7-col>
         <f7-range
           v-if="showSlider"
           id="range"

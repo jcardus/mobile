@@ -16,7 +16,6 @@ import * as lnglat from './utils/lnglat'
 import './amplify'
 import VueTimers from 'vue-timers'
 import { SharedData } from './utils/utils'
-import Chat from 'vue-beautiful-chat'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
@@ -47,7 +46,6 @@ Vue.config.errorHandler = (err, vm, info) => {
 }
 
 Vue.use(LoadScript)
-Vue.use(Chat)
 
 const isProduction = process.env.NODE_ENV === 'production'
 const options = {

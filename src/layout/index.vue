@@ -6,7 +6,6 @@
       <side-bar />
       <app-main class="divMain" />
     </div>
-    <chat v-if="driverChatEnabled"></chat>
   </div>
 </template>
 
@@ -19,7 +18,6 @@ import Profile from './components/Profile'
 import * as notifications from '../utils/notifications'
 import { mapGetters } from 'vuex'
 import { serverBus } from '../main'
-import Chat from '../components/ChatWindow'
 import settings from '../settings'
 
 export default {
@@ -28,8 +26,7 @@ export default {
     AppMain,
     Navbar,
     SideBar,
-    Profile,
-    Chat
+    Profile
   },
   data() {
     return {

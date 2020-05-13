@@ -1,63 +1,44 @@
 <template>
   <div>
-    <span class="header">
-      <el-row>
-        <el-col :span="12">
-          {{ name }}</el-col>
-        <el-col :span="12">
-          <el-switch
-            v-show="!isMobile"
-            :value="true"
-            style="float:right"
-            @change="toggleChanged"
-          >
-          </el-switch>
-          <f7-toggle
-            v-if="isMobile"
-            :checked="checked"
-            style="float:right"
-            type="checkbox"
-            @change="toggleChanged"
-          >
-          </f7-toggle></el-col></el-row>
-    </span>
+    {{ name }}
+    <el-switch
+      v-show="!isMobile"
+      :value="true"
+      style="float:right"
+      @change="toggleChanged"
+    >
+    </el-switch>
+    <f7-toggle
+      v-if="isMobile"
+      :checked="checked"
+      style="float:right"
+      type="checkbox"
+      @change="toggleChanged"
+    >
+    </f7-toggle>
 
-    <el-row style="padding-top: 5px">
-      <el-col :span="12">
-
+    <div style="padding-top: 5px; overflow: hidden; width:100%">
+      <div style="float:left; ">
         <label>
           <input v-if="isMobile" v-model="_minDate" type="date">
           <el-date-picker v-else v-model="_minDate"></el-date-picker>
         </label>
-
-      </el-col>
-      <el-col :span="12">
-        <div style="float:right">
-          <label>
-            <input v-if="isMobile" v-model="_maxDate" style="float: right" type="date">
-            <el-date-picker v-else v-model="_maxDate"></el-date-picker>
-          </label>
-        </div>
-
-      </el-col>
-    </el-row>
-    <div style="height: 10px"></div>
-    <el-row>
-      <el-col :span="17" style="max-height: 42px; color:gray" class="textFormat">
-        {{ formattedDate }}
-        <br>
-        <div style="white-space: nowrap;">
-          {{ formatAddress }}</div>
-      </el-col>
-      <el-col :span="7">
-        <span v-if="!isMobile" class="textFormat">
-        </span>
-        <span class="textFormat" style="float:right">{{ (isMobile? '' : $t('map.totalDistance') + ':') }}
-          {{ totalDistance }} Kms
-        </span></el-col>
-      <div style="float:left; padding-top: 10px; max-height:52px; overflow: hidden">
       </div>
-    </el-row>
+      <div style="float:right">
+        <label>
+          <input v-if="isMobile" v-model="_maxDate" style="float: right" type="date">
+          <el-date-picker v-else v-model="_maxDate"></el-date-picker>
+        </label>
+      </div>
+    </div>
+    <div class="textFormat" style="padding-top: 5px; overflow: hidden; width:100%">
+      {{ formattedDate }}
+      <div style="float:right">
+        {{ (isMobile? '' : $t('map.totalDistance') + ':') }}
+        {{ totalDistance }} Kms
+      </div>
+      <div style="white-space: nowrap;">{{ formatAddress }}</div>
+    </div>
   </div>
 </template>
 
@@ -905,7 +886,6 @@ export default {
   .textFormat {
     color: gray;
     font-size: 14px;
-
   }
 
 </style>
