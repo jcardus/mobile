@@ -191,7 +191,6 @@ export default {
 </script>
 
 <style lang="scss">
-  @import '../../styles/element-variables';
   .vehicleDetail {
     padding: 0;
     z-index:999 ;
@@ -234,16 +233,15 @@ export default {
     float:left;
     font-style: normal;
     font-weight: bold;
-    font-size: large;
-    vertical-align: center;
-  }
-  .driver {
-    float:right;
-    font-weight: normal;
+    font-size: 22px;
+    color: #32325D;
+    padding-bottom: 10px;
+    padding-top: 1px;
+    overflow: auto;
   }
   .content {
     font-size: 13px;
-    color: $--color-info;
+    color: #8898AA;
     float:left;
     width: 100%;
     overflow: auto;

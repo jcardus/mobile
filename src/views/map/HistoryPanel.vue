@@ -4,7 +4,7 @@
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
-      <div style="padding-left:48px; padding-right:15px">
+      <div style="padding-left:40px; padding-right:20px">
         <label>
           <input
             v-model="embeddedSliderPos"
@@ -224,7 +224,7 @@ export default {
     border-right:0;
   }
   .playButtons {
-    padding-top: 5px;
+    padding-top: 10px;
     padding-right: 20px;
     padding-left: 10px;
     color:$--color-primary;
