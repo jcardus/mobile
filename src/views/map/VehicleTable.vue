@@ -169,7 +169,6 @@ export default {
       animating: false,
       data: [],
       selectedDevice: null,
-      devicesBackup: this.devices,
       propagate: true,
       lastUpdate: new Date(),
       sortColumns: {},
@@ -192,7 +191,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'geofences', 'currentTime']),
+    ...mapGetters(['historyMode', 'geofences', 'currentTime', 'devices']),
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },
@@ -204,9 +203,6 @@ export default {
     },
     isMobile() {
       return lnglat.isMobile()
-    },
-    devices() {
-      return vm.$store.getters.devices
     },
     devicesOnCount() {
       return this.devicesOn.length
@@ -223,13 +219,10 @@ export default {
     devicesOn: function() {
       return this.devices.filter(d => this.getDeviceState(d) === 'Moving')
     },
-    positions() {
-      return vm.$data.positions
-    },
     map() {
       return vm.$data.map
     },
-    filteredVehicles: function() {
+    filteredVehicles() {
       const self = this
       const filterKey = this.filterKey && this.filterKey.toLowerCase()
       const filterState = this.filterState
@@ -278,7 +271,6 @@ export default {
         }
         return (a === b ? 0 : a > b ? 1 : -1)
       })
-
       return devices
     },
     pois: function() {
@@ -350,11 +342,6 @@ export default {
         return value
       }
       return Math.round(value)
-    },
-    findFeatureByDeviceId(deviceId) {
-      return this.positionsSource.features.find(function(e) {
-        return e.properties.deviceId === deviceId
-      })
     },
     vehicleSelected: function(device) {
       if (this.historyMode) {

@@ -714,7 +714,8 @@ export default {
         device.lastUpdate = position.fixTime
       }
       feature.properties.motion = device.motion = position.attributes.motion
-      feature.properties.speed = device.speed = position.speed
+      feature.properties.speed = position.speed
+      this.$store.dispatch('user/updateDeviceSpeed', { device, value: position.speed })
       feature.properties.address = position.address
       feature.properties.fixTime = position.fixTime
       feature.properties.totalDistance = position.attributes.totalDistance
