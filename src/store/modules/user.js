@@ -63,6 +63,13 @@ const mutations = {
   },
   SET_DRIVERS(state, drivers) {
     state.drivers = drivers
+  },
+  SET_DEVICE_SPEED(state, { device, speed = device.speed }) {
+    const index = state.devices.indexOf(device)
+    state.devices.splice(index, 1, {
+      ...device,
+      speed
+    })
   }
 }
 
@@ -111,6 +118,9 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
+  updateDeviceSpeed({ commit }, { device, value }) {
+    commit('SET_DEVICE_SPEED', { device, speed: value })
+  },
   setGeofences({ commit }, geofences) {
     commit('SET_GEOFENCES', geofences)
   },
