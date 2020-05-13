@@ -1,6 +1,6 @@
 <template>
   <el-tooltip
-    v-if="selectedDevice.attributes.has_immobilization"
+    v-if="selectedDevice && selectedDevice.attributes && selectedDevice.attributes.has_immobilization"
     :content="immobilizationActive ? $t('vehicleTable.de_immobilize') : $t('vehicleTable.immobilize')"
     placement="bottom"
   >
