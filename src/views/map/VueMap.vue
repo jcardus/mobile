@@ -395,9 +395,6 @@ export default {
         }
       }
     },
-    addLayers: function() {
-      lnglat.addLayers(this.$static.map)
-    },
     addControls: function() {
       const map = this.$static.map
       this.$log.debug('adding mapcontrols...')
@@ -457,19 +454,19 @@ export default {
 
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
-      this.$static.map.on('touchstart', consts.vehiclesLayer, this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', lnglat.layers.vehicles, this.onClickTouchUnclustered)
 
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'pois', this.onClickTouchPois)
-      this.$static.map.on('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
+      this.$static.map.on('click', lnglat.layers.vehicles, this.onClickTouchUnclustered)
 
       this.$static.map.on('mouseenter', 'clusters', this.mouseEnter)
       this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
-      this.$static.map.on('mouseenter', consts.vehiclesLayer, this.mouseEnter)
+      this.$static.map.on('mouseenter', lnglat.layers.vehicles, this.mouseEnter)
 
       this.$static.map.on('mouseleave', 'clusters', this.mouseLeave)
       this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
-      this.$static.map.on('mouseleave', consts.vehiclesLayer, this.mouseLeave)
+      this.$static.map.on('mouseleave', lnglat.layers.vehicles, this.mouseLeave)
 
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)

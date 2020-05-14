@@ -24,6 +24,12 @@ const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-str
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
+export const layers = {
+  vehicles: 'vehiclesLayer',
+  labels: 'vehicleLabels',
+  buildings3d: '3dbuildings'
+}
+
 export function refreshMap() {
   if (vm.$static.map.getSource('positions')) {
     vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
@@ -319,44 +325,6 @@ export function addVehiclesLayer(layer, source) {
       }
     }
   })
-  if (layer === consts.vehiclesLayer) {
-    vm.$static.map.addLayer({
-      id: layer + 'labels',
-      type: 'symbol',
-      source: source,
-      filter: ['!=', 'cluster', true],
-      layout: {
-        'text-size': 11,
-        'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
-        'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
-        'text-justify': 'auto',
-        'text-field': ['get', 'text'],
-        'text-transform': 'uppercase',
-        'text-optional': true
-      },
-      paint: {
-        'text-color': 'darkslategrey'
-        // 'text-color': ['case', gray, styles.info, green, styles.success, yellow, styles.warning, styles.danger],
-        // 'text-halo-width': 20
-      }
-    })
-  }
-  showVehicleLabels(store.state.settings.showLabels)
-}
-
-export function showVehicleLabels(show) {
-  vm.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', show ? 'visible' : 'none')
-}
-
-export function fitBounds(devices) {
-  const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
-  if (features.length > 1) {
-    const coords = features.map(f => f.geometry.coordinates)
-    const box = bbox(helpers.lineString(coords))
-    const bounds = [[box[0], box[1]], [box[2], box[3]]]
-    vm.$static.map.fitBounds(bounds, { padding: 30 })
-    updateMarkers()
-  }
 }
 
 export function addLayers(map) {
@@ -399,8 +367,29 @@ export function addLayers(map) {
       }
     })
   }
-  if (!map.getLayer(consts.vehiclesLayer)) {
-    addVehiclesLayer(consts.vehiclesLayer, source)
+  if (!map.getLayer(layers.vehicles)) {
+    addVehiclesLayer(layers.vehicles, source)
+    vm.$static.map.addLayer({
+      id: layers.labels,
+      type: 'symbol',
+      source: source,
+      filter: ['!=', 'cluster', true],
+      layout: {
+        'text-size': 11,
+        'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
+        'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
+        'text-justify': 'auto',
+        'text-field': ['get', 'text'],
+        'text-transform': 'uppercase',
+        'text-optional': true
+      },
+      paint: {
+        'text-color': 'darkslategrey'
+        // 'text-color': ['case', gray, styles.info, green, styles.success, yellow, styles.warning, styles.danger],
+        // 'text-halo-width': 20
+      }
+    })
+    hideLayer(!store.state.settings.showLabels)
   } else {
     Vue.$log.warn('vehiclesLayer already exists...')
   }
@@ -416,7 +405,7 @@ export function addLayers(map) {
         'circle-opacity': 0.1
       }
     })
-  } else { Vue.$log.warn('layer clusters already exists...') }
+  } else { Vue.$log.error('layer clusters already exists...') }
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
@@ -446,7 +435,9 @@ export function hideLayers(hide) {
     hideLayer('3d-buildings', hide)
   }
   hideLayer(consts.vehiclesLayer, hide)
-  hideLayer(consts.vehiclesLayer + 'labels', hide)
+  if (store.state.settings.showLabels) {
+    hideLayer(consts.vehiclesLayer + 'labels', hide)
+  }
   if (hide) { removeMarkers() }
   refreshGeofences()
 }

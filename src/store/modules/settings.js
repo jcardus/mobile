@@ -16,7 +16,7 @@ const state = {
 const mutations = {
   SET_SHOW_LABELS(state, value) {
     state.showLabels = value
-    lnglat.showVehicleLabels(value)
+    lnglat.hideLayer(lnglat.layers.labels, !value)
   },
   CHANGE_SETTING: (state, { key, value }) => {
     Vue.$log.debug(key + ':' + value)

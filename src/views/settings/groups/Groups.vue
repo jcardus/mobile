@@ -200,7 +200,7 @@
         prop="id"
       >
         <template slot-scope="scope">
-          {{ scope.row.drivers.length }}
+          {{ scope.row.drivers && scope.row.drivers.length }}
         </template>
       </el-table-column>
       <el-table-column
@@ -208,10 +208,10 @@
         align="center"
         prop="geofences"
       >
-        <template slot-scope="scope">
-          {{ scope.row.geofences.geofences.length }}<i class="fas fa-draw-polygon" style="padding-left: 5px; padding-right: 25px"></i>
-          {{ scope.row.geofences.pois.length }}<i class="fas fa-map-marker-alt" style="padding-left: 5px; padding-right: 25px"></i>
-          {{ scope.row.geofences.linegeofences.length }}<i class="fas fa-wave-square" style="padding-left: 5px; padding-right: 25px"></i>
+        <template v-if="scope.row.geofences" slot-scope="scope">
+          {{ scope.row.geofences.geofences && scope.row.geofences.geofences.length }}<i class="fas fa-draw-polygon" style="padding-left: 5px; padding-right: 25px"></i>
+          {{ scope.row.geofences.pois && scope.row.geofences.pois.length }}<i class="fas fa-map-marker-alt" style="padding-left: 5px; padding-right: 25px"></i>
+          {{ scope.row.geofences.linegeofences && scope.row.geofences.linegeofences.length }}<i class="fas fa-wave-square" style="padding-left: 5px; padding-right: 25px"></i>
         </template>
       </el-table-column>
       <el-table-column label="" min-width="50px">

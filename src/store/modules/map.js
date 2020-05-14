@@ -5,8 +5,7 @@ const state = {
   showPOIs: false,
   showLineGeofences: false,
   minPos: 0,
-  maxPos: 1000,
-  isPlaying: false
+  maxPos: 1000
 }
 
 const mutations = {
@@ -24,27 +23,15 @@ const mutations = {
   },
   TOGGLE_LINEGEOFENCES(state) {
     state.showLineGeofences = !state.showLineGeofences
-  },
-  TOGGLE_PLAY(state) {
-    state.isPlaying = !state.isPlaying
-  },
-  SET_PLAYING(state, value) {
-    state.isPlaying = value
   }
 }
 
 const actions = {
-  setPlaying({ commit }, value) {
-    commit('SET_PLAYING', value)
-  },
   setMinPos({ commit }, min) {
     commit('SET_MIN_POS', min)
   },
   setMaxPos({ commit }, max) {
     commit('SET_MAX_POS', max)
-  },
-  togglePlaying({ commit }) {
-    commit('TOGGLE_PLAY')
   },
   toggleGeofences({ commit, state }) {
     commit('TOGGLE_GEOFENCES')
