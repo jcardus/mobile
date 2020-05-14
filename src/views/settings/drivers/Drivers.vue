@@ -10,6 +10,9 @@
               <el-form-item :label="$t('settings.driver_name')" prop="name">
                 <el-input v-model="driverForm.name" />
               </el-form-item>
+              <el-form-item :label="$t('settings.driver_uniqueId')" prop="uniqueId" @change.native="resetDuplicatedKeyValidator">
+                <el-input v-model="driverForm.uniqueId" />
+              </el-form-item>
               <el-form-item :label="$t('settings.driver_email')" prop="email">
                 <el-input v-model="driverForm.email" />
               </el-form-item>
@@ -42,6 +45,13 @@
       <el-table-column
         :label="$t('settings.driver_name')"
         prop="name"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column
+        :label="$t('settings.driver_uniqueId')"
+        prop="uniqueId"
+        :formatter="formatUniqueId"
         sortable
       >
       </el-table-column>
@@ -93,10 +103,17 @@
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 
 export default {
   name: 'Drivers',
   data() {
+    const isDuplicatedKey = (rule, value, callback) => {
+      if (this.isUniqueIdDuplicated) {
+        return callback(new Error())
+      }
+      callback()
+    }
     const checkEmailRequired = (rule, value, callback) => {
       if ((!value || value.length === 0) && this.driverForm.phone.length === 0) {
         return callback(new Error())
@@ -113,14 +130,19 @@ export default {
       isOpenDriverForm: false,
       isNewDriver: true,
       selectedDriver: null,
+      isUniqueIdDuplicated: false,
       driverForm: {
         name: '',
+        uniqueId: '',
         email: '',
         phone: ''
       },
       rules: {
         name: [
           { required: true, message: this.$t('settings.name_required'), trigger: 'blur' }
+        ],
+        uniqueId: [
+          { validator: isDuplicatedKey, message: this.$t('settings.uniqueId_duplicated'), trigger: 'blur' }
         ],
         email: [
           { type: 'email', message: this.$t('settings.email_format_invalid'), trigger: 'blur' },
@@ -142,8 +164,20 @@ export default {
     tableHeaderStyle() {
       return 'font-size: 14px'
     },
+    formatUniqueId(row, column, cellValue) {
+      if (cellValue) {
+        return cellValue.startsWith('_driver_') ? '' : cellValue
+      } else {
+        return ''
+      }
+    },
     handleAddGroup() {
       this.isNewDriver = true
+      this.selectedDriver = null
+      this.driverForm.name = ''
+      this.driverForm.uniqueId = ''
+      this.driverForm.email = ''
+      this.driverForm.phone = ''
       this.isOpenDriverForm = !this.isOpenDriverForm
     },
     handleEdit(row) {
@@ -151,6 +185,7 @@ export default {
       this.selectedDriver = row
 
       this.driverForm.name = row.name
+      this.driverForm.uniqueId = row.uniqueId.startsWith('_driver_') ? '' : row.uniqueId
       this.driverForm.email = row.attributes.email
       this.driverForm.phone = row.attributes.phone
 
@@ -173,12 +208,11 @@ export default {
         type: 'success',
         duration: 5 * 1000
       })
-      const driverDeleted = vm.$store.state.user.drivers.find(g => g.id === id)
-      vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driverDeleted), 1)
+      const driver = vm.$store.state.user.drivers.find(g => g.id === id)
+      this.$store.dispatch('user/removeDriver', driver)
     },
     handleCancelDriverForm() {
       this.isOpenDriverForm = false
-      this.clearFormData()
     },
     handleSubmitDriverForm() {
       this.$refs.driver.validate(valid => {
@@ -186,7 +220,7 @@ export default {
           if (this.isNewDriver) {
             const newDriver = {
               name: this.driverForm.name,
-              uniqueId: this.driverForm.phone.length > 0 ? this.driverForm.phone : this.driverForm.email,
+              uniqueId: this.driverForm.uniqueId.length === 0 ? this.createUniqueID() : this.driverForm.uniqueId,
               attributes: {
                 email: this.driverForm.email,
                 phone: this.driverForm.phone
@@ -198,6 +232,7 @@ export default {
 
             const driver = this.selectedDriver
             driver.name = this.driverForm.name
+            driver.uniqueId = this.driverForm.uniqueId.length === 0 ? this.createUniqueID() : this.driverForm.uniqueId
             driver.attributes.email = this.driverForm.email
             driver.attributes.phone = this.driverForm.phone
 
@@ -211,34 +246,35 @@ export default {
               }
             }
 
-            traccar.updateDriver(driver.id, d, this.driverUpdated)
+            traccar.updateDriver(driver.id, d, this.driverUpdated, this.driverUniqueIdDuplicated)
           }
-
-          this.isOpenDriverForm = false
-          this.clearFormData()
         }
       })
+    },
+    createUniqueID() {
+      return '_driver_' + vm.$store.state.user.userId + '_' + Vue.moment.now()
     },
     driverCreated: function(newDriver) {
       this.$message({
         type: 'success',
         message: this.$t('settings.driver_created')
       })
-      this.clearFormData()
-      vm.$store.state.user.drivers.push(newDriver)
+      this.isOpenDriverForm = false
+      this.$store.dispatch('user/addDriver', newDriver)
     },
     driverUpdated: function() {
       this.$message({
         type: 'success',
         message: this.$t('settings.driver_updated')
       })
-      this.clearFormData()
+      this.isOpenDriverForm = false
     },
-    clearFormData() {
-      this.selectedDriver = null
-      this.driverForm.name = ''
-      this.driverForm.email = ''
-      this.driverForm.phone = ''
+    driverUniqueIdDuplicated: function() {
+      this.isUniqueIdDuplicated = true
+      this.$refs.driver.validate()
+    },
+    resetDuplicatedKeyValidator() {
+      this.isUniqueIdDuplicated = false
     }
   }
 }

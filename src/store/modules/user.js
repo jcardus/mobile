@@ -64,6 +64,13 @@ const mutations = {
   SET_DRIVERS(state, drivers) {
     state.drivers = drivers
   },
+  ADD_DRIVER(state, driver) {
+    state.drivers.push(driver)
+  },
+  REMOVE_DRIVER(state, driver) {
+    const index = state.drivers.indexOf(driver)
+    state.drivers.splice(index, 1)
+  },
   SET_DEVICE(state, device) {
     const index = state.devices.indexOf(device)
     state.devices.splice(index, 1, device)
@@ -123,6 +130,12 @@ const actions = {
   },
   setDevices({ commit }, devices) {
     commit('SET_DEVICES', devices)
+  },
+  addDriver({ commit }, device) {
+    commit('ADD_DRIVER', device)
+  },
+  removeDriver({ commit }, device) {
+    commit('REMOVE_DRIVER', device)
   },
   checkSession({ dispatch, commit }) {
     return new Promise((resolve) => {

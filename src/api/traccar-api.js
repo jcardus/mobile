@@ -311,12 +311,16 @@ export const traccar = {
   deleteDriver: function(driverId, onFulfill) {
     invokeDeleteApi(drivers, driverId, onFulfill)
   },
-  updateDriver: function(driverId, driver, onFulfill) {
+  updateDriver: function(driverId, driver, onFulfill, onDuplicatedEntry) {
     Vue.$log.debug(driver)
     axios.put(drivers + '/' + driverId, driver, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
-        Vue.$log.error(reason)
+        if (reason.response.data.startsWith('Duplicate entry')) {
+          onDuplicatedEntry()
+        } else {
+          Vue.$log.error(reason)
+        }
       })
   },
   ping: function(onFulfill, onError) {
