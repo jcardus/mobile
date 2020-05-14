@@ -67,6 +67,7 @@
     <div class="mobileScroll">
       <el-table
         id="vehicleTable"
+        ref="vehicleTable"
         v-loading.fullscreen.lock="loading"
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -117,7 +118,13 @@
               /></div>
           </template>
         </el-table-column>
+        <el-table-column v-if="historyMode" type="expand" width="1">
+          <template>
+            <trip-table></trip-table>
+          </template>
+        </el-table-column>
       </el-table>
+
     </div>
   </div>
 </template>
@@ -127,12 +134,13 @@ import { serverBus, vm } from '../../main'
 import * as lnglat from '@/utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
+import TripTable from './TripTable'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'VehicleTable',
-  components: { ImmobilizeButton },
+  components: { ImmobilizeButton, TripTable },
   filters: {
     translate(value) {
       return vm.$t(value)
@@ -296,6 +304,10 @@ export default {
     showRoutesChanged() {
       if (!this.historyMode) {
         this.selectedDevice = null
+      } else {
+        const $table = this.$refs.vehicleTable
+        Vue.$log.debug('table=', $table)
+        Vue.$log.debug('device=', this.selectedDevice)
       }
     },
     getBgColor: function(device) {
