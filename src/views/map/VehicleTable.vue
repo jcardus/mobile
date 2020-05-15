@@ -352,7 +352,7 @@ export default {
         if (device) {
           this.selectedDevice = device
           Vue.$log.debug('device=', device)
-          vm.$store.dispatch('map/togglePlaying').then(() =>
+          vm.$store.dispatch('transient/togglePlaying').then(() =>
             serverBus.$emit('deviceSelected', device)
           )
         }
