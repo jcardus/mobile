@@ -6,10 +6,17 @@ const state = {
   dataLoaded: false,
   historyMode: false,
   events: [],
-  stiLoaded: false
+  stiLoaded: false,
+  isPlaying: false
 }
 
 const mutations = {
+  TOGGLE_PLAY(state) {
+    state.isPlaying = !state.isPlaying
+  },
+  SET_PLAYING(state, value) {
+    state.isPlaying = value
+  },
   SET_EVENTS(state, events) {
     Vue.$log.debug(events)
     state.events = events
@@ -25,9 +32,15 @@ const mutations = {
 }
 
 const actions = {
+  setPlaying({ commit }, value) {
+    commit('SET_PLAYING', value)
+  },
+  togglePlaying({ commit }) {
+    commit('TOGGLE_PLAY')
+  },
   toggleHistoryMode(context) {
     context.commit('TOGGLE_HISTORYMODE')
-    context.dispatch('map/setPlaying', false, { root: true })
+    context.dispatch('setPlaying', false)
   },
   setDataLoaded({ commit }) {
     commit('SET_DATA_LOADED')
@@ -67,8 +80,8 @@ const actions = {
       return 'black'
     }
     traccar.report_events(
-      start.toISOString(),
-      end.toISOString(),
+      start,
+      end,
       rootGetters.devices.map(d => d.id),
       types.map(a => a.notification.type)
     ).then(({ data }) => {

@@ -182,9 +182,8 @@ export default {
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData')
-    if (this.device && vm.$static.popUps[this.device.id]) {
-      Vue.$log.debug('removing popup', vm.$static.popUps[this.device.id])
-      vm.$static.popUps[this.device.id].remove()
+    if (this.device && lnglat.popUps[this.device.id]) {
+      lnglat.popUps[this.device.id].remove()
     }
     this.loadingRoutes = true
     this.getRoute(this.minDate, this.maxDate)
@@ -195,24 +194,6 @@ export default {
   methods: {
     toggleChanged: function() {
       vm.$store.dispatch('transient/toggleHistoryMode')
-    },
-    showRoutesClick: function() {
-      Vue.$log.debug('showRoutesChanged to ', this.showRoutes)
-      if (this.device && vm.$static.popUps[this.device.id]) {
-        Vue.$log.debug('removing popup', vm.$static.popUps[this.device.id])
-        vm.$static.popUps[this.device.id].remove()
-      }
-      if (this.showRoutes) {
-        traccar.stopReceiving()
-        this.getRoute(this.minDate, this.maxDate)
-      } else {
-        this.removeLayers()
-        traccar.startReceiving()
-      }
-      this.loadingRoutes = this.showRoutes
-      vm.$data.currentDevice = this.device
-      lnglat.hideLayers(this.showRoutes)
-      animation.hideRouteLayer(!this.showRoutes)
     },
     onPositions: function(positions) {
       Vue.$log.debug('positions before filter ', positions)
@@ -795,7 +776,7 @@ export default {
             sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
         }
         if (newPos === sharedData.getPositions().length - 1) {
-          this.$store.dispatch('map/togglePlaying')
+          this.$store.dispatch('transient/togglePlaying')
         }
       } else {
         if (!this.trips[this.currentTrip]) {

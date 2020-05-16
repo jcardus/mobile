@@ -12,4 +12,4 @@ export const spriteUrl = cdnUrl + '/sprite/8/sprite'
 // export const spriteUrl = 'https://mac.pinme.io:8080/img/sprite'
 export const mapboxSprite = 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/sprite' // @2x.png?access_token=
 export const mapboxAccessToken = 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ'
-export const vehiclesLayer = 'vehiclesLayer'
+export const detailedZoom = 14

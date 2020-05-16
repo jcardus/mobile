@@ -151,7 +151,7 @@ export default {
       this.updateChart = !this.updateChart
     },
     click: function() {
-      this.$store.dispatch('map/togglePlaying')
+      this.$store.dispatch('transient/togglePlaying')
     },
     clickForward: function() {
       if (this.currentPos < this.positions.length - 1) {

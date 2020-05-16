@@ -168,8 +168,7 @@ export const vm = new Vue({
       geofencesSource: {
         'type': 'FeatureCollection',
         'features': []
-      },
-      popUps: []
+      }
     }
   },
   methods: {
