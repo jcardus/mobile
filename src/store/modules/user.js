@@ -213,6 +213,7 @@ const actions = {
       }).finally(() => {
         commit('REMOVE_USER')
         vm.reset()
+        delete Vue.prototype.$socket
         resolve()
       })
     })
