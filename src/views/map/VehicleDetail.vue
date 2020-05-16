@@ -6,7 +6,7 @@
         {{ device.name }}
       </div>
       <div class="content">
-        {{ device.position.attributes.address }}
+        {{ device.position && device.position.address }}
         <div style="padding-top: 5px;">
           <div v-if="feature.properties.ignition || device.speed > 2" style="color:#32325D;">
             {{ Math.round(device.speed * 1.852) }} km/h,
