@@ -199,10 +199,13 @@ export default {
     },
     ping() {
       if (this.userLoggedIn) {
-        traccar.ping(() => {}, () => {
-          vm.$data.loadingMap = false
-          NProgress.done()
-        })
+        traccar.ping()
+          .then(() => this.store.dispatch('user/connectionOk', { state: true }))
+          .catch(() => {
+            this.$store.dispatch('user/connectionOk', { state: false })
+            vm.$data.loadingMap = false
+            NProgress.done()
+          })
       }
       checkForUpdates()
     },

@@ -20,6 +20,9 @@ const drivers = baseUrl + 'drivers'
 const s3_report_lambda_url = 'https://' + serverHost + '/api_reports'
 const api_helper_lambda_url = 'https://' + serverHost + '/api_helper'
 
+/**
+ * @deprecated
+ */
 function invokeApi(url, onFulfill, onError) {
   return new Promise((resolve, reject) => {
     axios.get(url, { withCredentials: true }) // send cookies when cross-domain requests)
@@ -332,8 +335,8 @@ export const traccar = {
         }
       })
   },
-  ping: function(onFulfill, onError) {
-    invokeApi(server, onFulfill, onError)
+  ping: function() {
+    return get(server)
   },
   getSession() {
     return invokeApi(baseUrl + 'session')

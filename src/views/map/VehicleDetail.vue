@@ -11,7 +11,7 @@
           <div v-if="device.position.ignition || device.position.speed > 2" style="color:#32325D;">
             {{ Math.round(device.position.speed * 1.852) }} km/h,
           </div>
-          <span>{{ device.position.fixTime | moment('from', currentTime) }}</span>
+          <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
         </div>
         <div style="padding-top: 5px">
           <div style="float:left;padding-right: 10px; width:55%">
