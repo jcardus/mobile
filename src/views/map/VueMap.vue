@@ -129,10 +129,7 @@ export default {
     },
     popUps: {
       get: function() {
-        return vm.$static.popUps
-      },
-      set: function(value) {
-        vm.$static.popUps = value
+        return lnglat.popUps
       }
     },
     isMobile() { return lnglat.isMobile() },
@@ -328,8 +325,6 @@ export default {
         store: this.$store
       })
       this.lastPopup.$mount('#vue-vehicle-popup')
-
-      if (settings.truck3d) { this.truck.setCoords(coordinates) }
     },
     flyToDevice: function(feature) {
       if (feature) {
@@ -616,8 +611,6 @@ export default {
       feature.route = arc
 
       const self = this
-
-      if (settings.truck3d) { this.truckFollowPath(feature.route, feature.coordinates, lineDistance) }
       function _animate() {
         const coordinates = feature.route[counter]
         if (coordinates) {
@@ -714,8 +707,8 @@ export default {
       // moment is expensive so we cache this value
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
-      feature.properties = { ...feature.properties, ...position }
       device.position = position
+      feature.properties = { ...feature.properties, ...position }
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
       this.$store.dispatch('user/updateDevice', device)
     },
@@ -742,6 +735,7 @@ export default {
             self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
             feature.geometry.coordinates = [position.longitude, position.latitude]
+            if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
           }
           self.updateFeature(feature, device, position)
         }

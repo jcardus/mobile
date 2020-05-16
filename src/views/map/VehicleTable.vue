@@ -99,7 +99,7 @@
               <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
             <div style="line-height: normal;padding-top: 2px">
               <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
-              <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
+              <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
               <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.poi) }}</span>

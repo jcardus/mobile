@@ -30,6 +30,8 @@ export const layers = {
   buildings3d: '3dbuildings'
 }
 
+export const popUps = []
+
 export function refreshMap() {
   if (vm.$static.map.getSource('positions')) {
     vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
