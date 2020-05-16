@@ -330,7 +330,7 @@ export default {
       if (feature) {
         this.$static.map.flyTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
-          zoom: 13,
+          zoom: consts.detailedZoom,
           maxDuration: 5000
         })
         this.showPopup(feature, this.selected)
@@ -615,7 +615,7 @@ export default {
         const coordinates = feature.route[counter]
         if (coordinates) {
           feature.geometry.coordinates = coordinates
-          if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates.slice()) }
+          if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates) }
           serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
           const p1 = feature.route[counter >= steps ? counter - 1 : counter]
           const p2 = feature.route[counter >= steps ? counter : counter + 1]
@@ -712,34 +712,34 @@ export default {
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
       this.$store.dispatch('user/updateDevice', device)
     },
-    processPositions: function(positions) {
-      const self = this
-      positions.forEach(function(position) {
-        let feature = self.findFeatureByDeviceId(position.deviceId)
-        const device = self.devices.find(e => e.id === position.deviceId)
+    processPositions(positions) {
+      for (const position of positions) {
+        let feature = this.findFeatureByDeviceId(position.deviceId)
+        const device = this.devices.find(e => e.id === position.deviceId)
         if (!feature) {
           if (!device) {
-            Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position, 'devices', self.devices)
-            return
+            this.$log.warn('no feature and no device, this is weird, we should logoff, position:', position, 'devices', this.devices)
+            continue
           }
-          feature = self.positionToFeature(position, device)
-          self.positionsSource.features.push(feature)
+          feature = this.positionToFeature(position, device)
+          this.positionsSource.features.push(feature)
         } else {
-          if (!device) return
+          if (!device) continue
           const oldFixTime = feature.properties.fixTime
-          if (settings.animateMarkers && !self.historyMode &&
-            lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            self.map.getZoom() > 12
+          if (settings.animateMarkers && !this.historyMode &&
+            lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
+            this.map.getZoom() > consts.detailedZoom
           ) {
-            self.$log.debug('animating ', feature.properties.text)
-            self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
+            this.$log.debug('animating ', feature.properties.text)
+            this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
+            this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
           }
-          self.updateFeature(feature, device, position)
+          this.updateFeature(feature, device, position)
         }
-      })
+      }
       this.refreshMap()
     },
     findNearestPOI: function(position) {

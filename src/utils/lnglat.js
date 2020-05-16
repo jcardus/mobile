@@ -323,7 +323,7 @@ export function addLayers(map) {
       type: 'geojson',
       data: vm.$static.positionsSource,
       cluster: true,
-      clusterMaxZoom: 15, // Max zoom to cluster points on
+      clusterMaxZoom: consts.detailedZoom - 1, // Max zoom to cluster points on
       clusterRadius: 25,
       clusterProperties: { // keep separate counts for each magnitude category in a cluster
         'gray': ['+', ['case', gray, 1, 0]],
