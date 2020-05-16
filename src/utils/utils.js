@@ -106,7 +106,7 @@ export function getDeviceColor(state) {
 export function getDeviceState(position) {
   if (!position || position.fixDays > 5 || position.outdated) {
     return 'Disconnected'
-  } else if (!position.ignition) {
+  } else if (!position.attributes.ignition) {
     return 'Stopped'
   } else if (position.speed < 4) {
     return 'Idle'
