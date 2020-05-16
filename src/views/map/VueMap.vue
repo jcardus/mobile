@@ -281,7 +281,6 @@ export default {
       const feature = this.findFeatureByDeviceId(device.id)
       if (feature && feature.properties.category !== device.category) {
         feature.properties.category = this.getCategory(device.category)
-        device.currentFeature = feature
         this.refreshMap()
       }
     },
@@ -735,7 +734,6 @@ export default {
         } else {
           if (!device) return
           const oldFixTime = feature.properties.fixTime
-          self.updateFeature(feature, device, position)
           if (settings.animateMarkers && !self.historyMode &&
             lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             self.map.getZoom() > 12
@@ -743,11 +741,10 @@ export default {
             self.$log.debug('animating ', feature.properties.text)
             self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
-            feature.properties.course = position.course
             feature.geometry.coordinates = [position.longitude, position.latitude]
           }
+          self.updateFeature(feature, device, position)
         }
-        device.currentFeature = feature
       })
       this.refreshMap()
     },
