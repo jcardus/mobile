@@ -105,7 +105,7 @@
               <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.poi) }}</span>
             </div>
             <div v-else style="line-height: normal">
-              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.position.address }}</span>
+              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.position && scope.row.position.address }}</span>
             </div>
             <div style="padding-top: 6px;float:left">
               <span v-if="scope.row.lastUpdate">{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
