@@ -382,6 +382,7 @@ export default {
         devices = this.devices.filter(d => this.getDeviceState(d) === state)
       }
       lnglat.fitBounds(devices)
+      lnglat.changeVehicleLayerFilter(state)
     },
     deviceSelectedOnMap(device) {
       this.selectedDevice = device

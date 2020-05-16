@@ -11,6 +11,7 @@ import * as consts from './consts'
 import store from '../store'
 
 let markersOnScreen = {}
+let currentState = null
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
@@ -212,12 +213,20 @@ function fetchGeofences(map) {
 }
 function createDonutChart(props) {
   const offsets = []
-  const counts = [props.gray, props.green, props.yellow, props.red]
+  const counts = [
+    currentState === null || currentState === 'Disconnected' ? props.gray : 0,
+    currentState === null || currentState === 'Moving' ? props.green : 0,
+    currentState === null || currentState === 'Idle' ? props.yellow : 0,
+    currentState === null || currentState === 'Stopped' ? props.red : 0]
+
   let total = 0
   for (let i = 0; i < counts.length; i++) {
     offsets.push(total)
     total += counts[i]
   }
+
+  if (total === 0) { return null }
+
   const fontSize = total >= 30 ? 20 : total >= 15 ? 16 : total >= 10 ? 15 : 14
   const r = total >= 30 ? 22 : total >= 24 ? 20 : total >= 10 ? 18 : 16
   const r0 = Math.round(r * 0.75)
@@ -267,8 +276,12 @@ export function updateMarkers() {
     const id = props.cluster_id
 
     let marker = vm.$static.markers[id]
+
     if (!marker) {
       const el = createDonutChart(props)
+
+      if (el === null) continue
+
       marker = vm.$static.markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
     }
     newMarkers[id] = marker
@@ -440,6 +453,49 @@ export function hideLayers(hide) {
   }
   if (hide) { removeMarkers() }
   refreshGeofences()
+}
+export function changeVehicleLayerFilter(state) {
+  currentState = state
+  if (state === null) {
+    vm.$static.map.setFilter('vehiclesLayer', ['!=', ['get', 'cluster'], true])
+    vm.$static.map.setFilter('vehicleLabels', ['!=', ['get', 'cluster'], true])
+  }
+  if (state === 'Moving') {
+    vm.$static.map.setFilter('vehiclesLayer', ['all', ['!=', ['get', 'cluster'], true], green])
+    vm.$static.map.setFilter('vehicleLabels', ['all', ['!=', ['get', 'cluster'], true], green])
+    vm.$static.map.setFilter('clusters', green)
+  }
+  if (state === 'Idle') {
+    vm.$static.map.setFilter('vehiclesLayer', ['all', ['!=', ['get', 'cluster'], true], yellow])
+    vm.$static.map.setFilter('vehicleLabels', ['all', ['!=', ['get', 'cluster'], true], yellow])
+  }
+  if (state === 'Disconnected') {
+    vm.$static.map.setFilter('vehiclesLayer', ['all', ['!=', ['get', 'cluster'], true], gray])
+    vm.$static.map.setFilter('vehicleLabels', ['all', ['!=', ['get', 'cluster'], true], gray])
+  }
+  if (state === 'Stopped') {
+    vm.$static.map.setFilter('vehiclesLayer', ['all', ['!=', ['get', 'cluster'], true], red])
+    vm.$static.map.setFilter('vehicleLabels', ['all', ['!=', ['get', 'cluster'], true], red])
+    vm.$static.map.setFilter('clusters', ['all', ['has', 'point_count'], red])
+  }
+
+  // To update cluster markers
+  vm.$static.markers = []
+  for (const id in markersOnScreen) {
+    const remove = markersOnScreen[id]
+    remove.remove()
+  }
+  updateMarkers()
+}
+export function fitBounds(devices) {
+  const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
+  if (features.length > 1) {
+    const coords = features.map(f => f.geometry.coordinates)
+    const box = bbox(helpers.lineString(coords))
+    const bounds = [[box[0], box[1]], [box[2], box[3]]]
+    vm.$static.map.fitBounds(bounds, { padding: 30 })
+    updateMarkers()
+  }
 }
 export function getMarkerType() {
   return ['airport', 'aquarium', 'attraction', 'barrier', 'building-alt1',
