@@ -82,6 +82,10 @@ function invokeApiMultiple(urls) {
   })
 }
 
+function get(url) {
+  return axios.get(url, { withCredentials: true })
+}
+
 export const traccar = {
   api_helper: function(options, ok, nok) {
     axios.post(
@@ -112,6 +116,8 @@ export const traccar = {
       .catch(reason => nok(report_id, reason))
   },
   report_events(from, to, deviceIds, types) {
+    from = from.toISOString()
+    to = to.toISOString()
     deviceIds = deviceIds.map(d => 'deviceId=' + d).join('&')
     types = types.map(n => 'type=' + encodeURI(n)).join('&')
     return axios.get(`${events}?${deviceIds}&${types}&from=${from}&to=${to}`, { withCredentials: true }) // send cookies when cross-domain requests)
@@ -157,12 +163,15 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  positions: function(onFulfill, positionId) {
+  positions(onFulfill, positionId) {
     if (positionId) {
       return invokeApi(positions + '?id=' + positionId)
     } else {
       return invokeApi(positions, onFulfill)
     }
+  },
+  position(positionId) {
+    return get(positions + '?id=' + positionId)
   },
   trips: function(devices, from, to, onFulfill) {
     const yesterday = new Date()
@@ -220,8 +229,8 @@ export const traccar = {
   alertsByDevice: function(deviceId) {
     return axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true })
   },
-  alerts(resolve) {
-    return invokeApi(alerts, resolve)
+  alerts() {
+    return get(alerts, { withCredentials: true })
   },
   newAlert: function(alert, onFulfill) {
     Vue.$log.debug(alert)

@@ -122,6 +122,23 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
+  setDeviceLastIgnOff({ commit }, { device, fixTime }) {
+    const end = new Date()
+    const start = Vue.moment(fixTime).subtract(60, 'day').toDate()
+    traccar.report_events(start, end, [device.id], ['ignitionOff']).then((d) => {
+      if (d.data && d.data.length > 0) {
+        const lastIgnOff = d.data.splice(-1)[0]
+        Vue.$log.debug('lastIgnOff', device, lastIgnOff)
+        traccar.position(lastIgnOff.positionId).then(r => {
+          Vue.$log.debug('lastIgnOff Position ', r.data[0])
+          if (r.data[0]) {
+            device.lastUpdate = r.data[0].fixTime
+            commit('SET_DEVICE', device)
+          }
+        })
+      }
+    })
+  },
   updateDevice({ commit }, device) {
     commit('SET_DEVICE', device)
   },

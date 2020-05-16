@@ -14,10 +14,10 @@ let markersOnScreen = {}
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
-const gray = ['any', ['>', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], true], ['==', ['get', 'ignition'], null]]
-const green = ['all', ['>', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
-const yellow = ['all', ['==', ['get', 'ignition'], true], ['<=', ['get', 'speed'], 2], ['<=', ['get', 'fixDays'], 5], ['==', ['get', 'outdated'], false]]
-const red = ['all', ['==', ['get', 'ignition'], false], ['<=', ['get', 'fixDays'], 5], ['<=', ['get', 'speed'], 2], ['==', ['get', 'outdated'], false]]
+const gray = ['==', ['get', 'color'], 'gray']
+const green = ['==', ['get', 'color'], 'green']
+const yellow = ['==', ['get', 'color'], 'yellow']
+const red = ['==', ['get', 'color'], 'red']
 const _colorFormula = ['%', ['-', 25, ['floor', ['/', ['get', 'course'], 14.4]]], 25]
 const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-string', _colorFormula]], ['to-string', _colorFormula]]
 
@@ -295,24 +295,12 @@ export function addVehiclesLayer(layer, source) {
     type: 'symbol',
     source: source,
     filter: ['!=', 'cluster', true],
-    paint: {
-      'icon-opacity': ['case',
-        gray, 1,
-        1
-      ]
-    },
     layout: {
       'symbol-z-order': 'source',
       'icon-keep-upright': true,
       'icon-pitch-alignment': 'map',
       'icon-rotation-alignment': 'map',
-      'icon-image': ['concat',
-        ['case',
-          gray, ['concat', 'gray', ['get', 'category']],
-          green, ['concat', 'green', ['get', 'category']],
-          yellow, ['concat', 'yellow', ['get', 'category']],
-          ['concat', 'red', ['get', 'category']]
-        ], '00', colorFormula],
+      'icon-image': ['concat', ['get', 'color'], ['get', 'category'], '00', colorFormula],
       'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 14.4]], 14.4]], 1],
       'icon-allow-overlap': true,
       'icon-size': {
@@ -337,9 +325,9 @@ export function addLayers(map) {
       clusterRadius: 25,
       clusterProperties: { // keep separate counts for each magnitude category in a cluster
         'gray': ['+', ['case', gray, 1, 0]],
-        'green': ['+', ['case', green, 1, 0]],
         'yellow': ['+', ['case', yellow, 1, 0]],
-        'red': ['+', ['case', red, 1, 0]]
+        'red': ['+', ['case', red, 1, 0]],
+        'green': ['+', ['case', green, 1, 0]]
       }
     })
   } else { Vue.$log.warn(source, ' already exists...') }
@@ -456,3 +444,15 @@ function removeMarkers() {
     }
   }
 }
+
+export function fitBounds(devices) {
+  const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
+  if (features.length > 1) {
+    const coords = features.map(f => f.geometry.coordinates)
+    const box = bbox(helpers.lineString(coords))
+    const bounds = [[box[0], box[1]], [box[2], box[3]]]
+    vm.$static.map.fitBounds(bounds, { padding: 30 })
+    updateMarkers()
+  }
+}
+

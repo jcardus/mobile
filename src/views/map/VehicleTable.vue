@@ -98,14 +98,14 @@
               <span style="font-weight: bold">{{ scope.row.name }} </span>
               <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
             <div style="line-height: normal;padding-top: 2px">
-              <span v-if="scope.row.currentFeature" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.currentFeature.properties.totalDistance / 1000 | formatNumber }} km</span>
+              <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
               <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.speed * 1.852 | formatNumber }} km/h </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
               <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.poi) }}</span>
             </div>
             <div v-else style="line-height: normal">
-              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.address }}</span>
+              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.position.address }}</span>
             </div>
             <div style="padding-top: 6px;float:left">
               <span v-if="scope.row.lastUpdate">{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
@@ -113,7 +113,6 @@
               <immobilize-button
                 style="padding:0"
                 :selected-device="scope.row"
-                :immobilization-active="scope.row.currentFeature ? scope.row.currentFeature.properties.immobilization_active : false"
               /></div>
           </template>
         </el-table-column>
@@ -124,11 +123,12 @@
 <script>
 
 import { serverBus, vm } from '../../main'
-import * as lnglat from '@/utils/lnglat'
+import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
+import * as utils from '../../utils/utils'
 
 export default {
   name: 'VehicleTable',
@@ -312,16 +312,7 @@ export default {
       return styles.danger
     },
     getDeviceState: function(device) {
-      if (device.fixDays > 5) {
-        return 'Disconnected'
-      }
-      if (device.speed > 2 && !device.outdated) {
-        return 'Moving'
-      }
-      if (device.ignition && !device.outdated) {
-        return 'Idle'
-      }
-      return 'Stopped'
+      return utils.getDeviceState(device.position)
     },
     getDeviceStateOrder: function(device) {
       const state = this.getDeviceState(device)

@@ -41,6 +41,7 @@ import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
+import * as utils from '../../utils/utils'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -698,37 +699,25 @@ export default {
         }
       }
       if (!position.attributes.ignition) {
-        // position.lastUpdate = devices.lastIgnOff(position.deviceId)
+        Vue.$log.debug(device.name, position, 'ignition off checking last one')
+        if (this.$moment().diff(this.$moment(position.fixTime), 'days') < 6) {
+          this.$store.dispatch('user/setDeviceLastIgnOff', { device, fixTime: position.fixTime })
+        }
       }
       this.updateFeature(feature, device, position)
       return feature
     },
     updateFeature(feature, device, position) {
-      feature.properties.course = position.course
-      feature.properties.outdated = device.outdated = position.outdated
+      // don't update "lastUpdated" if ignition is off but devices keeps sending data
       if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
-        feature.properties.ignition = device.ignition = position.attributes.ignition
         device.lastUpdate = position.fixTime
       }
-      feature.properties.motion = device.motion = position.attributes.motion
-      device.speed = feature.properties.speed = position.speed
-      feature.properties.address = position.address
-      feature.properties.fixTime = position.fixTime
-      feature.properties.totalDistance = position.attributes.totalDistance
-      feature.properties.hours = position.attributes.hours
-      if (device.lastUpdate) {
-        device.fixDays = feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
-      } else {
-        Vue.$log.warn(device.lastUpdate, 'setting fixDays to 100...')
-        feature.properties.fixDays = 100
-      }
-      const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
-      if (immoValue !== feature.properties.immobilization_active) {
-        feature.properties.immobilization_active = immoValue
-        this.$store.dispatch('devices/setCommandPending', { device: device.id, pending: false }).then(() => {})
-      }
-      device.address = position.address
+      // moment is expensive so we cache this value
+      position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
+      feature.properties = { ...feature.properties, ...position }
+      device.position = position
+      feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
       this.$store.dispatch('user/updateDevice', device)
     },
     processPositions: function(positions) {
