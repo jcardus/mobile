@@ -28,15 +28,11 @@ export default {
     selectedDevice: {
       type: Object,
       default: null
-    },
-    immobilizationActive: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
     deviceCommandPending() {
-      return this.selectedDevice.id && this.commandPending
+      return this.selectedDevice.id && this.selectedDevice.commandPending
     },
     user() {
       return vm.$store.state.user
@@ -47,10 +43,9 @@ export default {
     getIcon() {
       return this.immobilizationActive ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
     },
-    commandPending: {
-      get() {
-        return vm.$store.state.devices.commandPending[this.selectedDevice.id]
-      }
+    immobilizationActive() {
+      const position = this.selectedDevice.position
+      return position && (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
     }
   },
   beforeDestroy() {
@@ -59,7 +54,8 @@ export default {
   methods: {
     sendImmobilizationCommand() {
       const self = this
-      vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true }).then(() => {
+      this.selectedDevice.commandPending = true
+      vm.$store.dispatch('user/updateDevice', this.selectedDevice).then(() => {
         traccar.api_helper(
           {
             'username': this.user.email,

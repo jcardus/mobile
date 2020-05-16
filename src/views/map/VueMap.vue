@@ -41,6 +41,7 @@ import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
+import * as utils from '../../utils/utils'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -128,10 +129,7 @@ export default {
     },
     popUps: {
       get: function() {
-        return vm.$static.popUps
-      },
-      set: function(value) {
-        vm.$static.popUps = value
+        return lnglat.popUps
       }
     },
     isMobile() { return lnglat.isMobile() },
@@ -201,10 +199,13 @@ export default {
     },
     ping() {
       if (this.userLoggedIn) {
-        traccar.ping(() => {}, () => {
-          vm.$data.loadingMap = false
-          NProgress.done()
-        })
+        traccar.ping()
+          .then(() => this.store.dispatch('user/connectionOk', { state: true }))
+          .catch(() => {
+            this.$store.dispatch('user/connectionOk', { state: false })
+            vm.$data.loadingMap = false
+            NProgress.done()
+          })
       }
       checkForUpdates()
     },
@@ -280,7 +281,6 @@ export default {
       const feature = this.findFeatureByDeviceId(device.id)
       if (feature && feature.properties.category !== device.category) {
         feature.properties.category = this.getCategory(device.category)
-        device.currentFeature = feature
         this.refreshMap()
       }
     },
@@ -328,14 +328,12 @@ export default {
         store: this.$store
       })
       this.lastPopup.$mount('#vue-vehicle-popup')
-
-      if (settings.truck3d) { this.truck.setCoords(coordinates) }
     },
     flyToDevice: function(feature) {
       if (feature) {
         this.$static.map.flyTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
-          zoom: 13,
+          zoom: consts.detailedZoom,
           maxDuration: 5000
         })
         this.showPopup(feature, this.selected)
@@ -596,7 +594,7 @@ export default {
       this.getMatch(route.geometry.coordinates, [25, 25], route, timestamps, feature, position)
     },
     animateMatched: function(route, feature) {
-      const steps = 200
+      const steps = 300
       let counter = 0
       const lineDistance = lnglat.lineDistance(route)
 
@@ -616,14 +614,11 @@ export default {
       feature.route = arc
 
       const self = this
-
-      if (settings.truck3d) { this.truckFollowPath(feature.route, feature.coordinates, lineDistance) }
       function _animate() {
         const coordinates = feature.route[counter]
         if (coordinates) {
           feature.geometry.coordinates = coordinates
-          if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates.slice()) }
-          serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
+          if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates) }
           const p1 = feature.route[counter >= steps ? counter - 1 : counter]
           const p2 = feature.route[counter >= steps ? counter : counter + 1]
           if (p1 && p2) {
@@ -631,14 +626,14 @@ export default {
           }
           self.refreshMap()
         }
-        if (counter < steps) {
+        if (counter++ < steps) {
           requestAnimationFrame(_animate)
         } else {
           // feature.properties.course = newCourse;
           self.refreshMap()
+          serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
           feature.animating = false
         }
-        counter = counter + 1
       }
 
       if (!feature.animating) {
@@ -698,68 +693,55 @@ export default {
         }
       }
       if (!position.attributes.ignition) {
-        // position.lastUpdate = devices.lastIgnOff(position.deviceId)
+        Vue.$log.debug(device.name, position, 'ignition off checking last one')
+        if (this.$moment().diff(this.$moment(position.fixTime), 'days') < 6) {
+          this.$store.dispatch('user/setDeviceLastIgnOff', { device, fixTime: position.fixTime })
+        }
       }
       this.updateFeature(feature, device, position)
       return feature
     },
     updateFeature(feature, device, position) {
-      feature.properties.course = position.course
-      feature.properties.outdated = device.outdated = position.outdated
+      // don't update "lastUpdated" if ignition is off but devices keeps sending data
       if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
-        feature.properties.ignition = device.ignition = position.attributes.ignition
         device.lastUpdate = position.fixTime
       }
-      feature.properties.motion = device.motion = position.attributes.motion
-      device.speed = feature.properties.speed = position.speed
-      feature.properties.address = position.address
-      feature.properties.fixTime = position.fixTime
-      feature.properties.totalDistance = position.attributes.totalDistance
-      feature.properties.hours = position.attributes.hours
-      if (device.lastUpdate) {
-        device.fixDays = feature.properties.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
-      } else {
-        Vue.$log.warn(device.lastUpdate, 'setting fixDays to 100...')
-        feature.properties.fixDays = 100
-      }
-      const immoValue = (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
-      if (immoValue !== feature.properties.immobilization_active) {
-        feature.properties.immobilization_active = immoValue
-        this.$store.dispatch('devices/setCommandPending', { device: device.id, pending: false }).then(() => {})
-      }
-      device.address = position.address
+      // moment is expensive so we cache this value
+      position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
+      device.position = position
+      feature.properties = { ...feature.properties, ...position }
+      feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
       this.$store.dispatch('user/updateDevice', device)
     },
-    processPositions: function(positions) {
-      const self = this
-      positions.forEach(function(position) {
-        let feature = self.findFeatureByDeviceId(position.deviceId)
-        const device = self.devices.find(e => e.id === position.deviceId)
+    processPositions(positions) {
+      for (const position of positions) {
+        let feature = this.findFeatureByDeviceId(position.deviceId)
+        const device = this.devices.find(e => e.id === position.deviceId)
         if (!feature) {
           if (!device) {
-            Vue.$log.warn('no feature and no device, this is weird, we should logoff, position:', position, 'devices', self.devices)
-            return
+            this.$log.warn('no feature and no device, this is weird, we should logoff, position:', position, 'devices', this.devices)
+            continue
           }
-          feature = self.positionToFeature(position, device)
-          self.positionsSource.features.push(feature)
+          feature = this.positionToFeature(position, device)
+          this.positionsSource.features.push(feature)
         } else {
-          if (!device) return
+          if (!device) continue
           const oldFixTime = feature.properties.fixTime
-          self.updateFeature(feature, device, position)
-          if (settings.animateMarkers && !self.historyMode &&
-            lnglat.contains(self.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            self.map.getZoom() > 12
+          if (settings.animateMarkers && !this.historyMode &&
+            lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
+            this.map.getZoom() >= consts.detailedZoom
           ) {
-            self.$log.debug('animating ', feature.properties.text)
-            self.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
+            this.$log.debug('animating ', feature.properties.text)
+            this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
-            feature.properties.course = position.course
+            this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
+            if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
           }
+          this.updateFeature(feature, device, position)
         }
-        device.currentFeature = feature
-      })
+      }
       this.refreshMap()
     },
     findNearestPOI: function(position) {

@@ -182,9 +182,8 @@ export default {
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData')
-    if (this.device && vm.$static.popUps[this.device.id]) {
-      Vue.$log.debug('removing popup', vm.$static.popUps[this.device.id])
-      vm.$static.popUps[this.device.id].remove()
+    if (this.device && lnglat.popUps[this.device.id]) {
+      lnglat.popUps[this.device.id].remove()
     }
     this.loadingRoutes = true
     this.getRoute(this.minDate, this.maxDate)

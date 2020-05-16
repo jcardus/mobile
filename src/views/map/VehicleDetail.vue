@@ -6,10 +6,10 @@
         {{ device.name }}
       </div>
       <div class="content">
-        {{ feature.properties.address }}
+        {{ device.position && device.position.address }}
         <div style="padding-top: 5px;">
-          <div v-if="feature.properties.ignition || device.speed > 5" style="color:#32325D;">
-            {{ Math.round(device.speed * 1.852) }} km/h,
+          <div v-if="device.position.ignition || device.position.speed > 2" style="color:#32325D;">
+            {{ Math.round(device.position.speed * 1.852) }} km/h,
           </div>
           <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
         </div>
@@ -26,7 +26,6 @@
             </div><div style="float: left">
               <immobilize-button
                 :selected-device="device"
-                :immobilization-active="device.currentFeature && device.currentFeature.properties.immobilization_active"
               ></immobilize-button></div>
           </div>
           <div style="float:right; padding: 3px 0">
@@ -82,7 +81,7 @@ export default {
   computed: {
     ...mapGetters(['historyMode', 'currentTime']),
     totalDistance() {
-      let result = this.feature.properties.totalDistance / 1000
+      let result = this.device.position.attributes.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
       return result
     },
