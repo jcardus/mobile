@@ -94,3 +94,22 @@ export function checkForUpdates() {
 export function appOffline() {
   return !vm.$store.state.socket.isConnected || !vm.$store.state.user.connectionOk
 }
+
+export function getDeviceColor(state) {
+  switch (state) {
+    case 'Disconnected': return 'gray'
+    case 'Moving': return 'green'
+    case 'Idle': return 'yellow'
+    case 'Stopped': return 'red'
+  }
+}
+export function getDeviceState(position) {
+  if (!position || position.fixDays > 5 || position.outdated) {
+    return 'Disconnected'
+  } else if (!position.attributes.ignition) {
+    return 'Stopped'
+  } else if (position.speed < 4) {
+    return 'Idle'
+  }
+  return 'Moving'
+}

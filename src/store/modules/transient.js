@@ -80,8 +80,8 @@ const actions = {
       return 'black'
     }
     traccar.report_events(
-      start.toISOString(),
-      end.toISOString(),
+      start,
+      end,
       rootGetters.devices.map(d => d.id),
       types.map(a => a.notification.type)
     ).then(({ data }) => {
