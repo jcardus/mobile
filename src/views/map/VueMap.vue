@@ -591,7 +591,7 @@ export default {
       this.getMatch(route.geometry.coordinates, [25, 25], route, timestamps, feature, position)
     },
     animateMatched: function(route, feature) {
-      const steps = 200
+      const steps = 300
       let counter = 0
       const lineDistance = lnglat.lineDistance(route)
 
@@ -616,7 +616,6 @@ export default {
         if (coordinates) {
           feature.geometry.coordinates = coordinates
           if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates) }
-          serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
           const p1 = feature.route[counter >= steps ? counter - 1 : counter]
           const p2 = feature.route[counter >= steps ? counter : counter + 1]
           if (p1 && p2) {
@@ -624,14 +623,14 @@ export default {
           }
           self.refreshMap()
         }
-        if (counter < steps) {
+        if (counter++ < steps) {
           requestAnimationFrame(_animate)
         } else {
           // feature.properties.course = newCourse;
           self.refreshMap()
+          serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
           feature.animating = false
         }
-        counter = counter + 1
       }
 
       if (!feature.animating) {
