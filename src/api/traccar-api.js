@@ -72,11 +72,12 @@ function invokeDeleteApi(url, id, onFulfill) {
   })
 }
 
-function invokeApiMultiple(urls) {
+function invokeApiMultiple(urls, onFulfill) {
   return new Promise((resolve, reject) => {
     axios.all(urls)
       .then(axios.spread((...responses) => {
-        resolve(responses.map(r => r.data))
+        Vue.$log.debug(responses)
+        onFulfill(responses.map(r => r.data))
       }))
       .catch(e => {
         Vue.$log.error(e)
@@ -215,10 +216,10 @@ export const traccar = {
   geofences: function(onFulfill, onError) {
     invokeApi(geoFences, onFulfill, onError)
   },
-  geofencesByGroup: function(groups) {
+  geofencesByGroup: function(groups, onFulfill) {
     Vue.$log.debug('geofencesByGroup')
     const groupsUrl = groups.map(groupId => axios.get(geoFences + '?groupId=' + groupId, { withCredentials: true }))
-    return invokeApiMultiple(groupsUrl)
+    return invokeApiMultiple(groupsUrl, onFulfill)
   },
   geofencesByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
@@ -265,10 +266,10 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  addAllPermissions: function(permissionsToAdd) {
+  addAllPermissions: function(permissionsToAdd, onFulfill) {
     Vue.$log.debug(permissionsToAdd)
     const permissionsUrls = permissionsToAdd.map(permission => axios.post(permissions, permission, { withCredentials: true }))
-    return invokeApiMultiple(permissionsUrls)
+    return invokeApiMultiple(permissionsUrls, onFulfill)
   },
   deletePermission: function(permission, onFulfill) {
     Vue.$log.debug(permission)
@@ -278,10 +279,10 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  deleteAllPermissions: function(permissionsToDelete) {
+  deleteAllPermissions: function(permissionsToDelete, onFulfill) {
     Vue.$log.debug(permissionsToDelete)
     const permissionsUrls = permissionsToDelete.map(permission => axios.delete(permissions, { data: permission, withCredentials: true }))
-    return invokeApiMultiple(permissionsUrls)
+    return invokeApiMultiple(permissionsUrls, onFulfill)
   },
   groups: function(userId, onFulfill, onError) {
     invokeApi(groups + '?userId=' + userId, onFulfill, onError)
@@ -308,10 +309,10 @@ export const traccar = {
   drivers: function(userId, onFulfill, onError) {
     invokeApi(drivers + '?userId=' + userId, onFulfill, onError)
   },
-  driversByGroup: function(groups) {
+  driversByGroup: function(groups, onFulfill) {
     Vue.$log.debug('driversByGroup')
     const groupsUrl = groups.map(groupId => axios.get(drivers + '?groupId=' + groupId, { withCredentials: true }))
-    return invokeApiMultiple(groupsUrl)
+    return invokeApiMultiple(groupsUrl, onFulfill)
   },
   addDriver: function(driver, onFulfill) {
     axios.post(drivers, driver, { withCredentials: true })
