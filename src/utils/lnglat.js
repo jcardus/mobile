@@ -28,7 +28,7 @@ const WIDTH = 768 // refer to Bootstrap's responsive design
 export const layers = {
   vehicles: 'vehiclesLayer',
   labels: 'vehicleLabels',
-  buildings3d: '3dbuildings'
+  buildings3d: '3d-buildings'
 }
 
 export const popUps = []
@@ -435,11 +435,11 @@ export function hideLayer(layer, hide) {
 }
 export function hideLayers(hide) {
   if (!isMobile()) {
-    hideLayer('3d-buildings', hide)
+    hideLayer(layers.buildings3d, hide)
   }
-  hideLayer(consts.vehiclesLayer, hide)
+  hideLayer(layers.vehicles, hide)
   if (store.state.settings.showLabels) {
-    hideLayer(consts.vehiclesLayer + 'labels', hide)
+    hideLayer(layers.labels + 'labels', hide)
   }
   if (hide) { removeMarkers() }
   refreshGeofences()
