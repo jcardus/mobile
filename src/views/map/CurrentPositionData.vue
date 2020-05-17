@@ -44,7 +44,7 @@
 
 <script>
 
-import { vm, serverBus, sharedData } from '../../main'
+import { serverBus, sharedData, vm } from '../../main'
 import settings from '../../settings'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
@@ -71,7 +71,6 @@ export default {
   },
   static() {
     return {
-      trips: [],
       speedTrips: [],
       speedMarkers: [],
       startMaker: null,
@@ -81,8 +80,8 @@ export default {
   computed: {
     ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'historyMode']),
     trips: {
-      get() { return this.$static.trips },
-      set(value) { this.$static.trips = value }
+      get() { return vm.$data.trips },
+      set(value) { vm.$data.trips = value }
     },
     speedMarkers: {
       get() { return this.$static.speedMarkers },
@@ -208,7 +207,7 @@ export default {
         this.filterTrips()
         Vue.$log.debug('after filter got ', this.trips.length, ' trips')
         this.trips.forEach(function(trip) {
-          Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime, trip.slice(-1)[0])
+          Vue.$log.debug('one trip with ', trip.positions.length, 'positions', 'start: ', trip.positions[0].deviceTime, 'end: ', trip.positions.slice(-1)[0].deviceTime, trip.positions.slice(-1)[0])
         })
         this.currentTrip = this.trips.length - 1
         if (vm.$store.state.settings.viewSpeedAlerts) {
@@ -224,6 +223,8 @@ export default {
       } else {
         serverBus.$emit('message', this.$t('route.nodata'))
       }
+
+      Vue.$log.debug(vm.$data.trips)
       this.loadingRoutes = false
     },
     onPositionsError() {
@@ -261,17 +262,17 @@ export default {
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
     },
     getRouteTrips: function(positions) {
-      this.trips = []
+      this.trips.splice(0, this.trips.length)
       let locations = []
       let startPos = false
-      const trips = this.trips
+      const self = this
       positions.forEach(function(position) {
         if (!startPos) {
           if ((!position.attributes.ignition && !position.attributes.motion) ||
             (position.attributes.power > 0 && position.attributes.power < 13)) {
             return
           }
-          trips.push(locations)
+          self.trips.push(self.createTrip(locations))
           locations.push(position)
           startPos = true
           return
@@ -290,7 +291,7 @@ export default {
         locations = []
         startPos = false
       })
-      if (trips.length === 0) { trips.push(positions) }
+      if (this.trips.length === 0) { this.trips.push(this.createTrip(positions)) }
     },
     getSpeedTrips(positions) {
       const speedThreshold = vm.$store.state.settings.speedThreshold
@@ -304,7 +305,7 @@ export default {
         const vehicleSpeedLimit = Math.round(this.device.attributes.speedLimit * 1.85200)
         this.trips.forEach(function(tripPositions) {
           const currentSpeedTrips = []
-          tripPositions.forEach(function(position) {
+          tripPositions.positions.forEach(function(position) {
             const positionSpeed = Math.round(position.speed * 1.85200)
             if (!startPos && positionSpeed > vehicleSpeedLimitThreshold) {
               locations.push(position)
@@ -351,7 +352,7 @@ export default {
 
       this.trips.forEach(function(tripPositions) {
         const currentSpeedTrips = []
-        tripPositions.forEach(function(position) {
+        tripPositions.positions.forEach(function(position) {
           const speedPosition = data.find(d => Vue.moment(d.timestamp).unix() === Vue.moment(position.fixTime).unix())
           if (startPos && (speedPosition && speedLimit !== speedPosition.speedLimit)) {
             locations.push(position)
@@ -387,6 +388,12 @@ export default {
 
       this.drawTrip()
       this.drawSpeedTrip()
+    },
+    createTrip: function(locations) {
+      return {
+        positions: locations,
+        totalDistance: Math.round(lnglat.arrayDistance(locations.map(x => [x.longitude, x.latitude])))
+      }
     },
     drawSpeedTrip: function() {
       if (!this.speedTrips || !this.speedTrips[this.currentTrip]) {
@@ -472,7 +479,7 @@ export default {
       const result = []
       if (this.trips.length < 2) { return }
       this.trips.forEach(function(trip) {
-        if (trip.length > 3) { result.push(trip) }
+        if (trip.positions.length > 3) { result.push(trip) }
       })
       this.trips = result
     },
@@ -482,7 +489,7 @@ export default {
       if (vm.$store.state.settings.matchRoutes) {
         this.iterate()
       } else {
-        const coordinates = this.trips[this.currentTrip].map(p => [p.longitude, p.latitude])
+        const coordinates = this.trips[this.currentTrip].positions.map(p => [p.longitude, p.latitude])
 
         this.drawRoute(coordinates)
       }
@@ -494,7 +501,7 @@ export default {
     },
     drawStartEnd: function() {
       if (this.currentTrip < 0) return
-      const positions = this.trips[this.currentTrip]
+      const positions = this.trips[this.currentTrip].positions
       const start = [positions[0].longitude, positions[0].latitude]
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]
       const sCoord = this.map.project(start)
@@ -558,7 +565,7 @@ export default {
       }
     },
     iterate: function() {
-      const positions = this.trips[this.currentTrip]
+      const positions = this.trips[this.currentTrip].positions
       if (this.i < positions.length) {
         const j = (this.i + 100) <= (positions.length) ? (this.i + 100) : (positions.length)
         Vue.$log.debug('slicing ', this.i, ' to ', j)
@@ -793,10 +800,10 @@ export default {
         const newDate = utils.getDate(positions[newPos].fixTime)
         const oldTrip = this.currentTrip
 
-        while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()) {
+        while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].deviceTime).toDate()) {
           this.currentTrip++
         }
-        while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()) {
+        while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip].positions[0].deviceTime).toDate()) {
           this.currentTrip--
         }
         if (oldTrip !== this.currentTrip) {

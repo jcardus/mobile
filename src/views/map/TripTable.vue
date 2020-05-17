@@ -5,27 +5,22 @@
         id="tripTable"
         :data="trips"
         row-key="id"
-        :show-header="true"
+        :show-header="false"
         highlight-current-row
         stripe
         @row-click="tripSelected"
       >
         <el-table-column
-          prop=""
-          label=""
-          width="10"
-          heigth="10"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="name"
+          prop="deviceTime"
           label="Vehicles"
           sortable=""
           heigth="1"
         >
           <template slot-scope="scope">
             <div style="padding: 3px 0 0;">
-              <span style="font-weight: bold">{{ scope.lenght }} </span>
+              <span style="font-weight: bold">Distance: {{ scope.row.totalDistance }} </span>
+              <span style="font-weight: bold">Start: {{ scope.row.positions[scope.row.positions.length - 1].fixTime }} </span>
+              <span style="font-weight: bold">End: {{ scope.row.positions[scope.row.positions.length - 1].fixTime }} </span>
             </div>
           </template>
         </el-table-column>
@@ -43,8 +38,9 @@ export default {
     return {}
   },
   computed: {
-    trips: {
-      get() { return this.$static.trips }
+    trips: function() {
+      vm.$data.trips = []
+      return vm.$data.trips
     },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },

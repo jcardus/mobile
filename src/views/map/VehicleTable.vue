@@ -82,7 +82,7 @@
         @row-click="vehicleSelected"
       >
         <el-table-column
-          prop=""
+          prop="positions"
           label=""
           width="10"
           heigth="10"
@@ -117,7 +117,7 @@
               /></div>
           </template>
         </el-table-column>
-        <el-table-column v-if="historyMode" type="expand" width="1">
+        <el-table-column type="expand" width="1">
           <template>
             <trip-table></trip-table>
           </template>
@@ -303,11 +303,12 @@ export default {
   methods: {
     showRoutesChanged() {
       if (!this.historyMode) {
+        const table = this.$refs.vehicleTable
+        table.toggleRowExpansion(this.selectedDevice, false)
         this.selectedDevice = null
       } else {
-        const $table = this.$refs.vehicleTable
-        Vue.$log.debug('table=', $table)
-        Vue.$log.debug('device=', this.selectedDevice)
+        const table = this.$refs.vehicleTable
+        table.toggleRowExpansion(this.selectedDevice, true)
       }
     },
     getBgColor: function(device) {
