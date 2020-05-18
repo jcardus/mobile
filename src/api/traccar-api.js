@@ -119,6 +119,20 @@ export const traccar = {
       .then(() => ok(report_id))
       .catch(reason => nok(report_id, reason))
   },
+  get_report: function(body, report_id, ok, nok) {
+    axios.post(s3_report_lambda_url,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true,
+        timeout: 29000 // Maximum timeout for the Lambda API Gateway
+      }
+    )
+      .then(response => ok(response.data))
+      .catch(reason => nok(report_id, reason))
+  },
   report_events(from, to, deviceIds, types) {
     from = from.toISOString()
     to = to.toISOString()

@@ -22,26 +22,27 @@
                 <span style="font-size: 12px">{{ scope.$index + 1 }}ª Viagem</span>
               </div>
               <div style="line-height: normal">
-                <span style="font-size: 12px">{{ formatDate(scope.row.positions[0].fixTime) }}</span>
+                <span style="font-size: 12px">{{ formatDate(scope.row.trip_start_fixtime) }}</span>
               </div>
               <div style="line-height: normal; padding-top: 5px">
-                <span style="font-size: 12px; float: left;padding-right: 20px"><i class="far fa-flag" style="width: 15px; color: green"></i> {{ formatTime(scope.row.positions[0].fixTime) }}</span>
-                <span style="font-size: 12px;"><i class="fas fa-flag-checkered" style="width: 15px; color: black"></i> {{ formatTime(scope.row.positions[scope.row.positions.length - 1].fixTime) }} </span>
+                <span style="font-size: 12px; float: left;padding-right: 20px"><i class="far fa-flag" style="width: 15px; color: green"></i> {{ formatTime(scope.row.trip_start_fixtime) }}</span>
+                <span style="font-size: 12px;"><i class="fas fa-flag-checkered" style="width: 15px; color: black"></i> {{ formatTime(scope.row.trip_end_fixtime) }} </span>
               </div>
               <div v-if="hasEndPOI(scope.row)" style="line-height: normal; padding-top: 10px">
                 <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.endPoi) }}</span>
               </div>
               <div v-else style="line-height: normal">
-                <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.positions[scope.row.positions.length - 1].address }}</span>
+                <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.trip_end_address }}</span>
               </div>
               <div style="line-height: normal; padding-top: 10px">
-                <span style="font-size: 12px; "><i class="fas fa-car" style="width: 15px; color: #F5365C"></i>5m</span>
-                <span style="font-size: 12px;float: left;padding-right: 20px"><i class="fas fa-car" style="width: 15px; color: #055AE5"></i>{{ scope.row.totalTime }}</span>
-                <span style="font-size: 12px;float: left;padding-right: 20px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i>2h25m</span>
-                <span style="font-size: 12px;float: left;padding-right: 20px"><i class="fas fa-car" style="width: 15px; color: #FFBA00"></i>5m</span>
+                <span style="font-size: 12px; "><i class="fas fa-car" style="width: 15px; color: #F5365C"></i>{{ scope.row.trip_stop_time }}</span>
+                <span style="font-size: 12px;float: left;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #055AE5"></i>{{ scope.row.trip_duration }}</span>
+                <span style="font-size: 12px;float: left;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i>{{ scope.row.trip_driving_time }}</span>
+                <span style="font-size: 12px;float: left;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #FFBA00"></i>{{ scope.row.trip_idle_time }}</span>
               </div>
               <div style="line-height: normal">
-                <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i>{{ scope.row.totalDistance | formatNumber }} km</span>
+                <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i>{{ scope.row.trip_distance }} km</span>
+                <span style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.trip_avg_speed }} km/h </span>
               </div>
             </div>
           </template>
@@ -58,24 +59,12 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'TripTable',
-  filters: {
-    formatNumber: function(value) {
-      if (isNaN(value)) {
-        return value
-      }
-      return Math.round(value)
-    }
-  },
   data() {
     return {}
   },
   computed: {
     ...mapGetters(['geofences']),
     trips: function() {
-      vm.$data.trips = []
-      return vm.$data.trips
-    },
-    tripsReport: function() {
       vm.$data.tripsReport = []
       return vm.$data.tripsReport
     },
@@ -91,7 +80,6 @@ export default {
     }
   },
   mounted() {
-    vm.$data.tripsReport = []
   },
   methods: {
     hasEndPOI(row) {
@@ -101,10 +89,10 @@ export default {
       serverBus.$emit('tripChanged', this.trips.indexOf(trip))
     },
     formatDate(date) {
-      return this.$moment(date).format('YYYY-MM-DD')
+      return this.$moment(date, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD')
     },
     formatTime(date) {
-      return this.$moment(date).format('HH:mm:ss')
+      return this.$moment(date, 'DD-MM-YYYY HH:mm:ss').format('HH:mm:ss')
     },
     getPOIName(poiId) {
       return this.pois.find(p => p.id === poiId).name
