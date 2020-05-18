@@ -422,4 +422,7 @@ export default {
     background: #555;
     border-radius: 5px;
   }
+  .el-table__expanded-cell[class*=cell] {
+    padding: 5px 5px
+  }
 </style>
