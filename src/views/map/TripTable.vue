@@ -116,7 +116,6 @@
 
 <script>
 import { serverBus, vm } from '../../main'
-import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -137,7 +136,9 @@ export default {
       set(value) { vm.$data.loadingRoutes = value }
     },
     height() {
-      return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
+      // return `calc(100vh - ${consts.vehicleListHeaderHeight}px)`
+      // todo: use constants
+      return 'calc(100vh - 355px)'
     },
     pois: function() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
