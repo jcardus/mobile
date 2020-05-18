@@ -96,7 +96,8 @@ export default {
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result:', response.data)
       if (response.data.success) {
-        vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: true })
+        this.selectedDevice.commandPending = false
+        vm.$store.dispatch('user/updateDevice', this.selectedDevice)
         if (this.isMobile) {
           this.$f7.notification.create({
             icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
