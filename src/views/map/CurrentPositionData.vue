@@ -44,16 +44,18 @@
 
 <script>
 
-import { vm, serverBus, sharedData } from '../../main'
+import { serverBus, sharedData, vm } from '../../main'
 import settings from '../../settings'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
+import * as report_utils from '../reports/utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
+import VueCookies from 'vue-cookies'
 
 export default {
   name: 'CurrentPositionData',
@@ -79,10 +81,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos', 'isPlaying', 'historyMode']),
+    ...mapGetters(['user', 'minPos', 'maxPos', 'isPlaying', 'historyMode', 'geofences', 'currentTime']),
     trips: {
       get() { return this.$static.trips },
       set(value) { this.$static.trips = value }
+    },
+    tripsReport: {
+      get() { return vm.$data.tripsReport },
+      set(value) { vm.$data.tripsReport = value }
     },
     speedMarkers: {
       get() { return this.$static.speedMarkers },
@@ -155,6 +161,9 @@ export default {
     },
     maxDate() {
       return vm.$data.routeMaxDate
+    },
+    pois() {
+      return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     }
   },
   watch: {
@@ -170,12 +179,13 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
+    serverBus.$on('tripChanged', this.onTripChanged)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
     window.removeEventListener('resize', this.resizeDiv)
     serverBus.$off('posChanged', this.onPosChanged)
-    serverBus.$off('routePlay', this.routePlay)
+    serverBus.$off('tripChanged', this.onTripChanged)
     this.removeLayers()
     lnglat.hideLayers(this.showRoutes)
     animation.hideRouteLayer(!this.showRoutes)
@@ -204,11 +214,12 @@ export default {
         Vue.$log.debug('got ', positions.length, ' positions')
         this.drawAll(positions)
         this.getRouteTrips(positions)
+        this.getReportTrips(this.minDate, this.maxDate)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
         this.filterTrips()
         Vue.$log.debug('after filter got ', this.trips.length, ' trips')
         this.trips.forEach(function(trip) {
-          Vue.$log.debug('one trip with ', trip.length, 'positions', 'start: ', trip[0].deviceTime, 'end: ', trip.slice(-1)[0].deviceTime, trip.slice(-1)[0])
+          Vue.$log.debug('one trip with ', trip.positions.length, 'positions', 'start: ', trip.positions[0].deviceTime, 'end: ', trip.positions.slice(-1)[0].deviceTime, trip.positions.slice(-1)[0])
         })
         this.currentTrip = this.trips.length - 1
         if (vm.$store.state.settings.viewSpeedAlerts) {
@@ -224,6 +235,8 @@ export default {
       } else {
         serverBus.$emit('message', this.$t('route.nodata'))
       }
+
+      Vue.$log.debug(vm.$data.trips)
       this.loadingRoutes = false
     },
     onPositionsError() {
@@ -257,21 +270,48 @@ export default {
       }
     },
     getRoute: function(from, to) {
+      this.tripsReport.splice(0, Number.MAX_VALUE)
       Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
     },
+    getReportTrips: function(from, to) {
+      const report_id = this.user.email + '_' + report_utils.generate_token(40)
+      const body = {
+        username: this.user.email,
+        password: VueCookies.get('JSESSIONID'),
+        platform: 'web',
+        report: 'trip',
+        'sync': true,
+        report_id: report_id,
+        selected_devices: [this.device.id],
+        selected_geofences: [],
+        date_from: Vue.moment(from).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        date_to: Vue.moment(to).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+      }
+
+      traccar.get_report(body, report_id, this.renderReport, this.errorHandler)
+    },
+    renderReport: function(response) {
+      response.trips[0].forEach(t => {
+        vm.$data.tripsReport.push(t)
+      })
+
+      this.$log.debug('Report trips - ', vm.$data.tripsReport)
+    },
+    errorHandler: function(report_id, reason) {
+      this.$log.debug('Report triggering failed - ' + reason)
+    },
     getRouteTrips: function(positions) {
-      this.trips = []
+      this.trips.splice(0, this.trips.length)
       let locations = []
       let startPos = false
-      const trips = this.trips
+      const self = this
       positions.forEach(function(position) {
         if (!startPos) {
           if ((!position.attributes.ignition && !position.attributes.motion) ||
             (position.attributes.power > 0 && position.attributes.power < 13)) {
             return
           }
-          trips.push(locations)
           locations.push(position)
           startPos = true
           return
@@ -287,10 +327,18 @@ export default {
           return
         }
         Vue.$log.debug('stopping trip because on default ', position)
+        const distance = Math.round(lnglat.arrayDistance(locations.map(x => [x.longitude, x.latitude])))
+        if (distance > 0) {
+          self.trips.push({ positions: locations })
+        }
         locations = []
         startPos = false
       })
-      if (trips.length === 0) { trips.push(positions) }
+
+      // last trip not finished
+      if (locations.length > 0) { self.trips.push({ positions: locations }) }
+
+      if (this.trips.length === 0) { this.trips.push({ positions: positions }) }
     },
     getSpeedTrips(positions) {
       const speedThreshold = vm.$store.state.settings.speedThreshold
@@ -304,7 +352,7 @@ export default {
         const vehicleSpeedLimit = Math.round(this.device.attributes.speedLimit * 1.85200)
         this.trips.forEach(function(tripPositions) {
           const currentSpeedTrips = []
-          tripPositions.forEach(function(position) {
+          tripPositions.positions.forEach(function(position) {
             const positionSpeed = Math.round(position.speed * 1.85200)
             if (!startPos && positionSpeed > vehicleSpeedLimitThreshold) {
               locations.push(position)
@@ -351,7 +399,7 @@ export default {
 
       this.trips.forEach(function(tripPositions) {
         const currentSpeedTrips = []
-        tripPositions.forEach(function(position) {
+        tripPositions.positions.forEach(function(position) {
           const speedPosition = data.find(d => Vue.moment(d.timestamp).unix() === Vue.moment(position.fixTime).unix())
           if (startPos && (speedPosition && speedLimit !== speedPosition.speedLimit)) {
             locations.push(position)
@@ -387,6 +435,30 @@ export default {
 
       this.drawTrip()
       this.drawSpeedTrip()
+    },
+    findNearestPOI: function(position) {
+      if (this.pois.length === 0) { return null }
+
+      if (!position) { return null }
+
+      const a = this.pois.map(p => {
+        if (p.area) {
+          const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
+          const coord = str.trim().split(' ')
+          return {
+            id: p.id,
+            distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude))
+          }
+        }
+        return {
+          id: p.id,
+          distance: Number.MAX_SAFE_INTEGER
+        }
+      }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
+
+      if (a.length > 0) {
+        return a[0].id
+      }
     },
     drawSpeedTrip: function() {
       if (!this.speedTrips || !this.speedTrips[this.currentTrip]) {
@@ -472,17 +544,18 @@ export default {
       const result = []
       if (this.trips.length < 2) { return }
       this.trips.forEach(function(trip) {
-        if (trip.length > 3) { result.push(trip) }
+        if (trip.positions.length > 3) { result.push(trip) }
       })
       this.trips = result
     },
     drawTrip: function() {
+      Vue.$log.debug('DrawTrip')
       if (this.currentTrip < 0) return
       this.drawStartEnd()
       if (vm.$store.state.settings.matchRoutes) {
         this.iterate()
       } else {
-        const coordinates = this.trips[this.currentTrip].map(p => [p.longitude, p.latitude])
+        const coordinates = this.trips[this.currentTrip].positions.map(p => [p.longitude, p.latitude])
 
         this.drawRoute(coordinates)
       }
@@ -493,8 +566,11 @@ export default {
       return Math.sqrt(dx * dx + dy * dy)
     },
     drawStartEnd: function() {
+      Vue.$log.debug('drawStartEnd')
+
       if (this.currentTrip < 0) return
-      const positions = this.trips[this.currentTrip]
+      const positions = this.trips[this.currentTrip].positions
+      Vue.$log.debug('positions', positions)
       const start = [positions[0].longitude, positions[0].latitude]
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]
       const sCoord = this.map.project(start)
@@ -558,7 +634,7 @@ export default {
       }
     },
     iterate: function() {
-      const positions = this.trips[this.currentTrip]
+      const positions = this.trips[this.currentTrip].positions
       if (this.i < positions.length) {
         const j = (this.i + 100) <= (positions.length) ? (this.i + 100) : (positions.length)
         Vue.$log.debug('slicing ', this.i, ' to ', j)
@@ -742,6 +818,16 @@ export default {
         this.formattedDate = ''
       }
     },
+    onTripChanged(newTrip) {
+      Vue.$log.debug(this.tripsReport[newTrip].trip_start_fixtime)
+
+      const p = sharedData.getPositions().find(p =>
+        this.$moment(p.fixTime) > this.$moment(this.tripsReport[newTrip].trip_start_fixtime, 'DD-MM-YYYY HH:mm:ss')
+      )
+      Vue.$log.debug(p)
+
+      this.onPosChanged(sharedData.getPositions().indexOf(this.trips[newTrip].positions[0]))
+    },
     onPosChanged(newPos) {
       this.$log.debug('CurrentPositionData', newPos)
       const positions = sharedData.getPositions()
@@ -793,12 +879,14 @@ export default {
         const newDate = utils.getDate(positions[newPos].fixTime)
         const oldTrip = this.currentTrip
 
-        while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].slice(-1)[0].deviceTime).toDate()) {
+        while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].deviceTime).toDate()) {
           this.currentTrip++
         }
-        while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip][0].deviceTime).toDate()) {
+
+        while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip].positions[0].deviceTime).toDate()) {
           this.currentTrip--
         }
+
         if (oldTrip !== this.currentTrip) {
           const t = this.currentTrip
           this.currentTrip = oldTrip

@@ -67,6 +67,7 @@
     <div class="mobileScroll">
       <el-table
         id="vehicleTable"
+        ref="vehicleTable"
         v-loading.fullscreen.lock="loading"
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -81,7 +82,7 @@
         @row-click="vehicleSelected"
       >
         <el-table-column
-          prop=""
+          prop="positions"
           label=""
           width="10"
           heigth="10"
@@ -116,7 +117,13 @@
               /></div>
           </template>
         </el-table-column>
+        <el-table-column type="expand" width="1">
+          <template>
+            <trip-table></trip-table>
+          </template>
+        </el-table-column>
       </el-table>
+
     </div>
   </div>
 </template>
@@ -126,13 +133,14 @@ import { serverBus, vm } from '../../main'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
+import TripTable from './TripTable'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 import * as utils from '../../utils/utils'
 
 export default {
   name: 'VehicleTable',
-  components: { ImmobilizeButton },
+  components: { ImmobilizeButton, TripTable },
   filters: {
     translate(value) {
       return vm.$t(value)
@@ -295,7 +303,12 @@ export default {
   methods: {
     showRoutesChanged() {
       if (!this.historyMode) {
+        const table = this.$refs.vehicleTable
+        table.toggleRowExpansion(this.selectedDevice, false)
         this.selectedDevice = null
+      } else {
+        const table = this.$refs.vehicleTable
+        table.toggleRowExpansion(this.selectedDevice, true)
       }
     },
     getBgColor: function(device) {
@@ -373,6 +386,7 @@ export default {
         devices = this.devices.filter(d => this.getDeviceState(d) === state)
       }
       lnglat.fitBounds(devices)
+      lnglat.changeVehicleLayerFilter(state)
     },
     deviceSelectedOnMap(device) {
       this.selectedDevice = device
@@ -407,5 +421,8 @@ export default {
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
     border-radius: 5px;
+  }
+  .el-table__expanded-cell[class*=cell] {
+    padding: 5px 5px
   }
 </style>
