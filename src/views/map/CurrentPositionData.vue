@@ -73,7 +73,6 @@ export default {
   },
   static() {
     return {
-      trips: [],
       speedTrips: [],
       speedMarkers: [],
       startMaker: null,
@@ -83,8 +82,8 @@ export default {
   computed: {
     ...mapGetters(['user', 'minPos', 'maxPos', 'isPlaying', 'historyMode', 'geofences', 'currentTime']),
     trips: {
-      get() { return this.$static.trips },
-      set(value) { this.$static.trips = value }
+      get() { return vm.$data.trips },
+      set(value) { vm.$data.trips = value }
     },
     tripsReport: {
       get() { return vm.$data.tripsReport },
@@ -271,6 +270,7 @@ export default {
     },
     getRoute: function(from, to) {
       this.tripsReport.splice(0, Number.MAX_VALUE)
+      this.trips.splice(0, Number.MAX_VALUE)
       Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
     },
@@ -319,6 +319,7 @@ export default {
         locations.push(position)
         if (position.attributes.power > 0 && position.attributes.power < 12.9) {
           Vue.$log.debug('stopping trip on low power: ', position)
+          self.trips.push(self.createTrip(locations))
           locations = []
           startPos = false
           return
@@ -327,18 +328,74 @@ export default {
           return
         }
         Vue.$log.debug('stopping trip because on default ', position)
-        const distance = Math.round(lnglat.arrayDistance(locations.map(x => [x.longitude, x.latitude])))
-        if (distance > 0) {
-          self.trips.push({ positions: locations })
+        if (locations.length > 1) {
+          self.trips.push(self.createTrip(locations))
         }
         locations = []
         startPos = false
       })
 
       // last trip not finished
-      if (locations.length > 0) { self.trips.push({ positions: locations }) }
+      Vue.$log.debug('Last trip ', locations)
+      if (locations.length > 0) { self.trips.push(this.createTrip(locations)) }
 
-      if (this.trips.length === 0) { this.trips.push({ positions: positions }) }
+      Vue.$log.debug('Trips ', this.trips)
+      if (this.trips.length === 0) { this.trips.push(this.createTrip(positions)) }
+    },
+    createTrip(locations) {
+      const distance = Math.round(lnglat.arrayDistance(locations.map(x => [x.longitude, x.latitude])) * 10) / 10
+
+      var timeLocations = []
+      for (var i = 1; i < locations.length; i++) {
+        const diffSeconds = this.$moment(locations[i].fixTime).diff(this.$moment(locations[i - 1].fixTime), 'seconds')
+        timeLocations.push(
+          {
+            type: locations[i].speed < 4 ? 1 : 0,
+            time: diffSeconds,
+            speed: locations[i].speed * 1.852
+          })
+      }
+
+      // Calculate avgSpeed of current trip
+      const totalSeconds = timeLocations.reduce((a, b) => a + b.time, 0)
+      const avgSpeed = Math.round((timeLocations.reduce((a, b) => a + (b.speed * b.time), 0) / totalSeconds) * 10) / 10
+
+      // Calculate stopTime of last trip
+      if (this.trips.length > 0) {
+        const lastTrip = this.trips[this.trips.length - 1]
+        let stopSeconds = this.$moment(locations[0].fixTime).diff(this.$moment(lastTrip.positions[lastTrip.positions.length - 1].fixTime), 'seconds')
+
+        const stopHours = String(Math.floor(stopSeconds / 3600)).padStart(2, '0')
+        stopSeconds %= 3600
+        const stopMinutes = String(Math.floor(stopSeconds / 60)).padStart(2, '0')
+
+        lastTrip.trip_stop_time = stopHours + ':' + stopMinutes
+      }
+
+      // Calculate drivingTime of current trip
+      let drivingSeconds = timeLocations.filter(t => t.type === 0).reduce((a, b) => a + b.time, 0)
+      const drivingHours = String(Math.floor(drivingSeconds / 3600)).padStart(2, '0')
+      drivingSeconds %= 3600
+      const drivingMinutes = String(Math.floor(drivingSeconds / 60)).padStart(2, '0')
+
+      // Calculate Idle of current trip
+      let idleSeconds = timeLocations.filter(t => t.type === 1).reduce((a, b) => a + b.time, 0)
+      const idleHours = String(Math.floor(idleSeconds / 3600)).padStart(2, '0')
+      idleSeconds %= 3600
+      const idleMinutes = String(Math.floor(idleSeconds / 60)).padStart(2, '0')
+
+      return {
+        positions: locations,
+        trip_start_fixtime: this.$moment(locations[0].fixTime).format('DD-MM-YYYY HH:mm:ss'),
+        trip_end_fixtime: this.$moment(locations[locations.length - 1].fixTime).format('DD-MM-YYYY HH:mm:ss'),
+        trip_end_address: locations[locations.length - 1].address,
+        trip_driving_time: drivingHours + ':' + drivingMinutes,
+        trip_idle_time: idleHours + ':' + idleMinutes,
+        trip_stop_time: '00:00',
+        trip_distance: distance,
+        trip_avg_speed: avgSpeed,
+        endPoi: this.findNearestPOI(locations[locations.length - 1])
+      }
     },
     getSpeedTrips(positions) {
       const speedThreshold = vm.$store.state.settings.speedThreshold
@@ -819,13 +876,6 @@ export default {
       }
     },
     onTripChanged(newTrip) {
-      Vue.$log.debug(this.tripsReport[newTrip].trip_start_fixtime)
-
-      const p = sharedData.getPositions().find(p =>
-        this.$moment(p.fixTime) > this.$moment(this.tripsReport[newTrip].trip_start_fixtime, 'DD-MM-YYYY HH:mm:ss')
-      )
-      Vue.$log.debug(p)
-
       this.onPosChanged(sharedData.getPositions().indexOf(this.trips[newTrip].positions[0]))
     },
     onPosChanged(newPos) {
