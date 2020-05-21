@@ -129,7 +129,8 @@ export default {
     ...mapGetters(['geofences']),
     trips: function() {
       vm.$data.tripsReport = []
-      return vm.$data.tripsReport
+      vm.$data.trips = []
+      return vm.$data.trips
     },
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
