@@ -9,6 +9,7 @@ import VueNativeSock from 'vue-native-websocket'
 import { backEndHostName } from '../../utils/consts'
 import { getServerHost } from '../../api'
 import settings from '../../settings'
+import { setLanguage } from '../../lang'
 
 const state = {
   name: '',
@@ -172,6 +173,7 @@ const actions = {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
         .finally(() => {
+          setLanguage(state.attributes.lang)
           TrackJS.addMetadata('user', state.name)
           const hostName = getServerHost()
           Vue.$log.info('opening websocket ', state)

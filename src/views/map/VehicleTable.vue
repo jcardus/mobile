@@ -186,20 +186,7 @@ export default {
       sortColumns: {},
       sortKey: 'name',
       filterState: null,
-      orderedBy: 'orderByStatus',
-      orderBy: [{
-        value: 'orderByStatus',
-        label: this.$t('vehicleList.order_by_status')
-      }, {
-        value: 'order_by_vehicle',
-        label: this.$t('vehicleList.order_by_vehicle')
-      }, {
-        value: 'order_by_group',
-        label: this.$t('vehicleList.order_by_group')
-      }, {
-        value: 'order_by_last_update',
-        label: this.$t('vehicleList.order_by_last_update')
-      }]
+      orderedBy: 'orderByStatus'
     }
   },
   computed: {
@@ -287,6 +274,21 @@ export default {
     },
     pois: function() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+    },
+    orderBy: function() {
+      return [{
+        value: 'orderByStatus',
+        label: this.$t('vehicleList.order_by_status')
+      }, {
+        value: 'order_by_vehicle',
+        label: this.$t('vehicleList.order_by_vehicle')
+      }, {
+        value: 'order_by_group',
+        label: this.$t('vehicleList.order_by_group')
+      }, {
+        value: 'order_by_last_update',
+        label: this.$t('vehicleList.order_by_last_update')
+      }]
     }
   },
   mounted() {
