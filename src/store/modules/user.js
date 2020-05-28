@@ -122,7 +122,8 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
-  setDeviceLastIgnOff({ commit }, { device, fixTime }) {
+  setDeviceLastIgnOff({ commit, state }, { device, fixTime }) {
+    if (!settings.getLastIgnitionOff) return
     const end = new Date()
     const start = Vue.moment(fixTime).subtract(60, 'day').toDate()
     traccar.report_events(start, end, [device.id], ['ignitionOff']).then((d) => {
