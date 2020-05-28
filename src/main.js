@@ -7,8 +7,7 @@ import './routeInterceptor'
 import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
-import i18n from './lang'
-import { getLanguage } from './lang'
+import i18n, { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
@@ -16,6 +15,8 @@ import * as lnglat from './utils/lnglat'
 import './amplify'
 import VueTimers from 'vue-timers'
 import { SharedData } from './utils/utils'
+import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
+import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
@@ -100,7 +101,8 @@ if ('serviceWorker' in navigator) {
 
 const moment = require('moment')
 require('moment/locale/pt')
-require('moment/locale/es')// 'fr'
+require('moment/locale/es')
+require('moment/locale/en-gb')// 'fr'
 moment.locale(getLanguage().slice(2))
 Vue.use(require('vue-moment'), { moment })
 
@@ -116,8 +118,6 @@ Vue.use(VueStatic, {
 
 Vue.use(VueI18nFilter)
 
-import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
-import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 Framework7.use(Framework7Vue)
 
 Vue.use(VueTimers)

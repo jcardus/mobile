@@ -97,8 +97,12 @@
           <template slot-scope="scope">
             <div style="padding: 3px 0 0;">
               <span style="font-weight: bold">{{ scope.row.name }} </span>
-              <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span></div>
-            <div style="line-height: normal;padding-top: 2px">
+              <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span>
+            </div>
+            <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId != 0" style="padding-top: 2px">
+              <span style="font-size: 12px;"><i class="fas fa-user" style="width: 15px;padding-left: 1px;color: #055AE5"></i> {{ getDriverName(scope.row.position.attributes.driverUniqueId) }}</span>
+            </div>
+            <div style="line-height: normal">
               <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
               <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
             </div>
@@ -182,24 +186,11 @@ export default {
       sortColumns: {},
       sortKey: 'name',
       filterState: null,
-      orderedBy: 'orderByStatus',
-      orderBy: [{
-        value: 'orderByStatus',
-        label: this.$t('vehicleList.order_by_status')
-      }, {
-        value: 'order_by_vehicle',
-        label: this.$t('vehicleList.order_by_vehicle')
-      }, {
-        value: 'order_by_group',
-        label: this.$t('vehicleList.order_by_group')
-      }, {
-        value: 'order_by_last_update',
-        label: this.$t('vehicleList.order_by_last_update')
-      }]
+      orderedBy: 'orderByStatus'
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'geofences', 'currentTime', 'devices']),
+    ...mapGetters(['historyMode', 'geofences', 'currentTime', 'devices', 'drivers']),
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },
@@ -283,6 +274,21 @@ export default {
     },
     pois: function() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+    },
+    orderBy: function() {
+      return [{
+        value: 'orderByStatus',
+        label: this.$t('vehicleList.order_by_status')
+      }, {
+        value: 'order_by_vehicle',
+        label: this.$t('vehicleList.order_by_vehicle')
+      }, {
+        value: 'order_by_group',
+        label: this.$t('vehicleList.order_by_group')
+      }, {
+        value: 'order_by_last_update',
+        label: this.$t('vehicleList.order_by_last_update')
+      }]
     }
   },
   mounted() {
@@ -396,6 +402,16 @@ export default {
     },
     getPOIName(poiId) {
       return this.pois.find(p => p.id === poiId).name
+    },
+    getDriverName(driverUniqueId) {
+      if (!driverUniqueId) return ''
+
+      if (driverUniqueId === 0) return ''
+
+      const driver = this.drivers.find(d => d.uniqueId === driverUniqueId)
+      if (driver) return driver.name
+
+      return ''
     }
   }
 }

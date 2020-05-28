@@ -18,5 +18,6 @@ module.exports = {
   show3dBuildings: true,
   experiment: true,
   debugRoutes: false,
-  mapBoxRouteMatch: false
+  mapBoxRouteMatch: false,
+  getLastIgnitionOff: false
 }
