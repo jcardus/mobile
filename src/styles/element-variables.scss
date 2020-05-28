@@ -10,7 +10,7 @@ $--color-white: #F8F9FE;
 /* constants */
 $--vehicle-list-header-height: 252px;
 $--el-switch-height: 45px;
-
+$--driver-list-header-height: 165px;
 
 /* icon font path, required */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
@@ -27,5 +27,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   info: $--color-info;
   textPrimary: $--color-text-primary;
   vehicleListHeaderHeight: $--vehicle-list-header-height;
+  driverListHeaderHeight: $--driver-list-header-height;
   elSwitchHeight: $--el-switch-height;
 }

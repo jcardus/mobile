@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import elementEnLocale from 'element-ui/lib/locale/lang/en' // element-ui lang
-import elementEsLocale from 'element-ui/lib/locale/lang/es'// element-ui lang
-import elementPtLocale from 'element-ui/lib/locale/lang/pt'// element-ui lang
-import elementFrLocale from 'element-ui/lib/locale/lang/fr'// element-ui lang
+import elementEsLocale from 'element-ui/lib/locale/lang/es' // element-ui lang
+import elementPtLocale from 'element-ui/lib/locale/lang/pt' // element-ui lang
+import elementFrLocale from 'element-ui/lib/locale/lang/fr' // element-ui lang
 import enGBLocale from './enGB'
 import ptBRLocale from './ptBR'
 import ptPTLocale from './ptPT'
@@ -36,21 +36,32 @@ const messages = {
   }
 }
 
+export function setLanguage(lang) {
+  if (lang) {
+    const key = lang.replace('-', '')
+    i18n.locale = key
+    Vue.config.lang = lang.slice(2)
+    Vue.moment.locale(lang.slice(2))
+  }
+}
+
 export function getLanguageI18n() {
   const lang = getLanguage()
   return lang.slice(0, 2) + '-' + lang.slice(-2)
 }
 
 export function getLanguage() {
-  const chooseLanguage = store.state.user.attributes && store.state.user.attributes.lang
-  if (chooseLanguage) return chooseLanguage.replace('-', '')
+  if (store) {
+    const chooseLanguage = store.state.user.attributes && store.state.user.attributes.lang
+    if (chooseLanguage) return chooseLanguage.replace('-', '')
 
-  // if has not choose language
-  const language = (navigator.language || navigator.browserLanguage).toLowerCase().replace('-', '')
-  const locales = Object.keys(messages)
-  for (const locale of locales) {
-    if (language.indexOf(locale) > -1) {
-      return locale
+    // if has not choose language
+    const language = (navigator.language || navigator.browserLanguage).toLowerCase().replace('-', '')
+    const locales = Object.keys(messages)
+    for (const locale of locales) {
+      if (language.indexOf(locale) > -1) {
+        return locale
+      }
     }
   }
   return 'enGB'
