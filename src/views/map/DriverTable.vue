@@ -29,7 +29,7 @@
               <span class="driverGroupName">{{ scope.row.groupName || '' }} </span>
             </div>
             <div style="line-height: normal">
-              <span class="driverVehicleName"><i class="fas fa-car driverVehicleIcon"></i> {{ getVehicleName(scope.row.uniqueId) }}</span>
+              <span class="driverVehicleName"><i class="fas fa-car driverVehicleIcon"></i> {{ scope.row.vehicle ? scope.row.vehicle.name : '' }}</span>
             </div>
           </template>
         </el-table-column>
@@ -56,7 +56,9 @@ export default {
     height() {
       return 'calc(100vh - ' + styles.driverListHeaderHeight + ')'
     },
-    map: function() { return vm.$static.map },
+    map: function() {
+      return vm.$static.map
+    },
     filteredDrivers: function() {
       const self = this
       const filterKey = this.filterKey && this.filterKey.toLowerCase()
@@ -75,11 +77,18 @@ export default {
         return (a === b ? 0 : a > b ? 1 : -1)
       })
       return drivers
+    },
+    getVehicleName(row) {
+      if (row.vehicle) {
+        return row.vehicle.name
+      }
+
+      return ''
     }
   },
   methods: {
     getDriverStateOrder: function(driver) {
-      if (this.getVehicle(driver.uniqueId)) {
+      if (driver.vehicle) {
         return 0
       }
 
@@ -93,20 +102,13 @@ export default {
       return result
     },
     getBgColor: function(driver) {
-      if (this.getVehicle(driver.uniqueId)) {
+      if (driver.vehicle) {
         return styles.success
       }
       return 'Gray'
     },
     driverSelected: function(driver) {
 
-    },
-    getVehicleName(uniqueId) {
-      const d = this.getVehicle(uniqueId)
-      return d ? d.name : ''
-    },
-    getVehicle(uniqueId) {
-      return this.devices.find(d => d.position && d.position.attributes.driverUniqueId === uniqueId)
     }
   }
 }

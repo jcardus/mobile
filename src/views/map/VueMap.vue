@@ -36,12 +36,12 @@ import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import * as utils from '../../utils/utils'
 import { checkForUpdates } from '../../utils/utils'
 import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
-import * as utils from '../../utils/utils'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -109,7 +109,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'showLabels', 'devices', 'isPlaying']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'drivers', 'showLabels', 'devices', 'isPlaying']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -709,6 +709,7 @@ export default {
       // moment is expensive so we cache this value
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
+      device.driver = this.findDriver(position, device)
       device.position = position
       feature.properties = { ...feature.properties, ...position }
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
@@ -743,6 +744,34 @@ export default {
         }
       }
       this.refreshMap()
+    },
+    findDriver(position, device) {
+      if (!position.attributes.driverUniqueId ||
+        position.attributes.driverUniqueId === 0) {
+        if (device.driver && device.driver.id) {
+          const driver = this.drivers.find(d => d.id === device.driver.id)
+          vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
+          driver.vehicle = { name: device.name }
+          vm.$store.state.user.drivers.push(driver)
+        }
+
+        return { name: '' }
+      }
+      const driver = this.drivers.find(d => d.uniqueId === position.attributes.driverUniqueId)
+
+      if (driver) {
+        vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
+        driver.vehicle = { name: device.name }
+        vm.$store.state.user.drivers.push(driver)
+        return { id: driver.id, name: driver.name }
+      }
+
+      if (device.driver && device.driver.id) {
+        const driver = this.drivers.find(d => d.id === device.driver.id)
+        driver.vehicle = null
+      }
+
+      return { name: position.attributes.driverUniqueId }
     },
     findNearestPOI: function(position) {
       if (this.pois.length === 0) {
