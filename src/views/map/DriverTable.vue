@@ -29,7 +29,7 @@
               <span class="driverGroupName">{{ scope.row.groupName || '' }} </span>
             </div>
             <div style="line-height: normal">
-              <span class="driverVehicleName"><i class="fas fa-car driverVehicleIcon"></i> {{ getVehicleName(scope.row) }}</span>
+              <span class="driverVehicleName"><i class="fas fa-car driverVehicleIcon"></i> {{ scope.row.vehicle ? scope.row.vehicle.name : '' }}</span>
             </div>
           </template>
         </el-table-column>
@@ -77,11 +77,18 @@ export default {
         return (a === b ? 0 : a > b ? 1 : -1)
       })
       return drivers
+    },
+    getVehicleName(row) {
+      if (row.vehicle) {
+        return row.vehicle.name
+      }
+
+      return ''
     }
   },
   methods: {
     getDriverStateOrder: function(driver) {
-      if (this.getVehicle(driver)) {
+      if (driver.vehicle) {
         return 0
       }
 
@@ -95,33 +102,13 @@ export default {
       return result
     },
     getBgColor: function(driver) {
-      if (this.getVehicle(driver)) {
+      if (driver.vehicle) {
         return styles.success
       }
       return 'Gray'
     },
     driverSelected: function(driver) {
 
-    },
-    getVehicleName(row) {
-      const d = this.getVehicle(row)
-      return d ? d.name : ''
-    },
-    getVehicle(row) {
-      if (row.uniqueId) {
-        if (!row.vehicle) {
-          row.vehicle = this.devices.find(d => d.position && d.position.attributes.driverUniqueId === row.uniqueId)
-          if (!row.vehicle) {
-            row.vehicle = { name: '' }
-          }
-          this.$log.debug('caching ', row.uniqueId, row.vehicle)
-        } else {
-          this.$log.debug('returning cached ', row.vehicle)
-        }
-        return row.vehicle
-      } else {
-        return { name: '' }
-      }
     }
   }
 }
