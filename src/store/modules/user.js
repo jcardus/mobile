@@ -234,9 +234,9 @@ const actions = {
     commit('SET_ALERTS', alerts)
   },
   fetchAlerts({ commit, state, getters }) {
-    return traccar.alerts(function(alerts) {
+    return traccar.alerts().then(response => {
       const result = []
-      alerts.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
+      response.data.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
         const alarm_data = {
           notification: a,
           devices: []
@@ -245,7 +245,7 @@ const actions = {
       })
       commit('SET_ALERTS', result)
 
-      getters.devices.forEach(d => {
+      state.devices.forEach(d => {
         traccar.alertsByDevice(d.id)
           .then(({ data }) => {
             data.forEach(a => {
