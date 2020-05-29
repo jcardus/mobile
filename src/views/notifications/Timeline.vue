@@ -60,6 +60,14 @@
 import { vm } from '../../main'
 import { mapGetters } from 'vuex'
 
+const alertTypes = [
+  'geofenceExit',
+  'geofenceEnter',
+  'deviceOverspeed',
+  'ignitionOn',
+  'ignitionOff'
+]
+
 export default {
   data() {
     return {
@@ -113,7 +121,9 @@ export default {
     ...mapGetters(['events', 'alerts', 'devices']),
     geofences: function() { return vm.$store.state.user.geofences },
     sortedItems: function() {
-      return this.events.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      return this.events.filter(e => {
+        alertTypes.includes(e.type)
+      }).slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     }
   },
   mounted() {
