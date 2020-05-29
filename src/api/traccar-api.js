@@ -245,7 +245,7 @@ export const traccar = {
     })
   },
   alertsByDevice: function(deviceId) {
-    return axios.get(alerts + '?deviceId=' + deviceId, { withCredentials: true })
+    return get(alerts + '?deviceId=' + deviceId, { withCredentials: true })
   },
   alerts() {
     return get(alerts, { withCredentials: true })
@@ -361,14 +361,6 @@ export const traccar = {
     const requestGeofences = axios.get(geoFences, { withCredentials: true })
     const requestGroups = axios.get(groups + '?userId=' + userId, { withCredentials: true })
     const requestDrivers = axios.get(drivers + '?userId=' + userId, { withCredentials: true })
-    return new Promise(resolve => {
-      axios.all([requestDevices, requestGeofences, requestGroups, requestDrivers])
-        .then(axios.spread((...responses) => {
-          resolve(responses)
-        }))
-        .catch(e => {
-          Vue.$log.error(e)
-        })
-    })
+    return axios.all([requestDevices, requestGeofences, requestGroups, requestDrivers])
   }
 }
