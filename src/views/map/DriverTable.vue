@@ -6,7 +6,7 @@
         style="padding: 10px"
         highlight-current-row
         :cell-style="cellStyle"
-        :data="drivers"
+        :data="filteredDrivers"
         :show-header="false"
         :height="height"
         @current-change="driverSelected"
@@ -29,7 +29,7 @@
               <span class="driverGroupName">{{ scope.row.groupName || '' }} </span>
             </div>
             <div style="line-height: normal">
-              <span class="driverVehicleName"><i class="fas fa-car driverVehicleIcon"></i> {{ getVehicleName(scope.row.uniqueId) }}</span>
+              <span class="driverVehicleName"><i class="fas fa-car driverVehicleIcon"></i> {{ getVehicleName(scope.row) }}</span>
             </div>
           </template>
         </el-table-column>
@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     getDriverStateOrder: function(driver) {
-      if (this.getVehicle(driver.uniqueId)) {
+      if (this.getVehicle(driver)) {
         return 0
       }
 
@@ -93,7 +93,7 @@ export default {
       return result
     },
     getBgColor: function(driver) {
-      if (this.getVehicle(driver.uniqueId)) {
+      if (this.getVehicle(driver)) {
         return styles.success
       }
       return 'Gray'
@@ -101,12 +101,15 @@ export default {
     driverSelected: function(driver) {
 
     },
-    getVehicleName(uniqueId) {
-      const d = this.getVehicle(uniqueId)
+    getVehicleName(row) {
+      const d = this.getVehicle(row)
       return d ? d.name : ''
     },
-    getVehicle(uniqueId) {
-      return this.devices.find(d => d.position && d.position.attributes.driverUniqueId === uniqueId)
+    getVehicle(row) {
+      if (!row.vehicle) {
+        row.vehicle = this.devices.find(d => d.position && d.position.attributes.driverUniqueId === row.uniqueId)
+      }
+      return row.vehicle
     }
   }
 }
