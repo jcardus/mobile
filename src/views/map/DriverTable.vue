@@ -56,7 +56,9 @@ export default {
     height() {
       return 'calc(100vh - ' + styles.driverListHeaderHeight + ')'
     },
-    map: function() { return vm.$static.map },
+    map: function() {
+      return vm.$static.map
+    },
     filteredDrivers: function() {
       const self = this
       const filterKey = this.filterKey && this.filterKey.toLowerCase()
@@ -106,10 +108,20 @@ export default {
       return d ? d.name : ''
     },
     getVehicle(row) {
-      if (!row.vehicle) {
-        row.vehicle = this.devices.find(d => d.position && d.position.attributes.driverUniqueId === row.uniqueId)
+      if (row.uniqueId) {
+        if (!row.vehicle) {
+          row.vehicle = this.devices.find(d => d.position && d.position.attributes.driverUniqueId === row.uniqueId)
+          if (!row.vehicle) {
+            row.vehicle = { name: '' }
+          }
+          this.$log.debug('caching ', row.uniqueId, row.vehicle)
+        } else {
+          this.$log.debug('returning cached ', row.vehicle)
+        }
+        return row.vehicle
+      } else {
+        return { name: '' }
       }
-      return row.vehicle
     }
   }
 }
