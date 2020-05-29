@@ -6,7 +6,7 @@
         style="padding: 10px"
         highlight-current-row
         :cell-style="cellStyle"
-        :data="filteredDrivers"
+        :data="drivers"
         :show-header="false"
         :height="height"
         @current-change="driverSelected"
