@@ -5,6 +5,7 @@
 <script>
 import { Chart } from 'chart.js'
 // eslint-disable-next-line no-unused-vars
+import { annotationPlugin } from 'chartjs-plugin-annotation'
 import Vue from 'vue'
 import { serverBus, sharedData, vm } from '../../main'
 import * as lnglat from '../../utils/lnglat'
