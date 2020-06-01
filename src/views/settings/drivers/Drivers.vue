@@ -40,7 +40,11 @@
       height="calc(100vh - 125px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
-      :data="drivers"
+      :data="drivers.filter(data => !search
+        || data.name.toLowerCase().includes(search.toLowerCase())
+        || data.uniqueId.toLowerCase().includes(search.toLowerCase())
+        || (data.attributes.email && data.attributes.email.toLowerCase().includes(search.toLowerCase()))
+        || (data.attributes.phone && data.attributes.phone.toLowerCase().includes(search.toLowerCase())))"
     >
       <el-table-column
         :label="$t('settings.driver_name')"
@@ -67,15 +71,24 @@
         sortable
       >
       </el-table-column>
-      <el-table-column label="" min-width="50px">
-        <template slot="header">
-          <el-tooltip :content="$t('settings.driver_add')" placement="top">
-            <el-button
-              class="formButton"
-              size="small"
-              @click="handleAddGroup"
-            ><i class="fas fa-plus"></i></el-button>
-          </el-tooltip>
+      <el-table-column label="" min-width="90px">
+        <template slot="header" slot-scope="scope">
+          <div style="float: left">
+            <el-input
+              v-model="search"
+              placeholder="Pesquisa"
+              @chage="doNothing(scope)"
+            />
+          </div>
+          <div style="float: right">
+            <el-tooltip :content="$t('settings.driver_add')" placement="top">
+              <el-button
+                class="formButton"
+                size="small"
+                @click="handleAddGroup"
+              ><i class="fas fa-plus"></i></el-button>
+            </el-tooltip>
+          </div>
         </template>
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.driver_delete')" placement="top">
@@ -131,6 +144,7 @@ export default {
       isNewDriver: true,
       selectedDriver: null,
       isUniqueIdDuplicated: false,
+      search: '',
       driverForm: {
         name: '',
         uniqueId: '',
@@ -275,6 +289,10 @@ export default {
     },
     resetDuplicatedKeyValidator() {
       this.isUniqueIdDuplicated = false
+    },
+    doNothing(scope) {
+      /* this method is here because we need the attribute 'slot-scope = "scope"' on the template
+       for search box to work, but to be able to commit the variable 'scope' it must be used*/
     }
   }
 }
