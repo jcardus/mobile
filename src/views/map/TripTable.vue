@@ -46,7 +46,7 @@
                     <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.endPoi) }}</span>
                   </div>
                   <div v-else>
-                    <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.trip_end_address }}</span>
+                    <span style="font-size: 12px"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.trip_end_address }}</span>
                   </div>
                 </el-col>
               </el-row>
