@@ -48,14 +48,12 @@ import { serverBus, sharedData, vm } from '../../main'
 import settings from '../../settings'
 import { routeMatch } from '../../api/here'
 import * as utils from '../../utils/utils'
-import * as report_utils from '../reports/utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
-import VueCookies from 'vue-cookies'
 
 export default {
   name: 'CurrentPositionData',
@@ -80,15 +78,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user', 'minPos', 'maxPos', 'isPlaying', 'historyMode', 'geofences', 'currentTime']),
-    trips: {
-      get() { return vm.$data.trips },
-      set(value) { vm.$data.trips = value }
-    },
-    tripsReport: {
-      get() { return vm.$data.tripsReport },
-      set(value) { vm.$data.tripsReport = value }
-    },
+    ...mapGetters(['user', 'minPos', 'maxPos', 'isPlaying', 'historyMode', 'geofences', 'currentTime', 'trips']),
     speedMarkers: {
       get() { return this.$static.speedMarkers },
       set(value) { this.$static.speedMarkers = value }
@@ -213,29 +203,27 @@ export default {
         Vue.$log.debug('got ', positions.length, ' positions')
         this.drawAll(positions)
         this.getRouteTrips(positions)
-        this.getReportTrips(this.minDate, this.maxDate)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
-        this.filterTrips()
-        Vue.$log.debug('after filter got ', this.trips.length, ' trips')
-        this.trips.forEach(function(trip) {
-          Vue.$log.debug('one trip with ', trip.positions.length, 'positions', 'start: ', trip.positions[0].deviceTime, 'end: ', trip.positions.slice(-1)[0].deviceTime, trip.positions.slice(-1)[0])
+        this.filterTrips().then(() => {
+          Vue.$log.debug('after filter got ', this.trips.length, ' trips')
+          this.trips.forEach(function(trip) {
+            Vue.$log.debug('one trip with ', trip.positions.length, 'positions', 'start: ', trip.positions[0].deviceTime, 'end: ', trip.positions.slice(-1)[0].deviceTime, trip.positions.slice(-1)[0])
+          })
+          this.currentTrip = this.trips.length - 1
+          if (vm.$store.state.settings.viewSpeedAlerts) {
+            this.getSpeedTrips(positions)
+          } else {
+            this.drawTrip()
+          }
+          sharedData.setPositions(positions)
+          this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
+          Vue.$log.debug('emit routeFetched')
+          serverBus.$emit('routeFetched')
         })
-        this.currentTrip = this.trips.length - 1
-        if (vm.$store.state.settings.viewSpeedAlerts) {
-          this.getSpeedTrips(positions)
-        } else {
-          this.drawTrip()
-        }
-
-        sharedData.setPositions(positions)
-        this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
-        Vue.$log.debug('emit routeFetched')
-        serverBus.$emit('routeFetched')
       } else {
         serverBus.$emit('message', this.$t('route.nodata'))
       }
-
-      Vue.$log.debug(vm.$data.trips)
+      Vue.$log.debug(this.trips)
       this.loadingRoutes = false
     },
     onPositionsError() {
@@ -269,75 +257,45 @@ export default {
       }
     },
     getRoute: function(from, to) {
-      this.tripsReport.splice(0, Number.MAX_VALUE)
-      this.trips.splice(0, Number.MAX_VALUE)
       Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
     },
-    getReportTrips: function(from, to) {
-      const report_id = this.user.email + '_' + report_utils.generate_token(40)
-      const body = {
-        username: this.user.email,
-        password: VueCookies.get('JSESSIONID'),
-        platform: 'web',
-        report: 'trip',
-        'sync': true,
-        report_id: report_id,
-        selected_devices: [this.device.id],
-        selected_geofences: [],
-        date_from: Vue.moment(from).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-        date_to: Vue.moment(to).endOf('day').format('YYYY-MM-DD HH:mm:ss')
-      }
-
-      traccar.get_report(body, report_id, this.renderReport, this.errorHandler)
-    },
-    renderReport: function(response) {
-      response.trips[0].forEach(t => {
-        vm.$data.tripsReport.push(t)
-      })
-
-      this.$log.debug('Report trips - ', vm.$data.tripsReport)
-    },
-    errorHandler: function(report_id, reason) {
-      this.$log.debug('Report triggering failed - ' + reason)
-    },
     getRouteTrips: function(positions) {
-      this.trips.splice(0, this.trips.length)
+      this.trips.length = 0
       let locations = []
       let startPos = false
-      const self = this
-      positions.forEach(function(position) {
+      for (const position of positions) {
         if (!startPos) {
           if ((!position.attributes.ignition && !position.attributes.motion) ||
             (position.attributes.power > 0 && position.attributes.power < 13)) {
-            return
+            continue
           }
           locations.push(position)
           startPos = true
-          return
+          continue
         }
         locations.push(position)
-        if (position.attributes.power > 0 && position.attributes.power < 12.9) {
+        if (position.attributes.power > 0 && position.attributes.power < 12.8) {
           Vue.$log.debug('stopping trip on low power: ', position)
-          self.trips.push(self.createTrip(locations))
+          this.trips.push(this.createTrip(locations))
           locations = []
           startPos = false
-          return
+          continue
         }
         if (position.attributes.ignition || position.speed > 0) {
-          return
+          continue
         }
         Vue.$log.debug('stopping trip because on default ', position)
         if (locations.length > 1) {
-          self.trips.push(self.createTrip(locations))
+          this.trips.push(this.createTrip(locations))
         }
         locations = []
         startPos = false
-      })
+      }
 
       // last trip not finished
       Vue.$log.debug('Last trip ', locations)
-      if (locations.length > 0) { self.trips.push(this.createTrip(locations)) }
+      if (locations.length > 0) { this.trips.push(this.createTrip(locations)) }
 
       Vue.$log.debug('Trips ', this.trips)
       if (this.trips.length === 0) { this.trips.push(this.createTrip(positions)) }
@@ -597,16 +555,16 @@ export default {
       this.drawSpeedMarkers()
       animation.removeAddRouteLayer()
     },
-    filterTrips() {
+    async filterTrips() {
       const result = []
       if (this.trips.length < 2) { return }
-      this.trips.forEach(function(trip) {
+      this.trips.forEach((trip) => {
         if (trip.positions.length > 3) { result.push(trip) }
       })
-      this.trips = result
+      return this.$store.dispatch('transient/setTrips', result)
     },
-    drawTrip: function() {
-      Vue.$log.debug('DrawTrip')
+    drawTrip() {
+      this.$log.debug(this.currentTrip)
       if (this.currentTrip < 0) return
       this.drawStartEnd()
       if (vm.$store.state.settings.matchRoutes) {
@@ -622,9 +580,8 @@ export default {
       const dy = p.y - q.y
       return Math.sqrt(dx * dx + dy * dy)
     },
-    drawStartEnd: function() {
-      Vue.$log.debug('drawStartEnd')
-
+    drawStartEnd() {
+      this.$log.debug(this.currentTrip)
       if (this.currentTrip < 0) return
       const positions = this.trips[this.currentTrip].positions
       Vue.$log.debug('positions', positions)

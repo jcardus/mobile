@@ -7,10 +7,14 @@ const state = {
   historyMode: false,
   events: [],
   stiLoaded: false,
-  isPlaying: false
+  isPlaying: false,
+  trips: []
 }
 
 const mutations = {
+  SET_TRIPS(state, trips) {
+    state.trips = trips
+  },
   TOGGLE_PLAY(state) {
     state.isPlaying = !state.isPlaying
   },
@@ -32,6 +36,9 @@ const mutations = {
 }
 
 const actions = {
+  setTrips({ commit }, trips) {
+    commit('SET_TRIPS', trips)
+  },
   setPlaying({ commit }, value) {
     commit('SET_PLAYING', value)
   },
