@@ -4,6 +4,8 @@
 
 <script>
 import { Chart } from 'chart.js'
+// eslint-disable-next-line no-unused-vars
+import * as plugins from 'chartjs-plugin-annotation'
 import Vue from 'vue'
 import { sharedData } from '../../main'
 import * as lnglat from '../../utils/lnglat'
@@ -27,7 +29,13 @@ export default {
           this.chart.data.labels = sharedData.getChartLabels()
         }
         if (this.chart.data && this.chart.data.datasets[0]) {
-          this.chart.data.datasets[0].data = sharedData.getChartData()
+          const chartData = sharedData.getChartData()
+          this.chart.data.datasets[0].data = chartData
+          if (chartData.length > 0) {
+            this.chart.options.annotation.annotations[0].xMin = chartData[0].x
+            this.chart.options.annotation.annotations[0].xMax = chartData[chartData.length - 1].x
+            this.$log.debug('creating annotation', this.chart.options.annotation.annotations[0])
+          }
         }
         this.chart.update()
       }
@@ -53,6 +61,47 @@ export default {
           }]
         },
         options: {
+          annotation: {
+            // Defines when the annotations are drawn.
+            // This allows positioning of the annotation relative to the other
+            // elements of the graph.
+            //
+            // Should be one of: afterDraw, afterDatasetsDraw, beforeDatasetsDraw
+            // See http://www.chartjs.org/docs/#advanced-usage-creating-plugins
+            drawTime: 'afterDatasetsDraw', // (default)
+
+            // Mouse events to enable on each annotation.
+            // Should be an array of one or more browser-supported mouse events
+            // See https://developer.mozilla.org/en-US/docs/Web/Events
+            events: ['click'],
+
+            // Double-click speed in ms used to distinguish single-clicks from
+            // double-clicks whenever you need to capture both. When listening for
+            // both click and dblclick, click events will be delayed by this
+            // amount.
+            dblClickSpeed: 350, // ms (default)
+
+            // Array of annotation configuration objects
+            // See below for detailed descriptions of the annotation options
+            annotations: [{
+              type: 'box',
+
+              // optional annotation ID (must be unique)
+              id: 'a-box-1',
+
+              // ID of the X scale to bind onto
+              xScaleID: 'x-axis-0',
+
+              // Left edge of the box. in units along the x axis
+              xMin: this.$moment().add(-2, 'days').toDate(),
+
+              // Right edge of the box
+              xMax: Date.now(),
+              backgroundColor: 'rgba(56, 135, 190, 0.5)',
+              borderColor: 'rgb(56, 135, 190)',
+              borderWidth: 1
+            }]
+          },
           elements: {
             point: {
               radius: 0
