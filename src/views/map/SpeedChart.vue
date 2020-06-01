@@ -5,10 +5,10 @@
 <script>
 import { Chart } from 'chart.js'
 // eslint-disable-next-line no-unused-vars
-import * as plugins from 'chartjs-plugin-annotation'
 import Vue from 'vue'
-import { sharedData } from '../../main'
+import { serverBus, sharedData, vm } from '../../main'
 import * as lnglat from '../../utils/lnglat'
+
 export default {
   name: 'SpeedChart',
   props: {
@@ -19,27 +19,25 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      currentTrip: null
+    }
+  },
+  computed: {
+    trips() {
+      return vm.$data.trips
     }
   },
   watch: {
     update() {
-      if (this.chart) {
-        if (this.chart.data) {
-          this.chart.data.labels = sharedData.getChartLabels()
-        }
-        if (this.chart.data && this.chart.data.datasets[0]) {
-          const chartData = sharedData.getChartData()
-          this.chart.data.datasets[0].data = chartData
-          if (chartData.length > 0) {
-            this.chart.options.annotation.annotations[0].xMin = chartData[0].x
-            this.chart.options.annotation.annotations[0].xMax = chartData[chartData.length - 1].x
-            this.$log.debug('creating annotation', this.chart.options.annotation.annotations[0])
-          }
-        }
-        this.chart.update()
-      }
+      this.updateChart()
     }
+  },
+  created() {
+    serverBus.$on('tripChanged', this.onTripChanged)
+  },
+  beforeDestroy() {
+    serverBus.$off('tripChanged', this.onTripChanged)
   },
   mounted() {
     Vue.$log.debug('SpeedChart created')
@@ -91,12 +89,6 @@ export default {
 
               // ID of the X scale to bind onto
               xScaleID: 'x-axis-0',
-
-              // Left edge of the box. in units along the x axis
-              xMin: this.$moment().add(-2, 'days').toDate(),
-
-              // Right edge of the box
-              xMax: Date.now(),
               backgroundColor: 'rgba(56, 135, 190, 0.5)',
               borderColor: 'rgb(56, 135, 190)',
               borderWidth: 1
@@ -169,6 +161,28 @@ export default {
           }
         }
       })
+    }
+  },
+  methods: {
+    updateChart() {
+      if (this.chart) {
+        if (this.chart.data) {
+          this.chart.data.labels = sharedData.getChartLabels()
+        }
+        if (this.chart.data && this.chart.data.datasets[0]) {
+          this.chart.data.datasets[0].data = sharedData.getChartData()
+          if (this.trips && this.trips[this.currentTrip]) {
+            this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
+            this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
+            this.$log.debug('creating annotation', this.chart.annotation.elements['a-box-1'])
+          }
+        }
+        this.chart.update()
+      }
+    },
+    onTripChanged(trip) {
+      this.currentTrip = trip
+      this.updateChart()
     }
   }
 }
