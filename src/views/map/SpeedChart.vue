@@ -4,9 +4,12 @@
 
 <script>
 import { Chart } from 'chart.js'
+// eslint-disable-next-line no-unused-vars
+import { annotationPlugin } from 'chartjs-plugin-annotation'
 import Vue from 'vue'
-import { sharedData } from '../../main'
+import { serverBus, sharedData, vm } from '../../main'
 import * as lnglat from '../../utils/lnglat'
+
 export default {
   name: 'SpeedChart',
   props: {
@@ -17,21 +20,25 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      currentTrip: null
+    }
+  },
+  computed: {
+    trips() {
+      return vm.$data.trips
     }
   },
   watch: {
     update() {
-      if (this.chart) {
-        if (this.chart.data) {
-          this.chart.data.labels = sharedData.getChartLabels()
-        }
-        if (this.chart.data && this.chart.data.datasets[0]) {
-          this.chart.data.datasets[0].data = sharedData.getChartData()
-        }
-        this.chart.update()
-      }
+      this.updateChart()
     }
+  },
+  created() {
+    serverBus.$on('tripChanged', this.onTripChanged)
+  },
+  beforeDestroy() {
+    serverBus.$off('tripChanged', this.onTripChanged)
   },
   mounted() {
     Vue.$log.debug('SpeedChart created')
@@ -53,6 +60,41 @@ export default {
           }]
         },
         options: {
+          annotation: {
+            // Defines when the annotations are drawn.
+            // This allows positioning of the annotation relative to the other
+            // elements of the graph.
+            //
+            // Should be one of: afterDraw, afterDatasetsDraw, beforeDatasetsDraw
+            // See http://www.chartjs.org/docs/#advanced-usage-creating-plugins
+            drawTime: 'afterDatasetsDraw', // (default)
+
+            // Mouse events to enable on each annotation.
+            // Should be an array of one or more browser-supported mouse events
+            // See https://developer.mozilla.org/en-US/docs/Web/Events
+            events: ['click'],
+
+            // Double-click speed in ms used to distinguish single-clicks from
+            // double-clicks whenever you need to capture both. When listening for
+            // both click and dblclick, click events will be delayed by this
+            // amount.
+            dblClickSpeed: 350, // ms (default)
+
+            // Array of annotation configuration objects
+            // See below for detailed descriptions of the annotation options
+            annotations: [{
+              type: 'box',
+
+              // optional annotation ID (must be unique)
+              id: 'a-box-1',
+
+              // ID of the X scale to bind onto
+              xScaleID: 'x-axis-0',
+              backgroundColor: 'rgba(56, 135, 190, 0.5)',
+              borderColor: 'rgb(56, 135, 190)',
+              borderWidth: 1
+            }]
+          },
           elements: {
             point: {
               radius: 0
@@ -120,6 +162,28 @@ export default {
           }
         }
       })
+    }
+  },
+  methods: {
+    updateChart() {
+      if (this.chart) {
+        if (this.chart.data) {
+          this.chart.data.labels = sharedData.getChartLabels()
+        }
+        if (this.chart.data && this.chart.data.datasets[0]) {
+          this.chart.data.datasets[0].data = sharedData.getChartData()
+          if (this.trips && this.trips[this.currentTrip]) {
+            this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
+            this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
+            this.$log.debug('creating annotation', this.chart.annotation.elements['a-box-1'])
+          }
+        }
+        this.chart.update()
+      }
+    },
+    onTripChanged(trip) {
+      this.currentTrip = trip
+      this.updateChart()
     }
   }
 }
