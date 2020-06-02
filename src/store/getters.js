@@ -19,7 +19,8 @@ const getters = {
   geofences: state => state.user.geofences,
   unreadItems: state => state.unreadItems,
   showLabels: state => state.settings.showLabels,
-  currentTime: state => state.currentTime
+  currentTime: state => state.currentTime,
+  trips: state => state.transient.trips
 }
 
 export default getters
