@@ -78,6 +78,12 @@ export const constantRoutes = [
         component: () => import('@/views/reports/ReportTolls'),
         name: 'Tolls Report',
         meta: { title: 'route.report_tolls' }
+      },
+      {
+        path: 'customreport_vistawaste_activity',
+        component: () => import('@/views/reports/CustomReportVistaWasteActivity'),
+        name: 'CustomVistaWaste1Report',
+        meta: { title: 'route.customreport_vistawaste_activity_title' }
       }
     ]
   },
