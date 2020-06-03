@@ -5,6 +5,7 @@
     <Databases isList="true" count="1">
       <customreport_vistawaste_activity Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
         <Alias>customreport_vistawaste_activity</Alias>
+        <Key />
         <Name>customreport_vistawaste_activity</Name>
         <PathData>C:\Temp\customreport_vistawaste_activity.json</PathData>
       </customreport_vistawaste_activity>
@@ -286,7 +287,7 @@
             <Text7 Ref="19" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>4,0,3.6,0.6</ClientRectangle>
+              <ClientRectangle>4,0,4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Open Sans,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
@@ -304,7 +305,7 @@
             <Text2 Ref="20" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>7.6,0,2.2,0.6</ClientRectangle>
+              <ClientRectangle>8,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Open Sans,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
@@ -623,7 +624,7 @@
             <Text1 Ref="38" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>4,0,3.6,0.4</ClientRectangle>
+              <ClientRectangle>4,0,4,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Open Sans,7</Font>
               <GrowToHeight>True</GrowToHeight>
@@ -662,7 +663,7 @@
             <Text5 Ref="40" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
-              <ClientRectangle>7.6,0,2.2,0.4</ClientRectangle>
+              <ClientRectangle>8,0,1.8,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
               <Font>Open Sans,7</Font>
               <GrowToHeight>True</GrowToHeight>
@@ -1010,8 +1011,9 @@
           <Sort isList="true" count="0" />
         </DataBand1>
         <DataBand2 Ref="57" type="DataBand" isKey="true">
-          <Border>Bottom;[216:216:216];1;Solid;False;4;Black</Border>
-          <Brush>Transparent</Brush>
+          <Border>Top;Black;1;Solid;False;4;Black</Border>
+          <Brush>Gainsboro</Brush>
+          <BusinessObjectGuid isNull="true" />
           <ClientRectangle>0,6.2,27.7,0.4</ClientRectangle>
           <Components isList="true" count="11">
             <Text51 Ref="58" type="Text" isKey="true">
@@ -1247,7 +1249,7 @@
         </DataBand2>
         <DataBand3 Ref="69" type="DataBand" isKey="true">
           <Border>Bottom;[216:216:216];1;Solid;False;4;Black</Border>
-          <Brush>Transparent</Brush>
+          <Brush>Gainsboro</Brush>
           <BusinessObjectGuid isNull="true" />
           <ClientRectangle>0,7.4,27.7,0.4</ClientRectangle>
           <Components isList="true" count="11">
@@ -1504,10 +1506,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>6/3/2020 12:33:50 PM</ReportChanged>
+  <ReportChanged>6/3/2020 6:19:10 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\customreport_vistawaste_activity.mrt</ReportFile>
-  <ReportGuid>74d387fa112749159af256f9ae23d82a</ReportGuid>
+  <ReportGuid>f10d4a883e5241a090910cc01afaae63</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.4.2.0</ReportVersion>
