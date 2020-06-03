@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.594",
+  "version": "1.0.597",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -40,6 +40,7 @@
     "odometer": "latest",
     "trackjs": "latest",
     "vue": "latest",
+    "vue-cli": "^2.9.6",
     "vue-cookies": "^1.7.0",
     "vue-i18n": "^8.17.5",
     "vue-i18n-filter": "latest",
@@ -59,7 +60,7 @@
     "@babel/register": "7.0.0",
     "@vue/cli-plugin-babel": "3.5.3",
     "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-plugin-pwa": "^4.3.1",
+    "@vue/cli-plugin-pwa": "latest",
     "@vue/cli-plugin-unit-jest": "3.5.3",
     "@vue/cli-service": "3.5.3",
     "@vue/test-utils": "1.0.0-beta.29",
