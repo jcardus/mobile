@@ -4,7 +4,7 @@
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
-      <div style="padding-left:40px; padding-right:20px">
+      <div style="padding-left:48px; padding-right:15px">
         <label>
           <input
             v-model="embeddedSliderPos"
@@ -87,17 +87,15 @@ export default {
       serverBus.$emit('routePlay')
     },
     currentPos(newPos) {
-      if (this.isPlaying) {
-        this.$log.info('HistoryPanel emit posChanged', newPos)
-        serverBus.$emit('posChanged', newPos)
-      } else { serverBus.$emit('posChanged', newPos) }
+      this.$log.info('HistoryPanel emit posChanged', newPos)
+      serverBus.$emit('posChanged', newPos)
     }
   },
   created() {
     serverBus.$on('routeFetched', this.updateMinMax)
     serverBus.$on('routeMatchFinished', this.playNext)
     serverBus.$on('sliderChanged', this.sliderPos)
-    serverBus.$on('autoSliderChange', this.sliderPos)
+    serverBus.$on('autoSliderChange', this.autoSliderChange)
     serverBus.$on('clickPlay', this.click)
     serverBus.$on('clickBack', this.clickBackward)
     serverBus.$on('clickForward', this.clickForward)
@@ -107,7 +105,7 @@ export default {
     serverBus.$off('routeFetched', this.updateMinMax)
     serverBus.$off('routeMatchFinished', this.playNext)
     serverBus.$off('sliderChanged', this.sliderPos)
-    serverBus.$off('autoSliderChange', this.sliderPos)
+    serverBus.$off('autoSliderChange', this.autoSliderChange)
     serverBus.$off('clickPlay', this.click)
     serverBus.$off('clickBack', this.clickBackward)
     serverBus.$off('clickForward', this.clickForward)
@@ -117,6 +115,11 @@ export default {
     this.resizeDiv()
   },
   methods: {
+    autoSliderChange(newValue) {
+      this.$log.debug(newValue)
+      this.sliderPos(newValue)
+      this.embeddedSliderPos = newValue
+    },
     sliderPos(newValue) {
       const indexArray = sharedData.getPositionIndex()
       const pos = indexArray[newValue]

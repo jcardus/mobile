@@ -5,10 +5,11 @@
 <script>
 import { Chart } from 'chart.js'
 // eslint-disable-next-line no-unused-vars
-import { annotationPlugin } from 'chartjs-plugin-annotation'
+import { annotationPlugin } from 'chartjs-plugin-annotation' // this unused import must be here
 import Vue from 'vue'
-import { serverBus, sharedData, vm } from '../../main'
+import { serverBus, sharedData } from '../../main'
 import * as lnglat from '../../utils/lnglat'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'SpeedChart',
@@ -25,9 +26,7 @@ export default {
     }
   },
   computed: {
-    trips() {
-      return vm.$data.trips
-    }
+    ...mapGetters(['trips'])
   },
   watch: {
     update() {
@@ -52,7 +51,7 @@ export default {
         data: {
           labels: this.labels,
           datasets: [{
-            backgroundColor: color('lemonchiffon').alpha(0.5).rgbString(),
+            backgroundColor: color('LightGreen').alpha(0.5).rgbString(),
             borderColor: color('green').alpha(1).rgbString(),
             borderWidth: 1,
             fill: true,
@@ -184,6 +183,9 @@ export default {
     onTripChanged(trip) {
       this.currentTrip = trip
       this.updateChart()
+      const newPos = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).unix()
+      this.$log.debug('autoSliderChange', newPos)
+      serverBus.$emit('autoSliderChange', newPos)
     }
   }
 }

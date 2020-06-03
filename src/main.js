@@ -72,7 +72,9 @@ export let regServiceWorker
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
-    Vue.$log.info(registrations)
+    if (registrations.length === 0) {
+      navigator.serviceWorker.register('/service-worker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
+    }
     for (const reg of registrations) {
       reg.addEventListener('updatefound', () => {
         Vue.$log.debug('A wild service worker has appeared in reg.installing!')
@@ -96,7 +98,7 @@ if ('serviceWorker' in navigator) {
     refreshing = true
   })
 } else {
-  Vue.$log.warn('no serviceWorker detected, weird browser...')
+  Vue.$log.warn('no service Worker support, weird browser...')
 }
 
 const moment = require('moment')
