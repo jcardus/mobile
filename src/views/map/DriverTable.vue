@@ -39,9 +39,10 @@
 </template>
 
 <script>
-import { vm } from '../../main'
+import { serverBus, vm } from '../../main'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 
 export default {
   name: 'DriverTable',
@@ -52,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['drivers', 'devices']),
+    ...mapGetters(['historyMode', 'drivers', 'devices']),
     height() {
       return 'calc(100vh - ' + styles.driverListHeaderHeight + ')'
     },
@@ -108,7 +109,17 @@ export default {
       return 'Gray'
     },
     driverSelected: function(driver) {
-
+      if (driver.vehicle && !this.historyMode) {
+        const device = this.devices.find(d => d.id === driver.vehicle.id)
+        if (device) {
+          this.selectedDevice = device
+          Vue.$log.debug('device=', device)
+          vm.$store.dispatch('transient/togglePlaying').then(() => {
+            serverBus.$emit('deviceSelected', device)
+            serverBus.$emit('deviceSelectedOnMap', device)
+          })
+        }
+      }
     }
   }
 }
