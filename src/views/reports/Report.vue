@@ -226,17 +226,14 @@ export default {
       Vue.$log.debug('Check report data before rendering it')
       axios.get(s3_report_base_url + '/' + report_id)
         .then(response => {
-          if (response.data.server_message != null) {
-            Vue.$log.debug('Got a message from lambda: ' + response.data.server_message)
-            this.$alert(response.data.server_message)
-          }
-          var render_report = true
-          if (response.data.server_render != null) {
-            render_report = response.data.server_render
-          }
-          if (render_report) {
+          if (response.data.server_message == null) {
             Vue.$log.debug('Rendering report')
             sutil.load(this.reportMrt, report_id)
+          } else {
+            Vue.$log.debug('Got a message from lambda: ' + response.data.server_message)
+            Vue.$log.debug('NOT Rendering report')
+            document.getElementById('viewerDiv').innerHTML = ''
+            this.$alert(response.data.server_message)
           }
         })
         .catch(reason => {
