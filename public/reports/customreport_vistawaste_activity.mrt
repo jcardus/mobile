@@ -621,7 +621,7 @@
           <BusinessObjectGuid isNull="true" />
           <ClientRectangle>0,5,27.7,0.4</ClientRectangle>
           <Components isList="true" count="19">
-            <Text1 Ref="38" type="Text" isKey="true">
+            <Motorista Ref="38" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>4,0,4,0.4</ClientRectangle>
@@ -631,7 +631,7 @@
               <Guid>f07fa20ff58d46c4809a7c759ebd3a9f</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text1</Name>
+              <Name>Motorista</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.motorista}</Text>
@@ -640,8 +640,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text1>
-            <DataTextroot2 Ref="39" type="Text" isKey="true">
+            </Motorista>
+            <Veiculo Ref="39" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,4,0.4</ClientRectangle>
@@ -650,7 +650,7 @@
               <GrowToHeight>True</GrowToHeight>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>DataTextroot2</Name>
+              <Name>Veiculo</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.veiculo}</Text>
@@ -659,8 +659,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>DataColumn</Type>
               <VertAlignment>Center</VertAlignment>
-            </DataTextroot2>
-            <Text5 Ref="40" type="Text" isKey="true">
+            </Veiculo>
+            <Estaleiro Ref="40" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>8,0,1.8,0.4</ClientRectangle>
@@ -670,7 +670,7 @@
               <Guid>10e690b55fae48a3980eccc5ebb102a6</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text5</Name>
+              <Name>Estaleiro</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.estaleiro}</Text>
@@ -679,8 +679,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text5>
-            <Text6 Ref="41" type="Text" isKey="true">
+            </Estaleiro>
+            <Data Ref="41" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>9.8,0,1.4,0.4</ClientRectangle>
@@ -690,7 +690,7 @@
               <Guid>bdd16ba0b94e4867a019ae306f80b881</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text6</Name>
+              <Name>Data</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.data}</Text>
@@ -699,8 +699,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>DataColumn</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text6>
-            <Text9 Ref="42" type="Text" isKey="true">
+            </Data>
+            <Saida_Estaleiro Ref="42" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>11.2,0,1,0.4</ClientRectangle>
@@ -710,7 +710,7 @@
               <Guid>a4e1c549042e4166bbc9f55bd4cfdbea</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text9</Name>
+              <Name>Saida_Estaleiro</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.saida_do_estaleiro}</Text>
@@ -719,8 +719,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text9>
-            <Text11 Ref="43" type="Text" isKey="true">
+            </Saida_Estaleiro>
+            <Entrada_Aterro Ref="43" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>12.2,0,1,0.4</ClientRectangle>
@@ -730,7 +730,7 @@
               <Guid>c0982ba0ba8a479cb2ebbd9c556db9b3</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text11</Name>
+              <Name>Entrada_Aterro</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{Left(Right(root_activity.entrada_no_aterro, 8), 5)}</Text>
@@ -739,8 +739,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text11>
-            <Text13 Ref="44" type="Text" isKey="true">
+            </Entrada_Aterro>
+            <Aterro Ref="44" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>13.2,0,2,0.4</ClientRectangle>
@@ -750,7 +750,7 @@
               <Guid>41d11364f64046a8912c4084fffa5278</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text13</Name>
+              <Name>Aterro</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.aterro}</Text>
@@ -759,8 +759,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text13>
-            <Text16 Ref="45" type="Text" isKey="true">
+            </Aterro>
+            <Saida_Aterro Ref="45" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>15.2,0,1,0.4</ClientRectangle>
@@ -770,7 +770,7 @@
               <Guid>79d93441ba324df6b98fa649705f4815</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text16</Name>
+              <Name>Saida_Aterro</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.saida_do_aterro}</Text>
@@ -779,8 +779,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text16>
-            <Text18 Ref="46" type="Text" isKey="true">
+            </Saida_Aterro>
+            <Entrada_Estaleiro Ref="46" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.2,0,1,0.4</ClientRectangle>
@@ -790,7 +790,7 @@
               <Guid>79a7b9a9bfa54a41808d2de8cbb87b60</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text18</Name>
+              <Name>Entrada_Estaleiro</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.entrada_no_estaleiro}</Text>
@@ -799,8 +799,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text18>
-            <Text20 Ref="47" type="Text" isKey="true">
+            </Entrada_Estaleiro>
+            <Km Ref="47" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>18.2,0,1,0.4</ClientRectangle>
@@ -810,7 +810,7 @@
               <Guid>fa4cb479ce184581a86ba1b692a4c990</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text20</Name>
+              <Name>Km</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.km}</Text>
@@ -819,8 +819,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text20>
-            <Text22 Ref="48" type="Text" isKey="true">
+            </Km>
+            <Tempo_Trabalho Ref="48" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>19.2,0,1,0.4</ClientRectangle>
@@ -830,7 +830,7 @@
               <Guid>95c8d732285e4ae98a6d3ec0157973ba</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text22</Name>
+              <Name>Tempo_Trabalho</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.tempo_em_trabalho}</Text>
@@ -839,8 +839,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text22>
-            <Text24 Ref="49" type="Text" isKey="true">
+            </Tempo_Trabalho>
+            <Tempo_Recolha Ref="49" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>20.2,0,1,0.4</ClientRectangle>
@@ -850,7 +850,7 @@
               <Guid>3b6d7527863840e0827039633a8a1880</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text24</Name>
+              <Name>Tempo_Recolha</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.tempo_em_recolha}</Text>
@@ -859,8 +859,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text24>
-            <Text26 Ref="50" type="Text" isKey="true">
+            </Tempo_Recolha>
+            <Tempo_Aterro Ref="50" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>21.2,0,1,0.4</ClientRectangle>
@@ -870,7 +870,7 @@
               <Guid>f31d83ed52764a59b38422a7efc517de</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text26</Name>
+              <Name>Tempo_Aterro</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.tempo_em_aterro}</Text>
@@ -879,8 +879,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text26>
-            <Text28 Ref="51" type="Text" isKey="true">
+            </Tempo_Aterro>
+            <Tempo_Regresso Ref="51" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>22.2,0,1,0.4</ClientRectangle>
@@ -890,7 +890,7 @@
               <Guid>afa57b74ecb84b94ae17167cadea0bb4</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text28</Name>
+              <Name>Tempo_Regresso</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.tempo_em_regresso}</Text>
@@ -899,8 +899,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text28>
-            <Text30 Ref="52" type="Text" isKey="true">
+            </Tempo_Regresso>
+            <Horas_Extra Ref="52" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>23.2,0,1,0.4</ClientRectangle>
@@ -910,7 +910,7 @@
               <Guid>2c73653eebdc42ab8e668f90c9d4f14a</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text30</Name>
+              <Name>Horas_Extra</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.horas_extra}</Text>
@@ -919,8 +919,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text30>
-            <Text35 Ref="53" type="Text" isKey="true">
+            </Horas_Extra>
+            <Velocidade_Localidade Ref="53" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>24.2,0,1.2,0.4</ClientRectangle>
@@ -930,7 +930,7 @@
               <Guid>61dac910765641e8936e5a810f35f382</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text35</Name>
+              <Name>Velocidade_Localidade</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.tempo_excesso_localidade}</Text>
@@ -939,8 +939,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text35>
-            <Text36 Ref="54" type="Text" isKey="true">
+            </Velocidade_Localidade>
+            <Velocidade_ForaLocalidade Ref="54" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>25.4,0,1.2,0.4</ClientRectangle>
@@ -950,7 +950,7 @@
               <Guid>692f47bdc0fc461682f48ee07ad36a70</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text36</Name>
+              <Name>Velocidade_ForaLocalidade</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.tempo_excesso_fora_localidade}</Text>
@@ -959,8 +959,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text36>
-            <Text38 Ref="55" type="Text" isKey="true">
+            </Velocidade_ForaLocalidade>
+            <Viagens_Sem_Condutor Ref="55" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>26.6,0,1,0.4</ClientRectangle>
@@ -970,7 +970,7 @@
               <Guid>17bad3fae1dc4cb9b116c1ab5d61196b</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text38</Name>
+              <Name>Viagens_Sem_Condutor</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.viagens_sem_driver}</Text>
@@ -979,8 +979,8 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text38>
-            <Text40 Ref="56" type="Text" isKey="true">
+            </Viagens_Sem_Condutor>
+            <Nr_Entradas Ref="56" type="Text" isKey="true">
               <Brush>Transparent</Brush>
               <CanGrow>True</CanGrow>
               <ClientRectangle>17.2,0,1,0.4</ClientRectangle>
@@ -990,7 +990,7 @@
               <Guid>f5f2e7e232b54985b21a68c8d66b2ac0</Guid>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
-              <Name>Text40</Name>
+              <Name>Nr_Entradas</Name>
               <Page isRef="9" />
               <Parent isRef="37" />
               <Text>{root_activity.entradas_em_aterro}</Text>
@@ -999,7 +999,7 @@
               <TextQuality>Wysiwyg</TextQuality>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
-            </Text40>
+            </Nr_Entradas>
           </Components>
           <Conditions isList="true" count="0" />
           <DataRelationName isNull="true" />
@@ -1506,10 +1506,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>6/3/2020 6:19:10 PM</ReportChanged>
+  <ReportChanged>6/5/2020 7:34:56 PM</ReportChanged>
   <ReportCreated>9/4/2019 11:35:59 AM</ReportCreated>
   <ReportFile>C:\xampp\htdocs\traccar-vue-element\public\reports\customreport_vistawaste_activity.mrt</ReportFile>
-  <ReportGuid>f10d4a883e5241a090910cc01afaae63</ReportGuid>
+  <ReportGuid>c35a2270b6cb443fb46f12c842d2d969</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2019.4.2.0</ReportVersion>
