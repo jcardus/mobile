@@ -73,6 +73,9 @@ import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
 import * as utils from './utils/utils'
 import { mapGetters } from 'vuex'
+import axios from 'axios'
+
+const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
 
 export default {
   name: 'Report',
@@ -220,7 +223,22 @@ export default {
       }
     },
     renderReport: function(report_id) {
-      sutil.load(this.reportMrt, report_id)
+      Vue.$log.debug('Check report data before rendering it')
+      axios.get(s3_report_base_url + '/' + report_id)
+        .then(response => {
+          if (response.data.server_message == null) {
+            Vue.$log.debug('Rendering report')
+            sutil.load(this.reportMrt, report_id)
+          } else {
+            Vue.$log.debug('Got a message from lambda: ' + response.data.server_message)
+            Vue.$log.debug('NOT Rendering report')
+            document.getElementById('viewerDiv').innerHTML = ''
+            this.$alert(response.data.server_message)
+          }
+        })
+        .catch(reason => {
+          Vue.$log.debug('Error checking report data - ' + reason)
+        })
       this.loadingReport = false
     },
     errorHandler: function(report_id, reason) {

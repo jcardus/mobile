@@ -10,6 +10,7 @@ export default {
     report_trip_title: 'Relatório de viagens',
     report_location_title: 'Relatório de posições',
     report_zone_crossing: 'Relatório de zonas',
+    customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Configurações',
     duration: 'Duração',
     nodata: 'Não existem dados para o período seleccionado'

@@ -751,7 +751,7 @@ export default {
         if (device.driver && device.driver.id) {
           const driver = this.drivers.find(d => d.id === device.driver.id)
           vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
-          driver.vehicle = { name: device.name }
+          driver.vehicle = { id: device.id, name: device.name }
           vm.$store.state.user.drivers.push(driver)
         }
 
@@ -761,7 +761,7 @@ export default {
 
       if (driver) {
         vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
-        driver.vehicle = { name: device.name }
+        driver.vehicle = { id: device.id, name: device.name }
         vm.$store.state.user.drivers.push(driver)
         return { id: driver.id, name: driver.name }
       }
