@@ -33,19 +33,17 @@
           </el-tooltip>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="7">
         <div class="grid-content">
           <el-tooltip :content="$t('report.select_period')" placement="bottom">
             <el-date-picker
               v-model="dateRange"
               style="width: 100%"
-              type="daterange"
+              type="datetimerange"
               unlink-panels
               range-separator="-"
-              format="dd-MM-yyyy"
+              format="dd-MM-yyyy HH:mm"
               value-format="yyyy-MM-dd HH:mm:ss"
-              :start-placeholder="$t('report.date_start')"
-              :end-placeholder="$t('report.date_end')"
               :picker-options="pickerOptions"
               :default-time="['00:00:00', '23:59:59']"
             />
