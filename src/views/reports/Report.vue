@@ -33,19 +33,17 @@
           </el-tooltip>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="7">
         <div class="grid-content">
           <el-tooltip :content="$t('report.select_period')" placement="bottom">
             <el-date-picker
               v-model="dateRange"
               style="width: 100%"
-              type="daterange"
+              type="datetimerange"
               unlink-panels
               range-separator="-"
-              format="dd-MM-yyyy"
+              format="dd-MM-yyyy HH:mm"
               value-format="yyyy-MM-dd HH:mm:ss"
-              :start-placeholder="$t('report.date_start')"
-              :end-placeholder="$t('report.date_end')"
               :picker-options="pickerOptions"
               :default-time="['00:00:00', '23:59:59']"
             />
@@ -73,6 +71,9 @@ import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
 import * as utils from './utils/utils'
 import { mapGetters } from 'vuex'
+import axios from 'axios'
+
+const s3_report_base_url = 'https://reports-traccar.s3.amazonaws.com'
 
 export default {
   name: 'Report',
@@ -220,7 +221,22 @@ export default {
       }
     },
     renderReport: function(report_id) {
-      sutil.load(this.reportMrt, report_id)
+      Vue.$log.debug('Check report data before rendering it')
+      axios.get(s3_report_base_url + '/' + report_id)
+        .then(response => {
+          if (response.data.server_message == null) {
+            Vue.$log.debug('Rendering report')
+            sutil.load(this.reportMrt, report_id)
+          } else {
+            Vue.$log.debug('Got a message from lambda: ' + response.data.server_message)
+            Vue.$log.debug('NOT Rendering report')
+            document.getElementById('viewerDiv').innerHTML = ''
+            this.$alert(response.data.server_message)
+          }
+        })
+        .catch(reason => {
+          Vue.$log.debug('Error checking report data - ' + reason)
+        })
       this.loadingReport = false
     },
     errorHandler: function(report_id, reason) {

@@ -14,6 +14,7 @@ export default {
     report_speeding: 'Informe de excesos de velocidad',
     report_speeding_beta: 'Informe de excesos de velocidad BETA',
     report_tolls: 'Informe de peajes',
+    customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Ajustes',
     duration: 'Duracción',
     nodata: 'no hay datos para el periodo seleccionado.'
