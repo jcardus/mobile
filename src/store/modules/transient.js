@@ -56,7 +56,7 @@ const actions = {
   fetchEvents({ commit, rootGetters }, { start, end, types }) {
     function getNotificationContent(notification) {
       if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
-        const geofence = this.geofences.find(g => g.id === notification.geofenceId)
+        const geofence = rootGetters.geofences.find(g => g.id === notification.geofenceId)
 
         return ' >> ' + geofence.name
       }

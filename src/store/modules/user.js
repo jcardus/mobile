@@ -233,7 +233,7 @@ const actions = {
   setAlerts({ commit }, alerts) {
     commit('SET_ALERTS', alerts)
   },
-  fetchAlerts({ commit, state, getters }) {
+  fetchAlerts({ commit, state }) {
     return traccar.alerts().then(response => {
       const result = []
       response.data.sort((a, b) => (a.type > b.type) ? 1 : -1).forEach(a => {
@@ -263,23 +263,23 @@ const actions = {
             })
             .catch(e => Vue.$log.error(e, d, 'moving on...'))
         })
+
+        state.alerts.forEach(a => {
+          if (a.notification.always === true) {
+            state.devices.forEach(d => {
+              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                traccar.geofencesByDevice(d.id, function(geofences) {
+                  a.devices.push({ data: d, geofences: geofences })
+                })
+              } else {
+                a.devices.push({ data: d })
+              }
+            })
+          }
+        })
       } else {
         this.$log.error('devices is null', state.devices)
       }
-
-      state.alerts.forEach(a => {
-        if (a.notification.always === true) {
-          getters.devices.forEach(d => {
-            if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-              traccar.geofencesByDevice(d.id, function(geofences) {
-                a.devices.push({ data: d, geofences: geofences })
-              })
-            } else {
-              a.devices.push({ data: d })
-            }
-          })
-        }
-      })
     })
   },
   processGroups({ state }) {
