@@ -224,6 +224,7 @@ export default {
     },
     finishLoading() {
       if (++this.loadingCount === 3) {
+        NProgress.done()
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
         lnglat.updateMarkers()
@@ -232,7 +233,6 @@ export default {
         if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
           this.$f7.preloader.show()
         }
-        vm.$data.loadingMap = false
         this.$log.warn('not finishing loading', this.loadingCount)
       }
     },
@@ -254,15 +254,6 @@ export default {
         this.map.dragRotate.disable()
         this.map.touchZoomRotate.disableRotation()
       }
-
-      const self = this.map
-      this.map.loadImage('./img/icons/pois/marker.png', function(error, image) {
-        if (!error) {
-          self.addImage('marker', image)
-        }
-      })
-
-      NProgress.done()
       if (this.dataLoaded && this.userLoggedIn && !this.initialized) {
         this.$log.info('dataLoaded', this.dataLoaded, 'userLoggedIn', this.userLoggedIn, 'initialized', this.initialized)
         this.$log.info('initializing...')
