@@ -244,25 +244,28 @@ const actions = {
         result.push(alarm_data)
       })
       commit('SET_ALERTS', result)
-
-      state.devices.forEach(d => {
-        traccar.alertsByDevice(d.id)
-          .then(({ data }) => {
-            data.forEach(a => {
-              const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
-              if (a.always === false) {
-                if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                  traccar.geofencesByDevice(d.id, function(geofences) {
-                    alert.devices.push({ data: d, geofences: geofences })
-                  })
-                } else {
-                  alert.devices.push({ data: d })
+      if (state.devices) {
+        state.devices.forEach(d => {
+          traccar.alertsByDevice(d.id)
+            .then(({ data }) => {
+              data.forEach(a => {
+                const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
+                if (a.always === false) {
+                  if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                    traccar.geofencesByDevice(d.id, function(geofences) {
+                      alert.devices.push({ data: d, geofences: geofences })
+                    })
+                  } else {
+                    alert.devices.push({ data: d })
+                  }
                 }
-              }
+              })
             })
-          })
-          .catch(e => Vue.$log.error(e, d, 'moving on...'))
-      })
+            .catch(e => Vue.$log.error(e, d, 'moving on...'))
+        })
+      } else {
+        this.$log.error('devices is null', state.devices)
+      }
 
       state.alerts.forEach(a => {
         if (a.notification.always === true) {
