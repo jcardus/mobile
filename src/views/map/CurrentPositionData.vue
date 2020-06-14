@@ -1,22 +1,23 @@
 <template>
   <div>
     {{ name }}
-    <el-switch
-      v-show="!isMobile"
-      :value="true"
-      style="float:right"
-      @change="toggleChanged"
-    >
-    </el-switch>
-    <f7-toggle
-      v-if="isMobile"
-      :checked="checked"
-      style="float:right"
-      type="checkbox"
-      @change="toggleChanged"
-    >
-    </f7-toggle>
-
+    <span style="font-style: italic; float: right">
+      {{ $t('map.totalDistance') + ': ' + totalDistance }} Kms
+      <span style="float:right; padding-left: 10px">
+        <el-switch
+          v-if="!isMobile"
+          :value="true"
+          @change="toggleChanged"
+        >
+        </el-switch>
+        <f7-toggle
+          v-else
+          :checked="checked"
+          type="checkbox"
+          @change="toggleChanged"
+        >
+        </f7-toggle></span>
+    </span>
     <div style="padding-top: 5px; overflow: hidden; width:100%">
       <div style="float:left; ">
         <label>
@@ -33,10 +34,6 @@
     </div>
     <div class="textFormat" style="padding-top: 5px; overflow: hidden; width:100%">
       {{ formattedDate }}
-      <div style="float:right">
-        {{ (isMobile? '' : $t('map.totalDistance') + ':') }}
-        {{ totalDistance }} Kms
-      </div>
       <div style="white-space: nowrap;">{{ formatAddress }}</div>
     </div>
   </div>
