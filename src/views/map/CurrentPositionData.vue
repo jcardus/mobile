@@ -32,9 +32,8 @@
         </label>
       </div>
     </div>
-    <div class="textFormat" style="padding-top: 5px; overflow: hidden; width:100%">
-      {{ formattedDate }}
-      <div style="white-space: nowrap;">{{ formatAddress }}</div>
+    <div class="textFormat" style="padding-top: 5px; overflow: hidden; width:100%; white-space: nowrap;">
+      {{ formattedDate }} {{ formatAddress }}
     </div>
   </div>
 </template>

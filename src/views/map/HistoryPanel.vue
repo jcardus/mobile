@@ -1,6 +1,6 @@
 <template>
   <div v-show="historyMode" v-loading="loadingRoutes" class="historyPanel2">
-    <div style="position: relative; height:80px; padding-right: 20px">
+    <div style="position: relative; height:120px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
