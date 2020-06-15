@@ -112,7 +112,7 @@ export default {
     height() {
       // return `calc(100vh - ${consts.vehicleListHeaderHeight}px)`
       // todo: use constants
-      return 'calc(100vh - 360px)'
+      return 'calc(100vh - 385px)'
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
