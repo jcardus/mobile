@@ -417,7 +417,7 @@ export default {
 <style>
   /* this must be here */
   .el-table__expanded-cell {
-    padding: 5px 5px
+    padding: 5px 5px !important;
   }
   ::-webkit-scrollbar {
     width: 5px;
