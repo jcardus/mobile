@@ -412,8 +412,13 @@ export default {
   .mobileScroll {
     -webkit-overflow-scrolling: touch;
   }
+
 </style>
 <style>
+  /* this must be here */
+  .el-table__expanded-cell {
+    padding: 5px 5px
+  }
   ::-webkit-scrollbar {
     width: 5px;
   }
