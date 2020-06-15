@@ -99,7 +99,7 @@
               <span style="font-weight: bold">{{ scope.row.name }} </span>
               <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span>
             </div>
-            <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId != 0" style="padding-top: 2px">
+            <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== 0" style="padding-top: 2px">
               <span style="font-size: 12px;"><i class="fas fa-user" style="width: 15px;padding-left: 1px;color: #055AE5"></i> {{ scope.row.driver.name }}</span>
             </div>
             <div style="line-height: normal">
@@ -272,7 +272,7 @@ export default {
       })
       return devices
     },
-    pois: function() {
+    pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
     orderBy: function() {
@@ -401,7 +401,8 @@ export default {
       return device.poi
     },
     getPOIName(poiId) {
-      return this.pois.find(p => p.id === poiId).name
+      const poi = this.pois.find(p => p.id === poiId)
+      return poi && poi.name
     }
   }
 }
@@ -427,8 +428,5 @@ export default {
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
     border-radius: 5px;
-  }
-  .el-table__expanded-cell[class*=cell] {
-    padding: 5px 5px
   }
 </style>
