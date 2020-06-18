@@ -742,13 +742,21 @@ export default {
         if (device.driver && device.driver.id) {
           const driver = this.drivers.find(d => d.id === device.driver.id)
           vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
-          driver.vehicle = { id: device.id, name: device.name }
+          driver.vehicle = null
           vm.$store.state.user.drivers.push(driver)
         }
 
         return { name: '' }
       }
+
       const driver = this.drivers.find(d => d.uniqueId === position.attributes.driverUniqueId)
+
+      if (position.fixDays > 5 || position.outdated) {
+        if (driver) {
+          driver.vehicle = null
+        }
+        return { name: '' }
+      }
 
       if (driver) {
         vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
