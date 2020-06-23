@@ -99,7 +99,7 @@
               <span style="font-weight: bold">{{ scope.row.name }} </span>
               <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span>
             </div>
-            <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== 0" style="padding-top: 2px">
+            <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== '0'" style="padding-top: 2px">
               <span style="font-size: 12px;"><i class="fas fa-user" style="width: 15px;padding-left: 1px;color: #055AE5"></i> {{ scope.row.driver.name }}</span>
             </div>
             <div style="line-height: normal">

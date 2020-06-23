@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import * as lnglat from '../utils/lnglat'
 import GoogleLogin from '../views/login/GoogleLogin'
+import Layout from '@/layout'
 
 Vue.use(Router)
-
-import Layout from '@/layout'
 
 export const constantRoutes = [
   {
@@ -29,7 +28,7 @@ export const constantRoutes = [
     redirect: '/map',
     hidden: false,
     component: Layout,
-    children: [{ path: 'map', component: () => import('../views/map/MapView'), meta: { title: 'map', icon: 'far fa-map' }}]
+    children: [{ path: 'map', component: () => import('../views/map/MapView'), name: 'Map', meta: { title: 'map', icon: 'far fa-map' }}]
   },
   {
     path: '/dashboard',
