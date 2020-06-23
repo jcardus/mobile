@@ -154,6 +154,13 @@ export default {
       }
     }
   },
+  watch: {
+    '$route'(to, from) {
+      if (to.name === 'Map') {
+        setTimeout(() => serverBus.$emit('mapShown'), 500)
+      }
+    }
+  },
   created() {
     this.$log.info('VueMap', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
