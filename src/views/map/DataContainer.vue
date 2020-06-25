@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
     <div style="float: right">
-      <i :class="tableCollapsed?'el-icon-s-unfold':'el-icon-s-fold'" @click="$store.dispatch('map/toggleTableCollapsed')"></i>
+      <i :class="tableCollapsed?'el-icon-s-unfold':'el-icon-s-fold'" :style="`color:${colors.info}`" @click="$store.dispatch('map/toggleTableCollapsed')"></i>
     </div>
     <div v-if="!tableCollapsed" class="dd-body-inner">
       <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType()"></logo-svg>
@@ -41,6 +41,7 @@ import VehicleTable from './VehicleTable'
 import * as partner from '../../utils/partner'
 import LogoSvg from '../../layout/components/LogoSvg'
 import { mapGetters } from 'vuex'
+import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'DataContainer',
@@ -57,6 +58,9 @@ export default {
     },
     isMobile() {
       return lnglat.isMobile()
+    },
+    colors() {
+      return styles
     }
   },
   methods: {
