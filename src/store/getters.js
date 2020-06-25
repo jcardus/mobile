@@ -20,7 +20,11 @@ const getters = {
   unreadItems: state => state.unreadItems,
   showLabels: state => state.settings.showLabels,
   currentTime: state => state.currentTime,
-  trips: state => state.transient.trips
+  trips: state => state.transient.trips,
+  showGeofences: state => state.map.showGeofences,
+  showLineGeofences: state => state.map.showLineGeofences,
+  showPOIs: state => state.map.showPOIs,
+  show3dBuildings: state => state.map.show3dBuildings
 }
 
 export default getters

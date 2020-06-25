@@ -5,7 +5,7 @@
       <button
         v-for="style in styles"
         :key="style.title"
-        :class="[style.title === selected?'active':'', style.title.replace(/[^a-z0-9-]/gi, '_')]"
+        :class="style.title === selected?'active':''"
         @click="styleClicked(style.title)"
       >
         {{ style.title }}
@@ -13,6 +13,7 @@
       <button :class="geofencesVisible?'active':''" @click="toggleGeofences">Geofences</button>
       <button :class="lineGeofencesVisible?'active':''" @click="toggleLineGeofences">Line</button>
       <button :class="poisVisible?'active':''" @click="togglePOIs">POIs</button>
+      <button :class="buildingsVisible?'active':''" @click="toggleBuildings">3D Buildings</button>
     </div>
   </div>
 </template>
@@ -41,7 +42,8 @@ export default {
     map: function() { return vm.$static.map },
     geofencesVisible: function() { return vm.$store.state.map.showGeofences },
     lineGeofencesVisible: function() { return vm.$store.state.map.showLineGeofences },
-    poisVisible: function() { return vm.$store.state.map.showPOIs }
+    poisVisible: function() { return vm.$store.state.map.showPOIs },
+    buildingsVisible() { return vm.$store.state.map.show3dBuildings }
   },
   mounted: function() {
     document.addEventListener('click', event => {
@@ -61,6 +63,9 @@ export default {
     togglePOIs: function() {
       vm.$store.dispatch('map/togglePOIs')
     },
+    async toggleBuildings() {
+      await vm.$store.dispatch('map/toggleBuildings')
+    },
     btnClick: function() {
       this.btnVisible = false
       this.containerVisible = true
@@ -70,10 +75,6 @@ export default {
       this.selected = title
       this.containerVisible = false
       this.btnVisible = true
-      const elms = this.$refs.controlContainer.getElementsByClassName('active')
-      while (elms[0]) {
-        elms[0].classList.remove('active')
-      }
     }
   }
 }

@@ -4,6 +4,7 @@ const state = {
   showGeofences: false,
   showPOIs: false,
   showLineGeofences: false,
+  show3dBuildings: false,
   minPos: 0,
   maxPos: 1000
 }
@@ -20,6 +21,9 @@ const mutations = {
   },
   TOGGLE_POIS(state) {
     state.showPOIs = !state.showPOIs
+  },
+  TOGGLE_BUILDINGS(state) {
+    state.show3dBuildings = !state.show3dBuildings
   },
   TOGGLE_LINEGEOFENCES(state) {
     state.showLineGeofences = !state.showLineGeofences
@@ -53,6 +57,11 @@ const actions = {
     commit('TOGGLE_POIS')
     vm.$static.map.setLayoutProperty('pois', 'visibility',
       state.showPOIs ? 'visible' : 'none')
+  },
+  toggleBuildings({ commit, state }) {
+    commit('TOGGLE_BUILDINGS')
+    vm.$static.map.setLayoutProperty('3d-buildings', 'visibility',
+      state.show3dBuildings ? 'visible' : 'none')
   }
 }
 
