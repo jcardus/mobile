@@ -1,6 +1,5 @@
 <template>
   <div class="right-menu">
-    <div v-if="offline">Offline...</div>
     <el-dropdown trigger="click">
       <span class="el-dropdown-link">
         <el-avatar size="large">{{ avatar }}</el-avatar>
@@ -20,6 +19,7 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
+    <div v-if="offline">Offline...</div>
   </div>
 </template>
 
