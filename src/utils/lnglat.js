@@ -346,15 +346,15 @@ export function addLayers(map) {
       }
     })
   } else { Vue.$log.warn(source, ' already exists...') }
-  if (!isMobile()) {
+  if (!map.getLayer(layers.buildings3d)) {
     vm.$static.map.addLayer({
-      'id': '3d-buildings',
-      'source': 'composite',
+      id: layers.buildings3d,
+      source: 'composite',
       'source-layer': 'building',
-      'filter': ['==', 'extrude', 'true'],
-      'type': 'fill-extrusion',
-      'minzoom': 15,
-      'paint': {
+      filter: ['==', 'extrude', 'true'],
+      type: 'fill-extrusion',
+      minzoom: 15,
+      paint: {
         'fill-extrusion-color': '#aaa',
         'fill-extrusion-height': [
           'interpolate', ['linear'], ['zoom'],
@@ -369,7 +369,10 @@ export function addLayers(map) {
         'fill-extrusion-opacity': 0.6
       }
     })
+  } else {
+    Vue.$log.warn('3dbuildings layer already exists...')
   }
+  hideLayer(layers.buildings3d, !store.state.map.show3dBuildings)
   if (!map.getLayer(layers.vehicles)) {
     addVehiclesLayer(layers.vehicles, source)
     vm.$static.map.addLayer({
@@ -392,7 +395,7 @@ export function addLayers(map) {
         // 'text-halo-width': 20
       }
     })
-    hideLayer(!store.state.settings.showLabels)
+    hideLayer(layers.labels, !store.state.settings.showLabels)
   } else {
     Vue.$log.warn('vehiclesLayer already exists...')
   }

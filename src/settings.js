@@ -15,7 +15,6 @@ module.exports = {
   showVehicleList: true,
   showSlider: true,
   truck3d: false,
-  show3dBuildings: true,
   experiment: true,
   debugRoutes: false,
   mapBoxRouteMatch: false,
