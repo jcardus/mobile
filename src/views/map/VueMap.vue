@@ -476,14 +476,14 @@ export default {
       serverBus.$on('areaSelected', this.areaSelected)
       serverBus.$on('deviceChanged', this.deviceChanged)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
-        switch (mutation) {
+        switch (mutation.type) {
           case 'SOCKET_ONMESSAGE':
             if (state.socket.message.positions) {
               self.updateMarkers(self.map)
             }
             break
-          case 'TOGGLE_TABLE_COLLAPSED':
-            this.mapResize()
+          case 'map/TOGGLE_TABLE_COLLAPSED':
+            setTimeout(self.mapResize, 500)
             break
           default:
         }
