@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="divData">
+    <div class="divData" :style="`min-width: ${tableWidth}px;width: ${tableWidth}px;`">
       <data-container></data-container>
     </div>
     <div class="divMap">
@@ -12,10 +12,17 @@
 <script>
 import DataContainer from './DataContainer'
 import VueMap from './VueMap'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MapView',
-  components: { DataContainer, VueMap }
+  components: { DataContainer, VueMap },
+  computed: {
+    ...mapGetters(['tableCollapsed']),
+    tableWidth() {
+      return this.tableCollapsed ? 0 : 300
+    }
+  }
 }
 </script>
 <style>
@@ -23,8 +30,6 @@ export default {
     display: flex;
   }
   .divData {
-    min-width: 300px;
-    max-width: 300px;
     -webkit-box-shadow: 0 0 32px rgba(136, 152, 170, 0.4);
     z-index: 10;
   }

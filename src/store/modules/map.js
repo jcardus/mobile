@@ -6,7 +6,8 @@ const state = {
   showLineGeofences: false,
   show3dBuildings: false,
   minPos: 0,
-  maxPos: 1000
+  maxPos: 1000,
+  tableCollapsed: false
 }
 
 const mutations = {
@@ -27,10 +28,16 @@ const mutations = {
   },
   TOGGLE_LINEGEOFENCES(state) {
     state.showLineGeofences = !state.showLineGeofences
+  },
+  TOGGLE_TABLE_COLLAPSED(state) {
+    state.tableCollapsed = !state.tableCollapsed
   }
 }
 
 const actions = {
+  toggleTableCollapsed({ commit }) {
+    commit('TOGGLE_TABLE_COLLAPSED')
+  },
   setMinPos({ commit }, min) {
     commit('SET_MIN_POS', min)
   },

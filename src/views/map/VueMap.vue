@@ -155,7 +155,7 @@ export default {
     }
   },
   watch: {
-    '$route'(to, from) {
+    '$route'(to) {
       if (to.name === 'Map') {
         setTimeout(() => serverBus.$emit('mapShown'), 500)
       }
@@ -243,7 +243,7 @@ export default {
         this.$log.warn('not finishing loading', this.loadingCount)
       }
     },
-    mapResize: function() {
+    mapResize() {
       if (this.map) {
         this.$log.debug('map.resize')
         this.map.resize()
@@ -476,10 +476,16 @@ export default {
       serverBus.$on('areaSelected', this.areaSelected)
       serverBus.$on('deviceChanged', this.deviceChanged)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'SOCKET_ONMESSAGE') {
-          if (state.socket.message.positions) {
-            self.updateMarkers(self.map)
-          }
+        switch (mutation) {
+          case 'SOCKET_ONMESSAGE':
+            if (state.socket.message.positions) {
+              self.updateMarkers(self.map)
+            }
+            break
+          case 'TOGGLE_TABLE_COLLAPSED':
+            this.mapResize()
+            break
+          default:
         }
       })
       window.addEventListener('resize', this.mapResize)
