@@ -9,6 +9,9 @@ import { vm } from '../main'
 import styles from '../styles/element-variables.scss'
 import * as consts from './consts'
 import store from '../store'
+import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
 let markersOnScreen = {}
 let currentState = null
@@ -415,6 +418,7 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
+  map.addLayer(customLayer, 'waterway-label')
 }
 export function contains(lngLatBounds, position, padding = 0) {
   return (
@@ -475,6 +479,7 @@ export function changeVehicleLayerFilter(state) {
   // To update cluster markers
   vm.$static.markers = []
   for (const id in markersOnScreen) {
+    // noinspection JSUnfilteredForInLoop
     const remove = markersOnScreen[id]
     remove.remove()
   }
@@ -503,6 +508,135 @@ function removeMarkers() {
       const remove = markersOnScreen[id]
       remove.remove()
     }
+  }
+}
+
+// parameters to ensure the model is georeferenced correctly on the map
+const modelOrigin = [-9.267752, 38.720413]
+const modelAltitude = 0
+const modelRotate = [Math.PI / 2, 0, 0]
+
+const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
+  modelOrigin,
+  modelAltitude
+)
+
+// transformation parameters to position, rotate and scale the 3D model onto the map
+const modelTransform = {
+  translateX: modelAsMercatorCoordinate.x,
+  translateY: modelAsMercatorCoordinate.y,
+  translateZ: modelAsMercatorCoordinate.z,
+  rotateX: modelRotate[0],
+  rotateY: modelRotate[1],
+  rotateZ: modelRotate[2],
+  /* Since our 3D model is in real world meters, a scale transform needs to be
+  * applied since the CustomLayerInterface expects units in MercatorCoordinates.
+  */
+  scale: modelAsMercatorCoordinate.meterInMercatorCoordinateUnits()
+}
+
+// configuration of the custom layer for a 3D model per the CustomLayerInterface
+const customLayer = {
+  id: '3d-model',
+  type: 'custom',
+  renderingMode: '3d',
+  onAdd: function(map, gl) {
+    this.camera = new THREE.Camera()
+    this.scene = new THREE.Scene()
+    this.map = map
+    // use the Mapbox GL JS map canvas for three.js
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: map.getCanvas(),
+      context: gl,
+      antialias: true
+    })
+
+    this.scene.add(new THREE.AmbientLight())
+    const mainLight = new THREE.PointLight()
+    mainLight.position.set(0.418, 16.199, 0.300)
+    this.scene.add(mainLight)
+    const bodyMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xff0000, metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
+    })
+    /*
+    const detailsMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff, metalness: 1.0, roughness: 0.5
+    })
+
+    const glassMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, metalness: 0, roughness: 0.1, transparency: 0.9, transparent: true
+    })*/
+
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath('img/gltf/')
+
+    // use the three.js GLTF loader to add the 3D model to the three.js scene
+    const loader = new GLTFLoader()
+    loader.setDRACOLoader(dracoLoader)
+
+    loader.load('img/reddefault.glb', function(gltf) {
+      const carModel = gltf.scene.children[0]
+      Vue.$log.debug(gltf.scene)
+
+      carModel.getObjectByName('sls_amg.001_0').material = bodyMaterial
+      carModel.getObjectByName('sls_amg.001_25').material = bodyMaterial
+      carModel.getObjectByName('sls_amg.001_28').material = bodyMaterial
+      carModel.getObjectByName('sls_amg.001_33').material = bodyMaterial
+      carModel.getObjectByName('sls_amg.001_40').material = bodyMaterial
+      carModel.getObjectByName('sls_amg.001_49').material = bodyMaterial
+
+      /* carModel.getObjectByName('body').material = bodyMaterial
+      carModel.getObjectByName('rim_fl').material = detailsMaterial
+      carModel.getObjectByName('rim_fr').material = detailsMaterial
+      carModel.getObjectByName('rim_rr').material = detailsMaterial
+      carModel.getObjectByName('rim_rl').material = detailsMaterial
+      carModel.getObjectByName('trim').material = detailsMaterial
+      carModel.getObjectByName('glass').material = glassMaterial*/
+
+      this.scene.add(gltf.scene)
+    }.bind(this))
+
+    this.renderer.outputEncoding = THREE.sRGBEncoding
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping
+    this.renderer.toneMappingExposure = 0.85
+    this.renderer.autoClear = false
+  },
+  render: function(gl, matrix) {
+    const rotationX = new THREE.Matrix4().makeRotationAxis(
+      new THREE.Vector3(1, 0, 0),
+      modelTransform.rotateX
+    )
+    const rotationY = new THREE.Matrix4().makeRotationAxis(
+      new THREE.Vector3(0, 1, 0),
+      modelTransform.rotateY
+    )
+    const rotationZ = new THREE.Matrix4().makeRotationAxis(
+      new THREE.Vector3(0, 0, 1),
+      modelTransform.rotateZ
+    )
+
+    const m = new THREE.Matrix4().fromArray(matrix)
+    const l = new THREE.Matrix4()
+      .makeTranslation(
+        modelTransform.translateX,
+        modelTransform.translateY,
+        modelTransform.translateZ
+      )
+      .scale(
+        new THREE.Vector3(
+          modelTransform.scale,
+          -modelTransform.scale,
+          modelTransform.scale
+        )
+      )
+      .multiply(rotationX)
+      .multiply(rotationY)
+      .multiply(rotationZ)
+
+    this.camera.projectionMatrix = m.multiply(l)
+    this.renderer.state.reset()
+    this.renderer.render(this.scene, this.camera)
+    this.map.triggerRepaint()
   }
 }
 
