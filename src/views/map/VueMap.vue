@@ -435,6 +435,7 @@ export default {
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
+        lnglat.showHideLayers()
       }
     },
     onPitch: function() {

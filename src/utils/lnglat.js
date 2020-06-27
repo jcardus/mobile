@@ -28,10 +28,17 @@ const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-str
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
+export function showHideLayers() {
+  const zoom = vm.$static.map.getZoom()
+  hideLayer(layers.vehicles3d, zoom <= consts.detailedZoom)
+  hideLayer(layers.vehicles, zoom > consts.detailedZoom)
+}
+
 export const layers = {
   vehicles: 'vehiclesLayer',
   labels: 'vehicleLabels',
-  buildings3d: '3d-buildings'
+  buildings3d: '3d-buildings',
+  vehicles3d: '3d-vehicles'
 }
 
 export const popUps = []
@@ -537,10 +544,14 @@ const modelTransform = {
 
 // configuration of the custom layer for a 3D model per the CustomLayerInterface
 const customLayer = {
-  id: '3d-model',
+  id: layers.vehicles3d,
   type: 'custom',
   renderingMode: '3d',
-  onAdd: function(map, gl) {
+  onAdd(map, gl) {
+    this.center = mapboxgl.MercatorCoordinate.fromLngLat(map.getCenter(), 0)
+    const { x, y, z } = this.center
+    this.cameraTransform = new THREE.Matrix4().makeTranslation(x, y, z)
+
     this.camera = new THREE.Camera()
     this.scene = new THREE.Scene()
     this.map = map
