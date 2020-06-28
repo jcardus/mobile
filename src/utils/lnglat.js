@@ -11,11 +11,12 @@ import * as consts from './consts'
 import store from '../store'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
 let markersOnScreen = {}
 let currentState = null
 
+let model = null
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
 const gray = ['==', ['get', 'color'], 'gray']
@@ -30,7 +31,7 @@ const WIDTH = 768 // refer to Bootstrap's responsive design
 
 export function showHideLayers() {
   const zoom = vm.$static.map.getZoom()
-  hideLayer(layers.vehicles3d, zoom <= consts.detailedZoom)
+  // hideLayer(layers.vehicles3d, zoom <= consts.detailedZoom)
   hideLayer(layers.vehicles, zoom > consts.detailedZoom)
 }
 
@@ -40,6 +41,9 @@ export const layers = {
   buildings3d: '3d-buildings',
   vehicles3d: '3d-vehicles'
 }
+
+// configuration of the custom layer for a 3D model per the CustomLayerInterface
+const gltfPath = 'img/reddefault.glb'
 
 export const popUps = []
 
@@ -425,8 +429,8 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
-  map.addLayer(customLayer, 'waterway-label')
 }
+
 export function contains(lngLatBounds, position, padding = 0) {
   return (
     (lngLatBounds.getWest() + padding < position.longitude && position.longitude < lngLatBounds.getEast() - padding) &&
@@ -518,42 +522,73 @@ function removeMarkers() {
   }
 }
 
-// parameters to ensure the model is georeferenced correctly on the map
-const modelOrigin = [-9.267752, 38.720413]
-const modelAltitude = 0
-const modelRotate = [Math.PI / 2, 0, 0]
+const bodyMaterial = new THREE.MeshPhysicalMaterial({
+  color: 0xff0000, metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
+})
+/*
+  const detailsMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff, metalness: 1.0, roughness: 0.5
+  })
 
-const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
-  modelOrigin,
-  modelAltitude
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff, metalness: 0, roughness: 0.1, transparency: 0.9, transparent: true
+  })*/
+
+const loader = new GLTFLoader()
+loader.load(
+  gltfPath,
+  gltf => {
+    const carModel = gltf.scene.children[0]
+    Vue.$log.debug(gltf.scene)
+    carModel.getObjectByName('sls_amg.001_0').material = bodyMaterial
+    carModel.getObjectByName('sls_amg.001_25').material = bodyMaterial
+    carModel.getObjectByName('sls_amg.001_28').material = bodyMaterial
+    carModel.getObjectByName('sls_amg.001_33').material = bodyMaterial
+    carModel.getObjectByName('sls_amg.001_40').material = bodyMaterial
+    carModel.getObjectByName('sls_amg.001_49').material = bodyMaterial
+    /* carModel.getObjectByName('body').material = bodyMaterial
+      carModel.getObjectByName('rim_fl').material = detailsMaterial
+      carModel.getObjectByName('rim_fr').material = detailsMaterial
+      carModel.getObjectByName('rim_rr').material = detailsMaterial
+      carModel.getObjectByName('rim_rl').material = detailsMaterial
+      carModel.getObjectByName('trim').material = detailsMaterial
+      carModel.getObjectByName('glass').material = glassMaterial*/
+    model = gltf.scene
+    Vue.$log.debug('model loaded')
+    setTimeout(() => { vm.$static.map.addLayer(customLayer, 'waterway-label') }, 3000)
+  },
+  (e) => {
+    Vue.$log.debug('progress is being made; bytes loaded', e)
+  },
+  e => {
+    Vue.$log.error(e) // tslint:disable-line
+  }
 )
 
-// transformation parameters to position, rotate and scale the 3D model onto the map
-const modelTransform = {
-  translateX: modelAsMercatorCoordinate.x,
-  translateY: modelAsMercatorCoordinate.y,
-  translateZ: modelAsMercatorCoordinate.z,
-  rotateX: modelRotate[0],
-  rotateY: modelRotate[1],
-  rotateZ: modelRotate[2],
-  /* Since our 3D model is in real world meters, a scale transform needs to be
-  * applied since the CustomLayerInterface expects units in MercatorCoordinates.
-  */
-  scale: modelAsMercatorCoordinate.meterInMercatorCoordinateUnits()
-}
-
-// configuration of the custom layer for a 3D model per the CustomLayerInterface
 const customLayer = {
   id: layers.vehicles3d,
   type: 'custom',
   renderingMode: '3d',
+  modelConfig: {
+    path: gltfPath,
+    scale: 1,
+    rotate: [Math.PI / 2, 0, 0]
+    /* [
+      rotateDeg ? rotateDeg.x || 0 : 0,
+      rotateDeg ? rotateDeg.y || 0 : 0,
+      rotateDeg ? rotateDeg.z || 0 : 0
+    ].map(deg => (Math.PI / 180) * deg) */
+  },
+  cameraTransform: null,
+  camera: null,
+  map: null,
   onAdd(map, gl) {
     this.center = mapboxgl.MercatorCoordinate.fromLngLat(map.getCenter(), 0)
     const { x, y, z } = this.center
     this.cameraTransform = new THREE.Matrix4().makeTranslation(x, y, z)
 
     this.camera = new THREE.Camera()
-    this.scene = new THREE.Scene()
+    this.makeScene()
     this.map = map
     // use the Mapbox GL JS map canvas for three.js
     this.renderer = new THREE.WebGLRenderer({
@@ -562,92 +597,81 @@ const customLayer = {
       antialias: true
     })
 
-    this.scene.add(new THREE.AmbientLight())
-    const mainLight = new THREE.PointLight()
-    mainLight.position.set(0.418, 16.199, 0.300)
-    this.scene.add(mainLight)
-    const bodyMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xff0000, metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
-    })
-    /*
-    const detailsMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffffff, metalness: 1.0, roughness: 0.5
-    })
-
-    const glassMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff, metalness: 0, roughness: 0.1, transparency: 0.9, transparent: true
-    })*/
-
-    const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('img/gltf/')
-
-    // use the three.js GLTF loader to add the 3D model to the three.js scene
-    const loader = new GLTFLoader()
-    loader.setDRACOLoader(dracoLoader)
-
-    loader.load('img/reddefault.glb', function(gltf) {
-      const carModel = gltf.scene.children[0]
-      Vue.$log.debug(gltf.scene)
-
-      carModel.getObjectByName('sls_amg.001_0').material = bodyMaterial
-      carModel.getObjectByName('sls_amg.001_25').material = bodyMaterial
-      carModel.getObjectByName('sls_amg.001_28').material = bodyMaterial
-      carModel.getObjectByName('sls_amg.001_33').material = bodyMaterial
-      carModel.getObjectByName('sls_amg.001_40').material = bodyMaterial
-      carModel.getObjectByName('sls_amg.001_49').material = bodyMaterial
-
-      /* carModel.getObjectByName('body').material = bodyMaterial
-      carModel.getObjectByName('rim_fl').material = detailsMaterial
-      carModel.getObjectByName('rim_fr').material = detailsMaterial
-      carModel.getObjectByName('rim_rr').material = detailsMaterial
-      carModel.getObjectByName('rim_rl').material = detailsMaterial
-      carModel.getObjectByName('trim').material = detailsMaterial
-      carModel.getObjectByName('glass').material = glassMaterial*/
-
-      this.scene.add(gltf.scene)
-    }.bind(this))
-
+    this.renderer.autoClear = false
     this.renderer.outputEncoding = THREE.sRGBEncoding
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
     this.renderer.toneMappingExposure = 0.85
-    this.renderer.autoClear = false
   },
-  render: function(gl, matrix) {
-    const rotationX = new THREE.Matrix4().makeRotationAxis(
-      new THREE.Vector3(1, 0, 0),
-      modelTransform.rotateX
-    )
-    const rotationY = new THREE.Matrix4().makeRotationAxis(
-      new THREE.Vector3(0, 1, 0),
-      modelTransform.rotateY
-    )
-    const rotationZ = new THREE.Matrix4().makeRotationAxis(
-      new THREE.Vector3(0, 0, 1),
-      modelTransform.rotateZ
-    )
-
-    const m = new THREE.Matrix4().fromArray(matrix)
-    const l = new THREE.Matrix4()
-      .makeTranslation(
-        modelTransform.translateX,
-        modelTransform.translateY,
-        modelTransform.translateZ
-      )
-      .scale(
-        new THREE.Vector3(
-          modelTransform.scale,
-          -modelTransform.scale,
-          modelTransform.scale
-        )
-      )
-      .multiply(rotationX)
-      .multiply(rotationY)
-      .multiply(rotationZ)
-
-    this.camera.projectionMatrix = m.multiply(l)
+  render(gl, matrix) {
+    this.camera.projectionMatrix = new THREE.Matrix4()
+      .fromArray(matrix)
+      .multiply(this.cameraTransform)
     this.renderer.state.reset()
     this.renderer.render(this.scene, this.camera)
     this.map.triggerRepaint()
+  },
+  setData() {
+
+  },
+  addObjects: function() {
+    const spriteScenes = vm.$static.positionsSource.features.map(f => {
+      const { geometry } = f
+      if (geometry.type !== 'Point') {
+        Vue.$log.error(`Sprite layers must have Point geometries; got ${f.geometry.type}`)
+        throw new Error(`Sprite layers must have Point geometries; got ${f.geometry.type}`)
+      }
+      const { coordinates } = geometry
+      const scene = model.clone()
+      scene.applyMatrix4(
+        getSpriteMatrix(
+          {
+            model: this.modelConfig,
+            position: {
+              lng: coordinates[0],
+              lat: coordinates[1]
+            },
+            altitude: 0
+          },
+          this.center
+        )
+      )
+      return scene
+    })
+
+    for (const scene of spriteScenes) {
+      this.scene.add(scene)
+    }
+  },
+  makeScene() {
+    this.scene = new THREE.Scene()
+    const ambientLight = new THREE.AmbientLight(0x916262, 0.5)
+    this.scene.add(ambientLight)
+
+    const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1)
+    this.scene.add(light)
+
+    // loader.setDRACOLoader(dracoLoader)
+    Vue.$log.debug('waiting for model')
+    Vue.$log.debug('done waiting for model')
+    // this.scene = this.makeScene() // clear the old scene
+    this.addObjects()
   }
+}
+
+function getSpriteMatrix(sprite, center) {
+  Vue.$log.debug(sprite, center)
+  const { model, position, altitude } = sprite
+  const { scale, rotate } = model
+  const rotationX = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(1, 0, 0), rotate[0])
+  const rotationY = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 1, 0), rotate[1])
+  const rotationZ = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 0, 1), rotate[2])
+
+  const coord = mapboxgl.MercatorCoordinate.fromLngLat(position, altitude)
+  return new THREE.Matrix4()
+    .makeTranslation(coord.x - center.x, coord.y - center.y, coord.z - center.z)
+    .scale(new THREE.Vector3(scale, -scale, scale))
+    .multiply(rotationX)
+    .multiply(rotationY)
+    .multiply(rotationZ)
 }
 
