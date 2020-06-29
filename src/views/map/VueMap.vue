@@ -428,14 +428,14 @@ export default {
       _vm.$mount('#style-switcher-div')
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
-    onMoveEnd: function() {
-      this.$log.info('moveend', this.isPlaying)
+    onMoveEnd() {
       if (!this.isPlaying) {
-        this.$log.debug('moveend storing cookie... isPlaying: ', this.isPlaying)
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
         lnglat.showHideLayers()
+      } else {
+        Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
     },
     onPitch: function() {

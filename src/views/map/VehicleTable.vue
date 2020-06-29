@@ -361,10 +361,8 @@ export default {
       } else {
         if (device) {
           this.selectedDevice = device
-          Vue.$log.debug('device=', device)
-          vm.$store.dispatch('transient/togglePlaying').then(() =>
-            serverBus.$emit('deviceSelected', device)
-          )
+          Vue.$log.debug('device', device)
+          serverBus.$emit('deviceSelected', device)
         }
       }
     },

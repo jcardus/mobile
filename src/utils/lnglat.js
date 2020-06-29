@@ -9,14 +9,14 @@ import { vm } from '../main'
 import styles from '../styles/element-variables.scss'
 import * as consts from './consts'
 import store from '../store'
-import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
+import { layers as _layers } from './consts'
 
 let markersOnScreen = {}
 let currentState = null
 
-let model = null
+export const layers = _layers
+
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
 const gray = ['==', ['get', 'color'], 'gray']
@@ -31,19 +31,10 @@ const WIDTH = 768 // refer to Bootstrap's responsive design
 
 export function showHideLayers() {
   const zoom = vm.$static.map.getZoom()
-  // hideLayer(layers.vehicles3d, zoom <= consts.detailedZoom)
+  Vue.$log.debug(zoom)
+  hideLayer(layers.vehicles3d, zoom <= consts.detailedZoom)
   hideLayer(layers.vehicles, zoom > consts.detailedZoom)
 }
-
-export const layers = {
-  vehicles: 'vehiclesLayer',
-  labels: 'vehicleLabels',
-  buildings3d: '3d-buildings',
-  vehicles3d: '3d-vehicles'
-}
-
-// configuration of the custom layer for a 3D model per the CustomLayerInterface
-const gltfPath = 'img/reddefault.glb'
 
 export const popUps = []
 
@@ -98,9 +89,7 @@ export function coordsDistance(lon1, lat1, lon2, lat2) {
 
   return (distance(from, to, options) * 1000)
 }
-export function deg2rad(deg) {
-  return deg * (Math.PI / 180)
-}
+
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
@@ -429,6 +418,7 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
+  setTimeout(() => map.addLayer(vehicles3d), 1000)
 }
 
 export function contains(lngLatBounds, position, padding = 0) {
@@ -447,7 +437,6 @@ export function refreshGeofences() {
 export function hideLayer(layer, hide) {
   const visibility = hide ? 'none' : 'visible'
   if (vm.$static.map.getLayer(layer)) {
-    Vue.$log.debug('hide ', hide, ' on layer ', layer)
     vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
   } else { Vue.$log.debug('didnt find layer ', layer) }
 }
@@ -521,157 +510,3 @@ function removeMarkers() {
     }
   }
 }
-
-const bodyMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0xff0000, metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
-})
-/*
-  const detailsMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, metalness: 1.0, roughness: 0.5
-  })
-
-  const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff, metalness: 0, roughness: 0.1, transparency: 0.9, transparent: true
-  })*/
-
-const loader = new GLTFLoader()
-loader.load(
-  gltfPath,
-  gltf => {
-    const carModel = gltf.scene.children[0]
-    Vue.$log.debug(gltf.scene)
-    carModel.getObjectByName('sls_amg.001_0').material = bodyMaterial
-    carModel.getObjectByName('sls_amg.001_25').material = bodyMaterial
-    carModel.getObjectByName('sls_amg.001_28').material = bodyMaterial
-    carModel.getObjectByName('sls_amg.001_33').material = bodyMaterial
-    carModel.getObjectByName('sls_amg.001_40').material = bodyMaterial
-    carModel.getObjectByName('sls_amg.001_49').material = bodyMaterial
-    /* carModel.getObjectByName('body').material = bodyMaterial
-      carModel.getObjectByName('rim_fl').material = detailsMaterial
-      carModel.getObjectByName('rim_fr').material = detailsMaterial
-      carModel.getObjectByName('rim_rr').material = detailsMaterial
-      carModel.getObjectByName('rim_rl').material = detailsMaterial
-      carModel.getObjectByName('trim').material = detailsMaterial
-      carModel.getObjectByName('glass').material = glassMaterial*/
-    model = gltf.scene
-    Vue.$log.debug('model loaded')
-    setTimeout(() => { vm.$static.map.addLayer(customLayer, 'waterway-label') }, 3000)
-  },
-  (e) => {
-    Vue.$log.debug('progress is being made; bytes loaded', e)
-  },
-  e => {
-    Vue.$log.error(e) // tslint:disable-line
-  }
-)
-
-const customLayer = {
-  id: layers.vehicles3d,
-  type: 'custom',
-  renderingMode: '3d',
-  modelConfig: {
-    path: gltfPath,
-    scale: 1,
-    rotate: [Math.PI / 2, 0, 0]
-    /* [
-      rotateDeg ? rotateDeg.x || 0 : 0,
-      rotateDeg ? rotateDeg.y || 0 : 0,
-      rotateDeg ? rotateDeg.z || 0 : 0
-    ].map(deg => (Math.PI / 180) * deg) */
-  },
-  cameraTransform: null,
-  camera: null,
-  map: null,
-  onAdd(map, gl) {
-    this.center = mapboxgl.MercatorCoordinate.fromLngLat(map.getCenter(), 0)
-    const { x, y, z } = this.center
-    this.cameraTransform = new THREE.Matrix4().makeTranslation(x, y, z)
-
-    this.camera = new THREE.Camera()
-    this.makeScene()
-    this.map = map
-    // use the Mapbox GL JS map canvas for three.js
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: map.getCanvas(),
-      context: gl,
-      antialias: true
-    })
-
-    this.renderer.autoClear = false
-    this.renderer.outputEncoding = THREE.sRGBEncoding
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    this.renderer.toneMappingExposure = 0.85
-  },
-  render(gl, matrix) {
-    this.camera.projectionMatrix = new THREE.Matrix4()
-      .fromArray(matrix)
-      .multiply(this.cameraTransform)
-    this.renderer.state.reset()
-    this.renderer.render(this.scene, this.camera)
-    this.map.triggerRepaint()
-  },
-  setData() {
-
-  },
-  addObjects: function() {
-    const spriteScenes = vm.$static.positionsSource.features.map(f => {
-      const { geometry } = f
-      if (geometry.type !== 'Point') {
-        Vue.$log.error(`Sprite layers must have Point geometries; got ${f.geometry.type}`)
-        throw new Error(`Sprite layers must have Point geometries; got ${f.geometry.type}`)
-      }
-      const { coordinates } = geometry
-      const scene = model.clone()
-      scene.applyMatrix4(
-        getSpriteMatrix(
-          {
-            model: this.modelConfig,
-            position: {
-              lng: coordinates[0],
-              lat: coordinates[1]
-            },
-            altitude: 0
-          },
-          this.center
-        )
-      )
-      return scene
-    })
-
-    for (const scene of spriteScenes) {
-      this.scene.add(scene)
-    }
-  },
-  makeScene() {
-    this.scene = new THREE.Scene()
-    const ambientLight = new THREE.AmbientLight(0x916262, 0.5)
-    this.scene.add(ambientLight)
-
-    const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1)
-    this.scene.add(light)
-
-    // loader.setDRACOLoader(dracoLoader)
-    Vue.$log.debug('waiting for model')
-    Vue.$log.debug('done waiting for model')
-    // this.scene = this.makeScene() // clear the old scene
-    this.addObjects()
-  }
-}
-
-function getSpriteMatrix(sprite, center) {
-  Vue.$log.debug(sprite, center)
-  const { model, position, altitude } = sprite
-  const { scale, rotate } = model
-  const rotationX = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(1, 0, 0), rotate[0])
-  const rotationY = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 1, 0), rotate[1])
-  const rotationZ = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 0, 1), rotate[2])
-
-  const coord = mapboxgl.MercatorCoordinate.fromLngLat(position, altitude)
-  return new THREE.Matrix4()
-    .makeTranslation(coord.x - center.x, coord.y - center.y, coord.z - center.z)
-    .scale(new THREE.Vector3(scale, -scale, scale))
-    .multiply(rotationX)
-    .multiply(rotationY)
-    .multiply(rotationZ)
-}
-
