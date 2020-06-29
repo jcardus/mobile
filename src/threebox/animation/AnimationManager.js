@@ -79,7 +79,7 @@ AnimationManager.prototype = {
     }
 
     obj.followPath = function(options, cb) {
-      var entry = {
+      const entry = {
         type: 'followPath',
         parameters: utils._validate(options, defaults.followPath)
       }
@@ -125,7 +125,7 @@ AnimationManager.prototype = {
 
       if (w) this.position.copy(w)
 
-      this.map.repaint = true
+      // this.map.repaint = true
     }
   },
 
