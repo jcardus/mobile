@@ -569,21 +569,6 @@ export default {
         serverBus.$emit('deviceSelectedOnMap', device)
       }
     },
-    truckFollowPath: function(coordinates, destination, distance) {
-      const options = {
-        path: coordinates,
-        duration: distance * 10000
-      }
-      this.truck.followPath(
-        options,
-        function() {
-          self.animating = false
-        }
-      )
-      this.origin = destination
-      this.animating = true
-      this._animate()
-    },
     animate: function(position, feature, timestamps) {
       const origin = feature.geometry.coordinates
       const destination = [position.longitude, position.latitude]
@@ -740,12 +725,14 @@ export default {
           if (settings.animateMarkers && !this.historyMode &&
             lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             this.map.getZoom() >= consts.detailedZoom) {
-            this.$log.debug('animating ', feature.properties.text)
+            this.$log.debug('animating', feature.properties.text)
             this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
             this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
+            feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
+            vehicles3d.updateCoords(feature)
           }
           this.updateFeature(feature, device, position)
         }

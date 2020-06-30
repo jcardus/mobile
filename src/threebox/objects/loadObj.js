@@ -27,35 +27,39 @@ function loadObj(options) {
     objLoader.load(`models/${options.category}.glb`, obj => {
       let r = utils.types.rotation(options, [0, 0, 0])
       // const s = utils.types.scale(options, [1, 1, 1])
-      const carModel = obj.scene.children[0]
-      Vue.$log.debug(options.category, carModel)
+      const model = obj.scene.children[0]
+      Vue.$log.debug(options.category, model)
       switch (options.category) {
         case 'default':
-          carModel.getObjectByName('sls_amg.001_0').material = bodyMaterial
-          carModel.getObjectByName('sls_amg.001_25').material = bodyMaterial
-          carModel.getObjectByName('sls_amg.001_28').material = bodyMaterial
-          carModel.getObjectByName('sls_amg.001_33').material = bodyMaterial
-          carModel.getObjectByName('sls_amg.001_40').material = bodyMaterial
-          carModel.getObjectByName('sls_amg.001_49').material = bodyMaterial
+          model.getObjectByName('sls_amg.001_0').material = bodyMaterial
+          model.getObjectByName('sls_amg.001_25').material = bodyMaterial
+          model.getObjectByName('sls_amg.001_28').material = bodyMaterial
+          model.getObjectByName('sls_amg.001_33').material = bodyMaterial
+          model.getObjectByName('sls_amg.001_40').material = bodyMaterial
+          model.getObjectByName('sls_amg.001_49').material = bodyMaterial
           break
         case 'truck':
           textMaterial = new THREE.MeshPhongMaterial({
             map: loader.load('models/textures/truck.tga')
           })
-          carModel.getObjectByName('MediumTruck01_0').material = textMaterial
-          carModel.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
+          model.getObjectByName('MediumTruck01_0').material = textMaterial
+          model.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
             color: 'lightgrey', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
           })
           r = utils.types.rotation(options, [90, 180, 0])
-          carModel.scale.set(0.05, 0.05, 0.05)
+          model.scale.set(0.05, 0.05, 0.05)
+          break
+        case 'moto':
+          r = utils.types.rotation(options, [90, 180, 0])
+          model.scale.set(0.1, 0.1, 0.1)
           break
         default:
           break
       }
-      carModel.rotation.set(r[0] + Math.PI / 2, r[1] + Math.PI, r[2])
+      model.rotation.set(r[0] + Math.PI / 2, r[1] + Math.PI, r[2])
 
       const proScaleGroup = new THREE.Group()
-      proScaleGroup.add(carModel)
+      proScaleGroup.add(model)
       const userScaleGroup = Objects.prototype._makeGroup(proScaleGroup, options)
       Objects.prototype._addMethods(userScaleGroup)
       resolve(userScaleGroup)
