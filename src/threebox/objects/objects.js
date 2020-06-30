@@ -8,7 +8,6 @@ function Objects() {
 }
 
 Objects.prototype = {
-
   // standard 1px line with gl
   line: function(obj) {
     obj = utils._validate(obj, this._defaults.line)
@@ -33,16 +32,10 @@ Objects.prototype = {
     return line
   },
 
-  extrusion: function(options) {
-
-  },
-
   _addMethods: function(obj, _static) {
     const root = this
-
     if (!_static) {
       if (!obj.coordinates) obj.coordinates = [0, 0, 0]
-
       // Bestow this mesh with animation superpowers and keeps track of its movements in the global animation queue
       root.animationManager.enroll(obj)
       obj.setCoords = function(lnglat) {
@@ -62,7 +55,6 @@ Objects.prototype = {
 
         return obj
       }
-
       obj.setRotation = function(xyz) {
         if (typeof xyz === 'number') xyz = { z: xyz }
 

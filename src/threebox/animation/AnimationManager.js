@@ -185,32 +185,29 @@ AnimationManager.prototype = {
         }
 
         if (item.type === 'followPath') {
-          var position = options.pathCurve.getPointAt(timeProgress)
+          const position = options.pathCurve.getPointAt(timeProgress)
           objectState = { worldCoordinates: position }
 
           // if we need to track heading
           if (options.trackHeading) {
-            var tangent = options.pathCurve
+            const tangent = options.pathCurve
               .getTangentAt(timeProgress)
               .normalize()
 
-            var axis = new THREE.Vector3(0, 0, 0)
-            var up = new THREE.Vector3(0, 1, 0)
+            const axis = new THREE.Vector3(0, 0, 0)
+            const up = new THREE.Vector3(0, 1, 0)
 
             axis
               .crossVectors(up, tangent)
               .normalize()
 
-            var radians = Math.acos(up.dot(tangent))
-
+            const radians = Math.acos(up.dot(tangent))
             objectState.quaternion = [axis, radians]
           }
-
           object._setObject(objectState)
         }
       }
     }
-
     this.previousFrameTime = now
   }
 }
