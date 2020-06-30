@@ -1,16 +1,18 @@
-var THREE = require('three')
-var Constants = require('./constants.js')
-var validate = require('./validate.js')
+const THREE = require('three')
+const Constants = require('./constants.js')
+import * as validate from './validate.js'
 
-var utils = {
+const utils = {
 
   prettyPrintMatrix: function(uglymatrix) {
-    for (var s = 0; s < 4; s++) {
-      var quartet = [uglymatrix[s],
+    for (let s = 0; s < 4; s++) {
+      const quartet = [uglymatrix[s],
         uglymatrix[s + 4],
         uglymatrix[s + 8],
         uglymatrix[s + 12]]
-      console.log(quartet.map(function(num) { return num.toFixed(4) }))
+      console.log(quartet.map(function(num) {
+        return num.toFixed(4)
+      }))
     }
   },
 
@@ -57,7 +59,9 @@ var utils = {
 
     if (typeof rad === 'object') {
       return [convert(rad.x), convert(rad.y), convert(rad.z)]
-    } else return convert(rad)
+    } else {
+      return convert(rad)
+    }
   },
 
   projectToWorld: function(coords) {
@@ -70,8 +74,9 @@ var utils = {
 
     // z dimension, defaulting to 0 if not provided
 
-    if (!coords[2]) projected.push(0)
-    else {
+    if (!coords[2]) {
+      projected.push(0)
+    } else {
       const pixelsPerMeter = this.projectedUnitsPerMeter(coords[1])
       projected.push(coords[2] * pixelsPerMeter)
     }
@@ -209,8 +214,12 @@ var utils = {
         if (defaults[key] === null) {
           console.error(key + ' is required')
           return
-        } else validatedOutput[key] = defaults[key]
-      } else validatedOutput[key] = userInputs[key]
+        } else {
+          validatedOutput[key] = defaults[key]
+        }
+      } else {
+        validatedOutput[key] = userInputs[key]
+      }
     }
 
     return validatedOutput

@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 
-const CameraSync = require('./camera/CameraSync.js')
-const utils = require('./utils/Utils.js')
-const AnimationManager = require('./animation/AnimationManager.js')
+import * as CameraSync from './camera/CameraSync.js'
+import * as utils from './utils/Utils.js'
+import * as AnimationManager from './animation/AnimationManager.js'
 
 const Objects = require('./objects/objects.js')
 const loadObj = require('./objects/loadObj.js')
