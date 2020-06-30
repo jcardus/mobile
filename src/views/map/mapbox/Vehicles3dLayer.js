@@ -49,5 +49,6 @@ export const vehicles3d = {
   },
   updateCoords(feature) {
     this.objects[feature.properties.deviceId].setCoords(feature.geometry.coordinates)
+    this.objects[feature.properties.deviceId].setRotation(360 - feature.properties.course)
   }
 }

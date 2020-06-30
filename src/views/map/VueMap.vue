@@ -624,13 +624,13 @@ export default {
         const coordinates = feature.route[counter]
         if (coordinates) {
           feature.geometry.coordinates = coordinates
-          vehicles3d.updateCoords(feature)
           if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates) }
           const p1 = feature.route[counter >= steps ? counter - 1 : counter]
           const p2 = feature.route[counter >= steps ? counter : counter + 1]
           if (p1 && p2) {
             feature.properties.course = bearing(p1, p2)
           }
+          vehicles3d.updateCoords(feature)
           self.refreshMap()
         }
         if (counter++ < steps) {
@@ -722,7 +722,6 @@ export default {
       feature.properties = { ...feature.properties, ...position }
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
       this.$store.dispatch('user/updateDevice', device)
-      // feature.model.setRotation(position.course)
     },
     processPositions(positions) {
       for (const position of positions) {
@@ -740,14 +739,12 @@ export default {
           const oldFixTime = feature.properties.fixTime
           if (settings.animateMarkers && !this.historyMode &&
             lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            this.map.getZoom() >= consts.detailedZoom
-          ) {
+            this.map.getZoom() >= consts.detailedZoom) {
             this.$log.debug('animating ', feature.properties.text)
             this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
             this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
-            vehicles3d.updateCoords(feature)
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
           }
           this.updateFeature(feature, device, position)
