@@ -334,6 +334,7 @@ export function addVehiclesLayer(layer, source) {
 }
 
 export function addLayers(map) {
+  map.addLayer(vehicles3d)
   if (!map.getSource(source)) {
     map.addSource(source, {
       type: 'geojson',
@@ -418,7 +419,6 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
-  map.addLayer(vehicles3d)
   showHideLayers()
 }
 

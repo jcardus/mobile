@@ -1,6 +1,7 @@
 import Threebox from '../../../threebox/Threebox'
 import { layers } from '../../../utils/consts'
 import Vue from 'vue'
+import loadObj from '../../../threebox/objects/loadObj'
 
 export const vehicles3d = {
   id: layers.vehicles3d,
@@ -10,7 +11,7 @@ export const vehicles3d = {
   async addFModel(f) {
     if (!this.models[f.properties.category]) {
       Vue.$log.debug('loading model', f.properties.category)
-      this.models[f.properties.category] = await this.tb.loadObj(f.properties)
+      this.models[f.properties.category] = await loadObj(f.properties)
       Vue.$log.debug('done loading model', f.properties.category)
     }
     const { coordinates } = f.geometry
