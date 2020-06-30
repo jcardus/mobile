@@ -18,7 +18,7 @@ export const vehicles3d = {
     model.setRotation(360 - f.properties.course)
     Vue.$log.debug('adding on', coordinates)
     this.tb.add(model.setCoords(coordinates))
-    return model
+    f.model = model
   },
   onAdd(map, gl) {
     this.tb = new Threebox(map, gl, { defaultLights: true })
