@@ -46,5 +46,8 @@ export const vehicles3d = {
   },
   render() {
     this.tb.update()
+  },
+  updateCoords(feature) {
+    this.objects[feature.properties.deviceId].setCoords(feature.geometry.coordinates)
   }
 }

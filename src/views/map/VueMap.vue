@@ -624,6 +624,7 @@ export default {
         const coordinates = feature.route[counter]
         if (coordinates) {
           feature.geometry.coordinates = coordinates
+          vehicles3d.updateCoords(feature)
           if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates) }
           const p1 = feature.route[counter >= steps ? counter - 1 : counter]
           const p2 = feature.route[counter >= steps ? counter : counter + 1]
@@ -746,7 +747,7 @@ export default {
           } else {
             this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
-            // feature.model.setCoords(feature.geometry.coordinates)
+            vehicles3d.updateCoords(feature)
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
           }
           this.updateFeature(feature, device, position)
