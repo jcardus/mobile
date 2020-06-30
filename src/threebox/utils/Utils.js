@@ -1,6 +1,6 @@
 const THREE = require('three')
 const Constants = require('./constants.js')
-import * as validate from './validate.js'
+import * as Validate from './validate.js'
 
 const utils = {
 
@@ -225,7 +225,7 @@ const utils = {
     return validatedOutput
   },
   // eslint-disable-next-line new-cap
-  Validator: new validate(),
+  Validator: Validate,
   exposedMethods: ['projectToWorld', 'projectedUnitsPerMeter', 'extend', 'unprojectFromWorld']
 }
 
