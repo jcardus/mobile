@@ -42,6 +42,7 @@ import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
+import { vehicles3d } from './mapbox/Vehicles3dLayer'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -703,6 +704,7 @@ export default {
           this.$store.dispatch('user/setDeviceLastIgnOff', { device, fixTime: position.fixTime })
         }
       }
+      feature.model = vehicles3d.addFModel(feature)
       this.updateFeature(feature, device, position)
       return feature
     },
@@ -719,6 +721,7 @@ export default {
       feature.properties = { ...feature.properties, ...position }
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
       this.$store.dispatch('user/updateDevice', device)
+      // feature.model.setRotation(position.course)
     },
     processPositions(positions) {
       for (const position of positions) {
@@ -743,6 +746,7 @@ export default {
           } else {
             this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
+            // feature.model.setCoords(feature.geometry.coordinates)
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
           }
           this.updateFeature(feature, device, position)

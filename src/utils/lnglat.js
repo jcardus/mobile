@@ -30,10 +30,10 @@ const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
 export function showHideLayers() {
-  const zoom = vm.$static.map.getZoom()
+  const zoom = vm.$static.map.getPitch()
   Vue.$log.debug(zoom)
-  hideLayer(layers.vehicles3d, zoom <= consts.detailedZoom)
-  hideLayer(layers.vehicles, zoom > consts.detailedZoom)
+  hideLayer(layers.vehicles3d, zoom === 0)
+  hideLayer(layers.vehicles, zoom > 0)
 }
 
 export const popUps = []
@@ -418,7 +418,8 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
-  setTimeout(() => map.addLayer(vehicles3d), 1000)
+  map.addLayer(vehicles3d)
+  showHideLayers()
 }
 
 export function contains(lngLatBounds, position, padding = 0) {

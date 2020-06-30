@@ -63,8 +63,6 @@ Threebox.prototype = {
 
   loadObj: loadObj,
 
-  // Material
-
   utils: utils,
 
   projectToWorld: function(coords) {
@@ -80,7 +78,7 @@ Threebox.prototype = {
   },
 
   queryRenderedFeatures: function(point) {
-    var mouse = new THREE.Vector2()
+    const mouse = new THREE.Vector2()
 
     // // scale mouse pixel position to a percentage of the screen's width and height
     mouse.x = (point.x / this.map.transform.width) * 2 - 1
@@ -95,7 +93,7 @@ Threebox.prototype = {
   update: function() {
     if (this.map.repaint) this.map.repaint = false
 
-    var timestamp = Date.now()
+    const timestamp = Date.now()
 
     // Update any animations
     this.objects.animationManager.update(timestamp)
@@ -118,7 +116,7 @@ Threebox.prototype = {
 
   defaultLights: function() {
     this.scene.add(new THREE.AmbientLight(0xffffff))
-    var sunlight = new THREE.DirectionalLight(0xffffff, 0.25)
+    const sunlight = new THREE.DirectionalLight(0xffffff, 0.25)
     sunlight.position.set(0, 80000000, 100000000)
     sunlight.matrixWorldNeedsUpdate = true
     this.world.add(sunlight)

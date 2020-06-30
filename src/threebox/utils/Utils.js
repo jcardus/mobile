@@ -72,7 +72,7 @@ var utils = {
 
     if (!coords[2]) projected.push(0)
     else {
-      var pixelsPerMeter = this.projectedUnitsPerMeter(coords[1])
+      const pixelsPerMeter = this.projectedUnitsPerMeter(coords[1])
       projected.push(coords[2] * pixelsPerMeter)
     }
 
@@ -174,14 +174,11 @@ var utils = {
   },
 
   // retrieve object parameters from an options object
-
   types: {
-
     rotation: function(r, currentRotation) {
       // if number provided, rotate only in Z by that amount
       if (typeof r === 'number') r = { z: r }
-
-      var degrees = this.applyDefault([r.x, r.y, r.z], currentRotation)
+      const degrees = this.applyDefault([r.x, r.y, r.z], currentRotation)
       return utils.radify(degrees)
     },
 
