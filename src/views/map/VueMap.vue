@@ -704,7 +704,7 @@ export default {
           this.$store.dispatch('user/setDeviceLastIgnOff', { device, fixTime: position.fixTime })
         }
       }
-      feature.model = vehicles3d.addFModel(feature)
+      vehicles3d.addFModel(feature)
       this.updateFeature(feature, device, position)
       return feature
     },
