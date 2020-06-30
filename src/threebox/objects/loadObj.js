@@ -68,4 +68,4 @@ function loadObj(options) {
   })
 }
 
-module.exports = exports = loadObj
+module.exports = loadObj
