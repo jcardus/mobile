@@ -96,4 +96,4 @@ Validate.prototype = {
 
 }
 
-module.exports = exports = Validate
+module.exports = Validate
