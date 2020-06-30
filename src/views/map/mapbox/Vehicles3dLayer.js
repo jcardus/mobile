@@ -9,28 +9,36 @@ export const vehicles3d = {
   renderingMode: '3d',
   models: {},
   modelLoading: {},
-  initModel: function(f) {
+  objects: {},
+  queue: {},
+  initObject: function(f) {
+    Vue.$log.debug(f)
     const { coordinates } = f.geometry
     const model = this.models[f.properties.category].duplicate()
     model.setRotation(360 - f.properties.course)
     Vue.$log.debug('adding on', coordinates)
     this.tb.add(model.setCoords(coordinates))
-    f.model = model
+    this.objects[f.properties.deviceId] = model
   },
   addFModel(f) {
-    if (this.models[f.properties.category]) {
-      this.initModel(f)
-    } else if (!this.modelLoading[f.properties.category]) {
-      this.modelLoading[f.properties.category] = true
-      Vue.$log.debug('loading model', f.properties.category)
-      loadObj(f.properties).then((model) => {
-        this.modelLoading[f.properties.category] = false
-        this.models[f.properties.category] = model
-        this.initModel(f)
-        Vue.$log.debug('done loading model', f.properties.category)
-      })
+    const modelName = f.properties.category
+    if (this.models[modelName]) {
+      this.initObject(f)
     } else {
-      setTimeout(() => this.addFModel(f), 1000)
+      if (!this.queue[modelName]) {
+        this.queue[modelName] = [f]
+        Vue.$log.debug('loading model', f.properties.category)
+        loadObj(f.properties).then((model) => {
+          this.models[f.properties.category] = model
+          Vue.$log.debug('done loading model', f.properties.category)
+          for (const f of this.queue[modelName]) {
+            this.initObject(f)
+          }
+        })
+      } else {
+        Vue.$log.debug(modelName, 'being loaded, queuing...')
+        this.queue[modelName].push(f)
+      }
     }
   },
   onAdd(map, gl) {
