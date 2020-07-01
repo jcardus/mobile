@@ -1,7 +1,7 @@
-const Objects = require('./objects.js')
+import { Objects } from './objects.js'
 import { utils } from '../utils/Utils.js'
 
-function Object3D(options) {
+export function Object3D(options) {
   options = utils._validate(options, Objects.prototype._defaults.Object3D)
 
   let obj = options.obj
@@ -14,4 +14,3 @@ function Object3D(options) {
   return obj
 }
 
-module.exports = exports = Object3D

@@ -159,4 +159,3 @@ Objects.prototype = {
   }
 }
 
-module.exports = exports = Objects

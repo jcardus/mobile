@@ -735,6 +735,7 @@ export default {
             vehicles3d.updateCoords(feature)
           }
           this.updateFeature(feature, device, position)
+          vehicles3d.updateColor(feature)
         }
       }
       this.refreshMap()

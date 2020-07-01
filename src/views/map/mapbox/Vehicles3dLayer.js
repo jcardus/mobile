@@ -1,7 +1,7 @@
-import Threebox from '../../../threebox/Threebox'
+import { Threebox } from '../../../threebox/Threebox'
 import { layers } from '../../../utils/consts'
 import Vue from 'vue'
-import loadObj from '../../../threebox/objects/loadObj'
+import { loadObj } from '../../../threebox/objects/loadObj'
 import * as THREE from 'three'
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
 
@@ -66,11 +66,9 @@ export const vehicles3d = {
   render() {
     this.tb.update()
   },
-  updateCoords(feature) {
+  updateColor(feature) {
     const model = this.objects[feature.properties.deviceId]
     if (model) {
-      model.setCoords(feature.geometry.coordinates)
-      model.setRotation(360 - feature.properties.course)
       switch (feature.properties.category) {
         case 'truck':
           model.getObjectByName('MediumTruck01_0').material = truckTextures[feature.properties.color]
@@ -78,6 +76,13 @@ export const vehicles3d = {
         default:
           break
       }
+    }
+  },
+  updateCoords(feature) {
+    const model = this.objects[feature.properties.deviceId]
+    if (model) {
+      model.setCoords(feature.geometry.coordinates)
+      model.setRotation(360 - feature.properties.course)
     }
   }
 }

@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Vue from 'vue'
 import * as THREE from 'three'
-import Objects from './objects'
+import { Objects } from './objects'
 import { utils } from '../utils/Utils.js'
 
 const bodyMaterial = new THREE.MeshPhysicalMaterial({
@@ -17,7 +17,7 @@ const bodyMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xffffff, metalness: 0, roughness: 0.1, transparency: 0.9, transparent: true
   })*/
 
-function loadObj(options) {
+export function loadObj(options) {
   return new Promise((resolve, reject) => {
     const objLoader = new GLTFLoader()
     objLoader.load(`models/${options.category}.glb`, obj => {
@@ -64,4 +64,3 @@ function loadObj(options) {
   })
 }
 
-module.exports = loadObj

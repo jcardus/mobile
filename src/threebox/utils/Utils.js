@@ -1,5 +1,5 @@
 const THREE = require('three')
-const Constants = require('./constants.js')
+import { Constants } from './constants.js'
 import { Validate } from './validate.js'
 
 export const utils = {

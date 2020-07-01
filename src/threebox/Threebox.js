@@ -1,14 +1,14 @@
 import * as THREE from 'three'
 
-const CameraSync = require('./camera/CameraSync.js')
-const utils = require('./utils/Utils.js')
-const AnimationManager = require('./animation/AnimationManager.js')
+import { CameraSync } from './camera/CameraSync'
+import { utils } from './utils/Utils.js'
+import { AnimationManager } from './animation/AnimationManager.js'
 
-const Objects = require('./objects/objects.js')
-const loadObj = require('./objects/loadObj.js')
-const Object3D = require('./objects/Object3D.js')
+import { Objects } from './objects/objects.js'
+import { loadObj } from './objects/loadObj.js'
+import { Object3D } from './objects/Object3D.js'
 
-function Threebox(map, glContext, options) {
+export function Threebox(map, glContext, options) {
   this.init(map, glContext, options)
 }
 
@@ -153,6 +153,4 @@ Threebox.prototype = {
     return obj
   }
 }
-
-module.exports = exports = Threebox
 

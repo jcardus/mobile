@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { utils } from '../utils/Utils.js'
-import ThreeboxConstants from '../utils/constants.js'
+import { Constants } from '../utils/constants.js'
 
-function CameraSync(map, camera, world) {
+export function CameraSync(map, camera, world) {
   this.map = map
   this.camera = camera
   this.active = true
@@ -11,7 +11,7 @@ function CameraSync(map, camera, world) {
 
   // Postion and configure the world group so we can scale it appropriately when the camera zooms
   this.world = world || new THREE.Group()
-  this.world.position.x = this.world.position.y = ThreeboxConstants.WORLD_SIZE / 2
+  this.world.position.x = this.world.position.y = Constants.WORLD_SIZE / 2
   this.world.matrixAutoUpdate = false
 
   // set up basic camera state
@@ -19,10 +19,10 @@ function CameraSync(map, camera, world) {
   this.state = {
     fov: 0.6435011087932844,
     translateCenter: new THREE.Matrix4(),
-    worldSizeRatio: 512 / ThreeboxConstants.WORLD_SIZE
+    worldSizeRatio: 512 / Constants.WORLD_SIZE
   }
 
-  this.state.translateCenter.makeTranslation(ThreeboxConstants.WORLD_SIZE / 2, -ThreeboxConstants.WORLD_SIZE / 2, 0)
+  this.state.translateCenter.makeTranslation(Constants.WORLD_SIZE / 2, -Constants.WORLD_SIZE / 2, 0)
 
   // Listen for move events from the map and update the Three.js camera. Some attributes only change when viewport resizes, so update those accordingly
   var _this = this
@@ -112,5 +112,3 @@ CameraSync.prototype = {
     // utils.prettyPrintMatrix(this.camera.projectionMatrix.elements);
   }
 }
-
-module.exports = exports = CameraSync
