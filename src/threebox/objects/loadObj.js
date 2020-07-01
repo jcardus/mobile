@@ -5,7 +5,7 @@ import { Objects } from './objects'
 import { utils } from '../utils/Utils.js'
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
 const loader = new TGALoader()
-
+import * as consts from '../../utils/consts'
 const bodyMaterial = new THREE.MeshPhysicalMaterial({
   color: 'grey', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
 })
@@ -38,7 +38,7 @@ export function loadObj(options) {
           break
         case 'truck':
           model.getObjectByName('MediumTruck01_0').material = new THREE.MeshPhongMaterial({
-            map: loader.load('models/textures/truck.tga')
+            map: loader.load(consts.cdnUrl + '/models/textures/truck.tga')
           })
           model.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
             color: 'ghostwhite', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
