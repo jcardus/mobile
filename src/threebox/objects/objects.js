@@ -1,4 +1,4 @@
-const utils = require('../utils/Utils.js')
+import { utils } from '../utils/Utils.js'
 import * as THREE from 'three'
 
 const AnimationManager = require('../animation/AnimationManager.js')

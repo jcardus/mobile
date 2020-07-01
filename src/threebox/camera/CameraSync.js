@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-const utils = require('../utils/Utils.js')
+import { utils } from '../utils/Utils.js'
 const ThreeboxConstants = require('../utils/constants.js')
 
 function CameraSync(map, camera, world) {

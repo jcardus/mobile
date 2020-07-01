@@ -2,6 +2,25 @@ import Threebox from '../../../threebox/Threebox'
 import { layers } from '../../../utils/consts'
 import Vue from 'vue'
 import loadObj from '../../../threebox/objects/loadObj'
+import * as THREE from 'three'
+import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
+
+const loader = new TGALoader()
+
+const truckTextures = {
+  gray: new THREE.MeshPhongMaterial({
+    map: loader.load('models/textures/truck-gray.tga')
+  }),
+  red: new THREE.MeshPhongMaterial({
+    map: loader.load('models/textures/truck-red.tga')
+  }),
+  green: new THREE.MeshPhongMaterial({
+    map: loader.load('models/textures/truck-green.tga')
+  }),
+  yellow: new THREE.MeshPhongMaterial({
+    map: loader.load('models/textures/truck-yellow.tga')
+  })
+}
 
 export const vehicles3d = {
   id: layers.vehicles3d,
@@ -48,9 +67,17 @@ export const vehicles3d = {
     this.tb.update()
   },
   updateCoords(feature) {
-    if (this.objects[feature.properties.deviceId]) {
-      this.objects[feature.properties.deviceId].setCoords(feature.geometry.coordinates)
-      this.objects[feature.properties.deviceId].setRotation(360 - feature.properties.course)
+    const model = this.objects[feature.properties.deviceId]
+    if (model) {
+      model.setCoords(feature.geometry.coordinates)
+      model.setRotation(360 - feature.properties.course)
+      switch (feature.properties.category) {
+        case 'truck':
+          model.getObjectByName('MediumTruck01_0').material = truckTextures[feature.properties.color]
+          break
+        default:
+          break
+      }
     }
   }
 }

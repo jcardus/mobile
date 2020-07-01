@@ -2,7 +2,7 @@ const THREE = require('three')
 const Constants = require('./constants.js')
 import { Validate } from './validate.js'
 
-const utils = {
+export const utils = {
 
   prettyPrintMatrix: function(uglymatrix) {
     for (let s = 0; s < 4; s++) {
@@ -229,4 +229,3 @@ const utils = {
   exposedMethods: ['projectToWorld', 'projectedUnitsPerMeter', 'extend', 'unprojectFromWorld']
 }
 
-module.exports = exports = utils

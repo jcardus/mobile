@@ -2,16 +2,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Vue from 'vue'
 import * as THREE from 'three'
 import Objects from './objects'
-import { TGALoader } from 'three/examples/jsm/loaders/TGALoader.js'
-
-const loader = new TGALoader()
-const utils = require('../utils/Utils.js')
+import { utils } from '../utils/Utils.js'
 
 const bodyMaterial = new THREE.MeshPhysicalMaterial({
   color: 'grey', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
 })
 
-let textMaterial = null
 /*
   const detailsMaterial = new THREE.MeshStandardMaterial({
     color: 0xffffff, metalness: 1.0, roughness: 0.5
@@ -39,10 +35,6 @@ function loadObj(options) {
           model.getObjectByName('sls_amg.001_49').material = bodyMaterial
           break
         case 'truck':
-          textMaterial = new THREE.MeshPhongMaterial({
-            map: loader.load('models/textures/truck.tga')
-          })
-          model.getObjectByName('MediumTruck01_0').material = textMaterial
           model.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
             color: 'lightgrey', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
           })

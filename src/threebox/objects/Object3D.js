@@ -1,5 +1,5 @@
 const Objects = require('./objects.js')
-const utils = require('../utils/Utils.js')
+import { utils } from '../utils/Utils.js'
 
 function Object3D(options) {
   options = utils._validate(options, Objects.prototype._defaults.Object3D)
