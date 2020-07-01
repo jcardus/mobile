@@ -13,6 +13,7 @@ export const vehicles3d = {
   modelLoading: {},
   objects: {},
   queue: {},
+  tb: new Threebox({ defaultLights: true }),
   initObject: function(f) {
     Vue.$log.debug(f)
     const { coordinates } = f.geometry
@@ -52,7 +53,7 @@ export const vehicles3d = {
     }
   },
   onAdd(map, gl) {
-    this.tb = new Threebox(map, gl, { defaultLights: true })
+    this.tb.init(map, gl)
   },
   render() {
     this.tb.update()

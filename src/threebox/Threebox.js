@@ -8,8 +8,24 @@ import { Objects } from './objects/objects.js'
 import { loadObj } from './objects/loadObj.js'
 import { Object3D } from './objects/Object3D.js'
 
-export function Threebox(map, glContext, options) {
-  this.init(map, glContext, options)
+export function Threebox(options) {
+  this.scene = new THREE.Scene()
+  this.camera = new THREE.PerspectiveCamera(28, window.innerWidth / window.innerHeight, 0.000000000001, Infinity)
+
+  // The CameraSync object will keep the Mapbox and THREE.js camera movements in sync.
+  // It requires a world group to scale as we zoom in. Rotation is handled in the camera's
+  // projection matrix itself (as is field of view and near/far clipping)
+  // It automatically registers to listen for move events on the map so we don't need to do that here
+  this.world = new THREE.Group()
+  this.scene.add(this.world)
+
+  // raycaster for mouse events
+  this.raycaster = new THREE.Raycaster()
+
+  // apply starter options
+
+  this.options = options
+  if (this.options.defaultLights) this.defaultLights()
 }
 
 Threebox.prototype = {
@@ -18,9 +34,9 @@ Threebox.prototype = {
     this.map.repaint = true
   },
 
-  init: function(map, glContext, options) {
+  init: function(map, glContext) {
     this.map = map
-
+    this.cameraSync = new CameraSync(this.map, this.camera, this.world)
     // Set up a THREE.js scene
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -31,26 +47,6 @@ Threebox.prototype = {
 
     this.renderer.shadowMap.enabled = true
     this.renderer.autoClear = false
-
-    this.scene = new THREE.Scene()
-    this.camera = new THREE.PerspectiveCamera(28, window.innerWidth / window.innerHeight, 0.000000000001, Infinity)
-
-    // The CameraSync object will keep the Mapbox and THREE.js camera movements in sync.
-    // It requires a world group to scale as we zoom in. Rotation is handled in the camera's
-    // projection matrix itself (as is field of view and near/far clipping)
-    // It automatically registers to listen for move events on the map so we don't need to do that here
-    this.world = new THREE.Group()
-    this.scene.add(this.world)
-
-    this.cameraSync = new CameraSync(this.map, this.camera, this.world)
-
-    // raycaster for mouse events
-    this.raycaster = new THREE.Raycaster()
-
-    // apply starter options
-
-    this.options = options
-    if (this.options.defaultLights) this.defaultLights()
   },
 
   // Objects
