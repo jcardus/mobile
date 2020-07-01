@@ -3,6 +3,8 @@ import Vue from 'vue'
 import * as THREE from 'three'
 import { Objects } from './objects'
 import { utils } from '../utils/Utils.js'
+import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
+const loader = new TGALoader()
 
 const bodyMaterial = new THREE.MeshPhysicalMaterial({
   color: 'grey', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
@@ -35,8 +37,11 @@ export function loadObj(options) {
           model.getObjectByName('sls_amg.001_49').material = bodyMaterial
           break
         case 'truck':
+          model.getObjectByName('MediumTruck01_0').material = new THREE.MeshPhongMaterial({
+            map: loader.load('models/textures/truck.tga')
+          })
           model.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
-            color: 'lightgrey', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
+            color: 'lightgrey', metalness: 0.6
           })
           r = utils.types.rotation(options, [90, 180, 0])
           model.scale.set(0.05, 0.05, 0.05)

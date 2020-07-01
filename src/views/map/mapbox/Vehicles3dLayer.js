@@ -3,24 +3,7 @@ import { layers } from '../../../utils/consts'
 import Vue from 'vue'
 import { loadObj } from '../../../threebox/objects/loadObj'
 import * as THREE from 'three'
-import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
-
-const loader = new TGALoader()
-
-const truckTextures = {
-  gray: new THREE.MeshPhongMaterial({
-    map: loader.load('models/textures/truck-gray.tga')
-  }),
-  red: new THREE.MeshPhongMaterial({
-    map: loader.load('models/textures/truck-red.tga')
-  }),
-  green: new THREE.MeshPhongMaterial({
-    map: loader.load('models/textures/truck-green.tga')
-  }),
-  yellow: new THREE.MeshPhongMaterial({
-    map: loader.load('models/textures/truck-yellow.tga')
-  })
-}
+import styles from '../../../styles/element-variables.scss'
 
 export const vehicles3d = {
   id: layers.vehicles3d,
@@ -38,6 +21,14 @@ export const vehicles3d = {
     Vue.$log.debug('adding on', coordinates)
     this.tb.add(model.setCoords(coordinates))
     this.objects[f.properties.deviceId] = model
+    switch (f.properties.category) {
+      case 'truck':
+        model.getObjectByName('MediumTruck01_0').material = model.getObjectByName('MediumTruck01_0').material.clone()
+        break
+      default:
+        break
+    }
+    this.updateColor(f)
   },
   addFModel(f) {
     const modelName = f.properties.category
@@ -67,11 +58,29 @@ export const vehicles3d = {
     this.tb.update()
   },
   updateColor(feature) {
+    let color = styles.info
+    switch (feature.properties.color) {
+      case 'red':
+        color = styles.danger
+        break
+      case 'green':
+        color = styles.success
+        break
+      case 'yellow':
+        color = styles.warning
+        break
+      case 'gray':
+        color = styles.info
+        break
+      default:
+        break
+    }
     const model = this.objects[feature.properties.deviceId]
     if (model) {
       switch (feature.properties.category) {
         case 'truck':
-          model.getObjectByName('MediumTruck01_0').material = truckTextures[feature.properties.color]
+          Vue.$log.debug(feature, color)
+          model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
           break
         default:
           break
