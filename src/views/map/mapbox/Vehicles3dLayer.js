@@ -27,6 +27,7 @@ export const vehicles3d = {
         model.getObjectByName('MediumTruck01_0').material = model.getObjectByName('MediumTruck01_0').material.clone()
         break
       default:
+        model.getObjectByName('MediumTruck01_0').material = model.getObjectByName('MediumTruck01_0').material.clone()
         break
     }
     this.updateColor(f)
@@ -85,6 +86,9 @@ export const vehicles3d = {
           }
           break
         default:
+          if (!model.getObjectByName('MediumTruck01_0').material.color.equals(new THREE.Color(color))) {
+            model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
+          }
           break
       }
     }
