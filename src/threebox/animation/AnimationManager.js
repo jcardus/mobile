@@ -1,7 +1,7 @@
 import { utils } from '../utils/Utils.js'
 import * as THREE from 'three'
 
-function AnimationManager(map) {
+export function AnimationManager(map) {
   this.map = map
   this.enrolledObjects = []
 }
@@ -219,4 +219,3 @@ const defaults = {
     trackHeading: true
   }
 }
-module.exports = exports = AnimationManager

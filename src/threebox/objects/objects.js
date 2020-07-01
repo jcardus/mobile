@@ -1,10 +1,8 @@
 import { utils } from '../utils/Utils.js'
 import * as THREE from 'three'
+import { AnimationManager } from '../animation/AnimationManager.js'
 
-const AnimationManager = require('../animation/AnimationManager.js')
-
-function Objects() {
-
+export function Objects() {
 }
 
 Objects.prototype = {

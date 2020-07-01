@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { utils } from '../utils/Utils.js'
-const ThreeboxConstants = require('../utils/constants.js')
+import ThreeboxConstants from '../utils/constants.js'
 
 function CameraSync(map, camera, world) {
   this.map = map
@@ -41,9 +41,9 @@ function CameraSync(map, camera, world) {
 CameraSync.prototype = {
 
   setupCamera: function() {
-    var t = this.map.transform
+    const t = this.map.transform
     const halfFov = this.state.fov / 2
-    var cameraToCenterDistance = 0.5 / Math.tan(halfFov) * t.height
+    const cameraToCenterDistance = 0.5 / Math.tan(halfFov) * t.height
     const groundAngle = Math.PI / 2 + t._pitch
 
     this.state.cameraToCenterDistance = cameraToCenterDistance
@@ -59,7 +59,7 @@ CameraSync.prototype = {
       return
     }
 
-    var t = this.map.transform
+    const t = this.map.transform
 
     // Calculate z distance of the farthest fragment that should be rendered.
     const furthestDistance = Math.cos(Math.PI / 2 - t._pitch) * this.state.topHalfSurfaceDistance + this.state.cameraToCenterDistance
@@ -69,9 +69,9 @@ CameraSync.prototype = {
 
     this.camera.projectionMatrix = utils.makePerspectiveMatrix(this.state.fov, t.width / t.height, 1, farZ)
 
-    var cameraWorldMatrix = new THREE.Matrix4()
-    var rotatePitch = new THREE.Matrix4().makeRotationX(t._pitch)
-    var rotateBearing = new THREE.Matrix4().makeRotationZ(t.angle)
+    const cameraWorldMatrix = new THREE.Matrix4()
+    const rotatePitch = new THREE.Matrix4().makeRotationX(t._pitch)
+    const rotateBearing = new THREE.Matrix4().makeRotationZ(t.angle)
 
     // Unlike the Mapbox GL JS camera, separate camera translation and rotation out into its world matrix
     // If this is applied directly to the projection matrix, it will work OK but break raycasting
@@ -93,8 +93,8 @@ CameraSync.prototype = {
     scale
       .makeScale(zoomPow, zoomPow, zoomPow)
 
-    var x = -this.map.transform.x || -this.map.transform.point.x
-    var y = this.map.transform.y || this.map.transform.point.y
+    const x = -this.map.transform.x || -this.map.transform.point.x
+    const y = this.map.transform.y || this.map.transform.point.y
 
     translateMap
       .makeTranslation(x, y, 0)
