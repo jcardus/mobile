@@ -41,7 +41,7 @@ export function loadObj(options) {
             map: loader.load('models/textures/truck.tga')
           })
           model.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
-            color: 'lightgrey', metalness: 0.6
+            color: 'ghostwhite', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
           })
           r = utils.types.rotation(options, [90, 180, 0])
           model.scale.set(0.05, 0.05, 0.05)

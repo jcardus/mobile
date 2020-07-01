@@ -79,8 +79,9 @@ export const vehicles3d = {
     if (model) {
       switch (feature.properties.category) {
         case 'truck':
-          Vue.$log.debug(feature, color)
-          model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
+          if (!model.getObjectByName('MediumTruck01_0').material.color.equals(new THREE.Color(color))) {
+            model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
+          }
           break
         default:
           break
