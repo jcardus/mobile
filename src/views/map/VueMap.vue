@@ -615,8 +615,11 @@ export default {
           if (p1 && p2) {
             feature.properties.course = bearing(p1, p2)
           }
-          vehicles3d.updateCoords(feature)
-          self.refreshMap()
+          if (self.map.getPitch() > 0) {
+            vehicles3d.updateCoords(feature)
+          } else {
+            self.refreshMap()
+          }
         }
         if (counter++ < steps) {
           requestAnimationFrame(_animate)
