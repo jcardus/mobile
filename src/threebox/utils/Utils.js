@@ -1,6 +1,6 @@
 const THREE = require('three')
 const Constants = require('./constants.js')
-import * as Validate from './validate.js'
+import { Validate } from './validate.js'
 
 const utils = {
 
