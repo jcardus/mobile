@@ -1,6 +1,9 @@
 <template>
   <div class="mainContainer">
-    <div class="dd-body-inner">
+    <div style="float: right">
+      <i :class="tableCollapsed?'el-icon-s-unfold':'el-icon-s-fold'" :style="`color:${colors.info}`" @click="$store.dispatch('map/toggleTableCollapsed')"></i>
+    </div>
+    <div v-if="!tableCollapsed" class="dd-body-inner">
       <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType()"></logo-svg>
       <img v-else :class="'logo ' + logoClassType" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
@@ -37,6 +40,8 @@ import DriverTable from './DriverTable'
 import VehicleTable from './VehicleTable'
 import * as partner from '../../utils/partner'
 import LogoSvg from '../../layout/components/LogoSvg'
+import { mapGetters } from 'vuex'
+import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'DataContainer',
@@ -47,11 +52,15 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['tableCollapsed']),
     hasSVG() {
       return partner.hasSVG()
     },
     isMobile() {
       return lnglat.isMobile()
+    },
+    colors() {
+      return styles
     }
   },
   methods: {
@@ -76,7 +85,7 @@ export default {
   }
   .logoMobile {
     margin-top: 25px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
   .logoDesktop {
     margin-bottom: 5px;

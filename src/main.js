@@ -160,6 +160,7 @@ export const vm = new Vue({
   },
   static() {
     return {
+      vehicles3d: null,
       currentFeature: null,
       markers: {},
       map: null,

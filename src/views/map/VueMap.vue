@@ -42,6 +42,7 @@ import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
+import { vehicles3d } from './mapbox/Vehicles3dLayer'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -155,7 +156,7 @@ export default {
     }
   },
   watch: {
-    '$route'(to, from) {
+    '$route'(to) {
       if (to.name === 'Map') {
         setTimeout(() => serverBus.$emit('mapShown'), 500)
       }
@@ -243,7 +244,7 @@ export default {
         this.$log.warn('not finishing loading', this.loadingCount)
       }
     },
-    mapResize: function() {
+    mapResize() {
       if (this.map) {
         this.$log.debug('map.resize')
         this.map.resize()
@@ -428,13 +429,14 @@ export default {
       _vm.$mount('#style-switcher-div')
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
-    onMoveEnd: function() {
-      this.$log.info('moveend', this.isPlaying)
+    onMoveEnd() {
       if (!this.isPlaying) {
-        this.$log.debug('moveend storing cookie... isPlaying: ', this.isPlaying)
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
+        lnglat.showHideLayers()
+      } else {
+        Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
     },
     onPitch: function() {
@@ -476,10 +478,16 @@ export default {
       serverBus.$on('areaSelected', this.areaSelected)
       serverBus.$on('deviceChanged', this.deviceChanged)
       this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'SOCKET_ONMESSAGE') {
-          if (state.socket.message.positions) {
-            self.updateMarkers(self.map)
-          }
+        switch (mutation.type) {
+          case 'SOCKET_ONMESSAGE':
+            if (state.socket.message.positions) {
+              self.updateMarkers(self.map)
+            }
+            break
+          case 'map/TOGGLE_TABLE_COLLAPSED':
+            setTimeout(self.mapResize, 500)
+            break
+          default:
         }
       })
       window.addEventListener('resize', this.mapResize)
@@ -561,21 +569,6 @@ export default {
         serverBus.$emit('deviceSelectedOnMap', device)
       }
     },
-    truckFollowPath: function(coordinates, destination, distance) {
-      const options = {
-        path: coordinates,
-        duration: distance * 10000
-      }
-      this.truck.followPath(
-        options,
-        function() {
-          self.animating = false
-        }
-      )
-      this.origin = destination
-      this.animating = true
-      this._animate()
-    },
     animate: function(position, feature, timestamps) {
       const origin = feature.geometry.coordinates
       const destination = [position.longitude, position.latitude]
@@ -622,7 +615,11 @@ export default {
           if (p1 && p2) {
             feature.properties.course = bearing(p1, p2)
           }
-          self.refreshMap()
+          if (self.map.getPitch() > 0) {
+            vehicles3d.updateCoords(feature)
+          } else {
+            self.refreshMap()
+          }
         }
         if (counter++ < steps) {
           requestAnimationFrame(_animate)
@@ -696,6 +693,7 @@ export default {
           this.$store.dispatch('user/setDeviceLastIgnOff', { device, fixTime: position.fixTime })
         }
       }
+      vehicles3d.addFModel(feature)
       this.updateFeature(feature, device, position)
       return feature
     },
@@ -729,16 +727,18 @@ export default {
           const oldFixTime = feature.properties.fixTime
           if (settings.animateMarkers && !this.historyMode &&
             lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            this.map.getZoom() >= consts.detailedZoom
-          ) {
-            this.$log.debug('animating ', feature.properties.text)
+            this.map.getZoom() >= consts.detailedZoom) {
+            this.$log.debug('animating', feature.properties.text)
             this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
             this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
+            feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
+            vehicles3d.updateCoords(feature)
           }
           this.updateFeature(feature, device, position)
+          vehicles3d.updateColor(feature)
         }
       }
       this.refreshMap()
