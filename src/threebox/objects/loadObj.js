@@ -64,8 +64,7 @@ function initModel(options, model) {
     case 'truck':
       model = model.scene.children[0]
       model.getObjectByName('MediumTruck01_0').material = new THREE.MeshPhongMaterial({
-        map: tgaLoader.load('truck.tga'),
-        shininess: 150
+        map: tgaLoader.load('truck.tga')
       })
       model.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
         color: 'ghostwhite', metalness: 0.7, roughness: 0.7, clearcoat: 0.05, clearcoatRoughness: 0.05
