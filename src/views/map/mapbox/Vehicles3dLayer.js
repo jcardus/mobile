@@ -30,7 +30,7 @@ export const vehicles3d = {
         model.traverse(function(child) {
           if (child.isMesh && child.material && child.material.name === 'carbodymat') {
             child.material.roughness = 0.7
-            child.material.metalness = 0.8
+            child.material.metalness = 0.7
             child.material = child.material.clone()
           }
         })

@@ -62,14 +62,13 @@ function initModel(options, model) {
       model.scale.set(0.5, 0.5, 0.5)
       break
     case 'truck':
-    case 'moto':
-    case 'arrow':
       model = model.scene.children[0]
       model.getObjectByName('MediumTruck01_0').material = new THREE.MeshPhongMaterial({
-        map: tgaLoader.load('truck.tga')
+        map: tgaLoader.load('truck.tga'),
+        shininess: 150
       })
       model.getObjectByName('MediumTruck01_1').material = new THREE.MeshPhysicalMaterial({
-        color: 'ghostwhite', metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
+        color: 'ghostwhite', metalness: 0.7, roughness: 0.7, clearcoat: 0.05, clearcoatRoughness: 0.05
       })
       r = utils.types.rotation(options, [90, 180, 0])
       model.scale.set(0.05, 0.05, 0.05)
