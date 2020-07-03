@@ -54,7 +54,6 @@ export function loadObj(feature, modelPath, objLoader) {
 
 function initModel(options, model) {
   let r = utils.types.rotation(options, [0, 0, 0])
-  // const s = utils.types.scale(options, [1, 1, 1])
   Vue.$log.debug(options.category, model)
   switch (options.category) {
     case 'default':
