@@ -9,7 +9,8 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { LoadingManager } from 'three'
 
-const texturePath = consts.cdnUrl + '/models/textures/'
+const modelsPath = consts.cdnUrl + '/models/'
+const texturePath = modelsPath + 'textures/'
 const manager = new LoadingManager()
 const tgaLoader = new TGALoader()
 tgaLoader.setPath(texturePath)
@@ -21,7 +22,7 @@ export function loadModel(feature) {
   switch (category) {
     case 'truck':
     case 'default':
-      return loadObj(feature, `models/${category}.glb`, new GLTFLoader())
+      return loadObj(feature, `${modelsPath}${category}.glb`, new GLTFLoader())
     case 'obj':
       return new Promise((resolve) => {
         new MTLLoader(manager)
