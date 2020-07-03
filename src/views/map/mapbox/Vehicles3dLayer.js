@@ -1,7 +1,7 @@
 import { Threebox } from '../../../threebox/Threebox'
 import { layers } from '../../../utils/consts'
 import Vue from 'vue'
-import { loadObj } from '../../../threebox/objects/loadObj'
+import { loadModel } from '../../../threebox/objects/loadObj'
 import * as THREE from 'three'
 import styles from '../../../styles/element-variables.scss'
 
@@ -27,7 +27,12 @@ export const vehicles3d = {
         model.getObjectByName('MediumTruck01_0').material = model.getObjectByName('MediumTruck01_0').material.clone()
         break
       default:
-        model.getObjectByName('MediumTruck01_0').material = model.getObjectByName('MediumTruck01_0').material.clone()
+        model.traverse(function(child) {
+          if (child.isMesh && child.material && child.material.name === 'carbodymat') {
+            child.material.roughness = 0.4
+            child.material = child.material.clone()
+          }
+        })
         break
     }
     this.updateColor(f)
@@ -39,8 +44,8 @@ export const vehicles3d = {
     } else {
       if (!this.queue[modelName]) {
         this.queue[modelName] = [f]
-        Vue.$log.debug('loading model', f.properties.category)
-        loadObj(f.properties).then((model) => {
+        Vue.$log.warn('loading model', f.properties.category)
+        loadModel(f).then((model) => {
           this.models[f.properties.category] = model
           Vue.$log.debug('done loading model', f.properties.category)
           for (const f of this.queue[modelName]) {
@@ -86,9 +91,12 @@ export const vehicles3d = {
           }
           break
         default:
-          if (!model.getObjectByName('MediumTruck01_0').material.color.equals(new THREE.Color(color))) {
-            model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
-          }
+          model.traverse(function(child) {
+            if (child.isMesh && child.material && child.material.name === 'carbodymat') {
+              Vue.$log.debug(child)
+              child.material.color = new THREE.Color(color)
+            }
+          })
           break
       }
     }
