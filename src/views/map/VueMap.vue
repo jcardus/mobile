@@ -231,14 +231,14 @@ export default {
       })
     },
     finishLoading() {
-      if (++this.loadingCount === 3) {
+      if (++this.loadingCount === 4) {
         NProgress.done()
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
         lnglat.updateMarkers()
         this.$log.info('finished loading', this.loadingCount)
       } else {
-        if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
+        if (this.isMobile && this.userLoggedIn && this.loadingCount < 4) {
           this.$f7.preloader.show()
         }
         this.$log.warn('not finishing loading', this.loadingCount)
@@ -472,6 +472,7 @@ export default {
       this.$static.map.on('draw.modechange', this.drawModeChange)
       this.$static.map.on('data', this.onData)
       this.$static.map.on('styleimagemissing', this.styleImageMissing)
+      serverBus.$on('modelsLoaded', this.finishLoading)
       serverBus.$on('dataLoaded', this.initData)
       serverBus.$on('mapShown', this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
@@ -512,6 +513,7 @@ export default {
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('data', this.onData)
+      serverBus.$off('modelsLoaded', this.finishLoading)
       serverBus.$off('deviceChanged', this.deviceChanged)
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
