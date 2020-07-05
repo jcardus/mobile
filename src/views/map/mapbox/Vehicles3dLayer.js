@@ -1,9 +1,10 @@
 import { Threebox } from '../../../threebox/Threebox'
 import { layers } from '../../../utils/consts'
 import Vue from 'vue'
-import { loadObj } from '../../../threebox/objects/loadObj'
+import { loadModel } from '../../../threebox/objects/loadObj'
 import * as THREE from 'three'
 import styles from '../../../styles/element-variables.scss'
+import { serverBus, vm } from '../../../main'
 
 export const vehicles3d = {
   id: layers.vehicles3d,
@@ -26,8 +27,16 @@ export const vehicles3d = {
       case 'truck':
         model.getObjectByName('MediumTruck01_0').material = model.getObjectByName('MediumTruck01_0').material.clone()
         break
+      case 'moto':
+        break
       default:
-        model.getObjectByName('MediumTruck01_0').material = model.getObjectByName('MediumTruck01_0').material.clone()
+        model.traverse(function(child) {
+          if (child.isMesh && child.material && child.material.name === 'carbodymat') {
+            child.material.roughness = 0.7
+            child.material.metalness = 0.8
+            child.material = child.material.clone()
+          }
+        })
         break
     }
     this.updateColor(f)
@@ -39,12 +48,17 @@ export const vehicles3d = {
     } else {
       if (!this.queue[modelName]) {
         this.queue[modelName] = [f]
-        Vue.$log.debug('loading model', f.properties.category)
-        loadObj(f.properties).then((model) => {
+        Vue.$log.warn('loading model', f.properties.category)
+        loadModel(f).then((model) => {
           this.models[f.properties.category] = model
-          Vue.$log.debug('done loading model', f.properties.category)
           for (const f of this.queue[modelName]) {
             this.initObject(f)
+          }
+          if (Object.keys(this.objects).length === vm.$static.positionsSource.features.length) {
+            Vue.$log.debug('done loading model', f.properties.category, Object.keys(this.objects).length, vm.$static.positionsSource.features.length)
+            serverBus.$emit('modelsLoaded')
+          } else {
+            Vue.$log.debug('done loading model', f.properties.category, Object.keys(this.objects).length, vm.$static.positionsSource.features.length)
           }
         })
       } else {
@@ -86,9 +100,11 @@ export const vehicles3d = {
           }
           break
         default:
-          if (!model.getObjectByName('MediumTruck01_0').material.color.equals(new THREE.Color(color))) {
-            model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
-          }
+          model.traverse(function(child) {
+            if (child.isMesh && child.material && child.material.name === 'carbodymat') {
+              child.material.color = new THREE.Color(color)
+            }
+          })
           break
       }
     }
