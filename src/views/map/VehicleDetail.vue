@@ -5,6 +5,9 @@
       <div class="title">
         {{ device.name }}
       </div>
+      <div class="subtitle">
+        {{ device.model }}
+      </div>
       <div class="content">
         {{ device.position && device.position.address }}
         <div style="padding-top: 5px;">
@@ -229,13 +232,20 @@ export default {
     padding: 0;
   }
   .title {
-    float:left;
     font-style: normal;
     font-weight: bold;
-    font-size: 22px;
+    font-size: 16px;
     color: #32325D;
-    padding-bottom: 10px;
+    padding-bottom: 2px;
     padding-top: 1px;
+    overflow: auto;
+  }
+  .subtitle {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    color: #32325D;
+    padding-bottom: 8px;
     overflow: auto;
   }
   .content {
