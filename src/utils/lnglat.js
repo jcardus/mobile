@@ -9,9 +9,13 @@ import { vm } from '../main'
 import styles from '../styles/element-variables.scss'
 import * as consts from './consts'
 import store from '../store'
+import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
+import { layers as _layers } from './consts'
 
 let markersOnScreen = {}
 let currentState = null
+
+export const layers = _layers
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 export const source = 'positions'
@@ -25,10 +29,11 @@ const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-str
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
-export const layers = {
-  vehicles: 'vehiclesLayer',
-  labels: 'vehicleLabels',
-  buildings3d: '3d-buildings'
+export function showHideLayers() {
+  const zoom = vm.$static.map.getPitch()
+  Vue.$log.debug(zoom)
+  hideLayer(layers.vehicles3d, zoom === 0)
+  hideLayer(layers.vehicles, zoom > 0)
 }
 
 export const popUps = []
@@ -84,9 +89,7 @@ export function coordsDistance(lon1, lat1, lon2, lat2) {
 
   return (distance(from, to, options) * 1000)
 }
-export function deg2rad(deg) {
-  return deg * (Math.PI / 180)
-}
+
 export function lineDistance(route) {
   return length(route, { units: 'kilometers' })
 }
@@ -331,6 +334,7 @@ export function addVehiclesLayer(layer, source) {
 }
 
 export function addLayers(map) {
+  map.addLayer(vehicles3d)
   if (!map.getSource(source)) {
     map.addSource(source, {
       type: 'geojson',
@@ -415,7 +419,10 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
+  map.addLayer(vehicles3d)
+  showHideLayers()
 }
+
 export function contains(lngLatBounds, position, padding = 0) {
   return (
     (lngLatBounds.getWest() + padding < position.longitude && position.longitude < lngLatBounds.getEast() - padding) &&
@@ -432,7 +439,6 @@ export function refreshGeofences() {
 export function hideLayer(layer, hide) {
   const visibility = hide ? 'none' : 'visible'
   if (vm.$static.map.getLayer(layer)) {
-    Vue.$log.debug('hide ', hide, ' on layer ', layer)
     vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
   } else { Vue.$log.debug('didnt find layer ', layer) }
 }
@@ -475,6 +481,7 @@ export function changeVehicleLayerFilter(state) {
   // To update cluster markers
   vm.$static.markers = []
   for (const id in markersOnScreen) {
+    // noinspection JSUnfilteredForInLoop
     const remove = markersOnScreen[id]
     remove.remove()
   }
@@ -505,4 +512,3 @@ function removeMarkers() {
     }
   }
 }
-
