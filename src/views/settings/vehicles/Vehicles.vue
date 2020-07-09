@@ -259,7 +259,7 @@ export default {
       this.vehicleName = row.name
       this.vehicleModel = row.model
       if (p) {
-        this.vehicleTotalKms = p.properties.totalDistance / 1000
+        this.vehicleTotalKms = p.properties.attributes.totalDistance / 1000
       }
       this.vehicleSpeedLimit = Math.round(row.attributes.speedLimit * 1.85200)
       this.isOpenVehicleForm = !this.isOpenVehicleForm
