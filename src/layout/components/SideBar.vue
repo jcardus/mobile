@@ -20,6 +20,7 @@
           <el-menu-item index="/reports/report_speeding">{{ $t('route.report_speeding') }}</el-menu-item>
           <el-menu-item v-if="tollsReport" index="/reports/report_tolls">{{ $t('route.report_tolls') }}</el-menu-item>
           <el-menu-item v-if="has_customreport_vistawaste_activity" index="/reports/customreport_vistawaste_activity">{{ $t('route.customreport_vistawaste_activity_title') }}</el-menu-item>
+          <el-menu-item v-if="timeRangeReport" index="/reports/report_timerange">{{ $t('route.report_timerange') }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
@@ -37,6 +38,9 @@ import * as permission from '../../utils/permission'
 
 export default {
   computed: {
+    timeRangeReport() {
+      return partner.hasTimeRangeReport()
+    },
     tollsReport() {
       return partner.hasTolls()
     },

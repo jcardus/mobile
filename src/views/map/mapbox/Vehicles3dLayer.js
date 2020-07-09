@@ -98,13 +98,16 @@ export const vehicles3d = {
           if (!model.getObjectByName('MediumTruck01_0').material.color.equals(new THREE.Color(color))) {
             model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
           }
+          model.scale.set()
           break
-        default:
+        case 'default':
           model.traverse(function(child) {
             if (child.isMesh && child.material && child.material.name === 'carbodymat') {
               child.material.color = new THREE.Color(color)
             }
           })
+          break
+        default:
           break
       }
     }

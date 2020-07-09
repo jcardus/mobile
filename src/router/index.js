@@ -44,45 +44,51 @@ export const constantRoutes = [
     children: [
       {
         path: 'report_trip',
-        component: () => import('@/views/reports/ReportTrip'),
+        component: () => import('../views/reports/ReportTrip'),
         name: 'TripReport',
         meta: { title: 'route.report_trip_title' }
       },
       {
         path: 'report_location',
-        component: () => import('@/views/reports/ReportLocation'),
+        component: () => import('../views/reports/ReportLocation'),
         name: 'Route Report',
         meta: { title: 'route.report_location_title' }
       },
       {
         path: 'report_zone_crossing',
-        component: () => import('@/views/reports/ReportZone'),
+        component: () => import('../views/reports/ReportZone'),
         name: 'Zone Report',
         meta: { title: 'route.report_zone_crossing' }
       },
       {
         path: 'report_speeding',
-        component: () => import('@/views/reports/ReportSpeeding'),
+        component: () => import('../views/reports/ReportSpeeding'),
         name: 'Speeding Report',
         meta: { title: 'route.report_speeding' }
       },
       {
         path: 'report_speeding_beta',
-        component: () => import('@/views/reports/ReportSpeedingBeta'),
+        component: () => import('../views/reports/ReportSpeedingBeta'),
         name: 'Speeding Report Beta',
         meta: { title: 'route.report_speeding_beta' }
       },
       {
         path: 'report_tolls',
-        component: () => import('@/views/reports/ReportTolls'),
+        component: () => import('../views/reports/ReportTolls'),
         name: 'Tolls Report',
         meta: { title: 'route.report_tolls' }
       },
       {
         path: 'customreport_vistawaste_activity',
-        component: () => import('@/views/reports/CustomReportVistaWasteActivity'),
+        component: () => import('../views/reports/CustomReportVistaWasteActivity'),
         name: 'CustomVistaWaste1Report',
         meta: { title: 'route.customreport_vistawaste_activity_title' }
+      },
+      {
+        path: 'report_timerange',
+        component: () => import('../views/reports/ReportTimeInterval'),
+        name: 'Time Range Report',
+        meta: { title: 'route.report_timerange' }
       }
     ]
   },

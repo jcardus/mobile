@@ -419,6 +419,7 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
+  map.addLayer(vehicles3d)
   showHideLayers()
 }
 

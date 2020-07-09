@@ -37,6 +37,11 @@ export function hasSVG() {
     hostname.includes('macp.pinme.io')
 }
 
+export function hasTimeRangeReport() {
+  return hostname === 'web.fleetrack2.cl' ||
+    hostname.includes('localhost')
+}
+
 export function hasTolls() {
   return hostname === 'web.fleetrack.cl' ||
     hostname.includes('localhost')
