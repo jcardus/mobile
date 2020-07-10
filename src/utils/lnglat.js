@@ -9,7 +9,7 @@ import { vm } from '../main'
 import styles from '../styles/element-variables.scss'
 import * as consts from './consts'
 import store from '../store'
-import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
+// import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
 import { layers as _layers } from './consts'
 
 let markersOnScreen = {}
@@ -334,7 +334,7 @@ export function addVehiclesLayer(layer, source) {
 }
 
 export function addLayers(map) {
-  map.addLayer(vehicles3d)
+  // map.addLayer(vehicles3d)
   if (!map.getSource(source)) {
     map.addSource(source, {
       type: 'geojson',
