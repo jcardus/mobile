@@ -231,14 +231,14 @@ export default {
       })
     },
     finishLoading() {
-      if (++this.loadingCount === 4) {
+      if (++this.loadingCount === 3) {
         NProgress.done()
         vm.$data.loadingMap = false
         if (this.isMobile) { this.$f7.preloader.hide() }
         lnglat.updateMarkers()
         this.$log.info('finished loading', this.loadingCount)
       } else {
-        if (this.isMobile && this.userLoggedIn && this.loadingCount < 4) {
+        if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
           this.$f7.preloader.show()
         }
         this.$log.warn('not finishing loading', this.loadingCount)
