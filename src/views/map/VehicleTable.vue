@@ -298,9 +298,7 @@ export default {
     document.getElementById('btnAll').addEventListener('touchstart', this.filterStateAll)
     document.getElementById('btnUnknown').addEventListener('touchstart', this.filterStateUnknown)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelectedOnMap)
-    if (!this.isMobile) {
-      serverBus.$on('showRoutesChanged', this.showRoutesChanged)
-    }
+    serverBus.$on('showRoutesChanged', this.showRoutesChanged)
   },
   beforeDestroy() {
     serverBus.$off('deviceSelectedOnMap', this.deviceSelectedOnMap)
@@ -308,11 +306,14 @@ export default {
   },
   methods: {
     showRoutesChanged() {
+      this.$log.debug('ShowRoutesChanged')
       if (!this.historyMode) {
+        this.$log.debug('Not HistoryMode toggleRowExpansion')
         const table = this.$refs.vehicleTable
         table.toggleRowExpansion(this.selectedDevice, false)
         this.selectedDevice = null
       } else {
+        this.$log.debug('HistoryMode toggleRowExpansion')
         const table = this.$refs.vehicleTable
         table.toggleRowExpansion(this.selectedDevice, true)
       }

@@ -18,27 +18,27 @@
         >
           <template slot-scope="scope">
             <div
-              style="margin-top: 10px; border-radius:10px; padding-left: 10px; padding-bottom: 10px;padding-right: 10px"
+              style="display: flow-root; margin-top: 10px; border-radius:10px; padding-left: 10px; padding-bottom: 10px;padding-right: 10px"
               :class="currentTrip===scope.row ? 'tripSelectedBackground' : ''"
             >
               <div :class="getTripIndexClass(scope.row)" style="background-color: #FFFFFF ; border-radius:10px">
                 <span style="font-size: 12px">{{ scope.$index + 1 }}ª Viagem</span>
               </div>
               <el-row>
-                <el-col :span="24">
+                <el-col :span="24" class="colTripData">
                   <div>
                     <span style="font-size: 12px">{{ formatDate(scope.row.trip_start_fixtime) }}</span>
                   </div>
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="12">
+                <el-col :span="12" class="colTripData">
                   <div>
                     <span style="font-size: 12px" :class="currentTrip===scope.row ? 'tripSelected' : ''">
                       <i class="fas fa-circle" style="width: 15px; color: #13ce66"></i> {{ formatTime(scope.row.trip_start_fixtime) }}</span>
                   </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="12" class="colTripData">
                   <div>
                     <span style="font-size: 12px" :class="currentTrip===scope.row ? 'tripSelected' : ''">
                       <i class="fas fa-circle" style="width: 15px; color: #F5365C"></i> {{ formatTime(scope.row.trip_end_fixtime) }} </span>
@@ -46,7 +46,7 @@
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="24">
+                <el-col :span="24" class="colTripData">
                   <div v-if="hasEndPOI(scope.row)">
                     <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.endPoi) }}</span>
                   </div>
@@ -56,29 +56,29 @@
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="8">
+                <el-col :span="8" class="colTripData">
                   <div>
                     <span style="font-size: 12px;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i> {{ scope.row.trip_driving_time }}</span>
                   </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="8" class="colTripData">
                   <div>
                     <span style="font-size: 12px;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #FFBA00"></i> {{ scope.row.trip_idle_time }}</span>
                   </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="8" class="colTripData">
                   <div>
                     <span style="font-size: 12px; "><i class="fas fa-car" style="width: 15px; color: #F5365C"></i> {{ scope.row.trip_stop_time }}</span>
                   </div>
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="12">
+                <el-col :span="12" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.trip_distance }} km</span>
                   </div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="12" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.trip_avg_speed }} km/h </span>
                   </div>
@@ -160,10 +160,21 @@ export default {
     line-height: normal;
     padding-bottom: 1px;
   }
+  .el-row::before {
+    content: none;
+  }
+  .el-row::after {
+    content: none;
+  }
   .tripSelected {
     font-weight: bold;
   }
   .tripSelectedBackground {
     background-color: rgba($--color-primary, 0.1);
+  }
+  .colTripData{
+    padding: 2px;
+    margin-bottom: 0px;
+    justify-content: start;
   }
 </style>

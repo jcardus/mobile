@@ -25,7 +25,8 @@ const getters = {
   showLineGeofences: state => state.map.showLineGeofences,
   showPOIs: state => state.map.showPOIs,
   show3dBuildings: state => state.map.show3dBuildings,
-  tableCollapsed: state => state.map.tableCollapsed
+  tableCollapsed: state => state.map.tableCollapsed,
+  vehicles3dEnabled: state => state.settings.vehicles3d
 }
 
 export default getters
