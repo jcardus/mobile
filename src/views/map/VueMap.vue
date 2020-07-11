@@ -43,6 +43,7 @@ import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
+import * as event from '../../events/event'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -158,7 +159,7 @@ export default {
   watch: {
     '$route'(to) {
       if (to.name === 'Map') {
-        setTimeout(() => serverBus.$emit('mapShown'), 500)
+        setTimeout(() => serverBus.$emit(event.mapShow), 500)
       }
     }
   },
@@ -474,7 +475,7 @@ export default {
       this.$static.map.on('styleimagemissing', this.styleImageMissing)
       serverBus.$on('modelsLoaded', this.finishLoading)
       serverBus.$on('dataLoaded', this.initData)
-      serverBus.$on('mapShown', this.mapResize)
+      serverBus.$on(event.mapShow, this.mapResize)
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       serverBus.$on('deviceChanged', this.deviceChanged)
@@ -518,7 +519,7 @@ export default {
       serverBus.$off('deviceSelected', this.deviceSelected)
       serverBus.$off('areaSelected', this.areaSelected)
       serverBus.$off('dataLoaded', this.initData)
-      serverBus.$off('mapShown', this.mapResize)
+      serverBus.$off(event.mapShow, this.mapResize)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },

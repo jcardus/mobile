@@ -42,6 +42,7 @@ import VueMap from '../../views/map/VueMap'
 import { serverBus } from '../../main'
 import { appOffline } from '../../utils/utils'
 import { mapGetters } from 'vuex'
+import * as event from '../../events/event'
 import Vue from 'vue'
 
 export default {
@@ -90,6 +91,8 @@ export default {
     this.$log.debug('created VueMap mobile, user loggedin: ', this.userLoggedIn)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('autoSliderChange', this.autoSliderChange)
+    serverBus.$on(event.tripChanged, this.tripSelected)
+    serverBus.$on(event.showRoutesChanged, this.showRoutesChanged)
   },
   mounted() {
     this.$log.debug('mounted VueMap mobile, user loggedin: ', this.userLoggedIn)
@@ -101,6 +104,8 @@ export default {
     this.$log.debug('destroying MapMobileContainer')
     serverBus.$off('deviceSelected', this.deviceSelected)
     serverBus.$off('autoSliderChange', this.autoSliderChange)
+    serverBus.$off(event.tripChanged, this.tripSelected)
+    serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
     autoSliderChange(value) {
@@ -134,6 +139,12 @@ export default {
     },
     deviceSelected() {
       this.$f7.panel.close('left')
+    },
+    tripSelected() {
+      this.$f7.panel.close('left')
+    },
+    showRoutesChanged() {
+      this.$f7.panel.open('left')
     }
   }
 }
