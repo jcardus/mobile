@@ -11,7 +11,7 @@
     </f7-fab>
     <div :style="'height: calc(100% - ' + height + 'px)'">
       <VueMap></VueMap>
-      <f7-row style="padding-left: 50px; padding-right: 35px; height: 20px"><f7-col>
+      <f7-row v-if="historyMode" style="padding-left: 50px; padding-right: 35px; height: 20px"><f7-col>
         <f7-range
           v-if="showSlider"
           id="range"
@@ -23,7 +23,7 @@
           @range:change="sliderChanged"
         /></f7-col>
       </f7-row>
-      <f7-row>
+      <f7-row v-if="historyMode">
         <f7-col>
           <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="backward_fill" icon-size="40" @click="onClickBack"></f7-link>
           <f7-link :icon-f7="(isPlaying ? 'pause' : 'play') + '_fill'" style="padding-left: 10px; padding-right: 5px" icon-size="40" @click="onClickPlay"></f7-link>
