@@ -141,6 +141,7 @@ import TripTable from './TripTable'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 import * as utils from '../../utils/utils'
+import * as event from '../../events/event'
 
 export default {
   name: 'VehicleTable',
@@ -297,12 +298,12 @@ export default {
     document.getElementById('btnIdle').addEventListener('touchstart', this.filterStateIdle)
     document.getElementById('btnAll').addEventListener('touchstart', this.filterStateAll)
     document.getElementById('btnUnknown').addEventListener('touchstart', this.filterStateUnknown)
-    serverBus.$on('deviceSelectedOnMap', this.deviceSelectedOnMap)
-    serverBus.$on('showRoutesChanged', this.showRoutesChanged)
+    serverBus.$on(event.deviceSelectedOnMap, this.deviceSelectedOnMap)
+    serverBus.$on(event.showRoutesChanged, this.showRoutesChanged)
   },
   beforeDestroy() {
-    serverBus.$off('deviceSelectedOnMap', this.deviceSelectedOnMap)
-    serverBus.$off('showRoutesChanged', this.showRoutesChanged)
+    serverBus.$off(event.deviceSelectedOnMap, this.deviceSelectedOnMap)
+    serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
     showRoutesChanged() {
@@ -357,12 +358,10 @@ export default {
     vehicleSelected: function(device) {
       if (this.historyMode) {
         vm.$store.dispatch('transient/toggleHistoryMode')
-        Vue.$log.info('VehicleTable emit showRoutesChanged')
-        serverBus.$emit('showRoutesChanged')
+        serverBus.$emit(event.showRoutesChanged)
       } else {
         if (device) {
           this.selectedDevice = device
-          Vue.$log.debug('device', device)
           serverBus.$emit('deviceSelected', device)
         }
       }

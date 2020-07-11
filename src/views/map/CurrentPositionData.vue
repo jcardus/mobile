@@ -50,6 +50,7 @@ import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
+import * as event from '../../events/event'
 
 export default {
   name: 'CurrentPositionData',
@@ -164,13 +165,13 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on('posChanged', this.onPosChanged)
     serverBus.$on('routePlay', this.routePlay)
-    serverBus.$on('tripChanged', this.onTripChanged)
+    serverBus.$on(event.tripChanged, this.onTripChanged)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
     window.removeEventListener('resize', this.resizeDiv)
     serverBus.$off('posChanged', this.onPosChanged)
-    serverBus.$off('tripChanged', this.onTripChanged)
+    serverBus.$off(event.tripChanged, this.onTripChanged)
     this.removeLayers()
     lnglat.hideLayers(this.showRoutes)
     animation.hideRouteLayer(!this.showRoutes)

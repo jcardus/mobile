@@ -1,5 +1,6 @@
 import { serverBus, vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
+import * as event from '../../events/event'
 import Vue from 'vue'
 
 const state = {
@@ -30,8 +31,8 @@ const mutations = {
   },
   TOGGLE_HISTORYMODE: (state) => {
     state.historyMode = !state.historyMode
-    serverBus.$emit('showRoutesChanged')
-    setTimeout(() => serverBus.$emit('mapShown'), 500)
+    serverBus.$emit(event.showRoutesChanged)
+    setTimeout(() => serverBus.$emit(event.mapShow), 500)
   }
 }
 
