@@ -10,7 +10,8 @@ const state = {
   viewSpeedAlerts: true,
   maxSpeedType: 'vehicle',
   speedThreshold: '0',
-  showLabels: false
+  showLabels: false,
+  vehicles3d: false
 }
 
 const mutations = {

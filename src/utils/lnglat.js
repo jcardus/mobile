@@ -9,7 +9,7 @@ import { vm } from '../main'
 import styles from '../styles/element-variables.scss'
 import * as consts from './consts'
 import store from '../store'
-// import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
+import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
 import { layers as _layers } from './consts'
 
 let markersOnScreen = {}
@@ -29,11 +29,12 @@ const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-str
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
-export function showHideLayers() {
-  const zoom = vm.$static.map.getPitch()
-  Vue.$log.debug(zoom)
-  hideLayer(layers.vehicles3d, zoom === 0)
-  hideLayer(layers.vehicles, zoom > 0)
+export function showHideLayersOnPitch() {
+  if (store.getters.vehicles3dEnabled) {
+    const on3d = vm.$static.map.getPitch() > 0
+    hideLayer(layers.vehicles3d, !on3d)
+    hideLayer(layers.vehicles, on3d)
+  }
 }
 
 export const popUps = []
@@ -334,7 +335,9 @@ export function addVehiclesLayer(layer, source) {
 }
 
 export function addLayers(map) {
-  // map.addLayer(vehicles3d)
+  if (store.getters.vehicles3dEnabled) {
+    map.addLayer(vehicles3d)
+  }
   if (!map.getSource(source)) {
     map.addSource(source, {
       type: 'geojson',
@@ -419,7 +422,7 @@ export function addLayers(map) {
   if (!map.getLayer('geofences')) {
     fetchGeofences(map)
   }
-  showHideLayers()
+  showHideLayersOnPitch()
 }
 
 export function contains(lngLatBounds, position, padding = 0) {
