@@ -434,7 +434,7 @@ export default {
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
-        lnglat.showHideLayers()
+        // lnglat.showHideLayers()
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
