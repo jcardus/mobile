@@ -95,6 +95,7 @@
 <script>
 import { serverBus, vm } from '../../main'
 import { mapGetters } from 'vuex'
+import * as event from '../../events/event'
 
 export default {
   name: 'TripTable',
@@ -127,7 +128,7 @@ export default {
     },
     tripSelected: function(trip) {
       this.currentTrip = trip
-      serverBus.$emit('tripChanged', this.trips.indexOf(trip))
+      serverBus.$emit(event.tripChanged, this.trips.indexOf(trip))
     },
     formatDate(date) {
       return this.$moment(date, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD')

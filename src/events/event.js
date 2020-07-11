@@ -1,0 +1,6 @@
+
+export const deviceSelectedOnMap = 'deviceSelectedOnMap'
+export const showRoutesChanged = 'showRoutesChanged'
+export const tripChanged = 'tripChanged'
+
+export const mapShow = 'mapShown'

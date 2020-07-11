@@ -5,10 +5,10 @@
 <script>
 import { Chart } from 'chart.js'
 // eslint-disable-next-line no-unused-vars
-import { annotationPlugin } from 'chartjs-plugin-annotation' // this unused import must be here
 import Vue from 'vue'
 import { serverBus, sharedData } from '../../main'
 import * as lnglat from '../../utils/lnglat'
+import * as event from '../../events/event'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -34,10 +34,10 @@ export default {
     }
   },
   created() {
-    serverBus.$on('tripChanged', this.onTripChanged)
+    serverBus.$on(event.tripChanged, this.onTripChanged)
   },
   beforeDestroy() {
-    serverBus.$off('tripChanged', this.onTripChanged)
+    serverBus.$off(event.tripChanged, this.onTripChanged)
   },
   mounted() {
     Vue.$log.debug('SpeedChart created')
