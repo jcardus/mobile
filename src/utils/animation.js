@@ -158,7 +158,7 @@ export function animateMatched(route, feature) {
     }
     if (counter < feature.route.length + 1) {
       counter = counter + 1
-      if (vm.$store.state.map.isPlaying) {
+      if (vm.$store.state.transient.isPlaying) {
         if (!vm.$static.map.isMoving()) {
           requestAnimationFrame(_animate)
         } else {
