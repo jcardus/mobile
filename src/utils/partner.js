@@ -28,7 +28,7 @@ export function getTitle() {
   if (hostname === 'web.fleetrack.cl') { return 'Fleetrack' }
   if (hostname === 'www.fleetrackchile.com') { return 'Fleetrack' }
   if (hostname === 'map.able-on.mobi') { return 'able-on' }
-  if (hostname === 'www.autotracker.cl') { return 'Auto Tracker ' }
+  if (hostname === 'www.autotracker.cl') { return 'Auto Tracker' }
   return 'Pinme'
 }
 
