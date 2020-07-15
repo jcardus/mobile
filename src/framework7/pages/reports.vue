@@ -38,6 +38,7 @@
         :placeholder="$t('report.select_period')"
         type="datepicker"
         readonly
+        :calendar-params="{ dateFormat: 'dd MM yyyy', rangePicker: true }"
         @calendar:change="calendarChange"
       ></f7-list-input>
       <f7-block>
