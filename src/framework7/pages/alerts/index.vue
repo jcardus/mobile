@@ -26,7 +26,7 @@
         :link="'/alertDetail/' + index"
         :title="item.title"
         :after="item.timestamp | moment('calendar')"
-        :subtitle="item.type"
+        :subtitle="item.description"
       />
     </f7-list>
   </f7-page>
