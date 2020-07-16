@@ -2,6 +2,7 @@ import { serverBus, vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
 import * as event from '../../events/event'
 import Vue from 'vue'
+import * as alertType from '../../alerts/alertType'
 
 const state = {
   dataLoaded: false,
@@ -23,7 +24,6 @@ const mutations = {
     state.isPlaying = value
   },
   SET_EVENTS(state, events) {
-    Vue.$log.debug(events)
     state.events = events
   },
   SET_DATA_LOADED(state) {
@@ -67,22 +67,25 @@ const actions = {
       return ''
     }
     function getNotificationImage(type) {
-      if (type === 'ignitionOn' || type === 'ignitionOff') {
+      if (type === alertType.ignitionOn || type === alertType.ignitionOff) {
         return 'fas fa-key'
       }
-      if (type === 'geofenceEnter' || type === 'geofenceExit') {
+      if (type === alertType.geofenceEnter || type === alertType.geofenceExit) {
         return 'fas fa-draw-polygon'
       }
-      if (type === 'deviceOverspeed') {
+      if (type === alertType.deviceOverspeed) {
         return 'fas fa-shipping-fast'
+      }
+      if (type === alertType.alarmSOS) {
+        return 'fas fa-exclamation-circle'
       }
       return ''
     }
     function getNotificationColor(type) {
-      if (type === 'ignitionOn' || type === 'geofenceEnter') {
+      if (type === alertType.ignitionOn || type === alertType.geofenceEnter) {
         return 'green'
       }
-      if (type === 'ignitionOff' || type === 'geofenceExit') {
+      if (type === alertType.ignitionOff || type === alertType.geofenceExit || type === alertType.alarmSOS) {
         return 'red'
       }
       return 'black'
@@ -99,15 +102,21 @@ const actions = {
       data.sort(function(a, b) {
         return Date.parse(b.serverTime) - Date.parse(a.serverTime)
       })
-      commit('SET_EVENTS', data.map(a => {
+      const filteredData = data.filter(a => {
+        const currentAlertType = a.type === 'alarm' ? a.attributes.alarm : a.type
+        return alertType.alertTypes.includes(currentAlertType)
+      })
+      commit('SET_EVENTS', filteredData.map(a => {
+        const alarmType = a.type === 'alarm' ? a.attributes.alarm : a.type
         return {
           positionId: a.positionId,
           timestamp: a.serverTime,
           title: rootGetters.devices.find(d => d.id === a.deviceId).name,
           content: getNotificationContent(a),
-          type: vm.$t('settings.alert_' + a.type),
-          image: getNotificationImage(a.type),
-          color: getNotificationColor(a.type)
+          type: alarmType,
+          description: vm.$t('settings.alert_' + alarmType),
+          image: getNotificationImage(alarmType),
+          color: getNotificationColor(alarmType)
         }
       }))
     }).catch((e) => Vue.$log.error(e))

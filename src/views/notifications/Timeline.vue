@@ -13,7 +13,7 @@
             :placeholder="$t('alerts.title')"
             value=""
           >
-            <el-option v-for="item in alerts" :key="item.notification.id" :label="$t('settings.alert_'+item.notification.type)" :value="item.notification.id" />
+            <el-option v-for="item in alerts" :key="item.notification.id" :label="$t('settings.alert_'+getAlertType(item))" :value="item.notification.id" />
           </el-select>
         </el-col>
         <el-col :span="2">
@@ -47,8 +47,8 @@
       </el-row>
       <el-timeline style="margin-top: 20px">
         <el-timeline-item v-for="(item,index) of sortedItems" :key="index" :icon="item.image" :color="item.color" size="large" placement="bottom">
-          <div style="margin-right: 5px; margin-bottom: 5px; font-weight: bold">{{ item.type }}</div>
-          <div style="margin-bottom: 5px; font-size: 13px">{{ item.timestamp }}</div>
+          <div style="margin-right: 5px; margin-bottom: 5px; font-weight: bold">{{ item.description }}</div>
+          <div style="margin-bottom: 5px; font-size: 13px">{{ item.timestamp | moment("YYYY-MM-DD, hh:mm:ss") }}</div>
           <div style="margin-right: 5px">{{ item.title }}<span></span>{{ item.content }}</div>
         </el-timeline-item>
       </el-timeline>
@@ -59,14 +59,7 @@
 <script>
 import { vm } from '../../main'
 import { mapGetters } from 'vuex'
-
-const alertTypes = [
-  'geofenceExit',
-  'geofenceEnter',
-  'deviceOverspeed',
-  'ignitionOn',
-  'ignitionOff'
-]
+import * as alertType from '../../alerts/alertType'
 
 export default {
   data() {
@@ -121,9 +114,8 @@ export default {
     ...mapGetters(['events', 'alerts', 'devices']),
     geofences: function() { return vm.$store.state.user.geofences },
     sortedItems: function() {
-      return this.events.filter(e => {
-        alertTypes.includes(e.type)
-      }).slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      return this.events.filter(e => alertType.alertTypes.includes(e.type))
+        .slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     }
   },
   mounted() {
@@ -155,6 +147,13 @@ export default {
           end: this.dateRange[1],
           types: this.alerts.filter(a => this.selectedAlertsType.find(e => e === a.notification.id))
         })
+      }
+    },
+    getAlertType(item) {
+      if (item.notification.type === 'alarm') {
+        return item.notification.attributes.alarms
+      } else {
+        return item.notification.type
       }
     }
   }

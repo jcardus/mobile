@@ -6,6 +6,7 @@
           <div class="modal">
             <h2 v-if="isNewAlert">{{ $t('settings.alert_add') }}</h2>
             <h2 v-else>{{ $t('settings.alert_edit') }}</h2>
+            <h4 v-if="showWarnigMessage" style="color: orange"><i class="fas fa-exclamation-triangle"></i> {{ $t('settings.alert_warning_type') }}</h4>
             <el-form>
               <el-form-item :label="$t('settings.alert_form_type')">
                 <el-select v-if="isNewAlert" v-model="selectedType" value="" :placeholder="$t('settings.alert_form_type_placeholder')">
@@ -232,7 +233,7 @@
       <el-table-column
         :label="$t('settings.alerts_type')"
         :formatter="alertTypeRenderer"
-        prop="notification.type"
+        prop="notification"
       >
       </el-table-column>
       <el-table-column
@@ -299,6 +300,7 @@
 import { vm } from '../../../main'
 import { traccar } from '../../../api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
+import * as alertType from '../../../alerts/alertType'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -319,11 +321,20 @@ export default {
       selectedPOIs: [],
       selectedLineGeofences: [],
       alertTypes: [
-        { value: 'geofenceExit', text: this.$t('settings.alert_geofenceExit') },
-        { value: 'geofenceEnter', text: this.$t('settings.alert_geofenceEnter') },
-        { value: 'deviceOverspeed', text: this.$t('settings.alert_deviceOverspeed') },
-        { value: 'ignitionOn', text: this.$t('settings.alert_ignitionOn') },
-        { value: 'ignitionOff', text: this.$t('settings.alert_ignitionOff') }
+        { value: alertType.geofenceExit, text: this.$t('settings.alert_geofenceExit') },
+        { value: alertType.geofenceEnter, text: this.$t('settings.alert_geofenceEnter') },
+        { value: alertType.deviceOverspeed, text: this.$t('settings.alert_deviceOverspeed') },
+        { value: alertType.ignitionOn, text: this.$t('settings.alert_ignitionOn') },
+        { value: alertType.ignitionOff, text: this.$t('settings.alert_ignitionOff') },
+        { value: alertType.alarmSOS, text: this.$t('settings.alert_sos') },
+        { value: alertType.alarmPowerCut, text: this.$t('settings.alert_powerCut') },
+        { value: alertType.alarmTow, text: this.$t('settings.alert_tow') },
+        { value: alertType.alarmGPSAntennaCut, text: this.$t('settings.alert_gpsAntennaCut') },
+        { value: alertType.alarmHighRpm, text: this.$t('settings.alert_highRpm') },
+        { value: alertType.alarmHardAcceleration, text: this.$t('settings.alert_hardAcceleration') },
+        { value: alertType.alarmHardBraking, text: this.$t('settings.alert_hardBraking') },
+        { value: alertType.alarmHardCornering, text: this.$t('settings.alert_hardCornering') },
+        { value: alertType.alarmShock, text: this.$t('settings.alert_shock') }
       ]
     }
   },
@@ -341,6 +352,9 @@ export default {
     },
     lineGeofences: function() {
       return this.geofences.filter(g => g.area.startsWith('LINESTRING'))
+    },
+    showWarnigMessage: function() {
+      return alertType.unitAlarmTypes.includes(this.selectedType)
     }
   },
   mounted() {
@@ -350,13 +364,16 @@ export default {
   },
   methods: {
     isDeviceOverspeed: function(row) {
-      return row.notification.type === 'deviceOverspeed'
+      return row.notification.type === alertType.deviceOverspeed
     },
     isInorOutGeofence: function(row) {
-      return row.notification.type === 'geofenceExit' || row.notification.type === 'geofenceEnter'
+      return row.notification.type === alertType.geofenceExit || row.notification.type === alertType.geofenceEnter
     },
-    alertTypeRenderer(row, column, cellValue) {
-      return this.$t('settings.alert_' + cellValue)
+    alertTypeRenderer(row, column, notification) {
+      if (notification.type === 'alarm') {
+        return this.$t('settings.alert_' + notification.attributes.alarms)
+      }
+      return this.$t('settings.alert_' + notification.type)
     },
     alertSpeedRenderer(row, column, cellValue) {
       if (cellValue) {
@@ -478,11 +495,20 @@ export default {
     },
     handleSubmitAlertForm() {
       if (this.isNewAlert) {
-        const newAlert = {
-          type: this.selectedType,
-          always: this.allVehicles.length === 1,
-          notificators: this.notificatorsGroup.toString()
+        const newAlert = {}
+        if (alertType.unitAlarmTypes.includes(this.selectedType)) {
+          newAlert.type = 'alarm'
+          newAlert.attributes = {
+            alarms: this.selectedType
+          }
+          newAlert.always = this.allVehicles.length === 1
+          newAlert.notificators = this.notificatorsGroup.toString()
+        } else {
+          newAlert.type = this.selectedType
+          newAlert.always = this.allVehicles.length === 1
+          newAlert.notificators = this.notificatorsGroup.toString()
         }
+
         traccar.newAlert(newAlert, this.alertCreated)
       } else {
         const alert = this.selectedAlert.notification
@@ -570,7 +596,7 @@ export default {
     handleEdit(row) {
       this.isNewAlert = false
       this.selectedAlert = row
-      this.selectedType = row.notification.type
+      this.selectedType = row.notification.type === 'alarm' ? row.notification.attributes.alarms : row.notification.type
       if (row.notification.always) {
         this.allVehicles.push('always')
       } else {
@@ -592,7 +618,8 @@ export default {
       }
     },
     handleDelete(row) {
-      this.$confirm(this.$t('settings.alert_delete_info') + this.$t('settings.alert_' + row.notification.type), this.$t('settings.alert_delete_title'), {
+      const selectedType = row.notification.type === 'alarm' ? row.notification.attributes.alarms : row.notification.type
+      this.$confirm(this.$t('settings.alert_delete_info') + this.$t('settings.alert_' + selectedType), this.$t('settings.alert_delete_title'), {
         confirmButtonText: this.$t('settings.alert_edit_confirm'),
         cancelButtonText: this.$t('settings.alert_edit_cancel')
       }).then(() => {
