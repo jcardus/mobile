@@ -128,7 +128,7 @@ export default {
     alert_ignitionOn: 'Motor encendido',
     alert_geofenceEnter: 'Entrada en geocerca',
     alert_geofenceExit: 'Salida de geocerca',
-    alert_deviceOverspeed: 'Traspassos de velocidad',
+    alert_deviceOverspeed: 'Excesos de velocidad',
     alert_deleted: 'Alerta ha sido apagado.',
     alert_delete_info: 'Desea apagar la alerta de ',
     alert_delete_title: 'Apagar Alerta',
@@ -278,7 +278,7 @@ export default {
     deviceStopped: 'Dispositivo parado',
     ignitionOff: 'Motor apagado',
     ignitionOn: 'Motor encendido',
-    deviceOverspeed: 'Traspassos de velocidad',
+    deviceOverspeed: 'Excesos de velocidad',
     geofenceEnter: 'Entrada en geocerca',
     geofenceExit: 'Salida de geocerca',
     newVersion: 'Una nueva versión de esta aplicación está disponible. Haga clic aquí para actualizar.'
