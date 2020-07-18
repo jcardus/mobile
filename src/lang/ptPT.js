@@ -145,7 +145,7 @@ export default {
     alert_gpsAntennaCut: 'Corte Antena GPS',
     alert_tow: 'Reboque',
     alert_highRpm: 'RPM Alta',
-    alert_hardAcceleration: 'Acelaração Brusca',
+    alert_hardAcceleration: 'Aceleração Brusca',
     alert_hardBraking: 'Travagem Brusca',
     alert_hardCornering: 'Viragem Brusca',
     alert_powerCut: 'Corte de Corrente',

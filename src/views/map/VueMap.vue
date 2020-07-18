@@ -238,6 +238,15 @@ export default {
         if (this.isMobile) { this.$f7.preloader.hide() }
         lnglat.updateMarkers()
         this.$log.info('finished loading', this.loadingCount)
+        if (this.$route.query.vehicleName) {
+          this.$log.debug(this.$route.query.vehicleName)
+          const device = this.devices.find(d => d.name === this.$route.query.vehicleName)
+          if (device) {
+            serverBus.$emit(event.deviceSelectedOnMap, device)
+            this.deviceSelected(device)
+            this.$store.dispatch('transient/toggleHistoryMode')
+          }
+        }
       } else {
         if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
           this.$f7.preloader.show()
@@ -284,7 +293,7 @@ export default {
         this.refreshMap()
       }
     },
-    deviceSelected: function(device) {
+    deviceSelected(device) {
       this.$log.debug('VueMap deviceSelected')
       this.selected = device
       if (device.id) {

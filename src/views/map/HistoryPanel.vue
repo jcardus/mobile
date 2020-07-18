@@ -191,7 +191,11 @@ export default {
             if (positions.length > 0) {
               self.initIndexArray()
               self.fillGraphData()
-              setTimeout(() => serverBus.$emit('autoSliderChange', self.maxPos), 200)
+              if (this.$route.query.date) {
+                setTimeout(() => serverBus.$emit('autoSliderChange', this.$moment(this.$route.query.date).unix()), 200)
+              } else {
+                setTimeout(() => serverBus.$emit('autoSliderChange', self.maxPos), 200)
+              }
             } else {
               Vue.$log.debug('no positions: ', sharedData.getPositions())
             }
