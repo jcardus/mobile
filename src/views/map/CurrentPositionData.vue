@@ -186,6 +186,12 @@ export default {
     vm.$data.currentDevice = this.device
     lnglat.hideLayers(this.showRoutes)
     animation.hideRouteLayer(!this.showRoutes)
+    if (this.$route.query.date) {
+      console.log(this.$route.query.date)
+      this._maxDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
+      this._minDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
+      this.datesChanged()
+    }
   },
   methods: {
     toggleChanged: function() {
