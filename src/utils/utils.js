@@ -81,14 +81,18 @@ export function reload() {
 }
 
 export function checkForUpdates() {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    if (registrations.length === 0) {
-      Vue.$log.warn('no service worker.. thats not good...')
-    }
-    for (const reg of registrations) {
-      reg.update().then(() => Vue.$log.debug('done checking for updates...'))
-    }
-  })
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      if (registrations.length === 0) {
+        Vue.$log.warn('no service worker.. thats not good...')
+      }
+      for (const reg of registrations) {
+        reg.update().then(() => Vue.$log.debug('done checking for updates...'))
+      }
+    })
+  } else {
+    Vue.$log.warn('no service worker...')
+  }
 }
 
 export function appOffline() {
