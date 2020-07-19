@@ -193,9 +193,26 @@ export default {
 </script>
 
 <style lang="scss">
+
+  @font-face {
+    font-family: 'AmazonEmberLight';
+    src: url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Lt.woff2') format('woff2'), url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Lt.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'AmazonEmber';
+    src: url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Rg.woff2') format('woff2'), url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Rg.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'AmazonEmberBold';
+    src: url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Bd.woff2') format('woff2'), url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Bd.woff') format('woff');
+  }
+
   .vehicleDetail {
     padding: 0;
     z-index:999 ;
+    font-family: AmazonEmber,serif
   }
   .marker {width:0; height:0;}
   .marker  span {
