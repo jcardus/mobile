@@ -54,21 +54,34 @@ export default {
 }
 </script>
 <style>
+  @font-face {
+    font-family: 'AmazonEmberLight';
+    src: url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Lt.woff2') format('woff2'), url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Lt.woff') format('woff');
+  }
 
+  @font-face {
+    font-family: 'AmazonEmber';
+    src: url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Rg.woff2') format('woff2'), url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Rg.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'AmazonEmberBold';
+    src: url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Bd.woff2') format('woff2'), url('https://d2alv66jwtleln.cloudfront.net/fonts/AmazonEmber_Bd.woff') format('woff');
+  }
+
+  html, body {
+    height: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: AmazonEmber, Helvetica Neue, Helvetica, Arial, sans-serif;
+  }
   a {
     text-decoration: none;
   }
   a:visited {
     color: white;
   }
-  html, body {
-    height: 100%;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-  }
-
    #snackbar {
      visibility: hidden;
      min-width: 250px;
