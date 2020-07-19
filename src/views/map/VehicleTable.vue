@@ -100,17 +100,17 @@
               <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span>
             </div>
             <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== '0'" style="padding-top: 2px">
-              <span style="font-size: 12px;"><i class="fas fa-user" style="width: 15px;padding-left: 1px;color: #055AE5"></i> {{ scope.row.driver.name }}</span>
+              <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i> {{ scope.row.driver.name }}</span>
             </div>
             <div style="line-height: normal">
               <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
               <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
-              <span style="font-size: 12px"><i class="fas fa-map-marker-alt" style="width: 13px;padding-left: 2px;color: #055AE5"></i> {{ getPOIName(scope.row.poi) }}</span>
+              <span style="font-size: 12px"><i class="fas fa-map-marker-alt poiIcon"></i> {{ getPOIName(scope.row.poi) }}</span>
             </div>
             <div v-else style="line-height: normal">
-              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home" style="width: 15px; color: #055AE5"></i> {{ scope.row.position && scope.row.position.address }}</span>
+              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home addressIcon"></i> {{ scope.row.position && scope.row.position.address }}</span>
             </div>
             <div style="padding-top: 6px;float:left">
               <span v-if="scope.row.lastUpdate">{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
@@ -412,7 +412,23 @@ export default {
   }
 
 </style>
-<style>
+<style lang="scss">
+  @import '../../styles/element-variables.scss';
+
+  .poiIcon {
+    width: 13px;
+    padding-left: 2px;
+    color: $--color-primary
+  }
+  .addressIcon {
+    width: 15px;
+    color: $--color-primary
+  }
+  .driverIcon {
+    width: 15px;
+    padding-left: 1px;
+    color: $--color-primary
+  }
   /* this must be here */
   .el-table__expanded-cell {
     padding: 5px 5px !important;

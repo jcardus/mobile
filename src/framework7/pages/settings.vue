@@ -1,7 +1,7 @@
 <template>
   <f7-page name="settings">
     <f7-navbar :title="$t('route.settings')"></f7-navbar>
-    <f7-block style="width: 400px; margin-left: auto; margin-right: auto; margin-top: 100px">
+    <f7-block style="width: 340px; margin-left: auto; margin-right: auto; margin-top: 100px">
       <f7-row no-gap>
         <f7-col style="padding:1px">
           <div class="settingButton">
@@ -170,8 +170,8 @@ export default {
     vertical-align: middle;
     background-color: rgba($--color-primary, 0.1);
     display: table-cell;
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
   .settingIcon {
     text-align: center;
