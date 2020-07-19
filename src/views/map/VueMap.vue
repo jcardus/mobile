@@ -238,7 +238,7 @@ export default {
         if (this.isMobile) { this.$f7.preloader.hide() }
         lnglat.updateMarkers()
         this.$log.info('finished loading', this.loadingCount)
-        if (!this.isMobile() && this.$route.query.vehicleName) {
+        if (!this.isMobile && this.$route.query.vehicleName) {
           this.$log.debug(this.$route.query.vehicleName)
           const device = this.devices.find(d => d.name === this.$route.query.vehicleName)
           if (device) {
