@@ -175,10 +175,12 @@ export default {
   }
   .settingIcon {
     text-align: center;
-    padding-bottom: 5px
+    padding-bottom: 5px;
+    color: $--color-primary;
   }
   .settingText {
     text-align: center;
-    font-size:10px
+    font-size:12px;
+    color: $--color-primary;
   }
 </style>
