@@ -97,7 +97,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,8</Font>
+              <Font>AmazonEmber,8</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>7a6ef3d6a7fb4d188cdcdebe9d164faa</Guid>
               <Margins>0,0,0,0</Margins>
@@ -115,7 +115,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.8,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,8</Font>
+              <Font>AmazonEmber,8</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e11dd94f9ef344da9efc99ca3e92aa25</Guid>
               <HorAlignment>Right</HorAlignment>
@@ -143,7 +143,7 @@
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0,11.8,1.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,28,Bold</Font>
+              <Font>AmazonEmber,28,Bold</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text37</Name>
               <Page isRef="7" />
@@ -177,7 +177,7 @@
                   <CanGrow>True</CanGrow>
                   <ClientRectangle>12.2,0,6.8,0.8</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <Font>Open Sans,12</Font>
+                  <Font>AmazonEmber,12</Font>
                   <Guid>29f57fd2b4ce43149382da38a184e1bb</Guid>
                   <HorAlignment>Right</HorAlignment>
                   <Margins>0,0,5,0</Margins>
@@ -195,7 +195,7 @@
                   <CanGrow>True</CanGrow>
                   <ClientRectangle>0,0,12,0.8</ClientRectangle>
                   <Conditions isList="true" count="0" />
-                  <Font>Open Sans,12</Font>
+                  <Font>AmazonEmber,12</Font>
                   <Guid>f3e39a8e03ab4a579e3681103650ebee</Guid>
                   <Margins>0,0,5,0</Margins>
                   <Name>Text28</Name>
@@ -230,7 +230,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0.2,0,3.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,8,Bold</Font>
+              <Font>AmazonEmber,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>3b776bbe1c50467e819edde83034a1ac</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -248,7 +248,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>4.2,0,10.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,8,Bold</Font>
+              <Font>AmazonEmber,8,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e3abeab592a9446aa7e41ce1e1416154</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -279,7 +279,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>4.2,0,10.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,10</Font>
+              <Font>AmazonEmber,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>f07fa20ff58d46c4809a7c759ebd3a9f</Guid>
               <Margins>0,0,0,0</Margins>
@@ -298,7 +298,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0.2,0,3.4,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,10</Font>
+              <Font>AmazonEmber,10</Font>
               <GrowToHeight>True</GrowToHeight>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
@@ -381,7 +381,7 @@ namespace Reports
     <Style1 Ref="23" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>[200:226:253]</Brush>
       <Conditions isList="true" count="0" />
-      <Font>Open Sans,8</Font>
+      <Font>AmazonEmber,8</Font>
       <Name>Style1</Name>
       <NegativeTextBrush>Red</NegativeTextBrush>
       <TextBrush>Black</TextBrush>
@@ -389,7 +389,7 @@ namespace Reports
     <Style2 Ref="24" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>Transparent</Brush>
       <Conditions isList="true" count="0" />
-      <Font>Open Sans,8</Font>
+      <Font>AmazonEmber,8</Font>
       <Name>Style2</Name>
       <NegativeTextBrush>Red</NegativeTextBrush>
       <TextBrush>Black</TextBrush>

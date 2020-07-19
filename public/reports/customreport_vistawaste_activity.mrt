@@ -167,7 +167,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,8</Font>
+              <Font>AmazonEmber,8</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>7a6ef3d6a7fb4d188cdcdebe9d164faa</Guid>
               <Margins>0,0,0,0</Margins>
@@ -185,7 +185,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>25.2,0,2.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,8</Font>
+              <Font>AmazonEmber,8</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e11dd94f9ef344da9efc99ca3e92aa25</Guid>
               <HorAlignment>Right</HorAlignment>
@@ -213,7 +213,7 @@
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0.2,20.8,1.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,28,Bold</Font>
+              <Font>AmazonEmber,28,Bold</Font>
               <Margins>0,0,0,0</Margins>
               <Name>Text37</Name>
               <Page isRef="9" />
@@ -242,7 +242,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>20.8,1.4,6.8,0.8</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,12</Font>
+              <Font>AmazonEmber,12</Font>
               <Guid>e3eb9249998248c8adcbccc30e891219</Guid>
               <HorAlignment>Right</HorAlignment>
               <Margins>0,0,5,0</Margins>
@@ -271,7 +271,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>3b776bbe1c50467e819edde83034a1ac</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -289,7 +289,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>4,0,4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e3abeab592a9446aa7e41ce1e1416154</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -307,7 +307,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>8,0,1.8,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>1612d024736b494195cef526e34e9677</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -325,7 +325,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>9.8,0,1.4,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>dff6429a64be4f7cbdd5197df70b84a1</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -343,7 +343,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>11.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>393feb71fc5d4c02a7ab1200df898fb7</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -361,7 +361,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>12.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>1bf6204c32d14bbab3dbeeb0888ec30d</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -379,7 +379,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>13.2,0,2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>34b5b96562fd4bdd92de001a960cd85e</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -397,7 +397,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>15.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>a0f29ff65fad4f90b62d4f70d0923d6d</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -415,7 +415,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>495b5a82970a46b7a7210667ec37b0d0</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -433,7 +433,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>18.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>712dc7e131724a80b53ebb773b54c2bd</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -451,7 +451,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>19.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>77b9f6c29d4e479caec0ce21dd2fcc25</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -469,7 +469,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>20.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>54e92c6109ec41c2971288159579d56c</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -487,7 +487,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>21.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>0ab1a519eb0a4069b8b6354f402bca2b</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -505,7 +505,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>22.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>159f816bb48c4e219cbe2ecc4d0caaaa</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -523,7 +523,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>23.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>b1c6dcacd63d49609e08187ebae5899e</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -541,7 +541,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>24.2,0,1.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>26acd92306424caebacd703486f93da8</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -559,7 +559,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>25.4,0,1.2,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>5c26ea7f68e941e1a7a3154492ef51c5</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -577,7 +577,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>26.6,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>763c72fff9494a47b070d2c3c565c070</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -595,7 +595,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>17.2,0,1,0.6</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e4d15923ee5b468fa6d8f96c31acc335</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -626,7 +626,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>4,0,4,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>f07fa20ff58d46c4809a7c759ebd3a9f</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -646,7 +646,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>0,0,4,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <HorAlignment>Center</HorAlignment>
               <Margins>0,0,0,0</Margins>
@@ -665,7 +665,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>8,0,1.8,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>10e690b55fae48a3980eccc5ebb102a6</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -685,7 +685,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>9.8,0,1.4,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>bdd16ba0b94e4867a019ae306f80b881</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -705,7 +705,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>11.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>a4e1c549042e4166bbc9f55bd4cfdbea</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -725,7 +725,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>12.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>c0982ba0ba8a479cb2ebbd9c556db9b3</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -745,7 +745,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>13.2,0,2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>41d11364f64046a8912c4084fffa5278</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -765,7 +765,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>15.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>79d93441ba324df6b98fa649705f4815</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -785,7 +785,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>79a7b9a9bfa54a41808d2de8cbb87b60</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -805,7 +805,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>18.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>fa4cb479ce184581a86ba1b692a4c990</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -825,7 +825,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>19.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>95c8d732285e4ae98a6d3ec0157973ba</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -845,7 +845,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>20.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>3b6d7527863840e0827039633a8a1880</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -865,7 +865,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>21.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>f31d83ed52764a59b38422a7efc517de</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -885,7 +885,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>22.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>afa57b74ecb84b94ae17167cadea0bb4</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -905,7 +905,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>23.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>2c73653eebdc42ab8e668f90c9d4f14a</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -925,7 +925,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>24.2,0,1.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>61dac910765641e8936e5a810f35f382</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -945,7 +945,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>25.4,0,1.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>692f47bdc0fc461682f48ee07ad36a70</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -965,7 +965,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>26.6,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>17bad3fae1dc4cb9b116c1ab5d61196b</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -985,7 +985,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>17.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7</Font>
+              <Font>AmazonEmber,7</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>f5f2e7e232b54985b21a68c8d66b2ac0</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1021,7 +1021,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>18.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>c6b2be5a61c241398ed609d58c99df4d</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1041,7 +1041,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>19.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>dd0f6a4b78ed4ab9b1d3ed437d6a95bb</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1061,7 +1061,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>20.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>32f4e2a6fbaf4bdf8af6ba8eb63cdc22</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1081,7 +1081,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>21.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>b85c7f9d275b437bab4a249a22136499</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1101,7 +1101,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>22.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>4b1da097d7834ebb98dd3a63ea4227c0</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1121,7 +1121,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>23.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>80c96a4521974cc28dd150bfca5fcac8</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1141,7 +1141,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>24.2,0,1.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>a107cce10fec45688a002a0c089c537a</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1161,7 +1161,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>25.4,0,1.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e4f5bd5e8faf4bb59f766b7bf79a298a</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1181,7 +1181,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>26.6,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>28429c3d281e4fb09f76817eab192ab1</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1201,7 +1201,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>fe5b54153dac4a8c8d0dc3560ecb9ccf</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1221,7 +1221,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>17.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>6ba99b152f464a18a062d2739a33f49a</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1258,7 +1258,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>18.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>fafe78cd67e1434e8ae4f0c87b106c3b</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1278,7 +1278,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>19.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>a7c9a9db091f4c09b92d75a5de125d06</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1298,7 +1298,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>20.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>09c717aa2f684b008d675ec1489a8028</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1318,7 +1318,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>21.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>e4c569597b134f6199b84780f92dcea3</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1338,7 +1338,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>22.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>8a0906629b1f46ab9f62bb4d75249b02</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1358,7 +1358,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>23.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>cf21d23d6ae24459bafa213f844021d8</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1378,7 +1378,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>24.2,0,1.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>2cbbc38c6a3c455993df866289f79229</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1398,7 +1398,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>25.4,0,1.2,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>a191300ad55a40e1a3210f27082eb2b6</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1418,7 +1418,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>26.6,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>ad4f8bc2c59f4ab58b7e47a6467be6f4</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1438,7 +1438,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>16.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>ca14a2e2ae4a429981d6832d2614bb01</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1458,7 +1458,7 @@
               <CanGrow>True</CanGrow>
               <ClientRectangle>17.2,0,1,0.4</ClientRectangle>
               <Conditions isList="true" count="0" />
-              <Font>Open Sans,7,Bold</Font>
+              <Font>AmazonEmber,7,Bold</Font>
               <GrowToHeight>True</GrowToHeight>
               <Guid>17582be07c7946ef9b3944e44016c587</Guid>
               <HorAlignment>Center</HorAlignment>
@@ -1541,7 +1541,7 @@ namespace Reports
     <Style1 Ref="81" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>[200:226:253]</Brush>
       <Conditions isList="true" count="0" />
-      <Font>Open Sans,8</Font>
+      <Font>AmazonEmber,8</Font>
       <Name>Style1</Name>
       <NegativeTextBrush>Red</NegativeTextBrush>
       <TextBrush>Black</TextBrush>
@@ -1549,7 +1549,7 @@ namespace Reports
     <Style2 Ref="82" type="Stimulsoft.Report.StiStyle" isKey="true">
       <Brush>Transparent</Brush>
       <Conditions isList="true" count="0" />
-      <Font>Open Sans,8</Font>
+      <Font>AmazonEmber,8</Font>
       <Name>Style2</Name>
       <NegativeTextBrush>Red</NegativeTextBrush>
       <TextBrush>Black</TextBrush>
