@@ -192,7 +192,7 @@ export default {
               self.initIndexArray()
               self.fillGraphData()
               if (this.$route.query.date) {
-                setTimeout(() => serverBus.$emit('autoSliderChange', this.$moment(this.$route.query.date).unix()), 200)
+                setTimeout(() => serverBus.$emit('autoSliderChange', this.$moment.utc(this.$route.query.date).unix()), 200)
               } else {
                 setTimeout(() => serverBus.$emit('autoSliderChange', self.maxPos), 200)
               }
