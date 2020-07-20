@@ -274,6 +274,6 @@ export default {
     line-height: normal;
   }
   .mapboxgl-popup-content {
-    min-width: 250px;
+    min-width: 260px;
   }
 </style>

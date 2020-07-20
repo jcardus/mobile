@@ -264,7 +264,6 @@ export default {
             color: $--color-info;
             height: 40px;
             font-size: 15px;
-            font-family: "Open Sans", serif;
 
             &:-webkit-autofill {
               box-shadow: 0 0 0 1000px $--background-color-base inset !important;
@@ -285,7 +284,6 @@ export default {
           height: 25px;
           color: $--color-info;
           font-size: 13px;
-          font-family: "Open Sans", serif;
         }
 
         .show-pwd {
@@ -301,7 +299,6 @@ export default {
         .el-button {
           width: 50%;
           alignment: right;
-          font-family: "Open Sans", serif;
         }
       }
     }
