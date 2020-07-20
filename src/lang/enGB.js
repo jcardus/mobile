@@ -110,6 +110,7 @@ export default {
     user_password_lengh: 'The password can not be less than 6 digits'
   },
   settings: {
+    icons3d: '3D icons',
     showLabels: 'Show vehicles name',
     search: 'Search...',
     empty_list: 'Nothing found',

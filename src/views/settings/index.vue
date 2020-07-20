@@ -48,6 +48,14 @@
           >
           </el-switch>
         </div>
+        <div style="margin-top: 20px">
+          <el-switch
+            v-model="icons3d"
+            :active-text="$t('settings.icons3d')"
+            inactive-text=""
+          >
+          </el-switch>
+        </div>
         <h3>{{ $t('settings.route_history') }}</h3>
         <div>
           <el-switch
@@ -92,6 +100,7 @@ import Geofences from './geofence/Geofences'
 import Vehicles from './vehicles/Vehicles'
 import Groups from './groups/Groups'
 import * as lnglat from '../../utils/lnglat'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Settings',
@@ -103,6 +112,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['vehicles3dEnabled']),
     showLabels: {
       get() { return this.$store.state.settings.showLabels },
       set(value) {
@@ -130,6 +140,15 @@ export default {
       set(value) {
         this.$store.dispatch('settings/changeSetting', {
           key: 'viewSpeedAlerts',
+          value: value
+        })
+      }
+    },
+    icons3d: {
+      get() { return this.vehicles3dEnabled },
+      set(value) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'vehicles3d',
           value: value
         })
       }
