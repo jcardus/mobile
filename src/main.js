@@ -105,7 +105,9 @@ const moment = require('moment')
 require('moment/locale/pt')
 require('moment/locale/es')
 require('moment/locale/en-gb')// 'fr'
-moment.locale(getLanguage().slice(2))
+const lang = getLanguage().slice(0, 2)
+Vue.$log.debug('setting moment locale to', lang)
+moment.locale(lang)
 Vue.use(require('vue-moment'), { moment })
 
 Object.keys(filters).forEach(key => {

@@ -99,6 +99,7 @@ export default {
     user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos'
   },
   settings: {
+    icons3d: 'Íconos 3D',
     showLabels: 'Mostrar nombre del vehículo',
     search: 'Procurar...',
     empty_list: 'Nada Encontrado',
