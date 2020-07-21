@@ -176,7 +176,6 @@ export default {
     box-shadow: 0 7px 40px 2px rgba(148, 149, 150, 0.1);
     background: white;
     border-radius: 5px !important;
-    font-family:  Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
   }
   .sc-chat-window.closed {
     opacity: 0;

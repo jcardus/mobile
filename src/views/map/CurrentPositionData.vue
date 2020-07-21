@@ -953,7 +953,6 @@ export default {
   /* A few custom styles for date inputs */
   input[type="date"] {
     color: #5a5e66;
-    // font-family: "Helvetica", arial, sans-serif;
     font-size: 19px;
     border-width:1px;
     padding:0;
