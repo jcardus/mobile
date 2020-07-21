@@ -49,5 +49,8 @@ export function hasTolls() {
 }
 
 export function getQuicksightHostName() {
+  if (hostname === 'mac.pinme.io') {
+    return 'quicksight.pinme.io'
+  }
   return 'quicksight.' + hostname
 }
