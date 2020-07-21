@@ -9,7 +9,7 @@
     >
       <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
     </f7-fab>
-    <div :style="'height: calc(100% - ' + height + 'px)'">
+    <div :style="`height: calc(100${vh} - ${height}px) `">
       <VueMap></VueMap>
       <f7-row v-if="historyMode" style="padding-left: 50px; padding-right: 35px; height: 20px"><f7-col>
         <f7-range
@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['minPos', 'maxPos', 'historyMode', 'isPlaying', 'name']),
+    ...mapGetters(['minPos', 'maxPos', 'historyMode', 'isPlaying', 'name', 'portrait']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -69,6 +69,9 @@ export default {
     },
     height() {
       return this.historyMode ? 70 : 0
+    },
+    vh() {
+      return this.portrait ? '%' : 'vh'
     }
   },
   watch: {
