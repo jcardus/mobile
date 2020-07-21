@@ -118,7 +118,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['unreadItems', 'user']),
+    ...mapGetters(['unreadItems', 'user', 'portrait']),
     googleLogin() {
       return getGoogleLogin()
     },
@@ -145,12 +145,14 @@ export default {
     serverBus.$off('event', this.showNotifications)
     serverBus.$off('updateAvailable', this.updateAvailable)
     serverBus.$off('message', this.message)
+    window.removeEventListener('orientationchange', this.orientationChange)
   },
   created() {
     Vue.$log.info('AppMobile', this.offline)
     serverBus.$on('event', this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('message', this.message)
+    window.addEventListener('orientationchange', this.orientationChange)
   },
   mounted() {
     try {
@@ -180,6 +182,16 @@ export default {
     }
   },
   methods: {
+    orientationChange() {
+      this.$store.dispatch('transient/setPortrait', window.orientation === 0).then(() => {
+        this.$log.debug(this.portrait)
+        if (this.portrait) {
+          this.$f7.toolbar.show('.toolbar')
+        } else {
+          this.$f7.toolbar.hide('.toolbar')
+        }
+      })
+    },
     googleSignIn() {
       this.$f7.preloader.show()
     },

@@ -1,6 +1,8 @@
 <template>
   <f7-page name="dashboard">
-    <Dashboard v-if="showDashboard"></Dashboard>
+    <div style="height: 100vh">
+      <Dashboard v-if="showDashboard"></Dashboard>
+    </div>
   </f7-page>
 </template>
 <script>
