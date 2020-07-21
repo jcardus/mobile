@@ -7,7 +7,7 @@ import { Chart } from 'chart.js'
 // eslint-disable-next-line no-unused-vars
 import { annotationPlugin } from 'chartjs-plugin-annotation' // this unused import must be here
 import Vue from 'vue'
-import { serverBus, sharedData, vm } from '../../main'
+import { serverBus, sharedData } from '../../main'
 import * as lnglat from '../../utils/lnglat'
 import * as event from '../../events/event'
 import { mapGetters } from 'vuex'
