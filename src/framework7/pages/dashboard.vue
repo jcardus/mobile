@@ -1,12 +1,16 @@
 <template>
   <f7-page name="dashboard">
-    <f7-navbar :title="$t('route.dashboard')"></f7-navbar>
-    <Dashboard v-if="showDashboard"></Dashboard>
+    <div :style="style">
+      <Dashboard v-if="showDashboard"></Dashboard>
+    </div>
   </f7-page>
 </template>
 <script>
 import Dashboard from '../../views/dashboard/Dashboard'
 import { serverBus } from '../../main'
+import { mapGetters } from 'vuex'
+import { dashboardLoaded } from '../../events'
+
 export default {
   name: 'DashboardMobile',
   components: { Dashboard },
@@ -15,9 +19,25 @@ export default {
       showDashboard: false
     }
   },
+  computed: {
+    ...mapGetters(['portrait']),
+    style() {
+      if (this.$device.iphone && this.$device.webView && this.portrait) {
+        return 'height: calc(100vh - 50px);padding-top: 50px'
+      }
+      return 'height: 100vh'
+    }
+  },
   created() {
     this.$log.debug('DashboardMobile')
-    serverBus.$on('dashboardActive', () => { this.showDashboard = true })
+    serverBus.$on('dashboardActive', () => {
+      if (!this.showDashboard) {
+        this.$f7.preloader.show()
+      }
+      this.showDashboard = true
+      this.$log.debug('dashboardActive')
+    })
+    serverBus.$on(dashboardLoaded, () => this.$f7.preloader.hide())
   }
 }
 </script>

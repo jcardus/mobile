@@ -9,7 +9,7 @@
               <div class="form-item-block">
                 <div class="form-item-row">
                   <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-left" :label="$t('settings.geofence_form_icon')">
-                    <img style="vertical-align:middle" :src="'img/icons/pois/'+geofenceIcon+'-blue.svg'">
+                    <img :src="'img/icons/pois/'+geofenceIcon+'-blue.svg'" alt="" style="vertical-align:middle">
                   </el-form-item>
                   <el-form-item class="form-item-block-right" :label="$t('settings.group_form_name')">
                     <el-input v-model="geofenceName" />
@@ -33,7 +33,7 @@
                             style="border-style: none"
                             @click="handleChangeIcon(type)"
                           >
-                            <img :src="getImageSrc(type)"></el-button>
+                            <img :src="getImageSrc(type)" alt=""></el-button>
                         </el-tooltip>
                       </el-col>
                     </el-row>
@@ -67,7 +67,7 @@
       <el-table-column label="" width="60">
         <template slot-scope="scope">
           <i v-if="!(getType(scope.row)==='poi')" :style="'color: '+(scope.row.attributes.color ? scope.row.attributes.color : '#3232b4')" :class="geofenceImageType(scope.row)"></i>
-          <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.svg'" rel="preload">
+          <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.svg'" alt="" rel="preload">
         </template>
       </el-table-column>
       <el-table-column
@@ -265,7 +265,6 @@ export default {
     border-radius: 10px;
     box-shadow: 0 2px 8px 3px;
     transition: all 0.2s ease-in;
-    font-family: Helvetica, Arial, sans-serif;
   }
   .fadeIn-enter .modal,
   .overlay {

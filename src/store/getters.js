@@ -26,7 +26,8 @@ const getters = {
   showPOIs: state => state.map.showPOIs,
   show3dBuildings: state => state.map.show3dBuildings,
   tableCollapsed: state => state.map.tableCollapsed,
-  vehicles3dEnabled: state => state.settings.vehicles3d
+  vehicles3dEnabled: state => state.settings.vehicles3d,
+  portrait: state => state.transient.portrait
 }
 
 export default getters

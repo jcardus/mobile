@@ -95,7 +95,7 @@
 <script>
 import { serverBus, vm } from '../../main'
 import { mapGetters } from 'vuex'
-import * as event from '../../events/event'
+import * as event from '../../events'
 
 export default {
   name: 'TripTable',
@@ -175,7 +175,7 @@ export default {
   }
   .colTripData{
     padding: 2px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     justify-content: start;
   }
 </style>

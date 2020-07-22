@@ -9,7 +9,7 @@ import { annotationPlugin } from 'chartjs-plugin-annotation' // this unused impo
 import Vue from 'vue'
 import { serverBus, sharedData } from '../../main'
 import * as lnglat from '../../utils/lnglat'
-import * as event from '../../events/event'
+import * as event from '../../events'
 import { mapGetters } from 'vuex'
 
 export default {

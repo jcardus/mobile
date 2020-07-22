@@ -13,6 +13,7 @@ import { isMobile } from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
 import { serverBus } from '../../main'
 import { mapGetters } from 'vuex'
+import * as event from '../../events'
 
 export default {
   name: 'Dashboard',
@@ -99,6 +100,7 @@ export default {
       this.$log.info('onDashboardLoad')
       this.stopLoading()
       this.dashboardLoaded = true
+      serverBus.$emit(event.dashboardLoaded)
     },
     onError(e) {
       this.$log.error('onError, ', e)

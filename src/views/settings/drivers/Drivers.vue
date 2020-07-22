@@ -315,7 +315,6 @@ export default {
     border-radius: 10px;
     box-shadow: 0 2px 8px 3px;
     transition: all 0.2s ease-in;
-    font-family: Helvetica, Arial, sans-serif;
   }
   .fadeIn-enter .modal,
   .overlay {
