@@ -141,7 +141,7 @@ import TripTable from './TripTable'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 import * as utils from '../../utils/utils'
-import * as event from '../../events/event'
+import * as event from '../../events'
 
 export default {
   name: 'VehicleTable',

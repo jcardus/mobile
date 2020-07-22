@@ -50,7 +50,7 @@ import * as animation from '../../utils/animation'
 import { traccar } from '../../api/traccar-api'
 import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
-import * as event from '../../events/event'
+import * as event from '../../events'
 
 export default {
   name: 'CurrentPositionData',

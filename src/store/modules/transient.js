@@ -1,6 +1,6 @@
 import { serverBus, vm } from '../../main'
 import { traccar } from '../../api/traccar-api'
-import * as event from '../../events/event'
+import * as event from '../../events'
 import Vue from 'vue'
 import * as alertType from '../../alerts/alertType'
 

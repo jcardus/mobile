@@ -43,7 +43,7 @@ import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
-import * as event from '../../events/event'
+import * as event from '../../events'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {

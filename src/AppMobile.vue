@@ -22,7 +22,7 @@
         tab
         tab-active
         url="/map"
-        @tab:show="emitEvent('mapActive')"
+        @tab:show="emitEvent('mapShown')"
       ></f7-view>
       <f7-view id="view-reports" name="reports" tab url="/reports" @tab:show="emitEvent('reportsActive')"></f7-view>
       <f7-view id="view-dashboard" name="dashboard" tab url="/dashboard" @tab:show="emitEvent('dashboardActive')"></f7-view>
@@ -215,6 +215,7 @@ export default {
         })
     },
     emitEvent(event) {
+      this.$log.debug(event)
       serverBus.$emit(event)
     },
     message(message) {
