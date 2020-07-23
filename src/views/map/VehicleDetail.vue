@@ -2,6 +2,12 @@
   <div class="vehicleDetail">
     <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
+      <div style="float: right">
+        <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
+          <div slot="content">{{ device.position.latitude }}<br />{{ device.position.longitude }}</div>
+          <i class="fas fa-globe" @click="copy()"></i>
+
+        </el-tooltip></div>
       <div class="title">
         {{ device.name }}
       </div>
@@ -123,6 +129,9 @@ export default {
     }
   },
   methods: {
+    copy(s) {
+      navigator.clipboard.writeText(this.device.position.latitude + ',' + this.device.position.longitude)
+    },
     clickDriver() {
       this.popupOpened = true
     },
