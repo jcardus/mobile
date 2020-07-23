@@ -14,7 +14,6 @@ module.exports = {
   maxMarkersForAnimation: 250,
   showVehicleList: true,
   showSlider: true,
-  truck3d: false,
   experiment: true,
   debugRoutes: false,
   mapBoxRouteMatch: false,

@@ -111,7 +111,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'drivers', 'showLabels', 'devices', 'isPlaying']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'drivers', 'showLabels', 'devices', 'isPlaying', 'vehicles3dEnabled']),
     userLoggedIn() {
       return this.name !== ''
     },
