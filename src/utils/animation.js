@@ -6,7 +6,8 @@ import settings from '../settings'
 import Vue from 'vue'
 import * as angles from 'angles'
 import * as consts from './consts'
-
+import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
+import store from '../store'
 const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
@@ -15,20 +16,24 @@ const routePlayLayer = 'routePlayLayer'
 angles.SCALE = 360
 
 export function hideRouteLayer(hide) {
-  lnglat.hideLayer(routePlayLayer, hide)
+  lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
 }
 export function refreshFeature() {
-  const data = {
-    type: 'FeatureCollection', features: [vm.$static.currentFeature]
-  }
-  if (!vm.$static.map.getLayer(routePlayLayer)) {
-    vm.$static.map.addSource(routePlayLayer, {
-      type: 'geojson',
-      data: data
-    })
-    lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
+  if (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled) {
+    vehicles3d.updateCoords(vm.$static.currentFeature)
   } else {
-    vm.$static.map.getSource(routePlayLayer).setData(data)
+    const data = {
+      type: 'FeatureCollection', features: [vm.$static.currentFeature]
+    }
+    if (!vm.$static.map.getLayer(routePlayLayer)) {
+      vm.$static.map.addSource(routePlayLayer, {
+        type: 'geojson',
+        data: data
+      })
+      lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
+    } else {
+      vm.$static.map.getSource(routePlayLayer).setData(data)
+    }
   }
 }
 export function removeAddRouteLayer() {

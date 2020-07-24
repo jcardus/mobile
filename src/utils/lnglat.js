@@ -445,9 +445,6 @@ export function hideLayer(layer, hide) {
   } else { Vue.$log.debug('didnt find layer ', layer) }
 }
 export function hideLayers(hide) {
-  if (!isMobile()) {
-    hideLayer(layers.buildings3d, hide)
-  }
   hideLayer(layers.vehicles, hide)
   if (store.state.settings.showLabels) {
     hideLayer(layers.labels + 'labels', hide)

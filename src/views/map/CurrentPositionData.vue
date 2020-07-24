@@ -194,10 +194,10 @@ export default {
     }
   },
   methods: {
-    toggleChanged: function() {
+    toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
     },
-    onPositions: function(positions) {
+    onPositions(positions) {
       Vue.$log.debug('positions before filter ', positions)
       positions = utils.filterPositions(positions)
       Vue.$log.debug('positions after filter ', positions)
