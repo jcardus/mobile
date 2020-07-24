@@ -12,7 +12,6 @@ const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
 const routePlayLayer = 'routePlayLayer'
-
 angles.SCALE = 360
 
 export function hideRouteLayer(hide) {
@@ -21,6 +20,7 @@ export function hideRouteLayer(hide) {
 export function refreshFeature() {
   if (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled) {
     vehicles3d.updateCoords(vm.$static.currentFeature)
+    vm.$static.map.repaint = true
   } else {
     const data = {
       type: 'FeatureCollection', features: [vm.$static.currentFeature]
