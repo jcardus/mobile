@@ -15,12 +15,11 @@ export const vehicles3d = {
   objects: {},
   queue: {},
   tb: new Threebox({ defaultLights: true }),
-  initObject: function(f) {
+  initObject(f) {
     Vue.$log.debug(f)
     const { coordinates } = f.geometry
     const model = this.models[f.properties.category].duplicate()
     model.setRotation(360 - f.properties.course)
-    Vue.$log.debug('adding on', coordinates)
     this.tb.add(model.setCoords(coordinates))
     this.objects[f.properties.deviceId] = model
     switch (f.properties.category) {
@@ -98,7 +97,6 @@ export const vehicles3d = {
           if (!model.getObjectByName('MediumTruck01_0').material.color.equals(new THREE.Color(color))) {
             model.getObjectByName('MediumTruck01_0').material.color = new THREE.Color(color)
           }
-          model.scale.set()
           break
         case 'default':
           model.traverse(function(child) {
