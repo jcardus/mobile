@@ -22,10 +22,12 @@ export default {
   computed: {
     ...mapGetters(['portrait']),
     style() {
-      if (this.$device.iphone && this.$device.webView && this.portrait) {
-        return 'height: calc(100vh - 50px);padding-top: 50px'
+      if (!this.portrait) {
+        return 'height: 100vh'
+      } else if (this.$device.iphone && this.$device.webView) {
+        return 'height: calc(100% - 50px);padding-top: 50px'
       }
-      return 'height: 100vh'
+      return 'height: 100%'
     }
   },
   created() {

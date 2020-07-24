@@ -111,7 +111,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'drivers', 'showLabels', 'devices', 'isPlaying']),
+    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'drivers', 'showLabels', 'devices', 'isPlaying', 'vehicles3dEnabled']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -444,7 +444,7 @@ export default {
         const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
-        // lnglat.showHideLayers()
+        lnglat.showHideLayersOnPitch()
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
