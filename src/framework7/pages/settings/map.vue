@@ -13,6 +13,12 @@
         {{ $t('settings.route_match') }}<f7-toggle :checked="matchRoutes" @change="saveMatchRoutes($event.target.checked)"></f7-toggle>
       </f7-list-item>
       <f7-list-item>
+        {{ $t('settings.icons3d') }}<f7-toggle
+          :checked="icons3d"
+          @change="changeSettings('vehicles3d', $event.target.checked)"
+        ></f7-toggle>
+      </f7-list-item>
+      <f7-list-item>
         {{ $t('settings.view_speed_alerts') }}<f7-toggle :checked="speedAlerts" @change="saveSpeedAlerts($event.target.checked)"></f7-toggle>
       </f7-list-item>
       <!-- Additional "radio" prop to enable radio list item -->
@@ -41,6 +47,7 @@ export default {
     return {
       showLabels: false,
       matchRoutes: false,
+      icons3d: this.$store.getters.vehicles3dEnabled,
       speedAlerts: false,
       useRoadLimit: 'road',
       speedThreshold: 120
