@@ -227,6 +227,7 @@ export default {
         serverBus.$emit('message', this.$t('route.nodata'))
       }
       Vue.$log.debug(this.trips)
+      lnglat.removeAdd3dLayer()
       this.loadingRoutes = false
     },
     onPositionsError() {
