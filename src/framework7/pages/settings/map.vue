@@ -43,22 +43,15 @@
 <script>
 export default {
   name: 'MapSettings',
-  data: function() {
+  data() {
     return {
-      showLabels: false,
-      matchRoutes: false,
+      showLabels: this.$store.state.settings.showLabels,
+      matchRoutes: this.$store.state.settings.matchRoutes,
       icons3d: this.$store.getters.vehicles3dEnabled,
-      speedAlerts: false,
-      useRoadLimit: 'road',
-      speedThreshold: 120
+      speedAlerts: this.$store.state.settings.viewSpeedAlerts,
+      useRoadLimit: this.$store.state.settings.maxSpeedType,
+      speedThreshold: this.$store.state.settings.speedThreshold
     }
-  },
-  mounted() {
-    this.showLabels = this.$store.state.settings.showLabels
-    this.matchRoutes = this.$store.state.settings.matchRoutes
-    this.speedAlerts = this.$store.state.settings.viewSpeedAlerts
-    this.useRoadLimit = this.$store.state.settings.maxSpeedType
-    this.speedThreshold = this.$store.state.settings.speedThreshold
   },
   methods: {
     saveSpeedAlerts(value) {
