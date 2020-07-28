@@ -57,8 +57,8 @@ export default {
             'username': this.user.email,
             'password': '',
             'command': 'immobilization',
-            'deviceid': self.selectedDevice.id,
-            'value': !self.immobilizationActive
+            'deviceid': this.selectedDevice.id,
+            'value': !this.selectedDevice.immobilized
           },
           self.commandImmobilizeOk,
           self.commandImmobilizeNok)
@@ -67,7 +67,7 @@ export default {
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
       const commandPending = this.deviceCommandPending
-      Vue.$log.info('Immobilization', this.immobilizationActive, 'for device', this.selectedDevice.id, 'pending', commandPending)
+      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', commandPending)
       if (commandPending) {
         const msg = this.$t('vehicleTable.immo_pending')
         if (this.isMobile) {
@@ -77,7 +77,7 @@ export default {
         }
         return
       }
-      let message = this.immobilizationActive ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
+      let message = this.selectedDevice.immobilized ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
       message += (' ' + selectedDevice.name + '?')
       if (this.isMobile) {
         this.$f7.dialog.confirm(message, this.sendImmobilizationCommand)
