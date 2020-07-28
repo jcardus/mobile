@@ -103,8 +103,9 @@
               <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i> {{ scope.row.driver.name }}</span>
             </div>
             <div style="line-height: normal">
-              <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
-              <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
+              <span v-if="scope.row.position" style="font-size: 12px; padding-right: 15px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
+              <span v-if="scope.row.position && scope.row.position.fuelLevel" style="font-size: 12px"><i :class="fuelLevelStatus(scope.row.position.fuelLevel)" style="width: 15px"></i> {{ scope.row.position.fuelLevel }}%</span>
+              <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt speedIcon"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
               <span style="font-size: 12px"><i class="fas fa-map-marker-alt poiIcon"></i> {{ getPOIName(scope.row.poi) }}</span>
@@ -306,6 +307,10 @@ export default {
     serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
+    fuelLevelStatus(fuelLevel) {
+      const fuelLevelStatus = fuelLevel > 40 ? 'fuelLevelNormalIcon' : (fuelLevel > 20 ? 'fuelLevelLowIcon' : 'fuelLevelVeryLowIcon')
+      return 'fas fa-gas-pump ' + fuelLevelStatus
+    },
     showRoutesChanged() {
       this.$log.debug('ShowRoutesChanged')
       if (!this.historyMode) {
@@ -428,6 +433,18 @@ export default {
     width: 15px;
     padding-left: 1px;
     color: $--color-primary
+  }
+  .fuelLevelNormalIcon {
+    color: $--color-success
+  }
+  .fuelLevelLowIcon {
+    color: $--color-warning
+  }
+  .fuelLevelVeryLowIcon {
+    color: $--color-danger
+  }
+  .speedIcon {
+    color: $--color-success
   }
   /* this must be here */
   .el-table__expanded-cell {
