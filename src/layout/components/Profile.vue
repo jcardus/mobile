@@ -62,7 +62,7 @@ export default {
   .el-avatar {
     color:$--color-text-regular;
     background-color:$--color-info-lighter;
-    opacity: 0.9;
+    opacity: 0.95;
     font-weight: bold;
   }
   a:link {
