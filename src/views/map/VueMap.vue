@@ -655,7 +655,7 @@ export default {
         requestAnimationFrame(this._animate)
       }
     },
-    updateMarkers: function() {
+    updateMarkers() {
       if (!this.positions) {
         this.$log.warn('updateMarkers canceled, positions is undefined')
         return
@@ -722,6 +722,7 @@ export default {
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
       device.driver = this.findDriver(position, device)
+      device.immobilized = position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
       device.position = position
       feature.properties = { ...feature.properties, ...position }
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
