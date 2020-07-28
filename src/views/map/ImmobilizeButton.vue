@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     deviceCommandPending() {
-      return this.selectedDevice.id && this.selectedDevice.commandPending
+      return this.selectedDevice && this.selectedDevice.commandPending
     },
     user() {
       return vm.$store.state.user
@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     sendImmobilizationCommand() {
-      const self = this
       this.selectedDevice.commandPending = true
       vm.$store.dispatch('user/updateDevice', this.selectedDevice).then(() => {
         traccar.api_helper(
@@ -60,8 +59,8 @@ export default {
             'deviceid': this.selectedDevice.id,
             'value': !this.selectedDevice.immobilized
           },
-          self.commandImmobilizeOk,
-          self.commandImmobilizeNok)
+          this.commandImmobilizeOk,
+          this.commandImmobilizeNok)
       })
     },
     commandImmobilize() {
@@ -91,8 +90,8 @@ export default {
     },
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result:', response.data)
+      this.selectedDevice.commandPending = false
       if (response.data.success) {
-        this.selectedDevice.commandPending = false
         vm.$store.dispatch('user/updateDevice', this.selectedDevice)
         if (this.isMobile) {
           this.$f7.notification.create({
