@@ -62,6 +62,7 @@ import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
 import { clientId } from '../../utils/mapillary'
 import { mapGetters } from 'vuex'
+import { isMobile } from '../../utils/lnglat'
 
 export default {
   name: 'VehicleDetail',
@@ -131,6 +132,9 @@ export default {
   methods: {
     copy(s) {
       navigator.clipboard.writeText(this.device.position.latitude + ',' + this.device.position.longitude)
+      if (isMobile()) {
+        serverBus.$emit('message', this.device.position.latitude + ',' + this.device.position.longitude)
+      }
     },
     clickDriver() {
       this.popupOpened = true
