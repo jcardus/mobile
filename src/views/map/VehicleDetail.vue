@@ -6,7 +6,6 @@
         <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
           <div slot="content">{{ device.position.latitude }}<br />{{ device.position.longitude }}</div>
           <i class="fas fa-globe" @click="copy()"></i>
-
         </el-tooltip></div>
       <div class="title">
         {{ device.name }}
@@ -130,7 +129,7 @@ export default {
     }
   },
   methods: {
-    copy(s) {
+    copy() {
       navigator.clipboard.writeText(this.device.position.latitude + ',' + this.device.position.longitude)
       if (isMobile()) {
         serverBus.$emit('message', this.device.position.latitude + ',' + this.device.position.longitude)

@@ -1,7 +1,7 @@
 <template>
   <el-tooltip
     v-if="selectedDevice && selectedDevice.attributes && selectedDevice.attributes.has_immobilization"
-    :content="immobilizationActive ? $t('vehicleTable.de_immobilize') : $t('vehicleTable.immobilize')"
+    :content="selectedDevice.immobilized ? $t('vehicleTable.de_immobilize') : $t('vehicleTable.immobilize')"
     placement="bottom"
   >
     <img
@@ -41,11 +41,7 @@ export default {
       return lnglat.isMobile()
     },
     getIcon() {
-      return this.immobilizationActive ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
-    },
-    immobilizationActive() {
-      const position = this.selectedDevice.position
-      return position && (position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn)
+      return this.$store.getters.devices.find(d => d.id === this.selectedDevice.id).immobilized ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
     }
   },
   beforeDestroy() {
