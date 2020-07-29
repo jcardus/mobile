@@ -47,7 +47,7 @@ export default {
   methods: {
     sendImmobilizationCommand() {
       this.selectedDevice.commandPending = true
-      this.$store.dispatch('users/updateDevice', this.selectedDevice)
+      this.$store.dispatch('user/updateDevice', this.selectedDevice)
       vm.$store.dispatch('user/updateDevice', this.selectedDevice).then(() => {
         traccar.api_helper(
           {
@@ -87,8 +87,6 @@ export default {
     },
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result:', response.data)
-      this.selectedDevice.commandPending = false
-      vm.$store.dispatch('user/updateDevice', this.selectedDevice)
       if (response.data.success) {
         if (this.isMobile) {
           this.$f7.notification.create({
@@ -101,16 +99,20 @@ export default {
         } else {
           this.$message('OK: ' + response.data.details)
         }
-      } else if (this.isMobile) {
-        this.$f7.notification.create({
-          icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
-          titleRightText: '',
-          text: 'NOK: ' + response.data.details,
-          closeTimeout: 5000,
-          subtitle: partner.getTitle()
-        }).open()
       } else {
-        this.$message('NOK: ' + response.data.details)
+        this.selectedDevice.commandPending = false
+        vm.$store.dispatch('user/updateDevice', this.selectedDevice)
+        if (this.isMobile) {
+          this.$f7.notification.create({
+            icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
+            titleRightText: '',
+            text: 'NOK: ' + response.data.details,
+            closeTimeout: 5000,
+            subtitle: partner.getTitle()
+          }).open()
+        } else {
+          this.$message('NOK: ' + response.data.details)
+        }
       }
     },
     commandImmobilizeNok: function(reason) {
