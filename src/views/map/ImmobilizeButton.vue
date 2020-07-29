@@ -9,7 +9,7 @@
       style="float:right"
       :src="getIcon"
       width="38"
-      :style="deviceCommandPending?'opacity: 0.2':''"
+      :style="selectedDevice.commandPending ? 'opacity: 0.2' : ''"
       @click="commandImmobilize"
     >
   </el-tooltip>
@@ -31,9 +31,6 @@ export default {
     }
   },
   computed: {
-    deviceCommandPending() {
-      return this.selectedDevice.id && this.selectedDevice.commandPending
-    },
     user() {
       return vm.$store.state.user
     },
@@ -49,8 +46,8 @@ export default {
   },
   methods: {
     sendImmobilizationCommand() {
-      const self = this
       this.selectedDevice.commandPending = true
+      this.$store.dispatch('user/updateDevice', this.selectedDevice)
       vm.$store.dispatch('user/updateDevice', this.selectedDevice).then(() => {
         traccar.api_helper(
           {
@@ -60,15 +57,14 @@ export default {
             'deviceid': this.selectedDevice.id,
             'value': !this.selectedDevice.immobilized
           },
-          self.commandImmobilizeOk,
-          self.commandImmobilizeNok)
+          this.commandImmobilizeOk,
+          this.commandImmobilizeNok)
       })
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
-      const commandPending = this.deviceCommandPending
-      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', commandPending)
-      if (commandPending) {
+      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', selectedDevice.commandPending)
+      if (selectedDevice.commandPending) {
         const msg = this.$t('vehicleTable.immo_pending')
         if (this.isMobile) {
           this.$f7.dialog.alert(msg)
@@ -92,8 +88,6 @@ export default {
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result:', response.data)
       if (response.data.success) {
-        this.selectedDevice.commandPending = false
-        vm.$store.dispatch('user/updateDevice', this.selectedDevice)
         if (this.isMobile) {
           this.$f7.notification.create({
             icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
@@ -105,20 +99,25 @@ export default {
         } else {
           this.$message('OK: ' + response.data.details)
         }
-      } else if (this.isMobile) {
-        this.$f7.notification.create({
-          icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
-          titleRightText: '',
-          text: 'NOK: ' + response.data.details,
-          closeTimeout: 5000,
-          subtitle: partner.getTitle()
-        }).open()
       } else {
-        this.$message('NOK: ' + response.data.details)
+        this.selectedDevice.commandPending = false
+        vm.$store.dispatch('user/updateDevice', this.selectedDevice)
+        if (this.isMobile) {
+          this.$f7.notification.create({
+            icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
+            titleRightText: '',
+            text: 'NOK: ' + response.data.details,
+            closeTimeout: 5000,
+            subtitle: partner.getTitle()
+          }).open()
+        } else {
+          this.$message('NOK: ' + response.data.details)
+        }
       }
     },
     commandImmobilizeNok: function(reason) {
-      vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: false })
+      this.selectedDevice.commandPending = false
+      vm.$store.dispatch('user/updateDevice', this.selectedDevice)
       Vue.$log.debug('Immobilization error: ', reason)
       this.$alert('Error: ' + reason)
     }

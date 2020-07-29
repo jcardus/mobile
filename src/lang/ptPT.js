@@ -60,7 +60,7 @@ export default {
     idle_vehicles: 'Ralenti',
     stopped_vehicles: 'Parado',
     disconnected_vehicles: 'Desconhecido',
-    immo_pending: 'Já existe um comando pendente para este veículo. Por favor aguardo o resultado.'
+    immo_pending: 'Já existe um comando pendente para este veículo. Por favor aguarde o resultado.'
   },
   vehicleDetail: {
     show_route: 'Rota'
