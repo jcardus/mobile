@@ -9,7 +9,7 @@
       style="float:right"
       :src="getIcon"
       width="38"
-      :style="deviceCommandPending?'opacity: 0.2':''"
+      :style="selectedDevice.commandPending ? 'opacity: 0.2' : ''"
       @click="commandImmobilize"
     >
   </el-tooltip>
@@ -31,9 +31,6 @@ export default {
     }
   },
   computed: {
-    deviceCommandPending() {
-      return this.selectedDevice && this.selectedDevice.commandPending
-    },
     user() {
       return vm.$store.state.user
     },
@@ -50,6 +47,7 @@ export default {
   methods: {
     sendImmobilizationCommand() {
       this.selectedDevice.commandPending = true
+      this.$store.dispatch('users/updateDevice', this.selectedDevice)
       vm.$store.dispatch('user/updateDevice', this.selectedDevice).then(() => {
         traccar.api_helper(
           {
@@ -65,9 +63,8 @@ export default {
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
-      const commandPending = this.deviceCommandPending
-      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', commandPending)
-      if (commandPending) {
+      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', selectedDevice.commandPending)
+      if (selectedDevice.commandPending) {
         const msg = this.$t('vehicleTable.immo_pending')
         if (this.isMobile) {
           this.$f7.dialog.alert(msg)
@@ -91,8 +88,8 @@ export default {
     commandImmobilizeOk: function(response) {
       Vue.$log.debug('Immobilization result:', response.data)
       this.selectedDevice.commandPending = false
+      vm.$store.dispatch('user/updateDevice', this.selectedDevice)
       if (response.data.success) {
-        vm.$store.dispatch('user/updateDevice', this.selectedDevice)
         if (this.isMobile) {
           this.$f7.notification.create({
             icon: '<img alt="" width="20" height="20" src="' + partner.getFavIcon() + '"/>',
@@ -117,7 +114,8 @@ export default {
       }
     },
     commandImmobilizeNok: function(reason) {
-      vm.$store.dispatch('devices/setCommandPending', { device: this.selectedDevice.id, pending: false })
+      this.selectedDevice.commandPending = false
+      vm.$store.dispatch('user/updateDevice', this.selectedDevice)
       Vue.$log.debug('Immobilization error: ', reason)
       this.$alert('Error: ' + reason)
     }
