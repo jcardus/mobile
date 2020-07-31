@@ -112,6 +112,11 @@
             @chage="doNothing(scope)"
           />
         </template>
+      </el-table-column>
+      <el-table-column align="right" label="">
+        <template slot="header">
+          <el-button :loading="downloadLoading" icon="el-icon-document" type="primary" @click="handleDownload">Excel</el-button>
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
             <el-button
@@ -145,7 +150,8 @@ export default {
       selectedGroup: null,
       selectedCategory: null,
       search: '',
-      groupsFilter: null
+      groupsFilter: null,
+      downloadLoading: false
     }
   },
   computed: {
@@ -153,7 +159,7 @@ export default {
     isMobile() {
       return lnglat.isMobile()
     },
-    devices: function() {
+    devices() {
       return vm.$store.getters.devices.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
     categories: function() {
@@ -200,6 +206,32 @@ export default {
       } else {
         return 'font-size: 14px'
       }
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('../../../utils/ExportExcel').then(excel => {
+        const tHeader = [
+          this.$t('settings.vehicle_name'),
+          this.$t('settings.vehicle_licenseplate'),
+          this.$t('settings.vehicle_group'),
+          this.$t('settings.vehicle_model'),
+          this.$t('settings.vehicle_speed_limit')
+        ]
+        const data = this.devices.map(v => [
+          v.name,
+          v.attributes.license_plate,
+          this.groups.find(g => g.id === v.groupId).name,
+          v.model,
+          v.attributes.speedLimit])
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '',
+          autoWidth: false,
+          bookType: 'xlsx'
+        })
+        this.downloadLoading = false
+      })
     },
     handleCancelVehicleForm() {
       this.isOpenVehicleForm = false
