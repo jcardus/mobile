@@ -153,10 +153,12 @@ export default {
   },
   computed: {
     filteredDevices() {
-      return this.devices.filter(data => !this.search ||
+      return this.devices.filter(
+        data => !this.search ||
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
         (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(this.search.toLowerCase())) ||
-        (data.model && data.model.toLowerCase().includes(this.search.toLowerCase())))
+        (data.model && data.model.toLowerCase().includes(this.search.toLowerCase()))
+      )
     },
     ...mapGetters(['groups']),
     isMobile() {
