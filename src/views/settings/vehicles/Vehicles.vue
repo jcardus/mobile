@@ -61,10 +61,7 @@
     </transition>
 
     <el-table
-      :data="devices.filter(data => !search
-        || data.name.toLowerCase().includes(search.toLowerCase())
-        || (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(search.toLowerCase()))
-        || (data.model && data.model.toLowerCase().includes(search.toLowerCase())))"
+      :data="filteredDevices"
       height="calc(100vh - 125px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
@@ -155,6 +152,12 @@ export default {
     }
   },
   computed: {
+    filteredDevices() {
+      return this.devices.filter(data => !this.search ||
+        data.name.toLowerCase().includes(this.search.toLowerCase()) ||
+        (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(this.search.toLowerCase())) ||
+        (data.model && data.model.toLowerCase().includes(this.search.toLowerCase())))
+    },
     ...mapGetters(['groups']),
     isMobile() {
       return lnglat.isMobile()
@@ -217,7 +220,7 @@ export default {
           this.$t('settings.vehicle_model'),
           this.$t('settings.vehicle_speed_limit')
         ]
-        const data = this.devices.map(v => [
+        const data = this.filteredDevices.map(v => [
           v.name,
           v.attributes.license_plate,
           this.groups.find(g => g.id === v.groupId) ? this.groups.find(g => g.id === v.groupId).name : '',
