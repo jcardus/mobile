@@ -267,8 +267,10 @@ export default {
             b = b['name']
             break
           case 'order_by_group':
-            a = a['groupName'] ? a['groupName'] : 'z'
-            b = b['groupName'] ? b['groupName'] : 'z'
+            a = self.$store.getters.groups.find(g => g.id === a.groupId)
+            b = self.$store.getters.groups.find(g => g.id === b.groupId)
+            a = a ? a.name : ''
+            b = b ? b.name : ''
             break
           case 'order_by_last_update':
             a = a['lastUpdate']
