@@ -167,6 +167,7 @@ export default {
           } else {
             Vue.$log.debug('no mapillary found at ', this.feature.geometry.coordinates)
             self.sequenceKey = ''
+            this.imageUrl = ''
           }
         })
         .catch(reason => {
