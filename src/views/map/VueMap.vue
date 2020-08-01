@@ -581,7 +581,7 @@ export default {
         serverBus.$emit('deviceSelectedOnMap', device)
       }
     },
-    animate: function(position, feature, timestamps) {
+    animate(position, feature, timestamps) {
       const origin = feature.geometry.coordinates
       const destination = [position.longitude, position.latitude]
       if (JSON.stringify(origin) === JSON.stringify(destination)) {
