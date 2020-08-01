@@ -45,9 +45,9 @@ export default {
     ...mapGetters(['groups', 'devices'])
   },
   methods: {
-    groupName: function(groupId) {
+    groupName(groupId) {
       if (groupId) {
-        const group = this.groups.find((g) => g.id === groupId)
+        const group = this.groups.find(g => g.id === groupId)
         return group && group.name
       } else {
         return ''
