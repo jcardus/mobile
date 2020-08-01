@@ -97,7 +97,7 @@
           <template slot-scope="scope">
             <div style="padding: 3px 0 0;">
               <span style="font-weight: bold">{{ scope.row.name }} </span>
-              <span style="float: right; font-size: smaller">{{ scope.row.groupName || '' }} </span>
+              <span style="float: right; font-size: smaller">{{ scope.row.groupId | formatGroup }} </span>
             </div>
             <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== '0'" style="padding-top: 2px">
               <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i> {{ scope.row.driver.name }}</span>
@@ -143,6 +143,7 @@ import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 import * as utils from '../../utils/utils'
 import * as event from '../../events'
+import store from '../../store'
 
 export default {
   name: 'VehicleTable',
@@ -156,6 +157,10 @@ export default {
         return value
       }
       return Math.round(value)
+    },
+    formatGroup: function(value) {
+      const group = store.getters.groups.find(g => g.id === value)
+      return group && group.name
     },
     capitalize: function(value) {
       if (!value) {
@@ -192,7 +197,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'geofences', 'currentTime', 'devices', 'drivers']),
+    ...mapGetters(['historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },
@@ -353,6 +358,12 @@ export default {
         result += 'background-color: ' + this.getBgColor(row.row)
       }
       return result
+    },
+    formatGroup: function(row, column, value) {
+      if (isNaN(value)) {
+        return value
+      }
+      return Math.round(value)
     },
     formatNumber: function(row, column, value) {
       if (isNaN(value)) {
