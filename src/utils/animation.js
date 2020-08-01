@@ -20,7 +20,6 @@ export function hideRouteLayer(hide) {
 export function refreshFeature() {
   if (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled) {
     vehicles3d.updateCoords(vm.$static.currentFeature)
-    vm.$static.map.repaint = true
   } else {
     const data = {
       type: 'FeatureCollection', features: [vm.$static.currentFeature]

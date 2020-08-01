@@ -73,8 +73,6 @@ function initModel(options, model) {
       model.scale.set(0.05, 0.05, 0.05)
       break
     default:
-      r = utils.types.rotation(options, [90, 180, 0])
-      model.scale.set(0.05, 0.05, 0.05)
       break
   }
   if (model.rotation) {

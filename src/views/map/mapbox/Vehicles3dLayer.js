@@ -115,6 +115,7 @@ export const vehicles3d = {
     if (model) {
       model.setCoords(feature.geometry.coordinates)
       model.setRotation(360 - feature.properties.course)
+      vm.$static.map.repaint = true
     }
   }
 }
