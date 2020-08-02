@@ -14,7 +14,7 @@ let firstLoad = true
 export async function routerBeforeEach(next, to) {
   const hasToken = store.state.user.name !== ''
 
-  if (hasToken) {
+  if (hasToken && !window.location.pathname.includes('/googlelogin/')) {
     if (to.path === '/login') {
       Vue.$log.info('redirecting to /')
       next({ path: '/' })

@@ -15,7 +15,7 @@ export default {
   },
   created() {
     this.$log.info('GoogleLogin', this.$route)
-    if (this.$route.query.jsessionid) {
+    if (this.$route && this.$route.query && this.$route.query.jsessionid) {
       api.getCookie(this.$route.query.jsessionid)
         .then(() => {
           traccar.getSession().then((s) => {
