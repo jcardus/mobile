@@ -22,6 +22,15 @@ export default {
       }
     })
     this.getUser()
+    if (this.$route.query.jsessionid) {
+      api.getCookie(this.$route.query.jsessionid)
+        .then(() => {
+          traccar.getSession().then((s) => {
+            this.$log.info(s)
+            this.redirect()
+          })
+        })
+    }
     setTimeout(this.redirect, 30000)
   },
   methods: {
