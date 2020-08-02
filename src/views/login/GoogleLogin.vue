@@ -15,13 +15,6 @@ export default {
   },
   created() {
     this.$log.info('GoogleLogin', this.$route)
-    Hub.listen('auth', ({ payload: { event, data }}) => {
-      console.log('hub ', event, data)
-      if (event === 'signIn') {
-        this.getUser()
-      }
-    })
-    this.getUser()
     if (this.$route.query.jsessionid) {
       api.getCookie(this.$route.query.jsessionid)
         .then(() => {
@@ -30,6 +23,14 @@ export default {
             this.redirect()
           })
         })
+    } else {
+      Hub.listen('auth', ({ payload: { event, data }}) => {
+        console.log('hub ', event, data)
+        if (event === 'signIn') {
+          this.getUser()
+        }
+      })
+      this.getUser()
     }
     setTimeout(this.redirect, 30000)
   },
