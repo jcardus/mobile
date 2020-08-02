@@ -14,7 +14,7 @@ export default {
     }
   },
   created() {
-    this.$log.info('GoogleLogin')
+    this.$log.info('GoogleLogin', this.$route)
     Hub.listen('auth', ({ payload: { event, data }}) => {
       console.log('hub ', event, data)
       if (event === 'signIn') {

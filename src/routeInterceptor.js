@@ -26,8 +26,9 @@ export async function routerBeforeEach(next, to) {
       Vue.$log.info('skipping auth', to.path)
       next()
     } else if (whiteList.indexOf(window.location.pathname) !== -1) {
-      Vue.$log.info('forcing pathname', to.path, window.location.pathname)
-      next(window.location.pathname)
+      const forcePath = window.location.pathname + window.location.search
+      Vue.$log.info('forcing pathname', to.path, forcePath)
+      next(forcePath)
     } else {
       Vue.$log.info('redirecting to login', to.path)
       next(`/login?redirect=${to.path}`)
