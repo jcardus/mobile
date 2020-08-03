@@ -6,7 +6,6 @@ import Vue from 'vue'
 import { checkForUpdates } from '../../utils/utils'
 import store from '../index'
 import VueNativeSock from 'vue-native-websocket'
-import { backEndHostName } from '../../utils/consts'
 import { getServerHost } from '../../api'
 import settings from '../../settings'
 import { setLanguage } from '../../lang'
@@ -204,13 +203,8 @@ const actions = {
       })
     })
   },
-  logout({ commit, state }) {
+  logout({ commit }) {
     return new Promise((resolve) => {
-      const qsUrl = 'https://' + backEndHostName + '/Prod/quicksight?username=' + state.email + '&userid=' + state.userId + '&deleteData=true'
-      Vue.$log.warn(qsUrl)
-      fetch(qsUrl)
-        .then(() => Vue.$log.info('done logout quicksight'))
-        .catch(e => Vue.$log.error(qsUrl, e))
       logout().catch((e) => {
         Vue.$log.error(e)
       }).finally(() => {
