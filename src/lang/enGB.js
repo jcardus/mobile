@@ -48,7 +48,8 @@ export default {
     order_by_status: 'Order by State',
     order_by_vehicle: 'Order by Vehicle',
     order_by_group: 'Order by Group',
-    order_by_last_update: 'Order by Last Update'
+    order_by_last_update: 'Order by Last Update',
+    order_by_fuel_level: 'Order by Fuel Level'
   },
   vehicleTable: {
     immobilize: 'Immobilize',
