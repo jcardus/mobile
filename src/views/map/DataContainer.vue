@@ -4,7 +4,7 @@
       <i :class="tableCollapsed?'el-icon-s-unfold':'el-icon-s-fold'" :style="`color:${colors.info}`" @click="$store.dispatch('map/toggleTableCollapsed')"></i>
     </div>
     <div v-if="!tableCollapsed" class="dd-body-inner">
-      <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType()"></logo-svg>
+      <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType"></logo-svg>
       <img v-else :class="'logo ' + logoClassType" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs stretch>
