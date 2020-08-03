@@ -61,9 +61,7 @@ export default {
     },
     colors() {
       return styles
-    }
-  },
-  methods: {
+    },
     logoImage() {
       return partner.getLogo()
     },
