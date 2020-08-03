@@ -5,7 +5,7 @@
       <div style="float: right">
         <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
           <div slot="content">{{ device.position.latitude }}<br />{{ device.position.longitude }}</div>
-          <i class="fas fa-globe" @click="copy()"></i>
+          <i class="fas fa-globe coordsIcon" @click="copy()"></i>
         </el-tooltip></div>
       <div class="title">
         {{ device.name }}
@@ -167,6 +167,7 @@ export default {
           } else {
             Vue.$log.debug('no mapillary found at ', this.feature.geometry.coordinates)
             self.sequenceKey = ''
+            this.imageUrl = ''
           }
         })
         .catch(reason => {
@@ -204,7 +205,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style  lang="scss">
+  @import '../../styles/element-variables.scss';
 
   @font-face {
     font-family: 'AmazonEmberLight';
@@ -226,6 +228,11 @@ export default {
     z-index:999 ;
     font-family: AmazonEmber,serif
   }
+
+  .coordsIcon{
+    color: $--color-primary
+  }
+
   .marker {width:0; height:0;}
   .marker  span {
       display:flex;

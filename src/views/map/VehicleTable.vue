@@ -104,7 +104,18 @@
             </div>
             <div style="line-height: normal">
               <span v-if="scope.row.position" style="font-size: 12px; padding-right: 15px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
-              <span v-if="scope.row.position && scope.row.position.fuelLevel" style="font-size: 12px"><i :class="fuelLevelStatus(scope.row.position.fuelLevel)" style="width: 15px"></i> {{ scope.row.position.fuelLevel }}%</span>
+              <span v-if="scope.row.position && scope.row.position.fuelLevel" style="font-size: 12px" @click="fuelLevelClick(scope.row)">
+                <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
+                  <div slot="content">
+                    <span style="font-size: 10px">
+                      <i class="fas fa-gas-pump fuelLevelNormalIcon" style="width: 15px"></i> mais de 40%<br />
+                      <i class="fas fa-gas-pump fuelLevelLowIcon" style="width: 15px"></i> entre 20% a 40%<br />
+                      <i class="fas fa-gas-pump fuelLevelVeryLowIcon" style="width: 15px"></i> menos de 20%
+                    </span>
+                  </div>
+                  <i :class="fuelLevelStatus(scope.row.position.fuelLevel)" style="width: 15px"></i>
+                </el-tooltip>{{ currentFuelLevel(scope.row) }}
+              </span>
               <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt speedIcon"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
@@ -193,7 +204,8 @@ export default {
       sortColumns: {},
       sortKey: 'name',
       filterState: null,
-      orderedBy: 'orderByStatus'
+      orderedBy: 'orderByStatus',
+      fuelMetric: 'percentage'
     }
   },
   computed: {
@@ -276,6 +288,11 @@ export default {
             a = a['lastUpdate']
             b = b['lastUpdate']
             return (a === b ? 0 : a > b ? -1 : 1)
+          case 'order_by_fuel_level':
+            self.$log.debug(a)
+            a = a.position ? (a.position.fuelLevel ? a.position.fuelLevel : '') : ''
+            b = b.position ? (b.position.fuelLevel ? b.position.fuelLevel : '') : ''
+            return (a === b ? 0 : a > b ? -1 : 1)
         }
         return (a === b ? 0 : a > b ? 1 : -1)
       })
@@ -297,15 +314,18 @@ export default {
       }, {
         value: 'order_by_last_update',
         label: this.$t('vehicleList.order_by_last_update')
+      }, {
+        value: 'order_by_fuel_level',
+        label: this.$t('vehicleList.order_by_fuel_level')
       }]
     }
   },
   mounted() {
-    document.getElementById('btnMoving').addEventListener('touchstart', this.filterStateOn)
-    document.getElementById('btnOff').addEventListener('touchstart', this.filterStateOff)
-    document.getElementById('btnIdle').addEventListener('touchstart', this.filterStateIdle)
-    document.getElementById('btnAll').addEventListener('touchstart', this.filterStateAll)
-    document.getElementById('btnUnknown').addEventListener('touchstart', this.filterStateUnknown)
+    document.getElementById('btnMoving').addEventListener(event.touchstart, this.filterStateOn)
+    document.getElementById('btnOff').addEventListener(event.touchstart, this.filterStateOff)
+    document.getElementById('btnIdle').addEventListener(event.touchstart, this.filterStateIdle)
+    document.getElementById('btnAll').addEventListener(event.touchstart, this.filterStateAll)
+    document.getElementById('btnUnknown').addEventListener(event.touchstart, this.filterStateUnknown)
     serverBus.$on(event.deviceSelectedOnMap, this.deviceSelectedOnMap)
     serverBus.$on(event.showRoutesChanged, this.showRoutesChanged)
   },
@@ -314,9 +334,23 @@ export default {
     serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
+    fuelLevelClick(device) {
+      if (this.fuelMetric === 'percentage') {
+        this.fuelMetric = 'liters'
+      } else {
+        this.fuelMetric = 'percentage'
+      }
+    },
     fuelLevelStatus(fuelLevel) {
       const fuelLevelStatus = fuelLevel > 40 ? 'fuelLevelNormalIcon' : (fuelLevel > 20 ? 'fuelLevelLowIcon' : 'fuelLevelVeryLowIcon')
       return 'fas fa-gas-pump ' + fuelLevelStatus
+    },
+    currentFuelLevel(device) {
+      if (this.fuelMetric === 'percentage') {
+        return device.position.fuelLevel + '%'
+      } else {
+        return Math.round(device.attributes.fuel_tank_capacity * (device.position.fuelLevel / 100)) + 'L'
+      }
     },
     showRoutesChanged() {
       this.$log.debug('ShowRoutesChanged')

@@ -14,14 +14,24 @@ export default {
     }
   },
   created() {
-    this.$log.info('GoogleLogin')
-    Hub.listen('auth', ({ payload: { event, data }}) => {
-      console.log('hub ', event, data)
-      if (event === 'signIn') {
-        this.getUser()
-      }
-    })
-    this.getUser()
+    this.$log.info('GoogleLogin', this.$route)
+    if (this.$route && this.$route.query && this.$route.query.jsessionid) {
+      api.getCookie(this.$route.query.jsessionid)
+        .then(() => {
+          traccar.getSession().then((s) => {
+            this.$log.info(s)
+            this.redirect()
+          })
+        })
+    } else {
+      Hub.listen('auth', ({ payload: { event, data }}) => {
+        console.log('hub ', event, data)
+        if (event === 'signIn') {
+          this.getUser()
+        }
+      })
+      this.getUser()
+    }
     setTimeout(this.redirect, 30000)
   },
   methods: {

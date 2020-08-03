@@ -14,7 +14,7 @@ let firstLoad = true
 export async function routerBeforeEach(next, to) {
   const hasToken = store.state.user.name !== ''
 
-  if (hasToken) {
+  if (hasToken && !window.location.pathname.includes('/googlelogin/')) {
     if (to.path === '/login') {
       Vue.$log.info('redirecting to /')
       next({ path: '/' })
@@ -26,8 +26,9 @@ export async function routerBeforeEach(next, to) {
       Vue.$log.info('skipping auth', to.path)
       next()
     } else if (whiteList.indexOf(window.location.pathname) !== -1) {
-      Vue.$log.info('forcing pathname', to.path, window.location.pathname)
-      next(window.location.pathname)
+      const forcePath = window.location.pathname + window.location.search
+      Vue.$log.info('forcing pathname', to.path, forcePath)
+      next(forcePath)
     } else {
       Vue.$log.info('redirecting to login', to.path)
       next(`/login?redirect=${to.path}`)
