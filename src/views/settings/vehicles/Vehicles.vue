@@ -62,7 +62,7 @@
 
     <el-table
       :data="filteredDevices"
-      height="calc(100vh - 125px)"
+      height="calc(100vh - 150px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
@@ -125,6 +125,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      layout="total"
+      :total="filteredDevices.length"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -332,7 +337,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+  @import '../../../styles/element-variables.scss';
+
   .form-item-block {
     width: 100%;
     display: table;
@@ -379,6 +386,10 @@ export default {
     background: #00000094;
     z-index: 999;
     transition: opacity 0.2s ease;
+  }
+
+  .el-pagination__total{
+    color: $--color-primary
   }
 
   .el-table  td:last-child {

@@ -209,9 +209,10 @@ export default {
     ping() {
       if (this.userLoggedIn) {
         traccar.ping()
-          .then(() => this.store.dispatch('user/connectionOk', { state: true }))
-          .catch(() => {
-            this.$store.dispatch('user/connectionOk', { state: false })
+          .then(() => this.$store.dispatch('connectionOk', { state: true }))
+          .catch((e) => {
+            Vue.$log.warn(e)
+            this.$store.dispatch('connectionOk', { state: false })
             vm.$data.loadingMap = false
             NProgress.done()
           })

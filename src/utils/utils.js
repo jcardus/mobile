@@ -96,7 +96,7 @@ export function checkForUpdates() {
 }
 
 export function appOffline() {
-  return !vm.$store.state.socket.isConnected || !vm.$store.state.user.connectionOk
+  return !vm.$store.state.socket.isConnected || !vm.$store.state.socket.connectionOk
 }
 
 export function getDeviceColor(state) {

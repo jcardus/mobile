@@ -5,7 +5,7 @@ export default {
   },
   route: {
     map: 'Mapa',
-    dashboard: 'Central de Controlo',
+    dashboard: 'Dashboard',
     reports: 'Relatórios',
     report_trip_title: 'Relatório de viagens',
     report_location_title: 'Relatório de posições',

@@ -108,7 +108,11 @@ export default {
     user_updated: 'User information has been updated successfully.',
     user_name_required: 'Name field is required',
     user_email_required: 'Please input a valid email',
-    user_password_lengh: 'The password can not be less than 6 digits'
+    user_password_lengh: 'The password can not be less than 6 digits',
+    user_reports: 'Relatórios por email',
+    daily_reports: 'Receber diariamente',
+    weekly_reports: 'Receber semanalmente',
+    monthly_reports: 'Receber mensalmente'
   },
   settings: {
     icons3d: '3D icons',

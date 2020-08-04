@@ -58,9 +58,8 @@
       </div>
     </transition>
     <el-table
-      height="calc(100vh - 125px)"
-      :data="geofences.filter(data => !search
-        || data.name.toLowerCase().includes(search.toLowerCase()))"
+      height="calc(100vh - 150px)"
+      :data="filteredGeofences"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
@@ -103,6 +102,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      layout="total"
+      :total="filteredGeofences.length"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -141,6 +145,10 @@ export default {
     },
     markerTypes: function() {
       return lnglat.getMarkerType()
+    },
+    filteredGeofences() {
+      return this.geofences.filter(data => !this.search ||
+        data.name.toLowerCase().includes(this.search.toLowerCase()))
     }
   },
   methods: {
@@ -247,7 +255,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import '../../../styles/element-variables.scss';
+
   .formButton {
     float: right;
     margin-top: 10px;
