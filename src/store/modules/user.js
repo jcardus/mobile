@@ -11,18 +11,17 @@ import settings from '../../settings'
 import { setLanguage } from '../../lang'
 
 const state = {
-  name: '',
-  email: '',
-  phone: '',
-  avatar: '',
-  userId: 0,
-  connectionOk: true,
+  user: {
+    name: '',
+    email: '',
+    phone: '',
+    attributes: null
+  },
   alerts: [],
   devices: [],
   groups: [],
   geofences: [],
-  drivers: [],
-  attributes: null
+  drivers: []
 }
 
 const mutations = {
@@ -38,22 +37,17 @@ const mutations = {
     }
   },
   SET_USER(state, token) {
-    state.name = token.name
-    state.userId = token.id
-    state.email = token.email
-    state.phone = token.phone
-    state.avatar = getAvatar(token.name)
-    state.attributes = token.attributes
+    state.user = token
+    state.user.attributes.avatar = getAvatar(token.name)
   },
   REMOVE_USER(state) {
-    state.name = ''
-    state.userId = 0
-    state.email = ''
-    state.phone = ''
-    state.avatar = ''
-  },
-  TOGGLE_CONNECTION_OK: () => {
-    state.connectionOk = !state.connectionOk
+    state.user = {
+      name: '',
+      id: 0,
+      email: '',
+      phone: '',
+      avatar: ''
+    }
   },
   SET_ALERTS(state, alerts) {
     state.alerts = alerts
@@ -84,7 +78,7 @@ function getAvatar(name) {
 
 function initData(commit, state, dispatch) {
   return new Promise((resolve, reject) => {
-    traccar.getInitData(state.userId)
+    traccar.getInitData(state.user.id)
       .then(responses => {
         dispatch('setGeofences', responses[1].data).then(() => {
           state.groups = responses[2].data
@@ -214,12 +208,6 @@ const actions = {
         resolve()
       })
     })
-  },
-  connectionOk(context, data) {
-    if (state.connectionOk !== data.state) {
-      Vue.$log.info('toggle connection ok to', data.state)
-      context.commit('TOGGLE_CONNECTION_OK')
-    }
   },
   connect({ commit }) {
     commit('CONNECT')

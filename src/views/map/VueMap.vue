@@ -209,9 +209,9 @@ export default {
     ping() {
       if (this.userLoggedIn) {
         traccar.ping()
-          .then(() => this.store.dispatch('user/connectionOk', { state: true }))
+          .then(() => this.store.dispatch('connectionOk', { state: true }))
           .catch(() => {
-            this.$store.dispatch('user/connectionOk', { state: false })
+            this.$store.dispatch('connectionOk', { state: false })
             vm.$data.loadingMap = false
             NProgress.done()
           })

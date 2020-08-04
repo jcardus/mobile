@@ -57,7 +57,7 @@ export default {
       const self = this
       NProgress.start()
       try {
-        fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.userId)
+        fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.id)
           .then(response => response.json())
           .then(json => {
             const containerDiv = document.getElementById('quicksightContainer')

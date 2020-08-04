@@ -274,7 +274,7 @@ export default {
       })
     },
     createUniqueID() {
-      return '_driver_' + vm.$store.state.user.userId + '_' + Vue.moment.now()
+      return '_driver_' + vm.$store.getters.user.id + '_' + Vue.moment.now()
     },
     driverCreated: function(newDriver) {
       this.$message({

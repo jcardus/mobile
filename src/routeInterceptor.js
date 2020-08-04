@@ -12,7 +12,7 @@ const whiteList = ['/login', '/auth-redirect', '/googlelogin/'] // no redirect w
 let firstLoad = true
 
 export async function routerBeforeEach(next, to) {
-  const hasToken = store.state.user.name !== ''
+  const hasToken = store.getters.user.name !== ''
 
   if (hasToken && !window.location.pathname.includes('/googlelogin/')) {
     if (to.path === '/login') {

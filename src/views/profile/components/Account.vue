@@ -1,35 +1,35 @@
 <template>
   <el-card style="margin-bottom:20px;">
     <div slot="header" class="clearfix">
-      <span>{{ $t('profile.user_account') }} <span v-if="userForm.isAdmin">(Administrator)</span> </span>
+      <span>{{ $t('profile.user_account') }} <span v-if="user.attributes.isAdmin">(Administrator)</span> </span>
     </div>
-    <el-form ref="user" :model="userForm" :rules="rules" label-width="120px">
+    <el-form ref="user" :model="user" :rules="rules" label-width="120px">
       <el-form-item :label="$t('profile.user_name')" prop="name">
-        <el-input v-model="userForm.name" />
+        <el-input v-model="user.name" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_email')" prop="email">
-        <el-input v-model="userForm.email" />
+        <el-input v-model="user.email" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_password')" prop="password">
         <el-input
           ref="password"
           :key="passwordType"
-          v-model="userForm.password"
+          v-model="user.password"
           name="password"
           :type="passwordType"
           :show-password="true"
         />
       </el-form-item>
       <el-form-item :label="$t('profile.user_phone')">
-        <el-input v-model="userForm.phone" />
+        <el-input v-model="user.phone" />
       </el-form-item>
       <el-form-item :label="$t('profile.user_timezone')">
-        <el-select v-model="selectedTimezone">
+        <el-select v-model="user.attributes.timezone">
           <el-option v-for="timezone in timezones" :key="timezone.value" :value="timezone.value" :label="timezone.text" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('profile.user_language')">
-        <el-select v-model="selectedLang">
+        <el-select v-model="user.attributes.lang">
           <el-option v-for="lang in languages" :key="lang.value" :value="lang.value" :label="lang.text" />
         </el-select>
       </el-form-item>
@@ -49,16 +49,6 @@ export default {
   name: 'Account',
   data() {
     return {
-      userForm: {
-        name: this.user.name,
-        email: this.user.email,
-        password: '',
-        isAdmin: false,
-        phone: this.user.phone,
-        lang: '',
-        timezone: ''
-      },
-      selectedLang: this.user.attributes.lang,
       languages: [
         { value: 'en-GB', text: 'English (UK)' },
         { value: 'fr-FR', text: 'Française (Frace)' },
@@ -66,7 +56,6 @@ export default {
         { value: 'pt-PT', text: 'Português (PT)' },
         { value: 'pt-BR', text: 'Português (BR)' }
       ],
-      selectedTimezone: this.user.attributes.timezone,
       timezones: [
         { value: 'Europe/Lisbon', text: 'Europe/Lisbon' },
         { value: 'America/Santiago', text: 'America/Santiago' },
@@ -94,16 +83,7 @@ export default {
     submit() {
       this.$refs.user.validate(valid => {
         if (valid) {
-          const newUser = { id: this.user.userId }
-          newUser.name = this.userForm.name
-          newUser.email = this.userForm.email
-          newUser.password = this.userForm.password
-          newUser.phone = this.userForm.phone
-          newUser.attributes = {
-            timezone: this.selectedTimezone,
-            lang: this.selectedLang
-          }
-          traccar.updateUser(newUser.id, newUser, this.userUpdated)
+          traccar.updateUser(this.user.id, this.user, this.userUpdated)
         }
       })
     },

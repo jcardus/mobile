@@ -35,7 +35,8 @@ const store = new Vuex.Store({
     socket: {
       isConnected: false,
       message: '',
-      reconnectError: false
+      reconnectError: false,
+      connectionOk: true
     },
     lastUpdate: null,
     currentTime: new Date()
@@ -49,9 +50,18 @@ const store = new Vuex.Store({
     },
     setTime({ commit }) {
       commit('SET_TIME')
+    },
+    connectionOk(context, data) {
+      if (context.state.socket.connectionOk !== data.state) {
+        Vue.$log.info('toggle connection ok to', data.state)
+        context.commit('TOGGLE_CONNECTION_OK')
+      }
     }
   },
   mutations: {
+    TOGGLE_CONNECTION_OK(state) {
+      state.socket.connectionOk = !state.socket.connectionOk
+    },
     SET_TIME(state) {
       state.currentTime = new Date()
     },
