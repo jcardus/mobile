@@ -176,7 +176,7 @@
     </transition>
     <el-table
       :key="alertTableKey"
-      height="calc(100vh - 125px)"
+      height="calc(100vh - 150px)"
       :data="groups"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
@@ -245,6 +245,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      layout="total"
+      :total="groups.length"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -557,7 +562,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import '../../../styles/element-variables.scss';
+
   .formButton {
     float: right;
     margin-top: 10px;
@@ -589,6 +596,10 @@ export default {
     background: #00000094;
     z-index: 999;
     transition: opacity 0.2s ease;
+  }
+
+  .el-pagination__total{
+    color: $--color-primary
   }
 
   .el-table .tomobile td:last-child {
