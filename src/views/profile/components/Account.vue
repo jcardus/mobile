@@ -83,7 +83,21 @@ export default {
     submit() {
       this.$refs.user.validate(valid => {
         if (valid) {
-          traccar.updateUser(this.user.id, this.user, this.userUpdated)
+          traccar.updateUser(this.user.id, this.user
+          ).then(({ data }) => {
+            setLanguage(data.attributes.lang)
+            this.$message({
+              message: this.$t('profile.user_updated'),
+              type: 'success',
+              duration: 5 * 1000
+            })
+          }).catch((e) => {
+            this.$message({
+              message: e,
+              type: 'error',
+              duration: 5 * 1000
+            })
+          })
         }
       })
     },
@@ -95,14 +109,6 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.password.focus()
-      })
-    },
-    userUpdated: function(user) {
-      setLanguage(user.attributes.lang)
-      this.$message({
-        message: this.$t('profile.user_updated'),
-        type: 'success',
-        duration: 5 * 1000
       })
     }
   }

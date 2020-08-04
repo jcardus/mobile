@@ -164,13 +164,8 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  updateUser(userid, user, onFulfill) {
-    axios.put(users + '/' + userid, user,
-      { withCredentials: true })
-      .then(() => onFulfill(user))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+  updateUser(userId, user) {
+    return axios.put(users + '/' + userId, user, { withCredentials: true })
   },
   route: function(deviceId, from, to, onFulfill) {
     from = Vue.moment(from).startOf('day').toDate()
