@@ -5,7 +5,7 @@ import { TrackJS } from 'trackjs'
 import { serverBus } from '../main'
 import { VuexPersistence } from 'vuex-persist'
 
-const excludedMudations = ['TOGGLE_HISTORYMODE']
+const excludedMudations = ['TOGGLE_HISTORYMODE', 'TOGGLE_CONNECTION_OK']
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
