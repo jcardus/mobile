@@ -167,7 +167,7 @@ const actions = {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
         .finally(() => {
-          setLanguage(state.attributes.lang)
+          setLanguage(state.user.attributes.lang)
           TrackJS.addMetadata('user', state.name)
           const hostName = getServerHost()
           Vue.$log.info('opening websocket ', state)

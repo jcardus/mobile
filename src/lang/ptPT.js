@@ -108,7 +108,11 @@ export default {
     user_updated: 'Informação do utilizador foi actualizada.',
     user_name_required: 'O campo nome é obrigatório',
     user_email_required: 'Por favor indique um e-mail válido',
-    user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
+    user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos',
+    user_reports: 'Relatórios por email',
+    daily_reports: 'Receber diariamente',
+    weekly_reports: 'Receber semanalmente',
+    monthly_reports: 'Receber mensalmente'
   },
   settings: {
     icons3d: 'Ícones 3D',

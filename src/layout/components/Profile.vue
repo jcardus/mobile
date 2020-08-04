@@ -75,6 +75,7 @@ export default {
   name: 'Profile',
   data() {
     return {
+      dirty: false,
       dialogVisible: false,
       languages: [
         { value: 'en-GB', text: 'English (UK)' },
@@ -134,6 +135,7 @@ export default {
           this.loading = true
           traccar.updateUser(this.user.id, this.user
           ).then(({ data }) => {
+            this.dirty = false
             setLanguage(data.attributes.lang)
             this.$message({
               message: this.$t('profile.user_updated'),
