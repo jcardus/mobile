@@ -53,7 +53,6 @@ const store = new Vuex.Store({
     },
     connectionOk(context, data) {
       if (context.state.socket.connectionOk !== data.state) {
-        Vue.$log.info('toggle connection ok to', data.state)
         context.commit('TOGGLE_CONNECTION_OK')
       }
     }
