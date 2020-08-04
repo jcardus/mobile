@@ -13,6 +13,10 @@
                   <el-option v-for="alertType in alertTypes" :key="alertType.value" :value="alertType.value" :label="alertType.text" />
                 </el-select>
                 <span v-else class="alertTypeTitle">{{ $t('settings.alert_'+selectedType) }}</span>
+                <el-tooltip v-if="showInfoMessage" placement="bottom" effect="light">
+                  <div slot="content">{{ $t('settings.alert_'+selectedType) }}</div>
+                  <i class="fas fa-info-circle alertInfo"></i>
+                </el-tooltip>
               </el-form-item>
               <el-form-item :label="$t('settings.alert_form_vehicles')">
                 <el-checkbox-group v-model="allVehicles" @change="handleAllVehiclesSelect">
@@ -156,7 +160,7 @@
     </transition>
     <el-table
       :key="alertTableKey"
-      height="calc(100vh - 125px)"
+      height="calc(100vh - 150px)"
       :data="alerts"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
@@ -293,6 +297,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      layout="total"
+      :total="alerts.length"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -355,6 +364,9 @@ export default {
     },
     showWarnigMessage: function() {
       return alertType.unitAlarmTypes.includes(this.selectedType)
+    },
+    showInfoMessage: function() {
+      return this.selectedType != null
     }
   },
   mounted() {
@@ -654,7 +666,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+  @import '../../../styles/element-variables.scss';
+
   .alertFormButton {
     float: right;
     margin-right: 10px;
@@ -688,7 +702,10 @@ export default {
     z-index: 999;
     transition: opacity 0.2s ease;
   }
-
+  .alertInfo{
+    margin-left: 5px;
+    color: $--color-info
+  }
   .alertTypeTitle{
     font-size: 16px;
   }

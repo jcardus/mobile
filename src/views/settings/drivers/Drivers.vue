@@ -37,14 +37,10 @@
       </div>
     </transition>
     <el-table
-      height="calc(100vh - 125px)"
+      height="calc(100vh - 150px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
-      :data="drivers.filter(data => !search
-        || data.name.toLowerCase().includes(search.toLowerCase())
-        || data.uniqueId.toLowerCase().includes(search.toLowerCase())
-        || (data.attributes.email && data.attributes.email.toLowerCase().includes(search.toLowerCase()))
-        || (data.attributes.phone && data.attributes.phone.toLowerCase().includes(search.toLowerCase())))"
+      :data="filteredDrivers"
     >
       <el-table-column
         :label="$t('settings.driver_name')"
@@ -109,6 +105,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      layout="total"
+      :total="filteredDrivers.length"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -169,7 +170,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['drivers'])
+    ...mapGetters(['drivers']),
+    filteredDrivers() {
+      return this.drivers.filter(data => !this.search ||
+        data.name.toLowerCase().includes(this.search.toLowerCase()) ||
+        data.uniqueId.toLowerCase().includes(this.search.toLowerCase()) ||
+        (data.attributes.email && data.attributes.email.toLowerCase().includes(this.search.toLowerCase())) ||
+        (data.attributes.phone && data.attributes.phone.toLowerCase().includes(this.search.toLowerCase())))
+    }
   },
   methods: {
     tableRowStyle() {
@@ -298,7 +306,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import '../../../styles/element-variables.scss';
+
   .formButton {
     float: right;
     margin-right: 10px;
@@ -329,5 +339,9 @@ export default {
     background: #00000094;
     z-index: 999;
     transition: opacity 0.2s ease;
+  }
+
+  .el-pagination__total{
+    color: $--color-primary
   }
 </style>
