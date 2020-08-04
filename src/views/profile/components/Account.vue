@@ -50,15 +50,15 @@ export default {
   data() {
     return {
       userForm: {
-        name: '',
-        email: '',
+        name: this.user.name,
+        email: this.user.email,
         password: '',
         isAdmin: false,
-        phone: '',
+        phone: this.user.phone,
         lang: '',
         timezone: ''
       },
-      selectedLang: '',
+      selectedLang: this.user.attributes.lang,
       languages: [
         { value: 'en-GB', text: 'English (UK)' },
         { value: 'fr-FR', text: 'Française (Frace)' },
@@ -66,7 +66,7 @@ export default {
         { value: 'pt-PT', text: 'Português (PT)' },
         { value: 'pt-BR', text: 'Português (BR)' }
       ],
-      selectedTimezone: '',
+      selectedTimezone: this.user.attributes.timezone,
       timezones: [
         { value: 'Europe/Lisbon', text: 'Europe/Lisbon' },
         { value: 'America/Santiago', text: 'America/Santiago' },
@@ -89,13 +89,6 @@ export default {
   },
   computed: {
     ...mapGetters(['user'])
-  },
-  created() {
-    this.userForm.name = this.user.name
-    this.userForm.email = this.user.email
-    this.userForm.phone = this.user.phone
-    this.selectedLang = this.user.attributes.lang
-    this.selectedTimezone = this.user.attributes.timezone
   },
   methods: {
     submit() {
