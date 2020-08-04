@@ -253,7 +253,6 @@ export default {
 
           input {
             background: transparent;
-            border-color: $--color-success;
             border-right-width: 0;
             border-left-width: 0;
             border-top-width: 0;
