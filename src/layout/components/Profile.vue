@@ -185,7 +185,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import '../../styles/element-variables.scss';
   .el-avatar {
     color:$--color-text-regular;
@@ -204,6 +204,19 @@ export default {
       z-index: 99;
   }
   $dark_gray:#889aa4;
+
+  .el-dialog__wrapper{
+    .el-dialog {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px 3px;
+      transition: all 0.2s ease-in;
+    }
+    .el-dialog__title{
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
 
   .show-pwd {
     position: absolute;
