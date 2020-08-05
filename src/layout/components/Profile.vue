@@ -20,7 +20,7 @@
       </el-dropdown>
       <div v-if="offline">Offline...</div>
     </div>
-    <el-dialog :title="$t('profile.user_account')" :visible.sync="dialogVisible" :before-close="handleClose" @open="dirty=false">
+    <el-dialog v-if="user.id !== 0" :title="$t('profile.user_account')" :visible.sync="dialogVisible" :before-close="handleClose" @open="dirty=false">
       <el-form ref="user" :model="user" :rules="rules" label-width="auto">
         <el-form-item :label="$t('profile.user_name')" prop="name">
           <el-input v-model="user.name" @input="dirty=true" />
