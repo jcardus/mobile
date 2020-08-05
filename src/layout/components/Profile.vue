@@ -20,13 +20,13 @@
       </el-dropdown>
       <div v-if="offline">Offline...</div>
     </div>
-    <el-dialog :title="$t('profile.user_account')" :visible.sync="dialogVisible">
+    <el-dialog :title="$t('profile.user_account')" :visible.sync="dialogVisible" :before-close="handleClose" @open="dirty=false">
       <el-form ref="user" :model="user" :rules="rules" label-width="auto">
         <el-form-item :label="$t('profile.user_name')" prop="name">
-          <el-input v-model="user.name" />
+          <el-input v-model="user.name" @input="dirty=true" />
         </el-form-item>
         <el-form-item :label="$t('profile.user_email')" prop="email">
-          <el-input v-model="user.email" />
+          <el-input v-model="user.email" @input="dirty=true" />
         </el-form-item>
         <el-form-item :label="$t('profile.user_password')" prop="password">
           <el-input
@@ -36,29 +36,30 @@
             :show-password="true"
             :type="passwordType"
             name="password"
+            @input="dirty=true"
           />
         </el-form-item>
         <el-form-item :label="$t('profile.user_phone')">
-          <el-input v-model="user.phone" />
+          <el-input v-model="user.phone" @input="dirty=true" />
         </el-form-item>
         <el-form-item :label="$t('profile.user_timezone')">
-          <el-select v-model="user.attributes.timezone">
+          <el-select v-model="user.attributes.timezone" @change="dirty=true">
             <el-option v-for="timezone in timezones" :key="timezone.value" :label="timezone.text" :value="timezone.value" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('profile.user_language')">
-          <el-select v-model="user.attributes.lang">
+          <el-select v-model="user.attributes.lang" @change="dirty=true">
             <el-option v-for="lang in languages" :key="lang.value" :label="lang.text" :value="lang.value" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('profile.user_reports')">
-          <el-switch v-model="user.attributes.dailyEmails" :active-text="$t('profile.daily_reports')" style="padding-right:10px"></el-switch>
-          <el-switch v-model="user.attributes.weeklyEmails" :active-text="$t('profile.weekly_reports')" style="padding-right:10px"></el-switch>
-          <el-switch v-model="user.attributes.monthlyEmails" :active-text="$t('profile.monthly_reports')"></el-switch>
+          <el-switch v-model="user.attributes.dailyEmails" :active-text="$t('profile.daily_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
+          <el-switch v-model="user.attributes.weeklyEmails" :active-text="$t('profile.weekly_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
+          <el-switch v-model="user.attributes.monthlyEmails" :active-text="$t('profile.monthly_reports')" @change="dirty=true"></el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button :loading="loading" type="primary" @click="submit">{{ $t('profile.user_update_button') }}</el-button>
+        <el-button :loading="loading" type="primary" :disabled="!dirty" @click="submit">{{ $t('profile.user_update_button') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -118,6 +119,15 @@ export default {
     }
   },
   methods: {
+    handleClose(done) {
+      if (this.dirty) {
+        this.$confirm(this.$t('profile.continue'), this.$t('profile.unsaved_changes'))
+          .then(() => { done() })
+          .catch(() => {})
+      } else {
+        done()
+      }
+    },
     async logout() {
       await this.$store.dispatch('app/setLoading', true)
       await this.$store.dispatch('user/logout')
@@ -126,7 +136,7 @@ export default {
     },
     handleCommand(command) {
       if (command === 'profile') {
-        this.dialogVisible = true
+        this.$store.dispatch('user/getUser').finally(() => { this.dialogVisible = true })
       }
     },
     submit() {

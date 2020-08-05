@@ -181,6 +181,11 @@ const actions = {
         })
     })
   },
+  getUser({ commit }) {
+    return new Promise((resolve, reject) => {
+      traccar.getUser().then(r => resolve(commit('SET_USER', r.data))).catch(e => reject(e))
+    })
+  },
   login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
