@@ -112,7 +112,9 @@ export default {
     user_reports: 'Relatórios por email',
     daily_reports: 'Receber diariamente',
     weekly_reports: 'Receber semanalmente',
-    monthly_reports: 'Receber mensalmente'
+    monthly_reports: 'Receber mensalmente',
+    continue: 'Continuar?',
+    unsaved_changes: 'Existem alterações que não foram guardadas'
   },
   settings: {
     icons3d: '3D icons',

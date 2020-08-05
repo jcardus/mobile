@@ -39,6 +39,10 @@ const mutations = {
   SET_USER(state, token) {
     state.user = token
     state.user.attributes.avatar = getAvatar(token.name)
+    // default dailyReports to true
+    if (state.user.attributes.dailyEmails === undefined) {
+      state.user.attributes.dailyEmails = true
+    }
   },
   REMOVE_USER(state) {
     state.user = {
@@ -46,7 +50,10 @@ const mutations = {
       id: 0,
       email: '',
       phone: '',
-      avatar: ''
+      avatar: '',
+      attributes: {
+        timezone: ''
+      }
     }
   },
   SET_ALERTS(state, alerts) {
@@ -179,6 +186,11 @@ const actions = {
           })
           resolve()
         })
+    })
+  },
+  getUser({ commit }) {
+    return new Promise((resolve, reject) => {
+      traccar.getUser().then(r => resolve(commit('SET_USER', r.data))).catch(e => reject(e))
     })
   },
   login({ commit, dispatch }, userInfo) {
