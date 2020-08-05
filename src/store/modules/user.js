@@ -167,7 +167,7 @@ const actions = {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
         .finally(() => {
-          setLanguage(state.attributes.lang)
+          setLanguage(state.user.attributes.lang)
           TrackJS.addMetadata('user', state.name)
           const hostName = getServerHost()
           Vue.$log.info('opening websocket ', state)
@@ -179,6 +179,11 @@ const actions = {
           })
           resolve()
         })
+    })
+  },
+  getUser({ commit }) {
+    return new Promise((resolve, reject) => {
+      traccar.getUser().then(r => resolve(commit('SET_USER', r.data))).catch(e => reject(e))
     })
   },
   login({ commit, dispatch }, userInfo) {

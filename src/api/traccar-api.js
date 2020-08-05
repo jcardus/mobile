@@ -348,6 +348,9 @@ export const traccar = {
   ping: function() {
     return get(server)
   },
+  getUser() {
+    return get(baseUrl + 'session')
+  },
   getSession() {
     return invokeApi(baseUrl + 'session')
   },
