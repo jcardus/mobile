@@ -9,6 +9,7 @@
           size="small"
           type="success"
           effect="dark"
+          @click="toggleSpeedChart"
         >
           <i class="fas fa-tachometer-alt" style="color: white"></i>
         </el-tag>
@@ -17,6 +18,7 @@
           size="small"
           type="warning"
           effect="dark"
+          @click="toggleFuelChart"
         >
           <i class="fas fa-gas-pump" style="color: white"></i>
         </el-tag>
@@ -211,6 +213,12 @@ export default {
     }
   },
   methods: {
+    toggleSpeedChart() {
+      serverBus.$emit(event.toogleSpeedChart)
+    },
+    toggleFuelChart() {
+      serverBus.$emit(event.toogleFuelChart)
+    },
     toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
     },
