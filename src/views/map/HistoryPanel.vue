@@ -4,7 +4,7 @@
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
-      <div style="padding-left:48px; padding-right:15px">
+      <div style="padding-left:48px; padding-right: 65px">
         <label>
           <input
             v-model="embeddedSliderPos"
@@ -12,7 +12,8 @@
             :max="maxPos"
             :min="minPos"
           />
-        </label></div>
+        </label>
+      </div>
       <div class="playButtons">
         <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="fas fa-backward" @click="clickBackward"></i>
         <i :class="'fas fa-' + (isPlaying ? 'pause' : 'play')" style="padding-left: 10px; padding-right: 10px" @click="click"></i>
@@ -150,7 +151,10 @@ export default {
       const series = sharedData.getPositions().map(x => {
         return { y: x.speed * 1.852, x: this.$moment(x.fixTime).toDate() }
       })
-      sharedData.setChartData(series)
+      const seriesFuelSensor = sharedData.getPositions().map(x => {
+        return { y: x.fuelLevel, x: this.$moment(x.fixTime).toDate() }
+      })
+      sharedData.setChartData(series, seriesFuelSensor)
       this.updateChart = !this.updateChart
     },
     click: function() {

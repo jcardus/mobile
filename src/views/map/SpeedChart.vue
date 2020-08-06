@@ -57,6 +57,14 @@ export default {
             borderWidth: 1,
             fill: true,
             data: this.chartData
+          },
+          {
+            borderColor: 'rgba(249, 178, 24, 1)',
+            borderWidth: 1,
+            fill: false,
+            data: this.chartDataFuelSensor,
+            type: 'line',
+            yAxisID: 'fuel-y-axis'
           }]
         },
         options: {
@@ -158,6 +166,19 @@ export default {
                 display: true,
                 labelString: 'Km/h'
               }
+            }, {
+              id: 'fuel-y-axis',
+              type: 'linear',
+              position: 'right',
+              scaleLabel: {
+                display: true,
+                labelString: 'Fuel %'
+              },
+              ticks: {
+                precision: 1,
+                min: 0,
+                max: 100
+              }
             }]
           }
         }
@@ -172,6 +193,7 @@ export default {
         }
         if (this.chart.data && this.chart.data.datasets[0]) {
           this.chart.data.datasets[0].data = sharedData.getChartData()
+          this.chart.data.datasets[1].data = sharedData.getChartDataFuelLevel()
           if (this.trips && this.trips[this.currentTrip]) {
             this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
             this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()

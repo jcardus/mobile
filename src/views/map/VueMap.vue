@@ -718,7 +718,7 @@ export default {
         device.lastUpdate = position.fixTime
       }
 
-      this.calculateFuelLevel(position, device)
+      utils.calculateFuelLevel(position, device)
       // moment is expensive so we cache this value
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
@@ -760,22 +760,6 @@ export default {
         }
       }
       this.refreshMap()
-    },
-    calculateFuelLevel(position, device) {
-      if (device.attributes.fuel_tank_capacity &&
-        device.attributes.fuel_low_threshold &&
-        device.attributes.fuel_high_threshold &&
-        position.attributes.adc1) {
-        // Calculate FuelLevel
-        if (position.attributes.ignition) {
-          const level = Math.round(((device.attributes.fuel_low_threshold - position.attributes.adc1) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
-          if (level >= 0 && level <= 100) {
-            position.fuelLevel = level
-          } else if (device.position) {
-            position.fuelLevel = device.position.fuelLevel
-          }
-        }
-      }
     },
     findDriver(position, device) {
       if (!position.attributes.driverUniqueId ||

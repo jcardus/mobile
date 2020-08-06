@@ -4,6 +4,22 @@
     <span style="font-style: italic; float: right">
       {{ $t('map.totalDistance') + ': ' + totalDistance }} Kms
       <span style="float:right; padding-left: 10px">
+        <el-tag
+          style="margin-right: 5px"
+          size="small"
+          type="success"
+          effect="dark"
+        >
+          <i class="fas fa-tachometer-alt" style="color: white"></i>
+        </el-tag>
+        <el-tag
+          style="margin-right: 5px"
+          size="small"
+          type="warning"
+          effect="dark"
+        >
+          <i class="fas fa-gas-pump" style="color: white"></i>
+        </el-tag>
         <el-switch
           v-if="!isMobile"
           :value="true"
@@ -32,9 +48,10 @@
         </label>
       </div>
     </div>
-    <div class="textFormat" style="padding-top: 5px; overflow: hidden; width:100%; white-space: nowrap;">
+    <div class="textFormat" style="padding-top: 5px; overflow: hidden; width: 100%; white-space: nowrap;">
       {{ formattedDate }} {{ formatAddress }}
     </div>
+
   </div>
 </template>
 
@@ -199,6 +216,7 @@ export default {
     },
     onPositions(positions) {
       Vue.$log.debug('positions before filter ', positions)
+      const self = this
       positions = utils.filterPositions(positions)
       Vue.$log.debug('positions after filter ', positions)
       this.removeLayers()
@@ -218,7 +236,9 @@ export default {
           } else {
             this.drawTrip()
           }
+          positions.forEach(function(p) { utils.calculateFuelLevel(p, self.device) })
           sharedData.setPositions(positions)
+          Vue.$log.debug(positions)
           this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
           Vue.$log.debug('emit routeFetched')
           serverBus.$emit('routeFetched')
