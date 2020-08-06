@@ -1,4 +1,9 @@
 import styles from '../styles/element-variables.scss'
+
+export function initSupportChat() {
+
+}
+
 export const hostname = window.location.hostname.replace('dev.', '')
 
 export function getFavIcon() {

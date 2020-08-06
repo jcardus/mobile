@@ -19,13 +19,13 @@ import RulerControl from 'mapbox-gl-controls/lib/ruler'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
-import { serverBus, vm } from '../../main'
+import { serverBus, vm } from '@/main'
 import settings from '../../settings'
 import * as lnglat from '../../utils/lnglat'
-import { MapboxCustomControl } from '../../utils/lnglat'
+import { MapboxCustomControl } from '@/utils/lnglat'
 import Vue from 'vue'
 import VueCookies from 'vue-cookies'
-import { traccar } from '../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
 import VehicleDetail from './VehicleDetail'
 import along from '@turf/along'
 import bbox from '@turf/bbox'
@@ -37,7 +37,7 @@ import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import * as utils from '../../utils/utils'
-import { checkForUpdates } from '../../utils/utils'
+import { checkForUpdates } from '@/utils/utils'
 import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapGetters } from 'vuex'
@@ -199,6 +199,7 @@ export default {
     this.subscribeEvents()
   },
   timers: {
+    checkUpdates: { time: 300000, autostart: true, repeat: true },
     ping: { time: 30000, autostart: true, repeat: true },
     setTime: { time: 5000, autostart: true, repeat: true }
   },
@@ -217,6 +218,8 @@ export default {
             NProgress.done()
           })
       }
+    },
+    checkUpdates() {
       checkForUpdates()
     },
     initData() {
