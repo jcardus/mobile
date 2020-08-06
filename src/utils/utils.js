@@ -5,6 +5,7 @@ export class SharedData {
   positions = null
   chartLabels = null
   chartData = null
+  chartDataFuelSensor = null
   positionIndex = null
   setPositionIndex(arr) {
     this.positionIndex = arr
@@ -15,14 +16,18 @@ export class SharedData {
   setChartLabels(labels) {
     this.chartLabels = labels
   }
-  setChartData(data) {
+  setChartData(data, dataFuelSensor) {
     this.chartData = data
+    this.chartDataFuelSensor = dataFuelSensor
   }
   getChartLabels() {
     return this.chartLabels
   }
   getChartData() {
     return this.chartData
+  }
+  getChartDataFuelLevel() {
+    return this.chartDataFuelSensor
   }
   setPositions(positions) {
     Vue.$log.debug('setting ', positions.length, ' positions...')
@@ -117,3 +122,21 @@ export function getDeviceState(position) {
   }
   return 'Moving'
 }
+
+export function calculateFuelLevel(position, device) {
+  if (device.attributes.fuel_tank_capacity &&
+    device.attributes.fuel_low_threshold &&
+    device.attributes.fuel_high_threshold &&
+    position.attributes.adc1) {
+    // Calculate FuelLevel
+    if (position.attributes.ignition) {
+      const level = Math.round(((device.attributes.fuel_low_threshold - position.attributes.adc1) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
+      if (level >= 0 && level <= 100) {
+        position.fuelLevel = level
+      } else if (device.position) {
+        position.fuelLevel = device.position.fuelLevel
+      }
+    }
+  }
+}
+

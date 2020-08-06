@@ -1,4 +1,4 @@
-import { vm } from '../main'
+import { vm } from '@/main'
 import { TrackJS } from 'trackjs'
 import Vue from 'vue'
 import store from '../store'
@@ -9,7 +9,7 @@ vm.$on('forceLogout', () => {
   Vue.$log.warn('LOGOUT')
   TrackJS.track('LOGOUT')
   store.dispatch('user/logout').then(() => {
-    location.reload()
+    // location.reload()
   }).catch((e) => Vue.$log.error('error on logout', e))
 })
 

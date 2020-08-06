@@ -125,7 +125,7 @@
 </template>
 <script>
 
-import { appOffline } from '../../utils/utils'
+import { appOffline } from '@/utils/utils'
 
 export default {
   name: 'Settings',

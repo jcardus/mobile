@@ -17,8 +17,7 @@ import Navbar from './components/Navbar'
 import Profile from './components/Profile'
 import * as notifications from '../utils/notifications'
 import { mapGetters } from 'vuex'
-import { serverBus } from '../main'
-import settings from '../settings'
+import { serverBus } from '@/main'
 
 export default {
   name: 'Layout',
@@ -30,25 +29,16 @@ export default {
   },
   data() {
     return {
-      unsubscribe: null,
       serviceWorker: null
     }
   },
   computed: {
-    ...mapGetters([
-      'loading', 'drivers'
-    ]),
-    devices() {
-      return this.$root.$data.devices
-    },
-    driverChatEnabled() {
-      return settings.driverChatEnabled
-    }
+    ...mapGetters(['loading'])
   },
   beforeDestroy() {
     serverBus.$off('event', this.onEvent)
   },
-  created: function() {
+  created() {
     this.$log.info('layout')
     serverBus.$on('event', this.onEvent)
   },
