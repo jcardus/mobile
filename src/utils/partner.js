@@ -1,7 +1,12 @@
 import styles from '../styles/element-variables.scss'
 
 export function initSupportChat() {
-
+  if (hostname === 'mac.pinme.io' || hostname === 'web.fleetrack.cl') {
+    const el = document.createElement('script')
+    el.setAttribute('src', 'https://static.zdassets.com/ekr/snippet.js?key=1a5e99d9-66d0-4187-abf9-0870a6768cda')
+    el.setAttribute('id', 'ze-snippet')
+    document.head.appendChild(el)
+  }
 }
 
 export const hostname = window.location.hostname.replace('dev.', '')

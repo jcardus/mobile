@@ -31,6 +31,7 @@ export default {
     this.$log.debug('App Desktop')
     document.getElementById('favicon').href = partner.getFavIcon()
     document.getElementById('title').innerHTML = partner.getTitle() + ' ' + process.env.PACKAGE_VERSION
+    partner.initSupportChat()
   },
   methods: {
     message(message, type) {
@@ -47,7 +48,7 @@ export default {
         this.$log.debug('reloading!')
         newServiceWorker.postMessage({ action: 'skipWaiting' })
       } else {
-        this.$log.error('this shouldnt happen')
+        this.$log.error(`this shouldn't happen`)
       }
     }
   }
