@@ -110,11 +110,16 @@ export default {
     user_email_required: 'Por favor indique um e-mail válido',
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos',
     user_reports: 'Relatórios por email',
-    daily_reports: 'Receber diariamente',
-    weekly_reports: 'Receber semanalmente',
-    monthly_reports: 'Receber mensalmente',
+    daily_reports: 'Actividade diária',
+    weekly_reports: 'Actividade semanal',
+    monthly_reports: 'Actividade mensal',
     continue: 'Continuar?',
-    unsaved_changes: 'Existem alterações que não foram guardadas'
+    unsaved_changes: 'Existem alterações que não foram guardadas.',
+    inactive_vehicles_email: 'Alerta de inactividade dos equipamentos',
+    inactive_vehicles_email_tooltip: 'Será enviado um email de alerta indicando os equipamentos que não comunicam há mais de 48 horas',
+    daily_reports_tooltip: 'Email enviado diariamente com informação da actividade dos veículos',
+    weekly_reports_tooltip: 'Email enviado semanalmente com informação da actividade dos veículos',
+    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos'
   },
   settings: {
     icons3d: 'Ícones 3D',

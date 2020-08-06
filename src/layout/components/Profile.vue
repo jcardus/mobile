@@ -53,9 +53,18 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('profile.user_reports')">
-          <el-switch v-model="user.attributes.dailyEmails" :active-text="$t('profile.daily_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
-          <el-switch v-model="user.attributes.weeklyEmails" :active-text="$t('profile.weekly_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
-          <el-switch v-model="user.attributes.monthlyEmails" :active-text="$t('profile.monthly_reports')" @change="dirty=true"></el-switch>
+          <el-tooltip :content="$t('profile.inactive_vehicles_email_tooltip')">
+            <el-switch v-model="user.attributes.inactiveVehiclesEmail" :active-text="$t('profile.inactive_vehicles_email')" style="padding-right:10px" @change="dirty=true"></el-switch>
+          </el-tooltip>
+          <el-tooltip :content="$t('profile.daily_reports_tooltip')">
+            <el-switch v-model="user.attributes.dailyEmails" :active-text="$t('profile.daily_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
+          </el-tooltip>
+          <el-tooltip class="item" :content="$t('profile.weekly_reports_tooltip')">
+            <el-switch v-model="user.attributes.weeklyEmails" :active-text="$t('profile.weekly_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
+          </el-tooltip>
+          <el-tooltip class="item" :content="$t('profile.monthly_reports_tooltip')">
+            <el-switch v-model="user.attributes.monthlyEmails" :active-text="$t('profile.monthly_reports')" @change="dirty=true"></el-switch>
+          </el-tooltip>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -121,7 +130,7 @@ export default {
   methods: {
     handleClose(done) {
       if (this.dirty) {
-        this.$confirm(this.$t('profile.continue'), this.$t('profile.unsaved_changes'))
+        this.$confirm(this.$t('profile.unsaved_changes'), this.$t('profile.continue'))
           .then(() => { done() })
           .catch(() => {})
       } else {
@@ -176,7 +185,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import '../../styles/element-variables.scss';
   .el-avatar {
     color:$--color-text-regular;

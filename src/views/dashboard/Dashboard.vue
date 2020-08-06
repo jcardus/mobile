@@ -14,6 +14,7 @@ import * as partner from '../../utils/partner'
 import { serverBus } from '../../main'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
+import axios from 'axios'
 
 export default {
   name: 'Dashboard',
@@ -54,14 +55,12 @@ export default {
         this.$log.info('dashboard already loaded, skip loading')
         return
       }
-      const self = this
       NProgress.start()
       try {
-        fetch('https://' + backEndHostName + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.id)
-          .then(response => response.json())
+        axios.get('https://' + backEndHostName + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.id)
           .then(json => {
             const containerDiv = document.getElementById('quicksightContainer')
-            let url = json.EmbedUrl
+            let url = json.data.EmbedUrl
             if (isMobile()) {
               if (this.$device.iphone) {
                 url = url.replace('us-east-1.quicksight.aws.amazon.com', partner.getQuicksightHostName())
@@ -76,19 +75,19 @@ export default {
             if (!isMobile()) {
               options.height = 'AutoFit'
             }
-            self.dashboard = QuickSightEmbedding.embedDashboard(options)
-            self.dashboard.on('error', this.onError)
-            self.dashboard.on('load', this.onDashboardLoad)
+            this.dashboard = QuickSightEmbedding.embedDashboard(options)
+            this.dashboard.on('error', this.onError)
+            this.dashboard.on('load', this.onDashboardLoad)
           }).catch((e) => {
-            self.$log.error(e)
-            self.stopLoading()
+            this.$log.error(e)
+            this.stopLoading()
             serverBus.$emit('message', e)
           }).finally(() => {
-            self.stopLoading()
+            this.stopLoading()
           })
       } catch (e) {
-        self.$log.error(e)
-        self.stopLoading()
+        this.$log.error(e)
+        this.stopLoading()
         TrackJS.track('DASHBOARD')
       }
     },
