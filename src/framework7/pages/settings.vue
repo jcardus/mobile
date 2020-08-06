@@ -156,7 +156,7 @@ export default {
       ).finally(() => {
         // this.$f7.preloader.hide()
         // this.$f7.loginScreen.open('#loginScreen', false)
-        // location.reload()
+        location.reload()
       })
     }
   }
