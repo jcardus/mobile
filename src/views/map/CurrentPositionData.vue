@@ -244,7 +244,13 @@ export default {
           } else {
             this.drawTrip()
           }
-          positions.forEach(function(p) { utils.calculateFuelLevel(p, self.device) })
+
+          let lastPosition = null
+          positions.forEach(function(p) {
+            const adc1CacheValues = lastPosition === null || !(lastPosition.adc1CacheValues) ? [] : lastPosition.adc1CacheValues
+            utils.calculateFuelLevel(adc1CacheValues, p, self.device)
+            lastPosition = p
+          })
           sharedData.setPositions(positions)
           Vue.$log.debug(positions)
           this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
