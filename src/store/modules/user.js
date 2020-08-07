@@ -1,14 +1,14 @@
-import { login, logout } from '../../api/user'
-import { traccar } from '../../api/traccar-api'
-import { serverBus, vm } from '../../main'
+import { login, logout } from '@/api/user'
+import { traccar } from '@/api/traccar-api'
+import { serverBus, vm } from '@/main'
 import { TrackJS } from 'trackjs'
 import Vue from 'vue'
-import { checkForUpdates } from '../../utils/utils'
+import { checkForUpdates } from '@/utils/utils'
 import store from '../index'
 import VueNativeSock from 'vue-native-websocket'
-import { getServerHost } from '../../api'
+import { getServerHost } from '@/api'
 import settings from '../../settings'
-import { setLanguage } from '../../lang'
+import { setLanguage } from '@/lang'
 
 const state = {
   user: {
@@ -97,7 +97,7 @@ function initData(commit, state, dispatch) {
                   if (state.devices.length < 100) {
                     dispatch('fetchAlerts').then(() => {
                       dispatch('transient/fetchEvents', {
-                        start: Vue.moment().subtract(1, 'day').toDate(),
+                        start: Vue.moment().subtract(1, 'hour').toDate(),
                         end: new Date(),
                         types: state.alerts
                       }, { root: true })

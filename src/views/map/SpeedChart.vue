@@ -23,7 +23,9 @@ export default {
   data() {
     return {
       chart: null,
-      currentTrip: null
+      currentTrip: null,
+      speedChartVisible: true,
+      fuelChartVisible: true
     }
   },
   computed: {
@@ -36,9 +38,13 @@ export default {
   },
   created() {
     serverBus.$on(event.tripChanged, this.onTripChanged)
+    serverBus.$on(event.toogleSpeedChart, this.onToogleSpeedChart)
+    serverBus.$on(event.toogleFuelChart, this.onToogleFuelChart)
   },
   beforeDestroy() {
     serverBus.$off(event.tripChanged, this.onTripChanged)
+    serverBus.$off(event.toogleSpeedChart, this.onToogleSpeedChart)
+    serverBus.$off(event.toogleFuelChart, this.onToogleFuelChart)
   },
   mounted() {
     Vue.$log.debug('SpeedChart created')
@@ -209,6 +215,32 @@ export default {
       const newPos = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).unix()
       this.$log.debug('autoSliderChange', newPos)
       serverBus.$emit('autoSliderChange', newPos)
+    },
+    onToogleSpeedChart() {
+      if (this.speedChartVisible) {
+        this.removeData(0)
+        this.speedChartVisible = false
+      } else {
+        this.addData(0, sharedData.getChartData())
+        this.speedChartVisible = true
+      }
+    },
+    onToogleFuelChart() {
+      if (this.fuelChartVisible) {
+        this.removeData(1)
+        this.fuelChartVisible = false
+      } else {
+        this.addData(1, sharedData.getChartDataFuelLevel())
+        this.fuelChartVisible = true
+      }
+    },
+    addData(index, data) {
+      this.chart.data.datasets[index].data = data
+      this.chart.update()
+    },
+    removeData(index) {
+      this.chart.data.datasets[index].data = []
+      this.chart.update()
     }
   }
 }
