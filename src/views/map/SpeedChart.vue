@@ -198,8 +198,8 @@ export default {
           this.chart.data.labels = sharedData.getChartLabels()
         }
         if (this.chart.data && this.chart.data.datasets[0]) {
-          this.chart.data.datasets[0].data = sharedData.getChartData()
-          this.chart.data.datasets[1].data = sharedData.getChartDataFuelLevel()
+          this.chart.data.datasets[0].data = this.speedChartVisible ? sharedData.getChartData() : []
+          this.chart.data.datasets[1].data = this.fuelChartVisible ? sharedData.getChartDataFuelLevel() : []
           if (this.trips && this.trips[this.currentTrip]) {
             this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
             this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
