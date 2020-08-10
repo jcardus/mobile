@@ -200,7 +200,7 @@ export default {
     this.subscribeEvents()
   },
   timers: {
-    checkUpdates: { time: 300000, autostart: true, repeat: true },
+    checkUpdates: { time: 60000, autostart: true, repeat: true },
     ping: { time: 30000, autostart: true, repeat: true },
     setTime: { time: 5000, autostart: true, repeat: true }
   },
@@ -775,7 +775,6 @@ export default {
           feature = this.positionToFeature(position, device)
           this.positionsSource.features.push(feature)
         } else {
-          if (!device) continue
           const oldFixTime = feature.properties.fixTime
           if (settings.animateMarkers && !this.historyMode &&
             lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
@@ -783,7 +782,7 @@ export default {
             this.$log.debug('animating', feature.properties.text)
             this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
-            this.$log.debug('not animating', device.name, settings.animateMarkers, this.historyMode, this.map.getZoom())
+            this.$log.debug('not animating', device.name)
             feature.geometry.coordinates = [position.longitude, position.latitude]
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
