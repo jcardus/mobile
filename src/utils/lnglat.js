@@ -14,6 +14,16 @@ import { layers as _layers, source } from './consts'
 import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
 import vehicleLabelsLayer from '@/views/map/mapbox/VehicleLabelsLayer'
 
+export function centerVehicle(feature) {
+  vm.$static.map.flyTo({
+    essential: true,
+    center: feature.geometry.coordinates,
+    zoom: 16,
+    bearing: feature.properties.course,
+    pitch: 60
+  })
+}
+
 let markersOnScreen = {}
 let currentState = null
 

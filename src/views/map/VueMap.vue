@@ -44,6 +44,7 @@ import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
+import { animate } from '@/utils/animation'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -551,13 +552,7 @@ export default {
       window.removeEventListener('resize', this.mapResize)
     },
     centerVehicle(feature = this.$static.currentFeature) {
-      this.map.flyTo({
-        essential: true,
-        center: feature.geometry.coordinates,
-        zoom: 16,
-        bearing: feature.properties.course,
-        pitch: 60
-      })
+      lnglat.centerVehicle(feature)
     },
     mouseEnter() {
       this.map.getCanvas().style.cursor = 'pointer'
@@ -775,12 +770,15 @@ export default {
           feature = this.positionToFeature(position, device)
           this.positionsSource.features.push(feature)
         } else {
-          const oldFixTime = feature.properties.fixTime
           if (settings.animateMarkers && !this.historyMode &&
             lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             this.map.getZoom() >= consts.detailedZoom) {
             this.$log.debug('animating', feature.properties.text)
-            this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
+            animate(
+              feature,
+              [feature.geometry.coordinates, [position.longitude, position.latitude]],
+              [feature.properties.fixTime, position.fixTime].map(x => Vue.moment(x).unix())
+            )
           } else {
             this.$log.debug('not animating', device.name)
             feature.geometry.coordinates = [position.longitude, position.latitude]

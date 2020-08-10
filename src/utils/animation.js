@@ -22,12 +22,12 @@ routePlayVehicleLayer.source = routePlayLayer
 export function hideRouteLayer(hide) {
   lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
 }
-export function refreshFeature() {
+export function refreshFeature(feature) {
   if (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled) {
-    vehicles3d.updateCoords(vm.$static.currentFeature)
+    vehicles3d.updateCoords(feature)
   } else {
     const data = {
-      type: 'FeatureCollection', features: [vm.$static.currentFeature]
+      type: 'FeatureCollection', features: [feature]
     }
     if (!vm.$static.map.getLayer(routePlayLayer)) {
       vm.$static.map.addSource(routePlayLayer, {
@@ -51,6 +51,11 @@ export function removeAddRouteLayer() {
 
 let changeColor = 0
 export function animate(feature, coordinates) {
+  const origin = feature.geometry.coordinates
+  const destination = coordinates.slice(-1)
+  if (JSON.stringify(origin) === JSON.stringify(destination)) {
+    return
+  }
   const route = {
     type: 'Feature',
     geometry: {
@@ -146,9 +151,10 @@ export function animateMatched(route, feature) {
   function _animate() {
     const coordinates = feature.route[counter]
     if (coordinates) {
-      feature.properties.speed = 10 // just to become  green...
+      // feature.properties.speed = 10 // just to become  green...
       feature.geometry.coordinates = coordinates
-      if (!lnglat.contains(vm.$static.map.getBounds(),
+      if (lnglat.popUps[feature.properties.deviceId]) { lnglat.popUps[feature.properties.deviceId].setLngLat(coordinates) }
+      if (store.getters.historyMode && !lnglat.contains(vm.$static.map.getBounds(),
         { longitude: coordinates[0], latitude: coordinates[1] })) {
         vm.$static.map.panTo(
           { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }, { essential: true, duration: 200 }
@@ -159,33 +165,27 @@ export function animateMatched(route, feature) {
       if (p1 && p2) {
         endRotation = angles.normalize(bearing(p1, p2))
       }
+      if (store.getters.followVehicle) {
+        feature.properties.bearing = feature.properties.course
+        lnglat.centerVehicle(feature)
+      }
       if (_animateRotation() > 15) {
         requestAnimationFrame(_animate)
         return
       }
-      refreshFeature()
+      refreshFeature(feature)
     }
-    if (counter < feature.route.length + 1) {
-      counter = counter + 1
-      if (vm.$store.state.transient.isPlaying) {
-        if (!vm.$static.map.isMoving()) {
-          requestAnimationFrame(_animate)
-        } else {
-          // map has priority
-          setTimeout(_animate, 20)
-        }
-      } else {
-        feature.animating = false
-      }
+    if (counter++ < feature.route.length + 1) {
+      requestAnimationFrame(_animate)
     } else {
       refreshFeature()
       feature.animating = false
-      Vue.$log.info('emit routeMatchFinished ', feature.route.length, ' coords refreshRate ', consts.refreshRate)
+      serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
       serverBus.$emit('routeMatchFinished')
     }
   }
 
-  if (feature.route.length > 0) {
+  if (feature.route.length > 0 && !feature.animating) {
     feature.animating = true
     Vue.$log.debug('animating ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions refreshRate ', consts.refreshRate)
     _animate()

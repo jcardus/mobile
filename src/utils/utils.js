@@ -83,7 +83,7 @@ export function reload() {
   } else {
     Vue.$log.error(`this shouldn't happen`)
   }
-  this.$log.info('bye bye...')
+  Vue.$log.info('bye bye...')
   window.location.reload()
 }
 
