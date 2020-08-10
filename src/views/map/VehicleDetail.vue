@@ -39,7 +39,7 @@
           @click="showRoutesChanged"
         >{{ $t('vehicleDetail.show_route') }}</el-button>
         <el-button
-          v-if="device.position.attributes.ignition"
+          v-if="device.position.attributes.ignition && followVehicleEnabled"
           icon="el-icon-video-camera"
           style="float:right"
           type="text"
@@ -89,7 +89,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'currentTime', 'followVehicle']),
+    ...mapGetters(['historyMode', 'currentTime', 'followVehicle', 'followVehicleEnabled']),
     totalDistance() {
       let result = this.device.position.attributes.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }

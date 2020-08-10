@@ -274,7 +274,8 @@ export default {
     date_end: 'Fecha de fin',
     generate_report: 'Generar informe',
     period: 'Periodo',
-    select_all: 'Todos'
+    select_all: 'Todos',
+    validate_period: 'Por favor seleccione un periodo'
   },
   layout: {
     deviceOnline: 'Dispositivo en línea',

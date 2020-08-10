@@ -59,14 +59,14 @@
 
 <script>
 
-import { serverBus, sharedData, vm } from '../../main'
+import { serverBus, sharedData, vm } from '@/main'
 import settings from '../../settings'
-import { routeMatch } from '../../api/here'
+import { routeMatch } from '@/api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import * as animation from '../../utils/animation'
-import { traccar } from '../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
 import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
@@ -205,7 +205,7 @@ export default {
     vm.$data.currentDevice = this.device
     lnglat.hideLayers(this.showRoutes)
     animation.hideRouteLayer(!this.showRoutes)
-    if (this.$route.query.date) {
+    if (this.$route && this.$route.query.date) {
       console.log(this.$route.query.date)
       this._maxDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
       this._minDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')

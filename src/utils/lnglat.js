@@ -12,7 +12,7 @@ import store from '../store'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import { layers as _layers, source } from './consts'
 import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
-import vehicleLablesLayer from '@/views/map/mapbox/VehicleLabelsLayer'
+import vehicleLabelsLayer from '@/views/map/mapbox/VehicleLabelsLayer'
 
 let markersOnScreen = {}
 let currentState = null
@@ -307,9 +307,7 @@ export function updateMarkers() {
   }
   markersOnScreen = newMarkers
 }
-export function addVehiclesLayer() {
-  vm.$static.map.addLayer(vehiclesLayer)
-}
+
 export function removeAdd3dLayer() {
   if (store.getters.vehicles3dEnabled) {
     vm.$static.map.removeLayer(vehicles3d.id)
@@ -364,8 +362,8 @@ export function addLayers(map) {
   }
   hideLayer(layers.buildings3d, !store.state.map.show3dBuildings)
   if (!map.getLayer(layers.vehicles)) {
-    addVehiclesLayer(layers.vehicles, source)
-    vm.$static.map.addLayer(vehicleLablesLayer)
+    vm.$static.map.addLayer(vehiclesLayer)
+    vm.$static.map.addLayer(vehicleLabelsLayer)
     hideLayer(layers.labels, !store.state.settings.showLabels)
   } else {
     Vue.$log.warn('vehiclesLayer already exists...')

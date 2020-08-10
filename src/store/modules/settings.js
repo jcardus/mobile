@@ -10,7 +10,8 @@ const state = {
   maxSpeedType: 'vehicle',
   speedThreshold: '0',
   showLabels: false,
-  vehicles3d: false
+  vehicles3d: false,
+  followVehicle: false
 }
 
 const mutations = {
