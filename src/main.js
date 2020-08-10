@@ -91,11 +91,8 @@ if ('serviceWorker' in navigator) {
     }
   })
 
-  let refreshing
-  navigator.serviceWorker.addEventListener('controllerchange', function() {
-    if (refreshing) return
-    // window.location.reload()
-    refreshing = true
+  navigator.serviceWorker.addEventListener('controllerchange', (e) => {
+    Vue.$log.warn(navigator.serviceWorker, e)
   })
 } else {
   Vue.$log.warn('no service Worker support, weird browser...')
