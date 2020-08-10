@@ -81,7 +81,7 @@ export function reload() {
     Vue.$log.info(newServiceWorker, 'skipWaiting!')
     newServiceWorker.postMessage({ action: 'skipWaiting' })
   } else {
-    this.$log.error(`this shouldn't happen`)
+    Vue.$log.error(`this shouldn't happen`)
   }
   this.$log.info('bye bye...')
   window.location.reload()
