@@ -52,7 +52,7 @@ export default {
     disconnected_vehicles: 'Desconectado'
   },
   vehicleDetail: {
-    show_route: 'Mostrar rota'
+    show_route: 'Rota'
   },
   poiTable: {
     showPOIs: 'Ver POIs'

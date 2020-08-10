@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
 import { TrackJS } from 'trackjs'
-import { serverBus } from '../main'
+import { serverBus } from '@/main'
 import { VuexPersistence } from 'vuex-persist'
 
 const excludedMudations = ['TOGGLE_HISTORYMODE', 'TOGGLE_CONNECTION_OK']

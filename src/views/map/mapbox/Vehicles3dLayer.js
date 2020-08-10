@@ -1,10 +1,10 @@
-import { Threebox } from '../../../threebox/Threebox'
-import { layers } from '../../../utils/consts'
+import { Threebox } from '@/threebox/Threebox'
+import { layers } from '@/utils/consts'
 import Vue from 'vue'
-import { loadModel } from '../../../threebox/objects/loadObj'
+import { loadModel } from '@/threebox/objects/loadObj'
 import * as THREE from 'three'
 import styles from '../../../styles/element-variables.scss'
-import { serverBus, vm } from '../../../main'
+import { serverBus, vm } from '@/main'
 
 export const vehicles3d = {
   id: layers.vehicles3d,

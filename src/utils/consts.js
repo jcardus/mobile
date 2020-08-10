@@ -1,5 +1,6 @@
-import { getBackendHost } from '../api'
+import { getBackendHost } from '@/api'
 
+export const source = 'positions'
 export var minDistanceForMatch = 0.5
 export const rotateStep = 9
 export const routeSlotLength = 6
@@ -12,7 +13,7 @@ export const spriteUrl = cdnUrl + '/sprite/8/sprite'
 // export const spriteUrl = 'https://mac.pinme.io:8080/img/sprite'
 export const mapboxSprite = 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/sprite' // @2x.png?access_token=
 export const mapboxAccessToken = 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ'
-export const detailedZoom = 14
+export const detailedZoom = 13
 export const layers = {
   vehicles: 'vehiclesLayer',
   labels: 'vehicleLabels',

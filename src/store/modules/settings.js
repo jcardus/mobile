@@ -1,6 +1,5 @@
 import defaultSettings from '../../settings'
 import Vue from 'vue'
-import * as lnglat from '../../utils/lnglat'
 
 const { sidebarLogo } = defaultSettings
 
@@ -17,7 +16,6 @@ const state = {
 const mutations = {
   SET_SHOW_LABELS(state, value) {
     state.showLabels = value
-    lnglat.hideLayer(lnglat.layers.labels, !value)
   },
   CHANGE_SETTING: (state, { key, value }) => {
     Vue.$log.debug(key + ':' + value)

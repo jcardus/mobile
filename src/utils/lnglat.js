@@ -5,12 +5,14 @@ import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
-import { vm } from '../main'
+import { vm } from '@/main'
 import styles from '../styles/element-variables.scss'
 import * as consts from './consts'
 import store from '../store'
-import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
-import { layers as _layers } from './consts'
+import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
+import { layers as _layers, source } from './consts'
+import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
+import vehicleLablesLayer from '@/views/map/mapbox/VehicleLabelsLayer'
 
 let markersOnScreen = {}
 let currentState = null
@@ -18,13 +20,10 @@ let currentState = null
 export const layers = _layers
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
-export const source = 'positions'
 const gray = ['==', ['get', 'color'], 'gray']
 const green = ['==', ['get', 'color'], 'green']
 const yellow = ['==', ['get', 'color'], 'yellow']
 const red = ['==', ['get', 'color'], 'red']
-const _colorFormula = ['%', ['-', 25, ['floor', ['/', ['get', 'course'], 14.4]]], 25]
-const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-string', _colorFormula]], ['to-string', _colorFormula]]
 
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
@@ -308,30 +307,8 @@ export function updateMarkers() {
   }
   markersOnScreen = newMarkers
 }
-export function addVehiclesLayer(layer, source) {
-  vm.$static.map.addLayer({
-    id: layer,
-    type: 'symbol',
-    source: source,
-    filter: ['!=', 'cluster', true],
-    layout: {
-      'symbol-z-order': 'source',
-      'icon-keep-upright': true,
-      'icon-pitch-alignment': 'map',
-      'icon-rotation-alignment': 'map',
-      'icon-image': ['concat', ['get', 'color'], ['get', 'category'], '00', colorFormula],
-      'icon-rotate': ['*', ['-', ['get', 'course'], ['*', ['floor', ['/', ['get', 'course'], 14.4]], 14.4]], 1],
-      'icon-allow-overlap': true,
-      'icon-size': {
-        stops: [
-          [1, 0.6],
-          [14, 0.7],
-          [15, 0.9],
-          [18, 1]
-        ]
-      }
-    }
-  })
+export function addVehiclesLayer() {
+  vm.$static.map.addLayer(vehiclesLayer)
 }
 export function removeAdd3dLayer() {
   if (store.getters.vehicles3dEnabled) {
@@ -388,26 +365,7 @@ export function addLayers(map) {
   hideLayer(layers.buildings3d, !store.state.map.show3dBuildings)
   if (!map.getLayer(layers.vehicles)) {
     addVehiclesLayer(layers.vehicles, source)
-    vm.$static.map.addLayer({
-      id: layers.labels,
-      type: 'symbol',
-      source: source,
-      filter: ['!=', 'cluster', true],
-      layout: {
-        'text-size': 11,
-        'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
-        'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
-        'text-justify': 'auto',
-        'text-field': ['get', 'text'],
-        'text-transform': 'uppercase',
-        'text-optional': true
-      },
-      paint: {
-        'text-color': 'darkslategrey'
-        // 'text-color': ['case', gray, styles.info, green, styles.success, yellow, styles.warning, styles.danger],
-        // 'text-halo-width': 20
-      }
-    })
+    vm.$static.map.addLayer(vehicleLablesLayer)
     hideLayer(layers.labels, !store.state.settings.showLabels)
   } else {
     Vue.$log.warn('vehiclesLayer already exists...')

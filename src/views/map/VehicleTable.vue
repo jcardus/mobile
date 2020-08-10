@@ -126,11 +126,10 @@
             </div>
             <div style="padding-top: 6px;float:left">
               <span v-if="scope.row.lastUpdate">{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
-            <div style="float: right">
-              <immobilize-button
-                style="padding:0"
-                :selected-device="scope.row"
-              /></div>
+            <immobilize-button
+              style="padding:0;float: right"
+              :selected-device="scope.row"
+            ></immobilize-button>
           </template>
         </el-table-column>
         <el-table-column type="expand" width="1">
@@ -145,7 +144,7 @@
 </template>
 <script>
 
-import { serverBus, vm } from '../../main'
+import { serverBus, vm } from '@/main'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
@@ -334,7 +333,7 @@ export default {
     serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
-    fuelLevelClick(device) {
+    fuelLevelClick() {
       if (this.fuelMetric === 'percentage') {
         this.fuelMetric = 'liters'
       } else {

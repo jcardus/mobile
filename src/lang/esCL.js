@@ -59,7 +59,9 @@ export default {
     immo_pending: 'Ya existe un comando de pendente para el vehículo. Por favor aguarde el resultado.'
   },
   vehicleDetail: {
-    show_route: 'Mostrar ruta'
+    show_route: 'Ruta',
+    follow: 'Seguir',
+    unfollow: 'Parar'
   },
   poiTable: {
     showPOIs: 'Mostar PDIs',

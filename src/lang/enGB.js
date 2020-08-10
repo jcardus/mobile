@@ -64,7 +64,9 @@ export default {
     immo_pending: 'There is already a pending command for this vehicle. Please wait for the result.'
   },
   vehicleDetail: {
-    show_route: 'Show route'
+    show_route: 'Show route',
+    follow: 'Seguir',
+    unfollow: 'Parar'
   },
   poiTable: {
     showPOIs: 'Show POIs',
