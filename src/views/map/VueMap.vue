@@ -762,13 +762,16 @@ export default {
     },
     processPositions(positions) {
       for (const position of positions) {
-        let feature = this.findFeatureByDeviceId(position.deviceId)
         const device = this.devices.find(e => e.id === position.deviceId)
+        if (!device) {
+          const errorMessage = `no feature and no device, this is weird, we should logoff, position:', ${position}, 'devices', ${this.devices}`
+          this.$log.error(errorMessage)
+          TrackJS.track(errorMessage)
+          continue
+        }
+
+        let feature = this.findFeatureByDeviceId(position.deviceId)
         if (!feature) {
-          if (!device) {
-            this.$log.warn('no feature and no device, this is weird, we should logoff, position:', position, 'devices', this.devices)
-            continue
-          }
           feature = this.positionToFeature(position, device)
           this.positionsSource.features.push(feature)
         } else {
