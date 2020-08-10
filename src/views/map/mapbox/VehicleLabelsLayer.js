@@ -10,9 +10,9 @@ export default {
     'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
     'text-radial-offset': ['interpolate', ['linear'], ['zoom'], 6, 1, 10, 2, 16, 3],
     'text-justify': 'auto',
-    'text-field': ['get', 'bearing'],
+    'text-field': ['get', 'text'],
     'text-transform': 'uppercase',
-    'text-optional': false
+    'text-optional': true
   },
   paint: {
     'text-color': 'darkslategrey'
