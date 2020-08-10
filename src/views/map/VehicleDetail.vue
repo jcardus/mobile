@@ -21,31 +21,32 @@
           </div>
           <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
         </div>
-        <div style="padding-top: 5px">
-          <div style="float:left;padding-right: 10px; width:55%">
-            <div style="float: left;padding: 6px 0">
-              <IOdometer
-                class="iOdometer"
-                style="margin-right: 4px;font-size: 1em;opacity: 0.4"
-                theme="car"
-                format="( ddd).d"
-                :value="totalDistance"
-              />
-            </div><div style="float: left">
-              <immobilize-button
-                :selected-device="device"
-              ></immobilize-button></div>
-          </div>
-          <div style="float:right; padding: 3px 0">
-            <el-button
-              icon="el-icon-video-play"
-              style="float:right"
-              type="text"
-              @click="showRoutesChanged"
-            >{{ $t('vehicleDetail.show_route') }}</el-button>
-          </div>
-        </div>
+        <IOdometer
+          class="iOdometer"
+          style="float:left;margin-right: 4px; margin-top:6px; font-size: 1em;opacity: 0.4"
+          theme="car"
+          format="( ddd).d"
+          :value="totalDistance"
+        ></IOdometer>
+        <immobilize-button
+          :selected-device="device"
+          style="float:left"
+        ></immobilize-button>
+        <el-button
+          icon="el-icon-video-play"
+          type="text"
+          style="float:right"
+          @click="showRoutesChanged"
+        >{{ $t('vehicleDetail.show_route') }}</el-button>
+        <el-button
+          v-if="device.position.attributes.ignition && followVehicleEnabled"
+          icon="el-icon-video-camera"
+          style="float:right"
+          type="text"
+          @click="toggleFollow"
+        >{{ followVehicle ? $t('vehicleDetail.unfollow') : $t('vehicleDetail.follow') }}</el-button>
       </div>
+
     </div>
   </div>
 </template>
@@ -55,13 +56,13 @@
 import axios from 'axios'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
-import { serverBus, vm } from '../../main'
+import { serverBus, vm } from '@/main'
 import ImmobilizeButton from './ImmobilizeButton'
 import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
-import { clientId } from '../../utils/mapillary'
+import { clientId } from '@/utils/mapillary'
 import { mapGetters } from 'vuex'
-import { isMobile } from '../../utils/lnglat'
+import { isMobile } from '@/utils/lnglat'
 
 export default {
   name: 'VehicleDetail',
@@ -88,7 +89,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'currentTime']),
+    ...mapGetters(['historyMode', 'currentTime', 'followVehicle', 'followVehicleEnabled']),
     totalDistance() {
       let result = this.device.position.attributes.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
@@ -129,6 +130,13 @@ export default {
     }
   },
   methods: {
+    toggleFollow() {
+      let value = null
+      if (!this.followVehicle || this.device.id !== this.followVehicle.id) {
+        value = this.device
+      }
+      this.$store.dispatch('map/followVehicle', value)
+    },
     copy() {
       navigator.clipboard.writeText(this.device.position.latitude + ',' + this.device.position.longitude)
       if (isMobile()) {
@@ -293,6 +301,6 @@ export default {
     line-height: normal;
   }
   .mapboxgl-popup-content {
-    min-width: 260px;
+    min-width: 270px;
   }
 </style>

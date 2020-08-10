@@ -3,9 +3,7 @@ import * as THREE from 'three'
 import { Objects } from './objects'
 import { utils } from '../utils/Utils.js'
 import * as consts from '../../utils/consts'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { LoadingManager } from 'three'
 
@@ -19,22 +17,7 @@ manager.addHandler(/\.tga$/i, tgaLoader)
 
 export function loadModel(feature) {
   const category = feature.properties.category
-  switch (category) {
-    case 'truck':
-    case 'default':
-      return loadObj(feature, `${modelsPath}${category}.glb`, new GLTFLoader())
-    case 'obj':
-      return new Promise((resolve) => {
-        new MTLLoader(manager)
-          .load('default.mtl', function(materials) {
-            materials.preload()
-            loadObj(feature, `models/${category}.obj`, new OBJLoader(manager).setMaterials(materials)).then(model => resolve(model))
-          })
-      })
-      // return loadObj(feature, `models/${category}.fbx`, new FBXLoader(manager))
-    default:
-      return loadObj(feature, `models/${category}.glb`, new GLTFLoader())
-  }
+  return loadObj(feature, `${modelsPath}${category}.glb`, new GLTFLoader())
 }
 
 export function loadObj(feature, modelPath, objLoader) {

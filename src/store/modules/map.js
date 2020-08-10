@@ -1,4 +1,4 @@
-import { vm } from '../../main'
+import { vm } from '@/main'
 
 const state = {
   showGeofences: false,
@@ -7,10 +7,14 @@ const state = {
   show3dBuildings: false,
   minPos: 0,
   maxPos: 1000,
-  tableCollapsed: false
+  tableCollapsed: false,
+  followVehicle: null
 }
 
 const mutations = {
+  FOLLOW_VEHICLE(state, value) {
+    state.followVehicle = value
+  },
   SET_MIN_POS(state, value) {
     state.minPos = value
   },
@@ -35,6 +39,9 @@ const mutations = {
 }
 
 const actions = {
+  followVehicle({ commit }, vehicle) {
+    commit('FOLLOW_VEHICLE', vehicle)
+  },
   toggleTableCollapsed({ commit }) {
     commit('TOGGLE_TABLE_COLLAPSED')
   },

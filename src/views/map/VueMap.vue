@@ -111,7 +111,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'dataLoaded', 'name', 'geofences', 'drivers', 'showLabels', 'devices', 'isPlaying', 'vehicles3dEnabled']),
+    ...mapGetters(['followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'drivers',
+      'showLabels', 'devices', 'isPlaying', 'vehicles3dEnabled']),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -298,6 +299,7 @@ export default {
       }
     },
     deviceSelected(device) {
+      this.$store.dispatch('map/followVehicle', null)
       this.$log.debug('VueMap deviceSelected')
       this.selected = device
       if (device.id) {
@@ -322,7 +324,7 @@ export default {
         this.flyToFeature(feature)
       }
     },
-    showPopup: function(feature, device) {
+    showPopup(feature = this.$static.currentFeature, device = this.deviceSelected) {
       const coordinates = feature.geometry.coordinates.slice()
       const description = feature.properties.description
       this.popUps.forEach(p => p.remove())
@@ -342,7 +344,7 @@ export default {
       })
       this.lastPopup.$mount('#vue-vehicle-popup')
     },
-    flyToDevice: function(feature) {
+    flyToDevice(feature) {
       if (feature) {
         this.$static.map.flyTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
@@ -452,10 +454,13 @@ export default {
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
+      // TODO:vm.$static.positionsSource.features.forEach(f => {
+      // f.properties.bearing = this.map.getBearing()
+      // f.properties.courseMinusBearing = angles.normalize(f.properties.course - this.map.getBearing())
+      // })
     },
     onPitch: function() {
       this.showHideDevices(this.$static.map.getPitch() === 0)
-      this.truck.visible = (this.$static.map.getPitch() !== 0)
     },
     subscribeEvents() {
       const self = this
@@ -492,7 +497,7 @@ export default {
       serverBus.$on('deviceSelected', this.deviceSelected)
       serverBus.$on('areaSelected', this.areaSelected)
       serverBus.$on('deviceChanged', this.deviceChanged)
-      this.unsubscribe = this.$root.$store.subscribe((mutation, state) => {
+      this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'SOCKET_ONMESSAGE':
             if (state.socket.message.positions) {
@@ -501,6 +506,16 @@ export default {
             break
           case 'map/TOGGLE_TABLE_COLLAPSED':
             setTimeout(self.mapResize, 500)
+            break
+          case 'map/FOLLOW_VEHICLE':
+            if (state.map.followVehicle) {
+              const feature = lnglat.findFeatureByDeviceId(state.map.followVehicle.id)
+              self.centerVehicle(feature)
+              this.showPopup(feature, state.map.followVehicle)
+            }
+            break
+          case 'settings/SET_SHOW_LABELS':
+            lnglat.hideLayer(consts.layers.labels, !state.settings.showLabels)
             break
           default:
         }
@@ -515,7 +530,6 @@ export default {
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
-      this.$static.map.off('pitch', this.onPitch)
       this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
       this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
       this.$static.map.off('touchstart', 'pois', this.onClickTouchPois)
@@ -535,6 +549,15 @@ export default {
       serverBus.$off(event.mapShow, this.mapResize)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
+    },
+    centerVehicle(feature = this.$static.currentFeature) {
+      this.map.flyTo({
+        essential: true,
+        center: feature.geometry.coordinates,
+        zoom: 16,
+        bearing: feature.properties.course,
+        pitch: 60
+      })
     },
     mouseEnter() {
       this.map.getCanvas().style.cursor = 'pointer'
@@ -631,7 +654,11 @@ export default {
           if (p1 && p2) {
             feature.properties.course = bearing(p1, p2)
           }
-          if (self.map.getPitch() > 0) {
+          if (self.followVehicle) {
+            feature.properties.bearing = feature.properties.course
+            self.centerVehicle(feature)
+          }
+          if (self.map.getPitch() > 0 && self.vehicles3dEnabled) {
             vehicles3d.updateCoords(feature)
           } else {
             self.refreshMap()
@@ -721,7 +748,8 @@ export default {
         device.lastUpdate = position.fixTime
       }
 
-      utils.calculateFuelLevel(position, device)
+      const adc1CacheValues = device.position && device.position.adc1CacheValues ? device.position.adc1CacheValues : []
+      utils.calculateFuelLevel(adc1CacheValues, position, device)
       // moment is expensive so we cache this value
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
@@ -752,7 +780,7 @@ export default {
             this.$log.debug('animating', feature.properties.text)
             this.animate(position, feature, [oldFixTime, position.fixTime].map(x => Vue.moment(x).unix()))
           } else {
-            this.$log.debug('not animating', settings.animateMarkers, this.historyMode, this.map.getZoom())
+            this.$log.debug('not animating', device.name, settings.animateMarkers, this.historyMode, this.map.getZoom())
             feature.geometry.coordinates = [position.longitude, position.latitude]
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }

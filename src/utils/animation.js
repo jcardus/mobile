@@ -1,18 +1,23 @@
 import * as lnglat from './lnglat'
 import along from '@turf/along'
 import bearing from '@turf/bearing'
-import { serverBus, vm } from '../main'
+import { serverBus, vm } from '@/main'
 import settings from '../settings'
 import Vue from 'vue'
 import * as angles from 'angles'
 import * as consts from './consts'
-import { vehicles3d } from '../views/map/mapbox/Vehicles3dLayer'
+import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import store from '../store'
 const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
 const routePlayLayer = 'routePlayLayer'
 angles.SCALE = 360
+import vehicleLayer from '@/views/map/mapbox/VehiclesLayer'
+
+const routePlayVehicleLayer = { ...vehicleLayer }
+routePlayVehicleLayer.id = routePlayLayer
+routePlayVehicleLayer.source = routePlayLayer
 
 export function hideRouteLayer(hide) {
   lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
@@ -29,7 +34,7 @@ export function refreshFeature() {
         type: 'geojson',
         data: data
       })
-      lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
+      vm.$static.map.addLayer(routePlayVehicleLayer)
     } else {
       vm.$static.map.getSource(routePlayLayer).setData(data)
     }
@@ -38,7 +43,7 @@ export function refreshFeature() {
 export function removeAddRouteLayer() {
   if (vm.$static.map.getLayer(routePlayLayer)) {
     vm.$static.map.removeLayer(routePlayLayer)
-    lnglat.addVehiclesLayer(routePlayLayer, routePlayLayer)
+    vm.$static.map.addLayer(routePlayVehicleLayer)
   } else {
     Vue.$log.warn('removeAddRouteLayer called but there is no layer!')
   }

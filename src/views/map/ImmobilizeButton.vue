@@ -6,7 +6,6 @@
   >
     <img
       alt="immobilization"
-      style="float:right"
       :src="getIcon"
       width="38"
       :style="selectedDevice.commandPending ? 'opacity: 0.2' : ''"
@@ -17,10 +16,11 @@
 
 <script>
 import Vue from 'vue'
-import { vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ImmobilizeButton',
@@ -31,6 +31,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['devices']),
     user() {
       return vm.$store.state.user
     },
@@ -38,7 +39,8 @@ export default {
       return lnglat.isMobile()
     },
     getIcon() {
-      return this.$store.getters.devices.find(d => d.id === this.selectedDevice.id).immobilized ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
+      const device = this.devices.find(d => d.id === this.selectedDevice.id)
+      return device && device.immobilized ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
     }
   },
   beforeDestroy() {

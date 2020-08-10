@@ -64,7 +64,9 @@ export default {
     immo_pending: 'Já existe um comando pendente para este veículo. Por favor aguarde o resultado.'
   },
   vehicleDetail: {
-    show_route: 'Rota'
+    show_route: 'Rota',
+    follow: 'Seguir',
+    unfollow: 'Parar'
   },
   poiTable: {
     showPOIs: 'Ver POIs',

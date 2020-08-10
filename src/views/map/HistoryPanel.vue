@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { serverBus, vm, sharedData } from '../../main'
+import { serverBus, vm, sharedData } from '@/main'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import * as consts from '../../utils/consts'
@@ -195,7 +195,7 @@ export default {
             if (positions.length > 0) {
               self.initIndexArray()
               self.fillGraphData()
-              if (this.$route.query.date) {
+              if (this.$route && this.$route.query.date) {
                 setTimeout(() => serverBus.$emit('autoSliderChange', this.$moment.utc(this.$route.query.date).unix()), 200)
               } else {
                 setTimeout(() => serverBus.$emit('autoSliderChange', self.maxPos), 200)

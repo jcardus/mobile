@@ -59,14 +59,14 @@
 
 <script>
 
-import { serverBus, sharedData, vm } from '../../main'
+import { serverBus, sharedData, vm } from '@/main'
 import settings from '../../settings'
-import { routeMatch } from '../../api/here'
+import { routeMatch } from '@/api/here'
 import * as utils from '../../utils/utils'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import * as animation from '../../utils/animation'
-import { traccar } from '../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
 import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
@@ -205,7 +205,7 @@ export default {
     vm.$data.currentDevice = this.device
     lnglat.hideLayers(this.showRoutes)
     animation.hideRouteLayer(!this.showRoutes)
-    if (this.$route.query.date) {
+    if (this.$route && this.$route.query.date) {
       console.log(this.$route.query.date)
       this._maxDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
       this._minDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
@@ -244,7 +244,13 @@ export default {
           } else {
             this.drawTrip()
           }
-          positions.forEach(function(p) { utils.calculateFuelLevel(p, self.device) })
+
+          let lastPosition = null
+          positions.forEach(function(p) {
+            const adc1CacheValues = lastPosition === null || !(lastPosition.adc1CacheValues) ? [] : lastPosition.adc1CacheValues
+            utils.calculateFuelLevel(adc1CacheValues, p, self.device)
+            lastPosition = p
+          })
           sharedData.setPositions(positions)
           Vue.$log.debug(positions)
           this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))

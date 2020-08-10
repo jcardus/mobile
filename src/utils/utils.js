@@ -123,18 +123,28 @@ export function getDeviceState(position) {
   return 'Moving'
 }
 
-export function calculateFuelLevel(position, device) {
+export function calculateFuelLevel(adc1CacheValues, position, device) {
   if (device.attributes.fuel_tank_capacity &&
     device.attributes.fuel_low_threshold &&
     device.attributes.fuel_high_threshold &&
     position.attributes.adc1) {
     // Calculate FuelLevel
     if (position.attributes.ignition) {
-      const level = Math.round(((device.attributes.fuel_low_threshold - position.attributes.adc1) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
+      if (adc1CacheValues.length === 5) {
+        adc1CacheValues.splice(0, 1)
+      }
+
+      adc1CacheValues.push(position.attributes.adc1)
+      const adc1CalculatedValue = (adc1CacheValues.reduce((total, value) => total + value, 0)) / adc1CacheValues.length
+
+      const level = Math.round(((device.attributes.fuel_low_threshold - adc1CalculatedValue) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
+
       if (level >= 0 && level <= 100) {
         position.fuelLevel = level
+        position.adc1CacheValues = adc1CacheValues
       } else if (device.position) {
         position.fuelLevel = device.position.fuelLevel
+        position.adc1CacheValues = adc1CacheValues
       }
     }
   }
