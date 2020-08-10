@@ -749,7 +749,8 @@ export default {
         device.lastUpdate = position.fixTime
       }
 
-      utils.calculateFuelLevel(position, device)
+      const adc1CacheValues = device.position && device.position.adc1CacheValues ? device.position.adc1CacheValues : []
+      utils.calculateFuelLevel(adc1CacheValues, position, device)
       // moment is expensive so we cache this value
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
