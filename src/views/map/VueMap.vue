@@ -44,7 +44,6 @@ import { mapGetters } from 'vuex'
 import PoiPopUp from './PoiPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
-import * as angles from 'angles'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -455,10 +454,10 @@ export default {
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
-      vm.$static.positionsSource.features.forEach(f => {
-        f.properties.bearing = this.map.getBearing()
-        f.properties.courseMinusBearing = angles.normalize(f.properties.course - this.map.getBearing())
-      })
+      // TODO:vm.$static.positionsSource.features.forEach(f => {
+      // f.properties.bearing = this.map.getBearing()
+      // f.properties.courseMinusBearing = angles.normalize(f.properties.course - this.map.getBearing())
+      // })
     },
     onPitch: function() {
       this.showHideDevices(this.$static.map.getPitch() === 0)
