@@ -38,6 +38,7 @@
         :placeholder="$t('report.select_period')"
         type="datepicker"
         readonly
+        :calendar-params="{ dateFormat: 'M dd yyyy', rangePicker: true }"
         @calendar:change="calendarChange"
       ></f7-list-input>
       <f7-block>
@@ -49,11 +50,11 @@
 
 <script>
 
-import { vm, serverBus } from '../../main'
+import { vm, serverBus } from '@/main'
 import VueCookies from 'vue-cookies'
 import * as utils from '../../views/reports/utils/utils'
 import Vue from 'vue'
-import { traccar } from '../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
 
 export default {
