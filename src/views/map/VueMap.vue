@@ -42,6 +42,7 @@ import PoiPopUp from './PoiPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
 import { animate } from '@/utils/animation'
+import * as angles from 'angles'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -293,7 +294,7 @@ export default {
       const feature = this.findFeatureByDeviceId(device.id)
       if (feature && feature.properties.category !== device.category) {
         feature.properties.category = this.getCategory(device.category)
-        this.refreshMap()
+        lnglat.refreshMap()
       }
     },
     deviceSelected(device) {
@@ -374,9 +375,6 @@ export default {
         }
       }
     },
-    refreshMap() {
-      lnglat.refreshMap()
-    },
     refreshGeofences() {
       // Geofences ... POIs ... Lines
       if (vm.$static.map && vm.$static.map.getSource('geofences')) {
@@ -453,14 +451,10 @@ export default {
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
         lnglat.showHideLayersOnPitch()
+        lnglat.refreshMap()
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
-      this.refreshMap()
-      // TODO:vm.$static.positionsSource.features.forEach(f => {
-      // f.properties.bearing = this.map.getBearing()
-      // f.properties.courseMinusBearing = angles.normalize(f.properties.course - this.map.getBearing())
-      // })
     },
     onPitch: function() {
       this.showHideDevices(this.$static.map.getPitch() === 0)
@@ -642,7 +636,8 @@ export default {
           text: device.name,
           deviceId: position.deviceId,
           category: this.getCategory(device.category),
-          description: '<div id=\'vue-vehicle-popup\'></div>'
+          description: '<div id=\'vue-vehicle-popup\'></div>',
+          bearing: this.map.getBearing()
         },
         geometry: {
           'type': 'Point',
@@ -677,6 +672,7 @@ export default {
       device.position = position
       feature.properties = { ...feature.properties, ...position }
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
+      feature.properties.courseMinusBearing = angles.normalize(position.course - feature.properties.bearing)
       this.$store.dispatch('user/updateDevice', device)
     },
     processPositions(positions) {
@@ -697,7 +693,7 @@ export default {
               this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             this.map.getZoom() >= consts.detailedZoom) {
             this.animateTo(feature, position)
-            this.refreshMap()
+            lnglat.refreshMap()
           } else {
             feature.geometry.coordinates = [position.longitude, position.latitude]
             feature.properties.course = position.course

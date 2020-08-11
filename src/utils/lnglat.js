@@ -13,6 +13,7 @@ import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import { layers as _layers, source } from './consts'
 import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
 import vehicleLabelsLayer from '@/views/map/mapbox/VehicleLabelsLayer'
+import * as angles from 'angles'
 
 export function centerVehicle(feature) {
   vm.$static.map.flyTo({
@@ -54,6 +55,7 @@ export function refreshMap() {
       'type': 'FeatureCollection',
       'features': vm.$static.positionsSource.features.filter(f => !f.properties.animating)
     }
+    Vue.$log.debug(source.features)
     vm.$static.map.getSource('positions').setData(source)
   }
 }
@@ -291,7 +293,12 @@ export function updateMarkers() {
   for (let i = 0; i < features.length; i++) {
     const coords = features[i].geometry.coordinates
     const props = features[i].properties
-    if (!props.cluster) continue
+    if (!props.cluster) {
+      const feature = findFeatureByDeviceId(props.deviceId)
+      feature.properties.bearing = vm.$static.map.getBearing()
+      feature.properties.courseMinusBearing = angles.normalize(feature.properties.course - feature.properties.bearing)
+      continue
+    }
     const id = props.cluster_id
 
     let marker = vm.$static.markers[id]

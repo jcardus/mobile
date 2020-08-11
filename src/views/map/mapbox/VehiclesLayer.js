@@ -1,7 +1,7 @@
 import { layers, source } from '@/utils/consts'
 
-const bearing = ['case', ['has', 'bearing'], ['get', 'bearing'], 0]
-const course = ['case', ['has', 'courseMinusBearing'], ['get', 'courseMinusBearing'], ['get', 'course']]
+const bearing = ['get', 'bearing']
+const course = ['get', 'courseMinusBearing']
 const _colorFormula = ['%', ['-', 25, ['floor', ['/', course, 14.4]]], 25]
 const colorFormula = ['case', ['<', _colorFormula, 10], ['concat', '0', ['to-string', _colorFormula]], ['to-string', _colorFormula]]
 const iconImage = ['concat', ['get', 'color'], ['get', 'category'], '00', colorFormula]
