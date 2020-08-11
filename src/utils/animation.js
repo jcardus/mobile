@@ -75,7 +75,6 @@ function _animate() {
     const counter = feature.counter
     if (counter < feature.route.length) {
       const coordinates = feature.route[counter]
-      // feature.properties.speed = 10 // just to become  green...
       feature.geometry.coordinates = coordinates
       if (lnglat.popUps[feature.properties.deviceId]) {
         lnglat.popUps[feature.properties.deviceId].setLngLat(coordinates)
@@ -88,33 +87,36 @@ function _animate() {
           { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }, { essential: true, duration: 200 }
         )
       }
-      const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
-      const p2 = feature.route[counter === feature.route.length - 1 ? counter : counter + 1]
-      if (p1 && p2) {
-        feature.endRotation = angles.normalize(bearing(p1, p2))
+      if (counter < feature.route.length - 1) {
+        feature.endRotation = angles.normalize(bearing(feature.route[counter], feature.route[counter + 1]))
+      } else {
+        feature.endRotation = feature.endingCourse
       }
       if (store.getters.followVehicle) {
         feature.properties.bearing = feature.properties.course
         lnglat.centerVehicle(feature)
       }
-      refreshFeature(feature)
       if (rotate(feature) < 15) {
         feature.counter++
       }
+      refreshFeature(feature)
     } else {
       feature.properties.animating = false
-      animatingFeatures.slice(i, 1)
+      animatingFeatures.splice(i, 1)
+      Vue.$log.debug('devicePositionChanged', feature.properties.deviceId)
       serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
       serverBus.$emit('routeMatchFinished')
     }
   }
   if (animatingFeatures.length) {
     requestAnimationFrame(_animate)
-  }
+  } else { Vue.$log.debug('stopped') }
 }
 
+// for debugging
 let changeColor = 0
-export function animate(feature, coordinates) {
+
+export function animate(feature, coordinates, endingCourse) {
   const origin = feature.geometry.coordinates
   const destination = coordinates.slice(-1)
   if (JSON.stringify(origin) === JSON.stringify(destination)) {
@@ -143,7 +145,7 @@ export function animate(feature, coordinates) {
       }
     })
   }
-  animateRoute(route, feature)
+  animateRoute(route, feature, endingCourse)
 }
 export function cacheMatch(coordinates, timestamps) {
   const route = {
@@ -177,13 +179,13 @@ function getHashCode(route) {
     Math.floor(dest[0] * multi) +
     Math.floor(dest[1] * multi)
 }
-export function animateRoute(route, feature) {
+export function animateRoute(route, feature, endingCourse) {
   if (nextKey === getHashCode(route)) {
     route.geometry.coordinates = nextMatch
   }
-  followLine(route, feature)
+  followLine(route, feature, endingCourse)
 }
-export function followLine(route, feature) {
+export function followLine(route, feature, endingCourse) {
   const steps = 300
   const arc = []
 
@@ -196,16 +198,15 @@ export function followLine(route, feature) {
     feature.route = arc
     feature.counter = 0
     feature.properties.animating = true
-    Vue.$log.debug(feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions refreshRate ', consts.refreshRate)
+    feature.endingCourse = endingCourse
+    Vue.$log.debug(feature.properties.text, lineDistance * 1000, 'meters')
     const animating = animatingFeatures.length
     if (!animatingFeatures.find(f => f === feature)) {
       animatingFeatures.push(feature)
     }
-    if (!animating) {
-      _animate()
-    }
+    if (!animating) { _animate() } else { Vue.$log.info('skip animation call, len:', animating) }
   } else {
-    Vue.$log.debug('ignoring', feature.properties.text, '(', feature.properties.animating, ')', lineDistance * 1000, 'meters', arc.length, ' positions')
+    Vue.$log.debug('ignoring', feature.properties.text, '(', feature.properties.animating, ')', arc.length, ' positions')
     serverBus.$emit('routeMatchFinished')
   }
 }

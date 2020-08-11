@@ -34,6 +34,5 @@ export default {
   },
   onAdd(map) {
     this.map = map
-    // this.layout['icon-image'] = getIconImage(map)
   }
 }

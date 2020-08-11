@@ -331,6 +331,10 @@ export default {
         .setLngLat(coordinates)
         .setHTML(description)
         .addTo(this.$static.map)
+        .on('close', () => {
+          Vue.$log.debug('popup closed', this.popUps[device.id])
+          this.popUps[device.id].closed = true
+        })
       const VD = Vue.extend(VehicleDetail)
       this.lastPopup = new VD({
         i18n: i18n,
@@ -692,11 +696,7 @@ export default {
             lnglat.contains(
               this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             this.map.getZoom() >= consts.detailedZoom) {
-            animate(
-              feature,
-              [feature.geometry.coordinates, [position.longitude, position.latitude]],
-              [feature.properties.fixTime, position.fixTime].map(x => Vue.moment(x).unix())
-            )
+            this.animateTo(feature, position)
             this.refreshMap()
           } else {
             feature.geometry.coordinates = [position.longitude, position.latitude]
@@ -955,6 +955,10 @@ export default {
     },
     styleImageMissing(e) {
       console.log('A styleimagemissing event occurred.', e)
+    },
+    animateTo(feature, position) {
+      const line = [feature.geometry.coordinates, [position.longitude, position.latitude]]
+      animate(feature, line, position.course)
     }
   }
 }
