@@ -50,7 +50,11 @@ export const popUps = []
 
 export function refreshMap() {
   if (vm.$static.map.getSource('positions')) {
-    vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+    const source = {
+      'type': 'FeatureCollection',
+      'features': vm.$static.positionsSource.features.filter(f => !f.properties.animating)
+    }
+    vm.$static.map.getSource('positions').setData(source)
   }
 }
 

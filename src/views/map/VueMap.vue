@@ -27,9 +27,6 @@ import Vue from 'vue'
 import VueCookies from 'vue-cookies'
 import { traccar } from '@/api/traccar-api'
 import VehicleDetail from './VehicleDetail'
-import along from '@turf/along'
-import bbox from '@turf/bbox'
-import bearing from '@turf/bearing'
 import HistoryPanel from './HistoryPanel'
 import i18n, { getLanguageI18n } from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
@@ -291,7 +288,7 @@ export default {
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
-    deviceChanged: function(device) {
+    deviceChanged(device) {
       this.$log.debug('VueMap deviceChanged')
       const feature = this.findFeatureByDeviceId(device.id)
       if (feature && feature.properties.category !== device.category) {
@@ -455,6 +452,7 @@ export default {
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
+      this.refreshMap()
       // TODO:vm.$static.positionsSource.features.forEach(f => {
       // f.properties.bearing = this.map.getBearing()
       // f.properties.courseMinusBearing = angles.normalize(f.properties.course - this.map.getBearing())
@@ -603,84 +601,6 @@ export default {
         serverBus.$emit('deviceSelectedOnMap', device)
       }
     },
-    animate(position, feature, timestamps) {
-      const origin = feature.geometry.coordinates
-      const destination = [position.longitude, position.latitude]
-      if (JSON.stringify(origin) === JSON.stringify(destination)) {
-        return
-      }
-      const route = {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: [origin, destination]
-        }
-      }
-      this.getMatch(route.geometry.coordinates, [25, 25], route, timestamps, feature, position)
-    },
-    animateMatched: function(route, feature) {
-      const steps = 300
-      let counter = 0
-      const lineDistance = lnglat.lineDistance(route)
-
-      if (this.selected && this.selected.id === feature.properties.deviceId) {
-        const box = bbox(route)
-        const bounds = [[box[0], box[1]], [box[2], box[3]]]
-        if (!lnglat.contains(this.$static.map.getBounds(), { longitude: box[0], latitude: box[1] }) ||
-            !lnglat.contains(this.$static.map.getBounds(), { longitude: box[2], latitude: box[3] })
-        ) { this.$static.map.fitBounds(bounds, { maxZoom: this.$static.map.getZoom() }) }
-      }
-
-      const arc = []
-      for (let i = 0; i < lineDistance; i += lineDistance / steps) {
-        const segment = along(route, i, { units: 'kilometers' })
-        arc.push(segment.geometry.coordinates)
-      }
-      feature.route = arc
-
-      const self = this
-      function _animate() {
-        const coordinates = feature.route[counter]
-        if (coordinates) {
-          feature.geometry.coordinates = coordinates
-          if (self.popUps[feature.properties.deviceId]) { self.popUps[feature.properties.deviceId].setLngLat(coordinates) }
-          const p1 = feature.route[counter >= steps ? counter - 1 : counter]
-          const p2 = feature.route[counter >= steps ? counter : counter + 1]
-          if (p1 && p2) {
-            feature.properties.course = bearing(p1, p2)
-          }
-          if (self.followVehicle) {
-            feature.properties.bearing = feature.properties.course
-            self.centerVehicle(feature)
-          }
-          if (self.map.getPitch() > 0 && self.vehicles3dEnabled) {
-            vehicles3d.updateCoords(feature)
-          } else {
-            self.refreshMap()
-          }
-        }
-        if (counter++ < steps) {
-          requestAnimationFrame(_animate)
-        } else {
-          // feature.properties.course = newCourse;
-          self.refreshMap()
-          serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
-          feature.animating = false
-        }
-      }
-
-      if (!feature.animating) {
-        feature.animating = true
-        self.$log.debug('animating ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters')
-        _animate(counter)
-      }
-    },
-    _animate: function() {
-      if (this.animating) {
-        // this.$static.map.triggerRepaint()
-        requestAnimationFrame(this._animate)
-      }
-    },
     updateMarkers() {
       if (!this.positions) {
         this.$log.warn('updateMarkers canceled, positions is undefined')
@@ -759,9 +679,7 @@ export default {
       for (const position of positions) {
         const device = this.devices.find(e => e.id === position.deviceId)
         if (!device) {
-          const errorMessage = `no feature and no device, this is weird, we should logoff, position:', ${position}, 'devices', ${this.devices}`
-          this.$log.error(errorMessage)
-          TrackJS.track(errorMessage)
+          this.$log.error('no device, this is weird, we should logoff,', position)
           continue
         }
 
@@ -771,16 +689,16 @@ export default {
           this.positionsSource.features.push(feature)
         } else {
           if (settings.animateMarkers && !this.historyMode &&
-            lnglat.contains(this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
+            lnglat.contains(
+              this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
             this.map.getZoom() >= consts.detailedZoom) {
-            this.$log.debug('animating', feature.properties.text)
             animate(
               feature,
               [feature.geometry.coordinates, [position.longitude, position.latitude]],
               [feature.properties.fixTime, position.fixTime].map(x => Vue.moment(x).unix())
             )
+            this.refreshMap()
           } else {
-            this.$log.debug('not animating', device.name)
             feature.geometry.coordinates = [position.longitude, position.latitude]
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
@@ -790,7 +708,7 @@ export default {
           vehicles3d.updateColor(feature)
         }
       }
-      this.refreshMap()
+      // this.refreshMap()
     },
     findDriver(position, device) {
       if (!position.attributes.driverUniqueId ||

@@ -14,10 +14,11 @@ let nextMatch = []
 const routePlayLayer = 'routePlayLayer'
 angles.SCALE = 360
 import vehicleLayer from '@/views/map/mapbox/VehiclesLayer'
-
 const routePlayVehicleLayer = { ...vehicleLayer }
 routePlayVehicleLayer.id = routePlayLayer
 routePlayVehicleLayer.source = routePlayLayer
+
+const animationLayers = {}
 
 export function hideRouteLayer(hide) {
   lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
@@ -29,14 +30,18 @@ export function refreshFeature(feature) {
     const data = {
       type: 'FeatureCollection', features: [feature]
     }
-    if (!vm.$static.map.getLayer(routePlayLayer)) {
-      vm.$static.map.addSource(routePlayLayer, {
+    if (!vm.$static.map.getSource(feature.properties.text)) {
+      vm.$static.map.addSource(feature.properties.text, {
         type: 'geojson',
         data: data
       })
-      vm.$static.map.addLayer(routePlayVehicleLayer)
+      const animationLayer = { ...vehicleLayer }
+      animationLayer.id = feature.properties.text
+      animationLayer.source = feature.properties.text
+      animationLayers[feature.properties.text] = animationLayer
+      vm.$static.map.addLayer(animationLayer)
     } else {
-      vm.$static.map.getSource(routePlayLayer).setData(data)
+      vm.$static.map.getSource(feature.properties.text).setData(data)
     }
   }
 }
@@ -79,7 +84,6 @@ export function animate(feature, coordinates) {
       }
     })
   }
-
   animateRoute(route, feature)
 }
 export function cacheMatch(coordinates, timestamps) {
@@ -116,27 +120,11 @@ function getHashCode(route) {
 }
 export function animateRoute(route, feature) {
   if (nextKey === getHashCode(route)) {
-    Vue.$log.debug('got match from cache:', getHashCode(route))
     route.geometry.coordinates = nextMatch
-    animateMatched(route, feature)
-  } else {
-    Vue.$log.debug('no match from cache, no snap', getHashCode(route))
-    animateMatched(route, feature)
   }
+  followLine(route, feature)
 }
-export function animateMatched(route, feature) {
-  const lineDistance = lnglat.lineDistance(route)
-  let counter = 0
-  const arc = []
-  for (let i = 0; i < lineDistance; i += 0.005) {
-    const segment = along(route, i, { units: 'kilometers' })
-    arc.push(segment.geometry.coordinates)
-  }
-  Vue.$log.info('animateMatched', route, feature)
-  feature.route = arc
-  const step = consts.rotateStep
-  let endRotation = 0
-
+export function followLine(route, feature) {
   function _animateRotation() {
     const dir = angles.shortestDirection(endRotation, feature.properties.course)
     if (dir !== 0) {
@@ -149,6 +137,7 @@ export function animateMatched(route, feature) {
     return 0
   }
   function _animate() {
+    const counter = feature.counter
     const coordinates = feature.route[counter]
     if (coordinates) {
       // feature.properties.speed = 10 // just to become  green...
@@ -169,29 +158,43 @@ export function animateMatched(route, feature) {
         feature.properties.bearing = feature.properties.course
         lnglat.centerVehicle(feature)
       }
+      refreshFeature(feature)
       if (_animateRotation() > 15) {
         requestAnimationFrame(_animate)
         return
       }
-      refreshFeature(feature)
     }
-    if (counter++ < feature.route.length + 1) {
+    if (feature.counter++ < feature.route.length + 1 && feature.properties.animating) {
       requestAnimationFrame(_animate)
     } else {
-      refreshFeature()
-      feature.animating = false
+      feature.properties.animating = false
+      refreshFeature(feature)
       serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
       serverBus.$emit('routeMatchFinished')
     }
   }
+  const steps = 300
+  const arc = []
+  const step = consts.rotateStep
+  let endRotation = 0
 
-  if (feature.route.length > 0 && !feature.animating) {
-    feature.animating = true
-    Vue.$log.debug('animating ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions refreshRate ', consts.refreshRate)
+  // if it's in the middle of an animation, cancel and start a new one from where it was
+  if (feature.properties.animating) {
+    feature.properties.animating = false
+  }
+  const lineDistance = lnglat.lineDistance(route)
+  for (let i = 0; i < lineDistance; i += lineDistance / steps) {
+    const segment = along(route, i, { units: 'kilometers' })
+    arc.push(segment.geometry.coordinates)
+  }
+  if (arc.length > 1) {
+    feature.route = arc
+    feature.counter = 0
+    feature.properties.animating = true
+    Vue.$log.debug(feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions refreshRate ', consts.refreshRate)
     _animate()
   } else {
-    Vue.$log.debug('ignoring ' + feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions')
-    Vue.$log.info('emit routeMatchFinished')
+    Vue.$log.debug('ignoring', feature.properties.text, '(', feature.properties.animating, ')', lineDistance * 1000, 'meters', arc.length, ' positions')
     serverBus.$emit('routeMatchFinished')
   }
 }

@@ -76,10 +76,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { appOffline } from '../../utils/utils'
-import { vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
-import { setLanguage } from '../../lang'
+import { appOffline } from '@/utils/utils'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
+import { setLanguage } from '@/lang'
 
 export default {
   name: 'Profile',
@@ -141,7 +141,7 @@ export default {
       await this.$store.dispatch('app/setLoading', true)
       await this.$store.dispatch('user/logout')
       await this.$store.dispatch('app/setLoading', false)
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      window.location.reload()
     },
     handleCommand(command) {
       if (command === 'profile') {
