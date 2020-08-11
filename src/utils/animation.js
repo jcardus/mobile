@@ -24,10 +24,11 @@ const animatingFeatures = []
 export function hideRouteLayer(hide) {
   lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
 }
-export function refreshFeature(feature) {
+export function updateFeature(feature) {
   if (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled) {
     vehicles3d.updateCoords(feature)
   } else {
+    lnglat.updateBearing(feature)
     const data = {
       type: 'FeatureCollection', features: [feature]
     }
@@ -93,13 +94,12 @@ function _animate() {
         feature.endRotation = feature.endingCourse
       }
       if (store.getters.followVehicle) {
-        feature.properties.bearing = feature.properties.course
         lnglat.centerVehicle(feature)
       }
       if (rotate(feature) < 15) {
         feature.counter++
       }
-      refreshFeature(feature)
+      updateFeature(feature)
     } else {
       feature.properties.animating = false
       animatingFeatures.splice(i, 1)

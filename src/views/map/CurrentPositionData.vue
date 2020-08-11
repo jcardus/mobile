@@ -845,7 +845,7 @@ export default {
     routePlay() {
       this.removeLayers(true)
       lnglat.hideLayers(true)
-      animation.refreshFeature()
+      animation.updateFeature()
       animation.removeAddRouteLayer()
       this.$log.info('CurrentPositionData emit routeMatchFinished')
       serverBus.$emit('routeMatchFinished')
@@ -951,7 +951,7 @@ export default {
         vm.$static.currentFeature.properties.course = positions[newPos].course
         vm.$static.currentFeature.geometry.coordinates = [positions[newPos].longitude, positions[newPos].latitude]
         vm.$static.currentFeature.properties.address = positions[newPos].address
-        animation.refreshFeature()
+        animation.updateFeature()
       }
       if (newPos < positions.length - 1) {
         this.oldPos = newPos

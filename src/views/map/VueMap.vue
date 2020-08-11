@@ -355,6 +355,8 @@ export default {
           maxDuration: 5000
         })
         this.showPopup(feature, this.selected)
+        // big hammer. moveEnd is not fired when there's no animation... I think this is a bug...
+        setTimeout(lnglat.updateMarkers, 1000)
       }
     },
     flyToFeature: function(feature) {
@@ -451,7 +453,6 @@ export default {
         VueCookies.set('mapPos', center)
         lnglat.updateMarkers()
         lnglat.showHideLayersOnPitch()
-        lnglat.refreshMap()
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }

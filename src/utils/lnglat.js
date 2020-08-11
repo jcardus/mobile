@@ -55,7 +55,6 @@ export function refreshMap() {
       'type': 'FeatureCollection',
       'features': vm.$static.positionsSource.features.filter(f => !f.properties.animating)
     }
-    Vue.$log.debug(source.features)
     vm.$static.map.getSource('positions').setData(source)
   }
 }
@@ -283,6 +282,12 @@ function donutSegment(start, end, r, r0, color) {
     r0, r0, 0, largeArc, 0, r + r0 * x0, r + r0 * y0,
     '" fill="' + color + '" />'].join(' ')
 }
+
+export function updateBearing(feature) {
+  feature.properties.bearing = vm.$static.map.getBearing()
+  feature.properties.courseMinusBearing = angles.normalize(feature.properties.course - feature.properties.bearing)
+}
+
 export function updateMarkers() {
   if (vm.$store.state.transient.historyMode) return
   const newMarkers = {}
@@ -295,8 +300,7 @@ export function updateMarkers() {
     const props = features[i].properties
     if (!props.cluster) {
       const feature = findFeatureByDeviceId(props.deviceId)
-      feature.properties.bearing = vm.$static.map.getBearing()
-      feature.properties.courseMinusBearing = angles.normalize(feature.properties.course - feature.properties.bearing)
+      updateBearing(feature)
       continue
     }
     const id = props.cluster_id
@@ -327,6 +331,7 @@ export function updateMarkers() {
     }
   }
   markersOnScreen = newMarkers
+  refreshMap()
 }
 
 export function removeAdd3dLayer() {
