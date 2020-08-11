@@ -19,6 +19,7 @@ routePlayVehicleLayer.id = routePlayLayer
 routePlayVehicleLayer.source = routePlayLayer
 
 const animationLayers = {}
+const animatingFeatures = []
 
 export function hideRouteLayer(hide) {
   lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
@@ -51,6 +52,64 @@ export function removeAddRouteLayer() {
     vm.$static.map.addLayer(routePlayVehicleLayer)
   } else {
     Vue.$log.warn('removeAddRouteLayer called but there is no layer!')
+  }
+}
+
+function rotate(feature) {
+  const step = consts.rotateStep
+  const dir = angles.shortestDirection(feature.endRotation, feature.properties.course)
+  if (dir !== 0) {
+    if (angles.distance(angles.normalize(feature.properties.course + dir * step), feature.endRotation) > step) {
+      feature.properties.course = angles.normalize(feature.properties.course + dir * step)
+      return angles.distance(angles.normalize(feature.properties.course), feature.endRotation)
+    }
+  }
+  feature.properties.course = feature.endRotation
+  return 0
+}
+
+function _animate() {
+  let i = animatingFeatures.length
+  while (i--) {
+    const feature = animatingFeatures[i]
+    const counter = feature.counter
+    if (counter < feature.route.length) {
+      const coordinates = feature.route[counter]
+      // feature.properties.speed = 10 // just to become  green...
+      feature.geometry.coordinates = coordinates
+      if (lnglat.popUps[feature.properties.deviceId]) {
+        lnglat.popUps[feature.properties.deviceId].setLngLat(coordinates)
+      }
+      if (
+        store.getters.historyMode &&
+        !lnglat.contains(vm.$static.map.getBounds(),
+          { longitude: coordinates[0], latitude: coordinates[1] })) {
+        vm.$static.map.panTo(
+          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }, { essential: true, duration: 200 }
+        )
+      }
+      const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
+      const p2 = feature.route[counter === feature.route.length - 1 ? counter : counter + 1]
+      if (p1 && p2) {
+        feature.endRotation = angles.normalize(bearing(p1, p2))
+      }
+      if (store.getters.followVehicle) {
+        feature.properties.bearing = feature.properties.course
+        lnglat.centerVehicle(feature)
+      }
+      refreshFeature(feature)
+      if (rotate(feature) < 15) {
+        feature.counter++
+      }
+    } else {
+      feature.properties.animating = false
+      animatingFeatures.slice(i, 1)
+      serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
+      serverBus.$emit('routeMatchFinished')
+    }
+  }
+  if (animatingFeatures.length) {
+    requestAnimationFrame(_animate)
   }
 }
 
@@ -125,63 +184,9 @@ export function animateRoute(route, feature) {
   followLine(route, feature)
 }
 export function followLine(route, feature) {
-  function _animateRotation() {
-    const dir = angles.shortestDirection(endRotation, feature.properties.course)
-    if (dir !== 0) {
-      if (angles.distance(angles.normalize(feature.properties.course + dir * step), endRotation) > step) {
-        feature.properties.course = angles.normalize(feature.properties.course + dir * step)
-        return angles.distance(angles.normalize(feature.properties.course), endRotation)
-      }
-    }
-    feature.properties.course = endRotation
-    return 0
-  }
-  function _animate() {
-    const counter = feature.counter
-    const coordinates = feature.route[counter]
-    if (coordinates) {
-      // feature.properties.speed = 10 // just to become  green...
-      feature.geometry.coordinates = coordinates
-      if (lnglat.popUps[feature.properties.deviceId]) { lnglat.popUps[feature.properties.deviceId].setLngLat(coordinates) }
-      if (store.getters.historyMode && !lnglat.contains(vm.$static.map.getBounds(),
-        { longitude: coordinates[0], latitude: coordinates[1] })) {
-        vm.$static.map.panTo(
-          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }, { essential: true, duration: 200 }
-        )
-      }
-      const p1 = feature.route[counter === feature.route.length - 1 ? counter - 1 : counter]
-      const p2 = feature.route[counter === feature.route.length - 1 ? counter : counter + 1]
-      if (p1 && p2) {
-        endRotation = angles.normalize(bearing(p1, p2))
-      }
-      if (store.getters.followVehicle) {
-        feature.properties.bearing = feature.properties.course
-        lnglat.centerVehicle(feature)
-      }
-      refreshFeature(feature)
-      if (_animateRotation() > 15) {
-        requestAnimationFrame(_animate)
-        return
-      }
-    }
-    if (feature.counter++ < feature.route.length + 1 && feature.properties.animating) {
-      requestAnimationFrame(_animate)
-    } else {
-      feature.properties.animating = false
-      refreshFeature(feature)
-      serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
-      serverBus.$emit('routeMatchFinished')
-    }
-  }
   const steps = 300
   const arc = []
-  const step = consts.rotateStep
-  let endRotation = 0
 
-  // if it's in the middle of an animation, cancel and start a new one from where it was
-  if (feature.properties.animating) {
-    feature.properties.animating = false
-  }
   const lineDistance = lnglat.lineDistance(route)
   for (let i = 0; i < lineDistance; i += lineDistance / steps) {
     const segment = along(route, i, { units: 'kilometers' })
@@ -192,7 +197,13 @@ export function followLine(route, feature) {
     feature.counter = 0
     feature.properties.animating = true
     Vue.$log.debug(feature.properties.text + ' ' + lineDistance * 1000 + ' meters, ' + feature.route.length + ' positions refreshRate ', consts.refreshRate)
-    _animate()
+    const animating = animatingFeatures.length
+    if (!animatingFeatures.find(f => f === feature)) {
+      animatingFeatures.push(feature)
+    }
+    if (!animating) {
+      _animate()
+    }
   } else {
     Vue.$log.debug('ignoring', feature.properties.text, '(', feature.properties.animating, ')', lineDistance * 1000, 'meters', arc.length, ' positions')
     serverBus.$emit('routeMatchFinished')
