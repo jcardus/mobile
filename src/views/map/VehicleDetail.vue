@@ -114,11 +114,11 @@ export default {
     Vue.$log.debug('VehicleDetail')
     serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$off('deviceSelected', this.deviceSelected)
-    serverBus.$off('devicePositionChanged', this.devicePositionChanged)
+    serverBus.$off('animationEnd', this.devicePositionChanged)
   },
   created() {
     Vue.$log.debug('VehicleDetail')
-    serverBus.$on('devicePositionChanged', this.devicePositionChanged)
+    serverBus.$on('animationEnd', this.devicePositionChanged)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },

@@ -39,10 +39,6 @@ const mutations = {
   SET_USER(state, token) {
     state.user = token
     state.user.attributes.avatar = getAvatar(token.name)
-    // default dailyReports to true
-    if (state.user.attributes.dailyEmails === undefined) {
-      state.user.attributes.dailyEmails = true
-    }
   },
   REMOVE_USER(state) {
     state.user = {

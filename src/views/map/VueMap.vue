@@ -333,7 +333,7 @@ export default {
         .setHTML(description)
         .addTo(this.$static.map)
         .on('close', () => {
-          Vue.$log.debug('popup closed', this.popUps[device.id])
+          Vue.$log.debug('popup closed', device.name)
           this.popUps[device.id].closed = true
         })
       const VD = Vue.extend(VehicleDetail)
@@ -683,7 +683,7 @@ export default {
           this.$log.error('no device, this is weird, we should logoff,', position)
           continue
         }
-
+        this.$log.debug(position.fixTime, device.name)
         let feature = this.findFeatureByDeviceId(position.deviceId)
         if (!feature) {
           feature = this.positionToFeature(position, device)

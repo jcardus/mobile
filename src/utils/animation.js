@@ -104,8 +104,8 @@ function _animate() {
     } else {
       feature.properties.animating = false
       animatingFeatures.splice(i, 1)
-      Vue.$log.debug('devicePositionChanged', feature.properties.deviceId)
-      serverBus.$emit('devicePositionChanged', feature.properties.deviceId)
+      Vue.$log.debug('animationEnd', feature.properties.deviceId)
+      serverBus.$emit('animationEnd', feature.properties.deviceId)
       serverBus.$emit('routeMatchFinished')
     }
   }
