@@ -40,6 +40,7 @@ export function updateFeature(feature) {
       const animationLayer = { ...vehicleLayer }
       animationLayer.id = feature.properties.text
       animationLayer.source = feature.properties.text
+      animationLayer.filter = ['get', 'animating']
       animationLayers[feature.properties.text] = animationLayer
       vm.$static.map.addLayer(animationLayer)
     } else {
