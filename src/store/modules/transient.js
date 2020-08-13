@@ -1,5 +1,5 @@
-import { serverBus, vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
+import { serverBus, vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as event from '../../events'
 import Vue from 'vue'
 import * as alertType from '../../alerts/alertType'
@@ -11,10 +11,14 @@ const state = {
   stiLoaded: false,
   isPlaying: false,
   trips: [],
-  portrait: true
+  portrait: true,
+  loading: false
 }
 
 const mutations = {
+  SET_LOADING(state, value) {
+    state.loading = value
+  },
   SET_PORTRAIT(state, value) {
     state.portrait = value
   },
@@ -41,6 +45,9 @@ const mutations = {
 }
 
 const actions = {
+  setLoading({ commit }, loading) {
+    commit('SET_LOADING', loading)
+  },
   setPortrait({ commit }, value) {
     commit('SET_PORTRAIT', value)
   },

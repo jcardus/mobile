@@ -24,7 +24,6 @@ import settings from '../../settings'
 import * as lnglat from '../../utils/lnglat'
 import { MapboxCustomControl } from '@/utils/lnglat'
 import Vue from 'vue'
-import VueCookies from 'vue-cookies'
 import { traccar } from '@/api/traccar-api'
 import VehicleDetail from './VehicleDetail'
 import HistoryPanel from './HistoryPanel'
@@ -37,7 +36,7 @@ import * as utils from '../../utils/utils'
 import { checkForUpdates } from '@/utils/utils'
 import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import PoiPopUp from './PoiPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
@@ -97,7 +96,6 @@ export default {
   data() {
     return {
       accessToken: consts.mapboxAccessToken,
-      center: [],
       origin: [-9.267959, 38.720023],
       destination: [],
       animating: true,
@@ -110,8 +108,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'drivers',
-      'showLabels', 'devices', 'isPlaying', 'vehicles3dEnabled']),
+    ...mapGetters([
+      'followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'drivers',
+      'showLabels', 'isPlaying', 'vehicles3dEnabled', 'deviceById', 'deviceByName',
+      'loading', 'zoom', 'center'
+    ]),
     userLoggedIn() {
       return this.name !== ''
     },
@@ -166,7 +167,7 @@ export default {
   created() {
     this.$log.info('VueMap', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
-    vm.$data.loadingMap = true
+    this.setLoading(true)
     if (this.isMobile) {
       this.$prompt = this.$f7.dialog.prompt
       this.$alert = this.$f7.dialog.alert
@@ -204,6 +205,17 @@ export default {
     setTime: { time: 5000, autostart: true, repeat: true }
   },
   methods: {
+    ...mapMutations('map', ['setCenter', 'setZoom']),
+    ...mapActions('transient', ['setLoading']),
+    shouldAnimate(feature) {
+      return settings.animateMarkers &&
+        !this.loading &&
+        !this.historyMode &&
+        lnglat.contains(
+          this.map.getBounds(),
+          { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
+        this.map.getZoom() >= consts.detailedZoom
+    },
     setTime() {
       this.$store.dispatch('setTime')
     },
@@ -214,7 +226,6 @@ export default {
           .catch((e) => {
             Vue.$log.warn(e)
             this.$store.dispatch('connectionOk', { state: false })
-            vm.$data.loadingMap = false
             NProgress.done()
           })
       }
@@ -224,27 +235,27 @@ export default {
     },
     initData() {
       Vue.$log.debug('VueMap')
-      const self = this
-      traccar.positions((pos) => {
-        self.processPositions(pos)
-        self.geofencesSource.features = self.processGeofences(vm.$store.state.user.geofences)
-        self.refreshGeofences()
-        Vue.$log.info('VueMap initData done finishLoading')
-        self.finishLoading()
+      traccar.positions().then(({ data }) => {
+        this.processPositions(data)
+        this.geofencesSource.features = this.processGeofences(vm.$store.state.user.geofences)
+        this.refreshGeofences()
+        Vue.$log.debug('finishLoading')
+        this.finishLoading()
         NProgress.done()
         this.initialized = true
       })
     },
     finishLoading() {
+      // load layers, load map and load data
       if (++this.loadingCount === 3) {
+        this.$log.debug(this.loadingCount)
         NProgress.done()
-        vm.$data.loadingMap = false
+        this.setLoading(false)
         if (this.isMobile) { this.$f7.preloader.hide() }
         lnglat.updateMarkers()
-        this.$log.info('finished loading', this.loadingCount)
         if (!this.isMobile && this.$route.query.vehicleName) {
           this.$log.debug(this.$route.query.vehicleName)
-          const device = this.devices.find(d => d.name === this.$route.query.vehicleName)
+          const device = this.deviceByName(this.$route.query.vehicleName)
           if (device) {
             serverBus.$emit(event.deviceSelectedOnMap, device)
             this.deviceSelected(device)
@@ -269,7 +280,7 @@ export default {
         TrackJS.track('MAP')
       }
     },
-    onMapLoad: function() {
+    onMapLoad() {
       this.addControls()
       this.map.resize()
       if (this.isMobile) {
@@ -283,7 +294,7 @@ export default {
       } else {
         this.$log.info('dataLoaded', this.dataLoaded, 'userLoggedIn', this.userLoggedIn, 'initialized', this.initialized, 'waiting for event')
       }
-      this.$log.debug('VueMap finishLoading')
+      this.$log.debug('finishLoading')
       this.finishLoading()
     },
     findFeatureByDeviceId(deviceId) {
@@ -384,19 +395,11 @@ export default {
       }
     },
     setZoomAndCenter() {
-      let center = [0, 0]
       try {
-        const cookie = VueCookies.get('mapPos')
-        const lat = cookie.split('|')[0].split(',')[0]
-        const lon = cookie.split('|')[0].split(',')[1]
-        const zoom = parseFloat(cookie.split('|')[1])
-        center = [parseFloat(lon), parseFloat(lat)]
-        this.$static.map.setZoom(zoom)
+        this.$static.map.setZoom(this.zoom)
+        this.$static.map.setCenter(this.center)
       } catch (e) {
-        this.$log.warn('no cookie...', e)
-      } finally {
-        this.origin = center
-        this.$static.map.setCenter(center)
+        this.$log.error(e)
       }
     },
     showHideDevices: function(show) {
@@ -449,8 +452,8 @@ export default {
     },
     onMoveEnd() {
       if (!this.isPlaying) {
-        const center = this.$static.map.getCenter().lat.toPrecision(9) + ',' + this.$static.map.getCenter().lng.toPrecision(9) + '|' + this.$static.map.getZoom()
-        VueCookies.set('mapPos', center)
+        this.setCenter(this.$static.map.getCenter())
+        this.setZoom(this.$static.map.getZoom())
         lnglat.updateMarkers()
         lnglat.showHideLayersOnPitch()
       } else {
@@ -567,7 +570,7 @@ export default {
       } else {
         this.$log.debug('adding layers...')
         lnglat.addLayers(vm.$static.map)
-        this.$log.debug('done adding layers finishLoading')
+        this.$log.debug('finishLoading')
         this.finishLoading()
       }
     },
@@ -591,10 +594,10 @@ export default {
         })
       })
     },
-    onClickTouchUnclustered: function(e) {
+    onClickTouchUnclustered(e) {
       this.$log.debug('clickUnclustered', e)
       const feature = e.features[0]
-      const device = this.devices.find(d => d.id === feature.properties.deviceId)
+      const device = this.deviceById(feature.properties.deviceId)
       if (device) {
         this.deviceSelected(device)
         serverBus.$emit('deviceSelectedOnMap', device)
@@ -678,7 +681,7 @@ export default {
     },
     processPositions(positions) {
       for (const position of positions) {
-        const device = this.devices.find(e => e.id === position.deviceId)
+        const device = this.deviceById(position.deviceId)
         if (!device) {
           this.$log.error('no device, this is weird, we should logoff,', position)
           continue
@@ -689,10 +692,7 @@ export default {
           feature = this.positionToFeature(position, device)
           this.positionsSource.features.push(feature)
         } else {
-          if (settings.animateMarkers && !this.historyMode &&
-            lnglat.contains(
-              this.map.getBounds(), { longitude: feature.geometry.coordinates[0], latitude: feature.geometry.coordinates[1] }) &&
-            this.map.getZoom() >= consts.detailedZoom) {
+          if (this.shouldAnimate(feature)) {
             this.animateTo(feature, position)
             lnglat.refreshMap()
           } else {

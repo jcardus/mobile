@@ -19,7 +19,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SimpleMap from '../../../views/map/SimpleMap'
-import { traccar } from '../../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
 
 export default {
   name: 'AlertDetail',
@@ -41,8 +41,8 @@ export default {
     this.positionId = this.alert.positionId
   },
   mounted() {
-    traccar.positions(null, this.positionId).then((position) => {
-      this.position = position[0]
+    traccar.positions(this.positionId).then(({ data }) => {
+      this.position = data[0]
     })
   }
 }

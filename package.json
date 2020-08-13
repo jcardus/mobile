@@ -42,7 +42,6 @@
     "three": "latest",
     "trackjs": "^3.7.4",
     "vue": "latest",
-    "vue-cookies": "^1.7.3",
     "vue-i18n": "^8.20.0",
     "vue-i18n-filter": "latest",
     "vue-moment": "^4.1.0",

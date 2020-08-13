@@ -176,12 +176,8 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  positions(onFulfill, positionId) {
-    if (positionId) {
-      return invokeApi(positions + '?id=' + positionId)
-    } else {
-      return invokeApi(positions, onFulfill)
-    }
+  positions(positionId) {
+    if (positionId) { return get(positions + '?id=' + positionId) } else { return get(positions) }
   },
   position(positionId) {
     return get(positions + '?id=' + positionId)

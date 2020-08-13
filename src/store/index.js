@@ -15,17 +15,10 @@ const vuexLocal = new VuexPersistence({
 
 Vue.use(Vuex)
 
-// https://webpack.js.org/guides/dependency-management/#requirecontext
-const modulesFiles = require.context('./modules', true, /\.js$/)
-
-// you do not need `import app from './modules/app'`
-// it will auto require all vuex module from modules file
-const modules = modulesFiles.keys().reduce((modules, modulePath) => {
-  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
-  const value = modulesFiles(modulePath)
-  modules[moduleName] = value.default
-  return modules
-}, {})
+import map from './modules/map'
+import settings from './modules/settings'
+import transient from './modules/transient'
+import user from './modules/user'
 
 const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
@@ -112,7 +105,12 @@ const store = new Vuex.Store({
       TrackJS.track('SOCKET_RECONNECT_ERROR')
     }
   },
-  modules,
+  modules: {
+    map: map,
+    settings: settings,
+    transient: transient,
+    user: user
+  },
   getters
 })
 

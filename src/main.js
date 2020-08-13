@@ -26,7 +26,7 @@ console.log('app starting...', window.location)
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
-  version: store.state.app.packageVersion
+  version: process.env.PACKAGE_VERSION
 })
 
 Vue.config.errorHandler = (err, vm, info) => {
@@ -148,7 +148,6 @@ export const vm = new Vue({
       vehiclePanel: null,
       historyPanel: null,
       loggedIn: false,
-      loadingMap: true,
       reportData: []
     }
   },

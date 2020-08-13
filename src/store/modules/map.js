@@ -8,10 +8,18 @@ const state = {
   minPos: 0,
   maxPos: 1000,
   tableCollapsed: false,
-  followVehicle: null
+  followVehicle: null,
+  center: null,
+  zoom: 0
 }
 
 const mutations = {
+  setCenter(state, value) {
+    state.center = value
+  },
+  setZoom(state, value) {
+    state.zoom = value
+  },
   FOLLOW_VEHICLE(state, value) {
     state.followVehicle = value
   },

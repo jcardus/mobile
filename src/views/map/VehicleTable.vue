@@ -208,15 +208,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
+    ...mapGetters(['loading', 'historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },
     height() {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
-    },
-    loading() {
-      return vm.$data.loadingMap
     },
     isMobile() {
       return lnglat.isMobile()
