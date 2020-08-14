@@ -42,6 +42,7 @@ import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
 import { animate } from '@/utils/animation'
 import * as angles from 'angles'
+import layerManager from './mapbox/LayerManager'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -121,14 +122,6 @@ export default {
     },
     heightHistoryPanel() {
       return this.historyMode ? 'height: ' + historyPanelHeight + 'px' : 'height:0'
-    },
-    historyPanel: {
-      get() { return vm.$data.historyPanel },
-      set(value) { vm.$data.historyPanel = value }
-    },
-    vehiclePanel: {
-      get() { return vm.$data.vehiclePanel },
-      set(value) { vm.$data.vehiclePanel = value }
     },
     popUps: {
       get: function() {
@@ -472,11 +465,11 @@ export default {
 
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
-      this.$static.map.on('touchstart', lnglat.layers.vehicles, this.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', lnglat.layers.vehicles, layerManager.onClickTouchUnclustered)
 
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'pois', this.onClickTouchPois)
-      this.$static.map.on('click', lnglat.layers.vehicles, this.onClickTouchUnclustered)
+      this.$static.map.on('click', lnglat.layers.vehicles, layerManager.onClickTouchUnclustered)
 
       this.$static.map.on('mouseenter', 'clusters', this.mouseEnter)
       this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
@@ -569,7 +562,7 @@ export default {
         this.map.setStyle(style)
       } else {
         this.$log.debug('adding layers...')
-        lnglat.addLayers(vm.$static.map)
+        layerManager.addLayers(vm.$static.map)
         this.$log.debug('finishLoading')
         this.finishLoading()
       }
@@ -593,15 +586,6 @@ export default {
           zoom: zoom + 1
         })
       })
-    },
-    onClickTouchUnclustered(e) {
-      this.$log.debug('clickUnclustered', e)
-      const feature = e.features[0]
-      const device = this.deviceById(feature.properties.deviceId)
-      if (device) {
-        this.deviceSelected(device)
-        serverBus.$emit('deviceSelectedOnMap', device)
-      }
     },
     updateMarkers() {
       if (!this.positions) {
@@ -641,7 +625,8 @@ export default {
           deviceId: position.deviceId,
           category: this.getCategory(device.category),
           description: '<div id=\'vue-vehicle-popup\'></div>',
-          bearing: this.map.getBearing()
+          bearing: this.map.getBearing(),
+          animating: false
         },
         geometry: {
           'type': 'Point',
@@ -677,7 +662,6 @@ export default {
       feature.properties = { ...feature.properties, ...position }
       feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
       feature.properties.courseMinusBearing = angles.normalize(position.course - feature.properties.bearing)
-      this.$store.dispatch('user/updateDevice', device)
     },
     processPositions(positions) {
       for (const position of positions) {

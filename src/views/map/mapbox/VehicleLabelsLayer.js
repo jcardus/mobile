@@ -4,7 +4,7 @@ export default {
   id: layers.labels,
   type: 'symbol',
   source: source,
-  filter: ['!=', 'cluster', true],
+  filter: ['all', ['!=', 'cluster', true], ['!=', 'animating', true]],
   layout: {
     'text-size': 11,
     'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],

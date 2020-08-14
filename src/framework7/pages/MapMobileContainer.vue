@@ -39,8 +39,8 @@
 
 <script>
 import VueMap from '../../views/map/VueMap'
-import { serverBus } from '../../main'
-import { appOffline } from '../../utils/utils'
+import { serverBus } from '@/main'
+import { appOffline } from '@/utils/utils'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import Vue from 'vue'
@@ -136,9 +136,6 @@ export default {
     clickOffline() {
       this.$log.warn('clicked offline icon, reloading...')
       location.reload()
-    },
-    beforeDestroy() {
-      serverBus.$off('deviceSelected', this.deviceSelected)
     },
     deviceSelected() {
       this.$f7.panel.close('left')

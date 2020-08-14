@@ -11,49 +11,28 @@ import store from '../store'
 const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
-const routePlayLayer = 'routePlayLayer'
 angles.SCALE = 360
-import vehicleLayer from '@/views/map/mapbox/VehiclesLayer'
-const routePlayVehicleLayer = { ...vehicleLayer }
-routePlayVehicleLayer.id = routePlayLayer
-routePlayVehicleLayer.source = routePlayLayer
+import layerManager from '@/views/map/mapbox/LayerManager'
 
-const animationLayers = {}
 const animatingFeatures = []
 
-export function hideRouteLayer(hide) {
-  lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
+function in3dMode() {
+  return vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled
 }
-export function updateFeature(feature) {
-  if (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled) {
+
+export function updateFeature(feature = vm.$static.currentFeature) {
+  if (in3dMode()) {
     vehicles3d.updateCoords(feature)
   } else {
     lnglat.updateBearing(feature)
-    const data = {
-      type: 'FeatureCollection', features: [feature]
-    }
-    if (!vm.$static.map.getSource(feature.properties.text)) {
-      vm.$static.map.addSource(feature.properties.text, {
-        type: 'geojson',
-        data: data
-      })
-      const animationLayer = { ...vehicleLayer }
-      animationLayer.id = feature.properties.text
-      animationLayer.source = feature.properties.text
-      animationLayer.filter = ['get', 'animating']
-      animationLayers[feature.properties.text] = animationLayer
-      vm.$static.map.addLayer(animationLayer)
+    if (store.getters.historyMode) {
+      layerManager.updateRoutePlayLayerSource(feature)
     } else {
-      vm.$static.map.getSource(feature.properties.text).setData(data)
+      if (!layerManager.getAnimationLayer(feature)) {
+        layerManager.addAnimationLayer(feature)
+      }
+      layerManager.updateAnimLayerSource(feature)
     }
-  }
-}
-export function removeAddRouteLayer() {
-  if (vm.$static.map.getLayer(routePlayLayer)) {
-    vm.$static.map.removeLayer(routePlayLayer)
-    vm.$static.map.addLayer(routePlayVehicleLayer)
-  } else {
-    Vue.$log.warn('removeAddRouteLayer called but there is no layer!')
   }
 }
 
@@ -103,7 +82,9 @@ function _animate() {
       updateFeature(feature)
     } else {
       feature.properties.animating = false
+      lnglat.refreshMap()
       animatingFeatures.splice(i, 1)
+      setTimeout(() => layerManager.removeAnimationLayer(feature), 3000)
       Vue.$log.debug('animationEnd', feature.properties.deviceId)
       serverBus.$emit('animationEnd', feature.properties.deviceId)
       serverBus.$emit('routeMatchFinished')

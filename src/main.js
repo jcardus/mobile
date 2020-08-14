@@ -145,8 +145,6 @@ export const vm = new Vue({
       currentDevice: null,
       lazyLoad: false,
       distance: 0,
-      vehiclePanel: null,
-      historyPanel: null,
       loggedIn: false,
       reportData: []
     }

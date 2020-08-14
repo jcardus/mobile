@@ -14,7 +14,7 @@ export default {
   type: 'symbol',
 
   source: source,
-  filter: ['!=', 'cluster', true],
+  filter: ['all', ['!=', 'cluster', true], ['!=', 'animating', true]],
   layout: {
     'symbol-z-order': 'source',
     'icon-keep-upright': true,
