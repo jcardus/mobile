@@ -21,10 +21,14 @@ const state = {
   devices: [],
   groups: [],
   geofences: [],
-  drivers: []
+  drivers: [],
+  orderDevicesBy: ''
 }
 
 const mutations = {
+  setOrderDevicesBy(state, value) {
+    state.orderDevicesBy = value
+  },
   SET_GEOFENCES(state, geofences) {
     console.log('SET_GEOFENCES', geofences)
     state.geofences = geofences

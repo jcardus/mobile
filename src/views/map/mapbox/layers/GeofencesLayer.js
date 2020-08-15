@@ -1,4 +1,4 @@
-import { vm } from '@/main'
+import store from '@/store'
 
 export default {
   geofencesFill: {
@@ -9,7 +9,7 @@ export default {
       'fill-color': ['get', 'color'],
       'fill-opacity': 0.4
     },
-    layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
+    layout: { visibility: store.state.map.showGeofences ? 'visible' : 'none' },
     filter: ['all', ['==', '$type', 'Polygon'], ['==', 'fill', true]]
   },
   geofences: {
@@ -24,7 +24,7 @@ export default {
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
-      visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      visibility: store.state.map.showGeofences ? 'visible' : 'none'
     },
     filter: ['all', ['==', '$type', 'Polygon'], ['==', 'fill', false]]
   },
@@ -35,7 +35,7 @@ export default {
     layout: {
       'text-size': 11,
       'text-field': '{title}',
-      visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      visibility: store.state.map.showGeofences ? 'visible' : 'none'
     },
     filter: ['==', '$type', 'Polygon']
   },
@@ -51,7 +51,7 @@ export default {
     layout: {
       'line-join': 'round',
       'line-cap': 'round',
-      visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      visibility: store.state.map.showGeofences ? 'visible' : 'none'
     },
     filter: ['==', '$type', 'LineString']
   },
@@ -62,7 +62,7 @@ export default {
     layout: {
       'text-size': 11,
       'text-field': '{title}',
-      visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
+      visibility: store.state.map.showGeofences ? 'visible' : 'none'
     },
     filter: ['==', '$type', 'LineString']
   },
@@ -72,7 +72,7 @@ export default {
     source: 'geofences',
     layout: {
       'text-field': '{title}',
-      visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
+      visibility: store.state.map.showPOIs ? 'visible' : 'none',
       'text-size': 11,
       'text-justify': 'auto',
       'text-offset': [0, 0.8],

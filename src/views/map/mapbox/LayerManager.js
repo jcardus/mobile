@@ -8,8 +8,9 @@ import { source } from '@/utils/consts'
 import * as consts from '@/utils/consts'
 import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
 import geofencesLayer from './layers/GeofencesLayer'
-import { hideLayer, layers, showHideLayersOnPitch } from '@/utils/lnglat'
-import * as lnglat from '@/utils/lnglat'
+import * as utils from '@/utils/utils'
+import * as angles from 'angles'
+const buildings3d = '3d-buildings'
 
 const routePlayLayer = 'routePlayLayer'
 const routePlayVehicleLayer = { ...vehicleLayer }
@@ -23,10 +24,13 @@ const red = ['==', ['get', 'color'], 'red']
 
 routePlayVehicleLayer.id = routePlayLayer
 routePlayVehicleLayer.source = routePlayLayer
+delete routePlayVehicleLayer.filter
 
 function updateSource(source, feature) {
-  vm.$static.map.getSource(source)
-    .setData({ type: 'FeatureCollection', features: [feature] })
+  const fSource = vm.$static.map.getSource(source)
+  if (fSource) {
+    fSource.setData({ type: 'FeatureCollection', features: [feature] })
+  }
 }
 
 function addAnimationSource(feature) {
@@ -38,8 +42,8 @@ function addAnimationSource(feature) {
   }
 }
 
-export function hideRouteLayer(hide) {
-  lnglat.hideLayer(routePlayLayer, hide || (vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled))
+export function hideRouteLayer() {
+  hideLayer(routePlayLayer)
 }
 
 export function removeAddRouteLayer() {
@@ -51,7 +55,38 @@ export function removeAddRouteLayer() {
   }
 }
 
+export function hideLayer(layer, hide) {
+  setVisible(layer, !hide)
+}
+
+export function setVisible(layer, value) {
+  const visibility = value ? 'visible' : 'none'
+  if (vm.$static.map.getLayer(layer)) {
+    vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
+  } else { Vue.$log.warn('nonexistent layer', layer) }
+}
+function refreshSources() {
+  vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+}
+
 export default {
+  updateFeature(feature, position) {
+    feature.properties = { ...feature.properties, ...position }
+    feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
+    feature.properties.courseMinusBearing = angles.normalize(position.course - feature.properties.bearing)
+  },
+  refreshLayers() {
+    refreshSources()
+    if (store.getters.vehicles3dEnabled) {
+      const on3d = vm.$static.map.getPitch() > 0
+      hideLayer(vehicles3d.id, !on3d)
+      hideLayer(vehiclesLayer.id, on3d)
+    }
+    setVisible(vehicleLabelsLayer.id,
+      !store.getters.historyMode && store.state.settings.showLabels)
+    setVisible(vehiclesLayer.id,
+      !store.getters.historyMode)
+  },
   addLayers(map) {
     if (store.getters.vehicles3dEnabled) {
       map.addLayer(vehicles3d)
@@ -71,9 +106,9 @@ export default {
         }
       })
     } else { Vue.$log.warn(source, ' already exists...') }
-    if (!map.getLayer(layers.buildings3d)) {
+    if (!map.getLayer(buildings3d)) {
       vm.$static.map.addLayer({
-        id: layers.buildings3d,
+        id: buildings3d,
         source: 'composite',
         'source-layer': 'building',
         filter: ['==', 'extrude', 'true'],
@@ -97,11 +132,10 @@ export default {
     } else {
       Vue.$log.warn('3dbuildings layer already exists...')
     }
-    hideLayer(layers.buildings3d, !store.state.map.show3dBuildings)
-    if (!map.getLayer(layers.vehicles)) {
+    hideLayer(buildings3d, !store.state.map.show3dBuildings)
+    if (!map.getLayer(vehiclesLayer.id)) {
       vm.$static.map.addLayer(vehiclesLayer)
       vm.$static.map.addLayer(vehicleLabelsLayer)
-      hideLayer(layers.labels, !store.state.settings.showLabels)
     } else {
       Vue.$log.warn('vehiclesLayer already exists...')
     }
@@ -121,9 +155,7 @@ export default {
     if (!map.getLayer('geofences')) {
       this.fetchGeofences(map)
     }
-    showHideLayersOnPitch()
-    vm.$static.map.addSource(routePlayLayer, { type: 'geojson', data: { type: 'FeatureCollection', features: [] }})
-    vm.$static.map.addLayer(routePlayVehicleLayer)
+    this.refreshLayers()
   },
   fetchGeofences(map) {
     if (!map.getSource('geofences')) {
@@ -172,13 +204,26 @@ export default {
   removeAnimationLayer(feature) {
     vm.$static.map.off('touchstart', animPrefix + feature.properties.text, this.onClickTouchUnclustered)
     vm.$static.map.off('click', animPrefix + feature.properties.text, this.onClickTouchUnclustered)
-    vm.$static.map.removeLayer(animPrefix + feature.properties.text)
-    vm.$static.map.removeLayer(labelPrefix + feature.properties.text)
+    if (vm.$static.map.getLayer(animPrefix + feature.properties.text)) {
+      vm.$static.map.removeLayer(animPrefix + feature.properties.text)
+    }
+    if (vm.$static.map.getLayer(labelPrefix + feature.properties.text)) {
+      vm.$static.map.removeLayer(labelPrefix + feature.properties.text)
+    }
   },
   updateAnimLayerSource(feature) {
     updateSource(feature.properties.text, feature)
   },
   updateRoutePlayLayerSource(feature) {
     updateSource(routePlayLayer, feature)
+  },
+  removeRoutePlayLayer() {
+    if (vm.$static.map.getLayer(routePlayVehicleLayer.id)) { vm.$static.map.removeLayer(routePlayVehicleLayer.id) }
+  },
+  addRoutePlayLayer(feature) {
+    if (!vm.$static.map.getSource(routePlayLayer)) {
+      vm.$static.map.addSource(routePlayLayer, { type: 'geojson', data: { type: 'FeatureCollection', features: [feature] }})
+    }
+    if (!vm.$static.map.getLayer(routePlayVehicleLayer.id)) { vm.$static.map.addLayer(routePlayVehicleLayer) }
   }
 }

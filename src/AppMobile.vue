@@ -240,7 +240,7 @@ export default {
     },
     panelClosed() {
       Vue.$log.debug('panelClosed')
-      lnglat.updateMarkers()
+      lnglat.updateDonuts()
     },
     updateAvailable() {
       this.toastNewVersion.open()

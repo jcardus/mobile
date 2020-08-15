@@ -1,6 +1,5 @@
 import length from '@turf/length'
 import distance from '@turf/distance'
-import Vue from 'vue'
 import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
 import bbox from '@turf/bbox'
@@ -9,8 +8,9 @@ import { vm } from '@/main'
 import styles from '../styles/element-variables.scss'
 import store from '../store'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
-import { layers as _layers, source } from './consts'
+import { source } from './consts'
 import * as angles from 'angles'
+import layerManager from '@/views/map/mapbox/LayerManager'
 
 const gray = ['==', ['get', 'color'], 'gray']
 const green = ['==', ['get', 'color'], 'green']
@@ -30,26 +30,12 @@ export function centerVehicle(feature) {
 let markersOnScreen = {}
 let currentState = null
 
-export const layers = _layers
-
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
-export function showHideLayersOnPitch() {
-  if (store.getters.vehicles3dEnabled) {
-    const on3d = vm.$static.map.getPitch() > 0
-    hideLayer(layers.vehicles3d, !on3d)
-    hideLayer(layers.vehicles, on3d)
-  }
-}
-
 export const popUps = []
-
-export function refreshMap() {
-  vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
-}
 
 export function __isMobile() {
   const rect = body.getBoundingClientRect()
@@ -186,10 +172,9 @@ export function updateBearing(feature) {
   feature.properties.courseMinusBearing = angles.normalize(feature.properties.course - feature.properties.bearing)
 }
 
-export function updateMarkers() {
-  if (vm.$store.state.transient.historyMode) return
+export function updateDonuts() {
   const newMarkers = {}
-  const features = vm.$static.map.querySourceFeatures(source)
+  const features = vm.$static.map.querySourceFeatures(source, { filter: ['boolean', !store.getters.historyMode] })
 
   // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
   // and add it to the map if it's not there already
@@ -202,23 +187,17 @@ export function updateMarkers() {
       continue
     }
     const id = props.cluster_id
-
     let marker = vm.$static.markers[id]
-
     if (!marker) {
       const el = createDonutChart(props)
-
       if (el === null) continue
-
       marker = vm.$static.markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
     }
     newMarkers[id] = marker
-
     if (!markersOnScreen[id]) { marker.addTo(vm.$static.map) }
   }
-  for (
-    // for every marker we've added previously, remove those that are no longer visible
-    const id in markersOnScreen) {
+  // for every marker we've added previously, remove those that are no longer visible
+  for (const id in markersOnScreen) {
     // noinspection JSUnfilteredForInLoop
     if (newMarkers.hasOwnProperty(id)) {
       continue
@@ -229,7 +208,7 @@ export function updateMarkers() {
     }
   }
   markersOnScreen = newMarkers
-  refreshMap()
+  layerManager.refreshLayers()
 }
 
 export function removeAdd3dLayer() {
@@ -245,27 +224,13 @@ export function contains(lngLatBounds, position, padding = 0) {
     (lngLatBounds.getSouth() + padding < position.latitude && position.latitude < lngLatBounds.getNorth() - padding)
   )
 }
+
 export function refreshGeofences() {
   if (vm.$static.map && vm.$static.map.getSource('geofences')) {
-    Vue.$log.debug(vm.$static.geofencesSource)
-
     vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
   }
 }
-export function hideLayer(layer, hide) {
-  const visibility = hide ? 'none' : 'visible'
-  if (vm.$static.map.getLayer(layer)) {
-    vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
-  } else { Vue.$log.debug('didnt find layer ', layer) }
-}
-export function hideLayers(hide) {
-  hideLayer(layers.vehicles, hide)
-  if (store.state.settings.showLabels) {
-    hideLayer(layers.labels + 'labels', hide)
-  }
-  if (hide) { removeMarkers() }
-  refreshGeofences()
-}
+
 export function changeVehicleLayerFilter(state) {
   currentState = state
   if (state === null) {
@@ -298,7 +263,7 @@ export function changeVehicleLayerFilter(state) {
     const remove = markersOnScreen[id]
     remove.remove()
   }
-  updateMarkers()
+  updateDonuts()
 }
 export function fitBounds(devices) {
   const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
@@ -307,21 +272,14 @@ export function fitBounds(devices) {
     const box = bbox(helpers.lineString(coords))
     const bounds = [[box[0], box[1]], [box[2], box[3]]]
     vm.$static.map.fitBounds(bounds, { padding: 30 })
-    updateMarkers()
+    updateDonuts()
   }
 }
+
 export function getMarkerType() {
   return ['airport', 'aquarium', 'attraction', 'barrier', 'building-alt1',
     'building', 'car-rental', 'car-repair', 'castle', 'cemetery', 'charging-station', 'circle',
     'city', 'embassy', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
     'parking', 'parking-garage', 'ranger-station', 'recycling', 'residential-community',
     'star', 'town', 'town-hall', 'village', 'warehouse', 'waste-basket', 'windmill']
-}
-function removeMarkers() {
-  for (const id in markersOnScreen) {
-    if (markersOnScreen.hasOwnProperty(id)) {
-      const remove = markersOnScreen[id]
-      remove.remove()
-    }
-  }
 }

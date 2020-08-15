@@ -41,8 +41,8 @@ import PoiPopUp from './PoiPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
 import { animate } from '@/utils/animation'
-import * as angles from 'angles'
 import layerManager from './mapbox/LayerManager'
+import vehiclesLayer from './mapbox/VehiclesLayer'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -245,7 +245,7 @@ export default {
         NProgress.done()
         this.setLoading(false)
         if (this.isMobile) { this.$f7.preloader.hide() }
-        lnglat.updateMarkers()
+        lnglat.updateDonuts()
         if (!this.isMobile && this.$route.query.vehicleName) {
           this.$log.debug(this.$route.query.vehicleName)
           const device = this.deviceByName(this.$route.query.vehicleName)
@@ -298,7 +298,7 @@ export default {
       const feature = this.findFeatureByDeviceId(device.id)
       if (feature && feature.properties.category !== device.category) {
         feature.properties.category = this.getCategory(device.category)
-        lnglat.refreshMap()
+        layerManager.refreshLayers()
       }
     },
     deviceSelected(device) {
@@ -360,7 +360,7 @@ export default {
         })
         this.showPopup(feature, this.selected)
         // big hammer. moveEnd is not fired when there's no animation... I think this is a bug...
-        setTimeout(lnglat.updateMarkers, 1000)
+        setTimeout(lnglat.updateDonuts, 1000)
       }
     },
     flyToFeature: function(feature) {
@@ -447,8 +447,7 @@ export default {
       if (!this.isPlaying) {
         this.setCenter(this.$static.map.getCenter())
         this.setZoom(this.$static.map.getZoom())
-        lnglat.updateMarkers()
-        lnglat.showHideLayersOnPitch()
+        lnglat.updateDonuts()
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
@@ -465,19 +464,19 @@ export default {
 
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
-      this.$static.map.on('touchstart', lnglat.layers.vehicles, layerManager.onClickTouchUnclustered)
+      this.$static.map.on('touchstart', vehiclesLayer.id, layerManager.onClickTouchUnclustered)
 
       this.$static.map.on('click', 'clusters', this.onClickTouch)
       this.$static.map.on('click', 'pois', this.onClickTouchPois)
-      this.$static.map.on('click', lnglat.layers.vehicles, layerManager.onClickTouchUnclustered)
+      this.$static.map.on('click', vehiclesLayer.id, layerManager.onClickTouchUnclustered)
 
       this.$static.map.on('mouseenter', 'clusters', this.mouseEnter)
       this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
-      this.$static.map.on('mouseenter', lnglat.layers.vehicles, this.mouseEnter)
+      this.$static.map.on('mouseenter', vehiclesLayer.id, this.mouseEnter)
 
       this.$static.map.on('mouseleave', 'clusters', this.mouseLeave)
       this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
-      this.$static.map.on('mouseleave', lnglat.layers.vehicles, this.mouseLeave)
+      this.$static.map.on('mouseleave', vehiclesLayer.id, this.mouseLeave)
 
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
@@ -509,7 +508,8 @@ export default {
             }
             break
           case 'settings/SET_SHOW_LABELS':
-            lnglat.hideLayer(consts.layers.labels, !state.settings.showLabels)
+          case 'transient/TOGGLE_HISTORY_MODE':
+            layerManager.refreshLayers()
             break
           default:
         }
@@ -569,7 +569,7 @@ export default {
     },
     onData(e) {
       if (e.sourceId !== lnglat.source || !e.isSourceLoaded) return
-      lnglat.updateMarkers()
+      lnglat.updateDonuts()
     },
     onTouchUnclustered: function(e) {
       this.$log.debug('touchUnclustered', e)
@@ -642,15 +642,14 @@ export default {
       if (this.vehicles3dEnabled) {
         vehicles3d.addFModel(feature)
       }
-      this.updateFeature(feature, device, position)
+      this.updateDeviceAndFeature(feature, device, position)
       return feature
     },
-    updateFeature(feature, device, position) {
+    updateDevice: function(position, feature, device) {
       // don't update "lastUpdated" if ignition is off but devices keeps sending data
       if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
         device.lastUpdate = position.fixTime
       }
-
       const adc1CacheValues = device.position && device.position.adc1CacheValues ? device.position.adc1CacheValues : []
       utils.calculateFuelLevel(adc1CacheValues, position, device)
       // moment is expensive so we cache this value
@@ -659,9 +658,13 @@ export default {
       device.driver = this.findDriver(position, device)
       device.immobilized = position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
       device.position = position
-      feature.properties = { ...feature.properties, ...position }
-      feature.properties.color = utils.getDeviceColor(utils.getDeviceState(position))
-      feature.properties.courseMinusBearing = angles.normalize(position.course - feature.properties.bearing)
+    },
+    updateFeature(feature, position) {
+      layerManager.updateFeature(feature, position)
+    },
+    updateDeviceAndFeature(feature, device, position) {
+      this.updateDevice(position, feature, device)
+      this.updateFeature(feature, position)
     },
     processPositions(positions) {
       for (const position of positions) {
@@ -678,14 +681,13 @@ export default {
         } else {
           if (this.shouldAnimate(feature)) {
             this.animateTo(feature, position)
-            lnglat.refreshMap()
           } else {
             feature.geometry.coordinates = [position.longitude, position.latitude]
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
             vehicles3d.updateCoords(feature)
           }
-          this.updateFeature(feature, device, position)
+          this.updateDeviceAndFeature(feature, device, position)
           vehicles3d.updateColor(feature)
         }
       }
@@ -917,7 +919,7 @@ export default {
       if (area.startsWith('POLYGON') || area.startsWith('LINE')) { return 'geofence' } else { return 'poi' }
     },
     onMove() {
-      lnglat.updateMarkers()
+      lnglat.updateDonuts()
     },
     onClickTouchPois(e) {
       new mapboxgl.Popup()

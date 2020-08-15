@@ -209,7 +209,7 @@ export default {
       }
     },
     playNext() {
-      this.$log.debug('HistoryPanel ', this.isPlaying, this.currentPos, this.positions.length, this.currentPos_)
+      this.$log.debug('HistoryPanel ', this.isPlaying, this.currentPos, this.currentPos_)
       if (this.isPlaying) {
         if (this.currentPos < this.positions.length - 1) {
           this.currentPos_ = Math.max(this.currentPos_, this.currentPos)

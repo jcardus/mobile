@@ -1,5 +1,4 @@
-import { layers, source } from '@/utils/consts'
-
+import { source } from '@/utils/consts'
 const bearing = ['get', 'bearing']
 const course = ['get', 'courseMinusBearing']
 const _colorFormula = ['%', ['-', 25, ['floor', ['/', course, 14.4]]], 25]
@@ -9,7 +8,7 @@ const _iconRotate = ['-', course, ['*', ['floor', ['/', course, 14.4]], 14.4]]
 const iconRotate = ['+', _iconRotate, bearing]
 
 export default {
-  id: layers.vehicles,
+  id: 'vehiclesLayer',
   map: null,
   type: 'symbol',
 

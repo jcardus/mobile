@@ -1,7 +1,7 @@
-import { source, layers } from '@/utils/consts'
+import { source } from '@/utils/consts'
 
 export default {
-  id: layers.labels,
+  id: 'vehicleLabels',
   type: 'symbol',
   source: source,
   filter: ['all', ['!=', 'cluster', true], ['!=', 'animating', true]],

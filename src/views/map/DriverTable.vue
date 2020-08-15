@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { serverBus, vm } from '../../main'
+import { serverBus, vm } from '@/main'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
@@ -108,7 +108,7 @@ export default {
       }
       return 'Gray'
     },
-    driverSelected: function(driver) {
+    driverSelected(driver) {
       if (driver.vehicle && !this.historyMode) {
         const device = this.devices.find(d => d.id === driver.vehicle.id)
         if (device) {

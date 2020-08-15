@@ -35,7 +35,8 @@ const getters = {
     return getters.devices.find(d => d.name === name)
   },
   zoom: state => state.map.zoom,
-  center: state => state.map.center
+  center: state => state.map.center,
+  orderDevicesBy: state => state.user.orderDevicesBy
 }
 
 export default getters

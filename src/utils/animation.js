@@ -8,6 +8,7 @@ import * as angles from 'angles'
 import * as consts from './consts'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import store from '../store'
+
 const minDistanceRouteMatch = 0.001
 let nextKey = ''
 let nextMatch = []
@@ -82,7 +83,7 @@ function _animate() {
       updateFeature(feature)
     } else {
       feature.properties.animating = false
-      lnglat.refreshMap()
+      layerManager.refreshLayers()
       animatingFeatures.splice(i, 1)
       setTimeout(() => layerManager.removeAnimationLayer(feature), 3000)
       Vue.$log.debug('animationEnd', feature.properties.deviceId)

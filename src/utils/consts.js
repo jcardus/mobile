@@ -14,10 +14,4 @@ export const spriteUrl = cdnUrl + '/sprite/8/sprite'
 export const mapboxSprite = 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/sprite' // @2x.png?access_token=
 export const mapboxAccessToken = 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ'
 export const detailedZoom = 13
-export const layers = {
-  vehicles: 'vehiclesLayer',
-  labels: 'vehicleLabels',
-  buildings3d: '3d-buildings',
-  vehicles3d: '3d-vehicles'
-}
 

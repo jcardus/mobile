@@ -37,7 +37,7 @@ const mutations = {
   SET_DATA_LOADED(state) {
     state.dataLoaded = true
   },
-  TOGGLE_HISTORYMODE: (state) => {
+  TOGGLE_HISTORY_MODE: (state) => {
     state.historyMode = !state.historyMode
     serverBus.$emit(event.showRoutesChanged)
     setTimeout(() => serverBus.$emit(event.mapShow), 500)
@@ -61,7 +61,7 @@ const actions = {
     commit('TOGGLE_PLAY')
   },
   toggleHistoryMode(context) {
-    context.commit('TOGGLE_HISTORYMODE')
+    context.commit('TOGGLE_HISTORY_MODE')
     context.dispatch('setPlaying', false)
   },
   setDataLoaded({ commit }) {
