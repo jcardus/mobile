@@ -233,8 +233,8 @@ export default {
     devicesIdle: function() {
       return this.devices.filter(d => this.getDeviceState(d) === 'Idle')
     },
-    devicesOn: function() {
-      return this.devices.filter(d => this.getDeviceState(d) === 'Moving')
+    devicesOn() {
+      return this.devices.filter(d => d.position && this.getDeviceState(d) === 'Moving')
     },
     map() {
       return vm.$data.map
@@ -267,7 +267,7 @@ export default {
           return row.id === self.selectedDevice.id
         })
       }
-      devices = devices.slice().sort(function(a, b) {
+      return devices.sort((a, b) => {
         switch (self.orderedBy) {
           case 'orderByStatus':
             a = self.getDeviceStateOrder(a) + ' ' + a['name']
@@ -295,7 +295,6 @@ export default {
         }
         return (a === b ? 0 : a > b ? 1 : -1)
       })
-      return devices
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -378,7 +377,7 @@ export default {
       }
       return styles.danger
     },
-    getDeviceState: function(device) {
+    getDeviceState(device) {
       return utils.getDeviceState(device.position)
     },
     getDeviceStateOrder: function(device) {

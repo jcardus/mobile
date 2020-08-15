@@ -35,10 +35,6 @@ const mutations = {
   },
   SET_DEVICES(state, devices) {
     state.devices = devices
-    if (devices.length > settings.maxMarkersForAnimation) {
-      Vue.$log.debug(devices.length, 'devices > ', settings.maxMarkersForAnimation, 'disabling marker animation')
-      settings.animateMarkers = false
-    }
   },
   SET_USER(state, token) {
     state.user = token
@@ -123,6 +119,11 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
+  refreshDevices({ commit, state }) {
+    if (state.devices.length > 0) {
+      commit('SET_DEVICE', state.devices[0])
+    }
+  },
   setDeviceLastIgnOff({ commit, state }, { device, fixTime }) {
     if (!settings.getLastIgnitionOff) return
     const end = new Date()

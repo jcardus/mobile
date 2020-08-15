@@ -211,6 +211,8 @@ export default {
     },
     setTime() {
       this.$store.dispatch('setTime')
+      // this will update VehicleTable
+      this.$store.dispatch('user/refreshDevices')
     },
     ping() {
       if (this.userLoggedIn) {

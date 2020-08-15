@@ -187,6 +187,7 @@ export function followLine(route, feature, endingCourse) {
     if (!animatingFeatures.find(f => f === feature)) {
       animatingFeatures.push(feature)
     }
+    layerManager.refreshLayers()
     if (!animating) { _animate() } else { Vue.$log.info('skip animation call, len:', animating) }
   } else {
     Vue.$log.debug('ignoring', feature.properties.text, '(', feature.properties.animating, ')', arc.length, ' positions')

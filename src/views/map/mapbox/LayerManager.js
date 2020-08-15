@@ -84,8 +84,8 @@ export default {
     }
     setVisible(vehicleLabelsLayer.id,
       !store.getters.historyMode && store.state.settings.showLabels)
-    setVisible(vehiclesLayer.id,
-      !store.getters.historyMode)
+    setVisible(vehiclesLayer.id, !store.getters.historyMode)
+    setVisible(routePlayVehicleLayer.id, store.getters.historyMode)
   },
   addLayers(map) {
     if (store.getters.vehicles3dEnabled) {
