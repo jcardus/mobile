@@ -66,7 +66,10 @@ export function setVisible(layer, value) {
   } else { Vue.$log.warn('nonexistent layer', layer) }
 }
 function refreshSources() {
-  vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
+  const fSource = vm.$static.map.getSource('positions')
+  if (fSource) {
+    fSource.setData(vm.$static.positionsSource)
+  }
 }
 
 export default {
