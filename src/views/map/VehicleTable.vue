@@ -267,7 +267,7 @@ export default {
           return row.id === self.selectedDevice.id
         })
       }
-      return devices.sort((a, b) => {
+      return devices.slice().sort((a, b) => {
         switch (self.orderedBy) {
           case 'orderByStatus':
             a = self.getDeviceStateOrder(a) + ' ' + a['name']
