@@ -64,13 +64,12 @@
   </div>
 </template>
 <script>
-import { vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
-import VueCookies from 'vue-cookies'
 import Vue from 'vue'
 import axios from 'axios'
-import { rServerUrl } from '../../utils/consts'
+import { rServerUrl } from '@/utils/consts'
 
 export default {
   name: 'ReportElement',
@@ -190,10 +189,7 @@ export default {
   },
   methods: {
     invokeReport: function() {
-      const cookie = VueCookies.get('user-info')
       const body = {
-        username: cookie.email,
-        password: cookie.password,
         report: 'speedingReport',
         selected_devices: this.selectedDevices,
         selected_geofences: this.selectedGeofences,

@@ -63,10 +63,9 @@
 </template>
 
 <script>
-import { vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
-import VueCookies from 'vue-cookies'
 import * as sutil from './utils/stimulsoft'
 import Vue from 'vue'
 import * as utils from './utils/utils'
@@ -202,7 +201,6 @@ export default {
           const report_id = this.user.email + '_' + utils.generate_token(40)
           const body = {
             username: this.user.email,
-            password: VueCookies.get('JSESSIONID'),
             platform: 'web',
             report: this.reportType,
             report_id: report_id,
