@@ -8,9 +8,8 @@ import { vm } from '@/main'
 import styles from '../styles/element-variables.scss'
 import store from '../store'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
-import { source } from './consts'
+import { positionsSource } from './consts'
 import * as angles from 'angles'
-import layerManager from '@/views/map/mapbox/LayerManager'
 
 const gray = ['==', ['get', 'color'], 'gray']
 const green = ['==', ['get', 'color'], 'green']
@@ -174,7 +173,7 @@ export function updateBearing(feature) {
 
 export function updateDonuts() {
   const newMarkers = {}
-  const features = vm.$static.map.querySourceFeatures(source, { filter: ['boolean', !store.getters.historyMode] })
+  const features = vm.$static.map.querySourceFeatures(positionsSource, { filter: ['boolean', !store.getters.historyMode] })
 
   // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
   // and add it to the map if it's not there already
@@ -208,7 +207,6 @@ export function updateDonuts() {
     }
   }
   markersOnScreen = newMarkers
-  layerManager.refreshLayers()
 }
 
 export function removeAdd3dLayer() {

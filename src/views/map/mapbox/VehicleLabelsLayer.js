@@ -1,9 +1,9 @@
-import { source } from '@/utils/consts'
+import { positionsSource } from '@/utils/consts'
 
 export default {
   id: 'vehicleLabels',
   type: 'symbol',
-  source: source,
+  source: positionsSource,
   filter: ['all', ['!=', 'cluster', true], ['!=', 'animating', true]],
   layout: {
     'text-size': 11,

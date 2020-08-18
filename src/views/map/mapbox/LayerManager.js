@@ -4,12 +4,13 @@ import store from '@/store'
 import vehicleLayer from '@/views/map/mapbox/VehiclesLayer'
 import vehicleLabelsLayer from '@/views/map/mapbox/VehicleLabelsLayer'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
-import { source } from '@/utils/consts'
+import { positionsSource } from '@/utils/consts'
 import * as consts from '@/utils/consts'
 import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
 import geofencesLayer from './layers/GeofencesLayer'
 import * as utils from '@/utils/utils'
 import * as angles from 'angles'
+import { updateDonuts } from '@/utils/lnglat'
 const buildings3d = '3d-buildings'
 
 const routePlayLayer = 'routePlayLayer'
@@ -66,10 +67,23 @@ export function setVisible(layer, value) {
   } else { Vue.$log.warn('nonexistent layer', layer) }
 }
 function refreshSources() {
-  const fSource = vm.$static.map.getSource('positions')
+  const fSource = vm.$static.map.getSource(positionsSource)
   if (fSource) {
     fSource.setData(vm.$static.positionsSource)
   }
+}
+
+function refreshLayersVisibility() {
+  if (store.getters.vehicles3dEnabled) {
+    const on3d = vm.$static.map.getPitch() > 0
+    hideLayer(vehicles3d.id, !on3d)
+    hideLayer(vehiclesLayer.id, on3d)
+  }
+  setVisible(vehicleLabelsLayer.id,
+    !store.getters.historyMode && store.state.settings.showLabels)
+  setVisible(vehiclesLayer.id, !store.getters.historyMode)
+  setVisible(routePlayVehicleLayer.id, store.getters.historyMode)
+  setVisible(buildings3d, store.state.map.show3dBuildings)
 }
 
 export default {
@@ -80,22 +94,15 @@ export default {
   },
   refreshLayers() {
     refreshSources()
-    if (store.getters.vehicles3dEnabled) {
-      const on3d = vm.$static.map.getPitch() > 0
-      hideLayer(vehicles3d.id, !on3d)
-      hideLayer(vehiclesLayer.id, on3d)
-    }
-    setVisible(vehicleLabelsLayer.id,
-      !store.getters.historyMode && store.state.settings.showLabels)
-    setVisible(vehiclesLayer.id, !store.getters.historyMode)
-    setVisible(routePlayVehicleLayer.id, store.getters.historyMode)
+    refreshLayersVisibility()
+    updateDonuts()
   },
   addLayers(map) {
     if (store.getters.vehicles3dEnabled) {
       map.addLayer(vehicles3d)
     }
-    if (!map.getSource(source)) {
-      map.addSource(source, {
+    if (!map.getSource(positionsSource)) {
+      map.addSource(positionsSource, {
         type: 'geojson',
         data: vm.$static.positionsSource,
         cluster: true,
@@ -108,7 +115,7 @@ export default {
           'green': ['+', ['case', green, 1, 0]]
         }
       })
-    } else { Vue.$log.warn(source, ' already exists...') }
+    } else { Vue.$log.warn(positionsSource, ' already exists...') }
     if (!map.getLayer(buildings3d)) {
       vm.$static.map.addLayer({
         id: buildings3d,
@@ -135,7 +142,6 @@ export default {
     } else {
       Vue.$log.warn('3dbuildings layer already exists...')
     }
-    hideLayer(buildings3d, !store.state.map.show3dBuildings)
     if (!map.getLayer(vehiclesLayer.id)) {
       vm.$static.map.addLayer(vehiclesLayer)
       vm.$static.map.addLayer(vehicleLabelsLayer)
@@ -145,7 +151,7 @@ export default {
     if (!map.getLayer('clusters')) {
       map.addLayer({
         'id': 'clusters',
-        'source': source,
+        'source': positionsSource,
         'type': 'circle',
         filter: ['has', 'point_count'],
         paint: {
@@ -158,6 +164,7 @@ export default {
     if (!map.getLayer('geofences')) {
       this.fetchGeofences(map)
     }
+    this.addRoutePlayLayer()
     this.refreshLayers()
   },
   fetchGeofences(map) {

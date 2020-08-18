@@ -1,4 +1,4 @@
-import { source } from '@/utils/consts'
+import { positionsSource } from '@/utils/consts'
 const bearing = ['get', 'bearing']
 const course = ['get', 'courseMinusBearing']
 const _colorFormula = ['%', ['-', 25, ['floor', ['/', course, 14.4]]], 25]
@@ -12,7 +12,7 @@ export default {
   map: null,
   type: 'symbol',
 
-  source: source,
+  source: positionsSource,
   filter: ['all', ['!=', 'cluster', true], ['!=', 'animating', true]],
   layout: {
     'symbol-z-order': 'source',

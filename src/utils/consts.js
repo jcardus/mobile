@@ -1,6 +1,6 @@
 import { getBackendHost } from '@/api'
 
-export const source = 'positions'
+export const positionsSource = 'positions'
 export var minDistanceForMatch = 0.5
 export const rotateStep = 9
 export const routeSlotLength = 6

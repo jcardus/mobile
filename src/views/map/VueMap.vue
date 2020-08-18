@@ -247,7 +247,6 @@ export default {
         NProgress.done()
         this.setLoading(false)
         if (this.isMobile) { this.$f7.preloader.hide() }
-        lnglat.updateDonuts()
         if (!this.isMobile && this.$route.query.vehicleName) {
           this.$log.debug(this.$route.query.vehicleName)
           const device = this.deviceByName(this.$route.query.vehicleName)
@@ -257,6 +256,7 @@ export default {
             this.$store.dispatch('transient/toggleHistoryMode')
           }
         }
+        layerManager.refreshLayers()
       } else {
         if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
           this.$f7.preloader.show()
@@ -362,7 +362,7 @@ export default {
         })
         this.showPopup(feature, this.selected)
         // big hammer. moveEnd is not fired when there's no animation... I think this is a bug...
-        setTimeout(lnglat.updateDonuts, 1000)
+        setTimeout(layerManager.refreshLayers, 1000)
       }
     },
     flyToFeature: function(feature) {
@@ -449,7 +449,7 @@ export default {
       if (!this.isPlaying) {
         this.setCenter(this.$static.map.getCenter())
         this.setZoom(this.$static.map.getZoom())
-        lnglat.updateDonuts()
+        layerManager.refreshLayers()
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
@@ -570,8 +570,8 @@ export default {
       }
     },
     onData(e) {
-      if (e.sourceId !== lnglat.source || !e.isSourceLoaded) return
-      lnglat.updateDonuts()
+      if (e.sourceId !== lnglat.positionsSource || !e.isSourceLoaded) return
+      layerManager.refreshLayers()
     },
     onTouchUnclustered: function(e) {
       this.$log.debug('touchUnclustered', e)
@@ -921,7 +921,7 @@ export default {
       if (area.startsWith('POLYGON') || area.startsWith('LINE')) { return 'geofence' } else { return 'poi' }
     },
     onMove() {
-      lnglat.updateDonuts()
+      layerManager.refreshLayers()
     },
     onClickTouchPois(e) {
       new mapboxgl.Popup()
