@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.660",
+  "version": "1.0.676",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -42,7 +42,6 @@
     "three": "latest",
     "trackjs": "^3.7.4",
     "vue": "latest",
-    "vue-cookies": "^1.7.3",
     "vue-i18n": "^8.20.0",
     "vue-i18n-filter": "latest",
     "vue-moment": "^4.1.0",

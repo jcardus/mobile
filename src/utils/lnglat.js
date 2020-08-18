@@ -1,48 +1,40 @@
 import length from '@turf/length'
 import distance from '@turf/distance'
-import Vue from 'vue'
 import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
 import bbox from '@turf/bbox'
 import * as helpers from '@turf/helpers'
 import { vm } from '@/main'
 import styles from '../styles/element-variables.scss'
-import * as consts from './consts'
 import store from '../store'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
-import { layers as _layers, source } from './consts'
-import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
-import vehicleLabelsLayer from '@/views/map/mapbox/VehicleLabelsLayer'
+import { positionsSource } from './consts'
+import * as angles from 'angles'
 
-let markersOnScreen = {}
-let currentState = null
-
-export const layers = _layers
-
-const colors = [styles.info, styles.success, styles.warning, styles.danger]
 const gray = ['==', ['get', 'color'], 'gray']
 const green = ['==', ['get', 'color'], 'green']
 const yellow = ['==', ['get', 'color'], 'yellow']
 const red = ['==', ['get', 'color'], 'red']
 
+export function centerVehicle(feature) {
+  vm.$static.map.flyTo({
+    essential: true,
+    center: feature.geometry.coordinates,
+    zoom: 16,
+    bearing: feature.properties.course,
+    pitch: 60
+  })
+}
+
+let markersOnScreen = {}
+let currentState = null
+
+const colors = [styles.info, styles.success, styles.warning, styles.danger]
+
 const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
-export function showHideLayersOnPitch() {
-  if (store.getters.vehicles3dEnabled) {
-    const on3d = vm.$static.map.getPitch() > 0
-    hideLayer(layers.vehicles3d, !on3d)
-    hideLayer(layers.vehicles, on3d)
-  }
-}
-
 export const popUps = []
-
-export function refreshMap() {
-  if (vm.$static.map.getSource('positions')) {
-    vm.$static.map.getSource('positions').setData(vm.$static.positionsSource)
-  }
-}
 
 export function __isMobile() {
   const rect = body.getBoundingClientRect()
@@ -121,101 +113,7 @@ export function matchRoute(coordinates, radius, timestamps, onSuccess, onError) 
     .then(onSuccess)
     .catch(onError)
 }
-function fetchGeofences(map) {
-  if (!map.getSource('geofences')) {
-    map.addSource('geofences', {
-      'type': 'geojson',
-      'data': vm.$static.geofencesSource
-    })
-  }
-  if (!map.getLayer('geofences')) {
-    map.addLayer({
-      id: 'geofences-fill',
-      type: 'fill',
-      source: 'geofences',
-      paint: {
-        'fill-color': ['get', 'color'],
-        'fill-opacity': 0.4
-      },
-      layout: { visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none' },
-      filter: ['all', ['==', '$type', 'Polygon'], ['==', 'fill', true]]
-    })
-    map.addLayer({
-      id: 'geofences',
-      type: 'line',
-      source: 'geofences',
-      paint: {
-        'line-color': ['get', 'color'],
-        'line-width': 4,
-        'line-opacity': 0.4
-      },
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round',
-        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-      },
-      filter: ['all', ['==', '$type', 'Polygon'], ['==', 'fill', false]]
-    })
-    map.addLayer({
-      id: 'geofences-labels',
-      type: 'symbol',
-      source: 'geofences',
-      layout: {
-        'text-size': 11,
-        'text-field': '{title}',
-        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-      },
-      filter: ['==', '$type', 'Polygon']
-    })
-    map.addLayer({
-      id: 'geofences-lines',
-      type: 'line',
-      source: 'geofences',
-      paint: {
-        'line-color': ['get', 'color'],
-        'line-width': 4,
-        'line-opacity': 0.4
-      },
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round',
-        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-      },
-      filter: ['==', '$type', 'LineString']
-    })
-    map.addLayer({
-      id: 'geofences-lines-labels',
-      type: 'symbol',
-      source: 'geofences',
-      layout: {
-        'text-size': 11,
-        'text-field': '{title}',
-        visibility: vm.$store.state.map.showGeofences ? 'visible' : 'none'
-      },
-      filter: ['==', '$type', 'LineString']
-    })
 
-    map.addLayer({
-      id: 'pois',
-      type: 'symbol',
-      source: 'geofences',
-      layout: {
-        'text-field': '{title}',
-        visibility: vm.$store.state.map.showPOIs ? 'visible' : 'none',
-        'text-size': 11,
-        'text-justify': 'auto',
-        'text-offset': [0, 0.8],
-        'icon-image': ['concat', ['get', 'icon'], '-blue'],
-        'icon-offset': {
-          stops: [
-            [13, [0, -10]]
-          ]
-        }
-      },
-      filter: ['all', ['==', '$type', 'Point']]
-    })
-  }
-}
 function createDonutChart(props) {
   const offsets = []
   const counts = [
@@ -267,35 +165,38 @@ function donutSegment(start, end, r, r0, color) {
     r0, r0, 0, largeArc, 0, r + r0 * x0, r + r0 * y0,
     '" fill="' + color + '" />'].join(' ')
 }
-export function updateMarkers() {
-  if (vm.$store.state.transient.historyMode) return
+
+export function updateBearing(feature) {
+  feature.properties.bearing = vm.$static.map.getBearing()
+  feature.properties.courseMinusBearing = angles.normalize(feature.properties.course - feature.properties.bearing)
+}
+
+export function updateDonuts() {
   const newMarkers = {}
-  const features = vm.$static.map.querySourceFeatures(source)
+  const features = vm.$static.map.querySourceFeatures(positionsSource, { filter: ['boolean', !store.getters.historyMode] })
 
   // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
   // and add it to the map if it's not there already
   for (let i = 0; i < features.length; i++) {
     const coords = features[i].geometry.coordinates
     const props = features[i].properties
-    if (!props.cluster) continue
+    if (!props.cluster) {
+      const feature = findFeatureByDeviceId(props.deviceId)
+      updateBearing(feature)
+      continue
+    }
     const id = props.cluster_id
-
     let marker = vm.$static.markers[id]
-
     if (!marker) {
       const el = createDonutChart(props)
-
       if (el === null) continue
-
       marker = vm.$static.markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
     }
     newMarkers[id] = marker
-
     if (!markersOnScreen[id]) { marker.addTo(vm.$static.map) }
   }
-  for (
-    // for every marker we've added previously, remove those that are no longer visible
-    const id in markersOnScreen) {
+  // for every marker we've added previously, remove those that are no longer visible
+  for (const id in markersOnScreen) {
     // noinspection JSUnfilteredForInLoop
     if (newMarkers.hasOwnProperty(id)) {
       continue
@@ -315,105 +216,19 @@ export function removeAdd3dLayer() {
   }
 }
 
-export function addLayers(map) {
-  if (store.getters.vehicles3dEnabled) {
-    map.addLayer(vehicles3d)
-  }
-  if (!map.getSource(source)) {
-    map.addSource(source, {
-      type: 'geojson',
-      data: vm.$static.positionsSource,
-      cluster: true,
-      clusterMaxZoom: consts.detailedZoom - 1, // Max zoom to cluster points on
-      clusterRadius: 25,
-      clusterProperties: { // keep separate counts for each magnitude category in a cluster
-        'gray': ['+', ['case', gray, 1, 0]],
-        'yellow': ['+', ['case', yellow, 1, 0]],
-        'red': ['+', ['case', red, 1, 0]],
-        'green': ['+', ['case', green, 1, 0]]
-      }
-    })
-  } else { Vue.$log.warn(source, ' already exists...') }
-  if (!map.getLayer(layers.buildings3d)) {
-    vm.$static.map.addLayer({
-      id: layers.buildings3d,
-      source: 'composite',
-      'source-layer': 'building',
-      filter: ['==', 'extrude', 'true'],
-      type: 'fill-extrusion',
-      minzoom: 15,
-      paint: {
-        'fill-extrusion-color': '#aaa',
-        'fill-extrusion-height': [
-          'interpolate', ['linear'], ['zoom'],
-          15, 0,
-          15.05, ['get', 'height']
-        ],
-        'fill-extrusion-base': [
-          'interpolate', ['linear'], ['zoom'],
-          15, 0,
-          15.05, ['get', 'min_height']
-        ],
-        'fill-extrusion-opacity': 0.6
-      }
-    })
-  } else {
-    Vue.$log.warn('3dbuildings layer already exists...')
-  }
-  hideLayer(layers.buildings3d, !store.state.map.show3dBuildings)
-  if (!map.getLayer(layers.vehicles)) {
-    vm.$static.map.addLayer(vehiclesLayer)
-    vm.$static.map.addLayer(vehicleLabelsLayer)
-    hideLayer(layers.labels, !store.state.settings.showLabels)
-  } else {
-    Vue.$log.warn('vehiclesLayer already exists...')
-  }
-  if (!map.getLayer('clusters')) {
-    map.addLayer({
-      'id': 'clusters',
-      'source': source,
-      'type': 'circle',
-      filter: ['has', 'point_count'],
-      paint: {
-        'circle-radius': 30,
-        'circle-color': 'white',
-        'circle-opacity': 0.1
-      }
-    })
-  } else { Vue.$log.error('layer clusters already exists...') }
-  if (!map.getLayer('geofences')) {
-    fetchGeofences(map)
-  }
-  showHideLayersOnPitch()
-}
-
 export function contains(lngLatBounds, position, padding = 0) {
   return (
     (lngLatBounds.getWest() + padding < position.longitude && position.longitude < lngLatBounds.getEast() - padding) &&
     (lngLatBounds.getSouth() + padding < position.latitude && position.latitude < lngLatBounds.getNorth() - padding)
   )
 }
+
 export function refreshGeofences() {
   if (vm.$static.map && vm.$static.map.getSource('geofences')) {
-    Vue.$log.debug(vm.$static.geofencesSource)
-
     vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
   }
 }
-export function hideLayer(layer, hide) {
-  const visibility = hide ? 'none' : 'visible'
-  if (vm.$static.map.getLayer(layer)) {
-    vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
-  } else { Vue.$log.debug('didnt find layer ', layer) }
-}
-export function hideLayers(hide) {
-  hideLayer(layers.vehicles, hide)
-  if (store.state.settings.showLabels) {
-    hideLayer(layers.labels + 'labels', hide)
-  }
-  if (hide) { removeMarkers() }
-  refreshGeofences()
-}
+
 export function changeVehicleLayerFilter(state) {
   currentState = state
   if (state === null) {
@@ -446,7 +261,7 @@ export function changeVehicleLayerFilter(state) {
     const remove = markersOnScreen[id]
     remove.remove()
   }
-  updateMarkers()
+  updateDonuts()
 }
 export function fitBounds(devices) {
   const features = vm.$static.positionsSource.features.filter(f => devices.findIndex(d => d.id === f.properties.deviceId) >= 0)
@@ -455,21 +270,14 @@ export function fitBounds(devices) {
     const box = bbox(helpers.lineString(coords))
     const bounds = [[box[0], box[1]], [box[2], box[3]]]
     vm.$static.map.fitBounds(bounds, { padding: 30 })
-    updateMarkers()
+    updateDonuts()
   }
 }
+
 export function getMarkerType() {
   return ['airport', 'aquarium', 'attraction', 'barrier', 'building-alt1',
     'building', 'car-rental', 'car-repair', 'castle', 'cemetery', 'charging-station', 'circle',
     'city', 'embassy', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
     'parking', 'parking-garage', 'ranger-station', 'recycling', 'residential-community',
     'star', 'town', 'town-hall', 'village', 'warehouse', 'waste-basket', 'windmill']
-}
-function removeMarkers() {
-  for (const id in markersOnScreen) {
-    if (markersOnScreen.hasOwnProperty(id)) {
-      const remove = markersOnScreen[id]
-      remove.remove()
-    }
-  }
 }

@@ -111,13 +111,14 @@ export default {
     }
   },
   beforeDestroy() {
-    Vue.$log.debug('destroying VehicleDetail...')
+    Vue.$log.debug('VehicleDetail')
     serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$off('deviceSelected', this.deviceSelected)
+    serverBus.$off('animationEnd', this.devicePositionChanged)
   },
   created() {
-    Vue.$log.debug('VehicleDetail, subscribing events')
-    serverBus.$on('devicePositionChanged', this.devicePositionChanged)
+    Vue.$log.debug('VehicleDetail')
+    serverBus.$on('animationEnd', this.devicePositionChanged)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
@@ -173,7 +174,8 @@ export default {
               img.src = 'https://images.mapillary.com/' + self.key + '/thumb-320.jpg'
             }
           } else {
-            Vue.$log.debug('no mapillary found at ', this.feature.geometry.coordinates)
+            Vue.$log.debug('no mapillary found at ',
+              this.feature.geometry.coordinates[0], this.feature.geometry.coordinates[1])
             self.sequenceKey = ''
             this.imageUrl = ''
           }
@@ -186,14 +188,16 @@ export default {
     },
     devicePositionChanged(deviceId) {
       if (this.device.id === deviceId) {
-        if (!this.fetching && this.lastImageUpdate < (new Date() - 3000)) {
-          this.fetching = true
-          Vue.$log.debug('updating mapillary')
-          this.lastImageUpdate = new Date()
-          this.updateImage()
-          this.oldPosition = this.feature.geometry.coordinates
-        }
-      }
+        if (!lnglat.popUps[deviceId].closed) {
+          if (!this.fetching && this.lastImageUpdate < (new Date() - 3000)) {
+            this.fetching = true
+            Vue.$log.debug(this.device.name, 'updating mapillary')
+            this.lastImageUpdate = new Date()
+            this.updateImage()
+            this.oldPosition = this.feature.geometry.coordinates
+          } else { Vue.$log.debug(this.device.name, 'not updating mapillary, too recent') }
+        } else { Vue.$log.debug(this.device.name, 'not updating mapillary, popup closed') }
+      } else { Vue.$log.debug(this.device.name, 'not updating mapillary, other device') }
     },
     deviceSelected(device) {
       Vue.$log.debug('device selected ', device.id)

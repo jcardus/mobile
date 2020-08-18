@@ -1,5 +1,5 @@
-import { serverBus, vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
+import { serverBus, vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as event from '../../events'
 import Vue from 'vue'
 import * as alertType from '../../alerts/alertType'
@@ -11,10 +11,14 @@ const state = {
   stiLoaded: false,
   isPlaying: false,
   trips: [],
-  portrait: true
+  portrait: true,
+  loading: false
 }
 
 const mutations = {
+  SET_LOADING(state, value) {
+    state.loading = value
+  },
   SET_PORTRAIT(state, value) {
     state.portrait = value
   },
@@ -33,7 +37,7 @@ const mutations = {
   SET_DATA_LOADED(state) {
     state.dataLoaded = true
   },
-  TOGGLE_HISTORYMODE: (state) => {
+  TOGGLE_HISTORY_MODE: (state) => {
     state.historyMode = !state.historyMode
     serverBus.$emit(event.showRoutesChanged)
     setTimeout(() => serverBus.$emit(event.mapShow), 500)
@@ -41,6 +45,9 @@ const mutations = {
 }
 
 const actions = {
+  setLoading({ commit }, loading) {
+    commit('SET_LOADING', loading)
+  },
   setPortrait({ commit }, value) {
     commit('SET_PORTRAIT', value)
   },
@@ -54,7 +61,7 @@ const actions = {
     commit('TOGGLE_PLAY')
   },
   toggleHistoryMode(context) {
-    context.commit('TOGGLE_HISTORYMODE')
+    context.commit('TOGGLE_HISTORY_MODE')
     context.dispatch('setPlaying', false)
   },
   setDataLoaded({ commit }) {

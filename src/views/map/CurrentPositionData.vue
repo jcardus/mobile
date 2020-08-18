@@ -70,6 +70,7 @@ import { traccar } from '@/api/traccar-api'
 import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
+import layerManager from './mapbox/LayerManager'
 
 export default {
   name: 'CurrentPositionData',
@@ -191,9 +192,12 @@ export default {
     window.removeEventListener('resize', this.resizeDiv)
     serverBus.$off('posChanged', this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
+    const lastPos = vm.$data.currentDevice.position
+    // put the vehicle back where it was...
+    if (lastPos) {
+      layerManager.updateFeature(vm.$static.currentFeature, lastPos)
+    }
     this.removeLayers()
-    lnglat.hideLayers(this.showRoutes)
-    animation.hideRouteLayer(!this.showRoutes)
   },
   mounted() {
     Vue.$log.debug('CurrentPositionData')
@@ -203,8 +207,6 @@ export default {
     this.loadingRoutes = true
     this.getRoute(this.minDate, this.maxDate)
     vm.$data.currentDevice = this.device
-    lnglat.hideLayers(this.showRoutes)
-    animation.hideRouteLayer(!this.showRoutes)
     if (this.$route && this.$route.query.date) {
       console.log(this.$route.query.date)
       this._maxDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
@@ -513,7 +515,7 @@ export default {
         return a[0].id
       }
     },
-    drawSpeedTrip: function() {
+    drawSpeedTrip() {
       if (!this.speedTrips || !this.speedTrips[this.currentTrip]) {
         return
       }
@@ -591,7 +593,9 @@ export default {
       })
       vm.$static.map.getSource(this.routeSpeedSource).setData(alertsGeoJSON)
       this.drawSpeedMarkers()
-      animation.removeAddRouteLayer()
+      // vehicle should be on top of the route, so we remove and add the layer
+      layerManager.removeRoutePlayLayer()
+      layerManager.addRoutePlayLayer(vm.$static.currentFeature)
     },
     async filterTrips() {
       const result = []
@@ -840,13 +844,10 @@ export default {
       }
       const routeGeoJSON = this.getGeoJSON(r.data.matchings[0].geometry)
       this.drawIteration(routeGeoJSON)
-      animation.removeAddRouteLayer()
     },
     routePlay() {
       this.removeLayers(true)
-      lnglat.hideLayers(true)
-      animation.refreshFeature()
-      animation.removeAddRouteLayer()
+      animation.updateFeature()
       this.$log.info('CurrentPositionData emit routeMatchFinished')
       serverBus.$emit('routeMatchFinished')
     },
@@ -904,7 +905,8 @@ export default {
         } else {
           this.$log.info('animating from ', origin, ' to ', newPos + 1)
           animation.animate(vm.$static.currentFeature,
-            sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]))
+            sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
+            sharedData.getPositions()[newPos + 1].course)
         }
         if (newPos === sharedData.getPositions().length - 1) {
           this.$store.dispatch('transient/togglePlaying')
@@ -951,7 +953,7 @@ export default {
         vm.$static.currentFeature.properties.course = positions[newPos].course
         vm.$static.currentFeature.geometry.coordinates = [positions[newPos].longitude, positions[newPos].latitude]
         vm.$static.currentFeature.properties.address = positions[newPos].address
-        animation.refreshFeature()
+        animation.updateFeature()
       }
       if (newPos < positions.length - 1) {
         this.oldPos = newPos

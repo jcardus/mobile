@@ -51,7 +51,6 @@
 <script>
 
 import { vm, serverBus } from '@/main'
-import VueCookies from 'vue-cookies'
 import * as utils from '../../views/reports/utils/utils'
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
@@ -120,7 +119,6 @@ export default {
       const report_id = this.user.email + '_' + utils.generate_token(40)
       const body = {
         username: this.user.email,
-        password: VueCookies.get('JSESSIONID'),
         platform: 'mobile',
         report: this.reportType,
         report_id: report_id,

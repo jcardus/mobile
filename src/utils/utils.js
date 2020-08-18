@@ -1,4 +1,4 @@
-import { vm, newServiceWorker, sharedData } from '../main'
+import { vm, newServiceWorker, sharedData } from '@/main'
 import Vue from 'vue'
 
 export class SharedData {
@@ -78,11 +78,13 @@ function filterPosition(p) {
 
 export function reload() {
   if (newServiceWorker) {
-    Vue.$log.debug('reloading!')
+    Vue.$log.info(newServiceWorker, 'skipWaiting!')
     newServiceWorker.postMessage({ action: 'skipWaiting' })
   } else {
-    Vue.$log.error('this shouldnt happen')
+    Vue.$log.error(`this shouldn't happen`)
   }
+  Vue.$log.info('bye bye...')
+  window.location.reload()
 }
 
 export function checkForUpdates() {

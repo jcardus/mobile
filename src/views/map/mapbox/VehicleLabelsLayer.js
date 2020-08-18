@@ -1,10 +1,10 @@
-import { source, layers } from '@/utils/consts'
+import { positionsSource } from '@/utils/consts'
 
 export default {
-  id: layers.labels,
+  id: 'vehicleLabels',
   type: 'symbol',
-  source: source,
-  filter: ['!=', 'cluster', true],
+  source: positionsSource,
+  filter: ['all', ['!=', 'cluster', true], ['!=', 'animating', true]],
   layout: {
     'text-size': 11,
     'text-variable-anchor': ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],

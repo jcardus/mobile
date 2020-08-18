@@ -10,7 +10,8 @@
 <script>
 import './styles/element-variables.scss'
 import * as partner from '@/utils/partner'
-import { serverBus, newServiceWorker } from './main'
+import { serverBus } from './main'
+import { reload } from './utils/utils'
 
 export default {
   name: 'App',
@@ -44,12 +45,7 @@ export default {
       this.showUpdateDiv = true
     },
     reload() {
-      if (newServiceWorker) {
-        this.$log.debug('reloading!')
-        newServiceWorker.postMessage({ action: 'skipWaiting' })
-      } else {
-        this.$log.error(`this shouldn't happen`)
-      }
+      reload()
     }
   }
 }

@@ -99,7 +99,18 @@ export default {
     user_updated: 'La información del usuario ha sido actualizada.',
     user_name_required: 'El campo de nombre es obligatorio',
     user_email_required: 'Por favor, indicar un e-mail válido.',
-    user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos'
+    user_password_lengh: 'La contraseña no puede tener menos de 6 dígitos',
+    user_reports: 'Informes por email',
+    daily_reports: 'Recibir diariamente',
+    weekly_reports: 'Recibir semanalmente',
+    monthly_reports: 'Recibir mensalmente',
+    continue: 'Continuar?',
+    unsaved_changes: 'Existen alteracciones que no fueron guardadas',
+    inactive_vehicles_email: 'Alerta de inactividade de los equipos',
+    inactive_vehicles_email_tooltip: 'Será enviado um email de alerta indicando os equipamentos que não comunicam há mais de 48 horas',
+    daily_reports_tooltip: 'Email enviado diariamente com informação da actividade dos veículos',
+    weekly_reports_tooltip: 'Email enviado semanalmente com informação da actividade dos veículos',
+    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos'
   },
   settings: {
     icons3d: 'Íconos 3D',

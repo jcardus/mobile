@@ -150,7 +150,7 @@ import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
 import TripTable from './TripTable'
 import styles from '../../styles/element-variables.scss'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import * as utils from '../../utils/utils'
 import * as event from '../../events'
 import store from '../../store'
@@ -203,20 +203,20 @@ export default {
       sortColumns: {},
       sortKey: 'name',
       filterState: null,
-      orderedBy: 'orderByStatus',
       fuelMetric: 'percentage'
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
+    ...mapGetters(['loading', 'historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
+    orderedBy: {
+      get() { return this.$store.getters.orderDevicesBy },
+      set(value) { this.$store.commit('user/setOrderDevicesBy', value) }
+    },
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
     },
     height() {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
-    },
-    loading() {
-      return vm.$data.loadingMap
     },
     isMobile() {
       return lnglat.isMobile()
@@ -233,8 +233,8 @@ export default {
     devicesIdle: function() {
       return this.devices.filter(d => this.getDeviceState(d) === 'Idle')
     },
-    devicesOn: function() {
-      return this.devices.filter(d => this.getDeviceState(d) === 'Moving')
+    devicesOn() {
+      return this.devices.filter(d => d.position && this.getDeviceState(d) === 'Moving')
     },
     map() {
       return vm.$data.map
@@ -267,7 +267,7 @@ export default {
           return row.id === self.selectedDevice.id
         })
       }
-      devices = devices.slice().sort(function(a, b) {
+      return devices.slice().sort((a, b) => {
         switch (self.orderedBy) {
           case 'orderByStatus':
             a = self.getDeviceStateOrder(a) + ' ' + a['name']
@@ -295,7 +295,6 @@ export default {
         }
         return (a === b ? 0 : a > b ? 1 : -1)
       })
-      return devices
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -333,6 +332,7 @@ export default {
     serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
+    ...mapMutations('user', ['setOrderDevicesBy']),
     fuelLevelClick() {
       if (this.fuelMetric === 'percentage') {
         this.fuelMetric = 'liters'
@@ -377,7 +377,7 @@ export default {
       }
       return styles.danger
     },
-    getDeviceState: function(device) {
+    getDeviceState(device) {
       return utils.getDeviceState(device.position)
     },
     getDeviceStateOrder: function(device) {

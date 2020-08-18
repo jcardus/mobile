@@ -21,28 +21,24 @@ const state = {
   devices: [],
   groups: [],
   geofences: [],
-  drivers: []
+  drivers: [],
+  orderDevicesBy: ''
 }
 
 const mutations = {
+  setOrderDevicesBy(state, value) {
+    state.orderDevicesBy = value
+  },
   SET_GEOFENCES(state, geofences) {
     console.log('SET_GEOFENCES', geofences)
     state.geofences = geofences
   },
   SET_DEVICES(state, devices) {
     state.devices = devices
-    if (devices.length > settings.maxMarkersForAnimation) {
-      Vue.$log.debug(devices.length, 'devices > ', settings.maxMarkersForAnimation, 'disabling marker animation')
-      settings.animateMarkers = false
-    }
   },
   SET_USER(state, token) {
     state.user = token
     state.user.attributes.avatar = getAvatar(token.name)
-    // default dailyReports to true
-    if (state.user.attributes.dailyEmails === undefined) {
-      state.user.attributes.dailyEmails = true
-    }
   },
   REMOVE_USER(state) {
     state.user = {
@@ -123,6 +119,11 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
+  refreshDevices({ commit, state }) {
+    if (state.devices.length > 0) {
+      commit('SET_DEVICE', state.devices[0])
+    }
+  },
   setDeviceLastIgnOff({ commit, state }, { device, fixTime }) {
     if (!settings.getLastIgnitionOff) return
     const end = new Date()

@@ -43,9 +43,6 @@ export default {
       return device && device.immobilized ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
     }
   },
-  beforeDestroy() {
-    Vue.$log.debug('ImmobilizeButton', this.selectedDevice)
-  },
   methods: {
     sendImmobilizationCommand() {
       this.selectedDevice.commandPending = true

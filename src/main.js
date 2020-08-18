@@ -26,7 +26,7 @@ console.log('app starting...', window.location)
 
 TrackJS.install({
   token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
-  version: store.state.app.packageVersion
+  version: process.env.PACKAGE_VERSION
 })
 
 Vue.config.errorHandler = (err, vm, info) => {
@@ -91,11 +91,8 @@ if ('serviceWorker' in navigator) {
     }
   })
 
-  let refreshing
-  navigator.serviceWorker.addEventListener('controllerchange', function() {
-    if (refreshing) return
-    // window.location.reload()
-    refreshing = true
+  navigator.serviceWorker.addEventListener('controllerchange', (e) => {
+    Vue.$log.warn(navigator.serviceWorker, e)
   })
 } else {
   Vue.$log.warn('no service Worker support, weird browser...')
@@ -148,10 +145,7 @@ export const vm = new Vue({
       currentDevice: null,
       lazyLoad: false,
       distance: 0,
-      vehiclePanel: null,
-      historyPanel: null,
       loggedIn: false,
-      loadingMap: true,
       reportData: []
     }
   },

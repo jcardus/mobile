@@ -7,10 +7,24 @@
     <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Security-Policy"
           content="
-          default-src *.zendesk.com *.zdassets.com driver-dev.auth.us-east-1.amazoncognito.com localhost:8080 ws: *.map.able-on.mobi 192.168.1.71:8080 172.20.10.3:8080 192.168.2.14:8080 *.mapillary.com *.wuizy.co.ao wss: 'self' *.amazonaws.com *.quicksight.aws.amazon.com *.trackjs.com *.cloudfront.net *.web.fleetrack.cl *.pinme.io blob: *.pinme.io:8080 data: *.fontawesome.com *.gstatic.com upload.wikimedia.org *.mapbox.com;
-          style-src  d758cqe2bs24d.pinme.io 'unsafe-inline' 'unsafe-eval' 'self' *.wuizy.co.ao *.web.fleetrack.cl *.fontawesome.com *.googleapis.com *.pinme.io;
-          script-src static.zdassets.com 'unsafe-inline' 'unsafe-eval' 'self' wchat.eu.freshchat.com *.wuizy.co.ao *.web.fleetrack.cl *.fontawesome.com *.googleapis.com *.pinme.io;
-          worker-src 'self' blob: *.wuizy.co.ao *.fleetrack.cl *.pinme.io;
+          object-src  'none';
+          default-src blob: data: 'self'
+                      *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.able-on.mobi
+                      *.fontawesome.com *.gstatic.com  *.mapbox.com *.wikimedia.org *.cloudfront.net *.trackjs.com
+                      *.zdassets.com *.amazon.com *.mapillary.com;
+          style-src   'unsafe-inline' 'unsafe-eval' 'self'
+                      *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.able-on.mobi
+                      *.fontawesome.com *.googleapis.com;
+          script-src  'unsafe-eval' 'self' 'unsafe-inline'
+                      *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.able-on.mobi
+                      *.zdassets.com  *.freshchat.com  *.fontawesome.com;
+          worker-src 'self' blob:
+                      *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.able-on.mobi;
+          connect-src ws: wss:
+                      *.pinme.io:8080
+                      *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.able-on.mobi
+                      *.cloudfront.net *.mapbox.com *.zendesk.com *.zdassets.com *.amazonaws.com *.trackjs.com *.amazon.com *.mapillary.com
+                      192.168.1.71:8080 localhost:8080 192.168.1.77:8080 172.20.10.3:8080 192.168.2.14:8080 localhost:8080;
 ">
     <link id="favicon" rel="icon" href="">
     <title id="title"></title>

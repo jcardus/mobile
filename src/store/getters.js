@@ -4,7 +4,7 @@ const getters = {
   name: state => state.user.user.name,
   map: state => state.map,
   devices: state => state.user.devices,
-  loading: state => state.app.loading,
+  loading: state => state.transient.loading,
   historyMode: state => state.transient.historyMode,
   minPos: state => state.map.minPos,
   maxPos: state => state.map.maxPos,
@@ -27,7 +27,16 @@ const getters = {
   vehicles3dEnabled: state => state.settings.vehicles3d,
   portrait: state => state.transient.portrait,
   followVehicle: state => state.map.followVehicle,
-  followVehicleEnabled: state => state.settings.followVehicle
+  followVehicleEnabled: state => state.settings.followVehicle,
+  deviceById: (state, getters) => (id) => {
+    return getters.devices.find(d => d.id === id)
+  },
+  deviceByName: (state, getters) => (name) => {
+    return getters.devices.find(d => d.name === name)
+  },
+  zoom: state => state.map.zoom,
+  center: state => state.map.center,
+  orderDevicesBy: state => state.user.orderDevicesBy
 }
 
 export default getters

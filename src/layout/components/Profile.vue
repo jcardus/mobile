@@ -54,10 +54,21 @@
         </el-form-item>
         <el-form-item :label="$t('profile.user_reports')">
           <el-tooltip :content="$t('profile.inactive_vehicles_email_tooltip')">
-            <el-switch v-model="user.attributes.inactiveVehiclesEmail" :active-text="$t('profile.inactive_vehicles_email')" style="padding-right:10px" @change="dirty=true"></el-switch>
+            <el-switch
+              v-model="inactiveVehiclesEmail"
+              :active-text="$t('profile.inactive_vehicles_email')"
+              style="padding-right:10px"
+              @change="dirty=true; user.attributes.inactiveVehiclesEmail = inactiveVehiclesEmail"
+            >
+            </el-switch>
           </el-tooltip>
           <el-tooltip :content="$t('profile.daily_reports_tooltip')">
-            <el-switch v-model="user.attributes.dailyEmails" :active-text="$t('profile.daily_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
+            <el-switch
+              v-model="user.attributes.dailyEmails"
+              :active-text="$t('profile.daily_reports')"
+              style="padding-right:10px"
+              @change="dirty=true"
+            ></el-switch>
           </el-tooltip>
           <el-tooltip class="item" :content="$t('profile.weekly_reports_tooltip')">
             <el-switch v-model="user.attributes.weeklyEmails" :active-text="$t('profile.weekly_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
@@ -76,10 +87,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { appOffline } from '../../utils/utils'
-import { vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
-import { setLanguage } from '../../lang'
+import { appOffline } from '@/utils/utils'
+import { traccar } from '@/api/traccar-api'
+import { setLanguage } from '@/lang'
 
 export default {
   name: 'Profile',
@@ -112,19 +122,18 @@ export default {
         ]
       },
       passwordType: 'password',
-      loading: false
+      loading: false,
+      inactiveVehiclesEmail: true
     }
   },
   computed: {
     ...mapGetters(['avatar', 'user']),
     offline() { return appOffline() }
   },
-  loading: {
-    get() {
-      return vm.$data.loading
-    },
-    set(value) {
-      vm.$data.loading = value
+  mounted() {
+    this.$log.debug(this.user.attributes)
+    if (this.user.attributes.inactiveVehiclesEmail !== undefined) {
+      this.inactiveVehiclesEmail = this.user.attributes.inactiveVehiclesEmail
     }
   },
   methods: {
@@ -141,7 +150,7 @@ export default {
       await this.$store.dispatch('app/setLoading', true)
       await this.$store.dispatch('user/logout')
       await this.$store.dispatch('app/setLoading', false)
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      window.location.reload()
     },
     handleCommand(command) {
       if (command === 'profile') {

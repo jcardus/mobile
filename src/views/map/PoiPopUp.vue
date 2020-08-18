@@ -13,7 +13,7 @@
 
 <script>
 import Vue from 'vue'
-import { getImage } from '../../utils/mapillary'
+import { getImage } from '@/utils/mapillary'
 import * as lnglat from '../../utils/lnglat'
 
 export default {
