@@ -22,7 +22,7 @@ const state = {
   groups: [],
   geofences: [],
   drivers: [],
-  orderDevicesBy: ''
+  orderDevicesBy: 'orderByStatus'
 }
 
 const mutations = {
