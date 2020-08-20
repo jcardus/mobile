@@ -63,7 +63,6 @@ export function hideLayer(layer, hide) {
 export function setVisible(layer, value) {
   const visibility = value ? 'visible' : 'none'
   if (vm.$static.map.getLayer(layer)) {
-    Vue.$log.debug(layer, 'visible', visibility)
     vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
   } else { Vue.$log.warn('nonexistent layer', layer) }
 }
@@ -94,6 +93,7 @@ export default {
     feature.properties.courseMinusBearing = angles.normalize(position.course - feature.properties.bearing)
   },
   refreshLayers() {
+    Vue.$log.debug('')
     refreshSources()
     refreshLayersVisibility()
     updateDonuts()

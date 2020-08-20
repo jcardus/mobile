@@ -164,11 +164,12 @@ export function animateRoute(route, feature, endingCourse) {
   followLine(route, feature, endingCourse)
 }
 export function followLine(route, feature, endingCourse) {
-  const steps = store.getters.historyMode ? 300 : 150
   const arc = []
 
   const lineDistance = lnglat.lineDistance(route)
-  for (let i = 0; i < lineDistance; i += lineDistance / steps) {
+  const step = store.getters.historyMode ? 0.005 : lineDistance / 300
+
+  for (let i = 0; i < lineDistance; i += step) {
     const segment = along(route, i, { units: 'kilometers' })
     arc.push(segment.geometry.coordinates)
   }
