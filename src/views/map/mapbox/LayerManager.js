@@ -63,6 +63,7 @@ export function hideLayer(layer, hide) {
 export function setVisible(layer, value) {
   const visibility = value ? 'visible' : 'none'
   if (vm.$static.map.getLayer(layer)) {
+    Vue.$log.debug(layer, 'visible', visibility)
     vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
   } else { Vue.$log.warn('nonexistent layer', layer) }
 }
@@ -230,10 +231,19 @@ export default {
   removeRoutePlayLayer() {
     if (vm.$static.map.getLayer(routePlayVehicleLayer.id)) { vm.$static.map.removeLayer(routePlayVehicleLayer.id) }
   },
-  addRoutePlayLayer(feature) {
+  addRoutePlayLayer() {
     if (!vm.$static.map.getSource(routePlayLayer)) {
-      vm.$static.map.addSource(routePlayLayer, { type: 'geojson', data: { type: 'FeatureCollection', features: [feature] }})
+      const source = { type: 'geojson', data: { type: 'FeatureCollection', features: [] }}
+      Vue.$log.warn('addSource', routePlayLayer, source)
+      vm.$static.map.addSource(routePlayLayer, source)
+    } else {
+      Vue.$log.warn('source', routePlayLayer, 'already exists...')
     }
-    if (!vm.$static.map.getLayer(routePlayVehicleLayer.id)) { vm.$static.map.addLayer(routePlayVehicleLayer) }
+    if (!vm.$static.map.getLayer(routePlayVehicleLayer.id)) {
+      Vue.$log.warn('addLayer', routePlayVehicleLayer)
+      vm.$static.map.addLayer(routePlayVehicleLayer)
+    } else {
+      Vue.$log.warn('layer', routePlayVehicleLayer.id, 'already exists...')
+    }
   }
 }
