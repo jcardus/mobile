@@ -117,12 +117,11 @@ export function getDeviceColor(state) {
 export function getDeviceState(position) {
   if (!position || position.fixDays > 5 || position.outdated) {
     return 'Disconnected'
+  } else if (position.speed >= 4) {
+    return 'Moving'
   } else if (!position.attributes.ignition) {
     return 'Stopped'
-  } else if (position.speed < 4) {
-    return 'Idle'
-  }
-  return 'Moving'
+  } return 'Idle'
 }
 
 export function calculateFuelLevel(adc1CacheValues, position, device) {
