@@ -270,6 +270,7 @@ export default {
       return devices.slice().sort((a, b) => {
         switch (self.orderedBy) {
           case 'orderByStatus':
+          case '':
             a = self.getDeviceStateOrder(a) + ' ' + a['name']
             b = self.getDeviceStateOrder(b) + ' ' + b['name']
             break
