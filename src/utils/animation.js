@@ -65,9 +65,7 @@ function _animate() {
         store.getters.historyMode &&
         !lnglat.contains(vm.$static.map.getBounds(),
           { longitude: coordinates[0], latitude: coordinates[1] })) {
-        vm.$static.map.panTo(
-          { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] }, { essential: true, duration: 200 }
-        )
+        vm.$static.map.panTo(feature.geometry.coordinates)
       }
       if (counter < feature.route.length - 1) {
         feature.endRotation = angles.normalize(bearing(feature.route[counter], feature.route[counter + 1]))
