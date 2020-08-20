@@ -61,11 +61,8 @@ function _animate() {
       if (lnglat.popUps[feature.properties.deviceId]) {
         lnglat.popUps[feature.properties.deviceId].setLngLat(coordinates)
       }
-      if (
-        store.getters.historyMode &&
-        !lnglat.contains(vm.$static.map.getBounds(),
-          { longitude: coordinates[0], latitude: coordinates[1] })) {
-        vm.$static.map.panTo(feature.geometry.coordinates)
+      if (store.getters.historyMode && !vm.$static.map.getBounds().contains(coordinates)) {
+        vm.$static.map.panTo(coordinates, { animate: false })
       }
       if (counter < feature.route.length - 1) {
         feature.endRotation = angles.normalize(bearing(feature.route[counter], feature.route[counter + 1]))
@@ -167,7 +164,7 @@ export function animateRoute(route, feature, endingCourse) {
   followLine(route, feature, endingCourse)
 }
 export function followLine(route, feature, endingCourse) {
-  const steps = 300
+  const steps = store.getters.historyMode ? 300 : 150
   const arc = []
 
   const lineDistance = lnglat.lineDistance(route)
