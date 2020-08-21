@@ -1,8 +1,8 @@
 import styles from '../styles/element-variables.scss'
 
-function initSurvey() {
+function initSurvey(token) {
   const s = document.createElement('script')
-  s.src = 'https://survey.survicate.com/workspaces/60bd590459b33f47d8dd8abccc0dc8d7/web_surveys.js'
+  s.src = `https://survey.survicate.com/workspaces/${token}/web_surveys.js`
   s.async = true
   const e = document.getElementsByTagName('script')[0]
   e.parentNode.insertBefore(s, e)
@@ -10,9 +10,14 @@ function initSurvey() {
 
 export function initSupportChat() {
   switch (hostname) {
-    case 'mac.pinme.io':
     case 'web.fleetrack.cl':
-      initSurvey()
+      initSurvey('60bd590459b33f47d8dd8abccc0dc8d7')
+      break
+    case 'mac.pinme.io':
+    case 'wuizy.co.ao':
+      initSurvey('51e321bab007a7f8e6b0575f91f20939')
+      break
+    default:
   }
 }
 
