@@ -1,4 +1,20 @@
 import styles from '../styles/element-variables.scss'
+import store from '@/store'
+
+function initFreshChat() {
+  window.fcWidget.init({
+    token: '022233f4-44bb-44b6-bdb3-7ff6a0a61515',
+    host: 'https://wchat.eu.freshchat.com'
+  })
+}
+function initialize(i, t) {
+  let e // noinspection CommaExpressionJS
+  i.getElementById(t) ? initFreshChat() : ((e = i.createElement('script')).id = t, e.async = !0, e.src = 'https://wchat.eu.freshchat.com/js/widget.js', e.onload = initFreshChat, i.head.appendChild(e))
+}
+
+function initiateCall() {
+  initialize(document, 'freshchat-js-sdk')
+}
 
 function initSurvey(token) {
   const s = document.createElement('script')
@@ -16,6 +32,9 @@ export function initSupportChat() {
     case 'mac.pinme.io':
     case 'wuizy.co.ao':
       initSurvey('51e321bab007a7f8e6b0575f91f20939')
+      if (store.getters.user.name === 'it@tvsd.co.mz') {
+        initiateCall()
+      }
       break
     default:
   }
