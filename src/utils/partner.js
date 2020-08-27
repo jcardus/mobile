@@ -1,5 +1,6 @@
 import styles from '../styles/element-variables.scss'
 import store from '@/store'
+import Vue from 'vue'
 
 function initFreshChat() {
   window.fcWidget.init({
@@ -32,8 +33,10 @@ export function initSupportChat() {
     case 'mac.pinme.io':
     case 'wuizy.co.ao':
       initSurvey('51e321bab007a7f8e6b0575f91f20939')
-      if (store.getters.user.name === 'it@tvsd.co.mz') {
+      if (store.getters.user.email === 'it@tvsd.co.mz') {
         initiateCall()
+      } else {
+        Vue.$log.warn(store.getters.user.name)
       }
       break
     default:
