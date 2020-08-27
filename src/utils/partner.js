@@ -5,9 +5,11 @@ import Vue from 'vue'
 function initFreshChat() {
   window.fcWidget.init({
     token: '022233f4-44bb-44b6-bdb3-7ff6a0a61515',
-    host: 'https://wchat.eu.freshchat.com'
-  })
+    host: 'https://wchat.eu.freshchat.com' })
+  window.fcWidget.user.setFirstName(store.user.name)
+  window.fcWidget.user.setEmail(store.user.email)
 }
+
 function initialize(i, t) {
   let e // noinspection CommaExpressionJS
   i.getElementById(t) ? initFreshChat() : ((e = i.createElement('script')).id = t, e.async = !0, e.src = 'https://wchat.eu.freshchat.com/js/widget.js', e.onload = initFreshChat, i.head.appendChild(e))
