@@ -109,6 +109,9 @@ export default {
     routeSpeedSource() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i + 'speedalert'
     },
+    routeIdleSource() {
+      return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i + 'idle'
+    },
     allTripsSource() {
       return 'allTrips-'
     },
@@ -183,14 +186,14 @@ export default {
   created() {
     Vue.$log.debug('CurrentPositionData created')
     window.addEventListener('resize', this.resizeDiv)
-    serverBus.$on('posChanged', this.onPosChanged)
-    serverBus.$on('routePlay', this.routePlay)
+    serverBus.$on(event.posChanged, this.onPosChanged)
+    serverBus.$on(event.routePlay, this.routePlay)
     serverBus.$on(event.tripChanged, this.onTripChanged)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
     window.removeEventListener('resize', this.resizeDiv)
-    serverBus.$off('posChanged', this.onPosChanged)
+    serverBus.$off(event.posChanged, this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
     const lastPos = vm.$data.currentDevice.position
     // put the vehicle back where it was...
@@ -283,6 +286,11 @@ export default {
           vm.$static.map.removeLayer(this.routeSpeedSource + 'arrows')
           vm.$static.map.removeSource(this.routeSpeedSource)
         }
+        if (vm.$static.map.getLayer(this.routeIdleSource)) {
+          Vue.$log.debug('removing ', this.routeIdleSource)
+          vm.$static.map.removeLayer(this.routeIdleSource)
+          vm.$static.map.removeSource(this.routeIdleSource)
+        }
       }
       this.i = 0
       if (this.startMaker) { this.startMaker.remove() }
@@ -303,6 +311,8 @@ export default {
     getRouteTrips: function(positions) {
       this.trips.length = 0
       let locations = []
+      let idleLocations = []
+      let idleSegment = []
       let startPos = false
       for (const position of positions) {
         if (!startPos) {
@@ -312,13 +322,32 @@ export default {
           }
           locations.push(position)
           startPos = true
+
+          // Check Idle
+          if (position.speed === 0) {
+            idleSegment.push(position)
+          }
           continue
         }
         locations.push(position)
+        if (position.speed === 0) {
+          idleSegment.push(position)
+        } else {
+          if (idleSegment.length > 0) {
+            idleSegment.push(position)
+            idleLocations.push({
+              positions: idleSegment
+            })
+          }
+          idleSegment = []
+        }
+
         if (position.attributes.power > 0 && position.attributes.power < 12.8) {
           Vue.$log.debug('stopping trip on low power: ', position)
-          this.trips.push(this.createTrip(locations))
+          this.trips.push(this.createTrip(locations, idleLocations))
           locations = []
+          idleLocations = []
+          idleSegment = []
           startPos = false
           continue
         }
@@ -327,20 +356,23 @@ export default {
         }
         Vue.$log.debug('stopping trip because on default ', position)
         if (locations.length > 1) {
-          this.trips.push(this.createTrip(locations))
+          this.trips.push(this.createTrip(locations, idleLocations))
         }
         locations = []
+        idleLocations = []
         startPos = false
       }
 
       // last trip not finished
       Vue.$log.debug('Last trip ', locations)
-      if (locations.length > 0) { this.trips.push(this.createTrip(locations)) }
+      if (locations.length > 0) { this.trips.push(this.createTrip(locations, idleLocations)) }
 
       Vue.$log.debug('Trips ', this.trips)
-      if (this.trips.length === 0) { this.trips.push(this.createTrip(positions)) }
+      if (this.trips.length === 0) { this.trips.push(this.createTrip(positions, idleLocations)) }
     },
-    createTrip(locations) {
+    createTrip(locations, idleLocations) {
+      Vue.$log.debug('IdleLocations ', idleLocations, ' idle trips')
+
       const distance = Math.round(lnglat.arrayDistance(locations.map(x => [x.longitude, x.latitude])) * 10) / 10
 
       var timeLocations = []
@@ -382,8 +414,20 @@ export default {
       idleSeconds %= 3600
       const idleMinutes = String(Math.floor(idleSeconds / 60)).padStart(2, '0')
 
+      Vue.$log.debug(idleLocations)
+
+      const idlePositions = idleLocations.map(p => {
+        Vue.$log.debug(idleLocations)
+        return {
+          latitude: p.positions[0].latitude,
+          longitude: p.positions[0].longitude,
+          idle_time: '02:00'
+        }
+      })
+
       return {
         positions: locations,
+        idlePositions: idlePositions,
         trip_start_fixtime: this.$moment(locations[0].fixTime).format('DD-MM-YYYY HH:mm:ss'),
         trip_end_fixtime: this.$moment(locations[locations.length - 1].fixTime).format('DD-MM-YYYY HH:mm:ss'),
         trip_end_address: locations[locations.length - 1].address,
@@ -428,6 +472,7 @@ export default {
           trips.push(currentSpeedTrips)
         })
         this.drawTrip()
+        this.drawIdlePoints()
         this.drawSpeedTrip()
       } else {
         Vue.$log.debug('Use road speed limit')
@@ -489,6 +534,7 @@ export default {
       })
 
       this.drawTrip()
+      this.drawIdlePoints()
       this.drawSpeedTrip()
     },
     findNearestPOI: function(position) {
@@ -616,6 +662,16 @@ export default {
 
         this.drawRoute(coordinates)
       }
+    },
+    drawIdlePoints() {
+      this.$log.debug(this.currentTrip)
+      if (this.currentTrip < 0) return
+
+      const coordinates = this.trips[this.currentTrip].idlePositions.map(p => {
+        return { type: 'Point', coordinates: [p.longitude, p.latitude] }
+      })
+      const idlePointsGeoJSON = lnglat.getGeoJSONFeatures(coordinates)
+      this.createIdleLayer(idlePointsGeoJSON)
     },
     distance(p, q) {
       const dx = p.x - q.x
@@ -774,6 +830,28 @@ export default {
       })
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
+    createIdleLayer: function(idleGeoJSON) {
+      vm.$static.map.addSource(this.routeIdleSource, {
+        type: 'geojson',
+        data: idleGeoJSON
+      })
+      Vue.$log.debug('adding idle layer', idleGeoJSON)
+      vm.$static.map.addLayer({
+        id: this.routeIdleSource,
+        type: 'circle',
+        source: this.routeIdleSource,
+        paint: {
+          'circle-radius': {
+            'base': 1.75,
+            'stops': [
+              [12, 5],
+              [22, 20]
+            ]
+          },
+          'circle-color': '#F9B218'
+        }
+      })
+    },
     createAllTripsLayer: function(routeGeoJSON) {
       if (vm.$static.map.getLayer(this.allTripsSource)) {
         this.map.removeLayer(this.allTripsSource)
@@ -849,7 +927,7 @@ export default {
       this.removeLayers(true)
       animation.updateFeature()
       this.$log.info('CurrentPositionData emit routeMatchFinished')
-      serverBus.$emit('routeMatchFinished')
+      serverBus.$emit(event.routeMatchFinished)
     },
     resizeDiv() {
       Vue.$log.debug('currentpositiondata')
@@ -896,12 +974,12 @@ export default {
         if (newPos < this.oldPos) {
           this.$log.info('ignoring animation, end of route ', newPos, this.oldPos)
           this.oldPos = newPos
-          serverBus.$emit('routeMatchFinished')
+          serverBus.$emit(event.routeMatchFinished)
           return
         }
         if (JSON.stringify(sharedData.getPositions()[origin]) === JSON.stringify(sharedData.getPositions()[newPos])) {
           this.$log.info('CurrentPositionData emit routeMatchFinished origin equals destination', origin, newPos)
-          serverBus.$emit('routeMatchFinished')
+          serverBus.$emit(event.routeMatchFinished)
         } else {
           this.$log.info('animating from ', origin, ' to ', newPos + 1)
           animation.animate(vm.$static.currentFeature,
@@ -940,6 +1018,7 @@ export default {
           this.removeLayers(true)
           this.currentTrip = t
           this.drawTrip()
+          this.drawIdlePoints()
           this.drawSpeedTrip()
 
           if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
