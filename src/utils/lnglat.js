@@ -46,6 +46,9 @@ export function getGeoJSON(coords) {
 export function getGeoJSONFeatures(coordsArray) {
   return helpers.featureCollection(coordsArray.map(coords => helpers.feature(coords)))
 }
+export function getGeoJSONFeaturesColletion(features) {
+  return helpers.featureCollection(features)
+}
 export function findFeatureByDeviceId(deviceId) {
   return vm.$static.positionsSource.features.find(e => e.properties.deviceId === deviceId)
 }

@@ -57,6 +57,21 @@ export function formatAddress(v) {
   return (sharedData.getPositions() && sharedData.getPositions()[v]) ? sharedData.getPositions()[v].address : ''
 }
 
+export function calculateTimeHHMM(idleSeconds) {
+  const idleHours = String(Math.floor(idleSeconds / 3600)).padStart(2, '0')
+  idleSeconds %= 3600
+  const idleMinutes = String(Math.floor(idleSeconds / 60)).padStart(2, '0')
+  return idleHours + ':' + idleMinutes
+}
+
+export function calculateTimeHHMMSS(idleSeconds) {
+  const idleHours = String(Math.floor(idleSeconds / 3600)).padStart(2, '0')
+  idleSeconds %= 3600
+  const idleMinutes = String(Math.floor(idleSeconds / 60)).padStart(2, '0')
+  idleSeconds %= 60
+  return idleHours + ':' + idleMinutes + ':' + String(idleSeconds).padStart(2, '0')
+}
+
 export function filterPositions(positions) {
   const firstPos = positions.findIndex(position => position.attributes.ignition || position.attributes.motion)
   if (firstPos > 0) {
