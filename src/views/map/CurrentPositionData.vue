@@ -83,7 +83,12 @@ export default {
       currentTrip: 0,
       elSwitchValue: true,
       totalDistance: 0,
-      formattedDate: ''
+      formattedDate: '',
+      popup: new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        className: 'popup-content'
+      })
     }
   },
   static() {
@@ -108,6 +113,9 @@ export default {
     },
     routeSpeedSource() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i + 'speedalert'
+    },
+    routeIdleSource() {
+      return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i + 'idle'
     },
     allTripsSource() {
       return 'allTrips-'
@@ -183,14 +191,14 @@ export default {
   created() {
     Vue.$log.debug('CurrentPositionData created')
     window.addEventListener('resize', this.resizeDiv)
-    serverBus.$on('posChanged', this.onPosChanged)
-    serverBus.$on('routePlay', this.routePlay)
+    serverBus.$on(event.posChanged, this.onPosChanged)
+    serverBus.$on(event.routePlay, this.routePlay)
     serverBus.$on(event.tripChanged, this.onTripChanged)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
     window.removeEventListener('resize', this.resizeDiv)
-    serverBus.$off('posChanged', this.onPosChanged)
+    serverBus.$off(event.posChanged, this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
     const lastPos = vm.$data.currentDevice.position
     // put the vehicle back where it was...
@@ -283,6 +291,11 @@ export default {
           vm.$static.map.removeLayer(this.routeSpeedSource + 'arrows')
           vm.$static.map.removeSource(this.routeSpeedSource)
         }
+        if (vm.$static.map.getLayer(this.routeIdleSource)) {
+          Vue.$log.debug('removing ', this.routeIdleSource)
+          vm.$static.map.removeLayer(this.routeIdleSource)
+          vm.$static.map.removeSource(this.routeIdleSource)
+        }
       }
       this.i = 0
       if (this.startMaker) { this.startMaker.remove() }
@@ -315,6 +328,7 @@ export default {
           continue
         }
         locations.push(position)
+
         if (position.attributes.power > 0 && position.attributes.power < 12.8) {
           Vue.$log.debug('stopping trip on low power: ', position)
           this.trips.push(this.createTrip(locations))
@@ -350,7 +364,8 @@ export default {
           {
             type: locations[i].speed < 4 ? 1 : 0,
             time: diffSeconds,
-            speed: locations[i].speed * 1.852
+            speed: locations[i].speed * 1.852,
+            position: locations[i]
           })
       }
 
@@ -361,34 +376,44 @@ export default {
       // Calculate stopTime of last trip
       if (this.trips.length > 0) {
         const lastTrip = this.trips[this.trips.length - 1]
-        let stopSeconds = this.$moment(locations[0].fixTime).diff(this.$moment(lastTrip.positions[lastTrip.positions.length - 1].fixTime), 'seconds')
-
-        const stopHours = String(Math.floor(stopSeconds / 3600)).padStart(2, '0')
-        stopSeconds %= 3600
-        const stopMinutes = String(Math.floor(stopSeconds / 60)).padStart(2, '0')
-
-        lastTrip.trip_stop_time = stopHours + ':' + stopMinutes
+        const stopSeconds = this.$moment(locations[0].fixTime).diff(this.$moment(lastTrip.positions[lastTrip.positions.length - 1].fixTime), 'seconds')
+        lastTrip.trip_stop_time = utils.calculateTimeHHMM(stopSeconds)
       }
 
       // Calculate drivingTime of current trip
-      let drivingSeconds = timeLocations.filter(t => t.type === 0).reduce((a, b) => a + b.time, 0)
-      const drivingHours = String(Math.floor(drivingSeconds / 3600)).padStart(2, '0')
-      drivingSeconds %= 3600
-      const drivingMinutes = String(Math.floor(drivingSeconds / 60)).padStart(2, '0')
+      const totalDrivingTime = utils.calculateTimeHHMM(timeLocations.filter(t => t.type === 0).reduce((a, b) => a + b.time, 0))
 
       // Calculate Idle of current trip
-      let idleSeconds = timeLocations.filter(t => t.type === 1).reduce((a, b) => a + b.time, 0)
-      const idleHours = String(Math.floor(idleSeconds / 3600)).padStart(2, '0')
-      idleSeconds %= 3600
-      const idleMinutes = String(Math.floor(idleSeconds / 60)).padStart(2, '0')
+      const totalTripIdleTime = utils.calculateTimeHHMM(timeLocations.filter(t => t.type === 1).reduce((a, b) => a + b.time, 0))
+
+      // Calculate Idle segments
+      const idlePositions = []
+      let idleSegment = []
+      for (var j = 1; j < timeLocations.length; j++) {
+        const t = timeLocations[j]
+        if (t.type === 1) {
+          idleSegment.push(t)
+        } else if (idleSegment.length > 0) {
+          idleSegment.push(t)
+          const idleTime = utils.calculateTimeHHMMSS(idleSegment.reduce((a, b) => a + b.time, 0))
+          idlePositions.push(
+            {
+              latitude: idleSegment[0].position.latitude,
+              longitude: idleSegment[0].position.longitude,
+              idle_time: idleTime
+            })
+          idleSegment = []
+        }
+      }
 
       return {
         positions: locations,
+        idlePositions: idlePositions,
         trip_start_fixtime: this.$moment(locations[0].fixTime).format('DD-MM-YYYY HH:mm:ss'),
         trip_end_fixtime: this.$moment(locations[locations.length - 1].fixTime).format('DD-MM-YYYY HH:mm:ss'),
         trip_end_address: locations[locations.length - 1].address,
-        trip_driving_time: drivingHours + ':' + drivingMinutes,
-        trip_idle_time: idleHours + ':' + idleMinutes,
+        trip_driving_time: totalDrivingTime,
+        trip_idle_time: totalTripIdleTime,
         trip_stop_time: '00:00',
         trip_distance: distance,
         trip_avg_speed: avgSpeed,
@@ -428,6 +453,7 @@ export default {
           trips.push(currentSpeedTrips)
         })
         this.drawTrip()
+        this.drawIdlePoints()
         this.drawSpeedTrip()
       } else {
         Vue.$log.debug('Use road speed limit')
@@ -489,6 +515,7 @@ export default {
       })
 
       this.drawTrip()
+      this.drawIdlePoints()
       this.drawSpeedTrip()
     },
     findNearestPOI: function(position) {
@@ -616,6 +643,16 @@ export default {
 
         this.drawRoute(coordinates)
       }
+    },
+    drawIdlePoints() {
+      this.$log.debug(this.currentTrip)
+      if (this.currentTrip < 0) return
+
+      const features = this.trips[this.currentTrip].idlePositions.map(p => {
+        return { type: 'Feature', properties: { idle_time: p.idle_time }, geometry: { type: 'Point', coordinates: [p.longitude, p.latitude] }}
+      })
+      const idlePointsGeoJSON = lnglat.getGeoJSONFeaturesColletion(features)
+      this.createIdleLayer(idlePointsGeoJSON)
     },
     distance(p, q) {
       const dx = p.x - q.x
@@ -774,6 +811,50 @@ export default {
       })
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
+    createIdleLayer: function(idleGeoJSON) {
+      vm.$static.map.addSource(this.routeIdleSource, {
+        type: 'geojson',
+        data: idleGeoJSON
+      })
+      Vue.$log.debug('adding idle layer', idleGeoJSON)
+      vm.$static.map.addLayer({
+        id: this.routeIdleSource,
+        type: 'circle',
+        source: this.routeIdleSource,
+        paint: {
+          'circle-radius': {
+            'base': 1.75,
+            'stops': [
+              [12, 5],
+              [22, 20]
+            ]
+          },
+          'circle-color': '#F9B218'
+        }
+      })
+
+      vm.$static.map.on('mouseenter', this.routeIdleSource, this.onIdleMouseEnter)
+
+      vm.$static.map.on('mouseleave', this.routeIdleSource, this.onIdleMouseLeave)
+    },
+    onIdleMouseEnter: function(e) {
+      var coordinates = e.features[0].geometry.coordinates.slice()
+      var description = e.features[0].properties.idle_time
+      this.$log.debug('IdleFeature', e.features[0])
+
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
+      }
+
+      this.popup
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(vm.$static.map)
+    },
+    onIdleMouseLeave: function() {
+      vm.$static.map.getCanvas().style.cursor = ''
+      this.popup.remove()
+    },
     createAllTripsLayer: function(routeGeoJSON) {
       if (vm.$static.map.getLayer(this.allTripsSource)) {
         this.map.removeLayer(this.allTripsSource)
@@ -849,7 +930,7 @@ export default {
       this.removeLayers(true)
       animation.updateFeature()
       this.$log.info('CurrentPositionData emit routeMatchFinished')
-      serverBus.$emit('routeMatchFinished')
+      serverBus.$emit(event.routeMatchFinished)
     },
     resizeDiv() {
       Vue.$log.debug('currentpositiondata')
@@ -896,12 +977,12 @@ export default {
         if (newPos < this.oldPos) {
           this.$log.info('ignoring animation, end of route ', newPos, this.oldPos)
           this.oldPos = newPos
-          serverBus.$emit('routeMatchFinished')
+          serverBus.$emit(event.routeMatchFinished)
           return
         }
         if (JSON.stringify(sharedData.getPositions()[origin]) === JSON.stringify(sharedData.getPositions()[newPos])) {
           this.$log.info('CurrentPositionData emit routeMatchFinished origin equals destination', origin, newPos)
-          serverBus.$emit('routeMatchFinished')
+          serverBus.$emit(event.routeMatchFinished)
         } else {
           this.$log.info('animating from ', origin, ' to ', newPos + 1)
           animation.animate(vm.$static.currentFeature,
@@ -940,6 +1021,7 @@ export default {
           this.removeLayers(true)
           this.currentTrip = t
           this.drawTrip()
+          this.drawIdlePoints()
           this.drawSpeedTrip()
 
           if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
@@ -1002,5 +1084,14 @@ export default {
     color: gray;
     font-size: 14px;
   }
-
+</style>
+<style>
+  .popup-content .mapboxgl-popup-content {
+    border-radius: 5px;
+    padding: 0;
+    text-align: center;
+    min-width: 70px;
+    color: white;
+    background-color: #F9B218;
+  }
 </style>
