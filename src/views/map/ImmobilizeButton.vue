@@ -21,6 +21,7 @@ import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
 import { mapGetters } from 'vuex'
+import store from 'store'
 
 export default {
   name: 'ImmobilizeButton',
@@ -50,7 +51,7 @@ export default {
       vm.$store.dispatch('user/updateDevice', this.selectedDevice).then(() => {
         traccar.api_helper(
           {
-            'username': this.user.email,
+            'username': store.getters.user.email,
             'password': '',
             'command': 'immobilization',
             'deviceid': this.selectedDevice.id,
