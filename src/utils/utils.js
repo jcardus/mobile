@@ -106,14 +106,14 @@ export function checkForUpdates() {
   if (navigator.serviceWorker) {
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       if (registrations.length === 0) {
-        Vue.$log.warn('no service worker.. thats not good...')
+        Vue.$log.warn('no service worker registrations... thats not good...')
       }
       for (const reg of registrations) {
-        reg.update().then(() => Vue.$log.debug('done checking for updates...'))
+        reg.update().then(() => Vue.$log.warn('done checking for updates...'))
       }
     })
   } else {
-    Vue.$log.warn('no service worker...')
+    Vue.$log.warn('no serviceWorker, weird browser...')
   }
 }
 
