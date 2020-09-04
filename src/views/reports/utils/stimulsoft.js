@@ -24,6 +24,7 @@ export function load(template, reportId) {
   options.appearance.showTooltips = false
 
   options.appearance.allowTouchZoom = true
+  options.appearance.scrollbarsMode = true
 
   options.toolbar.showAboutButton = false
   options.toolbar.showOpenButton = false
