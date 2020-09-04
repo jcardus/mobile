@@ -21,7 +21,7 @@ import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../utils/lnglat'
 import * as partner from '../../utils/partner'
 import { mapGetters } from 'vuex'
-import store from 'store'
+import store from '@/store'
 
 export default {
   name: 'ImmobilizeButton',
