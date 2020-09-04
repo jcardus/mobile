@@ -256,13 +256,13 @@ export default {
             this.$store.dispatch('transient/toggleHistoryMode')
           }
         }
-        layerManager.refreshLayers()
       } else {
         if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
           this.$f7.preloader.show()
         }
         this.$log.warn('not finishing loading', this.loadingCount)
       }
+      layerManager.refreshLayers()
     },
     mapResize() {
       if (this.map) {
