@@ -838,6 +838,8 @@ export default {
       vm.$static.map.on('mouseleave', this.routeIdleSource, this.onIdleMouseLeave)
     },
     onIdleMouseEnter: function(e) {
+      vm.$static.map.getCanvas().style.cursor = 'pointer'
+
       var coordinates = e.features[0].geometry.coordinates.slice()
       var description = e.features[0].properties.idle_time
       this.$log.debug('IdleFeature', e.features[0])
