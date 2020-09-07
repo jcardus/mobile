@@ -6,8 +6,8 @@ function initFreshChat() {
   window.fcWidget.init({
     token: '022233f4-44bb-44b6-bdb3-7ff6a0a61515',
     host: 'https://wchat.eu.freshchat.com' })
-  window.fcWidget.user.setFirstName(store.user.name)
-  window.fcWidget.user.setEmail(store.user.email)
+  window.fcWidget.user.setFirstName(store.getters.user.name)
+  window.fcWidget.user.setEmail(store.getters.user.email)
 }
 
 function initialize(i, t) {
