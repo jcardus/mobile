@@ -3,7 +3,7 @@
     <img style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" />
     <div style="width:100%; float:right">
       <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
-        <div slot="content">{{ this.lngLat[1].toFixed(6) }}<br />{{ this.lngLat[0].toFixed(6) }}</div>
+        <div slot="content">{{ lngLat[1].toFixed(6) }}<br />{{ lngLat[0].toFixed(6) }}</div>
         <i class="fas fa-globe coordsIcon" @click="copy()"></i>
       </el-tooltip>
     </div>
