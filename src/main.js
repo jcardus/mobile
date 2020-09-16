@@ -15,6 +15,7 @@ import * as lnglat from './utils/lnglat'
 import './amplify'
 import VueTimers from 'vue-timers'
 import { SharedData } from './utils/utils'
+import * as partner from './utils/partner'
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 
@@ -73,7 +74,7 @@ export let regServiceWorker
 window.OneSignal = window.OneSignal || []
 window.OneSignal.push(() => {
   window.OneSignal.init({
-    appId: process.env.VUE_APP_ONESIGNAL,
+    appId: partner.getOneSignalAppId(),
     allowLocalhostAsSecureOrigin: process.env.ENV !== 'production'
   })
 })

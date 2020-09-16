@@ -78,6 +78,17 @@ export function getTitle() {
   return 'Pinme'
 }
 
+export function getOneSignalAppId() {
+  if (hostname === 'wuizy.co.ao') { return '' }
+  if (hostname === 'web.fleetrack.cl') { return '' }
+  if (hostname === 'www.fleetrackchile.com') { return '' }
+  if (hostname === 'map.able-on.mobi') { return '' }
+  if (hostname === 'www.autotracker.cl') { return '' }
+  if (hostname === 'localhost') { return '70622a05-9e6e-4fb7-8817-f9e26b8b3064' }
+  if (hostname === 'dev.pinme.io') { return '2cef0590-22af-4d29-85f0-1edaa5279b9c' }
+  return 'Pinme'
+}
+
 export function hasSVG() {
   return hostname === 'wuizy.co.ao' ||
     // hostname.includes('localhost') ||
