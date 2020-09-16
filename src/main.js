@@ -70,10 +70,18 @@ export const serverBus = new Vue()
 export let newServiceWorker
 export let regServiceWorker
 
+window.OneSignal = window.OneSignal || []
+window.OneSignal.push(() => {
+  window.OneSignal.init({
+    appId: process.env.VUE_APP_ONESIGNAL,
+    allowLocalhostAsSecureOrigin: process.env.ENV !== 'production'
+  })
+})
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     if (registrations.length === 0) {
-      navigator.serviceWorker.register('/service-worker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
+      navigator.serviceWorker.register('/OneSignalSDKWorker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
     }
     for (const reg of registrations) {
       reg.addEventListener('updatefound', () => {
