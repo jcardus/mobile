@@ -41,8 +41,8 @@ module.exports = {
     workboxOptions: {
       // exclude: [/OneSignal.*\.js$/],
       // swSrc is required in InjectManifest mode.
-      // swSrc: 'src/service-worker.js'
-      swSrc: 'public/OneSignalSDKWorker.js'
+      swSrc: 'src/service-worker.js'
+      // swSrc: 'public/OneSignalSDKWorker.js'
     },
     manifestOptions: {
       'icons': [{
