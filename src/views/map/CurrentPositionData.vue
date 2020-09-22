@@ -13,7 +13,7 @@
           <i class="fas fa-tachometer-alt" style="color: white"></i>
         </el-tag>
         <el-tag
-          style="margin-right: 5px"
+          style="margin-right: 15px"
           size="small"
           :type="tagFuelChartColor()"
           effect="dark"
@@ -21,19 +21,8 @@
         >
           <i class="fas fa-gas-pump" style="color: white"></i>
         </el-tag>
-        <el-switch
-          v-if="!isMobile"
-          :value="true"
-          @change="toggleChanged"
-        >
-        </el-switch>
-        <f7-toggle
-          v-else
-          :checked="checked"
-          type="checkbox"
-          @change="toggleChanged"
-        >
-        </f7-toggle></span>
+        <i class="fas fa-times" style="color: gray" @click="toggleChanged"></i>
+      </span>
     </span>
     <div style="padding-top: 5px; overflow: hidden; width:100%">
       <div style="float:left; ">
