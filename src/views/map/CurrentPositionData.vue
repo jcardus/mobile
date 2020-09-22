@@ -6,7 +6,7 @@
         <el-tag
           style="margin-right: 5px"
           size="small"
-          type="success"
+          :type="tagSpeedChartColor()"
           effect="dark"
           @click="toggleSpeedChart"
         >
@@ -15,7 +15,7 @@
         <el-tag
           style="margin-right: 5px"
           size="small"
-          type="warning"
+          :type="tagFuelChartColor()"
           effect="dark"
           @click="toggleFuelChart"
         >
@@ -87,7 +87,9 @@ export default {
         closeButton: false,
         closeOnClick: false,
         className: 'popup-content'
-      })
+      }),
+      isSpeedChartVisible: true,
+      isFuelChartVisible: true
     }
   },
   static() {
@@ -222,11 +224,19 @@ export default {
     }
   },
   methods: {
+    tagSpeedChartColor() {
+      return this.isSpeedChartVisible ? 'success' : 'info'
+    },
     toggleSpeedChart() {
       serverBus.$emit(event.toogleSpeedChart)
+      this.isSpeedChartVisible = !this.isSpeedChartVisible
+    },
+    tagFuelChartColor() {
+      return this.isFuelChartVisible ? 'warning' : 'info'
     },
     toggleFuelChart() {
       serverBus.$emit(event.toogleFuelChart)
+      this.isFuelChartVisible = !this.isFuelChartVisible
     },
     toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
