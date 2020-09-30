@@ -6,8 +6,8 @@ function initFreshChat() {
   window.fcWidget.init({
     token: '022233f4-44bb-44b6-bdb3-7ff6a0a61515',
     host: 'https://wchat.eu.freshchat.com' })
-  window.fcWidget.user.setFirstName(store.user.name)
-  window.fcWidget.user.setEmail(store.user.email)
+  window.fcWidget.user.setFirstName(store.getters.user.name)
+  window.fcWidget.user.setEmail(store.getters.user.email)
 }
 
 function initialize(i, t) {
@@ -76,6 +76,23 @@ export function getTitle() {
   if (hostname === 'map.able-on.mobi') { return 'able-on' }
   if (hostname === 'www.autotracker.cl') { return 'Auto Tracker' }
   return 'Pinme'
+}
+
+export function getOneSignalAppId() {
+  switch (window.location.hostname) {
+    case 'wuizy.co.ao':
+      return 'd209de76-98c2-4721-aad4-168c4a8f4e66'
+    case 'mac.pinme.io':
+      return 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2'
+    case 'localhost':
+      return '70622a05-9e6e-4fb7-8817-f9e26b8b3064'
+    case 'pinme.io':
+      return '610e8c3c-0939-42ad-a9e4-ce321a5d13bc'
+    case 'dev.pinme.io':
+      return '2cef0590-22af-4d29-85f0-1edaa5279b9c'
+    default:
+      return ''
+  }
 }
 
 export function hasSVG() {

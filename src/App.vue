@@ -9,7 +9,7 @@
 
 <script>
 import './styles/element-variables.scss'
-import * as partner from '@/utils/partner'
+import * as partner from './utils/partner'
 import { serverBus } from './main'
 import { reload } from './utils/utils'
 

@@ -199,8 +199,7 @@ export default {
           icon: this.geofenceIcon,
           color: this.geofenceColor
         }
-      }
-      if (this.getType(this.selectedGeofence) === 'geofence') {
+      } else if (this.getType(this.selectedGeofence) === 'geofence') {
         geofence.attributes = {
           color: this.geofenceColor,
           fill: this.geofenceFill

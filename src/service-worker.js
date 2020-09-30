@@ -64,18 +64,4 @@ if (workbox) {
       console.log('skip waiting done')
     }
   })
-  self.addEventListener('push', (e) => {
-    let data
-    if (e.data) {
-      data = e.data
-    }
-    const event = JSON.parse(data.text())
-    const options = {
-      body: event.type,
-      icon: '/img/favicon/pinme192.png',
-      vibrate: [300, 200, 300],
-      badge: '/img/favicon/pinme32.png'
-    }
-    e.waitUntil(self.registration.showNotification(event.device, options))
-  })
 }

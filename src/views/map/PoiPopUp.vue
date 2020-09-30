@@ -1,6 +1,12 @@
 <template>
   <div>
     <img style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" />
+    <div style="width:100%; float:right">
+      <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
+        <div slot="content">{{ lngLat[1].toFixed(6) }}<br />{{ lngLat[0].toFixed(6) }}</div>
+        <i class="fas fa-globe coordsIcon" @click="copy()"></i>
+      </el-tooltip>
+    </div>
     <div class="left">
       {{ properties.title }}
     </div>
@@ -15,6 +21,8 @@
 import Vue from 'vue'
 import { getImage } from '@/utils/mapillary'
 import * as lnglat from '../../utils/lnglat'
+import { isMobile } from '@/utils/lnglat'
+import { serverBus } from '@/main'
 
 export default {
   name: 'PoiPopUp',
@@ -46,12 +54,20 @@ export default {
     navigateTo() {
       const win = window.open(this.navigateUrl, '_top')
       return win.focus()
+    },
+    copy() {
+      navigator.clipboard.writeText(this.lngLat[1].toFixed(6) + ',' + this.lngLat[0].toFixed(6))
+      if (isMobile()) {
+        serverBus.$emit('message', this.lngLat[1].toFixed(6) + ',' + this.lngLat[0].toFixed(6))
+      }
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import '../../styles/element-variables.scss';
+
   .left {
     padding:10px;
     float: left;
@@ -62,5 +78,11 @@ export default {
   .right {
     padding:10px;
     float: right;
+  }
+  .coordsIcon{
+    float: right;
+    color: $--color-primary;
+    padding-top: 15px;
+    padding-right: 10px;
   }
 </style>

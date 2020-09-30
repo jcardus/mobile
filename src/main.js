@@ -15,6 +15,7 @@ import * as lnglat from './utils/lnglat'
 import './amplify'
 import VueTimers from 'vue-timers'
 import { SharedData } from './utils/utils'
+import * as partner from './utils/partner'
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 
@@ -70,10 +71,18 @@ export const serverBus = new Vue()
 export let newServiceWorker
 export let regServiceWorker
 
+window.OneSignal = window.OneSignal || []
+window.OneSignal.push(() => {
+  window.OneSignal.init({
+    appId: partner.getOneSignalAppId(),
+    allowLocalhostAsSecureOrigin: process.env.ENV !== 'production'
+  })
+})
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     if (registrations.length === 0) {
-      navigator.serviceWorker.register('/service-worker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
+      navigator.serviceWorker.register('/OneSignalSDKWorker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
     }
     for (const reg of registrations) {
       reg.addEventListener('updatefound', () => {

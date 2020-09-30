@@ -176,7 +176,10 @@ const actions = {
         .catch(e => console.error('initData', e))
         .finally(() => {
           setLanguage(state.user.attributes.lang)
-          TrackJS.addMetadata('user', state.name)
+          if (window.OneSignal) {
+            window.OneSignal.setEmail(state.user.email)
+          }
+          TrackJS.addMetadata('user', state.user.name)
           const hostName = getServerHost()
           Vue.$log.info('opening websocket ', state)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
@@ -198,9 +201,13 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        commit('SET_USER', response.data)
+        const user = response.data
+        commit('SET_USER', user)
         dispatch('setUser').finally(() => {
           checkForUpdates()
+          user.attributes.lastHost = window.location.hostname
+          user.attributes.lastLogin = new Date()
+          traccar.updateUser(user.id, user)
           resolve()
         })
       }).catch(e => {

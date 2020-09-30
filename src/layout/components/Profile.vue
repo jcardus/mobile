@@ -52,31 +52,6 @@
             <el-option v-for="lang in languages" :key="lang.value" :label="lang.text" :value="lang.value" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('profile.user_reports')">
-          <el-tooltip :content="$t('profile.inactive_vehicles_email_tooltip')">
-            <el-switch
-              v-model="inactiveVehiclesEmail"
-              :active-text="$t('profile.inactive_vehicles_email')"
-              style="padding-right:10px"
-              @change="dirty=true; user.attributes.inactiveVehiclesEmail = inactiveVehiclesEmail"
-            >
-            </el-switch>
-          </el-tooltip>
-          <el-tooltip :content="$t('profile.daily_reports_tooltip')">
-            <el-switch
-              v-model="user.attributes.dailyEmails"
-              :active-text="$t('profile.daily_reports')"
-              style="padding-right:10px"
-              @change="dirty=true"
-            ></el-switch>
-          </el-tooltip>
-          <el-tooltip class="item" :content="$t('profile.weekly_reports_tooltip')">
-            <el-switch v-model="user.attributes.weeklyEmails" :active-text="$t('profile.weekly_reports')" style="padding-right:10px" @change="dirty=true"></el-switch>
-          </el-tooltip>
-          <el-tooltip class="item" :content="$t('profile.monthly_reports_tooltip')">
-            <el-switch v-model="user.attributes.monthlyEmails" :active-text="$t('profile.monthly_reports')" @change="dirty=true"></el-switch>
-          </el-tooltip>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button :loading="loading" type="primary" :disabled="!dirty" @click="submit">{{ $t('profile.user_update_button') }}</el-button>
@@ -122,19 +97,12 @@ export default {
         ]
       },
       passwordType: 'password',
-      loading: false,
-      inactiveVehiclesEmail: true
+      loading: false
     }
   },
   computed: {
     ...mapGetters(['avatar', 'user']),
     offline() { return appOffline() }
-  },
-  mounted() {
-    this.$log.debug(this.user.attributes)
-    if (this.user.attributes.inactiveVehiclesEmail !== undefined) {
-      this.inactiveVehiclesEmail = this.user.attributes.inactiveVehiclesEmail
-    }
   },
   methods: {
     handleClose(done) {

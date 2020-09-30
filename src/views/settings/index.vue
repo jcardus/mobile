@@ -25,7 +25,7 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
-          <i class="fas fa-map-marked"></i><span v-if="!isMobile" style="margin-left: 10px">Zonas</span>
+          <i class="fas fa-map-marked"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.zone') }}</span>
         </span>
         <geofences></geofences>
       </el-tab-pane>
@@ -34,6 +34,12 @@
           <i class="fas fa-bell"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.alerts') }}</span>
         </span>
         <alerts></alerts>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
+          <i class="far fa-sticky-note"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.reports') }}</span>
+        </span>
+        <automatic-reports></automatic-reports>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
@@ -99,12 +105,13 @@ import Drivers from './drivers/Drivers'
 import Geofences from './geofence/Geofences'
 import Vehicles from './vehicles/Vehicles'
 import Groups from './groups/Groups'
+import AutomaticReports from './reports/AutomaticReports.vue'
 import * as lnglat from '../../utils/lnglat'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Settings',
-  components: { Alerts, Vehicles, Groups, Drivers, Geofences },
+  components: { Alerts, Vehicles, Groups, Drivers, Geofences, AutomaticReports },
   data() {
     return {
       radioValue: 'road',

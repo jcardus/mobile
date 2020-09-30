@@ -12,13 +12,3 @@ serverBus.$on('forceLogout', () => {
     window.location.reload()
   }).catch((e) => Vue.$log.error('error on logout', e))
 })
-
-if (!('Notification' in window)) {
-  Vue.$log.warn('no notifications in this browser... Buuuu...')
-} else if (Notification.permission === 'granted') {
-  Vue.$log.info('notifications ok')
-} else if (Notification.permission !== 'denied') {
-  Notification.requestPermission().then((permission) => {
-    Vue.$log.info('notification permissions', permission)
-  })
-}
