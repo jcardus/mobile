@@ -80,6 +80,8 @@ export function getTitle() {
 
 export function getOneSignalAppId() {
   switch (window.location.hostname) {
+    case 'wuizy.co.ao':
+      return 'd209de76-98c2-4721-aad4-168c4a8f4e66'
     case 'mac.pinme.io':
       return 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2'
     case 'localhost':
