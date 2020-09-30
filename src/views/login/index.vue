@@ -73,8 +73,8 @@
 <script>
 
 import Vue from 'vue'
-import { getCSSName, getLogo, getThemeColor, hasSVG } from '../../utils/partner'
-import { cdnUrl } from '../../utils/consts'
+import { getCSSName, getLogo, getThemeColor, hasSVG } from '@/utils/partner'
+import { cdnUrl } from '@/utils/consts'
 import LogoSvg from '../../layout/components/LogoSvg'
 import GoogleButton from './GoogleButton'
 
@@ -186,7 +186,7 @@ export default {
             .catch(exception => {
               Vue.$log.error(exception)
               let message = this.$t('login.login_user_password_invalid')
-              if (exception.response.status === 400) {
+              if (exception.response && exception.response.status === 400) {
                 message = this.$t('login.login_user_disabled')
               }
               this.$message({
