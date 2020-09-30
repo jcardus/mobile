@@ -201,9 +201,13 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        commit('SET_USER', response.data)
+        const user = response.data
+        commit('SET_USER', user)
         dispatch('setUser').finally(() => {
           checkForUpdates()
+          user.attributes.lastHost = window.location.hostname
+          user.attributes.lastLogin = new Date()
+          traccar.updateUser(user.id, user)
           resolve()
         })
       }).catch(e => {
