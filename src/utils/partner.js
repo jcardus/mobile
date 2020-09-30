@@ -79,14 +79,18 @@ export function getTitle() {
 }
 
 export function getOneSignalAppId() {
-  if (hostname === 'wuizy.co.ao') { return '' }
-  if (hostname === 'web.fleetrack.cl') { return '' }
-  if (hostname === 'www.fleetrackchile.com') { return '' }
-  if (hostname === 'map.able-on.mobi') { return '' }
-  if (hostname === 'www.autotracker.cl') { return '' }
-  if (hostname === 'localhost') { return '70622a05-9e6e-4fb7-8817-f9e26b8b3064' }
-  if (hostname === 'pinme.io') { return '2cef0590-22af-4d29-85f0-1edaa5279b9c' }
-  return ''
+  switch (hostname) {
+    case 'mac.pinme.io':
+      return 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2'
+    case 'localhost':
+      return '70622a05-9e6e-4fb7-8817-f9e26b8b3064'
+    case 'pinme.io':
+      return '610e8c3c-0939-42ad-a9e4-ce321a5d13bc'
+    case 'dev.pinme.io':
+      return '2cef0590-22af-4d29-85f0-1edaa5279b9c'
+    default:
+      return ''
+  }
 }
 
 export function hasSVG() {
