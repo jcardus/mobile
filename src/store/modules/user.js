@@ -176,7 +176,10 @@ const actions = {
         .catch(e => console.error('initData', e))
         .finally(() => {
           setLanguage(state.user.attributes.lang)
-          TrackJS.addMetadata('user', state.name)
+          if (window.OneSignal) {
+            window.OneSignal.setEmail(state.user.email)
+          }
+          TrackJS.addMetadata('user', state.user.name)
           const hostName = getServerHost()
           Vue.$log.info('opening websocket ', state)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
