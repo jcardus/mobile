@@ -2,39 +2,27 @@
   <div>
     {{ name }}
     <span style="font-style: italic; float: right">
-      {{ $t('map.totalDistance') + ': ' + totalDistance }} Kms
       <span style="float:right; padding-left: 10px">
         <el-tag
           style="margin-right: 5px"
           size="small"
-          type="success"
+          :type="tagSpeedChartColor()"
           effect="dark"
           @click="toggleSpeedChart"
         >
           <i class="fas fa-tachometer-alt" style="color: white"></i>
         </el-tag>
         <el-tag
-          style="margin-right: 5px"
+          style="margin-right: 15px"
           size="small"
-          type="warning"
+          :type="tagFuelChartColor()"
           effect="dark"
           @click="toggleFuelChart"
         >
           <i class="fas fa-gas-pump" style="color: white"></i>
         </el-tag>
-        <el-switch
-          v-if="!isMobile"
-          :value="true"
-          @change="toggleChanged"
-        >
-        </el-switch>
-        <f7-toggle
-          v-else
-          :checked="checked"
-          type="checkbox"
-          @change="toggleChanged"
-        >
-        </f7-toggle></span>
+        <i class="fas fa-times" style="color: gray" @click="toggleChanged"></i>
+      </span>
     </span>
     <div style="padding-top: 5px; overflow: hidden; width:100%">
       <div style="float:left; ">
@@ -88,7 +76,9 @@ export default {
         closeButton: false,
         closeOnClick: false,
         className: 'popup-content'
-      })
+      }),
+      isSpeedChartVisible: true,
+      isFuelChartVisible: true
     }
   },
   static() {
@@ -223,11 +213,19 @@ export default {
     }
   },
   methods: {
+    tagSpeedChartColor() {
+      return this.isSpeedChartVisible ? 'success' : 'info'
+    },
     toggleSpeedChart() {
       serverBus.$emit(event.toogleSpeedChart)
+      this.isSpeedChartVisible = !this.isSpeedChartVisible
+    },
+    tagFuelChartColor() {
+      return this.isFuelChartVisible ? 'warning' : 'info'
     },
     toggleFuelChart() {
       serverBus.$emit(event.toogleFuelChart)
+      this.isFuelChartVisible = !this.isFuelChartVisible
     },
     toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
@@ -377,14 +375,14 @@ export default {
       if (this.trips.length > 0) {
         const lastTrip = this.trips[this.trips.length - 1]
         const stopSeconds = this.$moment(locations[0].fixTime).diff(this.$moment(lastTrip.positions[lastTrip.positions.length - 1].fixTime), 'seconds')
-        lastTrip.trip_stop_time = utils.calculateTimeHHMM(stopSeconds)
+        lastTrip.trip_stop_time = stopSeconds
       }
 
       // Calculate drivingTime of current trip
-      const totalDrivingTime = utils.calculateTimeHHMM(timeLocations.filter(t => t.type === 0).reduce((a, b) => a + b.time, 0))
+      const totalDrivingTime = timeLocations.filter(t => t.type === 0).reduce((a, b) => a + b.time, 0)
 
       // Calculate Idle of current trip
-      const totalTripIdleTime = utils.calculateTimeHHMM(timeLocations.filter(t => t.type === 1).reduce((a, b) => a + b.time, 0))
+      const totalTripIdleTime = timeLocations.filter(t => t.type === 1).reduce((a, b) => a + b.time, 0)
 
       // Calculate Idle segments
       const idlePositions = []
@@ -414,7 +412,7 @@ export default {
         trip_end_address: locations[locations.length - 1].address,
         trip_driving_time: totalDrivingTime,
         trip_idle_time: totalTripIdleTime,
-        trip_stop_time: '00:00',
+        trip_stop_time: 0,
         trip_distance: distance,
         trip_avg_speed: avgSpeed,
         endPoi: this.findNearestPOI(locations[locations.length - 1])

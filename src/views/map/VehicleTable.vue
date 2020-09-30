@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-if="!historyMode">
       <el-select v-if="!isMobile" v-model="orderedBy" style="margin-bottom: 10px; width: 100%">
         <el-option
           v-for="item in orderBy"
@@ -11,7 +11,7 @@
         </el-option>
       </el-select>
     </div>
-    <div style="margin-bottom: 15px;">
+    <div v-if="!historyMode" style="margin-bottom: 15px;">
       <el-row type="flex" justify="space-around">
         <el-col :span="4">
           <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
@@ -216,7 +216,8 @@ export default {
       return this.isMobile ? 'large' : 'mini'
     },
     height() {
-      return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
+      const historyModeHeight = this.historyMode ? styles.vehicleListHeaderHeightHistoryMode : styles.vehicleListHeaderHeight
+      return 'calc(100vh - ' + historyModeHeight + ')'
     },
     isMobile() {
       return lnglat.isMobile()

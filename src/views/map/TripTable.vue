@@ -18,7 +18,7 @@
         >
           <template slot-scope="scope">
             <div
-              style="display: flow-root; margin-top: 10px; border-radius:10px; padding-left: 10px; padding-bottom: 10px;padding-right: 10px"
+              style="display: flow-root; margin-top: 5px; border-radius:10px; padding-left: 10px; padding-bottom: 5px;padding-right: 10px"
               :class="currentTrip===scope.row ? 'tripSelectedBackground' : ''"
             >
               <div :class="getTripIndexClass(scope.row)" style="background-color: #FFFFFF ; border-radius:10px">
@@ -58,17 +58,17 @@
               <el-row>
                 <el-col :span="8" class="colTripData">
                   <div>
-                    <span style="font-size: 12px;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i> {{ scope.row.trip_driving_time }}</span>
+                    <span style="font-size: 12px;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i> {{ calculateTime(scope.row.trip_driving_time) }}</span>
                   </div>
                 </el-col>
                 <el-col :span="8" class="colTripData">
                   <div>
-                    <span style="font-size: 12px;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #FFBA00"></i> {{ scope.row.trip_idle_time }}</span>
+                    <span style="font-size: 12px;padding-right: 15px"><i class="fas fa-car" style="width: 15px; color: #FFBA00"></i> {{ calculateTime(scope.row.trip_idle_time) }}</span>
                   </div>
                 </el-col>
                 <el-col :span="8" class="colTripData">
                   <div>
-                    <span style="font-size: 12px; "><i class="fas fa-car" style="width: 15px; color: #F5365C"></i> {{ scope.row.trip_stop_time }}</span>
+                    <span style="font-size: 12px; "><i class="fas fa-car" style="width: 15px; color: #F5365C"></i> {{ calculateTime(scope.row.trip_stop_time) }}</span>
                   </div>
                 </el-col>
               </el-row>
@@ -89,6 +89,22 @@
         </el-table-column>
       </el-table>
     </div>
+    <div v-if="this.trips.length > 0" class="historyTotal">
+      <div style="margin-top: 5px">
+        <span style="font-size: 12px">Totais</span>
+      </div>
+      <div>
+        <span style="font-size: 12px"><i class="fas fa-route"></i> {{ this.trips.length }} viagens</span>
+      </div>
+      <div style="width: 100%">
+        <div style="width: 33%; float:left"><span style="font-size: 12px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i> {{ calculateTime(totalDrivingTime) }}</span></div>
+        <div style="width: 33%; float:left"><span style="font-size: 12px"><i class="fas fa-car" style="width: 15px; color: #FFBA00"></i> {{ calculateTime(totalIdleTime) }}</span></div>
+        <div style="width: 33%; float:left"><span style="font-size: 12px"><i class="fas fa-car" style="width: 15px; color: #F5365C"></i> {{ calculateTime(totalStopTime) }}</span></div>
+      </div>
+      <div>
+        <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ totalKms }} km</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -96,6 +112,8 @@
 import { serverBus, vm } from '../../main'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
+import styles from '../../styles/element-variables.scss'
+import * as utils from '../../utils/utils'
 
 export default {
   name: 'TripTable',
@@ -111,12 +129,22 @@ export default {
       set(value) { vm.$data.loadingRoutes = value }
     },
     height() {
-      // return `calc(100vh - ${consts.vehicleListHeaderHeight}px)`
-      // todo: use constants
-      return 'calc(100vh - 385px)'
+      return 'calc(100vh - ' + styles.tripListHeaderHeight + ')'
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+    },
+    totalKms() {
+      return Math.round(this.trips.reduce((sum, t) => sum + t.trip_distance, 0))
+    },
+    totalDrivingTime() {
+      return this.trips.reduce((sum, t) => sum + t.trip_driving_time, 0)
+    },
+    totalIdleTime() {
+      return this.trips.reduce((sum, t) => sum + t.trip_idle_time, 0)
+    },
+    totalStopTime() {
+      return this.trips.reduce((sum, t) => sum + t.trip_stop_time, 0)
     }
   },
   methods: {
@@ -136,6 +164,9 @@ export default {
     formatTime(date) {
       return this.$moment(date, 'DD-MM-YYYY HH:mm:ss').format('HH:mm:ss')
     },
+    calculateTime(time) {
+      return utils.calculateTimeHHMM(time)
+    },
     getPOIName(poiId) {
       return this.pois.find(p => p.id === poiId).name
     }
@@ -143,7 +174,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import '../../styles/element-variables.scss';
   .mobileScroll {
     -webkit-overflow-scrolling: touch;
@@ -167,14 +198,21 @@ export default {
   .el-row::after {
     content: none;
   }
+  .el-table td{
+    padding: 5px;
+  }
   .tripSelected {
     font-weight: bold;
   }
   .tripSelectedBackground {
     background-color: rgba($--color-primary, 0.1);
   }
+  .historyTotal {
+    height: 65px;
+    background-color: rgba($--color-primary, 0.1);
+    padding-left: 5px;
+  }
   .colTripData{
-    padding: 2px;
     margin-bottom: 0;
     justify-content: start;
   }
