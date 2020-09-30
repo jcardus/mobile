@@ -80,6 +80,10 @@ export function getTitle() {
 
 export function getOneSignalAppId() {
   switch (window.location.hostname) {
+    case 'map.able-on.mobi':
+      return '9cf3703f-92d5-4c55-b234-b613cc31b0d6'
+    case 'web.fleetrack.cl':
+      return '4f3f1081-5189-4715-87df-d1db684cc6a7'
     case 'wuizy.co.ao':
       return 'd209de76-98c2-4721-aad4-168c4a8f4e66'
     case 'mac.pinme.io':
