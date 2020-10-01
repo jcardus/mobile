@@ -194,7 +194,13 @@ const actions = {
   },
   getUser({ commit }) {
     return new Promise((resolve, reject) => {
-      traccar.getUser().then(r => resolve(commit('SET_USER', r.data))).catch(e => reject(e))
+      traccar.getUser().then(r => {
+        const user = r.data
+        resolve(commit('SET_USER', user))
+        user.attributes.lastHost = window.location.hostname
+        user.attributes.lastLogin = new Date()
+        traccar.updateUser(user.id, user)
+      }).catch(e => reject(e))
     })
   },
   login({ commit, dispatch }, userInfo) {
@@ -205,9 +211,6 @@ const actions = {
         commit('SET_USER', user)
         dispatch('setUser').finally(() => {
           checkForUpdates()
-          user.attributes.lastHost = window.location.hostname
-          user.attributes.lastLogin = new Date()
-          traccar.updateUser(user.id, user)
           resolve()
         })
       }).catch(e => {
