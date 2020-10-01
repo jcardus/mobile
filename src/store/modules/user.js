@@ -201,10 +201,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       traccar.getUser().then(r => {
         const user = r.data
-        resolve(commit('SET_USER', user))
         user.attributes.lastHost = window.location.hostname
         user.attributes.lastLogin = new Date()
         traccar.updateUser(user.id, user)
+        resolve(commit('SET_USER', user))
       }).catch(e => reject(e))
     })
   },
