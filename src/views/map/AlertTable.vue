@@ -34,9 +34,6 @@
         :height="height"
         @row-click="alertSelected"
       >
-        <el-table-column label="" width="35px">
-          <template slot-scope="scope"><i :style="'font-size: 14px; color: '+(scope.row.color ? scope.row.color : '#3232b4')" :class="scope.row.image"></i></template>
-        </el-table-column>
         <el-table-column
           prop="name"
           sortable=""
@@ -44,10 +41,10 @@
         >
           <template slot-scope="scope">
             <div>
-              <div style="font-weight: bold">{{ scope.row.description }}</div>
-              <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 15px"></i> {{ scope.row.title }}</span></div>
-              <div style="line-height: normal"><span style="font-size: 12px"><i v-if="scope.row.type === 'geofenceExit' || scope.row.type === 'geofenceEnter'" class="fas fa-map-marked listIcon" style="width: 15px"></i><i v-if="scope.row.type === 'deviceOverspeed'" class="fas fa-tachometer-alt listIcon" style="width: 15px"></i> {{ scope.row.content }}</span></div>
-              <div style="line-height: normal; font-size: 12px">{{ scope.row.timestamp | moment('from', currentTime) }}</div>
+              <div style="line-height: normal"><i :style="'width: 20px; font-size: 12px; color: '+(scope.row.color ? scope.row.color : '#3232b4')" :class="scope.row.image"></i><span style="font-weight: bold">{{ scope.row.description }}</span></div>
+              <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 20px"></i>{{ scope.row.title }}</span></div>
+              <div style="line-height: normal"><span style="font-size: 12px"><i v-if="scope.row.type === 'geofenceExit' || scope.row.type === 'geofenceEnter'" class="fas fa-map-marked listIcon" style="width: 20px"></i><i v-if="scope.row.type === 'deviceOverspeed'" class="fas fa-tachometer-alt listIcon" style="width: 20px"></i>{{ scope.row.content }}</span></div>
+              <div style="line-height: normal; font-size: 12px"><i class="fas fa-clock listIcon" style="width: 20px"></i>{{ scope.row.timestamp | moment('from', currentTime) }}</div>
             </div>
           </template>
         </el-table-column>

@@ -99,11 +99,11 @@
               <span style="font-weight: bold">{{ scope.row.name }} </span>
               <span style="float: right; font-size: smaller">{{ scope.row.groupId | formatGroup }} </span>
             </div>
-            <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== '0'" style="padding-top: 2px">
-              <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i> {{ scope.row.driver.name }}</span>
+            <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== '0'" style="padding-top: 2px; line-height: normal">
+              <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i>{{ scope.row.driver.name }}</span>
             </div>
             <div style="line-height: normal">
-              <span v-if="scope.row.position" style="font-size: 12px; padding-right: 15px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
+              <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road roadIcon"></i>{{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
               <span v-if="scope.row.position && scope.row.position.fuelLevel" style="font-size: 12px" @click="fuelLevelClick(scope.row)">
                 <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
                   <div slot="content">
@@ -119,13 +119,14 @@
               <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt speedIcon"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
-              <span style="font-size: 12px"><i class="fas fa-map-marker-alt poiIcon"></i> {{ getPOIName(scope.row.poi) }}</span>
+              <span style="font-size: 12px"><i class="fas fa-map-marker-alt poiIcon"></i>{{ getPOIName(scope.row.poi) }}</span>
             </div>
             <div v-else style="line-height: normal">
-              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home addressIcon"></i> {{ scope.row.position && scope.row.position.address }}</span>
+              <span style="font-size: 12px; word-break: normal;"><i class="fas fa-home addressIcon"></i>{{ scope.row.position && scope.row.position.address }}</span>
             </div>
-            <div style="padding-top: 6px;float:left">
-              <span v-if="scope.row.lastUpdate">{{ scope.row.lastUpdate | moment('from', currentTime) }}</span></div>
+            <div style="padding-bottom: 8px; line-height: normal; float:left">
+              <span v-if="scope.row.lastUpdate" style="font-size: 12px"><i class="fas fa-clock timeIcon" style="width: 20px"></i>{{ scope.row.lastUpdate | moment('from', currentTime) }}</span>
+            </div>
             <immobilize-button
               style="padding:0;float: right"
               :selected-device="scope.row"
@@ -468,18 +469,27 @@ export default {
 <style lang="scss">
   @import '../../styles/element-variables.scss';
 
+  .roadIcon {
+    width: 20px;
+    color: black
+  }
   .poiIcon {
-    width: 13px;
     padding-left: 2px;
+    width: 18px;
     color: $--color-primary
   }
   .addressIcon {
-    width: 15px;
+    width: 20px;
     color: $--color-primary
   }
   .driverIcon {
-    width: 15px;
+    padding-left: 2px;
+    width: 18px;
+    color: $--color-primary
+  }
+  .timeIcon {
     padding-left: 1px;
+    width: 19px;
     color: $--color-primary
   }
   .fuelLevelNormalIcon {
