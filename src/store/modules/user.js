@@ -85,7 +85,11 @@ function getAvatar(name) {
 
 function initData(commit, state, dispatch) {
   return new Promise((resolve, reject) => {
-    traccar.getInitData(state.user.id)
+    const user = state.user
+    user.attributes.lastHost = window.location.hostname
+    user.attributes.lastLogin = new Date()
+    traccar.updateUser(user.id, user)
+    traccar.getInitData(user.id)
       .then(responses => {
         dispatch('setGeofences', responses[1].data).then(() => {
           state.groups = responses[2].data
@@ -201,9 +205,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       traccar.getUser().then(r => {
         const user = r.data
-        user.attributes.lastHost = window.location.hostname
-        user.attributes.lastLogin = new Date()
-        traccar.updateUser(user.id, user)
         resolve(commit('SET_USER', user))
       }).catch(e => reject(e))
     })
