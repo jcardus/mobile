@@ -92,7 +92,7 @@ export default {
   },
   created() {
     this.$log.debug('created VueMap mobile, user loggedin: ', this.userLoggedIn)
-    serverBus.$on('deviceSelected', this.deviceSelected)
+    serverBus.$on(event.deviceSelected, this.deviceSelected)
     serverBus.$on('autoSliderChange', this.autoSliderChange)
     serverBus.$on(event.tripChanged, this.tripSelected)
     serverBus.$on(event.showRoutesChanged, this.showRoutesChanged)

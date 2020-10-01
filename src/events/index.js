@@ -1,10 +1,16 @@
 
+export const areaSelected = 'areaSelected'
+export const alertSelected = 'alertSelected'
+export const deviceSelected = 'deviceSelected'
 export const deviceSelectedOnMap = 'deviceSelectedOnMap'
+export const deviceChanged = 'deviceChanged'
 export const showRoutesChanged = 'showRoutesChanged'
 export const posChanged = 'posChanged'
 export const tripChanged = 'tripChanged'
 export const mapShow = 'mapShown'
 export const dashboardLoaded = 'dashboardLoaded'
+export const dataLoaded = 'dataLoaded'
+export const modelsLoaded = 'modelsLoaded'
 
 export const routePlay = 'routePlay'
 export const routeMatchFinished = 'routeMatchFinished'

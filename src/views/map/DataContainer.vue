@@ -28,6 +28,12 @@
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
+        <el-tab-pane>
+          <span slot="label">
+            <i class="fas fa-bell"></i>
+          </span>
+          <alert-table :filter-key="filterKey"></alert-table>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -35,6 +41,7 @@
 <script>
 
 import * as lnglat from '../../utils/lnglat'
+import AlertTable from './AlertTable'
 import GeofenceTable from './GeofenceTable'
 import DriverTable from './DriverTable'
 import VehicleTable from './VehicleTable'
@@ -45,7 +52,7 @@ import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'DataContainer',
-  components: { VehicleTable, GeofenceTable, DriverTable, LogoSvg },
+  components: { VehicleTable, AlertTable, GeofenceTable, DriverTable, LogoSvg },
   data() {
     return {
       filterKey: ''

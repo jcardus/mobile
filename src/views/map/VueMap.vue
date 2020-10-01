@@ -323,6 +323,16 @@ export default {
         }
       }
     },
+    alertSelected: function(alert) {
+      if (alert.positionId) {
+        traccar.position(alert.positionId).then(r => {
+          Vue.$log.debug('alert Position ', r.data[0])
+          if (r.data[0]) {
+            Vue.$log.debug(r.data[0])
+          }
+        })
+      }
+    },
     areaSelected: function(object) {
       const feature = lnglat.findFeatureById(object.id)
       if (feature) {
@@ -486,12 +496,13 @@ export default {
       this.$static.map.on('draw.modechange', this.drawModeChange)
       this.$static.map.on('data', this.onData)
       this.$static.map.on('styleimagemissing', this.styleImageMissing)
-      serverBus.$on('modelsLoaded', this.finishLoading)
-      serverBus.$on('dataLoaded', this.initData)
+      serverBus.$on(event.modelsLoaded, this.finishLoading)
+      serverBus.$on(event.dataLoaded, this.initData)
       serverBus.$on(event.mapShow, this.mapResize)
-      serverBus.$on('deviceSelected', this.deviceSelected)
-      serverBus.$on('areaSelected', this.areaSelected)
-      serverBus.$on('deviceChanged', this.deviceChanged)
+      serverBus.$on(event.deviceSelected, this.deviceSelected)
+      serverBus.$on(event.areaSelected, this.areaSelected)
+      serverBus.$on(event.deviceChanged, this.deviceChanged)
+      serverBus.$on(event.alertSelected, this.alertSelected)
       this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'SOCKET_ONMESSAGE':
@@ -537,11 +548,12 @@ export default {
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('data', this.onData)
-      serverBus.$off('modelsLoaded', this.finishLoading)
-      serverBus.$off('deviceChanged', this.deviceChanged)
-      serverBus.$off('deviceSelected', this.deviceSelected)
-      serverBus.$off('areaSelected', this.areaSelected)
-      serverBus.$off('dataLoaded', this.initData)
+      serverBus.$off(event.modelsLoaded, this.finishLoading)
+      serverBus.$off(event.deviceChanged, this.deviceChanged)
+      serverBus.$off(event.deviceSelected, this.deviceSelected)
+      serverBus.$off(event.areaSelected, this.areaSelected)
+      serverBus.$off(event.alertSelected, this.alertSelected)
+      serverBus.$off(event.dataLoaded, this.initData)
       serverBus.$off(event.mapShow, this.mapResize)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
