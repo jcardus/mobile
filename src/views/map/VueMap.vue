@@ -1030,5 +1030,6 @@ export default {
     fill: #909399;
     opacity: 1;
   }
+  *:focus{ outline: none; }
 
 </style>
