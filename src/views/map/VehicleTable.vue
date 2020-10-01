@@ -415,7 +415,7 @@ export default {
       } else {
         if (device) {
           this.selectedDevice = device
-          serverBus.$emit('deviceSelected', device)
+          serverBus.$emit(event.deviceSelected, device)
         }
       }
     },

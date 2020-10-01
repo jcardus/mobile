@@ -22,12 +22,16 @@ const state = {
   groups: [],
   geofences: [],
   drivers: [],
-  orderDevicesBy: 'orderByStatus'
+  orderDevicesBy: 'orderByStatus',
+  alertsSearchPeriod: 'last_one_hour'
 }
 
 const mutations = {
   setOrderDevicesBy(state, value) {
     state.orderDevicesBy = value
+  },
+  setAlertsSearchPeriod(state, value) {
+    state.alertsSearchPeriod = value
   },
   SET_GEOFENCES(state, geofences) {
     console.log('SET_GEOFENCES', geofences)
@@ -92,6 +96,7 @@ function initData(commit, state, dispatch) {
                 .then(() => {
                   if (state.devices.length < 100) {
                     dispatch('fetchAlerts').then(() => {
+                      state.user.alertsSearchPeriod = 'last_one_hour'
                       dispatch('transient/fetchEvents', {
                         start: Vue.moment().subtract(1, 'hour').toDate(),
                         end: new Date(),
