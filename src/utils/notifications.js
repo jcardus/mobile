@@ -2,7 +2,7 @@ import { vm } from '../main'
 import Vue from 'vue'
 import * as alertType from '@/alerts/alertType'
 
-export function convertEvents(events) {
+export function convertEvents(events, isNew) {
   events.forEach(e => {
     e.device = vm.$store.getters.devices.find(d => d.id === e.deviceId)
   })
@@ -23,7 +23,8 @@ export function convertEvents(events) {
       type: alarmType,
       description: vm.$t('settings.alert_' + alarmType),
       image: getNotificationImage(alarmType),
-      color: getNotificationColor(alarmType)
+      color: getNotificationColor(alarmType),
+      isNew: isNew
     }
   })
 }
@@ -60,7 +61,8 @@ function getNotificationColor(type) {
   if (type === alertType.ignitionOn || type === alertType.geofenceEnter) {
     return 'green'
   }
-  if (type === alertType.ignitionOff || type === alertType.geofenceExit || type === alertType.alarmSOS) {
+  if (type === alertType.ignitionOff || type === alertType.geofenceExit ||
+    type === alertType.alarmSOS || type === alertType.deviceOverspeed) {
     return 'red'
   }
   return 'black'
