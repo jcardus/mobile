@@ -38,9 +38,12 @@ import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import PoiPopUp from './PoiPopUp'
+import EventPopUp from './EventPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
 import { animate } from '@/utils/animation'
+import geofencesLayer from './mapbox/layers/GeofencesLayer'
+import eventsLayer from './mapbox/layers/EventsLayer'
 import layerManager from './mapbox/LayerManager'
 import vehiclesLayer from './mapbox/VehiclesLayer'
 
@@ -110,7 +113,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'drivers',
+      'followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'events', 'drivers',
       'showLabels', 'isPlaying', 'vehicles3dEnabled', 'deviceById', 'deviceByName',
       'loading', 'zoom', 'center'
     ]),
@@ -128,9 +131,15 @@ export default {
         return lnglat.popUps
       }
     },
+    eventPopUps: {
+      get: function() {
+        return lnglat.eventPopUps
+      }
+    },
     isMobile() { return lnglat.isMobile() },
     positionsSource() { return this.$root.$static.positionsSource },
     geofencesSource() { return this.$root.$static.geofencesSource },
+    eventsSource() { return this.$root.$static.eventsSource },
     positions() {
       return this.$root.$store.state.socket.message.positions
     },
@@ -232,7 +241,7 @@ export default {
       Vue.$log.debug('VueMap')
       traccar.positions().then(({ data }) => {
         this.processPositions(data)
-        this.geofencesSource.features = this.processGeofences(vm.$store.state.user.geofences)
+        this.geofencesSource.features = this.processGeofences(this.geofences)
         this.refreshGeofences()
         Vue.$log.debug('finishLoading')
         this.finishLoading()
@@ -323,18 +332,51 @@ export default {
         }
       }
     },
-    alertSelected: function(alert) {
-      if (alert.positionId) {
-        traccar.position(alert.positionId).then(r => {
-          Vue.$log.debug('alert Position ', r.data[0])
-          if (r.data[0]) {
-            Vue.$log.debug(r.data[0])
-          }
-        })
+    eventsLoaded: function() {
+      this.eventsSource.features = this.processEvents(this.events)
+      this.refreshEvents()
+    },
+    eventSelected: function(event) {
+      const featureSelected = eventsLayer.findFeatureSelected()
+      if (featureSelected !== undefined) {
+        featureSelected.properties.selected = false
+        this.eventPopUps[0].remove()
+        this.eventPopUps.splice(0)
       }
+      const feature = eventsLayer.findFeatureById(event.id)
+      feature.properties.selected = true
+
+      this.refreshEvents()
+      this.showEventPopUp(feature)
+      this.flyToFeature(feature)
+    },
+    showEventPopUp(e) {
+      const self = this
+      this.eventPopUps.push(new mapboxgl.Popup({
+        offset: [0, -20]
+      })
+        .setLngLat(e.geometry.coordinates.slice())
+        .setHTML('<div id="vue-event-popup"></div>')
+        .addTo(this.map)
+        .on('close', function(e) {
+          const featureSelected = eventsLayer.findFeatureSelected()
+          if (featureSelected !== undefined) {
+            featureSelected.properties.selected = false
+          }
+          self.refreshEvents()
+        }))
+      const PP = Vue.extend(EventPopUp)
+      const vm = new PP({
+        i18n: i18n,
+        data: {
+          properties: e.properties,
+          lngLat: e.geometry.coordinates
+        }
+      })
+      vm.$mount('#vue-event-popup')
     },
     areaSelected: function(object) {
-      const feature = lnglat.findFeatureById(object.id)
+      const feature = geofencesLayer.findFeatureById(object.id)
       if (feature) {
         this.flyToFeature(feature)
       }
@@ -397,6 +439,12 @@ export default {
       // Geofences ... POIs ... Lines
       if (vm.$static.map && vm.$static.map.getSource('geofences')) {
         vm.$static.map.getSource('geofences').setData(vm.$static.geofencesSource)
+      }
+    },
+    refreshEvents() {
+      // Events
+      if (vm.$static.map && vm.$static.map.getSource('events')) {
+        vm.$static.map.getSource('events').setData(vm.$static.eventsSource)
       }
     },
     setZoomAndCenter() {
@@ -502,7 +550,8 @@ export default {
       serverBus.$on(event.deviceSelected, this.deviceSelected)
       serverBus.$on(event.areaSelected, this.areaSelected)
       serverBus.$on(event.deviceChanged, this.deviceChanged)
-      serverBus.$on(event.alertSelected, this.alertSelected)
+      serverBus.$on(event.eventSelected, this.eventSelected)
+      serverBus.$on(event.eventsLoaded, this.eventsLoaded)
       this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'SOCKET_ONMESSAGE':
@@ -552,9 +601,10 @@ export default {
       serverBus.$off(event.deviceChanged, this.deviceChanged)
       serverBus.$off(event.deviceSelected, this.deviceSelected)
       serverBus.$off(event.areaSelected, this.areaSelected)
-      serverBus.$off(event.alertSelected, this.alertSelected)
+      serverBus.$off(event.eventSelected, this.eventSelected)
       serverBus.$off(event.dataLoaded, this.initData)
       serverBus.$off(event.mapShow, this.mapResize)
+      serverBus.$off(event.eventsLoaded, this.eventsLoaded)
       if (this.unsubscribe) { this.unsubscribe() }
       window.removeEventListener('resize', this.mapResize)
     },
@@ -785,91 +835,41 @@ export default {
       }
     },
     processGeofences: function(geofences) {
-      const self = this
       const result = []
-      Vue.$log.debug('converting ', geofences.length, ' features')
+      Vue.$log.debug('converting ', geofences.length, 'geofences to feature')
       geofences.forEach(function(item) {
         if (item) {
-          const geojson = self.getFeatureGeojson(item)
+          const geojson = geofencesLayer.getFeatureGeojson(item)
           Vue.$log.debug('adding... ', geojson)
           result.push(geojson)
         }
       })
       return result
     },
-    getFeatureGeojson: function(item) {
-      const wkt = item.area
-      let geojson
-      if (item.area.startsWith('POLYGON')) {
-        geojson = {
-          type: 'Feature',
-          geometry: {
-            type: 'Polygon',
-            coordinates: [[]]
-          },
-          properties: {
-            id: item.id,
-            title: item.name,
-            icon: '',
-            color: item.attributes.color ? item.attributes.color : '#3232b4',
-            fill: item.attributes.fill != null ? item.attributes.fill : true
-          }
+    processEvents: function(events) {
+      const result = []
+      Vue.$log.debug('converting ', events.length, 'events to feature')
+      events.forEach(function(item) {
+        if (item) {
+          // Refactor: call api with all positionIds
+          traccar.position(item.positionId).then(r => {
+            if (r.data[0]) {
+              const geojson = eventsLayer.getFeatureGeojson(item, r.data[0])
+              Vue.$log.debug('adding... ', geojson)
+              result.push(geojson)
+            }
+          })
         }
-        const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
-        const coord_list = str.split(',')
-        for (const i in coord_list) {
-          const coord = coord_list[i].trim().split(' ')
-          geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
-        }
-      } else if (item.area.startsWith('LINE')) {
-        geojson = {
-          type: 'Feature',
-          geometry: {
-            type: 'LineString',
-            coordinates: []
-          },
-          properties: {
-            id: item.id,
-            title: item.name,
-            icon: '',
-            color: item.attributes.color ? item.attributes.color : '#3232b4',
-            fill: false
-          }
-        }
-        const str = wkt.substring('LINESTRING('.length + 1, wkt.length - 1)
-        const coord_list = str.split(',')
-        for (const i in coord_list) {
-          const coord = coord_list[i].trim().split(' ')
-          geojson.geometry.coordinates.push([parseFloat(coord[1]), parseFloat(coord[0])])
-        }
-      } else if (item.area.startsWith('CIRCLE')) {
-        geojson = {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: []
-          },
-          properties: {
-            id: item.id,
-            title: item.name,
-            icon: item.attributes.icon ? item.attributes.icon : 'marker',
-            color: item.attributes.color ? item.attributes.color : '#3232b4',
-            fill: ''
-          }
-        }
-        const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))
-        const coord = str.trim().split(' ')
-        geojson.geometry.coordinates = [parseFloat(coord[1]), parseFloat(coord[0])]
-      }
-      return geojson
+      })
+      return result
     },
-    featureCreated: function(feature) {
-      vm.$store.state.user.geofences.push(feature)
+    createGeofenceFeature: function(geofence) {
+      vm.$store.state.user.geofences.push(geofence)
       this.$static.draw.deleteAll()
-      const featureGeojson = this.getFeatureGeojson(feature)
+      const featureGeojson = geofencesLayer.getFeatureGeojson(geofence)
       this.geofencesSource.features.push(featureGeojson)
       this.refreshGeofences()
-      const type = this.getType(feature.area)
+      const type = this.getType(geofence.area)
       serverBus.$emit('message', this.$t('map.' + type + '_created'), 'success')
     },
     drawCreate(e) {
@@ -888,7 +888,7 @@ export default {
 
       function createGeofence(geofenceName) {
         self.$log.debug('creating ', geofenceName)
-        traccar.newGeofence(geofenceName, 'description', area, self.featureCreated,
+        traccar.newGeofence(geofenceName, 'description', area, self.createGeofenceFeature,
           e => {
             serverBus.$emit('message', self.$t('map.' + type + '_create_error') + ': ' + e)
             self.$static.draw.deleteAll()

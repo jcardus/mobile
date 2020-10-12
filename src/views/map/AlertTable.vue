@@ -178,7 +178,7 @@ export default {
           alert.isNew = false
           this.$store.dispatch('decUnreadItems')
         }
-        serverBus.$emit(event.alertSelected, alert)
+        serverBus.$emit(event.eventSelected, alert)
       }
     }
   }

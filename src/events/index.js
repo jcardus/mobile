@@ -1,6 +1,7 @@
 
 export const areaSelected = 'areaSelected'
-export const alertSelected = 'alertSelected'
+export const eventSelected = 'eventSelected'
+export const eventsLoaded = 'eventsLoaded'
 export const deviceSelected = 'deviceSelected'
 export const deviceSelectedOnMap = 'deviceSelectedOnMap'
 export const deviceChanged = 'deviceChanged'

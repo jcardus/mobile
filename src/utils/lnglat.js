@@ -35,6 +35,7 @@ const { body } = document
 const WIDTH = 768 // refer to Bootstrap's responsive design
 
 export const popUps = []
+export const eventPopUps = []
 
 export function __isMobile() {
   const rect = body.getBoundingClientRect()
@@ -51,11 +52,6 @@ export function getGeoJSONFeaturesColletion(features) {
 }
 export function findFeatureByDeviceId(deviceId) {
   return vm.$static.positionsSource.features.find(e => e.properties.deviceId === deviceId)
-}
-export function findFeatureById(id) {
-  return vm.$static.geofencesSource.features.find(e => {
-    return e.properties.id === id
-  })
 }
 export function getArea(area) {
   if (area.features[0].geometry.type.toUpperCase() === 'POINT') {

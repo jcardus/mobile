@@ -176,6 +176,10 @@ export const vm = new Vue({
       geofencesSource: {
         'type': 'FeatureCollection',
         'features': []
+      },
+      eventsSource: {
+        'type': 'FeatureCollection',
+        'features': []
       }
     }
   },
@@ -196,6 +200,7 @@ export const vm = new Vue({
       this.$log.warn('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
+      this.$static.alertsSource.features = []
       this.$data.historyMode = false
       this.$log.debug('done.')
       this.devices = []
