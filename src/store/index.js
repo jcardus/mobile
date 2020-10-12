@@ -39,6 +39,12 @@ const store = new Vuex.Store({
     incUnreadItems({ commit }) {
       commit('INC_UNREAD_ITEMS')
     },
+    decUnreadItems({ commit }) {
+      commit('DEC_UNREAD_ITEMS')
+    },
+    setUnreadItems({ commit }, value) {
+      commit('SET_UNREAD_ITEMS', value)
+    },
     resetUnreadItems({ commit }) {
       commit('RESET_UNREAD_ITEMS')
     },
@@ -64,6 +70,12 @@ const store = new Vuex.Store({
     INC_UNREAD_ITEMS(state) {
       state.unreadItems++
     },
+    DEC_UNREAD_ITEMS(state) {
+      state.unreadItems--
+    },
+    SET_UNREAD_ITEMS(state, value) {
+      state.unreadItemsvalue = value
+    },
     SOCKET_ONOPEN(state, event) {
       state.socket.isConnected = true
       Vue.$log.warn(state)
@@ -87,7 +99,7 @@ const store = new Vuex.Store({
       if (state.socket.message.events) {
         Vue.$log.debug('SOCKET_ONMESSAGE event Received')
         const events = state.socket.message.events
-        store.dispatch('transient/addEvents', notifications.convertEvents(events)).then(() => {})
+        store.dispatch('transient/addEvents', notifications.convertEvents(events, true)).then(() => {})
         for (let i = 0; i < events.length; i++) {
           serverBus.$emit('event', events[i])
         }

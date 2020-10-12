@@ -261,14 +261,12 @@ const actions = {
             .then(({ data }) => {
               data.forEach(a => {
                 const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
-                if (a.always === false) {
-                  if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                    traccar.geofencesByDevice(d.id, function(geofences) {
-                      alert.devices.push({ data: d, geofences: geofences })
-                    })
-                  } else {
-                    alert.devices.push({ data: d })
-                  }
+                if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                  traccar.geofencesByDevice(d.id, function(geofences) {
+                    alert.devices.push({ data: d, geofences: geofences })
+                  })
+                } else {
+                  alert.devices.push({ data: d })
                 }
               })
             })
@@ -278,7 +276,7 @@ const actions = {
         state.alerts.forEach(a => {
           if (a.notification.always === true) {
             state.devices.forEach(d => {
-              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+              if (a.notification.type === 'geofenceExit' || a.notification.type === 'geofenceEnter') {
                 traccar.geofencesByDevice(d.id, function(geofences) {
                   a.devices.push({ data: d, geofences: geofences })
                 })

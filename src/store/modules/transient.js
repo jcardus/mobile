@@ -81,7 +81,7 @@ const actions = {
       rootGetters.devices.map(d => d.id),
       types.map(a => a.notification.type)
     ).then(({ data }) => {
-      commit('SET_EVENTS', notifications.convertEvents(data))
+      commit('SET_EVENTS', notifications.convertEvents(data, false))
     }).catch((e) => Vue.$log.error(e))
   },
   addEvents({ commit }, events) {

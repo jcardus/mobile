@@ -30,7 +30,9 @@
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label">
-            <i class="fas fa-bell"></i>
+            <el-badge :value="unreadItems" :hidden="unreadItems === 0" :max="99">
+              <i class="fas fa-bell"></i>
+            </el-badge>
           </span>
           <alert-table :filter-key="filterKey"></alert-table>
         </el-tab-pane>
@@ -60,6 +62,10 @@ export default {
   },
   computed: {
     ...mapGetters(['tableCollapsed']),
+    unreadItems: {
+      get() { return this.$store.getters.unreadItems },
+      set(value) { this.$store.commit('setUnreadItems', value) }
+    },
     hasSVG() {
       return partner.hasSVG()
     },
@@ -116,5 +122,4 @@ export default {
   .collapse {
     float: left;
   }
-
 </style>

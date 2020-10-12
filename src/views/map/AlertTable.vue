@@ -28,19 +28,28 @@
       <el-table
         id="alertTable"
         style="padding: 5px"
-        highlight-current-row
+        :cell-style="cellStyle"
         :data="filteredEvents"
         :show-header="false"
         :height="height"
+        highlight-current-row
+        stripe
         @row-click="alertSelected"
       >
+        <el-table-column
+          prop="name"
+          label=""
+          width="5"
+          heigth="10"
+        >
+        </el-table-column>
         <el-table-column
           prop="name"
           sortable=""
           heigth="1"
         >
           <template slot-scope="scope">
-            <div>
+            <div style="padding: 10px 0px">
               <div style="line-height: normal"><i :style="'width: 20px; font-size: 12px; color: '+(scope.row.color ? scope.row.color : '#3232b4')" :class="scope.row.image"></i><span style="font-weight: bold">{{ scope.row.description }}</span></div>
               <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 20px"></i>{{ scope.row.title }}</span></div>
               <div style="line-height: normal"><span style="font-size: 12px"><i v-if="scope.row.type === 'geofenceExit' || scope.row.type === 'geofenceEnter'" class="fas fa-map-marked listIcon" style="width: 20px"></i><i v-if="scope.row.type === 'deviceOverspeed'" class="fas fa-tachometer-alt listIcon" style="width: 20px"></i>{{ scope.row.content }}</span></div>
@@ -129,6 +138,13 @@ export default {
     }
   },
   methods: {
+    cellStyle(row) {
+      let result = 'padding: 0; '
+      if (row.columnIndex === 0 && row.row.isNew) {
+        result += 'background-color: Red'
+      }
+      return result
+    },
     getAlertType(item) {
       if (item.notification.type === 'alarm') {
         return item.notification.attributes.alarms
@@ -158,6 +174,10 @@ export default {
     },
     alertSelected: function(alert) {
       if (alert) {
+        if (alert.isNew) {
+          alert.isNew = false
+          this.$store.dispatch('decUnreadItems')
+        }
         serverBus.$emit(event.alertSelected, alert)
       }
     }
@@ -165,10 +185,24 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+.mobileScroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+</style>
 <style lang="scss">
 @import '../../styles/element-variables.scss';
 
 .listIcon {
   color: $--color-primary
+}
+
+.el-table .new-row {
+  background: $--color-primary
+}
+
+.el-table .normal-row {
+  background: $--color-success
 }
 </style>
