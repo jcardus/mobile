@@ -3,7 +3,7 @@
     <div class="right-menu">
       <el-dropdown trigger="click" @command="handleCommand">
         <span class="el-dropdown-link">
-          <el-avatar size="large">{{ avatar }}</el-avatar>
+          <el-avatar v-if="!$route.path.includes('dashboard')" size="large">{{ avatar }}</el-avatar>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="profile">{{ $t('navbar.profile') }}</el-dropdown-item>
