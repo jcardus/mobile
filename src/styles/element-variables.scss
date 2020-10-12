@@ -13,6 +13,7 @@ $--vehicle-list-header-height-history-mode: 165px;
 $--trip-list-header-height: 345px;
 $--el-switch-height: 45px;
 $--driver-list-header-height: 165px;
+$--alert-list-header-height: 255px;
 
 /* icon font path, required */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
@@ -41,6 +42,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   tripListHeaderHeight: $--trip-list-header-height;
   //noinspection CssUnknownProperty
   driverListHeaderHeight: $--driver-list-header-height;
+  alertListHeaderHeight: $--alert-list-header-height;
   //noinspection CssUnknownProperty
   elSwitchHeight: $--el-switch-height;
 }
@@ -56,4 +58,28 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     font-size: 20px;
     font-weight: bold;
   }
+}
+
+.el-badge__content.is-fixed {
+  position: absolute;
+  top: 0;
+  font-size: 8px;
+  right: 3px;
+  -webkit-transform: translateY(-50%) translateX(100%);
+  transform: translateY(-50%) translateX(100%);
+  margin-top: 9px;
+  margin-right: 5px;
+}
+.el-badge__content {
+  background-color: #f02;
+  border-radius: 10px;
+  color: #F8F9FE;
+  display: inline-block;
+  font-size: 12px;
+  height: 13px;
+  line-height: 13px;
+  padding: 0 3px;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid #F8F9FE;
 }

@@ -1,8 +1,8 @@
-import { serverBus, vm } from '@/main'
+import { serverBus } from '@/main'
 import { traccar } from '@/api/traccar-api'
 import * as event from '../../events'
 import Vue from 'vue'
-import * as alertType from '../../alerts/alertType'
+import * as notifications from '../../utils/notifications'
 
 const state = {
   dataLoaded: false,
@@ -32,7 +32,14 @@ const mutations = {
     state.isPlaying = value
   },
   SET_EVENTS(state, events) {
+    Vue.$log.debug('SET_EVENTS:', events.length)
     state.events = events
+  },
+  ADD_EVENTS(state, events) {
+    Vue.$log.debug('ADD_EVENTS:', events.length)
+    Vue.$log.debug('BEFORE:', state.events.length)
+    state.events = state.events.concat(events)
+    Vue.$log.debug('AFTER:', state.events.length)
   },
   SET_DATA_LOADED(state) {
     state.dataLoaded = true
@@ -67,73 +74,19 @@ const actions = {
   setDataLoaded({ commit }) {
     commit('SET_DATA_LOADED')
   },
-
   fetchEvents({ commit, rootGetters }, { start, end, types }) {
-    function getNotificationContent(notification) {
-      if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
-        const geofence = rootGetters.geofences.find(g => g.id === notification.geofenceId)
-
-        return ' >> ' + geofence.name
-      }
-      if (notification.type === 'deviceOverspeed') {
-        return ' >> ' + Math.round(notification.attributes.speed * 1.85200) + ' Km/h'
-      }
-      return ''
-    }
-    function getNotificationImage(type) {
-      if (type === alertType.ignitionOn || type === alertType.ignitionOff) {
-        return 'fas fa-key'
-      }
-      if (type === alertType.geofenceEnter || type === alertType.geofenceExit) {
-        return 'fas fa-draw-polygon'
-      }
-      if (type === alertType.deviceOverspeed) {
-        return 'fas fa-shipping-fast'
-      }
-      if (type === alertType.alarmSOS) {
-        return 'fas fa-exclamation-circle'
-      }
-      return ''
-    }
-    function getNotificationColor(type) {
-      if (type === alertType.ignitionOn || type === alertType.geofenceEnter) {
-        return 'green'
-      }
-      if (type === alertType.ignitionOff || type === alertType.geofenceExit || type === alertType.alarmSOS) {
-        return 'red'
-      }
-      return 'black'
-    }
     traccar.report_events(
       start,
       end,
       rootGetters.devices.map(d => d.id),
       types.map(a => a.notification.type)
     ).then(({ data }) => {
-      data.forEach(e => {
-        e.device = rootGetters.devices.find(d => d.id === e.deviceId)
-      })
-      data.sort(function(a, b) {
-        return Date.parse(b.serverTime) - Date.parse(a.serverTime)
-      })
-      const filteredData = data.filter(a => {
-        const currentAlertType = a.type === 'alarm' ? a.attributes.alarm : a.type
-        return alertType.alertTypes.includes(currentAlertType)
-      })
-      commit('SET_EVENTS', filteredData.map(a => {
-        const alarmType = a.type === 'alarm' ? a.attributes.alarm : a.type
-        return {
-          positionId: a.positionId,
-          timestamp: a.serverTime,
-          title: rootGetters.devices.find(d => d.id === a.deviceId).name,
-          content: getNotificationContent(a),
-          type: alarmType,
-          description: vm.$t('settings.alert_' + alarmType),
-          image: getNotificationImage(alarmType),
-          color: getNotificationColor(alarmType)
-        }
-      }))
+      commit('SET_EVENTS', notifications.convertEvents(data, false))
     }).catch((e) => Vue.$log.error(e))
+  },
+  addEvents({ commit }, events) {
+    Vue.$log.debug('Commit addevent')
+    commit('ADD_EVENTS', events)
   }
 }
 

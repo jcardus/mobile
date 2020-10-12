@@ -19,6 +19,7 @@ import map from './modules/map'
 import settings from './modules/settings'
 import transient from './modules/transient'
 import user from './modules/user'
+import * as notifications from '../utils/notifications'
 
 const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
@@ -37,6 +38,12 @@ const store = new Vuex.Store({
   actions: {
     incUnreadItems({ commit }) {
       commit('INC_UNREAD_ITEMS')
+    },
+    decUnreadItems({ commit }) {
+      commit('DEC_UNREAD_ITEMS')
+    },
+    setUnreadItems({ commit }, value) {
+      commit('SET_UNREAD_ITEMS', value)
     },
     resetUnreadItems({ commit }) {
       commit('RESET_UNREAD_ITEMS')
@@ -63,6 +70,12 @@ const store = new Vuex.Store({
     INC_UNREAD_ITEMS(state) {
       state.unreadItems++
     },
+    DEC_UNREAD_ITEMS(state) {
+      state.unreadItems--
+    },
+    SET_UNREAD_ITEMS(state, value) {
+      state.unreadItemsvalue = value
+    },
     SOCKET_ONOPEN(state, event) {
       state.socket.isConnected = true
       Vue.$log.warn(state)
@@ -83,9 +96,10 @@ const store = new Vuex.Store({
     SOCKET_ONMESSAGE(state, message) {
       state.socket.message = message
       state.lastUpdate = Date.now()
-
       if (state.socket.message.events) {
+        Vue.$log.debug('SOCKET_ONMESSAGE event Received')
         const events = state.socket.message.events
+        store.dispatch('transient/addEvents', notifications.convertEvents(events, true)).then(() => {})
         for (let i = 0; i < events.length; i++) {
           serverBus.$emit('event', events[i])
         }

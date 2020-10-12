@@ -22,12 +22,16 @@ const state = {
   groups: [],
   geofences: [],
   drivers: [],
-  orderDevicesBy: 'orderByStatus'
+  orderDevicesBy: 'orderByStatus',
+  alertsSearchPeriod: 'last_one_hour'
 }
 
 const mutations = {
   setOrderDevicesBy(state, value) {
     state.orderDevicesBy = value
+  },
+  setAlertsSearchPeriod(state, value) {
+    state.alertsSearchPeriod = value
   },
   SET_GEOFENCES(state, geofences) {
     console.log('SET_GEOFENCES', geofences)
@@ -81,7 +85,11 @@ function getAvatar(name) {
 
 function initData(commit, state, dispatch) {
   return new Promise((resolve, reject) => {
-    traccar.getInitData(state.user.id)
+    const user = state.user
+    user.attributes.lastHost = window.location.hostname
+    user.attributes.lastLogin = new Date()
+    traccar.updateUser(user.id, user)
+    traccar.getInitData(user.id)
       .then(responses => {
         dispatch('setGeofences', responses[1].data).then(() => {
           state.groups = responses[2].data
@@ -92,6 +100,7 @@ function initData(commit, state, dispatch) {
                 .then(() => {
                   if (state.devices.length < 100) {
                     dispatch('fetchAlerts').then(() => {
+                      state.user.alertsSearchPeriod = 'last_one_hour'
                       dispatch('transient/fetchEvents', {
                         start: Vue.moment().subtract(1, 'hour').toDate(),
                         end: new Date(),
@@ -194,7 +203,10 @@ const actions = {
   },
   getUser({ commit }) {
     return new Promise((resolve, reject) => {
-      traccar.getUser().then(r => resolve(commit('SET_USER', r.data))).catch(e => reject(e))
+      traccar.getUser().then(r => {
+        const user = r.data
+        resolve(commit('SET_USER', user))
+      }).catch(e => reject(e))
     })
   },
   login({ commit, dispatch }, userInfo) {
@@ -205,9 +217,6 @@ const actions = {
         commit('SET_USER', user)
         dispatch('setUser').finally(() => {
           checkForUpdates()
-          user.attributes.lastHost = window.location.hostname
-          user.attributes.lastLogin = new Date()
-          traccar.updateUser(user.id, user)
           resolve()
         })
       }).catch(e => {
@@ -252,14 +261,12 @@ const actions = {
             .then(({ data }) => {
               data.forEach(a => {
                 const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
-                if (a.always === false) {
-                  if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                    traccar.geofencesByDevice(d.id, function(geofences) {
-                      alert.devices.push({ data: d, geofences: geofences })
-                    })
-                  } else {
-                    alert.devices.push({ data: d })
-                  }
+                if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                  traccar.geofencesByDevice(d.id, function(geofences) {
+                    alert.devices.push({ data: d, geofences: geofences })
+                  })
+                } else {
+                  alert.devices.push({ data: d })
                 }
               })
             })
@@ -269,7 +276,7 @@ const actions = {
         state.alerts.forEach(a => {
           if (a.notification.always === true) {
             state.devices.forEach(d => {
-              if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+              if (a.notification.type === 'geofenceExit' || a.notification.type === 'geofenceEnter') {
                 traccar.geofencesByDevice(d.id, function(geofences) {
                   a.devices.push({ data: d, geofences: geofences })
                 })

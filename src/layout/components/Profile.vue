@@ -7,9 +7,6 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="profile">{{ $t('navbar.profile') }}</el-dropdown-item>
-          <router-link to="/notifications">
-            <el-dropdown-item>{{ $t('navbar.notifications') }}</el-dropdown-item>
-          </router-link>
           <router-link to="/settings/index">
             <el-dropdown-item>{{ $t('navbar.settings') }}</el-dropdown-item>
           </router-link>

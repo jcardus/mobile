@@ -431,8 +431,56 @@ export default {
       const self = this
       if (this.selectedDevice) {
         this.associateGeofences(this.selectedDevice)
+        this.clearFormData()
       } else {
-        this.selectedAlert.devices.forEach(d => self.associateGeofences(d.data))
+        const geofencePermissionsToRemove = this.selectedAlert.devices.map(d => {
+          return d.geofences.map(geofence => {
+            if (!self.selectedGeofences.includes(geofence.id) &&
+              !self.selectedPOIs.includes(geofence.id) &&
+              !self.selectedLineGeofences.includes(geofence.id)) {
+              return {
+                deviceId: d.data.id,
+                geofenceId: geofence.id
+              }
+            }
+          })
+        }).flat().filter(a => a !== undefined)
+
+        const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
+
+        const geofencePermissionsToAdd = this.selectedAlert.devices.map(d => {
+          return allGeofences.map(g => {
+            return {
+              deviceId: d.data.id,
+              geofenceId: g
+            }
+          })
+        }).flat().filter(a => a !== undefined)
+
+        traccar.deleteAllPermissions(geofencePermissionsToRemove
+          , function() {
+            traccar.addAllPermissions(geofencePermissionsToAdd
+              , function() {
+                const deviceGeofences = self.geofences.filter(g => allGeofences.includes(g.id))
+
+                self.alerts.forEach(a => {
+                  self.$log.debug('Alert:', a)
+                  if (a.notification.id === self.selectedAlert.notification.id) {
+                    a.devices.forEach(d => {
+                      d.geofences = deviceGeofences
+                    })
+                  }
+                })
+
+                self.clearFormData()
+              }
+              , (e) => {
+                self.$log.error(e)
+              })
+          }
+          , (e) => {
+            self.$log.error(e)
+          })
       }
     },
     associateGeofences(device) {
@@ -472,8 +520,6 @@ export default {
             })
           }
         })
-
-        self.clearFormData()
       })
     },
     handleSelectAll(type) {

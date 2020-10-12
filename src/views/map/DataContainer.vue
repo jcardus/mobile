@@ -28,6 +28,14 @@
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
+        <el-tab-pane>
+          <span slot="label">
+            <el-badge :value="unreadItems" :hidden="unreadItems === 0" :max="99">
+              <i class="fas fa-bell"></i>
+            </el-badge>
+          </span>
+          <alert-table :filter-key="filterKey"></alert-table>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -35,6 +43,7 @@
 <script>
 
 import * as lnglat from '../../utils/lnglat'
+import AlertTable from './AlertTable'
 import GeofenceTable from './GeofenceTable'
 import DriverTable from './DriverTable'
 import VehicleTable from './VehicleTable'
@@ -45,7 +54,7 @@ import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'DataContainer',
-  components: { VehicleTable, GeofenceTable, DriverTable, LogoSvg },
+  components: { VehicleTable, AlertTable, GeofenceTable, DriverTable, LogoSvg },
   data() {
     return {
       filterKey: ''
@@ -53,6 +62,10 @@ export default {
   },
   computed: {
     ...mapGetters(['tableCollapsed']),
+    unreadItems: {
+      get() { return this.$store.getters.unreadItems },
+      set(value) { this.$store.commit('setUnreadItems', value) }
+    },
     hasSVG() {
       return partner.hasSVG()
     },
@@ -109,5 +122,4 @@ export default {
   .collapse {
     float: left;
   }
-
 </style>
