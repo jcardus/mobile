@@ -8,6 +8,7 @@ import { positionsSource } from '@/utils/consts'
 import * as consts from '@/utils/consts'
 import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
 import geofencesLayer from './layers/GeofencesLayer'
+import eventsLayer from './layers/EventsLayer'
 import * as utils from '@/utils/utils'
 import * as angles from 'angles'
 import { updateDonuts } from '@/utils/lnglat'
@@ -22,6 +23,10 @@ const gray = ['==', ['get', 'color'], 'gray']
 const green = ['==', ['get', 'color'], 'green']
 const yellow = ['==', ['get', 'color'], 'yellow']
 const red = ['==', ['get', 'color'], 'red']
+
+const clustersLayerId = 'clusters'
+const geofencesLayerId = 'geofences'
+const eventsLayerId = 'events'
 
 routePlayVehicleLayer.id = routePlayLayer
 routePlayVehicleLayer.source = routePlayLayer
@@ -149,9 +154,9 @@ export default {
     } else {
       Vue.$log.warn('vehiclesLayer already exists...')
     }
-    if (!map.getLayer('clusters')) {
+    if (!map.getLayer(clustersLayerId)) {
       map.addLayer({
-        'id': 'clusters',
+        'id': clustersLayerId,
         'source': positionsSource,
         'type': 'circle',
         filter: ['has', 'point_count'],
@@ -162,11 +167,25 @@ export default {
         }
       })
     } else { Vue.$log.error('layer clusters already exists...') }
-    if (!map.getLayer('geofences')) {
+    if (!map.getLayer(geofencesLayerId)) {
       this.fetchGeofences(map)
+    }
+    if (!map.getLayer(eventsLayerId)) {
+      this.fetchEvents(map)
     }
     this.addRoutePlayLayer()
     this.refreshLayers()
+  },
+  fetchEvents(map) {
+    if (!map.getSource('events')) {
+      map.addSource('events', {
+        'type': 'geojson',
+        'data': vm.$static.eventsSource
+      })
+      if (!map.getLayer(eventsLayerId)) {
+        map.addLayer(eventsLayer.events)
+      }
+    }
   },
   fetchGeofences(map) {
     if (!map.getSource('geofences')) {
@@ -175,7 +194,7 @@ export default {
         'data': vm.$static.geofencesSource
       })
     }
-    if (!map.getLayer('geofences')) {
+    if (!map.getLayer(geofencesLayerId)) {
       map.addLayer(geofencesLayer.geofences)
       map.addLayer(geofencesLayer.geofencesFill)
       map.addLayer(geofencesLayer.geofencesLabels)

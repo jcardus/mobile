@@ -16,6 +16,7 @@ export function convertEvents(events, isNew) {
   return filteredData.map(a => {
     const alarmType = a.type === 'alarm' ? a.attributes.alarm : a.type
     return {
+      id: a.id,
       positionId: a.positionId,
       timestamp: a.serverTime,
       title: vm.$store.getters.devices.find(d => d.id === a.deviceId).name,

@@ -1,4 +1,5 @@
 import store from '@/store'
+import { vm } from '@/main'
 
 export default {
   geofencesFill: {
@@ -84,6 +85,76 @@ export default {
       }
     },
     filter: ['all', ['==', '$type', 'Point']]
+  },
+  getFeatureGeojson(item) {
+    const wkt = item.area
+    let geojson
+    if (item.area.startsWith('POLYGON')) {
+      geojson = {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[]]
+        },
+        properties: {
+          id: item.id,
+          title: item.name,
+          icon: '',
+          color: item.attributes.color ? item.attributes.color : '#3232b4',
+          fill: item.attributes.fill != null ? item.attributes.fill : true
+        }
+      }
+      const str = wkt.substring('POLYGON(('.length, wkt.length - 2)
+      const coord_list = str.split(',')
+      for (const i in coord_list) {
+        const coord = coord_list[i].trim().split(' ')
+        geojson.geometry.coordinates[0].push([parseFloat(coord[1]), parseFloat(coord[0])])
+      }
+    } else if (item.area.startsWith('LINE')) {
+      geojson = {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: []
+        },
+        properties: {
+          id: item.id,
+          title: item.name,
+          icon: '',
+          color: item.attributes.color ? item.attributes.color : '#3232b4',
+          fill: false
+        }
+      }
+      const str = wkt.substring('LINESTRING('.length + 1, wkt.length - 1)
+      const coord_list = str.split(',')
+      for (const i in coord_list) {
+        const coord = coord_list[i].trim().split(' ')
+        geojson.geometry.coordinates.push([parseFloat(coord[1]), parseFloat(coord[0])])
+      }
+    } else if (item.area.startsWith('CIRCLE')) {
+      geojson = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: []
+        },
+        properties: {
+          id: item.id,
+          title: item.name,
+          icon: item.attributes.icon ? item.attributes.icon : 'marker',
+          color: item.attributes.color ? item.attributes.color : '#3232b4',
+          fill: ''
+        }
+      }
+      const str = wkt.substring('CIRCLE ('.length, wkt.indexOf(','))
+      const coord = str.trim().split(' ')
+      geojson.geometry.coordinates = [parseFloat(coord[1]), parseFloat(coord[0])]
+    }
+    return geojson
+  },
+  findFeatureById(id) {
+    return vm.$static.geofencesSource.features.find(e => {
+      return e.properties.id === id
+    })
   }
 }
-

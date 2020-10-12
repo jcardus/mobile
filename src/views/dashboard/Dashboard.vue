@@ -4,14 +4,14 @@
 
 <script>
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
-import { getLanguageI18n } from '../../lang'
+import { getLanguageI18n } from '@/lang'
 import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
-import { backEndHostName } from '../../utils/consts'
+import { backEndHostName } from '@/utils/consts'
 import { TrackJS } from 'trackjs'
-import { isMobile } from '../../utils/lnglat'
+import { isMobile } from '@/utils/lnglat'
 import * as partner from '../../utils/partner'
-import { serverBus } from '../../main'
+import { serverBus } from '@/main'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import axios from 'axios'
@@ -112,7 +112,7 @@ export default {
 <style scoped>
   .dashboard {
     height: 100%;
-    /*width: 100%;*/
+    width: 100%;
     position: relative;
   }
   iframe {

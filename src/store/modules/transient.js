@@ -34,6 +34,7 @@ const mutations = {
   SET_EVENTS(state, events) {
     Vue.$log.debug('SET_EVENTS:', events.length)
     state.events = events
+    serverBus.$emit(event.eventsLoaded)
   },
   ADD_EVENTS(state, events) {
     Vue.$log.debug('ADD_EVENTS:', events.length)
