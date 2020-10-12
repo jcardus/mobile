@@ -670,7 +670,7 @@ export default {
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
       device.driver = this.findDriver(position, device)
-      device.immobilized = position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
+      device.immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
       device.position = position
     },
     updateFeature(feature, position) {

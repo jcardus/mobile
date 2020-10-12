@@ -105,7 +105,7 @@ export const traccar = {
       .then(response => ok(response))
       .catch(reason => nok(reason))
   },
-  trigger_report: function(body, report_id, ok, nok) {
+  trigger_report(body, report_id, ok, nok) {
     axios.post(s3_report_lambda_url,
       body,
       {
