@@ -23,7 +23,7 @@
     "@turf/distance": "latest",
     "@turf/helpers": "latest",
     "@turf/length": "latest",
-    "amazon-quicksight-embedding-sdk": "^1.0.9",
+    "amazon-quicksight-embedding-sdk": "latest",
     "angles": "latest",
     "aws-amplify": "^3.0.23",
     "axios": "latest",
