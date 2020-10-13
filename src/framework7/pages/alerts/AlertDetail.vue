@@ -41,7 +41,7 @@ export default {
     this.positionId = this.alert.positionId
   },
   mounted() {
-    traccar.positions(this.positionId).then(({ data }) => {
+    traccar.position(this.positionId).then(({ data }) => {
       this.position = data[0]
     })
   }

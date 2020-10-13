@@ -176,8 +176,13 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  positions(positionId) {
-    if (positionId) { return get(positions + '?id=' + positionId) } else { return get(positions) }
+  positions(positionIds) {
+    if (positionIds) {
+      const params = positionIds.map(p => 'id=' + p).join('&')
+      return get(positions + '?' + params)
+    } else {
+      return get(positions)
+    }
   },
   position(positionId) {
     return get(positions + '?id=' + positionId)
