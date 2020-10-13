@@ -344,11 +344,13 @@ export default {
         this.eventPopUps.splice(0)
       }
       const feature = eventsLayer.findFeatureById(event.id)
-      feature.properties.selected = true
+      if (feature) {
+        feature.properties.selected = true
 
-      this.refreshEvents()
-      this.showEventPopUp(feature)
-      this.flyToFeature(feature)
+        this.refreshEvents()
+        this.showEventPopUp(feature)
+        this.flyToFeature(feature)
+      }
     },
     showEventPopUp(e) {
       const self = this
@@ -849,18 +851,24 @@ export default {
     processEvents: function(events) {
       const result = []
       Vue.$log.debug('converting ', events.length, 'events to feature')
-      events.forEach(function(item) {
-        if (item) {
-          // Refactor: call api with all positionIds
-          traccar.position(item.positionId).then(r => {
-            if (r.data[0]) {
-              const geojson = eventsLayer.getFeatureGeojson(item, r.data[0])
-              Vue.$log.debug('adding... ', geojson)
-              result.push(geojson)
+
+      if (events.length > 0) {
+        const positionsIds = events.map(e => e.positionId)
+        traccar.positions(positionsIds).then(r => {
+          Vue.$log.debug('positions received... ', r.data.length)
+          events.forEach(function(item, i) {
+            if (r.data[i]) {
+              const position = r.data[i]
+              if (position.id === item.positionId) {
+                const geojson = eventsLayer.getFeatureGeojson(item, position)
+                Vue.$log.debug('adding... ', geojson)
+                result.push(geojson)
+              }
             }
           })
-        }
-      })
+        })
+      }
+
       return result
     },
     createGeofenceFeature: function(geofence) {
