@@ -200,7 +200,7 @@ export const vm = new Vue({
       this.$log.warn('removing sources')
       this.$static.positionsSource.features = []
       this.$static.geofencesSource.features = []
-      this.$static.alertsSource.features = []
+      this.$static.eventsSource.features = []
       this.$data.historyMode = false
       this.$log.debug('done.')
       this.devices = []
