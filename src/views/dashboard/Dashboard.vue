@@ -4,7 +4,6 @@
 
 <script>
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
-import { getLanguageI18n } from '@/lang'
 import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
 import { backEndHostName } from '@/utils/consts'
@@ -22,11 +21,7 @@ export default {
     return {
       dashboardLoaded: false,
       loading: true,
-      dashboard: null,
-      parameters: {
-        Inicio: this.$moment().subtract(6, 'month').startOf('day').format(),
-        Fim: this.$moment().subtract(1, 'day').endOf('day').format()
-      }
+      dashboard: null
     }
   },
   computed: {
@@ -70,7 +65,7 @@ export default {
               url: url,
               parameters: this.parameters,
               container: containerDiv,
-              locale: getLanguageI18n()
+              locale: 'pt-BR'
             }
             if (!isMobile()) {
               options.height = 'AutoFit'
