@@ -166,3 +166,14 @@ export function calculateFuelLevel(adc1CacheValues, position, device) {
   }
 }
 
+export function chunkArray(originalArray, chunkSize) {
+  const results = []
+  const newArray = [...originalArray]
+
+  while (newArray.length) {
+    results.push(newArray.splice(0, chunkSize))
+  }
+
+  return results
+}
+

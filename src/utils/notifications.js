@@ -3,9 +3,6 @@ import Vue from 'vue'
 import * as alertType from '@/alerts/alertType'
 
 export function convertEvents(events, isNew) {
-  events.forEach(e => {
-    e.device = vm.$store.getters.devices.find(d => d.id === e.deviceId)
-  })
   const filteredData = events.filter(a => {
     const currentAlertType = a.type === 'alarm' ? a.attributes.alarm : a.type
     return alertType.alertTypes.includes(currentAlertType)
@@ -13,6 +10,19 @@ export function convertEvents(events, isNew) {
   filteredData.sort(function(a, b) {
     return Date.parse(b.serverTime) - Date.parse(a.serverTime)
   })
+
+  filteredData.forEach(e => {
+    e.device = vm.$store.getters.devices.find(d => d.id === e.deviceId)
+    e.content = getNotificationContent(e)
+    e.type = e.type === 'alarm' ? e.attributes.alarm : e.type
+    e.description = vm.$t('settings.alert_' + e.type)
+    e.image = getNotificationImage(e.type)
+    e.color = getNotificationColor(e.type)
+    e.isNew = isNew
+  })
+
+  return filteredData.filter(e => e.device !== undefined)
+  /*
   return filteredData.map(a => {
     const alarmType = a.type === 'alarm' ? a.attributes.alarm : a.type
     return {
@@ -27,7 +37,7 @@ export function convertEvents(events, isNew) {
       color: getNotificationColor(alarmType),
       isNew: isNew
     }
-  })
+  })*/
 }
 
 function getNotificationContent(notification) {
@@ -37,7 +47,7 @@ function getNotificationContent(notification) {
     return geofence.name
   }
   if (notification.type === 'deviceOverspeed') {
-    return Math.round(notification.attributes.speed * 1.85200) + ' Km/h'
+    return Math.round(notification.attributes.speed * 1.85200) + ' Km/h (Max. ' + ~~(notification.attributes.speedLimit * 1.852) + ' km/h)'
   }
   return ''
 }
@@ -70,13 +80,10 @@ function getNotificationColor(type) {
 }
 
 export function getMessage(event) {
-  Vue.$log.debug(event.type, ' device: ', event.deviceId)
-  if (event.deviceId > 0) {
-    let result = vm.$store.getters.devices.find(e => e.id === event.deviceId).name
-    if (event.type === 'deviceOverspeed') {
-      result += ' - ' + ~~(event.attributes.speed * 1.852) + ' km/h (Max. ' + ~~(event.attributes.speedLimit * 1.852) + ' km/h)'
-    }
-    return result
+  Vue.$log.debug(event.type, ' device: ', event.device.name)
+  let result = event.device.name
+  if (event.content.length > 0) {
+    result += ' - ' + event.content
   }
-  return 'test message'
+  return result
 }

@@ -37,10 +37,7 @@ const mutations = {
     serverBus.$emit(event.eventsLoaded)
   },
   ADD_EVENTS(state, events) {
-    Vue.$log.debug('ADD_EVENTS:', events.length)
-    Vue.$log.debug('BEFORE:', state.events.length)
-    state.events = state.events.concat(events)
-    Vue.$log.debug('AFTER:', state.events.length)
+    state.events = events.concat(state.events)
   },
   SET_DATA_LOADED(state) {
     state.dataLoaded = true

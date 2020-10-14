@@ -2,6 +2,7 @@ import axios from 'axios'
 import { getServerHost } from './index'
 import store from '../store'
 import Vue from 'vue'
+import * as utils from '@/utils/utils'
 
 const serverHost = getServerHost()
 const baseUrl = 'https://' + serverHost + '/api/'
@@ -84,6 +85,10 @@ function invokeApiMultiple(urls, onFulfill) {
         reject(e)
       })
   })
+}
+
+function invokeApiAll(urls) {
+  return axios.all(urls)
 }
 
 function get(url) {
@@ -178,8 +183,14 @@ export const traccar = {
   },
   positions(positionIds) {
     if (positionIds) {
-      const params = positionIds.map(p => 'id=' + p).join('&')
-      return get(positions + '?' + params)
+      if (positionIds.length > 20) {
+        const splitedPositionsIds = utils.chunkArray(positionIds, 20)
+        const allUrls = splitedPositionsIds.map(pIds => get(positions + '?' + pIds.map(p => 'id=' + p).join('&')))
+        return invokeApiAll(allUrls)
+      } else {
+        const params = positionIds.map(p => 'id=' + p).join('&')
+        return invokeApiAll([get(positions + '?' + params)])
+      }
     } else {
       return get(positions)
     }

@@ -12,6 +12,7 @@ import VueI18nFilter from 'vue-i18n-filter'
 import LoadScript from 'vue-plugin-load-script'
 import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
+import * as event from './events'
 import './amplify'
 import VueTimers from 'vue-timers'
 import { SharedData } from './utils/utils'
@@ -159,7 +160,7 @@ export const vm = new Vue({
     }
   },
   created() {
-    serverBus.$on('event', () => {
+    serverBus.$on(event.newEventReceived, () => {
       store.dispatch('incUnreadItems').then(() => {})
     })
   },

@@ -25,10 +25,11 @@ export default {
       properties: {
         id: item.id,
         description: item.description,
-        device: item.title,
+        device: item.device.name,
+        content: item.content,
         icon: item.image,
         color: item.color ? item.color : '#3232b4',
-        timestamp: item.timestamp,
+        timestamp: item.serverTime,
         selected: false
       }
     }

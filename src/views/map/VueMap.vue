@@ -336,6 +336,14 @@ export default {
       this.eventsSource.features = this.processEvents(this.events)
       this.refreshEvents()
     },
+    newEventReceived: function(event) {
+      traccar.position(event.positionId).then(r => {
+        const geojson = eventsLayer.getFeatureGeojson(event, r.data[0])
+        Vue.$log.debug('adding... ', geojson)
+        this.eventsSource.features.push(geojson)
+        this.refreshEvents()
+      })
+    },
     eventSelected: function(event) {
       const featureSelected = eventsLayer.findFeatureSelected()
       if (featureSelected !== undefined) {
@@ -546,6 +554,8 @@ export default {
       this.$static.map.on('draw.modechange', this.drawModeChange)
       this.$static.map.on('data', this.onData)
       this.$static.map.on('styleimagemissing', this.styleImageMissing)
+
+      serverBus.$on(event.newEventReceived, this.newEventReceived)
       serverBus.$on(event.modelsLoaded, this.finishLoading)
       serverBus.$on(event.dataLoaded, this.initData)
       serverBus.$on(event.mapShow, this.mapResize)
@@ -599,6 +609,7 @@ export default {
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('data', this.onData)
+      serverBus.$off(event.newEventReceived, this.newEventReceived)
       serverBus.$off(event.modelsLoaded, this.finishLoading)
       serverBus.$off(event.deviceChanged, this.deviceChanged)
       serverBus.$off(event.deviceSelected, this.deviceSelected)
@@ -855,10 +866,11 @@ export default {
       if (events.length > 0) {
         const positionsIds = events.map(e => e.positionId)
         traccar.positions(positionsIds).then(r => {
-          Vue.$log.debug('positions received... ', r.data.length)
+          const positionsReceived = r.map(d => d.data).flat()
+          Vue.$log.debug('positions received... ', positionsReceived)
           events.forEach(function(item, i) {
-            if (r.data[i]) {
-              const position = r.data[i]
+            if (positionsReceived[i]) {
+              const position = positionsReceived[i]
               if (position.id === item.positionId) {
                 const geojson = eventsLayer.getFeatureGeojson(item, position)
                 Vue.$log.debug('adding... ', geojson)

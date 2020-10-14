@@ -20,6 +20,7 @@ import settings from './modules/settings'
 import transient from './modules/transient'
 import user from './modules/user'
 import * as notifications from '../utils/notifications'
+import * as event from '../events'
 
 const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
@@ -98,10 +99,10 @@ const store = new Vuex.Store({
       state.lastUpdate = Date.now()
       if (state.socket.message.events) {
         Vue.$log.debug('SOCKET_ONMESSAGE event Received')
-        const events = state.socket.message.events
-        store.dispatch('transient/addEvents', notifications.convertEvents(events, true)).then(() => {})
+        const events = notifications.convertEvents(state.socket.message.events, true)
+        store.dispatch('transient/addEvents', events).then(() => {})
         for (let i = 0; i < events.length; i++) {
-          serverBus.$emit('event', events[i])
+          serverBus.$emit(event.newEventReceived, events[i])
         }
       }
     },
