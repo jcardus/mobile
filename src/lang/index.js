@@ -38,8 +38,7 @@ const messages = {
 
 export function setLanguage(lang) {
   if (lang) {
-    const key = lang.replace('-', '')
-    i18n.locale = key
+    i18n.locale = lang.replace('-', '')
     Vue.config.lang = lang.slice(2)
     Vue.moment.locale(lang.slice(2))
   }
@@ -52,7 +51,7 @@ export function getLanguageI18n() {
 
 export function getLanguage() {
   if (store) {
-    const chooseLanguage = store.state.user.attributes && store.state.user.attributes.lang
+    const chooseLanguage = store.getters.user.attributes && store.getters.user.attributes.lang
     if (chooseLanguage) return chooseLanguage.replace('-', '')
 
     // if has not choose language
