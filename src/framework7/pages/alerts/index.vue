@@ -24,7 +24,7 @@
         v-for="(item, index) in events"
         :key="index"
         :link="'/alertDetail/' + index"
-        :title="item.title"
+        :title="item.device.name"
         :after="item.timestamp | moment('calendar')"
         :subtitle="item.description"
       />
