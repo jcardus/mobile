@@ -14,6 +14,9 @@
       <div class="subtitle">
         {{ properties.device }}
       </div>
+      <div class="subtitle">
+        {{ properties.content }}
+      </div>
       <div style="padding-top: 5px;padding-bottom: 5px;">
         <span>{{ properties.timestamp | moment('from', properties.timestamp) }}</span>
       </div>

@@ -101,6 +101,7 @@ import { mapGetters } from 'vuex'
 import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
 import { getGoogleLogin } from './api'
+import * as event from './events'
 
 export default {
   name: 'AppMobile',
@@ -142,14 +143,14 @@ export default {
     }
   },
   beforeDestroy() {
-    serverBus.$off('event', this.showNotifications)
+    serverBus.$off(event.newEventReceived, this.showNotifications)
     serverBus.$off('updateAvailable', this.updateAvailable)
     serverBus.$off('message', this.message)
     window.removeEventListener('orientationchange', this.orientationChange)
   },
   created() {
     Vue.$log.info('AppMobile', this.offline)
-    serverBus.$on('event', this.showNotifications)
+    serverBus.$on(event.newEventReceived, this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('message', this.message)
     window.addEventListener('orientationchange', this.orientationChange)
@@ -232,7 +233,7 @@ export default {
       this.$f7.notification.create({
         icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '" alt=""/>',
         titleRightText: '',
-        title: event.type && this.$t('layout.' + event.type),
+        title: event.description,
         text: notifications.getMessage(event),
         closeTimeout: 5000,
         subtitle: partner.getTitle()

@@ -16,6 +16,7 @@ import SideBar from './components/SideBar'
 import Navbar from './components/Navbar'
 import Profile from './components/Profile'
 import * as notifications from '../utils/notifications'
+import * as event from '../events'
 import { mapGetters } from 'vuex'
 import { serverBus } from '@/main'
 
@@ -36,16 +37,16 @@ export default {
     ...mapGetters(['loading'])
   },
   beforeDestroy() {
-    serverBus.$off('event', this.onEvent)
+    serverBus.$off(event.newEventReceived, this.onEvent)
   },
   created() {
     this.$log.info('layout')
-    serverBus.$on('event', this.onEvent)
+    serverBus.$on(event.newEventReceived, this.onEvent)
   },
   methods: {
     onEvent(event) {
       this.$notify({
-        title: this.$t('layout.' + event.type),
+        title: event.description,
         message: notifications.getMessage(event),
         type: 'info',
         duration: 5000
