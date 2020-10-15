@@ -57,6 +57,7 @@ const mutations = {
     }
   },
   SET_ALERTS(state, alerts) {
+    Vue.$log.debug('SET_ALERTS', alerts)
     state.alerts = alerts
   },
   SET_GROUPS(state, groups) {
@@ -98,17 +99,17 @@ function initData(commit, state, dispatch) {
             dispatch('processDevices').then(() => {
               dispatch('processGroups')
                 .then(() => {
-                  if (state.devices.length < 100) {
-                    dispatch('fetchAlerts').then(() => {
-                      state.user.alertsSearchPeriod = 'last_one_hour'
+                  dispatch('fetchAlerts').then(() => {
+                    state.user.alertsSearchPeriod = 'last_one_hour'
+                    if (state.devices.length < 100) {
                       dispatch('transient/fetchEvents', {
                         start: Vue.moment().subtract(1, 'hour').toDate(),
                         end: new Date(),
                         types: state.alerts
                       }, { root: true })
                         .catch(e => Vue.$log.warn(e, 'moving on...'))
-                    })
-                  }
+                    }
+                  })
                 })
                 .finally(() => {
                   dispatch('transient/setDataLoaded', null, { root: true })
