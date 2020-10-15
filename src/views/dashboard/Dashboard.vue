@@ -14,6 +14,7 @@ import { serverBus } from '@/main'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import axios from 'axios'
+import { getLanguageI18n } from '@/lang'
 
 export default {
   name: 'Dashboard',
@@ -63,10 +64,10 @@ export default {
             }
             const options = {
               url: url,
-              parameters: this.parameters,
               container: containerDiv,
-              locale: 'pt-BR'
+              locale: getLanguageI18n().replace('PT', 'BR') // currently just portuguese from Brasil
             }
+            this.$log.debug(options)
             if (!isMobile()) {
               options.height = 'AutoFit'
             }
@@ -115,4 +116,3 @@ export default {
   }
 
 </style>
-
