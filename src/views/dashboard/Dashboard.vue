@@ -4,7 +4,6 @@
 
 <script>
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
-import { getLanguageI18n } from '@/lang'
 import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
 import { backEndHostName } from '@/utils/consts'
@@ -15,6 +14,7 @@ import { serverBus } from '@/main'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import axios from 'axios'
+import { getLanguageI18n } from '@/lang'
 
 export default {
   name: 'Dashboard',
@@ -22,11 +22,7 @@ export default {
     return {
       dashboardLoaded: false,
       loading: true,
-      dashboard: null,
-      parameters: {
-        Inicio: this.$moment().subtract(6, 'month').startOf('day').format(),
-        Fim: this.$moment().subtract(1, 'day').endOf('day').format()
-      }
+      dashboard: null
     }
   },
   computed: {
@@ -68,10 +64,10 @@ export default {
             }
             const options = {
               url: url,
-              parameters: this.parameters,
               container: containerDiv,
-              locale: getLanguageI18n()
+              locale: getLanguageI18n().replace('PT', 'BR') // currently just portuguese from Brasil
             }
+            this.$log.debug(options)
             if (!isMobile()) {
               options.height = 'AutoFit'
             }
@@ -120,4 +116,3 @@ export default {
   }
 
 </style>
-
