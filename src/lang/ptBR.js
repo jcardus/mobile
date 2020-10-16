@@ -274,14 +274,20 @@ export default {
     delete_geofence: 'Apagar'
   },
   report: {
-    select_vehicles: 'Seleccionar veículos',
+    selector_search: 'Pesquisa',
+    select_vehicles: 'Seleccionados',
     select_vehicles_placeholder: 'Veículos',
-    select_geofences: 'Seleccionar balizas',
+    select_groups: 'Seleccionados',
+    select_groups_placeholder: 'Grupos',
+    select_geofences: 'Seleccionadas',
     select_geofences_placeholder: 'Balizas',
     select_period: 'Seleccionar período',
     date_start: 'Data de início',
     date_end: 'Data de fim',
-    generate_report: 'Gerar relatório'
+    generate_report: 'Gerar relatório',
+    period: 'Período',
+    validate_period: 'Por favor seleccione o período.',
+    select_all: 'Todos'
   },
   layout: {
     deviceOnline: 'Dispositivo Online',

@@ -350,10 +350,13 @@ export default {
     delete_geofence: 'Apagar'
   },
   report: {
-    select_vehicles: 'Seleccionar veículos',
+    selector_search: 'Pesquisa',
+    select_vehicles: 'Seleccionados',
     select_vehicles_placeholder: 'Veículos',
-    select_geofences: 'Seleccionar balizas',
-    select_geofences_placeholder: 'Balizas',
+    select_groups: 'Seleccionados',
+    select_groups_placeholder: 'Grupos',
+    select_geofences: 'Seleccionadas',
+    select_geofences_placeholder: 'Zonas',
     select_period: 'Seleccionar período',
     date_start: 'Data de início',
     date_end: 'Data de fim',

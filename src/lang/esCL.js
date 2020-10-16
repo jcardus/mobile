@@ -276,9 +276,12 @@ export default {
     delete_geofence: 'Apagar'
   },
   report: {
-    select_vehicles: 'Seleccione vehículos',
+    selector_search: 'Procurar',
+    select_vehicles: 'Seleccionados',
     select_vehicles_placeholder: 'Vehículos',
-    select_geofences: 'Seleccione geocercas',
+    select_groups: 'Seleccionados',
+    select_groups_placeholder: 'Grupos',
+    select_geofences: 'Seleccionados',
     select_geofences_placeholder: 'Geocercas',
     select_period: 'Seleccione periodo',
     date_start: 'Fecha de inicio',
