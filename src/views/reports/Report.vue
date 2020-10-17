@@ -3,12 +3,12 @@
     <el-collapse v-model="activeSection" accordion>
       <el-collapse-item name="1">
         <template slot="title">
-          <span v-if="activeSelector==='vehicles'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-car"></i>Veículos</span>
-          <span v-if="activeSelector==='groups'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-grip-horizontal"></i>Grupos</span> {{ this.currentVehicles }}
+          <span v-if="activeSelector==='vehicles'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-car"></i>{{ $t('report.select_vehicles_placeholder') }}</span>
+          <span v-if="activeSelector==='groups'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-grip-horizontal"></i>{{ $t('report.select_groups_placeholder') }}</span> {{ this.currentVehicles }}
         </template>
         <div style="float:left">
           <div class="tagSelector">
-            <el-tooltip content="Veículos" placement="bottom">
+            <el-tooltip :content="$t('report.select_vehicles_placeholder')" placement="bottom">
               <el-tag
                 style="margin-right: 5px"
                 size="small"
@@ -21,7 +21,7 @@
             </el-tooltip>
           </div>
           <div class="tagSelector">
-            <el-tooltip content="Grupos" placement="bottom">
+            <el-tooltip :content="$t('report.select_groups_placeholder')" placement="bottom">
               <el-tag
                 style="margin-right: 5px"
                 size="small"
@@ -39,8 +39,8 @@
             v-if="activeSelector === 'vehicles'"
             v-model="selectedDevices"
             filterable
-            filter-placeholder="Pesquisa"
-            :titles="['Veículos', 'Seleccionados']"
+            :filter-placeholder="$t('report.selector_search')"
+            :titles="[$t('report.select_vehicles_placeholder'), $t('report.select_vehicles')]"
             :props="{
               key: 'id',
               label: 'name'
@@ -54,8 +54,8 @@
             v-if="activeSelector === 'groups'"
             v-model="selectedGroups"
             filterable
-            filter-placeholder="Pesquisa"
-            :titles="['Grupos', 'Seleccionados']"
+            :filter-placeholder="$t('report.selector_search')"
+            :titles="[$t('report.select_groups_placeholder'), $t('report.select_groups')]"
             :props="{
               key: 'id',
               label: 'name'
@@ -67,13 +67,13 @@
       </el-collapse-item>
       <el-collapse-item v-if="selectGeofences" name="2">
         <template slot="title">
-          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-map-marked"></i>Zonas</span> {{ this.currentGeofences }}
+          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-map-marked"></i>{{ $t('report.select_geofences_placeholder') }}</span> {{ this.currentGeofences }}
         </template>
         <el-transfer
           v-model="selectedGeofences"
           filterable
-          filter-placeholder="Pesquisa"
-          :titles="['Zonas', 'Seleccionadas']"
+          :filter-placeholder="$t('report.selector_search')"
+          :titles="[$t('report.select_geofences_placeholder'), $t('report.select_geofences')]"
           :props="{
             key: 'id',
             label: 'name'
@@ -91,7 +91,7 @@
             <el-date-picker
               v-model="dateRange"
               style="width: 100%"
-              type="datetimerange"
+              type="daterange"
               unlink-panels
               range-separator="-"
               format="dd-MM-yyyy HH:mm"
@@ -303,6 +303,7 @@ export default {
       }
     },
     submitReport() {
+      this.activeSection = '0' // close all report parameters sections
       let devicesToReport = []
       if (this.activeSelector === 'vehicles') {
         devicesToReport = this.selectedDevices

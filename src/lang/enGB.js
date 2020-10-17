@@ -344,9 +344,12 @@ export default {
     delete_geofence: 'Delete'
   },
   report: {
-    select_vehicles: 'Select vehicles',
+    selector_search: 'Search',
+    select_vehicles: 'Selected',
     select_vehicles_placeholder: 'Vehicles',
-    select_geofences: 'Select geofences',
+    select_groups: 'Selected',
+    select_groups_placeholder: 'Groups',
+    select_geofences: 'Selected',
     select_geofences_placeholder: 'Geofences',
     select_period: 'Select period',
     period: 'Period',
