@@ -1,6 +1,7 @@
 import styles from '../styles/element-variables.scss'
 import store from '@/store'
 import Vue from 'vue'
+import * as lnglat from './lnglat'
 
 function initFreshChat() {
   window.fcWidget.init({
@@ -38,18 +39,13 @@ function getFreshChatToken() {
 
 export function initSupportChat() {
   switch (hostname) {
+    case 'mac.pinme.io':
     case 'web.fleetrack.cl':
       initSurvey('60bd590459b33f47d8dd8abccc0dc8d7')
-      switch (store.getters.user.email) {
-        case 'control.gestion@amaco.cl':
-        case 'informatico@amaco.cl':
-          initiateCall()
-          break
-        default:
-          Vue.$log.warn(store.getters.user.name)
+      if (!lnglat.isMobile()) {
+        initiateCall()
       }
       break
-    case 'mac.pinme.io':
     case 'wuizy.co.ao':
       initSurvey('51e321bab007a7f8e6b0575f91f20939')
       if (store.getters.user.email === 'it@tvsd.co.mz') {
