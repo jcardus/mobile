@@ -6,6 +6,7 @@ import * as lnglat from './lnglat'
 function initFreshChat() {
   window.fcWidget.init({
     token: getFreshChatToken(),
+    locale: getFreshChatLocale(),
     host: 'https://wchat.eu.freshchat.com' })
   window.fcWidget.user.setFirstName(store.getters.user.name)
   window.fcWidget.user.setEmail(store.getters.user.email)
@@ -26,6 +27,15 @@ function initSurvey(token) {
   s.async = true
   const e = document.getElementsByTagName('script')[0]
   e.parentNode.insertBefore(s, e)
+}
+
+function getFreshChatLocale() {
+  switch (hostname) {
+    case 'web.fleetrack.cl':
+      return 'es-LA'
+    default:
+      return 'pt'
+  }
 }
 
 function getFreshChatToken() {
