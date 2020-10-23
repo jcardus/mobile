@@ -40,10 +40,13 @@ export function initSupportChat() {
   switch (hostname) {
     case 'web.fleetrack.cl':
       initSurvey('60bd590459b33f47d8dd8abccc0dc8d7')
-      if (store.getters.user.email === 'control.gestion@amaco.cl') {
-        initiateCall()
-      } else {
-        Vue.$log.warn(store.getters.user.name)
+      switch (store.getters.user.email) {
+        case 'control.gestion@amaco.cl':
+        case 'informatico@amaco.cl':
+          initiateCall()
+          break
+        default:
+          Vue.$log.warn(store.getters.user.name)
       }
       break
     case 'mac.pinme.io':
