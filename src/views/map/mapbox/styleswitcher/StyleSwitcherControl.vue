@@ -30,7 +30,7 @@ export default {
       containerVisible: false,
       selected: 'Streets',
       styles: [
-        { title: 'Here', uri: 'https://assets.vector.hereapi.com/styles/berlin/base/mapbox/tilezen?apikey=X9PC1Gp1dyMzPqIjdMLMw17-iMTmRCS_x51Z2mPAVTc' },
+        { title: 'Here', uri: 'https://assets.vector.hereapi.com/styles/berlin/base/mapbox/tilezen?apikey=M9EVFxoBeQ4saN3podRuIL7lV0pXQiUpCjbpWaZjUtw' },
         { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v10' },
         { title: 'Light', uri: 'mapbox://styles/mapbox/light-v9' },
         { title: 'Outdoors', uri: 'mapbox://styles/mapbox/outdoors-v11' },
