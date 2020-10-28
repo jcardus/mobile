@@ -172,40 +172,46 @@ export function updateBearing(feature) {
 
 export function updateDonuts() {
   const newMarkers = {}
-  const features = vm.$static.map.querySourceFeatures(positionsSource, { filter: ['boolean', !store.getters.historyMode] })
+  try {
+    const features = vm.$static.map.querySourceFeatures(positionsSource, { filter: ['boolean', !store.getters.historyMode] })
 
-  // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
-  // and add it to the map if it's not there already
-  for (let i = 0; i < features.length; i++) {
-    const coords = features[i].geometry.coordinates
-    const props = features[i].properties
-    if (!props.cluster) {
-      const feature = findFeatureByDeviceId(props.deviceId)
-      updateBearing(feature)
-      continue
+    // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+    // and add it to the map if it's not there already
+    for (let i = 0; i < features.length; i++) {
+      const coords = features[i].geometry.coordinates
+      const props = features[i].properties
+      if (!props.cluster) {
+        const feature = findFeatureByDeviceId(props.deviceId)
+        updateBearing(feature)
+        continue
+      }
+      const id = props.cluster_id
+      let marker = vm.$static.markers[id]
+      if (!marker) {
+        const el = createDonutChart(props)
+        if (el === null) continue
+        marker = vm.$static.markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
+      }
+      newMarkers[id] = marker
+      if (!markersOnScreen[id]) {
+        marker.addTo(vm.$static.map)
+      }
     }
-    const id = props.cluster_id
-    let marker = vm.$static.markers[id]
-    if (!marker) {
-      const el = createDonutChart(props)
-      if (el === null) continue
-      marker = vm.$static.markers[id] = new mapboxgl.Marker({ element: el }).setLngLat(coords)
+    // for every marker we've added previously, remove those that are no longer visible
+    for (const id in markersOnScreen) {
+      // noinspection JSUnfilteredForInLoop
+      if (newMarkers.hasOwnProperty(id)) {
+        continue
+      }
+      if (markersOnScreen.hasOwnProperty(id)) {
+        const remove = markersOnScreen[id]
+        remove.remove()
+      }
     }
-    newMarkers[id] = marker
-    if (!markersOnScreen[id]) { marker.addTo(vm.$static.map) }
+    markersOnScreen = newMarkers
+  } catch (e) {
+    console.error(e)
   }
-  // for every marker we've added previously, remove those that are no longer visible
-  for (const id in markersOnScreen) {
-    // noinspection JSUnfilteredForInLoop
-    if (newMarkers.hasOwnProperty(id)) {
-      continue
-    }
-    if (markersOnScreen.hasOwnProperty(id)) {
-      const remove = markersOnScreen[id]
-      remove.remove()
-    }
-  }
-  markersOnScreen = newMarkers
 }
 
 export function removeAdd3dLayer() {
