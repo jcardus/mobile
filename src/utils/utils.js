@@ -99,7 +99,6 @@ export function reload() {
     Vue.$log.error(`this shouldn't happen`)
   }
   Vue.$log.info('bye bye...')
-  window.location.reload()
 }
 
 export function checkForUpdates() {

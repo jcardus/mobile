@@ -90,6 +90,7 @@ if ('serviceWorker' in navigator) {
         Vue.$log.debug('A wild service worker has appeared in reg.installing!')
         newServiceWorker = reg.installing
         newServiceWorker.addEventListener('statechange', () => {
+          console.log('new state', newServiceWorker.state)
           // Has network.state changed?
           if (newServiceWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
