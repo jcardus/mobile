@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.716",
+  "version": "1.0.717",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -13,6 +13,8 @@
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
+    "@aws-amplify/auth": "^3.4.7",
+    "@aws-amplify/core": "^3.7.0",
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.6.0",
     "@mapbox/mapbox-gl-traffic": "latest",
@@ -25,7 +27,6 @@
     "@turf/length": "latest",
     "amazon-quicksight-embedding-sdk": "latest",
     "angles": "latest",
-    "aws-amplify": "^3.0.23",
     "axios": "latest",
     "chart.js": "^2.9.3",
     "chartjs-plugin-annotation": "latest",
