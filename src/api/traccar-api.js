@@ -151,6 +151,7 @@ export const traccar = {
   updateDevice(deviceId, device) {
     delete device.poi
     delete device.driver
+    delete device.position
     Vue.$log.debug(device)
     return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
   },
