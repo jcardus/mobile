@@ -134,8 +134,8 @@
 </template>
 
 <script>
-import { serverBus, vm } from '../../../main'
-import { traccar } from '../../../api/traccar-api'
+import { serverBus, vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import { mapGetters } from 'vuex'
 
@@ -247,7 +247,7 @@ export default {
       this.isOpenVehicleForm = false
       this.clearFormData()
     },
-    handleSubmitVehicleForm() {
+    async handleSubmitVehicleForm() {
       const vehicle = this.selectedVehicle
       vehicle.name = this.vehicleName
       vehicle.groupId = this.selectedGroup
@@ -278,8 +278,8 @@ export default {
       }
 
       traccar.updateDeviceAccumulators(vehicle.id, accumulator, this.accumulatorUpdated)
-      traccar.updateDevice(vehicle.id, v, this.vehicleUpdated)
-
+      await traccar.updateDevice(vehicle.id, v)
+      this.vehicleUpdated(v)
       this.isOpenVehicleForm = false
     },
     accumulatorUpdated: function(data) {

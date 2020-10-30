@@ -148,13 +148,12 @@ export const traccar = {
   devices: function(onFulfill, onError) {
     invokeApi(devices, onFulfill, onError)
   },
-  updateDevice: function(deviceId, device, onFulfill) {
+  updateDevice(deviceId, device) {
+    delete device.poi
+    delete device.driver
+    delete device.position
     Vue.$log.debug(device)
-    axios.put(devices + '/' + deviceId, device, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+    return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
   },
   updateDeviceAccumulators: function(deviceId, accumulators, onFulfill) {
     const body = {
@@ -287,34 +286,26 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  addAllPermissions: function(permissionsToAdd, onFulfill) {
+  addAllPermissions(permissionsToAdd) {
     Vue.$log.debug(permissionsToAdd)
     const permissionsUrls = permissionsToAdd.map(permission => axios.post(permissions, permission, { withCredentials: true }))
-    return invokeApiMultiple(permissionsUrls, onFulfill)
+    return axios.all(permissionsUrls)
   },
-  deletePermission: function(permission, onFulfill) {
+  deletePermission(permission) {
     Vue.$log.debug(permission)
-    axios.delete(permissions, { data: permission, withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+    return axios.delete(permissions, { data: permission, withCredentials: true })
   },
-  deleteAllPermissions: function(permissionsToDelete, onFulfill) {
+  deleteAllPermissions(permissionsToDelete) {
     Vue.$log.debug(permissionsToDelete)
     const permissionsUrls = permissionsToDelete.map(permission => axios.delete(permissions, { data: permission, withCredentials: true }))
-    return invokeApiMultiple(permissionsUrls, onFulfill)
+    return axios.all(permissionsUrls)
   },
   groups: function(userId, onFulfill, onError) {
     invokeApi(groups + '?userId=' + userId, onFulfill, onError)
   },
-  editGroup: function(groupId, group, onFulfill) {
+  editGroup(groupId, group) {
     Vue.$log.debug(group)
-    axios.put(groups + '/' + groupId, group, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+    return axios.put(groups + '/' + groupId, group, { withCredentials: true })
   },
   deleteGroup: function(groupId, onFulfill) {
     invokeDeleteApi(groups, groupId, onFulfill)
