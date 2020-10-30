@@ -149,6 +149,7 @@ export const traccar = {
     invokeApi(devices, onFulfill, onError)
   },
   updateDevice(deviceId, device) {
+    delete device.poi
     Vue.$log.debug(device)
     return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
   },
