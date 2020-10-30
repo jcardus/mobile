@@ -306,8 +306,8 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
-import { traccar } from '../../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import * as alertType from '../../../alerts/alertType'
 import { mapGetters } from 'vuex'
@@ -426,61 +426,49 @@ export default {
       this.isOpenGeofencesForm = false
       this.clearFormData()
     },
-    handleSubmitGeofenceForm() {
-      this.isOpenGeofencesForm = false
-      const self = this
-      if (this.selectedDevice) {
-        this.associateGeofences(this.selectedDevice)
-        this.clearFormData()
-      } else {
-        const geofencePermissionsToRemove = this.selectedAlert.devices.map(d => {
-          return d.geofences.map(geofence => {
-            if (!self.selectedGeofences.includes(geofence.id) &&
-              !self.selectedPOIs.includes(geofence.id) &&
-              !self.selectedLineGeofences.includes(geofence.id)) {
+    async handleSubmitGeofenceForm() {
+      try {
+        this.isOpenGeofencesForm = false
+        const self = this
+        if (this.selectedDevice) {
+          this.associateGeofences(this.selectedDevice)
+          this.clearFormData()
+        } else {
+          const geofencePermissionsToRemove = this.selectedAlert.devices.map(d => {
+            return d.geofences.map(geofence => {
+              if (!self.selectedGeofences.includes(geofence.id) &&
+                !self.selectedPOIs.includes(geofence.id) &&
+                !self.selectedLineGeofences.includes(geofence.id)) {
+                return {
+                  deviceId: d.data.id,
+                  geofenceId: geofence.id
+                }
+              }
+            })
+          }).flat().filter(a => a !== undefined)
+          const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
+          const geofencePermissionsToAdd = this.selectedAlert.devices.map(d => {
+            return allGeofences.map(g => {
               return {
                 deviceId: d.data.id,
-                geofenceId: geofence.id
+                geofenceId: g
               }
-            }
-          })
-        }).flat().filter(a => a !== undefined)
-
-        const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
-
-        const geofencePermissionsToAdd = this.selectedAlert.devices.map(d => {
-          return allGeofences.map(g => {
-            return {
-              deviceId: d.data.id,
-              geofenceId: g
-            }
-          })
-        }).flat().filter(a => a !== undefined)
-
-        traccar.deleteAllPermissions(geofencePermissionsToRemove
-          , function() {
-            traccar.addAllPermissions(geofencePermissionsToAdd
-              , function() {
-                const deviceGeofences = self.geofences.filter(g => allGeofences.includes(g.id))
-
-                self.alerts.forEach(a => {
-                  self.$log.debug('Alert:', a)
-                  if (a.notification.id === self.selectedAlert.notification.id) {
-                    a.devices.forEach(d => {
-                      d.geofences = deviceGeofences
-                    })
-                  }
-                })
-
-                self.clearFormData()
-              }
-              , (e) => {
-                self.$log.error(e)
+            })
+          }).flat().filter(a => a !== undefined)
+          await traccar.deleteAllPermissions(geofencePermissionsToRemove)
+          await traccar.addAllPermissions(geofencePermissionsToAdd)
+          const deviceGeofences = self.geofences.filter(g => allGeofences.includes(g.id))
+          self.alerts.forEach(a => {
+            self.$log.debug('Alert:', a)
+            if (a.notification.id === self.selectedAlert.notification.id) {
+              a.devices.forEach(d => {
+                d.geofences = deviceGeofences
               })
-          }
-          , (e) => {
-            self.$log.error(e)
+            }
           })
+        }
+      } catch (e) {
+        this.$alert(e)
       }
     },
     associateGeofences(device) {
