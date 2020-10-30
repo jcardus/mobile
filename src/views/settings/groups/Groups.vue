@@ -254,8 +254,8 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
-import { traccar } from '../../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
@@ -382,7 +382,7 @@ export default {
       const devicesToRemove = originalDevices.filter(x => !self.selectedDevices.includes(x))
       const devicesToAdd = this.selectedDevices.filter(x => !originalDevices.includes(x))
 
-      devicesToRemove.forEach(d_Id => {
+      devicesToRemove.forEach(async d_Id => {
         const vehicle = self.devices.filter(d => d.id === d_Id)
         vehicle.groupId = 0
 
@@ -402,11 +402,10 @@ export default {
           contact: vehicle.contact,
           category: vehicle.category
         }
-
-        traccar.updateDevice(vehicle.id, v, function() { })
+        await traccar.updateDevice(vehicle.id, v, function() { })
       })
 
-      devicesToAdd.forEach(d_Id => {
+      devicesToAdd.forEach(async d_Id => {
         const vehicle = self.devices.find(d => d.id === d_Id)
         vehicle.groupId = self.selectedGroup.id
 
@@ -427,7 +426,7 @@ export default {
           category: vehicle.category
         }
         Vue.$log.debug(v)
-        traccar.updateDevice(vehicle.id, v, function() { })
+        await traccar.updateDevice(vehicle.id, v, function() { })
       })
 
       const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))

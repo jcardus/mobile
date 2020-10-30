@@ -148,9 +148,9 @@ export const traccar = {
   devices: function(onFulfill, onError) {
     invokeApi(devices, onFulfill, onError)
   },
-  updateDevice: function(deviceId, device, onFulfill) {
+  updateDevice(deviceId, device, onFulfill) {
     Vue.$log.debug(device)
-    axios.put(devices + '/' + deviceId, device, { withCredentials: true })
+    return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
@@ -308,9 +308,9 @@ export const traccar = {
   groups: function(userId, onFulfill, onError) {
     invokeApi(groups + '?userId=' + userId, onFulfill, onError)
   },
-  editGroup: function(groupId, group, onFulfill) {
+  editGroup(groupId, group, onFulfill) {
     Vue.$log.debug(group)
-    axios.put(groups + '/' + groupId, group, { withCredentials: true })
+    return axios.put(groups + '/' + groupId, group, { withCredentials: true })
       .then(response => onFulfill(response.data))
       .catch(reason => {
         Vue.$log.error(reason)
