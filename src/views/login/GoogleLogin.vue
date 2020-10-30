@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import { Auth, Hub } from 'aws-amplify'
+import { Hub } from '@aws-amplify/core'
+import { Auth } from '@aws-amplify/auth'
 import api from '../../api/backend'
 import * as traccar from '../../api/user'
 
