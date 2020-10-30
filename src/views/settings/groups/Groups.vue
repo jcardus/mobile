@@ -336,7 +336,7 @@ export default {
       this.isOpenGroupForm = false
       this.clearFormData()
     },
-    handleSubmitGroupForm() {
+    async handleSubmitGroupForm() {
       if (this.isNewGroup) {
         const newGroup = {
           name: this.groupName
@@ -352,7 +352,7 @@ export default {
           name: this.groupName
         }
 
-        this.updateGroupPermissions()
+        await this.updateGroupPermissions()
 
         Vue.$log.debug(this.groups)
         this.groups.forEach(g => {
@@ -371,7 +371,7 @@ export default {
         // Change table key to force table refresh
         this.alertTableKey = this.alertTableKey + 1
 
-        traccar.editGroup(this.selectedGroup.id, groupData, this.groupUpdated)
+        await traccar.editGroup(this.selectedGroup.id, groupData, this.groupUpdated)
       }
       this.isOpenGroupForm = false
     },
