@@ -165,6 +165,7 @@
               @click="handleCancelGroupForm"
             >{{ $t('settings.group_form_cancel') }}</el-button>
             <el-button
+              :loading="loading"
               type="success"
               class="formButton"
               size="small"
@@ -273,7 +274,8 @@ export default {
       selectedGeofences: [],
       selectedPOIs: [],
       selectedLineGeofences: [],
-      groupName: ''
+      groupName: '',
+      loading: false
     }
   },
   computed: {
@@ -337,154 +339,113 @@ export default {
       this.clearFormData()
     },
     async handleSubmitGroupForm() {
-      if (this.isNewGroup) {
-        const newGroup = {
-          name: this.groupName
-        }
-        traccar.newGroup(newGroup, this.groupCreated)
-      } else {
-        const self = this
-
-        const groupData = {
-          id: this.selectedGroup.id,
-          attributes: {},
-          groupId: this.selectedGroup.groupId,
-          name: this.groupName
-        }
-
-        await this.updateGroupPermissions()
-
-        Vue.$log.debug(this.groups)
-        this.groups.forEach(g => {
-          if (g.id === self.selectedGroup.id) {
-            g.drivers = self.selectedDrivers
-            g.geofences = {
-              geofences: self.selectedGeofences,
-              pois: self.selectedPOIs,
-              linegeofences: self.selectedLineGeofences
+      try {
+        this.loading = true
+        if (this.isNewGroup) {
+          const newGroup = {
+            name: this.groupName
+          }
+          await traccar.newGroup(newGroup, this.groupCreated)
+        } else {
+          const self = this
+          const groupData = {
+            id: this.selectedGroup.id,
+            attributes: {},
+            groupId: this.selectedGroup.groupId,
+            name: this.groupName
+          }
+          await this.updateGroupPermissions()
+          Vue.$log.debug(this.groups)
+          this.groups.forEach(g => {
+            if (g.id === self.selectedGroup.id) {
+              g.drivers = self.selectedDrivers
+              g.geofences = {
+                geofences: self.selectedGeofences,
+                pois: self.selectedPOIs,
+                linegeofences: self.selectedLineGeofences
+              }
             }
+          })
+          Vue.$log.debug(this.groups)
+          // Change table key to force table refresh
+          this.alertTableKey = this.alertTableKey + 1
+          await traccar.editGroup(this.selectedGroup.id, groupData)
+        }
+        this.groupUpdated()
+        this.isOpenGroupForm = false
+      } catch (e) {
+        console.error(e)
+        await this.$alert(e)
+      } finally {
+        this.loading = false
+      }
+    },
+    async updateGroupPermissions() {
+      try {
+        const self = this
+        const originalDevices = this.devices.filter(d => d.groupId === self.selectedGroup.id).map(d => d.id)
+
+        const devicesToRemove = originalDevices.filter(x => !self.selectedDevices.includes(x))
+        const devicesToAdd = this.selectedDevices.filter(x => !originalDevices.includes(x))
+
+        for (const id of devicesToRemove) {
+          const vehicle = self.devices.find(d => d.id === id)
+          vehicle.groupId = 0
+          const v = { ...vehicle }
+          await traccar.updateDevice(vehicle.id, v)
+        }
+
+        for (const id of devicesToAdd) {
+          const vehicle = self.devices.find(d => d.id === id)
+          vehicle.groupId = self.selectedGroup.id
+          const v = { ...vehicle }
+          await traccar.updateDevice(vehicle.id, v)
+        }
+
+        const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))
+        const driversToAdd = this.selectedDrivers.filter(x => !self.selectedGroup.drivers.includes(x))
+
+        const driverPermissionsToRemove = driversToRemove.map(d => {
+          return {
+            groupId: self.selectedGroup.id,
+            driverId: d
+          }
+        })
+        const driverPermissionsToAdd = driversToAdd.map(d => {
+          return {
+            groupId: self.selectedGroup.id,
+            driverId: d
           }
         })
 
-        Vue.$log.debug(this.groups)
+        await traccar.deleteAllPermissions(driverPermissionsToRemove)
+        await traccar.addAllPermissions(driverPermissionsToAdd)
 
-        // Change table key to force table refresh
-        this.alertTableKey = this.alertTableKey + 1
+        const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
+        const allOriginalGeofences = self.selectedGroup.geofences.geofences.concat(self.selectedGroup.geofences.pois.concat(self.selectedGroup.geofences.linegeofences))
 
-        await traccar.editGroup(this.selectedGroup.id, groupData, this.groupUpdated)
+        const geofencesToRemove = allOriginalGeofences.filter(x => !allGeofences.includes(x))
+        const geofencesToAdd = allGeofences.filter(x => !allOriginalGeofences.includes(x))
+
+        const geofencePermissionsToRemove = geofencesToRemove.map(g => {
+          return {
+            groupId: self.selectedGroup.id,
+            geofenceId: g
+          }
+        })
+        const geofencePermissionsToAdd = geofencesToAdd.map(g => {
+          return {
+            groupId: self.selectedGroup.id,
+            geofenceId: g
+          }
+        })
+
+        await traccar.deleteAllPermissions(geofencePermissionsToRemove)
+        await traccar.addAllPermissions(geofencePermissionsToAdd)
+      } catch (e) {
+        console.error(e)
+        await this.$alert(e)
       }
-      this.isOpenGroupForm = false
-    },
-    updateGroupPermissions() {
-      const self = this
-      const originalDevices = this.devices.filter(d => d.groupId === self.selectedGroup.id).map(d => d.id)
-
-      const devicesToRemove = originalDevices.filter(x => !self.selectedDevices.includes(x))
-      const devicesToAdd = this.selectedDevices.filter(x => !originalDevices.includes(x))
-
-      devicesToRemove.forEach(async d_Id => {
-        const vehicle = self.devices.filter(d => d.id === d_Id)
-        vehicle.groupId = 0
-
-        const v = {
-          id: vehicle.id,
-          name: vehicle.name,
-          groupId: vehicle.groupId,
-          attributes: {
-            speedLimit: vehicle.attributes.speedLimit,
-            license_plate: vehicle.attributes.license_plate,
-            'decoder.timezone': vehicle.attributes['decoder.timezone'],
-            has_immobilization: vehicle.attributes.has_immobilization
-          },
-          uniqueId: vehicle.uniqueId,
-          phone: vehicle.phone,
-          model: vehicle.model,
-          contact: vehicle.contact,
-          category: vehicle.category
-        }
-        await traccar.updateDevice(vehicle.id, v, function() { })
-      })
-
-      devicesToAdd.forEach(async d_Id => {
-        const vehicle = self.devices.find(d => d.id === d_Id)
-        vehicle.groupId = self.selectedGroup.id
-
-        const v = {
-          id: vehicle.id,
-          name: vehicle.name,
-          groupId: vehicle.groupId,
-          attributes: {
-            speedLimit: vehicle.attributes.speedLimit,
-            license_plate: vehicle.attributes.license_plate,
-            'decoder.timezone': vehicle.attributes['decoder.timezone'],
-            has_immobilization: vehicle.attributes.has_immobilization
-          },
-          uniqueId: vehicle.uniqueId,
-          phone: vehicle.phone,
-          model: vehicle.model,
-          contact: vehicle.contact,
-          category: vehicle.category
-        }
-        Vue.$log.debug(v)
-        await traccar.updateDevice(vehicle.id, v, function() { })
-      })
-
-      const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))
-      const driversToAdd = this.selectedDrivers.filter(x => !self.selectedGroup.drivers.includes(x))
-
-      const driverPermissionsToRemove = driversToRemove.map(d => {
-        return {
-          groupId: self.selectedGroup.id,
-          driverId: d
-        }
-      })
-      const driverPermissionsToAdd = driversToAdd.map(d => {
-        return {
-          groupId: self.selectedGroup.id,
-          driverId: d
-        }
-      })
-
-      traccar.deleteAllPermissions(driverPermissionsToRemove
-        , function() {}
-        , (e) => {
-          Vue.$log.error(e)
-        })
-      traccar.addAllPermissions(driverPermissionsToAdd
-        , function() {}
-        , (e) => {
-          Vue.$log.error(e)
-        })
-
-      const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
-      const allOriginalGeofences = self.selectedGroup.geofences.geofences.concat(self.selectedGroup.geofences.pois.concat(self.selectedGroup.geofences.linegeofences))
-
-      const geofencesToRemove = allOriginalGeofences.filter(x => !allGeofences.includes(x))
-      const geofencesToAdd = allGeofences.filter(x => !allOriginalGeofences.includes(x))
-
-      const geofencePermissionsToRemove = geofencesToRemove.map(g => {
-        return {
-          groupId: self.selectedGroup.id,
-          geofenceId: g
-        }
-      })
-      const geofencePermissionsToAdd = geofencesToAdd.map(g => {
-        return {
-          groupId: self.selectedGroup.id,
-          geofenceId: g
-        }
-      })
-
-      traccar.deleteAllPermissions(geofencePermissionsToRemove
-        , function() {}
-        , (e) => {
-          Vue.$log.error(e)
-        })
-      traccar.addAllPermissions(geofencePermissionsToAdd
-        , function() {}
-        , (e) => {
-          Vue.$log.error(e)
-        })
     },
     groupCreated: function(newGroup) {
       newGroup.drivers = []
@@ -516,9 +477,9 @@ export default {
       this.selectedGroup = row
       this.selectedDevices = this.devices.filter(d => d.groupId === row.id).map(d => d.id)
       this.selectedDrivers = row.drivers
-      this.selectedGeofences = row.geofences.geofences
-      this.selectedPOIs = row.geofences.pois
-      this.selectedLineGeofences = row.geofences.linegeofences
+      this.selectedGeofences = row.geofences && row.geofences.geofences
+      this.selectedPOIs = row.geofences && row.geofences.pois
+      this.selectedLineGeofences = row.geofences && row.geofences.linegeofences
       this.groupName = row.name
       this.isOpenGroupForm = !this.isOpenGroupForm
     },
