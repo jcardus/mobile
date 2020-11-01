@@ -368,7 +368,7 @@ export default {
         .setLngLat(e.geometry.coordinates.slice())
         .setHTML('<div id="vue-event-popup"></div>')
         .addTo(this.map)
-        .on('close', function(e) {
+        .on('close', function() {
           const featureSelected = eventsLayer.findFeatureSelected()
           if (featureSelected !== undefined) {
             featureSelected.properties.selected = false
@@ -733,7 +733,11 @@ export default {
       position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
       device.poi = this.findNearestPOI(position)
       device.driver = this.findDriver(position, device)
-      device.immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
+      const immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
+      if (immobilized !== device.immobilized) {
+        device.commandPending = false
+      }
+      device.immobilized = immobilized
       device.position = position
     },
     updateFeature(feature, position) {

@@ -103,27 +103,48 @@ module.exports = {
       errors: true
     }
   },
-  configureWebpack: {
-    plugins: [
-      new webpack.DefinePlugin({
-        'process.env': {
-          PACKAGE_VERSION: '"' + version + '"' }}),
-      new ScriptExtHtmlWebpackPlugin({
-        defaultAttribute: 'async'
-      }),
-      new ReplaceInFileWebpackPlugin([{
-        dir: 'dist',
-        files: ['OneSignalSDKWorker.js'],
-        rules: [{
-          search: /version/ig,
-          replace: version
-        }]
-      }])
-    ],
-    name: name,
-    resolve: {
-      alias: {
-        '@': resolve('src')
+  configureWebpack: () => {
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        plugins: [
+          new webpack.DefinePlugin({
+            'process.env': {
+              PACKAGE_VERSION: '"' + version + '"' }}),
+          new ScriptExtHtmlWebpackPlugin({
+            defaultAttribute: 'async'
+          }),
+          new ReplaceInFileWebpackPlugin([{
+            dir: 'dist',
+            files: ['OneSignalSDKWorker.js'],
+            rules: [{
+              search: /version/ig,
+              replace: version
+            }]
+          }])
+        ],
+        name: name,
+        resolve: {
+          alias: {
+            '@': resolve('src')
+          }
+        }
+      }
+    } else {
+      return {
+        plugins: [
+          new webpack.DefinePlugin({
+            'process.env': {
+              PACKAGE_VERSION: '"' + version + '"' }}),
+          new ScriptExtHtmlWebpackPlugin({
+            defaultAttribute: 'async'
+          })
+        ],
+        name: name,
+        resolve: {
+          alias: {
+            '@': resolve('src')
+          }
+        }
       }
     }
   },
