@@ -348,6 +348,19 @@ export const traccar = {
         }
       })
   },
+  users: function() {
+    return get(users, { withCredentials: true })
+  },
+  addUser: function(user, onFulfill) {
+    axios.post(users, user, { withCredentials: true })
+      .then(response => onFulfill(response.data))
+      .catch(reason => {
+        Vue.$log.error(reason)
+      })
+  },
+  deleteUser: function(userId, onFulfill) {
+    invokeDeleteApi(users, userId, onFulfill)
+  },
   ping: function() {
     return get(server)
   },
@@ -362,6 +375,7 @@ export const traccar = {
     const requestGeofences = axios.get(geoFences, { withCredentials: true })
     const requestGroups = axios.get(groups + '?userId=' + userId, { withCredentials: true })
     const requestDrivers = axios.get(drivers + '?userId=' + userId, { withCredentials: true })
-    return axios.all([requestDevices, requestGeofences, requestGroups, requestDrivers])
+    const requestUsers = axios.get(users, { withCredentials: true })
+    return axios.all([requestDevices, requestGeofences, requestGroups, requestDrivers, requestUsers])
   }
 }

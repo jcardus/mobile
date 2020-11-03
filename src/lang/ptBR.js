@@ -281,7 +281,21 @@ export default {
     delete: 'Apagar',
     name_required: 'O campo nome é obrigatório',
     email_format_invalid: 'Por favor indique um e-mail válido',
-    email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.'
+    email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.',
+    users: 'Utilizadores',
+    user_edit: 'Editar Utilizador',
+    user_add: 'Adicionar Utilizador',
+    user_name: 'Nome',
+    user_email: 'Email',
+    user_phone: 'Telemóvel',
+    user_type: 'Perfil',
+    user_password: 'Palavra-chave',
+    user_form_type_placeholder: 'Seleccionar Perfil',
+    user_deleted: 'O Utilizador foi apagado.',
+    user_delete_info: 'Pretende apagar o utilizador ',
+    user_delete_title: 'Apagar Utilizador',
+    user_created: 'Utilizador criado com sucesso!',
+    user_updated: 'Utilizador actualizado com sucesso!'
   },
   geofence: {
     showGeofences: 'Ver Cercas Eletrônicas',

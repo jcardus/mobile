@@ -121,7 +121,10 @@ export default {
     inactive_vehicles_email_tooltip: 'Será enviado um email de alerta indicando os equipamentos que não comunicam há mais de 48 horas',
     daily_reports_tooltip: 'Email enviado diariamente com informação da actividade dos veículos',
     weekly_reports_tooltip: 'Email enviado semanalmente com informação da actividade dos veículos',
-    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos'
+    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos',
+    user_type_admin: 'Administrador',
+    user_type_manager: 'Gestor',
+    user_type_operator: 'Operador'
   },
   settings: {
     icons3d: 'Ícones 3D',
@@ -148,6 +151,8 @@ export default {
     max_speed_threshold: 'Tolerância Máxima em Km/h',
     select_all: 'Seleccionar Todos',
     deselect_all: 'Remover Todos',
+    form_cancel: 'Cancelar',
+    form_confirm: 'Confirmar',
     alerts: 'Alertas',
     alerts_type: 'Tipo',
     alerts_notificators: 'Vias',
@@ -322,7 +327,21 @@ export default {
     delete: 'Apagar',
     name_required: 'O campo nome é obrigatório',
     email_format_invalid: 'Por favor indique um e-mail válido',
-    email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.'
+    email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.',
+    users: 'Utilizadores',
+    user_edit: 'Editar Utilizador',
+    user_add: 'Adicionar Utilizador',
+    user_name: 'Nome',
+    user_email: 'Email',
+    user_phone: 'Telemóvel',
+    user_type: 'Perfil',
+    user_password: 'Palavra-chave',
+    user_form_type_placeholder: 'Seleccionar Perfil',
+    user_deleted: 'O Utilizador foi apagado.',
+    user_delete_info: 'Pretende apagar o utilizador ',
+    user_delete_title: 'Apagar Utilizador',
+    user_created: 'Utilizador criado com sucesso!',
+    user_updated: 'Utilizador actualizado com sucesso!'
   },
   geofence: {
     showGeofences: 'Ver Balizas',

@@ -121,7 +121,10 @@ export default {
     inactive_vehicles_email_tooltip: 'Será enviado um email de alerta indicando os equipamentos que não comunicam há mais de 48 horas',
     daily_reports_tooltip: 'Email enviado diariamente com informação da actividade dos veículos',
     weekly_reports_tooltip: 'Email enviado semanalmente com informação da actividade dos veículos',
-    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos'
+    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos',
+    user_type_admin: 'Administrator',
+    user_type_manager: 'Manager',
+    user_type_operator: 'Operator'
   },
   settings: {
     icons3d: '3D icons',
@@ -318,7 +321,21 @@ export default {
     delete: 'Delete',
     name_required: 'Name field is required',
     email_format_invalid: 'Please input a valid email',
-    email_or_phone_required: 'At least one of these fields must have a valid value.'
+    email_or_phone_required: 'At least one of these fields must have a valid value.',
+    users: 'Users',
+    user_edit: 'Edit User',
+    user_add: 'Add User',
+    user_name: 'Name',
+    user_email: 'Email',
+    user_phone: 'Phone',
+    user_type: 'Profile',
+    user_password: 'Password',
+    user_form_type_placeholder: 'Select Profile',
+    user_deleted: 'User has been deleted.',
+    user_delete_info: 'Do you want to delete the user ',
+    user_delete_title: 'Delete User',
+    user_created: 'User created sucessfully!',
+    user_updated: 'User updated sucessfully!'
   },
   geofence: {
     showGeofences: 'Show Geofences',
