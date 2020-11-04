@@ -2,14 +2,21 @@
   <iframe
     scrolling="no"
     seamless="seamless"
-    src="https://ws.pinme.io/backend/api?externalreports"
+    :src="source"
     style="width:99%;height:99%"
   ></iframe>
 </template>
 
 <script>
+import { getServerHost } from '@/api'
+
 export default {
-  name: 'ReportCustom'
+  name: 'ReportCustom',
+  computed: {
+    source() {
+      return `https://${getServerHost()}/backend/api?externalreports`
+    }
+  }
 }
 </script>
 
