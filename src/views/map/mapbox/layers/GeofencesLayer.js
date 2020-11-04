@@ -99,6 +99,7 @@ export default {
         properties: {
           id: item.id,
           title: item.name,
+          description: item.description,
           icon: '',
           color: item.attributes.color ? item.attributes.color : '#3232b4',
           fill: item.attributes.fill != null ? item.attributes.fill : true
@@ -120,6 +121,7 @@ export default {
         properties: {
           id: item.id,
           title: item.name,
+          description: item.description,
           icon: '',
           color: item.attributes.color ? item.attributes.color : '#3232b4',
           fill: false
@@ -141,6 +143,7 @@ export default {
         properties: {
           id: item.id,
           title: item.name,
+          description: item.description,
           icon: item.attributes.icon ? item.attributes.icon : 'marker',
           color: item.attributes.color ? item.attributes.color : '#3232b4',
           fill: ''
