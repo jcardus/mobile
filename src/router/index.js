@@ -43,6 +43,12 @@ export const constantRoutes = [
     meta: { title: 'reports', icon: 'far fa-sticky-note' },
     children: [
       {
+        path: 'report_custom',
+        component: () => import('../views/reports/ReportCustom'),
+        name: 'CustomReport',
+        meta: { title: 'route.report_custom' }
+      },
+      {
         path: 'report_trip',
         component: () => import('../views/reports/ReportTrip'),
         name: 'TripReport',

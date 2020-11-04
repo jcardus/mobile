@@ -302,7 +302,7 @@ export default {
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
-    orderBy: function() {
+    orderBy() {
       return [{
         value: 'orderByStatus',
         label: this.$t('vehicleList.order_by_status')

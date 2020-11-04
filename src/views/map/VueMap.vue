@@ -722,7 +722,7 @@ export default {
       this.updateDeviceAndFeature(feature, device, position)
       return feature
     },
-    updateDevice: function(position, feature, device) {
+    updateDevice(position, feature, device) {
       // don't update "lastUpdated" if ignition is off but devices keeps sending data
       if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
         device.lastUpdate = position.fixTime

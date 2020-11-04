@@ -11,8 +11,15 @@
                   <el-form-item v-if="getType(selectedGeofence)==='poi'" class="form-item-block-left" :label="$t('settings.geofence_form_icon')">
                     <img :src="'img/icons/pois/'+geofenceIcon+'-blue.svg'" alt="" style="vertical-align:middle">
                   </el-form-item>
-                  <el-form-item class="form-item-block-right" :label="$t('settings.group_form_name')">
+                  <el-form-item class="form-item-block-right" :label="$t('settings.geofence_form_name')">
                     <el-input v-model="geofenceName" />
+                  </el-form-item>
+                </div>
+              </div>
+              <div class="form-item-block">
+                <div class="form-item-row">
+                  <el-form-item class="form-item-block-right" :label="$t('settings.geofence_form_description')">
+                    <el-input v-model="geofenceDescription" />
                   </el-form-item>
                 </div>
               </div>
@@ -75,6 +82,12 @@
         sortable
       >
       </el-table-column>
+      <el-table-column
+        :label="$t('settings.group_description')"
+        prop="description"
+        sortable
+      >
+      </el-table-column>
       <el-table-column label="" min-width="50px">
         <template slot="header" slot-scope="scope">
           <el-input
@@ -125,6 +138,7 @@ export default {
       isNewGeofence: true,
       selectedGeofence: null,
       geofenceName: '',
+      geofenceDescription: '',
       geofenceColor: '',
       geofenceIcon: '',
       geofenceFill: false,
@@ -179,6 +193,7 @@ export default {
       this.isNewGeofence = false
       this.selectedGeofence = row
       this.geofenceName = row.name
+      this.geofenceDescription = row.description
       this.geofenceIcon = row.attributes.icon ? row.attributes.icon : 'marker'
       this.geofenceColor = row.attributes.color ? row.attributes.color : '#3232b4'
       this.geofenceFill = row.attributes.fill != null ? row.attributes.fill : true
@@ -194,6 +209,7 @@ export default {
     handleSubmitGroupForm() {
       var geofence = this.selectedGeofence
       geofence.name = this.geofenceName
+      geofence.description = this.geofenceDescription
       if (this.getType(this.selectedGeofence) === 'poi') {
         geofence.attributes = {
           icon: this.geofenceIcon,
@@ -243,6 +259,7 @@ export default {
     },
     clearFormData() {
       this.geofenceName = ''
+      this.geofenceDescription = ''
       this.geofenceIcon = ''
       this.geofenceColor = ''
     },

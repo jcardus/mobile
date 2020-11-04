@@ -746,10 +746,6 @@ export default {
 
 </style>
 <style>
-  .el-form-item__label {
-    width: 100%;
-    text-align: left;
-  }
   .el-table .cell {
     word-break: break-word;
   }

@@ -22,6 +22,7 @@ const state = {
   groups: [],
   geofences: [],
   drivers: [],
+  users: [],
   orderDevicesBy: 'orderByStatus',
   alertsSearchPeriod: 'last_one_hour'
 }
@@ -44,7 +45,7 @@ const mutations = {
     state.user = token
     state.user.attributes.avatar = getAvatar(token.name)
   },
-  REMOVE_USER(state) {
+  CLEAR_USER(state) {
     state.user = {
       name: '',
       id: 0,
@@ -66,12 +67,22 @@ const mutations = {
   SET_DRIVERS(state, drivers) {
     state.drivers = drivers
   },
+  SET_USERS(state, users) {
+    state.users = users
+  },
   ADD_DRIVER(state, driver) {
     state.drivers.push(driver)
   },
   REMOVE_DRIVER(state, driver) {
     const index = state.drivers.indexOf(driver)
     state.drivers.splice(index, 1)
+  },
+  ADD_USER(state, user) {
+    state.users.push(user)
+  },
+  REMOVE_USER(state, user) {
+    const index = state.users.indexOf(user)
+    state.users.splice(index, 1)
   },
   SET_DEVICE(state, device) {
     const index = state.devices.indexOf(device)
@@ -95,6 +106,7 @@ function initData(commit, state, dispatch) {
         dispatch('setGeofences', responses[1].data).then(() => {
           state.groups = responses[2].data
           state.drivers = responses[3].data
+          state.users = responses[4].data.filter(u => u.id !== user.id)
           dispatch('setDevices', responses[0].data).then(() => {
             dispatch('processDevices').then(() => {
               dispatch('processGroups')
@@ -161,11 +173,17 @@ const actions = {
   setDevices({ commit }, devices) {
     commit('SET_DEVICES', devices)
   },
-  addDriver({ commit }, device) {
-    commit('ADD_DRIVER', device)
+  addDriver({ commit }, driver) {
+    commit('ADD_DRIVER', driver)
   },
   removeDriver({ commit }, device) {
     commit('REMOVE_DRIVER', device)
+  },
+  addUser({ commit }, user) {
+    commit('ADD_USER', user)
+  },
+  removeUser({ commit }, user) {
+    commit('REMOVE_USER', user)
   },
   checkSession({ dispatch, commit }) {
     return new Promise((resolve) => {
@@ -176,7 +194,7 @@ const actions = {
         dispatch('setUser')
       }).catch((e) => {
         Vue.$log.warn('no session, should go to login', e)
-        dispatch('removeUser').then(() => resolve())
+        dispatch('clearUser').then(() => resolve())
       })
     })
   },
@@ -222,7 +240,7 @@ const actions = {
         })
       }).catch(e => {
         Vue.$log.error(e)
-        commit('REMOVE_USER')
+        commit('CLEAR_USER')
         reject(e)
       })
     })
@@ -232,7 +250,7 @@ const actions = {
       logout().catch((e) => {
         Vue.$log.error(e)
       }).finally(() => {
-        commit('REMOVE_USER')
+        commit('CLEAR_USER')
         vm.reset()
         delete Vue.prototype.$socket
         resolve()
@@ -334,9 +352,9 @@ const actions = {
       Vue.$log.debug(r)
     })
   },
-  removeUser({ commit }) {
+  clearUser({ commit }) {
     return new Promise((resolve) => {
-      commit('REMOVE_USER')
+      commit('CLEAR_USER')
       resolve()
     })
   },

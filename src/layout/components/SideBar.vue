@@ -21,6 +21,7 @@
           <el-menu-item v-if="tollsReport" index="/reports/report_tolls">{{ $t('route.report_tolls') }}</el-menu-item>
           <el-menu-item v-if="has_customreport_vistawaste_activity" index="/reports/customreport_vistawaste_activity">{{ $t('route.customreport_vistawaste_activity_title') }}</el-menu-item>
           <el-menu-item v-if="timeRangeReport" index="/reports/report_timerange">{{ $t('route.report_timerange') }}</el-menu-item>
+          <el-menu-item v-if="customReports" index="/reports/report_custom">{{ $t('route.custom_reports') }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
@@ -46,6 +47,9 @@ export default {
     },
     has_customreport_vistawaste_activity() {
       return permission.checkUserPermission('customreport_vistawaste_activity')
+    },
+    customReports() {
+      return permission.checkUserPermission('externalreports')
     }
   }
 }

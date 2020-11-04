@@ -83,3 +83,8 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   white-space: nowrap;
   border: 1px solid #F8F9FE;
 }
+
+.el-form-item__label {
+  width: 100%;
+  text-align: left;
+}

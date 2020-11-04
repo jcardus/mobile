@@ -24,7 +24,7 @@
                       :placeholder="$t('settings.group_select_vehicles_placeholder')"
                       value=""
                     >
-                      <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
+                      <el-option v-for="item in filteredDevices" :key="item.id" :label="item.name" :value="item.id" />
                     </el-select>
                     <el-tooltip :content="$t('settings.select_all')" placement="top">
                       <el-button
@@ -281,6 +281,12 @@ export default {
   computed: {
     ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'groups']),
     isMobile() { return lnglat.isMobile() },
+    selectedGroupDevices: function() {
+      return this.devices.filter(d => d.groupId === this.selectedGroup.id)
+    },
+    filteredDevices: function() {
+      return this.devices.filter(d => d.groupId !== this.selectedGroup.id)
+    },
     devices: function() {
       return vm.$store.getters.devices
     },
@@ -310,7 +316,7 @@ export default {
       }
       if (type === 'DEVICE') {
         this.selectedDevices = []
-        this.selectedDevices = this.devices.map(d => d.id)
+        this.selectedDevices = this.filteredDevices.map(d => d.id)
       }
       if (type === 'DRIVER') {
         this.selectedDrivers = []
@@ -383,17 +389,9 @@ export default {
     async updateGroupPermissions() {
       try {
         const self = this
-        const originalDevices = this.devices.filter(d => d.groupId === self.selectedGroup.id).map(d => d.id)
 
-        const devicesToRemove = originalDevices.filter(x => !self.selectedDevices.includes(x))
+        const originalDevices = this.selectedGroupDevices.map(d => d.id)
         const devicesToAdd = this.selectedDevices.filter(x => !originalDevices.includes(x))
-
-        for (const id of devicesToRemove) {
-          const vehicle = self.devices.find(d => d.id === id)
-          vehicle.groupId = 0
-          const v = { ...vehicle }
-          await traccar.updateDevice(vehicle.id, v)
-        }
 
         for (const id of devicesToAdd) {
           const vehicle = self.devices.find(d => d.id === id)
@@ -475,7 +473,7 @@ export default {
     handleEdit(row) {
       this.isNewGroup = false
       this.selectedGroup = row
-      this.selectedDevices = this.devices.filter(d => d.groupId === row.id).map(d => d.id)
+      this.selectedDevices = []
       this.selectedDrivers = row.drivers
       this.selectedGeofences = row.geofences && row.geofences.geofences
       this.selectedPOIs = row.geofences && row.geofences.pois
