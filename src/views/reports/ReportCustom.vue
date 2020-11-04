@@ -1,5 +1,10 @@
 <template>
-  <iframe style="width:100%;height:100%" src="https://wuizy.trackingintegration.net/wuizy/reports?session="></iframe>
+  <iframe
+    scrolling="no"
+    seamless="seamless"
+    src="https://ws.pinme.io/backend/api?externalreports"
+    style="width:99%;height:99%"
+  ></iframe>
 </template>
 
 <script>
