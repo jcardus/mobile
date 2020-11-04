@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import { getGoogleLogin } from '../../api'
+import { getGoogleLogin } from '@/api'
 
 export default {
   name: 'GoogleButton',

@@ -4,7 +4,7 @@
     <f7-block-title v-if="alert" medium>{{ alert.description }}</f7-block-title>
     <f7-block>
       <f7-list v-if="alert">
-        <f7-list-item :title="alert.title" :after="alert.timestamp | moment('calendar')" />
+        <f7-list-item :title="alert.device.name" :after="alert.timestamp | moment('calendar')" />
         <f7-list-item :after="alert.content" />
       </f7-list>
       <div style="height: 500px">

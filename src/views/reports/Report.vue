@@ -1,45 +1,97 @@
 <template>
-  <div v-loading="loadingReport" class="reportContainer">
-    <el-row type="flex" justify="space-between">
-      <el-col :span="selectGeofences ? 7 : 16">
-        <div class="grid-content">
-          <el-tooltip :content="$t('report.select_vehicles')" placement="bottom">
-            <el-select
-              v-model="selectedDevices"
-              style="width: 100%; height: 35px"
-              multiple
-              filterable
-              :placeholder="$t('report.select_vehicles_placeholder')"
-              value=""
-            >
-              <el-option v-for="item in devices" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-tooltip>
+  <div v-loading="loadingReport" class="reportContainer" H>
+    <el-collapse v-model="activeSection" accordion>
+      <el-collapse-item name="1">
+        <template slot="title">
+          <span v-if="activeSelector==='vehicles'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-car"></i>{{ $t('report.select_vehicles_placeholder') }}</span>
+          <span v-if="activeSelector==='groups'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-grip-horizontal"></i>{{ $t('report.select_groups_placeholder') }}</span> {{ this.currentVehicles }}
+        </template>
+        <div style="float:left">
+          <div class="tagSelector">
+            <el-tooltip :content="$t('report.select_vehicles_placeholder')" placement="bottom">
+              <el-tag
+                style="margin-right: 5px"
+                size="small"
+                :type="tagColor('vehicles')"
+                effect="dark"
+                @click="toggleSelector('vehicles')"
+              >
+                <i class="fas fa-car" style="color: white"></i>
+              </el-tag>
+            </el-tooltip>
+          </div>
+          <div class="tagSelector">
+            <el-tooltip :content="$t('report.select_groups_placeholder')" placement="bottom">
+              <el-tag
+                style="margin-right: 5px"
+                size="small"
+                :type="tagColor('groups')"
+                effect="dark"
+                @click="toggleSelector('groups')"
+              >
+                <i class="fas fa-grip-horizontal" style="color: white"></i>
+              </el-tag>
+            </el-tooltip>
+          </div>
         </div>
-      </el-col>
-      <el-col v-if="selectGeofences" :span="7">
-        <div class="grid-content">
-          <el-tooltip :content="$t('report.select_geofences')" placement="bottom">
-            <el-select
-              v-model="selectedGeofences"
-              style="width: 100%; height: 35px"
-              multiple
-              filterable
-              :placeholder="$t('report.select_geofences_placeholder')"
-              value=""
-            >
-              <el-option v-for="item in geofences" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-tooltip>
+        <div>
+          <el-transfer
+            v-if="activeSelector === 'vehicles'"
+            v-model="selectedDevices"
+            filterable
+            :filter-placeholder="$t('report.selector_search')"
+            :titles="[$t('report.select_vehicles_placeholder'), $t('report.select_vehicles')]"
+            :props="{
+              key: 'id',
+              label: 'name'
+            }"
+            :data="devices"
+          >
+          </el-transfer>
         </div>
-      </el-col>
-      <el-col :span="7">
-        <div class="grid-content">
+        <div>
+          <el-transfer
+            v-if="activeSelector === 'groups'"
+            v-model="selectedGroups"
+            filterable
+            :filter-placeholder="$t('report.selector_search')"
+            :titles="[$t('report.select_groups_placeholder'), $t('report.select_groups')]"
+            :props="{
+              key: 'id',
+              label: 'name'
+            }"
+            :data="groups"
+          >
+          </el-transfer>
+        </div>
+      </el-collapse-item>
+      <el-collapse-item v-if="selectGeofences" name="2">
+        <template slot="title">
+          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-map-marked"></i>{{ $t('report.select_geofences_placeholder') }}</span> {{ this.currentGeofences }}
+        </template>
+        <el-transfer
+          v-model="selectedGeofences"
+          filterable
+          :filter-placeholder="$t('report.selector_search')"
+          :titles="[$t('report.select_geofences_placeholder'), $t('report.select_geofences')]"
+          :props="{
+            key: 'id',
+            label: 'name'
+          }"
+          :data="geofences"
+        >
+        </el-transfer>
+      </el-collapse-item>
+      <el-collapse-item name="3">
+        <template slot="title">
+          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-calendar-alt"></i>Período</span> {{ this.currentPeriod }}
+        </template>
+        <div class="periodSelector">
           <el-tooltip :content="$t('report.select_period')" placement="bottom">
             <el-date-picker
               v-model="dateRange"
               style="width: 100%"
-              type="datetimerange"
+              type="daterange"
               unlink-panels
               range-separator="-"
               format="dd-MM-yyyy HH:mm"
@@ -49,15 +101,13 @@
             />
           </el-tooltip>
         </div>
-      </el-col>
-      <el-col :span="1">
-        <div class="grid-content">
-          <el-tooltip :content="$t('report.generate_report')" placement="bottom">
-            <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
-          </el-tooltip>
-        </div>
-      </el-col>
-    </el-row>
+      </el-collapse-item>
+    </el-collapse>
+    <div class="submitButton">
+      <el-tooltip :content="$t('report.generate_report')" placement="bottom">
+        <el-button type="primary" icon="el-icon-caret-right" circle @click="submitReport" />
+      </el-tooltip>
+    </div>
     <div id="viewerDiv"></div>
   </div>
 </template>
@@ -92,8 +142,11 @@ export default {
   },
   data() {
     return {
+      activeSection: '1',
+      activeSelector: 'vehicles',
       loadingReport: false,
       selectedDevices: [],
+      selectedGroups: [],
       pickerOptions: {
         shortcuts: [{
           text: 'Today',
@@ -155,7 +208,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(['user', 'geofences']),
     title() {
       return vm.$t('route.' + this.$route.meta.title)
     },
@@ -172,13 +225,60 @@ export default {
           return (a === b ? 0 : a > b ? 1 : -1)
         })
       }
-      if (devices.length > 0) devices.unshift({ 'id': 0, 'name': 'Todos' })
       return devices
     },
-    geofences() {
-      return vm.$store.state.user.geofences
+    groups() {
+      const sortKey = 'name'
+      let groups = vm.$store.getters.groups
+      if (sortKey) {
+        groups = groups.slice().sort(function(a, b) {
+          a = a[sortKey]
+          b = b[sortKey]
+          return (a === b ? 0 : a > b ? 1 : -1)
+        })
+      }
+      return groups
     },
-    isMobile() { return lnglat.isMobile() }
+    isMobile() {
+      return lnglat.isMobile()
+    },
+    currentVehicles() {
+      let description = ''
+      if (this.activeSection !== '1') {
+        let data = []
+        const self = this
+        if (this.activeSelector === 'vehicles' && this.selectedDevices.length > 0) {
+          data = this.devices.filter(d => self.selectedDevices.includes(d.id))
+        }
+        if (this.activeSelector === 'groups' && this.selectedGroups.length > 0) {
+          data = this.groups.filter(g => self.selectedGroups.includes(g.id))
+        }
+        if (data.length > 0) {
+          description = description + ': ' + data.map(g => g.name).join(',')
+          return description.length < 100 ? description : description.substring(0, 100) + ' ...'
+        }
+      }
+      return description
+    },
+    currentGeofences() {
+      if (this.activeSection !== '2') {
+        if (this.selectedGeofences.length > 0) {
+          const self = this
+          const data = this.geofences.filter(g => self.selectedGeofences.includes(g.id))
+          const description = ': ' + data.map(g => g.name).join(',')
+          return description.length < 100 ? description : description.substring(0, 100) + ' ...'
+        }
+      }
+      return ''
+    },
+    currentPeriod() {
+      if (this.activeSection !== '3') {
+        if (this.dateRange.length > 0) {
+          return ': ' + this.dateRange[0] + ' a ' + this.dateRange[1]
+        }
+      }
+      return ''
+    }
   },
   created() {
     if (!this.$store.state.transient.stiLoaded) {
@@ -192,8 +292,26 @@ export default {
     } else { Vue.$log.debug(this.geofences.length, ' geofences already loaded') }
   },
   methods: {
+    toggleSelector(type) {
+      this.activeSelector = type
+    },
+    tagColor(type) {
+      if (this.activeSelector === type) {
+        return 'primary'
+      } else {
+        return 'info'
+      }
+    },
     submitReport() {
-      if (this.selectedDevices.length > 0) {
+      this.activeSection = '0' // close all report parameters sections
+      let devicesToReport = []
+      if (this.activeSelector === 'vehicles') {
+        devicesToReport = this.selectedDevices
+      } else {
+        devicesToReport = this.devices.filter(d => this.selectedGroups.includes(d.groupId)).map(d => d.id)
+      }
+
+      if (devicesToReport.length > 0) {
         if (this.dateRange.length > 0) {
           this.$log.debug('Triggering report generation')
           this.loadingReport = true
@@ -204,7 +322,7 @@ export default {
             platform: 'web',
             report: this.reportType,
             report_id: report_id,
-            selected_devices: this.selectedDevices,
+            selected_devices: devicesToReport,
             selected_geofences: this.selectedGeofences,
             date_from: this.dateRange[0],
             date_to: this.dateRange[1]
@@ -248,6 +366,18 @@ export default {
 <style lang="scss" scoped>
   @import 'stimulsoft/stimulsoft.viewer.office2013.whiteblue.css';
 
+  .submitButton {
+    padding-left: 10px;
+    padding-top: 10px;
+  }
+
+  .periodSelector {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .tagSelector {
+    padding: 10px
+  }
   .reportContainer {
     padding-left: 5px;
     padding-right: 5px;

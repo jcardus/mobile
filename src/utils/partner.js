@@ -1,10 +1,12 @@
 import styles from '../styles/element-variables.scss'
 import store from '@/store'
 import Vue from 'vue'
+import * as lnglat from './lnglat'
 
 function initFreshChat() {
   window.fcWidget.init({
-    token: '022233f4-44bb-44b6-bdb3-7ff6a0a61515',
+    token: getFreshChatToken(),
+    locale: getFreshChatLocale(),
     host: 'https://wchat.eu.freshchat.com' })
   window.fcWidget.user.setFirstName(store.getters.user.name)
   window.fcWidget.user.setEmail(store.getters.user.email)
@@ -27,12 +29,33 @@ function initSurvey(token) {
   e.parentNode.insertBefore(s, e)
 }
 
-export function initSupportChat() {
+function getFreshChatLocale() {
   switch (hostname) {
     case 'web.fleetrack.cl':
-      initSurvey('60bd590459b33f47d8dd8abccc0dc8d7')
-      break
+      return 'es-LA'
+    default:
+      return 'pt'
+  }
+}
+
+function getFreshChatToken() {
+  switch (hostname) {
+    case 'web.fleetrack.cl':
+      return 'b4913a05-9e33-4575-a7f9-a5ae4dda8dd4'
+    default:
+      return '022233f4-44bb-44b6-bdb3-7ff6a0a61515'
+  }
+}
+
+export function initSupportChat() {
+  switch (hostname) {
     case 'mac.pinme.io':
+    case 'web.fleetrack.cl':
+      initSurvey('60bd590459b33f47d8dd8abccc0dc8d7')
+      if (!lnglat.isMobile()) {
+        initiateCall()
+      }
+      break
     case 'wuizy.co.ao':
       initSurvey('51e321bab007a7f8e6b0575f91f20939')
       if (store.getters.user.email === 'it@tvsd.co.mz') {

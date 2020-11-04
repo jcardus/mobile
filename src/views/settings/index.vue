@@ -25,6 +25,12 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
+          <i class="fas fa-user-friends"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.users') }}</span>
+        </span>
+        <users></users>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
           <i class="fas fa-map-marked"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.zone') }}</span>
         </span>
         <geofences></geofences>
@@ -100,6 +106,7 @@
 
 <script>
 import { vm } from '../../main'
+import Users from './users/Users'
 import Alerts from './alerts/Alerts'
 import Drivers from './drivers/Drivers'
 import Geofences from './geofence/Geofences'
@@ -111,7 +118,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Settings',
-  components: { Alerts, Vehicles, Groups, Drivers, Geofences, AutomaticReports },
+  components: { Users, Alerts, Vehicles, Groups, Drivers, Geofences, AutomaticReports },
   data() {
     return {
       radioValue: 'road',
