@@ -24,7 +24,10 @@
           <el-menu-item v-if="customReports" index="/reports/report_custom">{{ $t('route.custom_reports') }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-
+      <el-menu-item index="/settings/external/index">
+        <i class="el-icon-truck"></i>
+        <span slot="title">{{ $t('route.maintenance') }}</span>
+      </el-menu-item>
       <el-menu-item index="/settings/index">
         <i class="el-icon-setting"></i>
         <span slot="title">{{ $t('route.settings') }}</span>
