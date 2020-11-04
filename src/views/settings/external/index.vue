@@ -3,7 +3,7 @@
     scrolling="no"
     seamless="seamless"
     :src="source"
-    style="width:99%;height:99%"
+    style="width:99%;height:calc(100vh - 51px)"
   ></iframe>
 </template>
 
