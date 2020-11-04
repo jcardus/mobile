@@ -19,7 +19,8 @@ export default {
     settings: 'Settings',
     duration: 'Duration',
     nodata: 'Não existem dados para o período seleccionado.',
-    alerts: 'Alerts'
+    alerts: 'Alerts',
+    custom_reports: 'Relatórios Custom'
   },
   map: {
     geofence_create_error: 'Error creating geofence',

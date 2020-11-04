@@ -22,7 +22,8 @@ export default {
   computed: {
     showNavBar() {
       return !this.$route.path.includes('map') &&
-        !this.$route.path.includes('dashboard')
+        !this.$route.path.includes('dashboard') &&
+        !this.$route.path.includes('report_custom')
     },
     ...mapGetters([
       'sidebar',
