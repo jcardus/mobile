@@ -142,14 +142,14 @@ export function calculateFuelLevel(adc1CacheValues, position, device) {
   if (device.attributes.fuel_tank_capacity &&
     device.attributes.fuel_low_threshold &&
     device.attributes.fuel_high_threshold &&
-    position.attributes.adc1) {
+    position.attributes.fuel) {
     // Calculate FuelLevel
     if (position.attributes.ignition) {
       if (adc1CacheValues.length === 5) {
         adc1CacheValues.splice(0, 1)
       }
 
-      adc1CacheValues.push(position.attributes.adc1)
+      adc1CacheValues.push(position.attributes.fuel)
       const adc1CalculatedValue = (adc1CacheValues.reduce((total, value) => total + value, 0)) / adc1CacheValues.length
 
       const level = Math.round(((device.attributes.fuel_low_threshold - adc1CalculatedValue) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
