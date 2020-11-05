@@ -3,43 +3,50 @@
     <transition name="modal">
       <div v-if="isOpenGroupForm">
         <div class="overlay">
-          <div class="modal" :style="'height:'+isNewGroup ? '200px' : '500px'">
+          <div class="modal">
             <h2 v-if="isNewGroup">{{ $t('settings.group_add') }}</h2>
             <h2 v-else>{{ $t('settings.group_edit') }}</h2>
             <el-form>
               <el-form-item :label="$t('settings.group_form_name')">
                 <el-input v-model="groupName" />
               </el-form-item>
-              <el-tabs v-if="!isNewGroup" style="height:325px" stretch>
+              <el-tabs v-if="!isNewGroup" style="height:360px" stretch>
                 <el-tab-pane>
                   <span slot="label">
                     <i class="fas fa-car"></i>
                   </span>
-                  <el-form-item :label="$t('settings.vehicles')">
-                    <el-select
+                  <el-form-item>
+                    <el-transfer
                       v-model="selectedDevices"
-                      style="float: left; width: 70%; height: 35px"
-                      multiple
-                      collapse-tags
-                      :placeholder="$t('settings.group_select_vehicles_placeholder')"
-                      value=""
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('report.select_vehicles_placeholder'), $t('report.select_groups')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="tDevices"
                     >
-                      <el-option v-for="item in filteredDevices" :key="item.id" :label="item.name" :value="item.id" />
-                    </el-select>
-                    <el-tooltip :content="$t('settings.select_all')" placement="top">
-                      <el-button
-                        class="alertSelectButton"
-                        size="small"
-                        @click="handleSelectAll('DEVICE')"
-                      ><i class="fas fa-check-double"></i></el-button>
-                    </el-tooltip>
-                    <el-tooltip :content="$t('settings.deselect_all')" placement="top">
-                      <el-button
-                        class="alertSelectButton"
-                        size="small"
-                        @click="handleDeselectAll('DEVICE')"
-                      ><i class="fas fa-times"></i></el-button>
-                    </el-tooltip>
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="fas fa-user-friends"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="selectedUsers"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="['Utilizadores', $t('report.select_vehicles')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="users"
+                    >
+                    </el-transfer>
                   </el-form-item>
                 </el-tab-pane>
                 <el-tab-pane>
@@ -196,6 +203,15 @@
       >
       </el-table-column>
       <el-table-column
+        label="Utilizadores"
+        align="center"
+        prop="id"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.users ? scope.row.users.length : 0 }}
+        </template>
+      </el-table-column>
+      <el-table-column
         label="Motoristas"
         align="center"
         prop="id"
@@ -274,15 +290,21 @@ export default {
       selectedGeofences: [],
       selectedPOIs: [],
       selectedLineGeofences: [],
+      selectedUsers: [],
       groupName: '',
       loading: false
     }
   },
   computed: {
-    ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'groups']),
+    ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'groups', 'users']),
     isMobile() { return lnglat.isMobile() },
     selectedGroupDevices: function() {
       return this.devices.filter(d => d.groupId === this.selectedGroup.id)
+    },
+    tDevices: function() {
+      return this.devices.map(d => {
+        return { id: d.id, name: d.name, disabled: d.groupId === this.selectedGroup.id }
+      })
     },
     filteredDevices: function() {
       return this.devices.filter(d => d.groupId !== this.selectedGroup.id)
@@ -314,10 +336,6 @@ export default {
         this.selectedLineGeofences = []
         this.selectedLineGeofences = this.lineGeofences.map(l => l.id)
       }
-      if (type === 'DEVICE') {
-        this.selectedDevices = []
-        this.selectedDevices = this.filteredDevices.map(d => d.id)
-      }
       if (type === 'DRIVER') {
         this.selectedDrivers = []
         this.selectedDrivers = this.drivers.map(d => d.id)
@@ -332,9 +350,6 @@ export default {
       }
       if (type === 'LINE') {
         this.selectedLineGeofences = []
-      }
-      if (type === 'DEVICE') {
-        this.selectedDevices = []
       }
       if (type === 'DRIVERS') {
         this.selectedDrivers = []
@@ -365,6 +380,7 @@ export default {
           this.groups.forEach(g => {
             if (g.id === self.selectedGroup.id) {
               g.drivers = self.selectedDrivers
+              g.users = self.users.filter(u => self.selectedUsers.includes(u.id))
               g.geofences = {
                 geofences: self.selectedGeofences,
                 pois: self.selectedPOIs,
@@ -440,6 +456,27 @@ export default {
 
         await traccar.deleteAllPermissions(geofencePermissionsToRemove)
         await traccar.addAllPermissions(geofencePermissionsToAdd)
+
+        const usersToRemove = this.selectedGroup.users.filter(x => !self.selectedUsers.includes(x.id))
+        const userIds = self.selectedGroup.users.map(u => u.id)
+        const usersToAdd = this.selectedUsers.filter(x => !userIds.includes(x))
+
+        const userPermissionsToRemove = usersToRemove.map(d => {
+          return {
+            userId: d.id,
+            groupId: self.selectedGroup.id
+
+          }
+        })
+        const userPermissionsToAdd = usersToAdd.map(uId => {
+          return {
+            userId: uId,
+            groupId: self.selectedGroup.id
+          }
+        })
+
+        await traccar.deleteAllPermissions(userPermissionsToRemove)
+        await traccar.addAllPermissions(userPermissionsToAdd)
       } catch (e) {
         console.error(e)
         await this.$alert(e)
@@ -473,11 +510,12 @@ export default {
     handleEdit(row) {
       this.isNewGroup = false
       this.selectedGroup = row
-      this.selectedDevices = []
+      this.selectedDevices = this.devices.filter(d => d.groupId === this.selectedGroup.id).map(d => d.id)
       this.selectedDrivers = row.drivers
       this.selectedGeofences = row.geofences && row.geofences.geofences
       this.selectedPOIs = row.geofences && row.geofences.pois
       this.selectedLineGeofences = row.geofences && row.geofences.linegeofences
+      this.selectedUsers = row.users.map(u => u.id)
       this.groupName = row.name
       this.isOpenGroupForm = !this.isOpenGroupForm
     },
@@ -533,7 +571,7 @@ export default {
     margin-right: 10px;
   }
   .modal {
-    width: 500px;
+    width: 600px;
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
