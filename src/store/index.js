@@ -20,7 +20,7 @@ import settings from './modules/settings'
 import transient from './modules/transient'
 import user from './modules/user'
 import * as notifications from '../utils/notifications'
-import * as event from '../events'
+import * as alertType from '../alerts/alertType'
 
 const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
@@ -102,7 +102,11 @@ const store = new Vuex.Store({
         const events = notifications.convertEvents(state.socket.message.events, true)
         store.dispatch('transient/addEvents', events).then(() => {})
         for (let i = 0; i < events.length; i++) {
-          serverBus.$emit(event.newEventReceived, events[i])
+          const event = events[i]
+          if (event.type === alertType.alarmSOS) {
+            event.device.alarmSOSReceived = true
+          }
+          serverBus.$emit(event.newEventReceived, event)
         }
       }
     },

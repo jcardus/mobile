@@ -326,6 +326,11 @@ export const traccar = {
     const groupsUrl = groups.map(groupId => axios.get(drivers + '?groupId=' + groupId, { withCredentials: true }))
     return invokeApiMultiple(groupsUrl, onFulfill)
   },
+  groupsByUser: function(users, onFulfill) {
+    Vue.$log.debug('groupsByUser')
+    const usersUrl = users.map(userId => axios.get(groups + '?userId=' + userId, { withCredentials: true }))
+    return invokeApiMultiple(usersUrl, onFulfill)
+  },
   addDriver: function(driver, onFulfill) {
     axios.post(drivers, driver, { withCredentials: true })
       .then(response => onFulfill(response.data))
@@ -351,12 +356,8 @@ export const traccar = {
   users: function() {
     return get(users, { withCredentials: true })
   },
-  addUser: function(user, onFulfill) {
-    axios.post(users, user, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+  addUser: function(user) {
+    return axios.post(users, user, { withCredentials: true })
   },
   deleteUser: function(userId, onFulfill) {
     invokeDeleteApi(users, userId, onFulfill)
@@ -370,12 +371,15 @@ export const traccar = {
   getSession() {
     return invokeApi(baseUrl + 'session')
   },
-  getInitData: function(userId) {
+  getInitData: function(user) {
     const requestDevices = axios.get(devices, { withCredentials: true })
     const requestGeofences = axios.get(geoFences, { withCredentials: true })
-    const requestGroups = axios.get(groups + '?userId=' + userId, { withCredentials: true })
-    const requestDrivers = axios.get(drivers + '?userId=' + userId, { withCredentials: true })
-    const requestUsers = axios.get(users, { withCredentials: true })
-    return axios.all([requestDevices, requestGeofences, requestGroups, requestDrivers, requestUsers])
+    const requestGroups = axios.get(groups + '?userId=' + user.id, { withCredentials: true })
+    const requestDrivers = axios.get(drivers + '?userId=' + user.id, { withCredentials: true })
+    const urls = [requestDevices, requestGeofences, requestGroups, requestDrivers]
+    if (!user.deviceReadonly && !user.readonly) {
+      urls.push(axios.get(users, { withCredentials: true }))
+    }
+    return axios.all(urls)
   }
 }

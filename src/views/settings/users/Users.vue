@@ -122,8 +122,8 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
-import { traccar } from '../../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -229,7 +229,17 @@ export default {
               readonly: this.userForm.userType === 'operator',
               deviceReadonly: this.userForm.userType === 'manager'
             }
-            traccar.addUser(newUser, this.userCreated)
+            traccar.addUser(newUser)
+              .then(this.userCreated)
+              .catch(reason => {
+                if (reason.response.data.startsWith('Duplicate entry')) {
+                  this.$message({
+                    message: 'Utilizador já existe.',
+                    type: 'warning',
+                    duration: 5 * 1000
+                  })
+                }
+              })
           } else {
             this.$log.debug(this.selectedUser)
 

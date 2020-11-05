@@ -112,6 +112,7 @@ export default {
       }
     },
     async logout() {
+      this.loading = true
       await this.$store.dispatch('app/setLoading', true)
       await this.$store.dispatch('user/logout')
       await this.$store.dispatch('app/setLoading', false)

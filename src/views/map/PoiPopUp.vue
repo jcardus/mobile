@@ -14,6 +14,9 @@
       <f7-link v-if="isMobile" href="#" @click="navigateTo">Navegar</f7-link>
       <el-link v-else :href="navigateUrl" target="_blank">Navegar</el-link>
     </div>
+    <div class="subtitle">
+      {{ properties.description }}
+    </div>
   </div>
 </template>
 
@@ -72,7 +75,13 @@ export default {
     padding:10px;
     float: left;
     font-weight: bold;
-    font-size: 22px;
+    font-size: 20px;
+    color: #32325D;
+  }
+  .subtitle {
+    padding:10px;
+    float: left;
+    font-size: 16px;
     color: #32325D;
   }
   .right {

@@ -101,12 +101,16 @@ function initData(commit, state, dispatch) {
     user.attributes.lastHost = window.location.hostname
     user.attributes.lastLogin = new Date()
     traccar.updateUser(user.id, user)
-    traccar.getInitData(user.id)
+    traccar.getInitData(user)
       .then(responses => {
         dispatch('setGeofences', responses[1].data).then(() => {
           state.groups = responses[2].data
           state.drivers = responses[3].data
-          state.users = responses[4].data.filter(u => u.id !== user.id)
+          if (!user.deviceReadonly && !user.readonly) {
+            state.users = responses[4].data.filter(u => u.id !== user.id)
+          } else {
+            state.users = []
+          }
           dispatch('setDevices', responses[0].data).then(() => {
             dispatch('processDevices').then(() => {
               dispatch('processGroups')
@@ -342,6 +346,30 @@ const actions = {
             }
           })
           state.groups[results.indexOf(result)].drivers = result.map(g => g.id)
+        })
+        resolve()
+      }, (e) => {
+        Vue.$log.error(e)
+        reject(e)
+      })
+    }).then(r => {
+      Vue.$log.debug(r)
+    })
+
+    new Promise((resolve, reject) => {
+      traccar.groupsByUser(state.users.map(u => u.id), function(results) {
+        Vue.$log.debug('processGroups', results)
+        results.forEach(result => {
+          result.forEach(d_data => {
+            const user = state.users[results.indexOf(result)]
+            const group = state.groups.find(g => g.id === d_data.id)
+            if (group && user) {
+              if (!group.users) {
+                group.users = []
+              }
+              group.users.push(user)
+            }
+          })
         })
         resolve()
       }, (e) => {
