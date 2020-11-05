@@ -374,8 +374,7 @@ export default {
       // Calculate stopTime of last trip
       if (this.trips.length > 0) {
         const lastTrip = this.trips[this.trips.length - 1]
-        const stopSeconds = this.$moment(locations[0].fixTime).diff(this.$moment(lastTrip.positions[lastTrip.positions.length - 1].fixTime), 'seconds')
-        lastTrip.trip_stop_time = stopSeconds
+        lastTrip.trip_stop_time = this.$moment(locations[0].fixTime).diff(this.$moment(lastTrip.positions[lastTrip.positions.length - 1].fixTime), 'seconds')
       }
 
       // Calculate drivingTime of current trip
@@ -912,6 +911,11 @@ export default {
         }
       })
       vm.$static.map.getSource(this.allTripsSource).setData(routeGeoJSON)
+      vm.$static.map.on('click', this.allTripsSource, this.routeClicked)
+    },
+    routeClicked(e) {
+      console.log('route clicked', e)
+      console.log('route clicked', e.features)
     },
     drawIteration: function(routeGeoJSON) {
       this.createLayers(routeGeoJSON)
