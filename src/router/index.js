@@ -99,6 +99,11 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/settings/external',
+    component: Layout,
+    children: [{ path: 'index', component: () => import('../views/settings/external/index'), name: 'Maintenance', meta: { title: 'route.maintenance', icon: 'fas fa-cog' }}]
+  },
+  {
     path: '/settings',
     component: Layout,
     children: [{ path: 'index', component: () => import('../views/settings'), name: 'Settings', meta: { title: 'route.settings', icon: 'fas fa-cog' }}]
