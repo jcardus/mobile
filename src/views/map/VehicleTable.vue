@@ -97,14 +97,13 @@
           <template slot-scope="scope">
             <div style="padding: 3px 0 0;">
               <span style="font-weight: bold">{{ scope.row.name }} </span>
-              <span style="float: right; font-size: smaller">{{ scope.row.groupId | formatGroup }} </span>
             </div>
             <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== '0'" style="padding-top: 2px; line-height: normal">
               <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i>{{ scope.row.driver.name }}</span>
             </div>
             <div style="line-height: normal">
               <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road roadIcon"></i>{{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
-              <span v-if="scope.row.position && scope.row.position.fuelLevel" style="font-size: 12px" @click="fuelLevelClick(scope.row)">
+              <span v-if="scope.row.position && scope.row.position.fuelLevel" style="padding-left: 25px; font-size: 12px" @click="fuelLevelClick(scope.row)">
                 <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
                   <div slot="content">
                     <span style="font-size: 10px">
