@@ -515,7 +515,7 @@ export default {
       this.selectedGeofences = row.geofences && row.geofences.geofences
       this.selectedPOIs = row.geofences && row.geofences.pois
       this.selectedLineGeofences = row.geofences && row.geofences.linegeofences
-      this.selectedUsers = row.users.map(u => u.id)
+      this.selectedUsers = row.users ? row.users.map(u => u.id) : []
       this.groupName = row.name
       this.isOpenGroupForm = !this.isOpenGroupForm
     },
