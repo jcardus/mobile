@@ -25,7 +25,6 @@ import * as lnglat from '../../utils/lnglat'
 import { MapboxCustomControl } from '@/utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
-import VehicleDetail from './VehicleDetail'
 import HistoryPanel from './HistoryPanel'
 import i18n, { getLanguageI18n } from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
@@ -178,9 +177,7 @@ export default {
   static() {
     return {
       map: vm.$static.map,
-      draw: null,
-      truck: null,
-      lastPopup: null
+      draw: null
     }
   },
   beforeDestroy() {
@@ -392,28 +389,7 @@ export default {
       }
     },
     showPopup(feature = this.$static.currentFeature, device = this.deviceSelected) {
-      const coordinates = feature.geometry.coordinates.slice()
-      const description = feature.properties.description
-      this.popUps.forEach(p => p.remove())
-      if (this.lastPopup) { this.lastPopup.$destroy() }
-      this.popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
-        .setLngLat(coordinates)
-        .setHTML(description)
-        .addTo(this.$static.map)
-        .on('close', () => {
-          Vue.$log.debug('popup closed', device.name)
-          this.popUps[device.id].closed = true
-        })
-      const VD = Vue.extend(VehicleDetail)
-      this.lastPopup = new VD({
-        i18n: i18n,
-        data: {
-          device: device,
-          feature: feature
-        },
-        store: this.$store
-      })
-      this.lastPopup.$mount('#vue-vehicle-popup')
+      lnglat.showPopup(feature, device)
     },
     flyToDevice(feature) {
       if (feature) {
