@@ -388,7 +388,7 @@ export default {
       }
     },
     showPopup(feature = this.$static.currentFeature, device = this.deviceSelected) {
-      lnglat.showPopup(feature, device)
+      lnglat.showPopup(feature, device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
     },
     flyToDevice(feature) {
       if (feature) {

@@ -20,6 +20,7 @@
             {{ Math.round(device.position.speed * 1.852) }} km/h,
           </div>
           <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
+          <span style="float:right">{{ device.lastUpdate | moment('LL') }} {{ device.lastUpdate | moment('LTS') }}</span>
         </div>
         <IOdometer
           class="iOdometer"

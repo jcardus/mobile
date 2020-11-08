@@ -725,7 +725,8 @@ export default {
             geometry: {
               'type': 'Point',
               'coordinates': [p.longitude, p.latitude]
-            }
+            },
+            id: p.id
           }
           feature.properties = { ...feature.properties, ...p, ...p.attributes }
           return feature
@@ -738,7 +739,7 @@ export default {
         this.createAllTripsLayer(lineData, pointsData)
       }
     },
-    iterate: function() {
+    iterate() {
       const positions = this.trips[this.currentTrip].positions
       if (this.i < positions.length) {
         const j = (this.i + 100) <= (positions.length) ? (this.i + 100) : (positions.length)
@@ -762,7 +763,7 @@ export default {
     getGeoJSON(coords) {
       return lnglat.getGeoJSON(coords)
     },
-    createLayers: function(routeGeoJSON) {
+    createLayers(routeGeoJSON) {
       if (vm.$static.map.getSource(this.routeSource)) {
         Vue.$log.warn('ignoring layer ', this.routeSource, ', already exists...')
         return
@@ -823,7 +824,7 @@ export default {
       })
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
-    createIdleLayer: function(idleGeoJSON) {
+    createIdleLayer(idleGeoJSON) {
       vm.$static.map.addSource(this.routeIdleSource, {
         type: 'geojson',
         data: idleGeoJSON
@@ -863,7 +864,7 @@ export default {
         .setHTML(description)
         .addTo(vm.$static.map)
     },
-    onIdleMouseLeave: function() {
+    onIdleMouseLeave() {
       vm.$static.map.getCanvas().style.cursor = ''
       this.popup.remove()
     },
@@ -924,19 +925,34 @@ export default {
           'text-color': 'darkslategrey',
           'text-halo-color': 'hsl(55, 11%, 96%)',
           'text-halo-width': 1,
-          'text-opacity': 0.8
+          'text-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            1,
+            0.5
+          ]
         }
       })
 
-      vm.$static.map.on('mouseenter', this.allTripsSource + 'arrows', this.showPopup)
-      vm.$static.map.on('mouseleave', this.allTripsSource + 'arrows', () => { lnglat.hidePopup(this.device) })
+      vm.$static.map.on('mouseenter', this.allTripsSource + 'arrows', this.mouseEnterArrow)
+      vm.$static.map.on('mouseleave', this.allTripsSource + 'arrows', this.mouseLeaveArrow)
     },
-    showPopup(e) {
+    mouseEnterArrow(e) {
       const feature = e.features[0]
+      this.lastArrowEntered = feature.id
+      vm.$static.map.setFeatureState({ source: this.allTripsSource + 'arrows', id: feature.id },
+        { hover: true })
       const position = { ...feature.properties }
       position.attributes = { ...feature.properties }
       lnglat.updateDevice(position, feature, this.device)
-      lnglat.showPopup(feature, this.device)
+      lnglat.showPopup(feature, this.device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
+    },
+    mouseLeaveArrow() {
+      lnglat.hidePopup(this.device)
+      if (this.lastArrowEntered) {
+        vm.$static.map.setFeatureState({ source: this.allTripsSource + 'arrows', id: this.lastArrowEntered },
+          { hover: false })
+      }
     },
     drawIteration: function(routeGeoJSON) {
       this.createLayers(routeGeoJSON)

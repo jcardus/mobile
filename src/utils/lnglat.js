@@ -292,14 +292,14 @@ export function getMarkerType() {
 }
 let lastPopup = null
 
-export function showPopup(feature, device) {
+export function showPopup(feature, device, newPopup) {
   const coordinates = feature.geometry.coordinates.slice()
   const description = feature.properties.description
   popUps.forEach(p => p.remove())
   if (lastPopup) {
     lastPopup.$destroy()
   }
-  popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
+  popUps[device.id] = newPopup
     .setLngLat(coordinates)
     .setHTML(description)
     .addTo(vm.$static.map)
