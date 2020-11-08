@@ -346,7 +346,6 @@ export default {
       }
 
       // last trip not finished
-      Vue.$log.debug('Last trip ', locations)
       if (locations.length > 0) { this.trips.push(this.createTrip(locations)) }
 
       Vue.$log.debug('Trips ', this.trips)
@@ -713,14 +712,30 @@ export default {
       el.innerHTML = '<span><b>' + label + '</b></span>'
       return el
     },
-    drawAll: function(positions) {
+    drawAll(positions) {
       if (positions && positions.length > 0) {
         this.map.resize()
+        const points = positions.map(p => {
+          const feature = {
+            type: 'Feature',
+            properties: {
+              text: this.device.name,
+              description: '<div id=\'vue-vehicle-popup\'></div>'
+            },
+            geometry: {
+              'type': 'Point',
+              'coordinates': [p.longitude, p.latitude]
+            }
+          }
+          feature.properties = { ...feature.properties, ...p, ...p.attributes }
+          return feature
+        })
         const coords = positions.map(p => [p.longitude, p.latitude])
         const bounds = lnglat.getBounds(coords)
         this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70 })
-        const routeGeoJSON = this.getGeoJSON({ type: 'LineString', coordinates: coords })
-        this.createAllTripsLayer(routeGeoJSON)
+        const pointsData = lnglat.getGeoJSONFeaturesColletion(points)
+        const lineData = lnglat.getGeoJSON({ type: 'LineString', coordinates: coords })
+        this.createAllTripsLayer(lineData, pointsData)
       }
     },
     iterate: function() {
@@ -744,7 +759,7 @@ export default {
         lnglat.matchRoute(positions, positions.map(() => [25]), timestamps, this.onRouteMatch)
       }
     },
-    getGeoJSON: function(coords) {
+    getGeoJSON(coords) {
       return lnglat.getGeoJSON(coords)
     },
     createLayers: function(routeGeoJSON) {
@@ -831,15 +846,13 @@ export default {
       })
 
       vm.$static.map.on('mouseenter', this.routeIdleSource, this.onIdleMouseEnter)
-
       vm.$static.map.on('mouseleave', this.routeIdleSource, this.onIdleMouseLeave)
     },
-    onIdleMouseEnter: function(e) {
+    onIdleMouseEnter(e) {
       vm.$static.map.getCanvas().style.cursor = 'pointer'
 
-      var coordinates = e.features[0].geometry.coordinates.slice()
-      var description = e.features[0].properties.idle_time
-      this.$log.debug('IdleFeature', e.features[0])
+      const coordinates = e.features[0].geometry.coordinates.slice()
+      const description = e.features[0].properties.idle_time
 
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
@@ -854,18 +867,22 @@ export default {
       vm.$static.map.getCanvas().style.cursor = ''
       this.popup.remove()
     },
-    createAllTripsLayer: function(routeGeoJSON) {
+    createAllTripsLayer(routeGeoJSON, points) {
       if (vm.$static.map.getLayer(this.allTripsSource)) {
         this.map.removeLayer(this.allTripsSource)
         this.map.removeLayer(this.allTripsSource + 'arrows')
         this.map.removeSource(this.allTripsSource)
+        this.map.removeSource(this.allTripsSource + 'arrows')
       }
       Vue.$log.debug('adding source ', this.allTripsSource)
       vm.$static.map.addSource(this.allTripsSource, {
         type: 'geojson',
         data: routeGeoJSON
       })
-      Vue.$log.debug('adding layer', this.allTripsSource)
+      vm.$static.map.addSource(this.allTripsSource + 'arrows', {
+        type: 'geojson',
+        data: points
+      })
       vm.$static.map.addLayer({
         id: this.allTripsSource,
         type: 'line',
@@ -883,10 +900,10 @@ export default {
       vm.$static.map.addLayer({
         id: this.allTripsSource + 'arrows',
         type: 'symbol',
-        source: this.allTripsSource,
+        source: this.allTripsSource + 'arrows',
         layout: {
-          'symbol-placement': 'line',
-          'text-field': '▶',
+          'text-rotate': ['-', ['get', 'course'], 90],
+          'text-field': '➤',
           'text-size': [
             'interpolate',
             ['linear'],
@@ -910,12 +927,16 @@ export default {
           'text-opacity': 0.8
         }
       })
-      vm.$static.map.getSource(this.allTripsSource).setData(routeGeoJSON)
-      vm.$static.map.on('click', this.allTripsSource, this.routeClicked)
+
+      vm.$static.map.on('mouseenter', this.allTripsSource + 'arrows', this.showPopup)
+      vm.$static.map.on('mouseleave', this.allTripsSource + 'arrows', () => { lnglat.hidePopup(this.device) })
     },
-    routeClicked(e) {
-      console.log('route clicked', e)
-      console.log('route clicked', e.features)
+    showPopup(e) {
+      const feature = e.features[0]
+      const position = { ...feature.properties }
+      position.attributes = { ...feature.properties }
+      lnglat.updateDevice(position, feature, this.device)
+      lnglat.showPopup(feature, this.device)
     },
     drawIteration: function(routeGeoJSON) {
       this.createLayers(routeGeoJSON)
