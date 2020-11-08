@@ -10,6 +10,9 @@ import store from '../store'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import { positionsSource } from './consts'
 import * as angles from 'angles'
+import VehicleDetail from '@/views/map/VehicleDetail'
+import i18n from '@/lang'
+import Vue from 'vue'
 
 const gray = ['==', ['get', 'color'], 'gray']
 const green = ['==', ['get', 'color'], 'green']
@@ -285,4 +288,32 @@ export function getMarkerType() {
     'city', 'embassy', 'fuel', 'home', 'industry', 'information', 'marker', 'marker-stroked',
     'parking', 'parking-garage', 'ranger-station', 'recycling', 'residential-community',
     'star', 'town', 'town-hall', 'village', 'warehouse', 'waste-basket', 'windmill']
+}
+let lastPopup = null
+
+export function showPopup(feature, device) {
+  const coordinates = feature.geometry.coordinates.slice()
+  const description = feature.properties.description
+  popUps.forEach(p => p.remove())
+  if (lastPopup) {
+    lastPopup.$destroy()
+  }
+  popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
+    .setLngLat(coordinates)
+    .setHTML(description)
+    .addTo(vm.$static.map)
+    .on('close', () => {
+      Vue.$log.debug('popup closed', device.name)
+      popUps[device.id].closed = true
+    })
+  const VD = Vue.extend(VehicleDetail)
+  lastPopup = new VD({
+    i18n: i18n,
+    data: {
+      device: device,
+      feature: feature
+    },
+    store: store
+  })
+  lastPopup.$mount('#vue-vehicle-popup')
 }
