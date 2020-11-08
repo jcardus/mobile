@@ -30,10 +30,12 @@
           :value="totalDistance"
         ></IOdometer>
         <immobilize-button
+          v-if="!routePoint"
           :selected-device="device"
           style="float:left"
         ></immobilize-button>
         <el-button
+          v-if="!routePoint"
           icon="el-icon-video-play"
           type="text"
           style="float:right"
@@ -86,7 +88,8 @@ export default {
       oldPosition: null,
       fetching: false,
       sequenceKey: null,
-      popupOpened: false
+      popupOpened: false,
+      routePoint: false
     }
   },
   computed: {
@@ -279,7 +282,7 @@ export default {
   .rotr span {transform: rotateZ(-90deg)}
   .mapboxgl-popup-content {
     border-radius: 10px;
-    padding: 0;
+    padding: 0 0 2px;
   }
   .title {
     font-style: normal;

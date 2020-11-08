@@ -906,7 +906,8 @@ export default {
         i18n: i18n,
         data: {
           device: this.device,
-          feature: feature
+          feature: feature,
+          routePoint: true
         },
         store: store
       })
