@@ -59,6 +59,10 @@ import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import layerManager from './mapbox/LayerManager'
+import styles from '../../styles/element-variables.scss'
+import VehicleDetail from '@/views/map/VehicleDetail'
+import i18n from '@/lang'
+import store from '@/store'
 
 export default {
   name: 'CurrentPositionData',
@@ -275,18 +279,22 @@ export default {
     onPositionsError() {
       this.loadingRoutes = false
     },
-    removeLayers: function(keepMain) {
+    removeLayers(keepMain) {
       for (this.i = 0; this.i < 10000; this.i++) {
         if (vm.$static.map.getLayer(this.routeSource)) {
-          Vue.$log.debug('removing ', this.routeSource)
           vm.$static.map.removeLayer(this.routeSource)
+        }
+        if (vm.$static.map.getLayer(this.routeSource + 'arrows')) {
           vm.$static.map.removeLayer(this.routeSource + 'arrows')
+        }
+        if (vm.$static.map.getSource(this.routeSource)) {
           vm.$static.map.removeSource(this.routeSource)
         }
+        if (vm.$static.map.getSource(this.routeSource + 'arrows')) {
+          vm.$static.map.removeSource(this.routeSource + 'arrows')
+        }
         if (vm.$static.map.getLayer(this.routeSpeedSource)) {
-          Vue.$log.debug('removing ', this.routeSpeedSource)
           vm.$static.map.removeLayer(this.routeSpeedSource)
-          vm.$static.map.removeLayer(this.routeSpeedSource + 'arrows')
           vm.$static.map.removeSource(this.routeSpeedSource)
         }
         if (vm.$static.map.getLayer(this.routeIdleSource)) {
@@ -304,14 +312,15 @@ export default {
           this.map.removeLayer(this.allTripsSource)
           this.map.removeLayer(this.allTripsSource + 'arrows')
           this.map.removeSource(this.allTripsSource)
+          this.map.removeSource(this.allTripsSource + 'arrows')
         }
       }
     },
-    getRoute: function(from, to) {
+    getRoute(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
     },
-    getRouteTrips: function(positions) {
+    getRouteTrips(positions) {
       this.trips.length = 0
       let locations = []
       let startPos = false
@@ -346,7 +355,6 @@ export default {
       }
 
       // last trip not finished
-      Vue.$log.debug('Last trip ', locations)
       if (locations.length > 0) { this.trips.push(this.createTrip(locations)) }
 
       Vue.$log.debug('Trips ', this.trips)
@@ -515,7 +523,7 @@ export default {
       this.drawIdlePoints()
       this.drawSpeedTrip()
     },
-    findNearestPOI: function(position) {
+    findNearestPOI(position) {
       if (this.pois.length === 0) { return null }
 
       if (!position) { return null }
@@ -575,7 +583,7 @@ export default {
         },
         paint: {
           'line-color': 'red',
-          'line-opacity': 0.6,
+          'line-opacity': 0.5,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -583,36 +591,6 @@ export default {
             12, 3,
             22, 12
           ]
-        }
-      })
-      vm.$static.map.addLayer({
-        id: this.routeSpeedSource + 'arrows',
-        type: 'symbol',
-        source: this.routeSpeedSource,
-        layout: {
-          'symbol-placement': 'line',
-          'text-field': '▶',
-          'text-size': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 24,
-            22, 60
-          ],
-          'symbol-spacing': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 30,
-            22, 160
-          ],
-          'text-keep-upright': false
-        },
-        paint: {
-          'text-color': '#FF0000',
-          'text-halo-color': 'hsl(55, 11%, 96%)',
-          'text-halo-width': 3,
-          'text-opacity': 0.6
         }
       })
       vm.$static.map.getSource(this.routeSpeedSource).setData(alertsGeoJSON)
@@ -637,7 +615,6 @@ export default {
         this.iterate()
       } else {
         const coordinates = this.trips[this.currentTrip].positions.map(p => [p.longitude, p.latitude])
-
         this.drawRoute(coordinates)
       }
     },
@@ -693,7 +670,7 @@ export default {
         this.endMarker.addTo(vm.$static.map)
       }
     },
-    drawSpeedMarkers: function() {
+    drawSpeedMarkers() {
       Vue.$log.debug('Draw Speed Markers')
       const speedTrips = this.speedTrips[this.currentTrip]
       if (this.speedMarkers) {
@@ -707,23 +684,40 @@ export default {
         self.speedMarkers[self.speedMarkers.length - 1].addTo(vm.$static.map)
       })
     },
-    getMarkerElement: function(classname, label) {
+    getMarkerElement(classname, label) {
       const el = document.createElement('div')
       el.className = classname
       el.innerHTML = '<span><b>' + label + '</b></span>'
       return el
     },
-    drawAll: function(positions) {
+    drawAll(positions) {
       if (positions && positions.length > 0) {
         this.map.resize()
+        const points = positions.map(p => {
+          const feature = {
+            type: 'Feature',
+            properties: {
+              text: this.device.name,
+              description: '<div id=\'vue-vehicle-popup\'></div>'
+            },
+            geometry: {
+              'type': 'Point',
+              'coordinates': [p.longitude, p.latitude]
+            },
+            id: p.id
+          }
+          feature.properties = { ...feature.properties, ...p, ...p.attributes }
+          return feature
+        })
         const coords = positions.map(p => [p.longitude, p.latitude])
         const bounds = lnglat.getBounds(coords)
         this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70 })
-        const routeGeoJSON = this.getGeoJSON({ type: 'LineString', coordinates: coords })
-        this.createAllTripsLayer(routeGeoJSON)
+        const pointsData = lnglat.getGeoJSONFeaturesColletion(points)
+        const lineData = lnglat.getGeoJSON({ type: 'LineString', coordinates: coords })
+        this.createAllTripsLayer(lineData, pointsData)
       }
     },
-    iterate: function() {
+    iterate() {
       const positions = this.trips[this.currentTrip].positions
       if (this.i < positions.length) {
         const j = (this.i + 100) <= (positions.length) ? (this.i + 100) : (positions.length)
@@ -735,7 +729,6 @@ export default {
     },
     drawRoute(positions, timestamps) {
       const lineString = { type: 'LineString', coordinates: positions }
-
       if (!settings.mapBoxRouteMatch) {
         const routeGeoJSON = this.getGeoJSON(lineString)
         Vue.$log.debug('Positions Route ', routeGeoJSON)
@@ -744,10 +737,10 @@ export default {
         lnglat.matchRoute(positions, positions.map(() => [25]), timestamps, this.onRouteMatch)
       }
     },
-    getGeoJSON: function(coords) {
+    getGeoJSON(coords) {
       return lnglat.getGeoJSON(coords)
     },
-    createLayers: function(routeGeoJSON) {
+    createLayers(routeGeoJSON) {
       if (vm.$static.map.getSource(this.routeSource)) {
         Vue.$log.warn('ignoring layer ', this.routeSource, ', already exists...')
         return
@@ -766,8 +759,8 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-opacity': 0.8,
-          'line-color': '#3887be',
+          'line-opacity': 0.5,
+          'line-color': styles.primary,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -777,38 +770,9 @@ export default {
           ]
         }
       })
-      vm.$static.map.addLayer({
-        id: this.routeSource + 'arrows',
-        type: 'symbol',
-        source: this.routeSource,
-        layout: {
-          'symbol-placement': 'line',
-          'text-field': '▶',
-          'text-size': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 30,
-            22, 60
-          ],
-          'symbol-spacing': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 20,
-            22, 100
-          ],
-          'text-keep-upright': false
-        },
-        paint: {
-          'text-color': '#3887be',
-          'text-halo-color': 'hsl(55, 11%, 96%)',
-          'text-halo-width': 3
-        }
-      })
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
-    createIdleLayer: function(idleGeoJSON) {
+    createIdleLayer(idleGeoJSON) {
       vm.$static.map.addSource(this.routeIdleSource, {
         type: 'geojson',
         data: idleGeoJSON
@@ -831,15 +795,13 @@ export default {
       })
 
       vm.$static.map.on('mouseenter', this.routeIdleSource, this.onIdleMouseEnter)
-
       vm.$static.map.on('mouseleave', this.routeIdleSource, this.onIdleMouseLeave)
     },
-    onIdleMouseEnter: function(e) {
+    onIdleMouseEnter(e) {
       vm.$static.map.getCanvas().style.cursor = 'pointer'
 
-      var coordinates = e.features[0].geometry.coordinates.slice()
-      var description = e.features[0].properties.idle_time
-      this.$log.debug('IdleFeature', e.features[0])
+      const coordinates = e.features[0].geometry.coordinates.slice()
+      const description = e.features[0].properties.idle_time
 
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
@@ -850,22 +812,26 @@ export default {
         .setHTML(description)
         .addTo(vm.$static.map)
     },
-    onIdleMouseLeave: function() {
+    onIdleMouseLeave() {
       vm.$static.map.getCanvas().style.cursor = ''
       this.popup.remove()
     },
-    createAllTripsLayer: function(routeGeoJSON) {
+    createAllTripsLayer(routeGeoJSON, points) {
       if (vm.$static.map.getLayer(this.allTripsSource)) {
         this.map.removeLayer(this.allTripsSource)
         this.map.removeLayer(this.allTripsSource + 'arrows')
         this.map.removeSource(this.allTripsSource)
+        this.map.removeSource(this.allTripsSource + 'arrows')
       }
       Vue.$log.debug('adding source ', this.allTripsSource)
       vm.$static.map.addSource(this.allTripsSource, {
         type: 'geojson',
         data: routeGeoJSON
       })
-      Vue.$log.debug('adding layer', this.allTripsSource)
+      vm.$static.map.addSource(this.allTripsSource + 'arrows', {
+        type: 'geojson',
+        data: points
+      })
       vm.$static.map.addLayer({
         id: this.allTripsSource,
         type: 'line',
@@ -883,10 +849,10 @@ export default {
       vm.$static.map.addLayer({
         id: this.allTripsSource + 'arrows',
         type: 'symbol',
-        source: this.allTripsSource,
+        source: this.allTripsSource + 'arrows',
         layout: {
-          'symbol-placement': 'line',
-          'text-field': '▶',
+          'text-rotate': ['-', ['get', 'course'], 90],
+          'text-field': '➤',
           'text-size': [
             'interpolate',
             ['linear'],
@@ -904,20 +870,57 @@ export default {
           'text-keep-upright': false
         },
         paint: {
-          'text-color': 'darkslategrey',
+          'text-color': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            styles.primary,
+            'darkslategrey'
+          ],
           'text-halo-color': 'hsl(55, 11%, 96%)',
           'text-halo-width': 1,
-          'text-opacity': 0.8
+          'text-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            1,
+            0.8
+          ]
         }
       })
-      vm.$static.map.getSource(this.allTripsSource).setData(routeGeoJSON)
-      vm.$static.map.on('click', this.allTripsSource, this.routeClicked)
+      vm.$static.map.on('mouseenter', this.allTripsSource + 'arrows', this.mouseEnterArrow)
+      vm.$static.map.on('mouseleave', this.allTripsSource + 'arrows', this.mouseLeaveArrow)
     },
-    routeClicked(e) {
-      console.log('route clicked', e)
-      console.log('route clicked', e.features)
+    mouseEnterArrow(e) {
+      const feature = e.features[0]
+      this.lastArrowEntered = feature.id
+      vm.$static.map.setFeatureState({ source: this.allTripsSource + 'arrows', id: feature.id },
+        { hover: true })
+      const position = { ...feature.properties }
+      position.attributes = { ...feature.properties }
+      lnglat.updateDevice(position, feature, this.device)
+      lnglat.showPopup(feature, this.device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
+      if (this.lastPopup) {
+        this.lastPopup.$destroy()
+      }
+      const VD = Vue.extend(VehicleDetail)
+      this.lastPopup = new VD({
+        i18n: i18n,
+        data: {
+          device: this.device,
+          feature: feature,
+          routePoint: true
+        },
+        store: store
+      })
+      this.lastPopup.$mount('#vue-vehicle-popup')
     },
-    drawIteration: function(routeGeoJSON) {
+    mouseLeaveArrow() {
+      lnglat.hidePopup(this.device)
+      if (this.lastArrowEntered) {
+        vm.$static.map.setFeatureState({ source: this.allTripsSource + 'arrows', id: this.lastArrowEntered },
+          { hover: false })
+      }
+    },
+    drawIteration(routeGeoJSON) {
       this.createLayers(routeGeoJSON)
       this.i += 99
       this.iterate()

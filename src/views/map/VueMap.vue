@@ -25,14 +25,12 @@ import * as lnglat from '../../utils/lnglat'
 import { MapboxCustomControl } from '@/utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
-import VehicleDetail from './VehicleDetail'
 import HistoryPanel from './HistoryPanel'
 import i18n, { getLanguageI18n } from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import * as utils from '../../utils/utils'
 import { checkForUpdates } from '@/utils/utils'
 import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
@@ -46,6 +44,9 @@ import geofencesLayer from './mapbox/layers/GeofencesLayer'
 import eventsLayer from './mapbox/layers/EventsLayer'
 import layerManager from './mapbox/LayerManager'
 import vehiclesLayer from './mapbox/VehiclesLayer'
+import VehicleDetail from '@/views/map/VehicleDetail'
+import store from '@/store'
+import { popUps } from '@/utils/lnglat'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -178,9 +179,7 @@ export default {
   static() {
     return {
       map: vm.$static.map,
-      draw: null,
-      truck: null,
-      lastPopup: null
+      draw: null
     }
   },
   beforeDestroy() {
@@ -394,16 +393,18 @@ export default {
     showPopup(feature = this.$static.currentFeature, device = this.deviceSelected) {
       const coordinates = feature.geometry.coordinates.slice()
       const description = feature.properties.description
-      this.popUps.forEach(p => p.remove())
-      if (this.lastPopup) { this.lastPopup.$destroy() }
-      this.popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
+      lnglat.popUps.forEach(p => p.remove())
+      lnglat.popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
         .setLngLat(coordinates)
         .setHTML(description)
-        .addTo(this.$static.map)
+        .addTo(vm.$static.map)
         .on('close', () => {
           Vue.$log.debug('popup closed', device.name)
-          this.popUps[device.id].closed = true
+          popUps[device.id].closed = true
         })
+      if (this.lastPopup) {
+        this.lastPopup.$destroy()
+      }
       const VD = Vue.extend(VehicleDetail)
       this.lastPopup = new VD({
         i18n: i18n,
@@ -411,7 +412,7 @@ export default {
           device: device,
           feature: feature
         },
-        store: this.$store
+        store: store
       })
       this.lastPopup.$mount('#vue-vehicle-popup')
     },
@@ -723,22 +724,7 @@ export default {
       return feature
     },
     updateDevice(position, feature, device) {
-      // don't update "lastUpdated" if ignition is off but devices keeps sending data
-      if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
-        device.lastUpdate = position.fixTime
-      }
-      const adc1CacheValues = device.position && device.position.adc1CacheValues ? device.position.adc1CacheValues : []
-      utils.calculateFuelLevel(adc1CacheValues, position, device)
-      // moment is expensive so we cache this value
-      position.fixDays = this.$moment().diff(this.$moment(device.lastUpdate), 'days')
-      device.poi = this.findNearestPOI(position)
-      device.driver = this.findDriver(position, device)
-      const immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
-      if (immobilized !== device.immobilized) {
-        device.commandPending = false
-      }
-      device.immobilized = immobilized
-      device.position = position
+      lnglat.updateDevice(position, feature, device)
     },
     updateFeature(feature, position) {
       layerManager.updateFeature(feature, position)
@@ -774,64 +760,7 @@ export default {
       }
       // this.refreshMap()
     },
-    findDriver(position, device) {
-      if (!position.attributes.driverUniqueId ||
-        position.attributes.driverUniqueId === 0) {
-        if (device.driver && device.driver.id) {
-          const driver = this.drivers.find(d => d.id === device.driver.id)
-          vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
-          driver.vehicle = null
-          vm.$store.state.user.drivers.push(driver)
-        }
 
-        return { name: '' }
-      }
-
-      const driver = this.drivers.find(d => d.uniqueId === position.attributes.driverUniqueId)
-
-      if (position.fixDays > 5 || position.outdated) {
-        if (driver) {
-          driver.vehicle = null
-        }
-        return { name: '' }
-      }
-
-      if (driver) {
-        vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
-        driver.vehicle = { id: device.id, name: device.name }
-        vm.$store.state.user.drivers.push(driver)
-        return { id: driver.id, name: driver.name }
-      }
-
-      if (device.driver && device.driver.id) {
-        const driver = this.drivers.find(d => d.id === device.driver.id)
-        driver.vehicle = null
-      }
-
-      return { name: position.attributes.driverUniqueId }
-    },
-    findNearestPOI: function(position) {
-      if (this.pois.length === 0) {
-        return null
-      }
-      const a = this.pois.map(p => {
-        if (p.area) {
-          const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
-          const coord = str.trim().split(' ')
-          return {
-            id: p.id,
-            distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude))
-          }
-        }
-        return {
-          id: p.id,
-          distance: Number.MAX_SAFE_INTEGER
-        }
-      }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
-      if (a.length > 0) {
-        return a[0].id
-      }
-    },
     getMatch: function(coordinates, radius, route, timestamps, feature, position) {
       const self = this
       const lineDistance = lnglat.lineDistance(route)
@@ -1055,5 +984,11 @@ export default {
     opacity: 1;
   }
   *:focus{ outline: none; }
+
+  .fc-widget-normal {
+    right:0 !important;
+    bottom:5px !important;
+    min-width:50px !important;
+  }
 
 </style>

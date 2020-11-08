@@ -98,7 +98,6 @@ export default {
     feature.properties.courseMinusBearing = angles.normalize(position.course - feature.properties.bearing)
   },
   refreshLayers() {
-    Vue.$log.debug('')
     refreshSources()
     refreshLayersVisibility()
     updateDonuts()

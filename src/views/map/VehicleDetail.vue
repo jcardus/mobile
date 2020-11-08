@@ -20,6 +20,7 @@
             {{ Math.round(device.position.speed * 1.852) }} km/h,
           </div>
           <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
+          <span style="float:right">{{ device.lastUpdate | moment('LL') }} {{ device.lastUpdate | moment('LTS') }}</span>
         </div>
         <IOdometer
           class="iOdometer"
@@ -29,10 +30,12 @@
           :value="totalDistance"
         ></IOdometer>
         <immobilize-button
+          v-if="!routePoint"
           :selected-device="device"
           style="float:left"
         ></immobilize-button>
         <el-button
+          v-if="!routePoint"
           icon="el-icon-video-play"
           type="text"
           style="float:right"
@@ -85,7 +88,8 @@ export default {
       oldPosition: null,
       fetching: false,
       sequenceKey: null,
-      popupOpened: false
+      popupOpened: false,
+      routePoint: false
     }
   },
   computed: {
@@ -254,16 +258,16 @@ export default {
       width: 40px;
       height: 40px;
       color:#fff;
-      background: #693;
+      background: $--color-success;
       border:solid 2px;
-      border-radius: 25px;
+      border-radius: 0 50% 50% 50%;
       box-shadow:0 0 2px #000;
       cursor: pointer;
       transform-origin:0 0;
       transform: rotateZ(-135deg);
   }
   .finish span {
-      background: #991907;
+      background: $--color-danger;
   }
   .speed span {
     background: #fff;
@@ -271,13 +275,14 @@ export default {
     border: 4px solid #ff0000;
     width: 35px;
     height: 35px;
+    border-radius: 25px;
   }
   .marker b {transform: rotateZ(135deg)}
   .rotl span {transform: rotateZ(180deg)}
   .rotr span {transform: rotateZ(-90deg)}
   .mapboxgl-popup-content {
     border-radius: 10px;
-    padding: 0;
+    padding: 0 0 2px;
   }
   .title {
     font-style: normal;

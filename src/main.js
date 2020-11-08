@@ -172,16 +172,16 @@ export const vm = new Vue({
       markers: {},
       map: null,
       positionsSource: {
-        'type': 'FeatureCollection',
-        'features': []
+        type: 'FeatureCollection',
+        features: []
       },
       geofencesSource: {
-        'type': 'FeatureCollection',
-        'features': []
+        type: 'FeatureCollection',
+        features: []
       },
       eventsSource: {
-        'type': 'FeatureCollection',
-        'features': []
+        type: 'FeatureCollection',
+        features: []
       }
     }
   },
