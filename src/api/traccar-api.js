@@ -377,7 +377,7 @@ export const traccar = {
     const requestGroups = axios.get(groups + '?userId=' + user.id, { withCredentials: true })
     const requestDrivers = axios.get(drivers + '?userId=' + user.id, { withCredentials: true })
     const urls = [requestDevices, requestGeofences, requestGroups, requestDrivers]
-    if (!user.deviceReadonly && !user.readonly) {
+    if (!user.deviceReadonly && !user.readonly && user.userLimit !== 0) {
       urls.push(axios.get(users, { withCredentials: true }))
     }
     return axios.all(urls)

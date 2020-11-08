@@ -106,7 +106,7 @@ function initData(commit, state, dispatch) {
         dispatch('setGeofences', responses[1].data).then(() => {
           state.groups = responses[2].data
           state.drivers = responses[3].data
-          if (!user.deviceReadonly && !user.readonly) {
+          if (!user.deviceReadonly && !user.readonly && user.userLimit !== 0) {
             state.users = responses[4].data.filter(u => u.id !== user.id)
           } else {
             state.users = []

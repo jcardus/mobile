@@ -1,9 +1,9 @@
 <template>
+
   <iframe
-    scrolling="no"
     seamless="seamless"
     :src="source"
-    style="width:99%;height:calc(100vh - 51px)"
+    style="height: 90% ; width: 99%"
   ></iframe>
 </template>
 
