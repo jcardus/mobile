@@ -44,6 +44,8 @@ import geofencesLayer from './mapbox/layers/GeofencesLayer'
 import eventsLayer from './mapbox/layers/EventsLayer'
 import layerManager from './mapbox/LayerManager'
 import vehiclesLayer from './mapbox/VehiclesLayer'
+import VehicleDetail from '@/views/map/VehicleDetail'
+import store from '@/store'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -389,6 +391,19 @@ export default {
     },
     showPopup(feature = this.$static.currentFeature, device = this.deviceSelected) {
       lnglat.showPopup(feature, device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
+      if (this.lastPopup) {
+        this.lastPopup.$destroy()
+      }
+      const VD = Vue.extend(VehicleDetail)
+      this.lastPopup = new VD({
+        i18n: i18n,
+        data: {
+          device: device,
+          feature: feature
+        },
+        store: store
+      })
+      this.lastPopup.$mount('#vue-vehicle-popup')
     },
     flyToDevice(feature) {
       if (feature) {

@@ -60,6 +60,9 @@ import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import layerManager from './mapbox/LayerManager'
 import styles from '../../styles/element-variables.scss'
+import VehicleDetail from '@/views/map/VehicleDetail'
+import i18n from '@/lang'
+import store from '@/store'
 
 export default {
   name: 'CurrentPositionData',
@@ -279,15 +282,19 @@ export default {
     removeLayers(keepMain) {
       for (this.i = 0; this.i < 10000; this.i++) {
         if (vm.$static.map.getLayer(this.routeSource)) {
-          Vue.$log.debug('removing ', this.routeSource)
           vm.$static.map.removeLayer(this.routeSource)
+        }
+        if (vm.$static.map.getLayer(this.routeSource + 'arrows')) {
           vm.$static.map.removeLayer(this.routeSource + 'arrows')
+        }
+        if (vm.$static.map.getSource(this.routeSource)) {
           vm.$static.map.removeSource(this.routeSource)
         }
+        if (vm.$static.map.getSource(this.routeSource + 'arrows')) {
+          vm.$static.map.removeSource(this.routeSource + 'arrows')
+        }
         if (vm.$static.map.getLayer(this.routeSpeedSource)) {
-          Vue.$log.debug('removing ', this.routeSpeedSource)
           vm.$static.map.removeLayer(this.routeSpeedSource)
-          vm.$static.map.removeLayer(this.routeSpeedSource + 'arrows')
           vm.$static.map.removeSource(this.routeSpeedSource)
         }
         if (vm.$static.map.getLayer(this.routeIdleSource)) {
@@ -305,6 +312,7 @@ export default {
           this.map.removeLayer(this.allTripsSource)
           this.map.removeLayer(this.allTripsSource + 'arrows')
           this.map.removeSource(this.allTripsSource)
+          this.map.removeSource(this.allTripsSource + 'arrows')
         }
       }
     },
@@ -575,7 +583,7 @@ export default {
         },
         paint: {
           'line-color': 'red',
-          'line-opacity': 0.6,
+          'line-opacity': 0.5,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -583,36 +591,6 @@ export default {
             12, 3,
             22, 12
           ]
-        }
-      })
-      vm.$static.map.addLayer({
-        id: this.routeSpeedSource + 'arrows',
-        type: 'symbol',
-        source: this.routeSpeedSource,
-        layout: {
-          'symbol-placement': 'line',
-          'text-field': '▶',
-          'text-size': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 24,
-            22, 60
-          ],
-          'symbol-spacing': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 30,
-            22, 160
-          ],
-          'text-keep-upright': false
-        },
-        paint: {
-          'text-color': '#FF0000',
-          'text-halo-color': 'hsl(55, 11%, 96%)',
-          'text-halo-width': 3,
-          'text-opacity': 0.6
         }
       })
       vm.$static.map.getSource(this.routeSpeedSource).setData(alertsGeoJSON)
@@ -920,6 +898,19 @@ export default {
       position.attributes = { ...feature.properties }
       lnglat.updateDevice(position, feature, this.device)
       lnglat.showPopup(feature, this.device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
+      if (this.lastPopup) {
+        this.lastPopup.$destroy()
+      }
+      const VD = Vue.extend(VehicleDetail)
+      this.lastPopup = new VD({
+        i18n: i18n,
+        data: {
+          device: this.device,
+          feature: feature
+        },
+        store: store
+      })
+      this.lastPopup.$mount('#vue-vehicle-popup')
     },
     mouseLeaveArrow() {
       lnglat.hidePopup(this.device)

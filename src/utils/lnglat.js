@@ -10,8 +10,6 @@ import store from '../store'
 import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import { positionsSource } from './consts'
 import * as angles from 'angles'
-import VehicleDetail from '@/views/map/VehicleDetail'
-import i18n from '@/lang'
 import Vue from 'vue'
 import * as utils from '@/utils/utils'
 
@@ -290,15 +288,11 @@ export function getMarkerType() {
     'parking', 'parking-garage', 'ranger-station', 'recycling', 'residential-community',
     'star', 'town', 'town-hall', 'village', 'warehouse', 'waste-basket', 'windmill']
 }
-let lastPopup = null
-
 export function showPopup(feature, device, newPopup) {
   const coordinates = feature.geometry.coordinates.slice()
   const description = feature.properties.description
   popUps.forEach(p => p.remove())
-  if (lastPopup) {
-    lastPopup.$destroy()
-  }
+
   popUps[device.id] = newPopup
     .setLngLat(coordinates)
     .setHTML(description)
@@ -307,16 +301,6 @@ export function showPopup(feature, device, newPopup) {
       Vue.$log.debug('popup closed', device.name)
       popUps[device.id].closed = true
     })
-  const VD = Vue.extend(VehicleDetail)
-  lastPopup = new VD({
-    i18n: i18n,
-    data: {
-      device: device,
-      feature: feature
-    },
-    store: store
-  })
-  lastPopup.$mount('#vue-vehicle-popup')
 }
 
 export function hidePopup(device) {
