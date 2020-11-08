@@ -1056,4 +1056,10 @@ export default {
   }
   *:focus{ outline: none; }
 
+  .fc-widget-normal {
+    right:0 !important;
+    bottom:5px !important;
+    min-width:50px !important;
+  }
+
 </style>
