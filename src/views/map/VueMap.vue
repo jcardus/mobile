@@ -46,6 +46,7 @@ import layerManager from './mapbox/LayerManager'
 import vehiclesLayer from './mapbox/VehiclesLayer'
 import VehicleDetail from '@/views/map/VehicleDetail'
 import store from '@/store'
+import { popUps } from '@/utils/lnglat'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -390,7 +391,17 @@ export default {
       }
     },
     showPopup(feature = this.$static.currentFeature, device = this.deviceSelected) {
-      lnglat.showPopup(feature, device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
+      const coordinates = feature.geometry.coordinates.slice()
+      const description = feature.properties.description
+      lnglat.popUps.forEach(p => p.remove())
+      lnglat.popUps[device.id] = new mapboxgl.Popup({ class: 'card2', offset: 25 })
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(vm.$static.map)
+        .on('close', () => {
+          Vue.$log.debug('popup closed', device.name)
+          popUps[device.id].closed = true
+        })
       if (this.lastPopup) {
         this.lastPopup.$destroy()
       }
