@@ -255,16 +255,16 @@ export default {
       width: 40px;
       height: 40px;
       color:#fff;
-      background: #693;
+      background: $--color-success;
       border:solid 2px;
-      border-radius: 25px;
+      border-radius: 0 50% 50% 50%;
       box-shadow:0 0 2px #000;
       cursor: pointer;
       transform-origin:0 0;
       transform: rotateZ(-135deg);
   }
   .finish span {
-      background: #991907;
+      background: $--color-danger;
   }
   .speed span {
     background: #fff;
@@ -272,6 +272,7 @@ export default {
     border: 4px solid #ff0000;
     width: 35px;
     height: 35px;
+    border-radius: 25px;
   }
   .marker b {transform: rotateZ(135deg)}
   .rotl span {transform: rotateZ(180deg)}
