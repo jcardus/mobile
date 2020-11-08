@@ -59,6 +59,7 @@ import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import layerManager from './mapbox/LayerManager'
+import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'CurrentPositionData',
@@ -275,7 +276,7 @@ export default {
     onPositionsError() {
       this.loadingRoutes = false
     },
-    removeLayers: function(keepMain) {
+    removeLayers(keepMain) {
       for (this.i = 0; this.i < 10000; this.i++) {
         if (vm.$static.map.getLayer(this.routeSource)) {
           Vue.$log.debug('removing ', this.routeSource)
@@ -307,11 +308,11 @@ export default {
         }
       }
     },
-    getRoute: function(from, to) {
+    getRoute(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
     },
-    getRouteTrips: function(positions) {
+    getRouteTrips(positions) {
       this.trips.length = 0
       let locations = []
       let startPos = false
@@ -514,7 +515,7 @@ export default {
       this.drawIdlePoints()
       this.drawSpeedTrip()
     },
-    findNearestPOI: function(position) {
+    findNearestPOI(position) {
       if (this.pois.length === 0) { return null }
 
       if (!position) { return null }
@@ -636,7 +637,6 @@ export default {
         this.iterate()
       } else {
         const coordinates = this.trips[this.currentTrip].positions.map(p => [p.longitude, p.latitude])
-
         this.drawRoute(coordinates)
       }
     },
@@ -692,7 +692,7 @@ export default {
         this.endMarker.addTo(vm.$static.map)
       }
     },
-    drawSpeedMarkers: function() {
+    drawSpeedMarkers() {
       Vue.$log.debug('Draw Speed Markers')
       const speedTrips = this.speedTrips[this.currentTrip]
       if (this.speedMarkers) {
@@ -706,7 +706,7 @@ export default {
         self.speedMarkers[self.speedMarkers.length - 1].addTo(vm.$static.map)
       })
     },
-    getMarkerElement: function(classname, label) {
+    getMarkerElement(classname, label) {
       const el = document.createElement('div')
       el.className = classname
       el.innerHTML = '<span><b>' + label + '</b></span>'
@@ -751,7 +751,6 @@ export default {
     },
     drawRoute(positions, timestamps) {
       const lineString = { type: 'LineString', coordinates: positions }
-
       if (!settings.mapBoxRouteMatch) {
         const routeGeoJSON = this.getGeoJSON(lineString)
         Vue.$log.debug('Positions Route ', routeGeoJSON)
@@ -782,8 +781,8 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-opacity': 0.8,
-          'line-color': '#3887be',
+          'line-opacity': 0.5,
+          'line-color': styles.primary,
           'line-width': [
             'interpolate',
             ['linear'],
@@ -791,35 +790,6 @@ export default {
             12, 6,
             22, 12
           ]
-        }
-      })
-      vm.$static.map.addLayer({
-        id: this.routeSource + 'arrows',
-        type: 'symbol',
-        source: this.routeSource,
-        layout: {
-          'symbol-placement': 'line',
-          'text-field': '▶',
-          'text-size': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 30,
-            22, 60
-          ],
-          'symbol-spacing': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 20,
-            22, 100
-          ],
-          'text-keep-upright': false
-        },
-        paint: {
-          'text-color': '#3887be',
-          'text-halo-color': 'hsl(55, 11%, 96%)',
-          'text-halo-width': 3
         }
       })
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
@@ -922,18 +892,22 @@ export default {
           'text-keep-upright': false
         },
         paint: {
-          'text-color': 'darkslategrey',
+          'text-color': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            styles.primary,
+            'darkslategrey'
+          ],
           'text-halo-color': 'hsl(55, 11%, 96%)',
           'text-halo-width': 1,
           'text-opacity': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
             1,
-            0.5
+            0.8
           ]
         }
       })
-
       vm.$static.map.on('mouseenter', this.allTripsSource + 'arrows', this.mouseEnterArrow)
       vm.$static.map.on('mouseleave', this.allTripsSource + 'arrows', this.mouseLeaveArrow)
     },
@@ -954,7 +928,7 @@ export default {
           { hover: false })
       }
     },
-    drawIteration: function(routeGeoJSON) {
+    drawIteration(routeGeoJSON) {
       this.createLayers(routeGeoJSON)
       this.i += 99
       this.iterate()
