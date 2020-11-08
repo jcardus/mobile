@@ -1004,24 +1004,19 @@ export default {
           Vue.$log.debug('no current trip...')
           return
         }
-
         if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
           vm.$static.map.panTo(
             { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
           )
         }
-
         const newDate = utils.getDate(positions[newPos].fixTime)
         const oldTrip = this.currentTrip
-
         while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].deviceTime).toDate()) {
           this.currentTrip++
         }
-
         while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip].positions[0].deviceTime).toDate()) {
           this.currentTrip--
         }
-
         if (oldTrip !== this.currentTrip) {
           const t = this.currentTrip
           this.currentTrip = oldTrip
@@ -1037,7 +1032,6 @@ export default {
             )
           }
         }
-
         vm.$static.currentFeature.properties.speed = positions[newPos].speed
         vm.$static.currentFeature.properties.course = positions[newPos].course
         vm.$static.currentFeature.geometry.coordinates = [positions[newPos].longitude, positions[newPos].latitude]
