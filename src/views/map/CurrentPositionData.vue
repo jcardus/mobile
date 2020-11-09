@@ -63,6 +63,10 @@ import styles from '../../styles/element-variables.scss'
 import VehicleDetail from '@/views/map/VehicleDetail'
 import i18n from '@/lang'
 import store from '@/store'
+import booleanContains from '@turf/boolean-contains'
+import * as helpers from '@turf/helpers'
+import bboxPolygon from '@turf/bbox-polygon'
+import bbox from '@turf/bbox'
 
 export default {
   name: 'CurrentPositionData',
@@ -187,7 +191,6 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on(event.posChanged, this.onPosChanged)
     serverBus.$on(event.routePlay, this.routePlay)
-    serverBus.$on(event.tripChanged, this.onTripChanged)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
@@ -264,7 +267,6 @@ export default {
             lastPosition = p
           })
           sharedData.setPositions(positions)
-          Vue.$log.debug(positions)
           this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
           Vue.$log.debug('emit routeFetched')
           serverBus.$emit('routeFetched')
@@ -616,6 +618,12 @@ export default {
       } else {
         const coordinates = this.trips[this.currentTrip].positions.map(p => [p.longitude, p.latitude])
         this.drawRoute(coordinates)
+        const mapBounds = bboxPolygon(bbox(helpers.lineString(this.map.getBounds().toArray())))
+        const tripLine = helpers.lineString(coordinates)
+        if (!booleanContains(mapBounds, tripLine)) {
+          const bounds = bbox(tripLine)
+          this.map.fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], { padding: 50 })
+        }
       }
     },
     drawIdlePoints() {
@@ -637,7 +645,6 @@ export default {
       this.$log.debug(this.currentTrip)
       if (this.currentTrip < 0) return
       const positions = this.trips[this.currentTrip].positions
-      Vue.$log.debug('positions', positions)
       const start = [positions[0].longitude, positions[0].latitude]
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]
       const sCoord = this.map.project(start)
@@ -1005,6 +1012,7 @@ export default {
           return
         }
         if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
+          this.$log.debug('panTo', positions[newPos])
           vm.$static.map.panTo(
             { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
           )
@@ -1025,12 +1033,6 @@ export default {
           this.drawTrip()
           this.drawIdlePoints()
           this.drawSpeedTrip()
-
-          if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
-            vm.$static.map.panTo(
-              { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
-            )
-          }
         }
         vm.$static.currentFeature.properties.speed = positions[newPos].speed
         vm.$static.currentFeature.properties.course = positions[newPos].course

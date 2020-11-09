@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.736",
+  "version": "1.0.737",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -21,7 +21,9 @@
     "@turf/along": "latest",
     "@turf/area": "latest",
     "@turf/bbox": "latest",
+    "@turf/bbox-polygon": "^6.0.1",
     "@turf/bearing": "latest",
+    "@turf/boolean-contains": "^6.0.1",
     "@turf/distance": "latest",
     "@turf/helpers": "latest",
     "@turf/length": "latest",
