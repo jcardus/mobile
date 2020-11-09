@@ -52,15 +52,6 @@ export function hideRouteLayer() {
   hideLayer(routePlayLayer)
 }
 
-export function removeAddRouteLayer() {
-  if (vm.$static.map.getLayer(routePlayLayer)) {
-    vm.$static.map.removeLayer(routePlayLayer)
-    vm.$static.map.addLayer(routePlayVehicleLayer)
-  } else {
-    Vue.$log.warn('removeAddRouteLayer called but there is no layer!')
-  }
-}
-
 export function hideLayer(layer, hide) {
   setVisible(layer, !hide)
 }
