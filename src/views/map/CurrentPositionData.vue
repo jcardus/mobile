@@ -621,8 +621,7 @@ export default {
         const mapBounds = bboxPolygon(bbox(helpers.lineString(this.map.getBounds().toArray())))
         const tripLine = helpers.lineString(coordinates)
         if (!booleanContains(mapBounds, tripLine)) {
-          const bounds = bbox(tripLine)
-          this.map.fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], { padding: 50 })
+          this.map.fitBounds(bbox(tripLine), { padding: 100 })
         }
       }
     },
