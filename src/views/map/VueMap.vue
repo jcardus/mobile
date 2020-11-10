@@ -780,16 +780,56 @@ export default {
         self.animateMatched(route, feature, position)
       }
     },
-    processGeofences: function(geofences) {
+    hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+      return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16)] : null
+    },
+    processGeofences(geofences) {
       const result = []
       Vue.$log.debug('converting ', geofences.length, 'geofences to feature')
-      geofences.forEach(function(item) {
+      for (let i1 = 0; i1 < geofences.length; i1++) {
+        const item = geofences[i1]
         if (item) {
           const geojson = geofencesLayer.getFeatureGeojson(item)
           Vue.$log.debug('adding... ', geojson)
           result.push(geojson)
+          if (item.attributes.color) {
+            const uniqueColor = this.hexToRgb(item.attributes.color)
+            const imageName = item.attributes.icon + item.attributes.color.replace('#', '')
+            if (!this.map.hasImage(imageName) && uniqueColor) {
+              const canvas = document.createElement('canvas')
+              canvas.width = 27
+              canvas.height = 27
+              const ctx = canvas.getContext('2d')
+              const image = document.createElement('img')
+              image.src = './img/icons/pois/' + item.attributes.icon + '-blue.svg'
+              ctx.drawImage(image, 0, 0)
+              const imgd = ctx.getImageData(0, 0, 128, 128)
+              const pix = imgd.data
+              let i = 0
+              const n = pix.length
+              for (; i < n; i += 4) {
+                if (pix[i + 3] === 255) {
+                  pix[i] = uniqueColor[0] // Red component
+                  pix[i + 1] = uniqueColor[1] // Blue component
+                  pix[i + 2] = uniqueColor[2] // Green component
+                  // pix[i+3] is the transparency.
+                }
+              }
+              ctx.putImageData(imgd, 0, 0)
+              const imageUrl = canvas.toDataURL('image/png')
+              this.map.loadImage(imageUrl, (err, image) => {
+                if (!err) {
+                  this.map.addImage(imageName, image)
+                }
+              })
+            }
+          }
         }
-      })
+      }
       return result
     },
     processEvents: function(events) {
