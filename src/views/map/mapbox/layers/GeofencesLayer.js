@@ -77,7 +77,7 @@ export default {
       'text-size': 11,
       'text-justify': 'auto',
       'text-offset': [0, 0.8],
-      'icon-image': ['concat', ['get', 'icon'], '-blue'],
+      'icon-image': ['concat', ['get', 'icon'], ['get', 'color']],
       'icon-offset': {
         stops: [
           [13, [0, -10]]
@@ -145,7 +145,7 @@ export default {
           title: item.name,
           description: item.description,
           icon: item.attributes.icon ? item.attributes.icon : 'marker',
-          color: item.attributes.color ? item.attributes.color : '#3232b4',
+          color: item.attributes.color ? item.attributes.color.replace('#', '') : '-blue',
           fill: ''
         }
       }
