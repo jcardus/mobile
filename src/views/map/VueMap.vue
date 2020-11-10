@@ -796,21 +796,19 @@ export default {
           const geojson = geofencesLayer.getFeatureGeojson(item)
           Vue.$log.debug('adding... ', geojson)
           result.push(geojson)
-          item.icon = item.attributes.icon
           if (item.attributes.color) {
             const uniqueColor = this.hexToRgb(item.attributes.color)
-            const imageName = item.icon + item.attributes.color.replace('#', '')
+            const imageName = item.attributes.icon + item.attributes.color.replace('#', '')
             if (!this.map.hasImage(imageName) && uniqueColor) {
               const canvas = document.createElement('canvas')
               canvas.width = 27
               canvas.height = 27
               const ctx = canvas.getContext('2d')
               const image = document.createElement('img')
-              image.src = './img/icons/pois/' + item.icon + '-blue.svg'
+              image.src = './img/icons/pois/' + item.attributes.icon + '-blue.svg'
               ctx.drawImage(image, 0, 0)
               const imgd = ctx.getImageData(0, 0, 128, 128)
               const pix = imgd.data
-
               let i = 0
               const n = pix.length
               for (; i < n; i += 4) {
