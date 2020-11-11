@@ -97,7 +97,7 @@
           />
         </template>
         <template slot-scope="scope">
-          <el-tooltip :content="$t('settings.group_delete')" placement="top">
+          <el-tooltip :content="$t('settings.delete')" placement="top">
             <el-button
               class="tableButton"
               size="small"
@@ -105,7 +105,7 @@
               @click="handleDelete(scope.row)"
             ><i class="fas fa-trash-alt"></i></el-button>
           </el-tooltip>
-          <el-tooltip :content="$t('settings.group_edit')" placement="top">
+          <el-tooltip :content="$t('settings.edit')" placement="top">
             <el-button
               size="small"
               class="tableButton"
@@ -125,9 +125,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { traccar } from '../../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
-import { vm } from '../../../main'
+import { vm } from '@/main'
 import image from '../../../icons/pois/airport-blue.svg'
 
 export default {
@@ -321,7 +321,7 @@ export default {
     height: 40px
   }
 
-  form-item-block {
+  .form-item-block {
     width: 100%;
     display: table;
     margin-bottom: 10px

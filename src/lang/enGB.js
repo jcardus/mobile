@@ -319,6 +319,7 @@ export default {
     report_periodicity_monthly: 'Receive monthly',
     uniqueId_duplicated: 'RFID Key duplicated!',
     pois_title: 'POIs',
+    add: 'Add',
     edit: 'Edit',
     delete: 'Delete',
     name_required: 'Name field is required',
