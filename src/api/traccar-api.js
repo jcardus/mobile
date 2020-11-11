@@ -241,6 +241,10 @@ export const traccar = {
     const groupsUrl = groups.map(groupId => axios.get(geoFences + '?groupId=' + groupId, { withCredentials: true }))
     return invokeApiMultiple(groupsUrl, onFulfill)
   },
+  geofencesByUser: function(userId) {
+    Vue.$log.debug('geofencesByUser')
+    return get(geoFences + '?userId=' + userId, { withCredentials: true })
+  },
   geofencesByDevice: function(deviceId, onFulfill) {
     return new Promise((resolve, reject) => {
       axios.get(geoFences + '?deviceId=' + deviceId, { withCredentials: true })
@@ -326,7 +330,15 @@ export const traccar = {
     const groupsUrl = groups.map(groupId => axios.get(drivers + '?groupId=' + groupId, { withCredentials: true }))
     return invokeApiMultiple(groupsUrl, onFulfill)
   },
-  groupsByUser: function(users, onFulfill) {
+  driversByUser: function(userId) {
+    Vue.$log.debug('driversByUser')
+    return get(drivers + '?userId=' + userId, { withCredentials: true })
+  },
+  groupsByUser: function(userId) {
+    Vue.$log.debug('groupsByUser')
+    return get(groups + '?userId=' + userId, { withCredentials: true })
+  },
+  groupsByUsers: function(users, onFulfill) {
     Vue.$log.debug('groupsByUser')
     const usersUrl = users.map(userId => axios.get(groups + '?userId=' + userId, { withCredentials: true }))
     return invokeApiMultiple(usersUrl, onFulfill)

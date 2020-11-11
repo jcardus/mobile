@@ -323,6 +323,7 @@ export default {
     report_periodicity_monthly: 'Mensalmente',
     uniqueId_duplicated: 'Chave RFID duplicada!',
     pois_title: 'POIs',
+    add: 'Adicionar',
     edit: 'Editar',
     delete: 'Apagar',
     name_required: 'O campo nome é obrigatório',

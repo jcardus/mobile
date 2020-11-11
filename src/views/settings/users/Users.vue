@@ -7,28 +7,96 @@
             <h2 v-if="isNewUser">{{ $t('settings.user_add') }}</h2>
             <h2 v-else>{{ $t('settings.user_edit') }}</h2>
             <el-form ref="user" :model="userForm" :rules="rules">
-              <el-select v-model="userForm.userType" value="" :placeholder="$t('settings.user_form_type_placeholder')">
-                <el-option v-for="type in userTypes" :key="type.value" :value="type.value" :label="$t('profile.'+type.text)" />
-              </el-select>
-              <el-form-item :label="$t('settings.user_name')">
-                <el-input v-model="userForm.name" />
-              </el-form-item>
-              <el-form-item :label="$t('settings.user_email')">
-                <el-input v-model="userForm.email" />
-              </el-form-item>
-              <el-form-item :label="$t('settings.user_password')">
-                <el-input
-                  :key="passwordType"
-                  ref="password"
-                  v-model="userForm.password"
-                  :show-password="true"
-                  :type="passwordType"
-                  name="password"
-                />
-              </el-form-item>
-              <el-form-item :label="$t('settings.user_phone')">
-                <el-input v-model="userForm.phone" />
-              </el-form-item>
+              <el-tabs style="height:370px" stretch>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="fas fa-user"></i>
+                  </span>
+                  <el-select v-model="userForm.userType" value="" :placeholder="$t('settings.user_form_type_placeholder')">
+                    <el-option v-for="type in userTypes" :key="type.value" :value="type.value" :label="$t('profile.'+type.text)" />
+                  </el-select>
+                  <el-form-item :label="$t('settings.user_name')">
+                    <el-input v-model="userForm.name" />
+                  </el-form-item>
+                  <el-form-item :label="$t('settings.user_email')">
+                    <el-input v-model="userForm.email" />
+                  </el-form-item>
+                  <div class="form-item-block">
+                    <div class="form-item-row">
+                      <el-form-item class="form-item-block-left" :label="$t('settings.user_password')">
+                        <el-input
+                          :key="passwordType"
+                          ref="password"
+                          v-model="userForm.password"
+                          :show-password="true"
+                          :type="passwordType"
+                          name="password"
+                        />
+                      </el-form-item>
+                      <el-form-item class="form-item-block-right" :label="$t('settings.user_phone')">
+                        <el-input v-model="userForm.phone" />
+                      </el-form-item>
+                    </div>
+                  </div>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="fas fa-grip-horizontal"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedGroups"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.groups'), $t('report.select_groups')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="groups"
+                    >
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="fas fa-address-card"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedDrivers"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.drivers'), $t('report.select_groups')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="drivers"
+                    >
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="fas fa-map-marked"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedGeofences"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.geofences'), $t('report.select_groups')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="geofences"
+                    >
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+              </el-tabs>
             </el-form>
             <el-button
               type="info"
@@ -37,6 +105,7 @@
               @click="handleCancelForm"
             >{{ $t('settings.form_cancel') }}</el-button>
             <el-button
+              :loading="loading"
               type="success"
               class="formButton"
               size="small"
@@ -85,7 +154,7 @@
             />
           </div>
           <div style="float: right">
-            <el-tooltip :content="$t('settings.driver_add')" placement="top">
+            <el-tooltip :content="$t('settings.add')" placement="top">
               <el-button
                 class="formButton"
                 size="small"
@@ -95,7 +164,7 @@
           </div>
         </template>
         <template slot-scope="scope">
-          <el-tooltip :content="$t('settings.driver_delete')" placement="top">
+          <el-tooltip :content="$t('settings.delete')" placement="top">
             <el-button
               class="formButton"
               size="small"
@@ -103,8 +172,9 @@
               @click="handleDelete(scope.row)"
             ><i class="fas fa-trash-alt"></i></el-button>
           </el-tooltip>
-          <el-tooltip :content="$t('settings.driver_edit')" placement="top">
+          <el-tooltip :content="$t('settings.edit')" placement="top">
             <el-button
+              :loading="loading"
               size="small"
               class="formButton"
               @click="handleEdit(scope.row)"
@@ -125,6 +195,7 @@
 import { vm } from '@/main'
 import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 
 export default {
   name: 'Users',
@@ -139,7 +210,13 @@ export default {
         email: '',
         phone: '',
         password: '',
-        userType: ''
+        userType: '',
+        userDrivers: [],
+        userGeofences: [],
+        userGroups: [],
+        userSelectedDrivers: [],
+        userSelectedGeofences: [],
+        userSelectedGroups: []
       },
       userTypes: [
         { value: 'manager', text: 'user_type_manager' },
@@ -157,11 +234,12 @@ export default {
           { required: true, min: 6, message: this.$t('profile.user_password_lengh'), trigger: 'blur' }
         ]
       },
-      passwordType: 'password'
+      passwordType: 'password',
+      loading: false
     }
   },
   computed: {
-    ...mapGetters(['users']),
+    ...mapGetters(['users', 'drivers', 'groups', 'geofences']),
     filteredUsers() {
       return this.users.filter(data => !this.search ||
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
@@ -189,20 +267,44 @@ export default {
       this.userForm.email = ''
       this.userForm.phone = ''
       this.userForm.password = ''
+      this.userForm.userDrivers = []
+      this.userForm.userGeofences = []
+      this.userForm.userGroups = []
+      this.userForm.userSelectedDrivers = []
+      this.userForm.userSelectedGeofences = []
+      this.userForm.userSelectedGroups = []
 
       this.isOpenUserForm = !this.isOpenUserForm
     },
-    handleEdit(row) {
-      this.isNewUser = false
-      this.selectedUSer = row
+    async handleEdit(row) {
+      try {
+        const self = this
+        this.loading = true
+        this.isNewUser = false
+        this.selectedUser = row
 
-      this.userForm.name = row.name
-      this.userForm.email = row.email
-      this.userForm.phone = row.phone
-      this.userForm.password = row.password
-      this.userForm.userType = row.readonly ? 'operator' : 'manager'
-
-      this.isOpenUserForm = !this.isOpenUserForm
+        this.userForm.name = row.name
+        this.userForm.email = row.email
+        this.userForm.phone = row.phone
+        this.userForm.password = row.password
+        this.userForm.userType = row.readonly ? 'operator' : 'manager'
+        await traccar.driversByUser(this.selectedUser.id).then(function(response) {
+          self.userForm.userDrivers = self.userForm.userSelectedDrivers = response.data.map(d => d.id)
+        })
+        await traccar.groupsByUser(self.selectedUser.id).then(function(response) {
+          self.userForm.userGroups = self.userForm.userSelectedGroups = response.data.map(g => g.id)
+        })
+        await traccar.geofencesByUser(self.selectedUser.id).then(function(response) {
+          self.userForm.userGeofences = self.userForm.userSelectedGeofences = response.data.map(g => g.id)
+          self.loading = false
+          self.isOpenUserForm = !self.isOpenUserForm
+        })
+      } catch (e) {
+        Vue.$log.error(e)
+        await this.$alert(e)
+      } finally {
+        this.loading = false
+      }
     },
     handleDelete(row) {
       this.$confirm(this.$t('settings.user_delete_info') + row.name, this.$t('settings.user_delete_title'), {
@@ -220,6 +322,7 @@ export default {
     handleSubmitForm() {
       this.$refs.user.validate(valid => {
         if (valid) {
+          this.loading = true
           if (this.isNewUser) {
             const newUser = {
               name: this.userForm.name,
@@ -249,25 +352,103 @@ export default {
             user.phone = this.userForm.phone
             user.password = this.userForm.password
 
-            traccar.updateUser(user.id, user, this.userUpdated)
+            traccar.updateUser(user.id, user)
+              .then(this.userUpdated)
           }
         }
       })
     },
-    userCreated: function(newUser) {
-      this.$message({
-        type: 'success',
-        message: this.$t('settings.user_created')
-      })
-      this.isOpenDriverForm = false
-      this.$store.dispatch('user/addUser', newUser)
+    userCreated: async function(newUser) {
+      try {
+        await this.$store.dispatch('user/addUser', newUser)
+
+        await this.updateUserPermissions()
+
+        this.$message({
+          type: 'success',
+          message: this.$t('settings.user_created')
+        })
+      } catch (e) {
+        Vue.$log.error(e)
+      } finally {
+        this.isOpenUserForm = false
+        this.loading = false
+      }
     },
-    userUpdated: function() {
-      this.$message({
-        type: 'success',
-        message: this.$t('settings.user_updated')
+    userUpdated: async function() {
+      try {
+        await this.updateUserPermissions()
+
+        this.$message({
+          type: 'success',
+          message: this.$t('settings.user_updated')
+        })
+      } catch (e) {
+        Vue.$log.error(e)
+      } finally {
+        this.isOpenUserForm = false
+        this.loading = false
+      }
+    },
+    async updateUserPermissions() {
+      const self = this
+
+      const geofencesToRemove = this.userForm.userGeofences.filter(x => !this.userForm.userSelectedGeofences.includes(x))
+      const geofencesToAdd = this.userForm.userSelectedGeofences.filter(x => !this.userForm.userGeofences.includes(x))
+
+      const geofencePermissionsToRemove = geofencesToRemove.map(g => {
+        return {
+          userId: self.selectedUser.id,
+          geofenceId: g
+        }
       })
-      this.isOpenDriverForm = false
+      const geofencePermissionsToAdd = geofencesToAdd.map(g => {
+        return {
+          userId: self.selectedUser.id,
+          geofenceId: g
+        }
+      })
+
+      await traccar.deleteAllPermissions(geofencePermissionsToRemove)
+      await traccar.addAllPermissions(geofencePermissionsToAdd)
+
+      const groupsToRemove = this.userForm.userGroups.filter(x => !self.userForm.userSelectedGroups.includes(x))
+      const groupsToAdd = this.userForm.userSelectedGroups.filter(x => !self.userForm.userGroups.includes(x))
+
+      const groupsPermissionsToRemove = groupsToRemove.map(g => {
+        return {
+          userId: self.selectedUser.id,
+          groupId: g
+        }
+      })
+      const groupPermissionsToAdd = groupsToAdd.map(g => {
+        return {
+          userId: self.selectedUser.id,
+          groupId: g
+        }
+      })
+
+      await traccar.deleteAllPermissions(groupsPermissionsToRemove)
+      await traccar.addAllPermissions(groupPermissionsToAdd)
+
+      const driversToRemove = this.userForm.userDrivers.filter(x => !self.userForm.userSelectedDrivers.includes(x))
+      const driversToAdd = this.userForm.userSelectedDrivers.filter(x => !self.userForm.userDrivers.includes(x))
+
+      const driversPermissionsToRemove = driversToRemove.map(d => {
+        return {
+          userId: self.selectedUser.id,
+          driverId: d
+        }
+      })
+      const driversPermissionsToAdd = driversToAdd.map(d => {
+        return {
+          userId: self.selectedUser.id,
+          driverId: d
+        }
+      })
+
+      await traccar.deleteAllPermissions(driversPermissionsToRemove)
+      await traccar.addAllPermissions(driversPermissionsToAdd)
     },
     userDeleted(id) {
       this.$log.debug('user deleted')
@@ -287,15 +468,35 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../../../styles/element-variables.scss';
 
+  .form-item-row {
+    display: table-row;
+  }
+
+  .form-item-block-left{
+    display: table-cell;
+    width: 200px;
+    padding-right: 50px;
+  }
+  .form-item-block-right{
+    width: 200px;
+    display: table-cell;
+  }
+
+  .el-form-item__label {
+    line-height: 30px;
+  }
+  .el-form-item {
+    margin-bottom: 10px;
+  }
   .formButton {
     float: right;
     margin-right: 10px;
   }
   .modal {
-    width: 500px;
+    width: 600px;
     margin: 0 auto;
     padding: 15px;
     background-color: #fff;
