@@ -243,13 +243,11 @@ export default {
   addRoutePlayLayer() {
     if (!vm.$static.map.getSource(routePlayLayer)) {
       const source = { type: 'geojson', data: { type: 'FeatureCollection', features: [] }}
-      Vue.$log.warn('addSource', routePlayLayer, source)
       vm.$static.map.addSource(routePlayLayer, source)
     } else {
       Vue.$log.warn('source', routePlayLayer, 'already exists...')
     }
     if (!vm.$static.map.getLayer(routePlayVehicleLayer.id)) {
-      Vue.$log.warn('addLayer', routePlayVehicleLayer)
       vm.$static.map.addLayer(routePlayVehicleLayer)
     } else {
       Vue.$log.warn('layer', routePlayVehicleLayer.id, 'already exists...')

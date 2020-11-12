@@ -79,20 +79,17 @@ const store = new Vuex.Store({
     },
     SOCKET_ONOPEN(state, event) {
       state.socket.isConnected = true
-      Vue.$log.warn(state)
-      Vue.$log.warn(event)
-      // TrackJS.track('SOCKET_ONOPEN')
+      Vue.$log.info(state)
+      Vue.$log.info(event)
     },
     SOCKET_ONCLOSE(state, event) {
       state.socket.isConnected = false
-      Vue.$log.warn(state)
-      Vue.$log.warn(event)
-      // TrackJS.track('SOCKET_ONCLOSE')
+      Vue.$log.info(state)
+      Vue.$log.info(event)
     },
     SOCKET_ONERROR(state, event) {
-      Vue.$log.warn(state)
-      Vue.$log.warn(event)
-      // TrackJS.track('SOCKET_ONERROR')
+      Vue.$log.info(state)
+      Vue.$log.info(event)
     },
     SOCKET_ONMESSAGE(state, message) {
       state.socket.message = message
@@ -116,7 +113,6 @@ const store = new Vuex.Store({
         serverBus.$emit('forceLogout')
       }
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
-      TrackJS.track('SOCKET_RECONNECT')
     },
     SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true

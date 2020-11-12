@@ -228,8 +228,13 @@ export default {
       traccar.editGeofence(this.selectedGeofence.id, geofence, this.geofenceEdited)
       this.isOpenGeofenceForm = false
     },
+    findFeatureById(id) {
+      return vm.$static.geofencesSource.features.find(e => {
+        return e.properties.id === id
+      })
+    },
     geofenceEdited: function(row) {
-      var feature = lnglat.findFeatureById(row.id)
+      const feature = this.findFeatureById(row.id)
       if (this.getType(row) === 'poi') {
         feature.properties.icon = row.attributes.icon
       }
