@@ -1,27 +1,13 @@
-const svg = `<svg baseProfile="full" width="300" height="200"
-xmlns="http://www.w3.org/2000/svg">
-   <rect width="100%" height="100%" fill="red" />
-   <circle cx="150" cy="100" r="80" fill="green" />
-   <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text></svg>`
-
-svgToPng(svg, (imgData) => {
-  const pngImage = document.createElement('img')
-  document.body.appendChild(pngImage)
-  pngImage.src = imgData
-})
-
-function svgToPng(svg, callback) {
+export function svgToPng(svg, callback) {
   const url = getSvgUrl(svg)
   svgUrlToPng(url, (imgData) => {
     callback(imgData)
     URL.revokeObjectURL(url)
   })
 }
-
 function getSvgUrl(svg) {
   return URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
 }
-
 function svgUrlToPng(svgUrl, callback) {
   const svgImage = document.createElement('img')
   // imgPreview.style.position = 'absolute';
@@ -39,7 +25,6 @@ function svgUrlToPng(svgUrl, callback) {
   }
   svgImage.src = svgUrl
 }
-
 export function deltaE(rgbA, rgbB) {
   const labA = rgb2lab(rgbA)
   const labB = rgb2lab(rgbB)

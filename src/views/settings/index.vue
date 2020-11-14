@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { vm } from '../../main'
+import { vm } from '@/main'
 import Users from './users/Users'
 import Alerts from './alerts/Alerts'
 import Drivers from './drivers/Drivers'
@@ -199,6 +199,12 @@ export default {
   .text_max_speed {
     font-size: 14px;
     color: #055AE5;
+  }
+
+  .fc_chat_widget_frame {
+    right:0 !important;
+    bottom:5px !important;
+    min-width:50px !important;
   }
 </style>
 
