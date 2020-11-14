@@ -115,7 +115,6 @@ import Groups from './groups/Groups'
 import AutomaticReports from './reports/AutomaticReports.vue'
 import * as lnglat from '../../utils/lnglat'
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Settings',
   components: { Users, Alerts, Vehicles, Groups, Drivers, Geofences, AutomaticReports },
@@ -201,10 +200,5 @@ export default {
     color: #055AE5;
   }
 
-  .fc_chat_widget_frame {
-    right:0 !important;
-    bottom:5px !important;
-    min-width:50px !important;
-  }
 </style>
 
