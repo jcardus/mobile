@@ -5,6 +5,13 @@ import * as lnglat from './lnglat'
 
 function initFreshChat() {
   window.fcWidget.init({
+    config: {
+      cssNames: {
+        widget: 'fc_chat_widget_frame',
+        open: 'fc_open',
+        expanded: 'fc_expanded'
+      }
+    },
     token: getFreshChatToken(),
     locale: getFreshChatLocale(),
     host: 'https://wchat.eu.freshchat.com' })

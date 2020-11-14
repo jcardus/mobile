@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { vm } from '../../main'
+import { vm } from '@/main'
 import Users from './users/Users'
 import Alerts from './alerts/Alerts'
 import Drivers from './drivers/Drivers'
@@ -115,7 +115,6 @@ import Groups from './groups/Groups'
 import AutomaticReports from './reports/AutomaticReports.vue'
 import * as lnglat from '../../utils/lnglat'
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Settings',
   components: { Users, Alerts, Vehicles, Groups, Drivers, Geofences, AutomaticReports },
@@ -200,5 +199,6 @@ export default {
     font-size: 14px;
     color: #055AE5;
   }
+
 </style>
 

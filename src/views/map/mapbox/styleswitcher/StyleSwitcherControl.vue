@@ -46,7 +46,7 @@ export default {
     poisVisible: function() { return vm.$store.state.map.showPOIs },
     buildingsVisible() { return vm.$store.state.map.show3dBuildings }
   },
-  mounted: function() {
+  mounted() {
     document.addEventListener('click', event => {
       if (this.$refs.controlContainer.contains(event.target)) {
         this.btnVisible = true
@@ -67,11 +67,11 @@ export default {
     async toggleBuildings() {
       await vm.$store.dispatch('map/toggleBuildings')
     },
-    btnClick: function() {
+    btnClick() {
       this.btnVisible = false
       this.containerVisible = true
     },
-    styleClicked: function(title) {
+    styleClicked(title) {
       vm.$static.map.setStyle(this.styles.find(e => e.title === title).uri)
       this.selected = title
       this.containerVisible = false

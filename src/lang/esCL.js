@@ -303,5 +303,9 @@ export default {
     geofenceEnter: 'Entrada en geocerca',
     geofenceExit: 'Salida de geocerca',
     newVersion: 'Una nueva versión de esta aplicación está disponible. Haga clic aquí para actualizar.'
+  },
+  alerts: {
+    title: 'Alertas',
+    get_alerts: 'Obtener Notificaciones'
   }
 }
