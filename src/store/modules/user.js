@@ -357,6 +357,7 @@ const actions = {
     })
 
     new Promise((resolve, reject) => {
+      state.groups.forEach(g => { g.users = [] })
       traccar.groupsByUsers(state.users.map(u => u.id), function(results) {
         Vue.$log.debug('processGroups', results)
         results.forEach(result => {
@@ -364,9 +365,6 @@ const actions = {
             const user = state.users[results.indexOf(result)]
             const group = state.groups.find(g => g.id === d_data.id)
             if (group && user) {
-              if (!group.users) {
-                group.users = []
-              }
               group.users.push(user)
             }
           })

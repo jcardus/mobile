@@ -61,7 +61,7 @@
             fill
             round
             @click="handleSubmitVehicleForm"
-          >{{ $t('settings.vehicle_form_confirm') }}</f7-button>
+          >{{ $t('settings.form_confirm') }}</f7-button>
         </f7-col>
         <f7-col>
           <f7-button
@@ -69,7 +69,7 @@
             fill
             round
             @click="handleCancelVehicleForm"
-          >{{ $t('settings.vehicle_form_cancel') }}</f7-button>
+          >{{ $t('settings.form_cancel') }}</f7-button>
         </f7-col>
       </f7-row>
     </f7-block>
@@ -77,10 +77,11 @@
 </template>
 
 <script>
-import { serverBus, vm } from '../../../main'
+import { serverBus, vm } from '@/main'
 import * as lnglat from '../../../utils/lnglat'
-import { traccar } from '../../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 
 export default {
   name: 'VehicleDetails',
@@ -135,7 +136,7 @@ export default {
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
-    handleSubmitVehicleForm() {
+    async handleSubmitVehicleForm() {
       const vehicle = this.selectedVehicle
       vehicle.name = this.vehicleName
       vehicle.groupId = this.selectedGroup
@@ -165,11 +166,18 @@ export default {
         totalDistance: this.vehicleTotalKms * 1000
       }
 
-      traccar.updateDeviceAccumulators(vehicle.id, accumulator, this.accumulatorUpdated)
-      traccar.updateDevice(vehicle.id, v, this.vehicleUpdated)
-    },
-    accumulatorUpdated: function(data) {
-
+      try {
+        await traccar.updateDeviceAccumulators(vehicle.id, accumulator)
+        await traccar.updateDevice(vehicle.id, v)
+        this.vehicleUpdated(v)
+      } catch (reason) {
+        if (reason.response.data.startsWith('Manager access required')) {
+          this.$f7.dialog.alert(this.$t('settings.vehicle_edit_not_allowed'), this.$t('settings.vehicle_edit'))
+        } else {
+          Vue.$log.error(reason)
+          await this.$alert(reason)
+        }
+      }
     },
     vehicleUpdated: function(device) {
       this.$f7.dialog.alert(this.$t('settings.vehicle_updated'), this.$t('settings.vehicle_edit'))

@@ -19,8 +19,8 @@
                     <el-transfer
                       v-model="selectedDevices"
                       filterable
-                      :filter-placeholder="$t('report.selector_search')"
-                      :titles="[$t('report.select_vehicles_placeholder'), $t('report.select_groups')]"
+                      :filter-placeholder="$t('settings.search')"
+                      :titles="[$t('settings.vehicles'), $t('settings.transfer_selected')]"
                       :props="{
                         key: 'id',
                         label: 'name'
@@ -38,8 +38,8 @@
                     <el-transfer
                       v-model="selectedUsers"
                       filterable
-                      :filter-placeholder="$t('report.selector_search')"
-                      :titles="['Utilizadores', $t('report.select_vehicles')]"
+                      :filter-placeholder="$t('settings.search')"
+                      :titles="[$t('settings.users'), $t('settings.transfer_selected')]"
                       :props="{
                         key: 'id',
                         label: 'name'
@@ -84,7 +84,7 @@
                   <span slot="label">
                     <i class="fas fa-map-marked"></i>
                   </span>
-                  <el-form-item :label="$t('settings.alert_form_geofences')">
+                  <el-form-item :label="$t('settings.geofences_type_geofences')">
                     <el-select
                       v-model="selectedGeofences"
                       style="float: left; width: 70%; height: 35px"
@@ -110,7 +110,7 @@
                       ><i class="fas fa-times"></i></el-button>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item :label="$t('settings.alert_form_pois')">
+                  <el-form-item :label="$t('settings.geofences_type_pois')">
                     <el-select
                       v-model="selectedPOIs"
                       style="float: left; width: 70%; height: 35px"
@@ -136,7 +136,7 @@
                       ><i class="fas fa-times"></i></el-button>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item :label="$t('settings.alert_form_linegeofences')">
+                  <el-form-item :label="$t('settings.geofences_type_linegeofences')">
                     <el-select
                       v-model="selectedLineGeofences"
                       style="float: left; width: 70%; height: 35px"
@@ -170,14 +170,14 @@
               class="formButton"
               size="small"
               @click="handleCancelGroupForm"
-            >{{ $t('settings.group_form_cancel') }}</el-button>
+            >{{ $t('settings.form_cancel') }}</el-button>
             <el-button
               :loading="loading"
               type="success"
               class="formButton"
               size="small"
               @click="handleSubmitGroupForm"
-            >{{ $t('settings.group_form_confirm') }}</el-button>
+            >{{ $t('settings.form_confirm') }}</el-button>
           </div>
         </div>
       </div>
@@ -185,7 +185,7 @@
     <el-table
       :key="alertTableKey"
       height="calc(100vh - 150px)"
-      :data="groups"
+      :data="filteredGroups"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
@@ -196,14 +196,14 @@
       >
       </el-table-column>
       <el-table-column
-        label="Veículos"
+        :label="$t('settings.vehicles')"
         align="center"
         :formatter="totalVehiclesRederer"
         prop="id"
       >
       </el-table-column>
       <el-table-column
-        label="Utilizadores"
+        :label="$t('settings.users')"
         align="center"
         prop="id"
       >
@@ -212,7 +212,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="Motoristas"
+        :label="$t('settings.drivers')"
         align="center"
         prop="id"
       >
@@ -221,7 +221,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="Zonas"
+        :label="$t('settings.zone')"
         align="center"
         prop="geofences"
       >
@@ -231,18 +231,27 @@
           {{ scope.row.geofences.linegeofences && scope.row.geofences.linegeofences.length }}<i class="fas fa-wave-square" style="padding-left: 5px; padding-right: 25px"></i>
         </template>
       </el-table-column>
-      <el-table-column label="" min-width="50px">
-        <template slot="header">
-          <el-tooltip content="Adicionar Grupo" placement="top">
-            <el-button
-              class="tableButton"
-              size="small"
-              @click="handleAddGroup"
-            ><i class="fas fa-plus"></i></el-button>
-          </el-tooltip>
+      <el-table-column label="" min-width="90px">
+        <template slot="header" slot-scope="scope">
+          <div style="float: left">
+            <el-input
+              v-model="search"
+              :placeholder="$t('settings.search')"
+              @chage="doNothing(scope)"
+            />
+          </div>
+          <div style="float: right">
+            <el-tooltip :content="$t('settings.add')" placement="top">
+              <el-button
+                class="tableButton"
+                size="small"
+                @click="handleAddGroup"
+              ><i class="fas fa-plus"></i></el-button>
+            </el-tooltip>
+          </div>
         </template>
         <template slot-scope="scope">
-          <el-tooltip :content="$t('settings.group_delete')" placement="top">
+          <el-tooltip :content="$t('settings.delete')" placement="top">
             <el-button
               v-if="!isMobile"
               class="tableButton"
@@ -251,7 +260,7 @@
               @click="handleDelete(scope.row)"
             ><i class="fas fa-trash-alt"></i></el-button>
           </el-tooltip>
-          <el-tooltip :content="$t('settings.group_edit')" placement="top">
+          <el-tooltip :content="$t('settings.edit')" placement="top">
             <el-button
               v-if="!isMobile"
               size="small"
@@ -282,6 +291,7 @@ export default {
   data() {
     return {
       alertTableKey: 0,
+      search: '',
       isOpenGroupForm: false,
       isNewGroup: true,
       selectedGroup: null,
@@ -298,6 +308,10 @@ export default {
   computed: {
     ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'groups', 'users']),
     isMobile() { return lnglat.isMobile() },
+    filteredGroups() {
+      return this.groups.filter(data => !this.search ||
+        data.name.toLowerCase().includes(this.search.toLowerCase()))
+    },
     selectedGroupDevices: function() {
       return this.devices.filter(d => d.groupId === this.selectedGroup.id)
     },
@@ -360,14 +374,11 @@ export default {
       this.clearFormData()
     },
     async handleSubmitGroupForm() {
-      try {
-        this.loading = true
-        if (this.isNewGroup) {
-          const newGroup = {
-            name: this.groupName
-          }
-          await traccar.newGroup(newGroup, this.groupCreated)
-        } else {
+      this.loading = true
+      if (this.isNewGroup) {
+        this.submitNewGroup()
+      } else {
+        try {
           const self = this
           const groupData = {
             id: this.selectedGroup.id,
@@ -392,98 +403,128 @@ export default {
           // Change table key to force table refresh
           this.alertTableKey = this.alertTableKey + 1
           await traccar.editGroup(this.selectedGroup.id, groupData)
+
+          this.groupUpdated()
+          this.isOpenGroupForm = false
+        } catch (reason) {
+          if (reason.response.data.startsWith('Manager access required') ||
+            reason.response.data.startsWith('Account is readonly') ||
+            reason.response.data.startsWith('Account is device readonly')) {
+            this.$message({
+              message: this.$t('settings.group_edit_not_allowed'),
+              type: 'warning',
+              duration: 5 * 1000
+            })
+          } else {
+            Vue.$log.error(reason)
+            await this.$alert(reason)
+          }
+        } finally {
+          this.loading = false
         }
-        this.groupUpdated()
-        this.isOpenGroupForm = false
-      } catch (e) {
-        console.error(e)
-        await this.$alert(e)
-      } finally {
-        this.loading = false
       }
     },
     async updateGroupPermissions() {
-      try {
-        const self = this
+      const self = this
 
-        const originalDevices = this.selectedGroupDevices.map(d => d.id)
-        const devicesToAdd = this.selectedDevices.filter(x => !originalDevices.includes(x))
+      const originalDevices = this.selectedGroupDevices.map(d => d.id)
+      const devicesToAdd = this.selectedDevices.filter(x => !originalDevices.includes(x))
 
-        for (const id of devicesToAdd) {
-          const vehicle = self.devices.find(d => d.id === id)
-          vehicle.groupId = self.selectedGroup.id
-          const v = { ...vehicle }
-          await traccar.updateDevice(vehicle.id, v)
-        }
-
-        const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))
-        const driversToAdd = this.selectedDrivers.filter(x => !self.selectedGroup.drivers.includes(x))
-
-        const driverPermissionsToRemove = driversToRemove.map(d => {
-          return {
-            groupId: self.selectedGroup.id,
-            driverId: d
-          }
-        })
-        const driverPermissionsToAdd = driversToAdd.map(d => {
-          return {
-            groupId: self.selectedGroup.id,
-            driverId: d
-          }
-        })
-
-        await traccar.deleteAllPermissions(driverPermissionsToRemove)
-        await traccar.addAllPermissions(driverPermissionsToAdd)
-
-        const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
-        const allOriginalGeofences = self.selectedGroup.geofences.geofences.concat(self.selectedGroup.geofences.pois.concat(self.selectedGroup.geofences.linegeofences))
-
-        const geofencesToRemove = allOriginalGeofences.filter(x => !allGeofences.includes(x))
-        const geofencesToAdd = allGeofences.filter(x => !allOriginalGeofences.includes(x))
-
-        const geofencePermissionsToRemove = geofencesToRemove.map(g => {
-          return {
-            groupId: self.selectedGroup.id,
-            geofenceId: g
-          }
-        })
-        const geofencePermissionsToAdd = geofencesToAdd.map(g => {
-          return {
-            groupId: self.selectedGroup.id,
-            geofenceId: g
-          }
-        })
-
-        await traccar.deleteAllPermissions(geofencePermissionsToRemove)
-        await traccar.addAllPermissions(geofencePermissionsToAdd)
-
-        const usersToRemove = this.selectedGroup.users.filter(x => !self.selectedUsers.includes(x.id))
-        const userIds = self.selectedGroup.users.map(u => u.id)
-        const usersToAdd = this.selectedUsers.filter(x => !userIds.includes(x))
-
-        const userPermissionsToRemove = usersToRemove.map(d => {
-          return {
-            userId: d.id,
-            groupId: self.selectedGroup.id
-
-          }
-        })
-        const userPermissionsToAdd = usersToAdd.map(uId => {
-          return {
-            userId: uId,
-            groupId: self.selectedGroup.id
-          }
-        })
-
-        await traccar.deleteAllPermissions(userPermissionsToRemove)
-        await traccar.addAllPermissions(userPermissionsToAdd)
-      } catch (e) {
-        console.error(e)
-        await this.$alert(e)
+      for (const id of devicesToAdd) {
+        const vehicle = self.devices.find(d => d.id === id)
+        const v = { ...vehicle }
+        v.groupId = self.selectedGroup.id
+        await traccar.updateDevice(vehicle.id, v)
+        vehicle.groupId = self.selectedGroup.id
       }
+
+      const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))
+      const driversToAdd = this.selectedDrivers.filter(x => !self.selectedGroup.drivers.includes(x))
+
+      const driverPermissionsToRemove = driversToRemove.map(d => {
+        return {
+          groupId: self.selectedGroup.id,
+          driverId: d
+        }
+      })
+      const driverPermissionsToAdd = driversToAdd.map(d => {
+        return {
+          groupId: self.selectedGroup.id,
+          driverId: d
+        }
+      })
+
+      await traccar.deleteAllPermissions(driverPermissionsToRemove)
+      await traccar.addAllPermissions(driverPermissionsToAdd)
+
+      const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
+      const allOriginalGeofences = self.selectedGroup.geofences.geofences.concat(self.selectedGroup.geofences.pois.concat(self.selectedGroup.geofences.linegeofences))
+
+      const geofencesToRemove = allOriginalGeofences.filter(x => !allGeofences.includes(x))
+      const geofencesToAdd = allGeofences.filter(x => !allOriginalGeofences.includes(x))
+
+      const geofencePermissionsToRemove = geofencesToRemove.map(g => {
+        return {
+          groupId: self.selectedGroup.id,
+          geofenceId: g
+        }
+      })
+      const geofencePermissionsToAdd = geofencesToAdd.map(g => {
+        return {
+          groupId: self.selectedGroup.id,
+          geofenceId: g
+        }
+      })
+
+      await traccar.deleteAllPermissions(geofencePermissionsToRemove)
+      await traccar.addAllPermissions(geofencePermissionsToAdd)
+
+      const usersToRemove = this.selectedGroup.users.filter(x => !self.selectedUsers.includes(x.id))
+      const userIds = self.selectedGroup.users.map(u => u.id)
+      const usersToAdd = this.selectedUsers.filter(x => !userIds.includes(x))
+
+      const userPermissionsToRemove = usersToRemove.map(d => {
+        return {
+          userId: d.id,
+          groupId: self.selectedGroup.id
+
+        }
+      })
+      const userPermissionsToAdd = usersToAdd.map(uId => {
+        return {
+          userId: uId,
+          groupId: self.selectedGroup.id
+        }
+      })
+
+      await traccar.deleteAllPermissions(userPermissionsToRemove)
+      await traccar.addAllPermissions(userPermissionsToAdd)
+    },
+    submitNewGroup: function() {
+      const newGroup = {
+        name: this.groupName
+      }
+      traccar.newGroup(newGroup)
+        .then(response => this.groupCreated(response.data))
+        .catch(reason => {
+          if (reason.response.data.startsWith('Account is readonly')) {
+            this.$message({
+              message: this.$t('settings.group_add_not_allowed'),
+              type: 'warning',
+              duration: 5 * 1000
+            })
+          } else {
+            Vue.$log.error(reason)
+            this.$alert(reason)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     groupCreated: function(newGroup) {
       newGroup.drivers = []
+      newGroup.users = []
       newGroup.geofences = {
         geofences: [],
         pois: [],
@@ -493,6 +534,8 @@ export default {
         type: 'success',
         message: this.$t('settings.group_created')
       })
+
+      this.isOpenGroupForm = false
       this.clearFormData()
       vm.$store.state.user.groups.push(newGroup)
     },
@@ -537,7 +580,21 @@ export default {
         confirmButtonText: this.$t('settings.group_edit_confirm'),
         cancelButtonText: this.$t('settings.group_edit_cancel')
       }).then(() => {
-        traccar.deleteGroup(row.id, this.groupDeleted)
+        traccar.deleteGroup(row.id)
+          .then(() => this.groupDeleted(row.id))
+          .catch(reason => {
+            Vue.$log.debug(reason)
+            if (reason.response.data.startsWith('Account is readonly')) {
+              this.$message({
+                message: this.$t('settings.group_delete_not_allowed'),
+                type: 'warning',
+                duration: 5 * 1000
+              })
+            } else {
+              Vue.$log.error(reason)
+              this.$alert(reason)
+            }
+          })
       }).catch(() => {
       })
     },
@@ -553,6 +610,10 @@ export default {
     },
     clearFormData() {
       this.groupName = ''
+    },
+    doNothing(scope) {
+      /* this method is here because we need the attribute 'slot-scope = "scope"' on the template
+       for search box to work, but to be able to commit the variable 'scope' it must be used*/
     }
   }
 }

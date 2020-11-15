@@ -155,18 +155,14 @@ export const traccar = {
     Vue.$log.debug(device)
     return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
   },
-  updateDeviceAccumulators: function(deviceId, accumulators, onFulfill) {
+  updateDeviceAccumulators(deviceId, accumulators) {
     const body = {
       deviceId: deviceId,
       totalDistance: accumulators.totalDistance,
       hours: accumulators.hours
     }
     Vue.$log.debug(body)
-    axios.put(devices + '/' + deviceId + '/accumulators', body, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+    return axios.put(devices + '/' + deviceId + '/accumulators', body, { withCredentials: true })
   },
   updateUser(userId, user) {
     return axios.put(users + '/' + userId, user, { withCredentials: true })
@@ -311,16 +307,12 @@ export const traccar = {
     Vue.$log.debug(group)
     return axios.put(groups + '/' + groupId, group, { withCredentials: true })
   },
-  deleteGroup: function(groupId, onFulfill) {
-    invokeDeleteApi(groups, groupId, onFulfill)
+  deleteGroup: function(groupId) {
+    return axios.delete(groups + '/' + groupId, { withCredentials: true })
   },
-  newGroup: function(group, onFulfill) {
+  newGroup(group) {
     Vue.$log.debug(group)
-    axios.post(groups, group, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+    return axios.post(groups, group, { withCredentials: true })
   },
   drivers: function(userId, onFulfill, onError) {
     invokeApi(drivers + '?userId=' + userId, onFulfill, onError)
@@ -343,27 +335,15 @@ export const traccar = {
     const usersUrl = users.map(userId => axios.get(groups + '?userId=' + userId, { withCredentials: true }))
     return invokeApiMultiple(usersUrl, onFulfill)
   },
-  addDriver: function(driver, onFulfill) {
-    axios.post(drivers, driver, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+  addDriver: function(driver) {
+    return axios.post(drivers, driver, { withCredentials: true })
   },
-  deleteDriver: function(driverId, onFulfill) {
-    invokeDeleteApi(drivers, driverId, onFulfill)
+  deleteDriver: function(driverId) {
+    return axios.delete(drivers + '/' + driverId, { withCredentials: true })
   },
-  updateDriver: function(driverId, driver, onFulfill, onDuplicatedEntry) {
+  updateDriver: function(driverId, driver) {
     Vue.$log.debug(driver)
-    axios.put(drivers + '/' + driverId, driver, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        if (reason.response.data.startsWith('Duplicate entry')) {
-          onDuplicatedEntry()
-        } else {
-          Vue.$log.error(reason)
-        }
-      })
+    return axios.put(drivers + '/' + driverId, driver, { withCredentials: true })
   },
   users: function() {
     return get(users, { withCredentials: true })

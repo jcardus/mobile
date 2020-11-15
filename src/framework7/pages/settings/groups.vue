@@ -47,8 +47,9 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
-import { traccar } from '../../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
+import Vue from 'vue'
 
 export default {
   name: 'Groups',
@@ -93,10 +94,30 @@ export default {
       const newGroup = {
         name: value
       }
-      traccar.newGroup(newGroup, this.groupCreated)
+      traccar.newGroup(newGroup)
+        .then(response => this.groupCreated(response.data))
+        .catch(reason => {
+          if (reason.response.data.startsWith('Account is readonly')) {
+            this.$f7.dialog.alert(this.$t('settings.group_add_not_allowed'), this.$t('settings.group_add'))
+          } else {
+            Vue.$log.error(reason)
+            this.$alert(reason)
+          }
+        })
     },
     editGroup(value) {
-      traccar.editGroup(this.selectedGroup.id, this.selectedGroup, this.groupEdited)
+      traccar.editGroup(this.selectedGroup.id, this.selectedGroup)
+        .then(() => {
+          this.groupEdited()
+        })
+        .catch(reason => {
+          if (reason.response.data.startsWith('Account is readonly')) {
+            this.$f7.dialog.alert(this.$t('settings.group_edit_not_allowed'), this.$t('settings.group_add'))
+          } else {
+            Vue.$log.error(reason)
+            this.$alert(reason)
+          }
+        })
       this.selectedGroup.name = value
     },
     cancelAdd(value) {
