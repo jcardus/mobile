@@ -49,8 +49,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { traccar } from '../../../api/traccar-api'
-import { vm } from '../../../main'
+import { traccar } from '@/api/traccar-api'
+import { vm } from '@/main'
+import Vue from 'vue'
 
 export default {
   name: 'Drivers',
@@ -63,7 +64,16 @@ export default {
   },
   methods: {
     onDriverDelete(driverId) {
-      traccar.deleteDriver(driverId, this.driverDeleted)
+      traccar.deleteDriver(driverId)
+        .then(() => this.driverDeleted(driverId))
+        .catch(reason => {
+          if (reason.response.data.startsWith('Account is readonly')) {
+            this.$f7.dialog.alert(this.$t('settings.driver_delete_not_allowed'), this.$t('settings.driver_delete_title'))
+          } else {
+            Vue.$log.error(reason)
+            this.$alert(reason)
+          }
+        })
     },
     driverDeleted: function(driverId) {
       vm.$store.state.user.drivers = vm.$store.state.user.drivers.filter((e) => e && e.id !== driverId)

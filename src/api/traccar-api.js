@@ -335,27 +335,15 @@ export const traccar = {
     const usersUrl = users.map(userId => axios.get(groups + '?userId=' + userId, { withCredentials: true }))
     return invokeApiMultiple(usersUrl, onFulfill)
   },
-  addDriver: function(driver, onFulfill) {
-    axios.post(drivers, driver, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+  addDriver: function(driver) {
+    return axios.post(drivers, driver, { withCredentials: true })
   },
-  deleteDriver: function(driverId, onFulfill) {
-    invokeDeleteApi(drivers, driverId, onFulfill)
+  deleteDriver: function(driverId) {
+    return axios.delete(drivers + '/' + driverId, { withCredentials: true })
   },
-  updateDriver: function(driverId, driver, onFulfill, onDuplicatedEntry) {
+  updateDriver: function(driverId, driver) {
     Vue.$log.debug(driver)
-    axios.put(drivers + '/' + driverId, driver, { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        if (reason.response.data.startsWith('Duplicate entry')) {
-          onDuplicatedEntry()
-        } else {
-          Vue.$log.error(reason)
-        }
-      })
+    return axios.put(drivers + '/' + driverId, driver, { withCredentials: true })
   },
   users: function() {
     return get(users, { withCredentials: true })

@@ -72,12 +72,12 @@
           <div style="float: left">
             <el-input
               v-model="search"
-              placeholder="Pesquisa"
+              :placeholder="$t('settings.search')"
               @chage="doNothing(scope)"
             />
           </div>
           <div style="float: right">
-            <el-tooltip :content="$t('settings.driver_add')" placement="top">
+            <el-tooltip :content="$t('settings.add')" placement="top">
               <el-button
                 class="formButton"
                 size="small"
@@ -87,7 +87,7 @@
           </div>
         </template>
         <template slot-scope="scope">
-          <el-tooltip :content="$t('settings.driver_delete')" placement="top">
+          <el-tooltip :content="$t('settings.delete')" placement="top">
             <el-button
               class="formButton"
               size="small"
@@ -95,7 +95,7 @@
               @click="handleDelete(scope.row)"
             ><i class="fas fa-trash-alt"></i></el-button>
           </el-tooltip>
-          <el-tooltip :content="$t('settings.driver_edit')" placement="top">
+          <el-tooltip :content="$t('settings.edit')" placement="top">
             <el-button
               size="small"
               class="formButton"
@@ -114,8 +114,8 @@
 </template>
 
 <script>
-import { vm } from '../../../main'
-import { traccar } from '../../../api/traccar-api'
+import { vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
 
@@ -218,7 +218,21 @@ export default {
         confirmButtonText: this.$t('settings.driver_form_confirm'),
         cancelButtonText: this.$t('settings.driver_form_cancel')
       }).then(() => {
-        traccar.deleteDriver(row.id, this.driverDeleted)
+        traccar.deleteDriver(row.id)
+          .then(() => this.driverDeleted(row.id))
+          .catch(reason => {
+            Vue.$log.debug(reason)
+            if (reason.response.data.startsWith('Account is readonly')) {
+              this.$message({
+                message: this.$t('settings.driver_delete_not_allowed'),
+                type: 'warning',
+                duration: 5 * 1000
+              })
+            } else {
+              Vue.$log.error(reason)
+              this.$alert(reason)
+            }
+          })
       }).catch((error) => {
         this.$log.error(error)
       })
@@ -248,27 +262,50 @@ export default {
                 phone: this.driverForm.phone
               }
             }
-            traccar.addDriver(newDriver, this.driverCreated)
+            traccar.addDriver(newDriver)
+              .then(response => this.driverCreated(response.data))
+              .catch(reason => {
+                if (reason.response.data.startsWith('Duplicate entry')) {
+                  this.isUniqueIdDuplicated = true
+                  this.$refs.driver.validate()
+                } else if (reason.response.data.startsWith('Account is readonly')) {
+                  this.$message({
+                    message: this.$t('settings.driver_add_not_allowed'),
+                    type: 'warning',
+                    duration: 5 * 1000
+                  })
+                } else {
+                  Vue.$log.error(reason)
+                  this.$alert(reason)
+                }
+              })
           } else {
-            this.$log.debug(this.selectedGroup)
-
-            const driver = this.selectedDriver
-            driver.name = this.driverForm.name
-            driver.uniqueId = this.driverForm.uniqueId.length === 0 ? this.createUniqueID() : this.driverForm.uniqueId
-            driver.attributes.email = this.driverForm.email
-            driver.attributes.phone = this.driverForm.phone
-
             const d = {
-              id: driver.id,
+              id: this.selectedDriver.id,
               name: this.driverForm.name,
-              uniqueId: driver.uniqueId,
+              uniqueId: this.driverForm.uniqueId.length === 0 ? this.createUniqueID() : this.driverForm.uniqueId,
               attributes: {
                 email: this.driverForm.email,
                 phone: this.driverForm.phone
               }
             }
 
-            traccar.updateDriver(driver.id, d, this.driverUpdated, this.driverUniqueIdDuplicated)
+            traccar.updateDriver(this.selectedDriver.id, d)
+              .then(() => this.driverUpdated())
+              .catch(reason => {
+                if (reason.response.data.startsWith('Duplicate entry')) {
+                  this.isUniqueIdDuplicated = true
+                  this.$refs.driver.validate()
+                } else if (reason.response.data.startsWith('Account is readonly')) {
+                  this.$message({
+                    message: this.$t('settings.driver_edit_not_allowed'),
+                    type: 'warning',
+                    duration: 5 * 1000
+                  })
+                } else {
+                  Vue.$log.error(reason)
+                }
+              })
           }
         }
       })
@@ -285,15 +322,17 @@ export default {
       this.$store.dispatch('user/addDriver', newDriver)
     },
     driverUpdated: function() {
+      const driver = this.selectedDriver
+      driver.name = this.driverForm.name
+      driver.uniqueId = this.driverForm.uniqueId
+      driver.attributes.email = this.driverForm.email
+      driver.attributes.phone = this.driverForm.phone
+
       this.$message({
         type: 'success',
         message: this.$t('settings.driver_updated')
       })
       this.isOpenDriverForm = false
-    },
-    driverUniqueIdDuplicated: function() {
-      this.isUniqueIdDuplicated = true
-      this.$refs.driver.validate()
     },
     resetDuplicatedKeyValidator() {
       this.isUniqueIdDuplicated = false

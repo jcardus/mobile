@@ -416,7 +416,7 @@ export default {
               duration: 5 * 1000
             })
           } else {
-            console.error(reason)
+            Vue.$log.error(reason)
             await this.$alert(reason)
           }
         } finally {
@@ -514,7 +514,7 @@ export default {
               duration: 5 * 1000
             })
           } else {
-            console.error(reason)
+            Vue.$log.error(reason)
             this.$alert(reason)
           }
         })
@@ -586,12 +586,12 @@ export default {
             Vue.$log.debug(reason)
             if (reason.response.data.startsWith('Account is readonly')) {
               this.$message({
-                message: this.$t('settings.group_add_not_allowed'),
+                message: this.$t('settings.group_delete_not_allowed'),
                 type: 'warning',
                 duration: 5 * 1000
               })
             } else {
-              console.error(reason)
+              Vue.$log.error(reason)
               this.$alert(reason)
             }
           })

@@ -294,6 +294,9 @@ export default {
     group_select_geofences_placeholder: 'Seleccionar balizas',
     group_select_pois_placeholder: 'Seleccionar POIs',
     group_select_linegeofences_placeholder: 'Seleccionar corredores',
+    group_add_not_allowed: 'Não tem permissões para criar grupos.',
+    group_edit_not_allowed: 'Não tem permissões para editar grupos.',
+    group_delete_not_allowed: 'Não tem permissões para apagar grupos.',
     drivers: 'Motoristas',
     driver_name: 'Nome',
     driver_uniqueId: 'Chave RFID',
@@ -311,6 +314,9 @@ export default {
     driver_delete_title: 'Apagar Motorista',
     driver_created: 'Motorista criado com sucesso!',
     driver_updated: 'Motorista actualizado com sucesso!',
+    driver_add_not_allowed: 'Não tem permissões para criar motoristas.',
+    driver_edit_not_allowed: 'Não tem permissões para editar motoristas.',
+    driver_delete_not_allowed: 'Não tem permissões para apagar motoristas.',
     reports: 'Relatórios',
     automatic_reports: 'Relatórios automáticos',
     activate_automatic_trip_report: 'Relatório de viagens - Activar relatório automático',
@@ -341,7 +347,10 @@ export default {
     user_delete_info: 'Pretende apagar o utilizador ',
     user_delete_title: 'Apagar Utilizador',
     user_created: 'Utilizador criado com sucesso!',
-    user_updated: 'Utilizador actualizado com sucesso!'
+    user_updated: 'Utilizador actualizado com sucesso!',
+    user_create_not_allowed: 'Não tem permissões para criar utilizadores.',
+    user_edit_not_allowed: 'Não tem permissões para editar utilizadores.',
+    user_duplicated_entry: 'Utilizador já existe.'
   },
   geofence: {
     showGeofences: 'Ver Balizas',

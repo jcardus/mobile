@@ -53,7 +53,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { traccar } from '../../../api/traccar-api'
+import { traccar } from '@/api/traccar-api'
+import Vue from 'vue'
 
 export default {
   name: 'DriverDetails',
@@ -100,7 +101,16 @@ export default {
           uniqueId: this.driverPhone.length > 0 ? this.driverPhone : this.driverEmail
         }
 
-        traccar.addDriver(newDriver, this.driverCreated)
+        traccar.addDriver(newDriver)
+          .then(response => this.driverCreated(response.data))
+          .catch(reason => {
+            if (reason.response.data.startsWith('Account is readonly')) {
+              this.$f7.dialog.alert(this.$t('settings.driver_add_not_allowed'), this.$t('settings.driver_edit_title'))
+            } else {
+              Vue.$log.error(reason)
+              this.$alert(reason)
+            }
+          })
       } else {
         const driver = this.selectedDriver
         driver.name = this.driverName
@@ -110,7 +120,7 @@ export default {
         traccar.updateDriver(driver.id, driver, this.driverUpdated)
       }
     },
-    driverUpdated: function(driver) {
+    driverUpdated: function() {
       this.$f7.dialog.alert(this.$t('settings.driver_updated'), this.$t('settings.driver_edit_title'))
       this.$f7router.back()
     },
