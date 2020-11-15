@@ -149,7 +149,7 @@
           <div style="float: left">
             <el-input
               v-model="search"
-              placeholder="Pesquisa"
+              :placeholder="$t('settings.search')"
               @chage="doNothing(scope)"
             />
           </div>
@@ -335,12 +335,21 @@ export default {
             traccar.addUser(newUser)
               .then(this.userCreated)
               .catch(reason => {
+                this.loading = false
                 if (reason.response.data.startsWith('Duplicate entry')) {
                   this.$message({
-                    message: 'Utilizador já existe.',
+                    message: this.$t('settings.user_duplicated_entry'),
                     type: 'warning',
                     duration: 5 * 1000
                   })
+                } else if (reason.response.data.startsWith('Manager access required')) {
+                  this.$message({
+                    message: this.$t('settings.user_create_not_allowed'),
+                    type: 'warning',
+                    duration: 5 * 1000
+                  })
+                } else {
+                  Vue.$log.error(reason)
                 }
               })
           } else {
@@ -353,7 +362,27 @@ export default {
             user.password = this.userForm.password
 
             traccar.updateUser(user.id, user)
-              .then(this.userUpdated)
+              .then(() => {
+                this.userUpdated
+              })
+              .catch(reason => {
+                this.loading = false
+                if (reason.response.data.startsWith('Duplicate entry')) {
+                  this.$message({
+                    message: this.$t('settings.user_duplicated_entry'),
+                    type: 'warning',
+                    duration: 5 * 1000
+                  })
+                } else if (reason.response.data.startsWith('Manager access required')) {
+                  this.$message({
+                    message: this.$t('settings.user_edit_not_allowed'),
+                    type: 'warning',
+                    duration: 5 * 1000
+                  })
+                } else {
+                  Vue.$log.error(reason)
+                }
+              })
           }
         }
       })

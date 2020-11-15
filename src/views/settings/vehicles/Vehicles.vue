@@ -48,13 +48,13 @@
               class="formButton"
               size="small"
               @click="handleCancelVehicleForm"
-            >{{ $t('settings.vehicle_form_cancel') }}</el-button>
+            >{{ $t('settings.form_cancel') }}</el-button>
             <el-button
               type="success"
               class="formButton"
               size="small"
               @click="handleSubmitVehicleForm"
-            >{{ $t('settings.vehicle_form_confirm') }}</el-button>
+            >{{ $t('settings.form_confirm') }}</el-button>
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@
         <template slot="header" slot-scope="scope">
           <el-input
             v-model="search"
-            placeholder="Pesquisa"
+            :placeholder="$t('settings.search')"
             @chage="doNothing(scope)"
           />
         </template>
@@ -115,7 +115,7 @@
           <el-button :loading="downloadLoading" icon="el-icon-document" type="primary" @click="handleDownload">Excel</el-button>
         </template>
         <template slot-scope="scope">
-          <el-tooltip :content="$t('settings.vehicle_edit')" placement="top">
+          <el-tooltip :content="$t('settings.edit')" placement="top">
             <el-button
               size="small"
               class="formButton"
@@ -138,6 +138,7 @@ import { serverBus, vm } from '@/main'
 import { traccar } from '@/api/traccar-api'
 import * as lnglat from '../../../utils/lnglat'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 
 export default {
   name: 'Vehicles',
@@ -248,44 +249,53 @@ export default {
       this.clearFormData()
     },
     async handleSubmitVehicleForm() {
-      const vehicle = this.selectedVehicle
-      vehicle.name = this.vehicleName
-      vehicle.groupId = this.selectedGroup
-      vehicle.category = this.selectedCategory
-      vehicle.model = this.vehicleModel
-      vehicle.attributes.speedLimit = this.vehicleSpeedLimit / 1.85200
-
       const v = {
-        id: vehicle.id,
-        name: vehicle.name,
-        groupId: vehicle.groupId,
+        id: this.selectedVehicle.id,
+        name: this.vehicleName,
+        groupId: this.selectedGroup,
         attributes: {
-          speedLimit: vehicle.attributes.speedLimit,
-          license_plate: vehicle.attributes.license_plate,
-          'decoder.timezone': vehicle.attributes['decoder.timezone'],
-          has_immobilization: vehicle.attributes.has_immobilization
+          speedLimit: this.vehicleSpeedLimit / 1.85200,
+          license_plate: this.selectedVehicle.attributes.license_plate,
+          'decoder.timezone': this.selectedVehicle.attributes['decoder.timezone'],
+          has_immobilization: this.selectedVehicle.attributes.has_immobilization
         },
-        uniqueId: vehicle.uniqueId,
-        phone: vehicle.phone,
-        model: vehicle.model,
-        contact: vehicle.contact,
-        category: vehicle.category
+        uniqueId: this.selectedVehicle.uniqueId,
+        phone: this.selectedVehicle.phone,
+        model: this.vehicleModel,
+        contact: this.selectedVehicle.contact,
+        category: this.selectedCategory
       }
 
       const accumulator = {
-        deviceId: vehicle.id,
+        deviceId: this.selectedVehicle.id,
         totalDistance: this.vehicleTotalKms * 1000
       }
 
-      traccar.updateDeviceAccumulators(vehicle.id, accumulator, this.accumulatorUpdated)
-      await traccar.updateDevice(vehicle.id, v)
-      this.vehicleUpdated(v)
-      this.isOpenVehicleForm = false
-    },
-    accumulatorUpdated: function(data) {
-
+      try {
+        await traccar.updateDeviceAccumulators(this.selectedVehicle.id, accumulator)
+        await traccar.updateDevice(this.selectedVehicle.id, v)
+        this.vehicleUpdated(v)
+      } catch (reason) {
+        if (reason.response.data.startsWith('Manager access required')) {
+          this.$message({
+            message: this.$t('settings.vehicle_edit_not_allowed'),
+            type: 'warning',
+            duration: 5 * 1000
+          })
+        } else {
+          Vue.$log.error(reason)
+          await this.$alert(reason)
+        }
+      }
     },
     vehicleUpdated: function(device) {
+      this.selectedVehicle.name = device.vehicleName
+      this.selectedVehicle.groupId = device.selectedGroup
+      this.selectedVehicle.category = device.selectedCategory
+      this.selectedVehicle.model = device.vehicleModel
+      this.selectedVehicle.attributes.speedLimit = device.vehicleSpeedLimit / 1.85200
+
+      this.isOpenVehicleForm = false
       this.$message({
         type: 'success',
         message: this.$t('settings.vehicle_updated')
