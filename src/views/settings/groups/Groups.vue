@@ -177,7 +177,7 @@
               class="formButton"
               size="small"
               @click="handleSubmitGroupForm"
-            >{{ $t('settings.form_confirm') }}</el-button>
+            >{{ $t('settings.form_save') }}</el-button>
           </div>
         </div>
       </div>
@@ -577,8 +577,8 @@ export default {
     },
     handleDelete(row) {
       this.$confirm(this.$t('settings.group_delete_info') + row.name, this.$t('settings.group_delete_title'), {
-        confirmButtonText: this.$t('settings.group_edit_confirm'),
-        cancelButtonText: this.$t('settings.group_edit_cancel')
+        confirmButtonText: this.$t('settings.form_confirm'),
+        cancelButtonText: this.$t('settings.form_cancel')
       }).then(() => {
         traccar.deleteGroup(row.id)
           .then(() => this.groupDeleted(row.id))
