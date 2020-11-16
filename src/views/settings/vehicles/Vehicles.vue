@@ -54,7 +54,7 @@
               class="formButton"
               size="small"
               @click="handleSubmitVehicleForm"
-            >{{ $t('settings.form_confirm') }}</el-button>
+            >{{ $t('settings.form_save') }}</el-button>
           </div>
         </div>
       </div>
