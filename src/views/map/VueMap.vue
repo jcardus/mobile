@@ -47,6 +47,7 @@ import vehiclesLayer from './mapbox/VehiclesLayer'
 import VehicleDetail from '@/views/map/VehicleDetail'
 import store from '@/store'
 import { popUps } from '@/utils/lnglat'
+import { hexToRgb } from '@/utils/images'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -891,7 +892,11 @@ export default {
       vm.$mount('#vue-poi-popup')
     },
     styleImageMissing(e) {
-      console.log('A styleimagemissing event occurred.', e)
+      const imageName = e.id
+      lnglat.addImageToMap(
+        imageName.slice(0, imageName.length - 6),
+        hexToRgb(imageName.slice(imageName.length - 6, imageName.length)),
+        imageName)
     },
     animateTo(feature, position) {
       const line = [feature.geometry.coordinates, [position.longitude, position.latitude]]
