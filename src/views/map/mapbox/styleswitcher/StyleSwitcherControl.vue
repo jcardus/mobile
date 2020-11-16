@@ -5,7 +5,7 @@
       <button
         v-for="style in styles"
         :key="style.title"
-        :class="style.title === selected?'active':''"
+        :class="style.title === mapType ? 'active': ''"
         @click="styleClicked(style.title)"
       >
         {{ style.title }}
@@ -21,14 +21,14 @@
 <script>
 
 import { vm } from '@/main'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'StyleSwitcherControl',
-  data: function() {
+  data() {
     return {
       btnVisible: true,
       containerVisible: false,
-      selected: 'Streets',
       styles: [
         { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v10' },
         { title: 'Light', uri: 'mapbox://styles/mapbox/light-v9' },
@@ -59,10 +59,11 @@ export default {
     }
   },
   computed: {
-    map: function() { return vm.$static.map },
-    geofencesVisible: function() { return vm.$store.state.map.showGeofences },
-    lineGeofencesVisible: function() { return vm.$store.state.map.showLineGeofences },
-    poisVisible: function() { return vm.$store.state.map.showPOIs },
+    ...mapGetters(['mapType']),
+    map() { return vm.$static.map },
+    geofencesVisible() { return vm.$store.state.map.showGeofences },
+    lineGeofencesVisible() { return vm.$store.state.map.showLineGeofences },
+    poisVisible() { return vm.$store.state.map.showPOIs },
     buildingsVisible() { return vm.$store.state.map.show3dBuildings }
   },
   mounted() {
@@ -74,13 +75,13 @@ export default {
     })
   },
   methods: {
-    toggleGeofences: function() {
+    toggleGeofences() {
       vm.$store.dispatch('map/toggleGeofences')
     },
-    toggleLineGeofences: function() {
+    toggleLineGeofences() {
       vm.$store.dispatch('map/toggleLineGeofences')
     },
-    togglePOIs: function() {
+    togglePOIs() {
       vm.$store.dispatch('map/togglePOIs')
     },
     async toggleBuildings() {
@@ -91,10 +92,12 @@ export default {
       this.containerVisible = true
     },
     styleClicked(title) {
-      vm.$static.map.setStyle(this.styles.find(e => e.title === title).uri)
-      this.selected = title
+      const style = this.styles.find(e => e.title === title).uri
+      this.$store.dispatch('map/setType', title)
+      this.$store.dispatch('map/setStyle', style)
       this.containerVisible = false
       this.btnVisible = true
+      vm.$static.map.setStyle(style)
     }
   }
 }
@@ -118,6 +121,7 @@ export default {
     width: 100%;
   }
 
+  /* ignore warning */
   .mapboxgl-style-list button.active
   {
     font-weight: bold;

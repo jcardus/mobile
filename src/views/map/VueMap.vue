@@ -104,7 +104,6 @@ export default {
       origin: [-9.267959, 38.720023],
       destination: [],
       animating: true,
-      mapStyle: this.$root.$data.mapStyle,
       unsubscribe: null,
       parentHeight: 0,
       imageDownloadQueue: [],
@@ -116,7 +115,7 @@ export default {
     ...mapGetters([
       'followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'events', 'drivers',
       'showLabels', 'isPlaying', 'vehicles3dEnabled', 'deviceById', 'deviceByName',
-      'loading', 'zoom', 'center'
+      'loading', 'zoom', 'center', 'mapType', 'mapStyle'
     ]),
     userLoggedIn() {
       return this.name !== ''
@@ -194,7 +193,7 @@ export default {
     mapboxgl.accessToken = this.accessToken
     this.$root.$static.map = new mapboxgl.Map({
       container: 'map',
-      style: this.$root.$data.mapStyle,
+      style: this.mapStyle,
       attributionControl: false
     })
     this.setZoomAndCenter()
@@ -510,7 +509,7 @@ export default {
       map.addControl(new MapboxTraffic(), 'bottom-left')
       map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-left')
       const VD = Vue.extend(StyleSwitcherControl)
-      const _vm = new VD({ i18n: i18n })
+      const _vm = new VD({ i18n: i18n, store: store })
       _vm.$mount('#style-switcher-div')
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },

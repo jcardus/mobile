@@ -10,10 +10,18 @@ const state = {
   tableCollapsed: false,
   followVehicle: null,
   center: null,
-  zoom: 0
+  zoom: 0,
+  mapType: 'streets',
+  mapStyle: 'mapbox://styles/mapbox/streets-v11'
 }
 
 const mutations = {
+  SET_TYPE(state, value) {
+    state.mapType = value
+  },
+  SET_STYLE(state, value) {
+    state.mapStyle = value
+  },
   setCenter(state, value) {
     state.center = value
   },
@@ -47,6 +55,12 @@ const mutations = {
 }
 
 const actions = {
+  setStyle({ commit }, style) {
+    commit('SET_STYLE', style)
+  },
+  setType({ commit }, type) {
+    commit('SET_TYPE', type)
+  },
   followVehicle({ commit }, vehicle) {
     commit('FOLLOW_VEHICLE', vehicle)
   },
