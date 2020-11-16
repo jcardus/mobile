@@ -62,7 +62,7 @@ export default {
     source: 'geofences',
     layout: {
       'text-size': 11,
-      'text-field': '{title}',
+      'text-field': 'title',
       visibility: store.state.map.showGeofences ? 'visible' : 'none'
     },
     filter: ['==', '$type', 'LineString']

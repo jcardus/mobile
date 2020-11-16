@@ -740,7 +740,6 @@ export default {
           this.$log.error('no device, this is weird, we should logoff,', position)
           continue
         }
-        this.$log.debug(position.fixTime, device.name)
         let feature = this.findFeatureByDeviceId(position.deviceId)
         if (!feature) {
           feature = this.positionToFeature(position, device)
