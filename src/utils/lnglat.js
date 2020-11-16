@@ -391,6 +391,38 @@ function findDriver(position, device) {
 
 import { hexToRgb, deltaE } from '@/utils/images'
 import geofencesLayer from '../views/map/mapbox/layers/GeofencesLayer'
+
+export function addImageToMap(icon, uniqueColor, imageName) {
+  const canvas = document.createElement('canvas')
+  canvas.width = 27
+  canvas.height = 27
+  const ctx = canvas.getContext('2d')
+  const image = document.createElement('img')
+  image.src = './img/icons/pois/' + icon + '-blue.svg'
+  ctx.drawImage(image, 0, 0)
+  const imgd = ctx.getImageData(0, 0, 27, 27)
+  const pix = imgd.data
+  let i = 0
+  const n = pix.length
+  for (; i < n; i += 4) {
+    // 3232b4
+    if (pix[i + 3] > 200 ||
+      deltaE([pix[i], pix[i + 1], pix[i + 2]], [[0x32], [0x32], [0xb4]]) < 75) {
+      pix[i] = uniqueColor[0] // Red component
+      pix[i + 1] = uniqueColor[1] // Blue component
+      pix[i + 2] = uniqueColor[2] // Green component
+      // pix[i+3] is the transparency.
+    }
+  }
+  ctx.putImageData(imgd, 0, 0)
+  const imageUrl = canvas.toDataURL('image/png')
+  vm.$static.map.loadImage(imageUrl, (err, image) => {
+    if (!err) {
+      vm.$static.map.addImage(imageName, image)
+    }
+  })
+}
+
 export function processGeofences(geofences) {
   const result = []
   Vue.$log.debug('converting ', geofences.length, 'geofences to feature')
@@ -404,34 +436,7 @@ export function processGeofences(geofences) {
         const uniqueColor = hexToRgb(item.attributes.color)
         const imageName = item.attributes.icon + item.attributes.color.replace('#', '')
         if (!vm.$static.map.hasImage(imageName) && uniqueColor) {
-          const canvas = document.createElement('canvas')
-          canvas.width = 27
-          canvas.height = 27
-          const ctx = canvas.getContext('2d')
-          const image = document.createElement('img')
-          image.src = './img/icons/pois/' + item.attributes.icon + '-blue.svg'
-          ctx.drawImage(image, 0, 0)
-          const imgd = ctx.getImageData(0, 0, 27, 27)
-          const pix = imgd.data
-          let i = 0
-          const n = pix.length
-          for (; i < n; i += 4) {
-            // 3232b4
-            if (pix[i + 3] > 200 ||
-              deltaE([pix[i], pix[i + 1], pix[i + 2]], [[0x32], [0x32], [0xb4]]) < 75) {
-              pix[i] = uniqueColor[0] // Red component
-              pix[i + 1] = uniqueColor[1] // Blue component
-              pix[i + 2] = uniqueColor[2] // Green component
-              // pix[i+3] is the transparency.
-            }
-          }
-          ctx.putImageData(imgd, 0, 0)
-          const imageUrl = canvas.toDataURL('image/png')
-          vm.$static.map.loadImage(imageUrl, (err, image) => {
-            if (!err) {
-              vm.$static.map.addImage(imageName, image)
-            }
-          })
+          addImageToMap(item.attributes.icon, uniqueColor, imageName)
         }
       }
     }

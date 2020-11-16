@@ -150,7 +150,6 @@ export const vm = new Vue({
       loadingRoutes: false,
       routeMinDate: Vue.moment().startOf('day').toDate(),
       routeMaxDate: new Date(),
-      mapStyle: 'mapbox://styles/mapbox/streets-v11',
       devices: [],
       geofences: [],
       currentDevice: null,

@@ -25,13 +25,13 @@
               class="alertFormButton"
               size="small"
               @click="handleCancelDriverForm"
-            >{{ $t('settings.driver_form_cancel') }}</el-button>
+            >{{ $t('settings.form_cancel') }}</el-button>
             <el-button
               type="success"
               class="alertFormButton"
               size="small"
               @click="handleSubmitDriverForm"
-            >{{ $t('settings.driver_form_confirm') }}</el-button>
+            >{{ $t('settings.form_save') }}</el-button>
           </div>
         </div>
       </div>
@@ -215,8 +215,8 @@ export default {
     },
     handleDelete(row) {
       this.$confirm(this.$t('settings.driver_delete_info') + row.name, this.$t('settings.driver_delete_title'), {
-        confirmButtonText: this.$t('settings.driver_form_confirm'),
-        cancelButtonText: this.$t('settings.driver_form_cancel')
+        confirmButtonText: this.$t('settings.form_confirm'),
+        cancelButtonText: this.$t('settings.form_cancel')
       }).then(() => {
         traccar.deleteDriver(row.id)
           .then(() => this.driverDeleted(row.id))

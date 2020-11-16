@@ -110,7 +110,7 @@
               class="formButton"
               size="small"
               @click="handleSubmitForm"
-            >{{ $t('settings.form_confirm') }}</el-button>
+            >{{ $t('settings.form_save') }}</el-button>
           </div>
         </div>
       </div>
@@ -333,7 +333,7 @@ export default {
               deviceReadonly: this.userForm.userType === 'manager'
             }
             traccar.addUser(newUser)
-              .then(this.userCreated)
+              .then(response => this.userCreated(response.data))
               .catch(reason => {
                 this.loading = false
                 if (reason.response.data.startsWith('Duplicate entry')) {
@@ -363,7 +363,7 @@ export default {
 
             traccar.updateUser(user.id, user)
               .then(() => {
-                this.userUpdated
+                this.userUpdated()
               })
               .catch(reason => {
                 this.loading = false
@@ -391,7 +391,7 @@ export default {
       try {
         await this.$store.dispatch('user/addUser', newUser)
 
-        await this.updateUserPermissions()
+        await this.updateUserPermissions(newUser)
 
         this.$message({
           type: 'success',
@@ -406,7 +406,7 @@ export default {
     },
     userUpdated: async function() {
       try {
-        await this.updateUserPermissions()
+        await this.updateUserPermissions(self.selectedUser)
 
         this.$message({
           type: 'success',
@@ -419,7 +419,7 @@ export default {
         this.loading = false
       }
     },
-    async updateUserPermissions() {
+    async updateUserPermissions(user) {
       const self = this
 
       const geofencesToRemove = this.userForm.userGeofences.filter(x => !this.userForm.userSelectedGeofences.includes(x))
@@ -427,13 +427,13 @@ export default {
 
       const geofencePermissionsToRemove = geofencesToRemove.map(g => {
         return {
-          userId: self.selectedUser.id,
+          userId: user.id,
           geofenceId: g
         }
       })
       const geofencePermissionsToAdd = geofencesToAdd.map(g => {
         return {
-          userId: self.selectedUser.id,
+          userId: user.id,
           geofenceId: g
         }
       })
@@ -446,13 +446,13 @@ export default {
 
       const groupsPermissionsToRemove = groupsToRemove.map(g => {
         return {
-          userId: self.selectedUser.id,
+          userId: user.id,
           groupId: g
         }
       })
       const groupPermissionsToAdd = groupsToAdd.map(g => {
         return {
-          userId: self.selectedUser.id,
+          userId: user.id,
           groupId: g
         }
       })
@@ -465,13 +465,13 @@ export default {
 
       const driversPermissionsToRemove = driversToRemove.map(d => {
         return {
-          userId: self.selectedUser.id,
+          userId: user.id,
           driverId: d
         }
       })
       const driversPermissionsToAdd = driversToAdd.map(d => {
         return {
-          userId: self.selectedUser.id,
+          userId: user.id,
           driverId: d
         }
       })

@@ -153,6 +153,7 @@ export default {
     deselect_all: 'Remover Todos',
     form_cancel: 'Cancelar',
     form_confirm: 'Confirmar',
+    form_save: 'Guardar',
     transfer_selected: 'Seleccionados',
     alerts: 'Alertas',
     alerts_type: 'Tipo',

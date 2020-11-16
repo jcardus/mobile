@@ -47,6 +47,7 @@ import vehiclesLayer from './mapbox/VehiclesLayer'
 import VehicleDetail from '@/views/map/VehicleDetail'
 import store from '@/store'
 import { popUps } from '@/utils/lnglat'
+import { hexToRgb } from '@/utils/images'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -104,7 +105,6 @@ export default {
       origin: [-9.267959, 38.720023],
       destination: [],
       animating: true,
-      mapStyle: this.$root.$data.mapStyle,
       unsubscribe: null,
       parentHeight: 0,
       imageDownloadQueue: [],
@@ -116,7 +116,7 @@ export default {
     ...mapGetters([
       'followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'events', 'drivers',
       'showLabels', 'isPlaying', 'vehicles3dEnabled', 'deviceById', 'deviceByName',
-      'loading', 'zoom', 'center'
+      'loading', 'zoom', 'center', 'mapType', 'mapStyle'
     ]),
     userLoggedIn() {
       return this.name !== ''
@@ -194,7 +194,7 @@ export default {
     mapboxgl.accessToken = this.accessToken
     this.$root.$static.map = new mapboxgl.Map({
       container: 'map',
-      style: this.$root.$data.mapStyle,
+      style: this.mapStyle,
       attributionControl: false
     })
     this.setZoomAndCenter()
@@ -510,7 +510,7 @@ export default {
       map.addControl(new MapboxTraffic(), 'bottom-left')
       map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-left')
       const VD = Vue.extend(StyleSwitcherControl)
-      const _vm = new VD({ i18n: i18n })
+      const _vm = new VD({ i18n: i18n, store: store })
       _vm.$mount('#style-switcher-div')
       map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
@@ -892,7 +892,11 @@ export default {
       vm.$mount('#vue-poi-popup')
     },
     styleImageMissing(e) {
-      console.log('A styleimagemissing event occurred.', e)
+      const imageName = e.id
+      lnglat.addImageToMap(
+        imageName.slice(0, imageName.length - 6),
+        hexToRgb(imageName.slice(imageName.length - 6, imageName.length)),
+        imageName)
     },
     animateTo(feature, position) {
       const line = [feature.geometry.coordinates, [position.longitude, position.latitude]]
