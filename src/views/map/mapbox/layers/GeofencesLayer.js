@@ -72,7 +72,7 @@ export default {
     type: 'symbol',
     source: 'geofences',
     layout: {
-      'text-field': '{title}',
+      'text-field': 'title',
       visibility: store.state.map.showPOIs ? 'visible' : 'none',
       'text-size': 11,
       'text-justify': 'auto',
