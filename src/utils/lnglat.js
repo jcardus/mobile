@@ -389,7 +389,7 @@ function findDriver(position, device) {
   return { name: position.attributes.driverUniqueId }
 }
 
-import { hexToRgb, deltaE } from '@/utils/images'
+import { deltaE } from '@/utils/images'
 import geofencesLayer from '../views/map/mapbox/layers/GeofencesLayer'
 
 export function addImageToMap(icon, uniqueColor, imageName) {
@@ -414,13 +414,7 @@ export function addImageToMap(icon, uniqueColor, imageName) {
       // pix[i+3] is the transparency.
     }
   }
-  ctx.putImageData(imgd, 0, 0)
-  const imageUrl = canvas.toDataURL('image/png')
-  vm.$static.map.loadImage(imageUrl, (err, image) => {
-    if (!err) {
-      vm.$static.map.addImage(imageName, image)
-    }
-  })
+  vm.$static.map.addImage(imageName, { width: 27, height: 27, data: pix })
 }
 
 export function processGeofences(geofences) {
@@ -430,15 +424,7 @@ export function processGeofences(geofences) {
     const item = geofences[i1]
     if (item) {
       const geoJson = geofencesLayer.getFeatureGeojson(item)
-      Vue.$log.debug('adding... ', geoJson)
       result.push(geoJson)
-      if (item.attributes.color) {
-        const uniqueColor = hexToRgb(item.attributes.color)
-        const imageName = item.attributes.icon + item.attributes.color.replace('#', '')
-        if (!vm.$static.map.hasImage(imageName) && uniqueColor) {
-          addImageToMap(item.attributes.icon, uniqueColor, imageName)
-        }
-      }
     }
   }
   return result

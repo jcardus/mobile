@@ -35,7 +35,7 @@ export default {
         { title: 'Outdoors', uri: 'mapbox://styles/mapbox/outdoors-v11' },
         { title: 'Satellite', uri: {
           version: 8,
-          'sources': {
+          sources: {
             'raster-tiles': {
               'type': 'raster',
               'tiles': [
@@ -44,7 +44,7 @@ export default {
               'tileSize': 256
             }
           },
-          'layers': [
+          layers: [
             {
               'id': 'simple-tiles',
               'type': 'raster',
@@ -52,7 +52,8 @@ export default {
               'minzoom': 0,
               'maxzoom': 22
             }
-          ]
+          ],
+          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
         }},
         { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v11' }
       ]
