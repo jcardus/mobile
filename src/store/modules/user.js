@@ -278,7 +278,7 @@ const actions = {
         result.push(alarm_data)
       })
       commit('SET_ALERTS', result)
-      if (state.devices) {
+      if (state.devices && state.devices.length > settings.maxDevicesForAlerts) {
         state.devices.forEach(d => {
           traccar.alertsByDevice(d.id)
             .then(({ data }) => {
