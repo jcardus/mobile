@@ -112,7 +112,7 @@ export default {
         }
       })
     } else { Vue.$log.warn(positionsSource, ' already exists...') }
-    if (!map.getLayer(buildings3d)) {
+    if (!map.getLayer(buildings3d) && map.getSource('composite')) {
       vm.$static.map.addLayer({
         id: buildings3d,
         source: 'composite',
