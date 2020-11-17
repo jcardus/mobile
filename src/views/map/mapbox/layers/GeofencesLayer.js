@@ -62,7 +62,7 @@ export default {
     source: 'geofences',
     layout: {
       'text-size': 11,
-      'text-field': 'title',
+      'text-field': ['get', 'title'],
       visibility: store.state.map.showGeofences ? 'visible' : 'none'
     },
     filter: ['==', '$type', 'LineString']
@@ -72,7 +72,7 @@ export default {
     type: 'symbol',
     source: 'geofences',
     layout: {
-      'text-field': 'title',
+      'text-field': ['get', 'title'],
       visibility: store.state.map.showPOIs ? 'visible' : 'none',
       'text-size': 11,
       'text-justify': 'auto',
