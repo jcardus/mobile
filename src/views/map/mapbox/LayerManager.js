@@ -60,7 +60,7 @@ export function setVisible(layer, value) {
   const visibility = value ? 'visible' : 'none'
   if (vm.$static.map.getLayer(layer)) {
     vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
-  } else { Vue.$log.warn('nonexistent layer', layer) }
+  }
 }
 function refreshSources() {
   const fSource = vm.$static.map.getSource(positionsSource)
