@@ -38,7 +38,9 @@ const getters = {
   zoom: state => state.map.zoom,
   center: state => state.map.center,
   orderDevicesBy: state => state.user.orderDevicesBy,
-  alertsSearchPeriod: state => state.user.alertsSearchPeriod
+  alertsSearchPeriod: state => state.user.alertsSearchPeriod,
+  mapType: state => state.map.mapType,
+  mapStyle: state => state.map.mapStyle
 }
 
 export default getters

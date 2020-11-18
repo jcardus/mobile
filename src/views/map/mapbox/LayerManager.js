@@ -60,7 +60,7 @@ export function setVisible(layer, value) {
   const visibility = value ? 'visible' : 'none'
   if (vm.$static.map.getLayer(layer)) {
     vm.$static.map.setLayoutProperty(layer, 'visibility', visibility)
-  } else { Vue.$log.warn('nonexistent layer', layer) }
+  }
 }
 function refreshSources() {
   const fSource = vm.$static.map.getSource(positionsSource)
@@ -112,7 +112,7 @@ export default {
         }
       })
     } else { Vue.$log.warn(positionsSource, ' already exists...') }
-    if (!map.getLayer(buildings3d)) {
+    if (!map.getLayer(buildings3d) && map.getSource('composite')) {
       vm.$static.map.addLayer({
         id: buildings3d,
         source: 'composite',
