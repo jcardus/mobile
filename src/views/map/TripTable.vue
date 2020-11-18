@@ -208,7 +208,7 @@ export default {
     background-color: rgba($--color-primary, 0.1);
   }
   .historyTotal {
-    height: 65px;
+    height: 75px;
     background-color: rgba($--color-primary, 0.1);
     padding-left: 5px;
   }
