@@ -68,6 +68,7 @@
       <el-table
         id="vehicleTable"
         ref="vehicleTable"
+        v-el-table-infinite-scroll="load"
         v-loading.fullscreen.lock="loading"
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -132,13 +133,8 @@
             ></immobilize-button>
           </template>
         </el-table-column>
-        <el-table-column type="expand" width="1">
-          <template>
-            <trip-table></trip-table>
-          </template>
-        </el-table-column>
       </el-table>
-
+      <trip-table v-if="historyMode"></trip-table>
     </div>
   </div>
 </template>
@@ -154,6 +150,7 @@ import { mapGetters, mapMutations } from 'vuex'
 import * as utils from '../../utils/utils'
 import * as event from '../../events'
 import store from '../../store'
+import elTableInfiniteScroll from 'el-table-infinite-scroll'
 
 export default {
   name: 'VehicleTable',
@@ -186,6 +183,9 @@ export default {
       return value
     }
   },
+  directives: {
+    'el-table-infinite-scroll': elTableInfiniteScroll
+  },
   props: {
     filterKey: {
       default: '',
@@ -194,6 +194,7 @@ export default {
   },
   data() {
     return {
+      count: 10,
       show: true,
       animating: false,
       data: [],
@@ -216,6 +217,8 @@ export default {
       return this.isMobile ? 'large' : 'mini'
     },
     height() {
+      if (this.historyMode) { return 90 }
+
       const historyModeHeight = this.historyMode ? styles.vehicleListHeaderHeightHistoryMode : styles.vehicleListHeaderHeight
       return 'calc(100vh - ' + historyModeHeight + ')'
     },
@@ -296,7 +299,7 @@ export default {
             return (a === b ? 0 : a > b ? -1 : 1)
         }
         return (a === b ? 0 : a > b ? 1 : -1)
-      })
+      }).slice(0, this.count)
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -335,6 +338,10 @@ export default {
   },
   methods: {
     ...mapMutations('user', ['setOrderDevicesBy']),
+    load() {
+      Vue.$log.debug('LoadMore')
+      this.count += 10
+    },
     fuelLevelClick() {
       if (this.fuelMetric === 'percentage') {
         this.fuelMetric = 'liters'

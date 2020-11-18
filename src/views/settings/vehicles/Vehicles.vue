@@ -160,8 +160,7 @@ export default {
   computed: {
     filteredDevices() {
       return this.devices.filter(
-        data => !this.search ||
-        data.name.toLowerCase().includes(this.search.toLowerCase()) ||
+        data => !this.search || (data.name && data.name.toLowerCase().includes(this.search.toLowerCase())) ||
         (data.attributes.license_plate && data.attributes.license_plate.toLowerCase().includes(this.search.toLowerCase())) ||
         (data.model && data.model.toLowerCase().includes(this.search.toLowerCase()))
       )
@@ -272,7 +271,9 @@ export default {
       }
 
       try {
-        await traccar.updateDeviceAccumulators(this.selectedVehicle.id, accumulator)
+        if (this.selectedVehicle.position) {
+          await traccar.updateDeviceAccumulators(this.selectedVehicle.id, accumulator)
+        }
         await traccar.updateDevice(this.selectedVehicle.id, v)
         this.vehicleUpdated(v)
       } catch (reason) {
@@ -288,19 +289,18 @@ export default {
         }
       }
     },
-    vehicleUpdated: function(device) {
-      this.selectedVehicle.name = device.vehicleName
-      this.selectedVehicle.groupId = device.selectedGroup
-      this.selectedVehicle.category = device.selectedCategory
-      this.selectedVehicle.model = device.vehicleModel
-      this.selectedVehicle.attributes.speedLimit = device.vehicleSpeedLimit / 1.85200
-
+    vehicleUpdated(updatedDevice) {
       this.isOpenVehicleForm = false
+      this.selectedVehicle.name = updatedDevice.name
+      this.selectedVehicle.groupId = updatedDevice.groupId
+      this.selectedVehicle.category = updatedDevice.category
+      this.selectedVehicle.model = updatedDevice.model
+      this.selectedVehicle.attributes.speedLimit = updatedDevice.attributes.speedLimit
       this.$message({
         type: 'success',
         message: this.$t('settings.vehicle_updated')
       })
-      serverBus.$emit('deviceChanged', device)
+      serverBus.$emit('deviceChanged', this.selectedVehicle)
       this.clearFormData()
     },
     handleEdit(row) {
