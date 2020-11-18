@@ -23,16 +23,15 @@ const state = {
   geofences: [],
   drivers: [],
   users: [],
-  orderDevicesBy: 'orderByStatus',
-  alertsSearchPeriod: 'last_one_hour'
+  orderDevicesBy: 'orderByStatus'
 }
 
 const mutations = {
   setOrderDevicesBy(state, value) {
-    state.orderDevicesBy = value
+    state.attributes.orderDevicesBy = value
   },
   setAlertsSearchPeriod(state, value) {
-    state.alertsSearchPeriod = value
+    state.attributes.alertsSearchPeriod = value
   },
   SET_GEOFENCES(state, geofences) {
     console.log('SET_GEOFENCES', geofences)
