@@ -19,7 +19,6 @@ import { SharedData } from './utils/utils'
 import * as partner from './utils/partner'
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
-import elTableInfiniteScroll from 'el-table-infinite-scroll'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
@@ -50,7 +49,6 @@ Vue.config.errorHandler = (err, vm, info) => {
 }
 
 Vue.use(LoadScript)
-Vue.use(elTableInfiniteScroll)
 
 const isProduction = process.env.NODE_ENV === 'production'
 const options = {
