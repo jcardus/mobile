@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.751",
+  "version": "1.0.752",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
@@ -32,6 +32,7 @@
     "axios": "latest",
     "chart.js": "^2.9.3",
     "chartjs-plugin-annotation": "latest",
+    "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "^2.13.2",
     "file-saver": "^2.0.2",
     "framework7": "^5.7.10",
