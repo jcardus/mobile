@@ -210,7 +210,7 @@ export default {
   computed: {
     ...mapGetters(['loading', 'historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
     orderedBy: {
-      get() { return this.$store.getters.orderDevicesBy },
+      get() { return this.$store.state.user.user.attributes.orderDevicesBy },
       set(value) { this.$store.commit('user/setOrderDevicesBy', value) }
     },
     buttonSize() {
