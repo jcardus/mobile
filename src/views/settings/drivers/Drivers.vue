@@ -176,7 +176,11 @@ export default {
   computed: {
     ...mapGetters(['drivers']),
     filteredDrivers() {
-      return this.drivers
+      return this.drivers.filter(data => !this.search ||
+        data.name.toLowerCase().includes(this.search.toLowerCase()) ||
+        data.uniqueId.toLowerCase().includes(this.search.toLowerCase()) ||
+        (data.attributes.email && data.attributes.email.toLowerCase().includes(this.search.toLowerCase())) ||
+        (data.attributes.phone && data.attributes.phone.toLowerCase().includes(this.search.toLowerCase())))
     }
   },
   methods: {
