@@ -406,7 +406,7 @@ export default {
     },
     userUpdated: async function() {
       try {
-        await this.updateUserPermissions(self.selectedUser)
+        await this.updateUserPermissions(this.selectedUser)
 
         this.$message({
           type: 'success',
