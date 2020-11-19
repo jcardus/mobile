@@ -3,6 +3,7 @@
     <div class="mobileScroll">
       <el-table
         id="driverTable"
+        v-el-table-infinite-scroll="load"
         style="padding: 10px"
         highlight-current-row
         :cell-style="cellStyle"
@@ -43,13 +44,22 @@ import { serverBus, vm } from '@/main'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
+import elTableInfiniteScroll from 'el-table-infinite-scroll'
 
 export default {
   name: 'DriverTable',
+  directives: {
+    'el-table-infinite-scroll': elTableInfiniteScroll
+  },
   props: {
     filterKey: {
       type: String,
       default: ''
+    }
+  },
+  data() {
+    return {
+      count: 50
     }
   },
   computed: {
@@ -77,7 +87,7 @@ export default {
 
         return (a === b ? 0 : a > b ? 1 : -1)
       })
-      return drivers
+      return drivers.slice(0, this.count)
     },
     getVehicleName(row) {
       if (row.vehicle) {
@@ -88,6 +98,11 @@ export default {
     }
   },
   methods: {
+    load() {
+      if (this.drivers.length < this.count) {
+        this.count += 10
+      }
+    },
     getDriverStateOrder: function(driver) {
       if (driver.vehicle) {
         return 0
