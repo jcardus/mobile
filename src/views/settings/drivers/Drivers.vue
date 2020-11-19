@@ -67,7 +67,7 @@
         sortable
       >
       </el-table-column>
-      <el-table-column label="" min-width="90px">
+      <el-table-column label="" min-width="140px">
         <template slot="header" slot-scope="scope">
           <div style="float: left">
             <el-input
@@ -75,6 +75,9 @@
               :placeholder="$t('settings.search')"
               @chage="doNothing(scope)"
             />
+          </div>
+          <div style="float: left; padding-left: 10px">
+            <el-button :loading="downloadLoading" icon="el-icon-document" type="primary" @click="handleDownload">Excel</el-button>
           </div>
           <div style="float: right">
             <el-tooltip :content="$t('settings.add')" placement="top">
@@ -141,6 +144,7 @@ export default {
       callback()
     }
     return {
+      downloadLoading: false,
       isOpenDriverForm: false,
       isNewDriver: true,
       selectedDriver: null,
@@ -180,6 +184,31 @@ export default {
     }
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      import('../../../utils/ExportExcel').then(excel => {
+        const tHeader = [
+          this.$t('settings.driver_name'),
+          this.$t('settings.driver_uniqueId'),
+          this.$t('settings.driver_email'),
+          this.$t('settings.driver_phone')
+        ]
+        const data = this.filteredDrivers.map(d => [
+          d.name,
+          d.uniqueId,
+          d.email,
+          d.phone]
+        )
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '',
+          autoWidth: false,
+          bookType: 'xlsx'
+        })
+        this.downloadLoading = false
+      })
+    },
     tableRowStyle() {
       return 'font-size: 14px'
     },
