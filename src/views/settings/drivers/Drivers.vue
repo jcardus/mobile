@@ -37,6 +37,7 @@
       </div>
     </transition>
     <el-table
+      v-el-table-infinite-scroll="load"
       height="calc(100vh - 150px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
@@ -144,6 +145,7 @@ export default {
       callback()
     }
     return {
+      count: 10,
       downloadLoading: false,
       isOpenDriverForm: false,
       isNewDriver: true,
@@ -176,10 +178,17 @@ export default {
   computed: {
     ...mapGetters(['drivers']),
     filteredDrivers() {
-      return this.drivers
+      return this.drivers.filter(data => this.search === '' ||
+        data.name.toLowerCase().includes(this.search.toLowerCase()) ||
+        data.uniqueId.toLowerCase().includes(this.search.toLowerCase()) ||
+        (data.attributes.email && data.attributes.email.toLowerCase().includes(this.search.toLowerCase())) ||
+        (data.attributes.phone && data.attributes.phone.toLowerCase().includes(this.search.toLowerCase()))).slice(0, this.count)
     }
   },
   methods: {
+    load() {
+      this.count += 10
+    },
     handleDownload() {
       this.downloadLoading = true
       import('../../../utils/ExportExcel').then(excel => {
