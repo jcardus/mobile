@@ -26,7 +26,7 @@ const state = {
 }
 
 const mutations = {
-  setOrderDevicesBy(state, orderDevicesBy) {
+  SET_ORDER_DEVICES_BY(state, orderDevicesBy) {
     state.user.attributes = { ...state.user.attributes, orderDevicesBy }
   },
   setAlertsSearchPeriod(state, value) {
@@ -114,7 +114,7 @@ function initData(commit, state, dispatch) {
               dispatch('processGroups')
                 .then(() => {
                   dispatch('fetchAlerts').then(() => {
-                    state.user.alertsSearchPeriod = 'last_one_hour'
+                    state.user.attributes.alertsSearchPeriod = 'last_one_hour'
                     if (state.devices.length < 100) {
                       dispatch('transient/fetchEvents', {
                         start: Vue.moment().subtract(1, 'hour').toDate(),
@@ -143,6 +143,10 @@ function initData(commit, state, dispatch) {
 }
 
 const actions = {
+  setOrderDevicesBy({ commit, state }, value) {
+    traccar.updateUser(state.user.id, state.user)
+    commit('SET_ORDER_DEVICES_BY', value)
+  },
   refreshDevices({ commit, state }) {
     if (state.devices.length > 0) {
       commit('SET_DEVICE', state.devices[0])

@@ -146,7 +146,7 @@ import Vue from 'vue'
 import ImmobilizeButton from './ImmobilizeButton'
 import TripTable from './TripTable'
 import styles from '../../styles/element-variables.scss'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 import * as utils from '../../utils/utils'
 import * as event from '../../events'
 import store from '../../store'
@@ -211,7 +211,7 @@ export default {
     ...mapGetters(['loading', 'historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
     orderedBy: {
       get() { return this.$store.state.user.user.attributes.orderDevicesBy },
-      set(value) { this.$store.commit('user/setOrderDevicesBy', value) }
+      set(value) { this.$store.dispatch('user/setOrderDevicesBy', value) }
     },
     buttonSize() {
       return this.isMobile ? 'large' : 'mini'
@@ -337,7 +337,6 @@ export default {
     serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
-    ...mapMutations('user', ['setOrderDevicesBy']),
     load() {
       Vue.$log.debug('LoadMore')
       this.count += 10
