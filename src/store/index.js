@@ -3,15 +3,6 @@ import Vuex from 'vuex'
 import getters from './getters'
 import { TrackJS } from 'trackjs'
 import { serverBus } from '@/main'
-import { VuexPersistence } from 'vuex-persist'
-
-const excludedMudations = ['TOGGLE_HISTORY_MODE', 'TOGGLE_CONNECTION_OK']
-
-const vuexLocal = new VuexPersistence({
-  storage: window.localStorage,
-  filter: mutation => (excludedMudations.indexOf(mutation.type) === -1),
-  modules: ['app', 'map', 'settings', 'user']
-})
 
 Vue.use(Vuex)
 
@@ -23,7 +14,6 @@ import * as notifications from '../utils/notifications'
 import * as alertType from '../alerts/alertType'
 
 const store = new Vuex.Store({
-  plugins: [vuexLocal.plugin],
   state: {
     unreadItems: 0,
     selectedDevice: null,
