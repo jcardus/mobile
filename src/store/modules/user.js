@@ -26,14 +26,11 @@ const state = {
 }
 
 const mutations = {
-  setOrderDevicesBy(state, value) {
-    if (!state.attributes) {
-      state.attributes = {}
-    }
-    state.attributes.orderDevicesBy = value
+  setOrderDevicesBy(state, orderDevicesBy) {
+    state.user.attributes = { ...state.user.attributes, orderDevicesBy }
   },
   setAlertsSearchPeriod(state, value) {
-    state.attributes.alertsSearchPeriod = value
+    state.user.attributes.alertsSearchPeriod = value
   },
   SET_GEOFENCES(state, geofences) {
     console.log('SET_GEOFENCES', geofences)
