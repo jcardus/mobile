@@ -15,7 +15,7 @@ const state = {
     name: '',
     email: '',
     phone: '',
-    attributes: null
+    attributes: {}
   },
   alerts: [],
   devices: [],
@@ -27,6 +27,9 @@ const state = {
 
 const mutations = {
   setOrderDevicesBy(state, value) {
+    if (!state.attributes) {
+      state.attributes = {}
+    }
     state.attributes.orderDevicesBy = value
   },
   setAlertsSearchPeriod(state, value) {
