@@ -7,7 +7,7 @@
             <h2 v-if="isNewUser">{{ $t('settings.user_add') }}</h2>
             <h2 v-else>{{ $t('settings.user_edit') }}</h2>
             <el-form ref="user" :model="userForm" :rules="rules">
-              <el-tabs style="height:370px" stretch>
+              <el-tabs style="height:460px" stretch>
                 <el-tab-pane>
                   <span slot="label">
                     <i class="fas fa-user"></i>
@@ -20,6 +20,11 @@
                   </el-form-item>
                   <el-form-item :label="$t('settings.user_email')">
                     <el-input v-model="userForm.email" />
+                  </el-form-item>
+                  <el-form-item :label="$t('settings.user_language')">
+                    <el-select v-model="userForm.lang">
+                      <el-option v-for="lang in languages" :key="lang.value" :label="lang.text" :value="lang.value" />
+                    </el-select>
                   </el-form-item>
                   <div class="form-item-block">
                     <div class="form-item-row">
@@ -92,6 +97,25 @@
                         label: 'name'
                       }"
                       :data="geofences"
+                    >
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="far fa-sticky-note"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedReports"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.reports'), $t('report.select_groups')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="permissions"
                     >
                     </el-transfer>
                   </el-form-item>
@@ -211,12 +235,14 @@ export default {
         phone: '',
         password: '',
         userType: '',
+        lang: '',
         userDrivers: [],
         userGeofences: [],
         userGroups: [],
         userSelectedDrivers: [],
         userSelectedGeofences: [],
-        userSelectedGroups: []
+        userSelectedGroups: [],
+        userSelectedReports: []
       },
       userTypes: [
         { value: 'manager', text: 'user_type_manager' },
@@ -235,15 +261,27 @@ export default {
         ]
       },
       passwordType: 'password',
-      loading: false
+      loading: false,
+      languages: [
+        { value: 'en-GB', text: 'English (UK)' },
+        { value: 'fr-FR', text: 'Française (Frace)' },
+        { value: 'es-CL', text: 'Español (Chile)' },
+        { value: 'pt-PT', text: 'Português (PT)' },
+        { value: 'pt-BR', text: 'Português (BR)' }
+      ]
     }
   },
   computed: {
-    ...mapGetters(['users', 'drivers', 'groups', 'geofences']),
+    ...mapGetters(['user', 'users', 'drivers', 'groups', 'geofences']),
     filteredUsers() {
       return this.users.filter(data => !this.search ||
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
         data.email.toLowerCase().includes(this.search.toLowerCase()))
+    },
+    permissions() {
+      return this.user.attributes.permissions ? this.user.attributes.permissions.map(p => {
+        return { 'id': p, 'name': this.$t('permissions.' + p) }
+      }) : []
     }
   },
   methods: {
@@ -267,13 +305,14 @@ export default {
       this.userForm.email = ''
       this.userForm.phone = ''
       this.userForm.password = ''
+      this.userForm.lang = this.user.attributes.lang
       this.userForm.userDrivers = []
       this.userForm.userGeofences = []
       this.userForm.userGroups = []
       this.userForm.userSelectedDrivers = []
       this.userForm.userSelectedGeofences = []
       this.userForm.userSelectedGroups = []
-
+      this.userForm.userSelectedReports = []
       this.isOpenUserForm = !this.isOpenUserForm
     },
     async handleEdit(row) {
@@ -282,11 +321,14 @@ export default {
         this.loading = true
         this.isNewUser = false
         this.selectedUser = row
-
+        this.userForm.userSelectedReports = row.attributes.permissions ? row.attributes.permissions.map(p => {
+          return { 'id': p, 'name': this.$t('permissions.' + p) }
+        }) : []
         this.userForm.name = row.name
         this.userForm.email = row.email
         this.userForm.phone = row.phone
         this.userForm.password = row.password
+        this.userForm.lang = row.attributes.lang
         this.userForm.userType = row.readonly ? 'operator' : 'manager'
         await traccar.driversByUser(this.selectedUser.id).then(function(response) {
           self.userForm.userDrivers = self.userForm.userSelectedDrivers = response.data.map(d => d.id)
@@ -330,7 +372,11 @@ export default {
               phone: this.userForm.phone,
               password: this.userForm.password,
               readonly: this.userForm.userType === 'operator',
-              deviceReadonly: this.userForm.userType === 'manager'
+              deviceReadonly: this.userForm.userType === 'manager',
+              attributes: {
+                lang: this.userForm.lang,
+                permissions: this.userForm.userSelectedReports
+              }
             }
             traccar.addUser(newUser)
               .then(response => this.userCreated(response.data))
@@ -360,6 +406,8 @@ export default {
             user.email = this.userForm.email
             user.phone = this.userForm.phone
             user.password = this.userForm.password
+            user.attributes.permissions = this.userForm.userSelectedReports
+            user.attributes.lang = this.userForm.lang
 
             traccar.updateUser(user.id, user)
               .then(() => {
