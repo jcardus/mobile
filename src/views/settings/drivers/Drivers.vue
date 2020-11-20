@@ -41,7 +41,7 @@
       height="calc(100vh - 150px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
-      :data="filteredDrivers"
+      :data="filteredDrivers.slice(0, this.count)"
     >
       <el-table-column
         :label="$t('settings.driver_name')"
@@ -182,7 +182,7 @@ export default {
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
         data.uniqueId.toLowerCase().includes(this.search.toLowerCase()) ||
         (data.attributes.email && data.attributes.email.toLowerCase().includes(this.search.toLowerCase())) ||
-        (data.attributes.phone && data.attributes.phone.toLowerCase().includes(this.search.toLowerCase()))).slice(0, this.count)
+        (data.attributes.phone && data.attributes.phone.toLowerCase().includes(this.search.toLowerCase())))
     }
   },
   methods: {

@@ -65,8 +65,9 @@
       </div>
     </transition>
     <el-table
+      v-el-table-infinite-scroll="load"
       height="calc(100vh - 150px)"
-      :data="filteredGeofences"
+      :data="filteredGeofences.slice(0, this.count)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >
@@ -134,6 +135,7 @@ export default {
   name: 'Geofences',
   data() {
     return {
+      count: 10,
       isOpenGeofenceForm: false,
       isNewGeofence: true,
       selectedGeofence: null,
@@ -166,6 +168,9 @@ export default {
     }
   },
   methods: {
+    load() {
+      this.count += 10
+    },
     getImageSrc(imgType) {
       return './img/icons/pois/' + imgType + '-blue.svg'
     },
