@@ -61,7 +61,8 @@
     </transition>
 
     <el-table
-      :data="filteredDevices"
+      v-el-table-infinite-scroll="load"
+      :data="filteredDevices.slice(0, this.count)"
       height="calc(100vh - 150px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
@@ -144,6 +145,7 @@ export default {
   name: 'Vehicles',
   data() {
     return {
+      count: 10,
       isOpenVehicleForm: false,
       selectedVehicle: null,
       vehicleName: '',
@@ -196,6 +198,9 @@ export default {
     })
   },
   methods: {
+    load() {
+      this.count += 10
+    },
     filterHandler(value, row, column) {
       const property = column['property']
       return row[property] === value

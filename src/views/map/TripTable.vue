@@ -22,7 +22,7 @@
               :class="currentTrip===scope.row ? 'tripSelectedBackground' : ''"
             >
               <div :class="getTripIndexClass(scope.row)" style="background-color: #FFFFFF ; border-radius:10px">
-                <span style="font-size: 12px">{{ scope.$index + 1 }}ª Viagem</span>
+                <span style="font-size: 12px">{{ scope.$index + 1 }}ª</span>
               </div>
               <el-row>
                 <el-col :span="24" class="colTripData">
@@ -89,12 +89,12 @@
         </el-table-column>
       </el-table>
     </div>
-    <div v-if="this.trips.length > 0" class="historyTotal">
+    <div v-if="trips.length > 0" class="historyTotal">
       <div style="margin-top: 5px">
         <span style="font-size: 12px">Totais</span>
       </div>
       <div>
-        <span style="font-size: 12px"><i class="fas fa-route"></i> {{ this.trips.length }} viagens</span>
+        <span style="font-size: 12px"><i class="fas fa-route"></i> {{ trips.length }} viagens</span>
       </div>
       <div style="width: 100%">
         <div style="width: 33%; float:left"><span style="font-size: 12px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i> {{ calculateTime(totalDrivingTime) }}</span></div>
@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { serverBus, vm } from '../../main'
+import { serverBus, vm } from '@/main'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import styles from '../../styles/element-variables.scss'

@@ -39,6 +39,7 @@
     <div class="mobileScroll">
       <el-table
         id="geofenceTable"
+        v-el-table-infinite-scroll="load"
         style="padding: 10px"
         highlight-current-row
         :data="filteredGeofences"
@@ -73,8 +74,8 @@
 </template>
 
 <script>
-import { serverBus, vm } from '../../main'
-import { traccar } from '../../api/traccar-api'
+import { serverBus, vm } from '@/main'
+import { traccar } from '@/api/traccar-api'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import styles from '../../styles/element-variables.scss'
@@ -89,6 +90,7 @@ export default {
   },
   data() {
     return {
+      count: 20
     }
   },
   computed: {
@@ -103,13 +105,15 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     geofences: function() {
-      return vm.$store.state.user.geofences.filter(g => g &&
+      const geofences = vm.$store.state.user.geofences.filter(g => g &&
           (
             (g.area.startsWith('POLYGON') && this.showGeofenceLayer) ||
             (g.area.startsWith('CIRCLE') && this.showPOIsLayer) ||
             (g.area.startsWith('LINESTRING') && this.showLineGeofenceLayer)
           )
       )
+
+      return geofences.slice(0, this.count)
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredGeofences: function() {
@@ -149,6 +153,9 @@ export default {
     }
   },
   methods: {
+    load() {
+      this.count += 10
+    },
     poiSelected: function(poi) {
       if (poi && this.showPOIsLayer) {
         Vue.$log.debug('poi=', poi)

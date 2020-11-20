@@ -342,6 +342,7 @@ export default {
     user_name: 'Name',
     user_email: 'Email',
     user_phone: 'Phone',
+    user_language: 'Language',
     user_type: 'Profile',
     user_password: 'Password',
     user_form_type_placeholder: 'Select Profile',
@@ -411,5 +412,25 @@ export default {
     geofenceExit: 'Geofence Exit',
     test: 'Test Notification',
     newVersion: 'A new version of this app is available. Click here to update.'
+  },
+  permissions: {
+    customreport_vistawaste_activity:	'Actividade Vistawaste',
+    externalmaintenance: 'Módulo Externo de Manutenção',
+    externalreports: 'Módulo Externo de Relatórios',
+    externalreports_activity_cocacola_day: 'Actividade Coca-Cola diário',
+    externalreports_activity_cocacola_month: 'Actividade Coca-Cola mensal',
+    externalreports_activity_cocacola_month_detailed: 'Actividade Coca-Cola mensal detalhado',
+    externalreports_luanda_speeding: 'Velocidades em localidade',
+    externalreports_passenger_pickup_per_passenger: 'Recolhas por passageiro',
+    externalreports_passenger_pickup_per_passenger_total: 'Recolhas totais por passageiro',
+    externalreports_passenger_pickup_per_vehicle: 'Recolhas por veículo',
+    externalreports_passenger_pickup_per_vehicle_total: 'Recolhas totais por veí­culo',
+    externalreports_report_group_km: 'Distâncias por grupo',
+    externalreports_report_km: 'Kms',
+    externalreports_report_misuse: 'Utilização indevida',
+    externalreports_rfid_cards: 'Configuração de cartões',
+    externalreports_rfid_readers: 'Configuração de leitores',
+    externalreports_usage: 'Utilização Resumido',
+    externalreports_wapo_speeding: 'Velocidade WAPO'
   }
 }

@@ -44,13 +44,9 @@ import { serverBus, vm } from '@/main'
 import styles from '../../styles/element-variables.scss'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
-import elTableInfiniteScroll from 'el-table-infinite-scroll'
 
 export default {
   name: 'DriverTable',
-  directives: {
-    'el-table-infinite-scroll': elTableInfiniteScroll
-  },
   props: {
     filterKey: {
       type: String,
@@ -99,9 +95,7 @@ export default {
   },
   methods: {
     load() {
-      if (this.drivers.length < this.count) {
-        this.count += 10
-      }
+      this.count += 10
     },
     getDriverStateOrder: function(driver) {
       if (driver.vehicle) {
