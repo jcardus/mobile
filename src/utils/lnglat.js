@@ -356,7 +356,7 @@ function findDriver(position, device) {
   if (!position.attributes.driverUniqueId ||
     position.attributes.driverUniqueId === 0) {
     if (device.driver && device.driver.id) {
-      const driver = this.drivers.find(d => d.id === device.driver.id)
+      const driver = vm.$store.getters.drivers.find(d => d.id === device.driver.id)
       vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
       driver.vehicle = null
       vm.$store.state.user.drivers.push(driver)
