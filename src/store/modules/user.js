@@ -144,8 +144,8 @@ function initData(commit, state, dispatch) {
 
 const actions = {
   setOrderDevicesBy({ commit, state }, value) {
-    traccar.updateUser(state.user.id, state.user)
     commit('SET_ORDER_DEVICES_BY', value)
+    traccar.updateUser(state.user.id, state.user)
   },
   refreshDevices({ commit, state }) {
     if (state.devices.length > 0) {

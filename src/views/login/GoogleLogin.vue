@@ -44,6 +44,7 @@ export default {
     getUserData(data) {
       if (data && data.attributes) {
         this.$log.info('userLoggedIn', data)
+        api.setToken(data.accessToken.getJwtToken())
         api.getJSessionId(data.username)
           .then(() => {
             traccar.getSession().then((s) => {
