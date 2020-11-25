@@ -375,7 +375,8 @@ export default {
               deviceReadonly: this.userForm.userType === 'manager',
               attributes: {
                 lang: this.userForm.lang,
-                permissions: this.userForm.userSelectedReports
+                permissions: this.userForm.userSelectedReports,
+                inactiveVehiclesEmail: this.userForm.userType === 'manager'
               }
             }
             traccar.addUser(newUser)
@@ -408,6 +409,11 @@ export default {
             user.password = this.userForm.password
             user.attributes.permissions = this.userForm.userSelectedReports
             user.attributes.lang = this.userForm.lang
+
+            // If operator set inactiveVehiclesEmail allways to false
+            if (this.userForm.userType === 'operator') {
+              user.attributes.inactiveVehiclesEmail = false
+            }
 
             traccar.updateUser(user.id, user)
               .then(() => {
