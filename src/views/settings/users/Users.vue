@@ -321,9 +321,7 @@ export default {
         this.loading = true
         this.isNewUser = false
         this.selectedUser = row
-        this.userForm.userSelectedReports = row.attributes.permissions ? row.attributes.permissions.map(p => {
-          return { 'id': p, 'name': this.$t('permissions.' + p) }
-        }) : []
+        this.userForm.userSelectedReports = row.attributes.permissions
         this.userForm.name = row.name
         this.userForm.email = row.email
         this.userForm.phone = row.phone
@@ -375,7 +373,8 @@ export default {
               deviceReadonly: this.userForm.userType === 'manager',
               attributes: {
                 lang: this.userForm.lang,
-                permissions: this.userForm.userSelectedReports
+                permissions: this.userForm.userSelectedReports,
+                inactiveVehiclesEmail: this.userForm.userType === 'manager'
               }
             }
             traccar.addUser(newUser)
@@ -399,8 +398,6 @@ export default {
                 }
               })
           } else {
-            this.$log.debug(this.selectedUser)
-
             const user = this.selectedUser
             user.name = this.userForm.name
             user.email = this.userForm.email
@@ -408,6 +405,10 @@ export default {
             user.password = this.userForm.password
             user.attributes.permissions = this.userForm.userSelectedReports
             user.attributes.lang = this.userForm.lang
+            // If operator set inactiveVehiclesEmail allways to false
+            if (this.userForm.userType === 'operator') {
+              user.attributes.inactiveVehiclesEmail = false
+            }
 
             traccar.updateUser(user.id, user)
               .then(() => {

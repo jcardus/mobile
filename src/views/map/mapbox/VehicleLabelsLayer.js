@@ -15,6 +15,6 @@ export default {
     'text-optional': true
   },
   paint: {
-    'text-color': 'darkslategrey'
+    'text-color': 'black'
   }
 }

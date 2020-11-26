@@ -36,9 +36,16 @@
                   </el-form-item>
                 </div>
               </div>
-              <el-form-item class="el-input-number-fix" :label="$t('settings.vehicle_form_total_kms')">
-                <el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
-              </el-form-item>
+              <div class="form-item-block">
+                <div class="form-item-row">
+                  <el-form-item class="form-item-block-left el-input-number-fix" :label="$t('settings.vehicle_form_total_kms')">
+                    <el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
+                  </el-form-item>
+                  <el-form-item class="form-item-block-right el-input-number-fix" :label="$t('settings.vehicle_form_fuel_tank_capacity')">
+                    <el-input-number v-model="vehicleFuelTankCapacity" :min="0" :precision="0" />
+                  </el-form-item>
+                </div>
+              </div>
               <el-form-item class="el-input-number-fix" :label="$t('settings.vehicle_form_speed_limit')">
                 <el-input-number v-model="vehicleSpeedLimit" :min="0" :precision="0" />
               </el-form-item>
@@ -152,6 +159,7 @@ export default {
       vehicleModel: '',
       vehicleSpeedLimit: 0,
       vehicleTotalKms: 0,
+      vehicleFuelTankCapacity: 0,
       selectedGroup: null,
       selectedCategory: null,
       search: '',
@@ -261,7 +269,8 @@ export default {
           speedLimit: this.vehicleSpeedLimit / 1.85200,
           license_plate: this.selectedVehicle.attributes.license_plate,
           'decoder.timezone': this.selectedVehicle.attributes['decoder.timezone'],
-          has_immobilization: this.selectedVehicle.attributes.has_immobilization
+          has_immobilization: this.selectedVehicle.attributes.has_immobilization,
+          fuel_tank_capacity: this.vehicleFuelTankCapacity
         },
         uniqueId: this.selectedVehicle.uniqueId,
         phone: this.selectedVehicle.phone,
@@ -301,6 +310,7 @@ export default {
       this.selectedVehicle.category = updatedDevice.category
       this.selectedVehicle.model = updatedDevice.model
       this.selectedVehicle.attributes.speedLimit = updatedDevice.attributes.speedLimit
+      this.selectedVehicle.attributes.fuel_tank_capacity = updatedDevice.attributes.fuel_tank_capacity
       this.$message({
         type: 'success',
         message: this.$t('settings.vehicle_updated')
@@ -315,6 +325,7 @@ export default {
       this.selectedCategory = row.category
       this.vehicleName = row.name
       this.vehicleModel = row.model
+      this.vehicleFuelTankCapacity = row.attributes.fuel_tank_capacity ? row.attributes.fuel_tank_capacity : 0
       if (p) {
         this.vehicleTotalKms = p.properties.attributes.totalDistance / 1000
       }
@@ -343,6 +354,7 @@ export default {
       this.vehicleModel = ''
       this.vehicleSpeedLimit = 0
       this.vehicleTotalKms = 0
+      this.vehicleFuelTankCapacity = 0
     },
     doNothing(scope) {
       /* this method is here because we need the attribute 'slot-scope = "scope"' on the template
