@@ -98,6 +98,7 @@
           <template slot-scope="scope">
             <div style="padding: 3px 0 0;">
               <span style="font-weight: bold">{{ scope.row.name }} </span>
+              <span style="float: right; font-size: smaller">{{ scope.row.groupId | formatGroup }} </span>
             </div>
             <div v-if="scope.row.position && scope.row.position.attributes.driverUniqueId && scope.row.position.attributes.driverUniqueId !== '0'" style="padding-top: 2px; line-height: normal">
               <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i>{{ scope.row.driver.name }}</span>
