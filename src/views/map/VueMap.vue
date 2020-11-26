@@ -48,6 +48,7 @@ import VehicleDetail from '@/views/map/VehicleDetail'
 import store from '@/store'
 import { popUps } from '@/utils/lnglat'
 import { hexToRgb } from '@/utils/images'
+import { checkFuelThresholds } from '@/utils/device'
 
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
@@ -739,6 +740,9 @@ export default {
         if (!device) {
           this.$log.error('no device, this is weird, we should logoff,', position)
           continue
+        }
+        if (position.attributes.fuel) {
+          checkFuelThresholds(position.attributes.fuel, device)
         }
         let feature = this.findFeatureByDeviceId(position.deviceId)
         if (!feature) {
