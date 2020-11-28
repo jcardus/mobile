@@ -210,6 +210,7 @@ export default {
   .historyTotal {
     height: 75px;
     background-color: rgba($--color-primary, 0.1);
+    color: black;
     padding-left: 5px;
   }
   .colTripData{
