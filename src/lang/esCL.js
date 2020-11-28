@@ -186,6 +186,7 @@ export default {
     vehicle_licenseplate: 'Placa',
     vehicle_model: 'Modelo',
     vehicle_form_total_kms: 'Total de Kms',
+    vehicle_form_fuel_tank_capacity: 'Fuel Tank Capacity (L)',
     vehicle_speed_limit: 'Límite de Velocidad',
     vehicle_form_name: 'Nombre',
     vehicle_form_model: 'Modelo',

@@ -135,6 +135,8 @@ export default {
     Vue.$log.debug(this.user)
     if (this.user.attributes.inactiveVehiclesEmail !== undefined) {
       this.inactiveVehiclesEmail = this.user.attributes.inactiveVehiclesEmail
+    } else {
+      this.inactiveVehiclesEmail = true
     }
     if (this.user.attributes.trip_report !== undefined) {
       this.trip_report = this.user.attributes.trip_report

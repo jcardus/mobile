@@ -210,6 +210,7 @@ export default {
     vehicle_model: 'Model',
     vehicle_form_category: 'Icon',
     vehicle_form_total_kms: 'Total Kms',
+    vehicle_form_fuel_tank_capacity: 'Fuel Tank Capacity (L)',
     vehicle_speed_limit: 'Speed Limit',
     vehicle_form_name: 'Name',
     vehicle_form_group: 'Group',

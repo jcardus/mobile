@@ -173,6 +173,7 @@ export default {
     vehicle_licenseplate: 'Matrícula',
     vehicle_model: 'Modelo',
     vehicle_form_total_kms: 'Total de Kms',
+    vehicle_form_fuel_tank_capacity: 'Capacidade do Depósito (L)',
     vehicle_speed_limit: 'Limite de Velocidade',
     vehicle_form_name: 'Nome',
     vehicle_form_model: 'Modelo',

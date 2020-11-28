@@ -216,6 +216,7 @@ export default {
     vehicle_form_category: 'Ícone',
     vehicle_form_category_placeholder: 'Seleccionar Ícone',
     vehicle_form_total_kms: 'Total de Kms',
+    vehicle_form_fuel_tank_capacity: 'Capacidade do Depósito (L)',
     vehicle_form_speed_limit: 'Limite de Velocidade (Km/h)',
     vehicle_updated: 'Veículo actualizado com sucesso!',
     vehicle_group: 'Grupo',
