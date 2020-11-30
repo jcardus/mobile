@@ -55,7 +55,7 @@
                   style="float:right"
                   plain
                   type="primary"
-                  @click.native.prevent="handleLogin"
+                  @click="handleRegister"
                 >{{ $t('login.register') }}</el-link>
               </el-row>
               <el-row style="margin-top: 15px;width:50%">
@@ -176,6 +176,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
+    },
+    handleRegister() {
+
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
