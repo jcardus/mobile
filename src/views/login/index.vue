@@ -51,6 +51,12 @@
                   type="primary"
                   @click.native.prevent="handleLogin"
                 >{{ $t('login.login_button') }}</el-button>
+                <el-link
+                  style="float:right"
+                  plain
+                  type="primary"
+                  @click.native.prevent="handleLogin"
+                >{{ $t('login.register') }}</el-link>
               </el-row>
               <el-row style="margin-top: 15px;width:50%">
                 <google-button />
