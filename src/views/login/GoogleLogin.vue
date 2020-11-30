@@ -44,7 +44,6 @@ export default {
     getUserData(data) {
       if (data) {
         console.log('userLoggedIn', data)
-        api.setToken(data.accessToken.getJwtToken())
         api.getJSessionId('')
           .then(() => {
             traccar.getSession().then((s) => {
