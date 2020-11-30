@@ -1,17 +1,24 @@
 import { getServerHost } from './index'
 import axios from 'axios'
+import { Auth } from '@aws-amplify/auth'
 const url = 'https://' + getServerHost() + '/backend'
 
 export default {
   axios: axios.create(),
-  setToken(token) {
-    this.axios.setToken(token)
-  },
   getJSessionId(username) {
-    return this.axios.get(url + '/api?username=' + username, { withCredentials: true })
+    return this.get('/api?username=' + username)
   },
   getCookie(jsessionid) {
-    return this.axios.get(url + '/api?jsessionid=' + jsessionid, { withCredentials: true })
+    return this.get('/api?jsessionid=' + jsessionid)
+  },
+  async get(path) {
+    const session = await Auth.currentSession()
+    return this.axios.get(url + path, {
+      withCredentials: true,
+      headers: {
+        'Authorization': `Basic ${session.getAccessToken()}`
+      }
+    })
   }
 }
 
