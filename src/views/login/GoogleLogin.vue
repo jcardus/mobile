@@ -42,7 +42,7 @@ export default {
       window.location.href = redirect
     },
     getUserData(data) {
-      if (data && data.attributes) {
+      if (data) {
         console.log('userLoggedIn', data)
         api.setToken(data.accessToken.getJwtToken())
         api.getJSessionId('')
