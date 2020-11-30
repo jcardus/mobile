@@ -107,7 +107,7 @@ export default {
     continue: 'Continuar?',
     unsaved_changes: 'Existen alteracciones que no fueron guardadas',
     inactive_vehicles_email: 'Alerta de inactividade de los equipos',
-    inactive_vehicles_email_tooltip: 'Será enviado um email de alerta indicando os equipamentos que não comunicam há mais de 48 horas',
+    inactive_vehicles_email_tooltip: 'Será enviado un email de alerta indicando los equipos que no comunicam hace más de 48 horas',
     daily_reports_tooltip: 'Email enviado diariamente com informação da actividade dos veículos',
     weekly_reports_tooltip: 'Email enviado semanalmente com informação da actividade dos veículos',
     monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos'
@@ -292,7 +292,7 @@ export default {
     driver_add_not_allowed: 'No tienes permiso para crear motoristas.',
     driver_edit_not_allowed: 'No tienes permiso para editar motoristas.',
     driver_delete_not_allowed: 'No tienes permiso para apagar motoristas.',
-    reports: 'Reports',
+    reports: 'Reportes',
     automatic_reports: 'Automatic reports',
     activate_automatic_trip_report: 'Relatório de viagens - Activar relatório automático',
     activate_automatic_location_report: 'Relatório de posições - Activar relatório automático',

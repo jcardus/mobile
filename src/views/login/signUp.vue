@@ -2,7 +2,7 @@
   <amplify-authenticator>
     <amplify-sign-in
       slot="sign-in"
-      header-text="GPS Manager"
+      :header-text="headerText"
     >
       <div slot="header-subtitle" />
       <div slot="federated-buttons" style="padding-bottom: 10px">
@@ -21,9 +21,15 @@
 
 <script>
 import GoogleButton from '@/views/login/GoogleButton'
+import * as partner from '@/utils/partner'
 export default {
   name: 'SignUp',
-  components: { GoogleButton }
+  components: { GoogleButton },
+  computed: {
+    headerText() {
+      return partner.getTitle()
+    }
+  }
 }
 </script>
 
