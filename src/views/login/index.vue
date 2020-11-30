@@ -52,10 +52,10 @@
                   @click.native.prevent="handleLogin"
                 >{{ $t('login.login_button') }}</el-button>
                 <el-link
-                  href="/register"
                   style="float:right"
                   plain
                   type="primary"
+                  @click="$router.push('/register')"
                 >{{ $t('login.register') }}</el-link>
               </el-row>
               <el-row style="margin-top: 15px;width:50%">

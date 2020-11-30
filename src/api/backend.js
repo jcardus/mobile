@@ -16,7 +16,7 @@ export default {
     return this.axios.get(url + path, {
       withCredentials: true,
       headers: {
-        'Authorization': `${session.getIdToken().getJwtToken()}`
+        'Authorization': `${session.accessToken.getJwtToken()}`
       }
     })
   }
