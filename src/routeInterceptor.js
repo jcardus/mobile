@@ -7,7 +7,7 @@ import store from './store'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect', '/googlelogin/'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/googlelogin/', '/register'] // no redirect whitelist
 
 let firstLoad = true
 
