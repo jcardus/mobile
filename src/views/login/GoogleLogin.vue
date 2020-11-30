@@ -43,9 +43,9 @@ export default {
     },
     getUserData(data) {
       if (data && data.attributes) {
-        this.$log.info('userLoggedIn', data)
+        console.log('userLoggedIn', data)
         api.setToken(data.accessToken.getJwtToken())
-        api.getJSessionId(data.username)
+        api.getJSessionId('')
           .then(() => {
             traccar.getSession().then((s) => {
               this.$log.info(s)
@@ -55,7 +55,7 @@ export default {
       }
     },
     getUser: async function() {
-      Auth.currentAuthenticatedUser()
+      Auth.currentSession()
         .then((data) => this.getUserData(data))
         .catch((e) => {
           this.$log.error(e)
