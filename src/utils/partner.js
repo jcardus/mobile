@@ -80,6 +80,7 @@ export const hostname = window.location.hostname.replace('dev.', '')
 export function getFavIcon() {
   return '/img/favicon/' + hostname + '.png'
 }
+
 export function getLogo() {
   return '/img/logos/' + hostname + '.png'
 }
@@ -105,7 +106,7 @@ export function getTitle() {
   if (hostname === 'www.fleetrackchile.com') { return 'Fleetrack' }
   if (hostname === 'map.able-on.mobi') { return 'able-on' }
   if (hostname === 'www.autotracker.cl') { return 'Auto Tracker' }
-  return 'Pinme'
+  return 'Fleetmap'
 }
 
 export function getOneSignalAppId() {
