@@ -32,7 +32,7 @@
     "amazon-quicksight-embedding-sdk": "^1.0.12",
     "angles": "latest",
     "axios": "latest",
-    "chart.js": "^2.9.4",
+    "chart.js": "2.9.3",
     "chartjs-plugin-annotation": "latest",
     "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "^2.14.1",
