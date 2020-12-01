@@ -9,7 +9,9 @@ export default {
     return this.get('/api?username=' + username)
   },
   getCookie(jsessionid) {
-    return this.get('/api?jsessionid=' + jsessionid)
+    return this.axios.get(url + '/api?jsessionid=' + jsessionid, {
+      withCredentials: true
+    })
   },
   async get(path) {
     const session = await Auth.currentSession()
