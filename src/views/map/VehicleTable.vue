@@ -261,10 +261,11 @@ export default {
         }
       }
       if (filterKey) {
+        const filteredGroups = store.getters.groups.filter(g => g.name.toLowerCase().indexOf(filterKey) > -1)
         devices = devices.filter(function(row) {
           return Object.keys(row).some(function(key) {
             return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-          })
+          }) || filteredGroups.map(g => g.id).includes(row['groupId'])
         })
       }
       if (self.selectedDevice != null && self.historyMode) {
