@@ -78,8 +78,10 @@ export default {
       ],
       timezones: [
         { value: 'Europe/Lisbon', text: 'Europe/Lisbon' },
-        { value: 'America/Santiago', text: 'America/Santiago' },
         { value: 'Africa/Luanda', text: 'Africa/Luanda' },
+        { value: 'Africa/Maputo', text: 'Africa/Maputo' },
+        { value: 'Africa/Casablanca', text: 'Africa/Casablanca' },
+        { value: 'America/Santiago', text: 'America/Santiago' },
         { value: 'America/Sao_Paulo', text: 'America/São Paulo' }
       ],
       rules: {
