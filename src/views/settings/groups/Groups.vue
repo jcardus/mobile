@@ -18,6 +18,7 @@
                   <el-form-item>
                     <el-transfer
                       v-model="selectedDevices"
+                      :filter-method="filteredDevices"
                       filterable
                       :filter-placeholder="$t('settings.search')"
                       :titles="[$t('settings.vehicles'), $t('settings.transfer_selected')]"
@@ -302,7 +303,12 @@ export default {
       selectedLineGeofences: [],
       selectedUsers: [],
       groupName: '',
-      loading: false
+      loading: false,
+      filteredDevices(query, item) {
+        if (item.license_plate) {
+          return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.license_plate.toLowerCase().indexOf(query.toLowerCase()) > -1
+        }
+      }
     }
   },
   computed: {
@@ -317,11 +323,8 @@ export default {
     },
     tDevices: function() {
       return this.devices.map(d => {
-        return { id: d.id, name: d.name, disabled: d.groupId === this.selectedGroup.id }
+        return { id: d.id, name: d.name, license_plate: d.attributes.license_plate, disabled: d.groupId === this.selectedGroup.id }
       })
-    },
-    filteredDevices: function() {
-      return this.devices.filter(d => d.groupId !== this.selectedGroup.id)
     },
     devices: function() {
       return vm.$store.getters.devices
@@ -417,7 +420,11 @@ export default {
             })
           } else {
             Vue.$log.error(reason)
-            await this.$alert(reason)
+            if (reason.response.data) {
+              await this.$alert(reason.response.data)
+            } else {
+              await this.$alert(reason)
+            }
           }
         } finally {
           this.loading = false
