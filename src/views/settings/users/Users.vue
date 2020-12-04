@@ -403,6 +403,8 @@ export default {
             user.email = this.userForm.email
             user.phone = this.userForm.phone
             user.password = this.userForm.password
+            user.readonly = this.userForm.userType === 'operator'
+            user.deviceReadonly = this.userForm.userType === 'manager'
             user.attributes.permissions = this.userForm.userSelectedReports.filter(a => this.permissions.map(p => p.id).includes(a))
             user.attributes.lang = this.userForm.lang
             // If operator set inactiveVehiclesEmail allways to false
