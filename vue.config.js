@@ -115,7 +115,7 @@ module.exports = {
           }),
           new ReplaceInFileWebpackPlugin([{
             dir: 'dist',
-            files: ['OneSignalSDKWorker.js'],
+            files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js'],
             rules: [{
               search: /version/ig,
               replace: version

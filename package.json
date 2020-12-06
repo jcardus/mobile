@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.785",
+  "version": "1.0.786",
   "scripts": {
     "build": "vue-cli-service build",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
