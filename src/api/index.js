@@ -18,8 +18,9 @@ export function getServerHost() {
   return (process.env.NODE_ENV === 'development' ||
     hostName.includes('192.168.1.') ||
     hostName.includes('172.20.10.') ||
-    hostName.includes('localhost'))
-    ? 'ws.pinme.io'
+    hostName.includes('localhost') ||
+    hostName.includes('fleetmap.io'))
+    ? 'api.pinme.io'
     : 'ws.' + hostName
 }
 
