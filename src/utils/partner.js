@@ -125,6 +125,8 @@ export function getOneSignalAppId() {
       return '610e8c3c-0939-42ad-a9e4-ce321a5d13bc'
     case 'dev.pinme.io':
       return '2cef0590-22af-4d29-85f0-1edaa5279b9c'
+    case 'fleetmap.io':
+      return 'd48134b7-ab16-4065-9ff8-54a3465f258a'
     default:
       return ''
   }
