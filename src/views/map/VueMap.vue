@@ -532,6 +532,7 @@ export default {
       this.$static.map.on('load', this.onMapLoad)
       this.$static.map.on('style.load', this.onStyleLoad)
       this.$static.map.on('move', this.onMove)
+      this.$static.map.on('zoom', this.onMove)
       this.$static.map.on('moveend', this.onMoveEnd)
 
       this.$static.map.on('touchstart', 'clusters', this.onClickTouch)
