@@ -24,11 +24,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/register',
-    component: () => import('../views/login/signUp'),
-    hidden: true
-  },
-  {
     path: '/',
     redirect: '/map',
     hidden: false,

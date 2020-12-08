@@ -55,7 +55,7 @@
                   style="float:right"
                   plain
                   type="primary"
-                  @click="$router.push('/register')"
+                  :href="registerUrl"
                 >{{ $t('login.register') }}</el-link>
               </el-row>
               <el-row style="margin-top: 15px;width:50%">
@@ -83,6 +83,8 @@ import { getCSSName, getLogo, getThemeColor, hasSVG } from '@/utils/partner'
 import { cdnUrl } from '@/utils/consts'
 import LogoSvg from '../../layout/components/LogoSvg'
 import GoogleButton from './GoogleButton'
+import awsConfig from '@/aws-exports'
+import { getGoogleRedirect } from '@/api'
 
 export default {
   name: 'Login',
@@ -116,6 +118,9 @@ export default {
     }
   },
   computed: {
+    registerUrl() {
+      return `https://${awsConfig.oauth.domain}/signup?client_id=${awsConfig.aws_user_pools_web_client_id}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${getGoogleRedirect()}`
+    },
     hasSVG() {
       return hasSVG()
     },
@@ -176,9 +181,6 @@ export default {
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
-    },
-    handleRegister() {
-
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
