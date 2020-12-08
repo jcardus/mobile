@@ -95,7 +95,8 @@ export default {
     login_password_warn: 'The password can not be less than 6 digits',
     login_user_password_invalid: 'There is no account with that username or password you entered. Please check your credentials and try again.',
     login_user_disabled: 'Username is disabled',
-    register: 'Novo utilizador?'
+    register: 'Novo utilizador?',
+    forgotPassword: 'Esqueceu a password?'
   },
   alerts: {
     title: 'Alerts',

@@ -57,6 +57,12 @@
                   type="primary"
                   :href="registerUrl"
                 >{{ $t('login.register') }}</el-link>
+                <el-link
+                  style="float:right"
+                  plain
+                  type="primary"
+                  :href="forgotPassUrl"
+                >{{ $t('login.forgotPassword') }}</el-link>
               </el-row>
               <el-row style="margin-top: 15px;width:50%">
                 <google-button />
@@ -120,6 +126,9 @@ export default {
   computed: {
     registerUrl() {
       return `https://${awsConfig.oauth.domain}/signup?client_id=${awsConfig.aws_user_pools_web_client_id}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${getGoogleRedirect()}`
+    },
+    forgotPassUrl() {
+      return `https://${awsConfig.oauth.domain}/forgotPassword?client_id=${awsConfig.aws_user_pools_web_client_id}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${getGoogleRedirect()}`
     },
     hasSVG() {
       return hasSVG()
