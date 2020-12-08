@@ -7,7 +7,7 @@
       :placeholder="$t('alerts.title')"
       value=""
     >
-      <el-option v-for="item in alerts" :key="item.notification.id" :label="$t('settings.alert_'+getAlertType(item))" :value="item.notification.type" />
+      <el-option v-for="item in alerts" :key="item.notification.id" :label="$t('settings.alert_'+getAlertType(item))" :value="item" />
     </el-select>
     <div v-if="!historyMode">
       <el-select
@@ -107,7 +107,8 @@ export default {
         })
       }
       if (this.selectedAlertType) {
-        events = events.filter(e => e.type === this.selectedAlertType)
+        const alertType = this.getAlertType(this.selectedAlertType)
+        events = events.filter(e => e.type === alertType)
       }
       events = events.sort((a, b) => {
         return (a.timestamp === b.timestamp ? 0 : a.timestamp > b.timestamp ? -1 : 1)
