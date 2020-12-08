@@ -322,7 +322,7 @@ export function updateDevice(position, feature, device) {
   device.driver = findDriver(position, device)
   const immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
   if (immobilized !== device.immobilized) {
-    device.commandPending = false
+    device.attributes.commandPending = false
   }
   device.immobilized = immobilized
   device.position = position

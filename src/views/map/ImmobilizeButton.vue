@@ -8,7 +8,7 @@
       alt="immobilization"
       :src="getIcon"
       width="38"
-      :style="selectedDevice.commandPending ? 'opacity: 0.2' : ''"
+      :style="selectedDevice.attributes.commandPending ? 'opacity: 0.2' : ''"
       @click="commandImmobilize"
     >
   </el-tooltip>
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     sendImmobilizationCommand() {
-      this.selectedDevice.commandPending = true
+      this.selectedDevice.attributes.commandPending = true
       this.$store.dispatch('user/updateDevice', this.selectedDevice)
       vm.$store.dispatch('user/updateDevice', this.selectedDevice).then(() => {
         traccar.api_helper(
@@ -63,8 +63,8 @@ export default {
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
-      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', selectedDevice.commandPending)
-      if (selectedDevice.commandPending) {
+      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', selectedDevice.attributes.commandPending)
+      if (selectedDevice.attributes.commandPending) {
         const msg = this.$t('vehicleTable.immo_pending')
         if (this.isMobile) {
           this.$f7.dialog.alert(msg)
@@ -100,7 +100,7 @@ export default {
           this.$message('OK: ' + response.data.details)
         }
       } else {
-        this.selectedDevice.commandPending = false
+        this.selectedDevice.attributes.commandPending = false
         vm.$store.dispatch('user/updateDevice', this.selectedDevice)
         if (this.isMobile) {
           this.$f7.notification.create({
@@ -116,7 +116,7 @@ export default {
       }
     },
     commandImmobilizeNok: function(reason) {
-      this.selectedDevice.commandPending = false
+      this.selectedDevice.attributes.commandPending = false
       vm.$store.dispatch('user/updateDevice', this.selectedDevice)
       Vue.$log.debug('Immobilization error: ', reason)
       this.$alert('Error: ' + reason)
