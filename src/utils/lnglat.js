@@ -321,10 +321,10 @@ export function updateDevice(position, feature, device) {
   device.poi = findNearestPOI(position)
   device.driver = findDriver(position, device)
   const immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
-  if (immobilized !== device.immobilized) {
+  if (immobilized !== device.attributes.immobilized) {
     device.attributes.commandPending = false
   }
-  device.immobilized = immobilized
+  device.attributes.immobilized = immobilized
   device.position = position
 }
 

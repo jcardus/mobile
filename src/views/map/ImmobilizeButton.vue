@@ -1,7 +1,7 @@
 <template>
   <el-tooltip
     v-if="selectedDevice && selectedDevice.attributes && selectedDevice.attributes.has_immobilization"
-    :content="selectedDevice.immobilized ? $t('vehicleTable.de_immobilize') : $t('vehicleTable.immobilize')"
+    :content="selectedDevice.attributes.immobilized ? $t('vehicleTable.de_immobilize') : $t('vehicleTable.immobilize')"
     placement="bottom"
   >
     <img
@@ -41,7 +41,7 @@ export default {
     },
     getIcon() {
       const device = this.devices.find(d => d.id === this.selectedDevice.id)
-      return device && device.immobilized ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
+      return device && device.attributes.immobilized ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
     }
   },
   methods: {
@@ -55,7 +55,7 @@ export default {
             'password': '',
             'command': 'immobilization',
             'deviceid': this.selectedDevice.id,
-            'value': !this.selectedDevice.immobilized
+            'value': !this.selectedDevice.attributes.immobilized
           },
           this.commandImmobilizeOk,
           this.commandImmobilizeNok)
@@ -63,7 +63,7 @@ export default {
     },
     commandImmobilize() {
       const selectedDevice = this.selectedDevice
-      Vue.$log.info('Immobilization', this.selectedDevice.immobilized, 'for device', this.selectedDevice.id, 'pending', selectedDevice.attributes.commandPending)
+      Vue.$log.info('Immobilization', this.selectedDevice.attributes.immobilized, 'for device', this.selectedDevice.id, 'pending', selectedDevice.attributes.commandPending)
       if (selectedDevice.attributes.commandPending) {
         const msg = this.$t('vehicleTable.immo_pending')
         if (this.isMobile) {
@@ -73,7 +73,7 @@ export default {
         }
         return
       }
-      let message = this.selectedDevice.immobilized ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
+      let message = this.selectedDevice.attributes.immobilized ? this.$t('vehicleTable.send_de_immobilization') : this.$t('vehicleTable.send_immobilization')
       message += (' ' + selectedDevice.name + '?')
       if (this.isMobile) {
         this.$f7.dialog.confirm(message, this.sendImmobilizationCommand)
