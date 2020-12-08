@@ -15,8 +15,6 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.4.13",
     "@aws-amplify/core": "^3.8.5",
-    "@aws-amplify/ui-components": "^0.9.5",
-    "@aws-amplify/ui-vue": "^0.2.30",
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@mapbox/mapbox-gl-traffic": "latest",

@@ -9,6 +9,7 @@ import VueNativeSock from 'vue-native-websocket'
 import { getServerHost } from '@/api'
 import settings from '../../settings'
 import { setLanguage } from '@/lang'
+import { Auth } from '@aws-amplify/auth'
 
 const state = {
   user: {
@@ -244,10 +245,17 @@ const actions = {
           checkForUpdates()
           resolve()
         })
-      }).catch(e => {
+      }).catch(async e => {
         Vue.$log.error(e)
         commit('CLEAR_USER')
-        reject(e)
+        try {
+          const result = await Auth.signIn(username.trim(), password)
+          Vue.$log.debug(result)
+          window.location.href = '/googlelogin/'
+        } catch (e) {
+          Vue.$log.error(e)
+          reject(e)
+        }
       })
     })
   },
