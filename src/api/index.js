@@ -5,6 +5,9 @@ const backendDev = 'wd5b3zc65f'
 const backendUrl = 'execute-api.us-east-1.amazonaws.com'
 
 export function getGoogleRedirect() {
+  if (window.location.hostname === 'localhost') {
+    return 'https://fleetmap.io/googlelogin/'
+  }
   return window.location.protocol + '//' + window.location.host + '/googlelogin/'
 }
 

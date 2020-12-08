@@ -151,7 +151,7 @@ export default {
         'type': 'circle',
         filter: ['has', 'point_count'],
         paint: {
-          'circle-radius': 30,
+          'circle-radius': 10,
           'circle-color': 'white',
           'circle-opacity': 0.1
         }

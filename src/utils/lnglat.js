@@ -176,7 +176,6 @@ export function updateDonuts() {
   const newMarkers = {}
   try {
     const features = vm.$static.map.querySourceFeatures(positionsSource, { filter: ['boolean', !store.getters.historyMode] })
-
     // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
     // and add it to the map if it's not there already
     for (let i = 0; i < features.length; i++) {
