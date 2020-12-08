@@ -110,25 +110,33 @@ export function getTitle() {
 }
 
 export function getOneSignalAppId() {
+  return getPartnerData().oneSignalAppId
+}
+
+export function getPartnerData() {
   switch (window.location.hostname) {
     case 'map.able-on.mobi':
-      return '9cf3703f-92d5-4c55-b234-b613cc31b0d6'
+      return { oneSignalAppId: '9cf3703f-92d5-4c55-b234-b613cc31b0d6' }
     case 'web.fleetrack.cl':
-      return '4f3f1081-5189-4715-87df-d1db684cc6a7'
+      return {
+        oneSignalAppId: '4f3f1081-5189-4715-87df-d1db684cc6a7',
+        cognitoClientId: '31h5dhcgf24c3asd7ulkbvp8jr'
+      }
     case 'wuizy.co.ao':
-      return 'd209de76-98c2-4721-aad4-168c4a8f4e66'
+      return { oneSignalAppId: 'd209de76-98c2-4721-aad4-168c4a8f4e66', cognitoClientId: '5h5nv9olv0ln6mqs1ucvighun2' }
     case 'mac.pinme.io':
-      return 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2'
+      return { oneSignalAppId: 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2' }
     case 'localhost':
-      return '70622a05-9e6e-4fb7-8817-f9e26b8b3064'
+      return { oneSignalAppId: '70622a05-9e6e-4fb7-8817-f9e26b8b3064', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
     case 'pinme.io':
-      return '610e8c3c-0939-42ad-a9e4-ce321a5d13bc'
+      return { oneSignalAppId: '610e8c3c-0939-42ad-a9e4-ce321a5d13bc' }
     case 'dev.pinme.io':
-      return '2cef0590-22af-4d29-85f0-1edaa5279b9c'
-    case 'fleetmap.io':
-      return 'd48134b7-ab16-4065-9ff8-54a3465f258a'
+      return { oneSignalAppId: '2cef0590-22af-4d29-85f0-1edaa5279b9c' }
     default:
-      return ''
+      return {
+        oneSignalAppId: 'd48134b7-ab16-4065-9ff8-54a3465f258a',
+        cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc'
+      }
   }
 }
 
