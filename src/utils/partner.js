@@ -115,6 +115,8 @@ export function getOneSignalAppId() {
 
 export function getPartnerData() {
   switch (window.location.hostname) {
+    case 'fleemap.co.mz':
+      return { cognitoClientId: '5n1pfl8gs7svbmptr325dpmdbh', oneSignalAppId: '25875ecc-70f6-414e-b9df-2c64eb8e2459' }
     case 'map.able-on.mobi':
       return { oneSignalAppId: '9cf3703f-92d5-4c55-b234-b613cc31b0d6' }
     case 'web.fleetrack.cl':
