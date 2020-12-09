@@ -123,7 +123,7 @@ export function getPartnerData() {
         cognitoClientId: '4mnfj8aa585q67fq7v3cufuh09'
       }
     case 'wuizy.co.ao':
-      return { oneSignalAppId: 'd209de76-98c2-4721-aad4-168c4a8f4e66', cognitoClientId: '5h5nv9olv0ln6mqs1ucvighun2' }
+      return { oneSignalAppId: 'd209de76-98c2-4721-aad4-168c4a8f4e66', cognitoClientId: '6ukv9e4jf844s439he87su3slp' }
     case 'mac.pinme.io':
       return { oneSignalAppId: 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2' }
     case 'localhost':
