@@ -120,7 +120,7 @@ export function getPartnerData() {
     case 'web.fleetrack.cl':
       return {
         oneSignalAppId: '4f3f1081-5189-4715-87df-d1db684cc6a7',
-        cognitoClientId: '31h5dhcgf24c3asd7ulkbvp8jr'
+        cognitoClientId: '4mnfj8aa585q67fq7v3cufuh09'
       }
     case 'wuizy.co.ao':
       return { oneSignalAppId: 'd209de76-98c2-4721-aad4-168c4a8f4e66', cognitoClientId: '5h5nv9olv0ln6mqs1ucvighun2' }
