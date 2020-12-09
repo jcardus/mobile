@@ -17,9 +17,7 @@ const ampConfig = {
         ],
         responseType: 'code'
     },
-    federationTarget: 'COGNITO_USER_POOLS',
-    aws_mobile_analytics_app_id: 'd0e262fc9a03412288d362dbc836501b',
-    aws_mobile_analytics_app_region: 'us-east-1'
+    federationTarget: 'COGNITO_USER_POOLS'
 };
 
 export default ampConfig;
