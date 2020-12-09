@@ -263,10 +263,11 @@ const actions = {
     return new Promise((resolve) => {
       logout().catch((e) => {
         Vue.$log.error(e)
-      }).finally(() => {
+      }).finally(async() => {
         commit('CLEAR_USER')
         vm.reset()
         delete Vue.prototype.$socket
+        Vue.$log.debug(await Auth.signOut())
         resolve()
       })
     })
