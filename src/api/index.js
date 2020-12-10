@@ -27,6 +27,20 @@ export function getServerHost() {
     : 'ws.' + hostName
 }
 
+function auth(action) {
+  return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&identity_provider=Google&redirect_uri=${getGoogleRedirect()}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}&redirect_uri=${getGoogleRedirect()}`
+}
+
 export function getGoogleLogin() {
-  return `https://${awsConfig.oauth.domain}/oauth2/authorize?identity_provider=Google&redirect_uri=${getGoogleRedirect()}&response_type=CODE&client_id=${awsConfig.aws_user_pools_web_client_id}`
+  return auth('oauth2/authorize')
+}
+export function signUp() {
+  return auth('signup')
+}
+export function forgotPassword() {
+  return auth('forgotPassword')
+}
+
+export function signOut() {
+  return auth('signout')
 }
