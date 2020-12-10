@@ -166,11 +166,6 @@ module.exports = {
       entry: 'src/main.js',
       template: 'public/index.html',
       chunks: ['chunk-vendors', 'chunk-common', 'index']
-    },
-    'googlelogin/index': {
-      entry: 'src/main.js',
-      template: 'public/index.html',
-      chunks: ['chunk-vendors', 'chunk-common', 'index']
     }
   }
 }

@@ -10,6 +10,7 @@ import { getServerHost } from '@/api'
 import settings from '../../settings'
 import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
+import api from '@/api/backend'
 
 const state = {
   user: {
@@ -200,8 +201,19 @@ const actions = {
         resolve()
         dispatch('setUser')
       }).catch((e) => {
-        Vue.$log.warn('no session, should go to login', e)
-        dispatch('clearUser').then(() => resolve())
+        Vue.$log.warn('no session, checking cognito', e)
+        api.getJSessionId('')
+          .then(() => {
+            traccar.getSession().then((s) => {
+              commit('SET_USER', s)
+              resolve()
+              dispatch('setUser')
+            })
+          })
+          .catch(e => {
+            Vue.$log.warn('no session, should go to login', e)
+            dispatch('clearUser').then(() => resolve())
+          })
       })
     })
   },
