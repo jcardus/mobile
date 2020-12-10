@@ -267,7 +267,6 @@ const actions = {
         commit('CLEAR_USER')
         vm.reset()
         delete Vue.prototype.$socket
-        Vue.$log.debug(await Auth.signOut())
         resolve()
       })
     })

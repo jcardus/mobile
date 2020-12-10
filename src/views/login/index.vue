@@ -89,8 +89,7 @@ import { getCSSName, getLogo, getThemeColor, hasSVG } from '@/utils/partner'
 import { cdnUrl } from '@/utils/consts'
 import LogoSvg from '../../layout/components/LogoSvg'
 import GoogleButton from './GoogleButton'
-import awsConfig from '@/aws-exports'
-import { getGoogleRedirect } from '@/api'
+import { forgotPassword, signUp } from '@/api'
 
 export default {
   name: 'Login',
@@ -125,10 +124,10 @@ export default {
   },
   computed: {
     registerUrl() {
-      return `https://${awsConfig.oauth.domain}/signup?client_id=${awsConfig.aws_user_pools_web_client_id}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${getGoogleRedirect()}`
+      return signUp()
     },
     forgotPassUrl() {
-      return `https://${awsConfig.oauth.domain}/forgotPassword?client_id=${awsConfig.aws_user_pools_web_client_id}&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${getGoogleRedirect()}`
+      return forgotPassword()
     },
     hasSVG() {
       return hasSVG()

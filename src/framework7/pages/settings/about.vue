@@ -18,8 +18,9 @@
 </template>
 
 <script>
-import { appOffline } from '../../../utils/utils'
-import { hostname } from '../../../utils/partner'
+import { appOffline } from '@/utils/utils'
+import { hostname } from '@/utils/partner'
+import { signOut } from '@/api'
 
 export default {
   name: 'About',
@@ -55,7 +56,7 @@ export default {
       ).finally(() => {
         // this.$f7.preloader.hide()
         // this.$f7.loginScreen.open('#loginScreen', false)
-        location.reload()
+        window.location.href = signOut()
       })
     }
   }
