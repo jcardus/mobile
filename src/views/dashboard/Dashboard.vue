@@ -6,7 +6,6 @@
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
-import { backEndHostName } from '@/utils/consts'
 import { TrackJS } from 'trackjs'
 import { isMobile } from '@/utils/lnglat'
 import * as partner from '../../utils/partner'
@@ -15,6 +14,7 @@ import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import axios from 'axios'
 import { getLanguageI18n } from '@/lang'
+import { getBackendHost } from '@/api'
 
 export default {
   name: 'Dashboard',
@@ -53,7 +53,7 @@ export default {
       }
       NProgress.start()
       try {
-        axios.get('https://' + backEndHostName + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.id)
+        axios.get('https://' + getBackendHost() + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.id)
           .then(json => {
             const containerDiv = document.getElementById('quicksightContainer')
             let url = json.data.EmbedUrl
