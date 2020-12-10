@@ -20,7 +20,6 @@
 <script>
 import { appOffline } from '@/utils/utils'
 import { hostname } from '@/utils/partner'
-import { signOut } from '@/api'
 
 export default {
   name: 'About',
@@ -45,15 +44,6 @@ export default {
     refreshApp() {
       this.$log.debug('refreshing...')
       location.reload()
-    },
-    logout() {
-      this.$f7.preloader.show()
-      this.$store.dispatch('user/logout').then(
-        () => {},
-        () => {}
-      ).finally(() => {
-        window.location.href = signOut()
-      })
     }
   }
 }
