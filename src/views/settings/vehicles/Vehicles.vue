@@ -69,7 +69,7 @@
 
     <el-table
       v-el-table-infinite-scroll="load"
-      :data="filteredDevices.slice(0, this.count)"
+      :data="filteredDevices.slice(0, count)"
       height="calc(100vh - 150px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"

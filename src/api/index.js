@@ -1,14 +1,11 @@
-import awsConfig from '../aws-exports'
+import { awsConfig } from '@/amplify'
 
 const backendProd = 'xmjth8acs5'
 const backendDev = 'wd5b3zc65f'
 const backendUrl = 'execute-api.us-east-1.amazonaws.com'
 
 export function getGoogleRedirect() {
-  if (window.location.hostname === 'localhost') {
-    return 'https://fleetmap.io/googlelogin/'
-  }
-  return window.location.protocol + '//' + window.location.host + '/googlelogin/'
+  return window.location.hostname === 'localhost' ? 'fleetmap.io' : window.location.hostname
 }
 
 export function getBackendHost() {
@@ -28,7 +25,8 @@ export function getServerHost() {
 }
 
 function auth(action) {
-  return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&identity_provider=Google&redirect_uri=${getGoogleRedirect()}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}&redirect_uri=${getGoogleRedirect()}`
+  const redirect = awsConfig.oauth.redirectSignIn
+  return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&identity_provider=Google&redirect_uri=${redirect}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
 }
 
 export function getGoogleLogin() {
@@ -42,5 +40,5 @@ export function forgotPassword() {
 }
 
 export function signOut() {
-  return auth('signout')
+  return auth('logout')
 }

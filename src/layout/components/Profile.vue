@@ -62,6 +62,7 @@ import { mapGetters } from 'vuex'
 import { appOffline } from '@/utils/utils'
 import { traccar } from '@/api/traccar-api'
 import { setLanguage } from '@/lang'
+import { signOut } from '@/api'
 
 export default {
   name: 'Profile',
@@ -118,7 +119,7 @@ export default {
       await this.$store.dispatch('app/setLoading', true)
       await this.$store.dispatch('user/logout')
       await this.$store.dispatch('app/setLoading', false)
-      window.location.reload()
+      window.location.href = signOut()
     },
     handleCommand(command) {
       if (command === 'profile') {

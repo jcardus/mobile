@@ -49,13 +49,9 @@ export default {
     logout() {
       this.$f7.preloader.show()
       this.$store.dispatch('user/logout').then(
-        () => {
-        },
-        () => {
-        }
+        () => {},
+        () => {}
       ).finally(() => {
-        // this.$f7.preloader.hide()
-        // this.$f7.loginScreen.open('#loginScreen', false)
         window.location.href = signOut()
       })
     }
