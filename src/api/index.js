@@ -28,7 +28,7 @@ export function getServerHost() {
 }
 
 function auth(action) {
-  return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&identity_provider=Google&redirect_uri=${getGoogleRedirect()}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}&redirect_uri=${getGoogleRedirect()}`
+  return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&identity_provider=Google&redirect_uri=${getGoogleRedirect()}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
 }
 
 export function getGoogleLogin() {
