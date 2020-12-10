@@ -67,7 +67,7 @@
     <el-table
       v-el-table-infinite-scroll="load"
       height="calc(100vh - 150px)"
-      :data="filteredGeofences.slice(0, this.count)"
+      :data="filteredGeofences.slice(0, count)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
     >

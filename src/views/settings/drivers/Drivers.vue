@@ -41,7 +41,7 @@
       height="calc(100vh - 150px)"
       :row-style="tableRowStyle"
       :header-cell-style="tableHeaderStyle"
-      :data="filteredDrivers.slice(0, this.count)"
+      :data="filteredDrivers.slice(0, count)"
     >
       <el-table-column
         :label="$t('settings.driver_name')"

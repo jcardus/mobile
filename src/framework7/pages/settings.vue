@@ -126,6 +126,7 @@
 <script>
 
 import { appOffline } from '@/utils/utils'
+import { signOut } from '@/api'
 
 export default {
   name: 'Settings',
@@ -154,9 +155,7 @@ export default {
         () => {
         }
       ).finally(() => {
-        // this.$f7.preloader.hide()
-        // this.$f7.loginScreen.open('#loginScreen', false)
-        location.reload()
+        window.location.href = signOut()
       })
     }
   }

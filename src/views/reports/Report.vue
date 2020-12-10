@@ -1,10 +1,10 @@
 <template>
-  <div v-loading="loadingReport" class="reportContainer" H>
+  <div v-loading="loadingReport" class="reportContainer">
     <el-collapse v-model="activeSection" accordion>
       <el-collapse-item name="1">
         <template slot="title">
           <span v-if="activeSelector==='vehicles'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-car"></i>{{ $t('report.select_vehicles_placeholder') }}</span>
-          <span v-if="activeSelector==='groups'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-grip-horizontal"></i>{{ $t('report.select_groups_placeholder') }}</span> {{ this.currentVehicles }}
+          <span v-if="activeSelector==='groups'" style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-grip-horizontal"></i>{{ $t('report.select_groups_placeholder') }}</span> {{ currentVehicles }}
         </template>
         <div style="float:left">
           <div class="tagSelector">
@@ -67,7 +67,7 @@
       </el-collapse-item>
       <el-collapse-item v-if="selectGeofences" name="2">
         <template slot="title">
-          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-map-marked"></i>{{ $t('report.select_geofences_placeholder') }}</span> {{ this.currentGeofences }}
+          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-map-marked"></i>{{ $t('report.select_geofences_placeholder') }}</span> {{ currentGeofences }}
         </template>
         <el-transfer
           v-model="selectedGeofences"
@@ -84,7 +84,7 @@
       </el-collapse-item>
       <el-collapse-item name="3">
         <template slot="title">
-          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-calendar-alt"></i>Período</span> {{ this.currentPeriod }}
+          <span style="font-weight: bold"><i style="padding-left:5px; padding-right: 5px;" class="fas fa-calendar-alt"></i>Período</span> {{ currentPeriod }}
         </template>
         <div class="periodSelector">
           <el-tooltip :content="$t('report.select_period')" placement="bottom">
