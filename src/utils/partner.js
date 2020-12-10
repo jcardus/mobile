@@ -118,7 +118,7 @@ export function getPartnerData() {
     case 'www.fleetmap.co.mz':
       return { cognitoClientId: '5n1pfl8gs7svbmptr325dpmdbh', oneSignalAppId: '25875ecc-70f6-414e-b9df-2c64eb8e2459' }
     case 'map.able-on.mobi':
-      return { oneSignalAppId: '9cf3703f-92d5-4c55-b234-b613cc31b0d6' }
+      return { oneSignalAppId: '9cf3703f-92d5-4c55-b234-b613cc31b0d6', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
     case 'web.fleetrack.cl':
       return {
         oneSignalAppId: '4f3f1081-5189-4715-87df-d1db684cc6a7',
