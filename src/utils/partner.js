@@ -132,8 +132,8 @@ export function getPartnerData() {
       return { oneSignalAppId: '70622a05-9e6e-4fb7-8817-f9e26b8b3064', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
     case 'pinme.io':
       return { oneSignalAppId: '610e8c3c-0939-42ad-a9e4-ce321a5d13bc' }
-    case 'dev.pinme.io':
-      return { oneSignalAppId: '2cef0590-22af-4d29-85f0-1edaa5279b9c' }
+    case 'dev.fleetmap.io':
+      return { oneSignalAppId: '2cef0590-22af-4d29-85f0-1edaa5279b9c', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
     default:
       return {
         oneSignalAppId: 'd48134b7-ab16-4065-9ff8-54a3465f258a',
