@@ -46,31 +46,29 @@
                 </el-form-item>
               </el-tooltip>
               <el-row>
-                <el-button
-                  :loading="loading"
-                  type="primary"
-                  @click.native.prevent="handleLogin"
-                >{{ $t('login.login_button') }}</el-button>
+                <el-col>
+                  <el-button
+                    :loading="loading"
+                    type="primary"
+                    @click.native.prevent="handleLogin"
+                  >{{ $t('login.login_button') }}</el-button>
+                </el-col>
+                <el-col>
+                  <el-link
+                    plain
+                    type="primary"
+                    :href="forgotPassUrl"
+                  >{{ $t('login.forgotPassword') }}</el-link>
+                </el-col>
+              </el-row>
+              <el-row style="margin-top: 15px;width:50%">
+                <google-button />
                 <el-link
-                  style="float:right"
                   plain
                   type="primary"
                   :href="registerUrl"
                 >{{ $t('login.register') }}</el-link>
-                <el-link
-                  style="float:right"
-                  plain
-                  type="primary"
-                  :href="forgotPassUrl"
-                >{{ $t('login.forgotPassword') }}</el-link>
               </el-row>
-              <el-row style="margin-top: 15px;width:50%">
-                <google-button />
-              </el-row>
-              <div>
-
-              </div>
-
               <div style="padding-top: 15px">
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
               </div>
@@ -239,6 +237,7 @@ export default {
   @import '../../styles/element-variables.scss';
 
   .login-container {
+    font-size: 18px;
     height: 100vh;
 
     .parentDiv {
@@ -281,7 +280,6 @@ export default {
             padding: 12px 5px 12px 15px;
             color: $--color-info;
             height: 40px;
-            font-size: 15px;
 
             &:-webkit-autofill {
               box-shadow: 0 0 0 1000px $--background-color-base inset !important;
@@ -301,7 +299,7 @@ export default {
         .el-form-item__label {
           height: 25px;
           color: $--color-info;
-          font-size: 13px;
+          font-size: 14px;
         }
 
         .show-pwd {
