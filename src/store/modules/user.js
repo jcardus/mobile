@@ -263,6 +263,7 @@ const actions = {
         try {
           const result = await Auth.signIn(username.trim(), password)
           await api.getJSessionId()
+          window.location.href = '/'
           Vue.$log.debug(result)
         } catch (e) {
           Vue.$log.error(e)
