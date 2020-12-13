@@ -5,8 +5,8 @@ const url = 'https://' + getServerHost() + '/backend'
 
 export default {
   axios: axios.create(),
-  getJSessionId(username) {
-    return this.get('/api?username=' + username)
+  getJSessionId() {
+    return this.get('/api?username=1')
   },
   getCookie(jsessionid) {
     return this.axios.get(url + '/api?jsessionid=' + jsessionid, {
