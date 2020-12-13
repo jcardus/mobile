@@ -262,8 +262,8 @@ const actions = {
         commit('CLEAR_USER')
         try {
           const result = await Auth.signIn(username.trim(), password)
+          await api.getJSessionId()
           Vue.$log.debug(result)
-          window.location.href = '/googlelogin/'
         } catch (e) {
           Vue.$log.error(e)
           reject(e)
