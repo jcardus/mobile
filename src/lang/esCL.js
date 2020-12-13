@@ -85,6 +85,7 @@ export default {
     login_password: 'Contraseña',
     login_button: 'Iniciar',
     login_password_warn: 'La contraseña no puede tener menos de 6 dígitos',
+    login_user_password_invalid: 'Usuário o contraseña inválidos.',
     login_user: 'Usuario',
     forgotPassword: 'Olvidó su clave?',
     register: 'Nuevo usuário?'

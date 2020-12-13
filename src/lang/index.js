@@ -53,17 +53,15 @@ export function getLanguage() {
   if (store) {
     const chooseLanguage = store.getters.user.attributes && store.getters.user.attributes.lang
     if (chooseLanguage) return chooseLanguage.replace('-', '')
-
-    // if has not choose language
-    const language = (navigator.language || navigator.browserLanguage).toLowerCase().replace('-', '')
-    const locales = Object.keys(messages)
-    for (const locale of locales) {
-      if (language.indexOf(locale) > -1) {
-        return locale
-      }
+  }
+  const language = (navigator.language || navigator.browserLanguage).toLowerCase().replace('-', '')
+  const locales = Object.keys(messages)
+  for (const locale of locales) {
+    if (locale.indexOf(language) > -1) {
+      return locale
     }
   }
-  return 'enGB'
+  return 'ptPT'
 }
 const i18n = new VueI18n({
   locale: getLanguage(),
