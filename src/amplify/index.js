@@ -10,7 +10,7 @@ export const awsConfig = {
   aws_user_pools_id: 'us-east-1_XEJ1DMDIJ',
   aws_user_pools_web_client_id: getPartnerData().cognitoClientId,
   oauth: {
-    redirectSignIn: `https://${getGoogleRedirect()}/googlelogin/`,
+    redirectSignIn: `https://${getGoogleRedirect()}/`,
     redirectSignOut: `https://${getGoogleRedirect()}/`,
     domain: 'auth.fleetmap.io',
     scope: [
