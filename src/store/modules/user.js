@@ -11,6 +11,7 @@ import settings from '../../settings'
 import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
 import api from '@/api/backend'
+import backend from '@/api/backend'
 
 const state = {
   user: {
@@ -28,6 +29,9 @@ const state = {
 }
 
 const mutations = {
+  SET_EMAIL_AUTH_HASH(state, hash) {
+    state.user.attributes.emailAuthHash = hash
+  },
   SET_ORDER_DEVICES_BY(state, orderDevicesBy) {
     state.user.attributes = { ...state.user.attributes, orderDevicesBy }
   },
@@ -221,10 +225,15 @@ const actions = {
     return new Promise((resolve) => {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
-        .finally(() => {
+        .finally(async() => {
           setLanguage(state.user.attributes.lang)
+          if (!state.user.attributes.emailAuthHash) {
+            await dispatch('setEmailAuthHash')
+          }
           if (window.OneSignal) {
-            window.OneSignal.setEmail(state.user.email)
+            window.OneSignal.setEmail(state.user.email, {
+              emailAuthHash: state.user.attributes.emailAuthHash
+            })
           }
           TrackJS.addMetadata('user', state.user.name)
           const hostName = getServerHost()
@@ -413,6 +422,10 @@ const actions = {
     })
   },
   processDevices() {
+  },
+  async setEmailAuthHash({ state, commit }) {
+    const r = await backend.getEmailAuthHash(state.user.email, state.user.attributes.lastHost)
+    commit('SET_EMAIL_AUTH_HASH', r.data)
   }
 }
 export default {

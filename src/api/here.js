@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import axios from 'axios'
-import { rServerUrl } from '../utils/consts'
+import { rServerUrl } from '@/utils/consts'
 
-const appId = 'app_id=10NhEXUZQ6VIbaHm2ifh&app_code=PlJd3hrHLjpI38mn1HvB0Q'
+const appId = 'apiKey=S1DGFLNdYfZrIjnplk0qjZzu4wYIiMgMr9Z8ycmxZEE'
 
-const calcRoute = 'https://fleet.api.here.com/2/calculateroute.json?&detailedTollCosts=1&' +
+const calcRoute = 'https://fleet.ls.hereapi.com/2/calculateroute.json?&detailedTollCosts=1&' +
   appId +
   '&routeMatch=1&filetype=CSV&mode=car&tollVehicleType=1&rollups=none,country;tollsys&' +
   'attributes=SPEED_LIMITS_FCn(*),ROAD_NAME_FCn(*),ROAD_ADMIN_FCn(*),DISTANCE_MARKERS_FCn(*)' +
