@@ -1,12 +1,12 @@
 import { awsConfig } from '@/amplify'
-const backendProd = 'xmjth8acs5'
-const backendUrl = 'execute-api.us-east-1.amazonaws.com'
 
 export function getGoogleRedirect() {
   return window.location.hostname === 'localhost' ? 'fleetmap.io' : window.location.hostname
 }
 
 export function getBackendHost() {
+  const backendProd = 'xmjth8acs5'
+  const backendUrl = 'execute-api.us-east-1.amazonaws.com'
   return `${backendProd}.${backendUrl}`
 }
 

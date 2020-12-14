@@ -224,7 +224,9 @@ const actions = {
         .finally(() => {
           setLanguage(state.user.attributes.lang)
           if (window.OneSignal) {
-            window.OneSignal.setEmail(state.user.email)
+            window.OneSignal.setEmail(state.user.email, {
+              emailAuthHash: state.user.id
+            })
           }
           TrackJS.addMetadata('user', state.user.name)
           const hostName = getServerHost()

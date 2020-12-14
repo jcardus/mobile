@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { vm } from '../../main'
+import { vm } from '@/main'
 export default {
   computed: {
     tableData() {

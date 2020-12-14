@@ -5,14 +5,13 @@
 <script>
 import ReportElement from './ReportElement'
 import ReportTollsTable from './ReportTollsTable'
-import { tollsMatch } from '../../api/here'
 
 export default {
   name: 'ReportTolls',
   components: { ReportTollsTable, ReportElement },
   methods: {
     filterData(rows, onResolve) {
-      tollsMatch(rows, onResolve)
+      onResolve(rows)
     }
   }
 }
