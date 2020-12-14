@@ -129,7 +129,7 @@ export function getPartnerData() {
     case 'mac.pinme.io':
       return { oneSignalAppId: 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2' }
     case 'localhost':
-      return { oneSignalAppId: '70622a05-9e6e-4fb7-8817-f9e26b8b3064', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
+      return { oneSignalAppId: '5be94b69-6e16-42ff-bca4-96b0454296ba', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
     case 'pinme.io':
       return { oneSignalAppId: '610e8c3c-0939-42ad-a9e4-ce321a5d13bc' }
     case 'dev.fleetmap.io':
