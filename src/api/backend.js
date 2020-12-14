@@ -21,6 +21,12 @@ export default {
         'Authorization': `${session.accessToken.getJwtToken()}`
       }
     })
+  },
+  getEmailAuthHash(email, lastHost) {
+    const path = `${url}/api?emailAuthHash=${email}&lastHost=${lastHost}`
+    return this.axios.get(path, {
+      withCredentials: true
+    })
   }
 }
 
