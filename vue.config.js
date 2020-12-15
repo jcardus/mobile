@@ -95,7 +95,10 @@ module.exports = {
   productionSourceMap: true,
   devServer: {
     disableHostCheck: true,
-    https: true,
+    https: {
+      key: fs.readFileSync('./localhost.key'),
+      cert: fs.readFileSync('./localhost.crt')
+    },
     port: port,
     open: true,
     overlay: {

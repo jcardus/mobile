@@ -7,8 +7,8 @@
       <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType"></logo-svg>
       <img v-else :class="'logo ' + logoClassType" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
-      <el-tabs stretch>
-        <el-tab-pane>
+      <el-tabs v-model="selectedTab" stretch>
+        <el-tab-pane name="/map">
           <span slot="label">
             <i class="fas fa-car"></i>
           </span>
@@ -28,7 +28,7 @@
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
-        <el-tab-pane>
+        <el-tab-pane name="/alerts">
           <span slot="label">
             <el-badge :value="unreadItems" :hidden="unreadItems === 0" :max="99">
               <i class="fas fa-bell"></i>
@@ -57,6 +57,7 @@ export default {
   components: { VehicleTable, AlertTable, GeofenceTable, DriverTable, LogoSvg },
   data() {
     return {
+      selectedTab: this.$route.path,
       filterKey: ''
     }
   },

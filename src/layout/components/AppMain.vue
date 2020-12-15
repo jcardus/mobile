@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!$route.path.includes('report_custom') && !$route.path.includes('map') && !$route.path.includes('dashboard')" style="height: 50px"></div>
+    <div v-if="!$route.path.includes('report_custom') && !$route.path.includes('alerts') && !$route.path.includes('map') && !$route.path.includes('dashboard')" style="height: 50px"></div>
     <transition name="fade-transform" mode="out-in">
       <keep-alive>
         <router-view :key="key" />

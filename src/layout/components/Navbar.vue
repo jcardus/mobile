@@ -21,7 +21,8 @@ export default {
   // eslint-disable-next-line vue/order-in-components
   computed: {
     showNavBar() {
-      return !this.$route.path.includes('map') &&
+      return !this.$route.path.includes('alerts') &&
+        !this.$route.path.includes('map') &&
         !this.$route.path.includes('dashboard') &&
         !this.$route.path.includes('report_custom')
     },
