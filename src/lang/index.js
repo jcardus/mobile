@@ -57,7 +57,8 @@ export function getLanguage() {
   const language = (navigator.language || navigator.browserLanguage).toLowerCase().replace('-', '')
   const locales = Object.keys(messages)
   for (const locale of locales) {
-    if (locale.indexOf(language) > -1) {
+    if (locale.toLowerCase().indexOf(language) > -1) {
+      console.log('getting locale from browser', locale)
       return locale
     }
   }
