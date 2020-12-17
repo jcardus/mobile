@@ -32,6 +32,9 @@ const mutations = {
   SET_EMAIL_AUTH_HASH(state, hash) {
     state.user.attributes.emailAuthHash = hash
   },
+  SET_USERID_AUTH_HASH(state, hash) {
+    state.user.attributes.userIdAuthHash = hash
+  },
   SET_ORDER_DEVICES_BY(state, orderDevicesBy) {
     state.user.attributes = { ...state.user.attributes, orderDevicesBy }
   },
@@ -230,10 +233,14 @@ const actions = {
           if (!state.user.attributes.emailAuthHash) {
             await dispatch('setEmailAuthHash')
           }
+          if (!state.user.attributes.userIdAuthHash) {
+            await dispatch('setUserIdAuthHash')
+          }
           if (window.OneSignal) {
             window.OneSignal.setEmail(state.user.email, {
               emailAuthHash: state.user.attributes.emailAuthHash
             })
+            window.OneSignal.setExternalUserId(state.user.id, state.user.attributes.userIdAuthHash)
           }
           TrackJS.addMetadata('user', state.user.name)
           const hostName = getServerHost()
@@ -426,6 +433,10 @@ const actions = {
   async setEmailAuthHash({ state, commit }) {
     const r = await backend.getEmailAuthHash(state.user.email, state.user.attributes.lastHost)
     commit('SET_EMAIL_AUTH_HASH', r.data)
+  },
+  async setUserIdAuthHash({ state, commit }) {
+    const r = await backend.getEmailAuthHash(state.user.id, state.user.attributes.lastHost)
+    commit('SET_USERID_AUTH_HASH', r.data)
   }
 }
 export default {
