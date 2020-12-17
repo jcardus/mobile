@@ -21,6 +21,7 @@ import transient from './modules/transient'
 import user from './modules/user'
 import * as notifications from '../utils/notifications'
 import * as alertType from '../alerts/alertType'
+import { newEventReceived } from '@/events'
 
 const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
@@ -103,7 +104,7 @@ const store = new Vuex.Store({
           if (event.type === alertType.alarmSOS) {
             event.device.alarmSOSReceived = true
           }
-          serverBus.$emit(event.newEventReceived, event)
+          serverBus.$emit(newEventReceived, event)
         }
       }
     },

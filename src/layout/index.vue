@@ -51,15 +51,6 @@ export default {
         type: 'info',
         duration: 5000
       })
-      try {
-        if (this.serviceWorker) {
-          this.serviceWorker.postMessage(notifications.getMessage(event))
-        } else {
-          this.$log.warn('serviceWorker is null...')
-        }
-      } catch (e) {
-        this.$log.error(e)
-      }
     }
   }
 }
