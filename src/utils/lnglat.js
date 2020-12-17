@@ -360,7 +360,6 @@ function findDriver(position, device) {
       driver.vehicle = null
       vm.$store.state.user.drivers.push(driver)
     }
-
     return { name: '' }
   }
 
@@ -381,8 +380,10 @@ function findDriver(position, device) {
   }
 
   if (device.driver && device.driver.id) {
-    const driver = this.drivers.find(d => d.id === device.driver.id)
-    driver.vehicle = null
+    const driver = vm.$store.state.user.drivers.find(d => d.id === device.driver.id)
+    if (driver) {
+      driver.vehicle = null
+    }
   }
 
   return { name: position.attributes.driverUniqueId }
