@@ -124,14 +124,12 @@ function initData(commit, state, dispatch) {
                 .then(() => {
                   dispatch('fetchAlerts').then(() => {
                     state.user.attributes.alertsSearchPeriod = 'last_one_hour'
-                    if (state.devices.length < 100) {
-                      dispatch('transient/fetchEvents', {
-                        start: Vue.moment().subtract(1, 'hour').toDate(),
-                        end: new Date(),
-                        types: state.alerts
-                      }, { root: true })
-                        .catch(e => Vue.$log.warn(e, 'moving on...'))
-                    }
+                    dispatch('transient/fetchEvents', {
+                      start: Vue.moment().subtract(1, 'hour').toDate(),
+                      end: new Date(),
+                      types: state.alerts
+                    }, { root: true })
+                      .catch(e => Vue.$log.warn(e, 'moving on...'))
                   })
                 })
                 .finally(() => {
