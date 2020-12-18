@@ -29,7 +29,7 @@ export default {
         content: item.content,
         icon: item.image,
         color: item.color ? item.color : '#3232b4',
-        timestamp: item.serverTime,
+        timestamp: position.fixTime,
         selected: false
       }
     }
