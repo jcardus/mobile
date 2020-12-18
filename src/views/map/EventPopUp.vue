@@ -18,7 +18,7 @@
         {{ properties.content }}
       </div>
       <div style="padding-top: 5px;padding-bottom: 5px;">
-        <span>{{ properties.timestamp | moment('from', properties.timestamp) }}</span>
+        <span>{{ properties.timestamp | moment('from', currentTime) }}</span>
       </div>
     </div>
   </div>
