@@ -123,7 +123,7 @@ function initData(commit, state, dispatch) {
               dispatch('processGroups')
                 .then(() => {
                   dispatch('fetchAlerts').then(() => {
-                    state.user.attributes.alertsSearchPeriod = 'last_one_hour'
+                    commit('setAlertsSearchPeriod', 'last_one_hour')
                     dispatch('transient/fetchEvents', {
                       start: Vue.moment().subtract(1, 'hour').toDate(),
                       end: new Date(),

@@ -54,7 +54,7 @@
               <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 20px"></i>{{ scope.row.device.name }}</span></div>
               <div style="line-height: normal">
                 <span style="font-size: 12px">
-                  <i v-if="scope.row.device.driver.name != ''" class="fas fa-user driverIcon"></i>
+                  <i v-if="scope.row.device.driver.name !== ''" class="fas fa-user driverIcon"></i>
                   {{ scope.row.device.driver.name }}
                 </span>
               </div>
@@ -94,15 +94,12 @@ export default {
   },
   data() {
     return {
-      selectedAlertType: ''
+      selectedAlertType: '',
+      alertsSearchPeriod: 'last_one_hour'
     }
   },
   computed: {
     ...mapGetters(['historyMode', 'currentTime', 'events', 'alerts', 'devices']),
-    alertsSearchPeriod: {
-      get() { return this.$store.getters.alertsSearchPeriod },
-      set(value) { this.$store.commit('user/setAlertsSearchPeriod', value) }
-    },
     height() {
       return 'calc(100vh - ' + styles.alertListHeaderHeight + ')'
     },
@@ -168,8 +165,9 @@ export default {
       }
     },
     getAlerts() {
-      Vue.$log.debug('Refresh events list')
+      this.$log.debug('Refresh events list')
       const hours = this.getSearchHours()
+      this.$log.debug(hours)
       this.$store.dispatch('transient/fetchEvents', {
         start: Vue.moment().subtract(hours, 'hour').toDate(),
         end: new Date(),
