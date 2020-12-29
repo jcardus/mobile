@@ -46,6 +46,26 @@
                 </el-tab-pane>
                 <el-tab-pane>
                   <span slot="label">
+                    <i class="fas fa-car"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedDevices"
+                      :filter-method="filteredDevices"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.vehicles'), $t('report.select_vehicles')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="devices"
+                    >
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
                     <i class="fas fa-grip-horizontal"></i>
                   </span>
                   <el-form-item>
@@ -239,9 +259,11 @@ export default {
         userDrivers: [],
         userGeofences: [],
         userGroups: [],
+        userDevices: [],
         userSelectedDrivers: [],
         userSelectedGeofences: [],
         userSelectedGroups: [],
+        userSelectedDevices: [],
         userSelectedReports: []
       },
       userTypes: [
@@ -268,11 +290,16 @@ export default {
         { value: 'es-CL', text: 'Español (Chile)' },
         { value: 'pt-PT', text: 'Português (PT)' },
         { value: 'pt-BR', text: 'Português (BR)' }
-      ]
+      ],
+      filteredDevices(query, item) {
+        if (item.attributes.license_plate) {
+          return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.attributes.license_plate.toLowerCase().indexOf(query.toLowerCase()) > -1
+        }
+      }
     }
   },
   computed: {
-    ...mapGetters(['user', 'users', 'drivers', 'groups', 'geofences']),
+    ...mapGetters(['user', 'users', 'drivers', 'groups', 'devices', 'geofences']),
     filteredUsers() {
       return this.users.filter(data => !this.search ||
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
@@ -313,6 +340,7 @@ export default {
       this.userForm.userSelectedGeofences = []
       this.userForm.userSelectedGroups = []
       this.userForm.userSelectedReports = []
+      this.userForm.userSelectedDevices = []
       this.isOpenUserForm = !this.isOpenUserForm
     },
     async handleEdit(row) {
@@ -333,6 +361,9 @@ export default {
         })
         await traccar.groupsByUser(self.selectedUser.id).then(function(response) {
           self.userForm.userGroups = self.userForm.userSelectedGroups = response.data.map(g => g.id)
+        })
+        await traccar.devicesByUser(self.selectedUser.id).then(function(response) {
+          self.userForm.userDevices = self.userForm.userSelectedDevices = response.data.map(d => d.id)
         })
         await traccar.geofencesByUser(self.selectedUser.id).then(function(response) {
           self.userForm.userGeofences = self.userForm.userSelectedGeofences = response.data.map(g => g.id)
@@ -529,6 +560,25 @@ export default {
 
       await traccar.deleteAllPermissions(driversPermissionsToRemove)
       await traccar.addAllPermissions(driversPermissionsToAdd)
+
+      const devicesToRemove = this.userForm.userDevices.filter(x => !self.userForm.userSelectedDevices.includes(x))
+      const devicesToAdd = this.userForm.userSelectedDevices.filter(x => !self.userForm.userDevices.includes(x))
+
+      const devicesPermissionsToRemove = devicesToRemove.map(d => {
+        return {
+          userId: user.id,
+          deviceId: d
+        }
+      })
+      const devicesPermissionsToAdd = devicesToAdd.map(d => {
+        return {
+          userId: user.id,
+          deviceId: d
+        }
+      })
+
+      await traccar.deleteAllPermissions(devicesPermissionsToRemove)
+      await traccar.addAllPermissions(devicesPermissionsToAdd)
     },
     userDeleted(id) {
       this.$log.debug('user deleted')
