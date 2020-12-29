@@ -38,8 +38,8 @@ const mutations = {
   SET_ORDER_DEVICES_BY(state, orderDevicesBy) {
     state.user.attributes = { ...state.user.attributes, orderDevicesBy }
   },
-  setAlertsSearchPeriod(state, value) {
-    state.user.attributes.alertsSearchPeriod = value
+  SET_ALERT_SEARCH_PERIOD(state, alertsSearchPeriod) {
+    state.user.attributes = { ...state.user.attributes, alertsSearchPeriod }
   },
   SET_GEOFENCES(state, geofences) {
     console.log('SET_GEOFENCES', geofences)
@@ -123,7 +123,7 @@ function initData(commit, state, dispatch) {
               dispatch('processGroups')
                 .then(() => {
                   dispatch('fetchAlerts').then(() => {
-                    state.user.attributes.alertsSearchPeriod = 'last_one_hour'
+                    commit('SET_ALERT_SEARCH_PERIOD', 'last_one_hour')
                     dispatch('transient/fetchEvents', {
                       start: Vue.moment().subtract(1, 'hour').toDate(),
                       end: new Date(),
