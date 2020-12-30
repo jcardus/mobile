@@ -301,7 +301,7 @@ export default {
   computed: {
     ...mapGetters(['user', 'users', 'drivers', 'groups', 'devices', 'geofences']),
     filteredUsers() {
-      return this.users.filter(data => !this.search ||
+      return this.users.filter(data => !data.token).filter(data => !this.search ||
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
         data.email.toLowerCase().includes(this.search.toLowerCase()))
     },

@@ -31,6 +31,12 @@
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
+          <i class="fas fa-user-clock"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.temporary_links') }}</span>
+        </span>
+        <temporary-links></temporary-links>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
           <i class="fas fa-map-marked"></i><span v-if="!isMobile" style="margin-left: 10px">{{ $t('settings.zone') }}</span>
         </span>
         <geofences></geofences>
@@ -112,12 +118,13 @@ import Drivers from './drivers/Drivers'
 import Geofences from './geofence/Geofences'
 import Vehicles from './vehicles/Vehicles'
 import Groups from './groups/Groups'
+import TemporaryLinks from './links/TemporaryLinks'
 import AutomaticReports from './reports/AutomaticReports.vue'
 import * as lnglat from '../../utils/lnglat'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Settings',
-  components: { Users, Alerts, Vehicles, Groups, Drivers, Geofences, AutomaticReports },
+  components: { Users, Alerts, Vehicles, Groups, Drivers, Geofences, AutomaticReports, TemporaryLinks },
   data() {
     return {
       radioValue: 'road',
