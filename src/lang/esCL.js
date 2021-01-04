@@ -329,7 +329,17 @@ export default {
     user_updated: 'User updated sucessfully!',
     user_create_not_allowed: 'You do not have permissions to create users.',
     user_edit_not_allowed: 'You do not have permissions to edit users.',
-    user_duplicated_entry: 'User already exists.'
+    user_duplicated_entry: 'User already exists.',
+    temporary_links: 'Acessos Temporários',
+    expiration_date: 'Data de Expiração',
+    user_temporary_link: 'Acesso',
+    temporary_link_add: 'Criar Acesso Temporário',
+    temporary_link_edit: 'Editar Acesso Temporário',
+    temporary_link_created: 'Acesso temporário criado com sucesso!',
+    temporary_link_create_not_allowed: 'Não tem permissões para criar acessos temporários.',
+    temporary_link_deleted: 'O acesso temporário foi apagado.',
+    temporary_link_delete_info: 'Pretende apagar o acesso temporário  ',
+    temporary_link_delete_title: 'Apagar Acesso Temporário'
   },
   geofence: {
     showGeofences: 'Mostrat Geocercas',

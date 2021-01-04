@@ -356,7 +356,17 @@ export default {
     user_updated: 'User updated sucessfully!',
     user_create_not_allowed: 'You do not have permissions to create users.',
     user_edit_not_allowed: 'You do not have permissions to edit users.',
-    user_duplicated_entry: 'User already exists.'
+    user_duplicated_entry: 'User already exists.',
+    temporary_links: 'Temporary Links',
+    expiration_date: 'Expiration Date',
+    user_temporary_link: 'Link',
+    temporary_link_add: 'Create Temporary Link',
+    temporary_link_edit: 'Edit Temporary Link',
+    temporary_link_created: 'Temporary link created sucessfully!',
+    temporary_link_create_not_allowed: 'You do not have permissions to create temporary links.',
+    temporary_link_deleted: 'Temporary link has been deleted.',
+    temporary_link_delete_info: 'Do you want to delete the temporary link ',
+    temporary_link_delete_title: 'Delete Temporary link'
   },
   geofence: {
     showGeofences: 'Show Geofences',
