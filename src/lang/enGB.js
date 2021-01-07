@@ -279,6 +279,7 @@ export default {
     geofence_form_icon: 'Icon',
     geofence_form_color: 'Color',
     geofence_form_options: 'Options',
+    geofence_form_speedlimit: 'Speed Limit',
     zone: 'Zones',
     groups: 'Groups',
     group_edit: 'Edit Group',

@@ -23,6 +23,13 @@
                   </el-form-item>
                 </div>
               </div>
+              <div v-if="getType(selectedGeofence)==='geofence' || getType(selectedGeofence)==='linegeofence'" class="form-item-block">
+                <div class="form-item-row">
+                  <el-form-item class="form-item-block-right" :label="$t('settings.geofence_form_speedlimit')">
+                    <el-input-number v-model="geofenceSpeedLimit" :min="0" :precision="0" />
+                  </el-form-item>
+                </div>
+              </div>
               <div class="form-item-block">
                 <div class="form-item-row">
                   <el-form-item class="form-item-block-left" :label="$t('settings.geofence_form_color')">
@@ -53,13 +60,13 @@
               class="formButton"
               size="small"
               @click="handleCancelGroupForm"
-            >{{ $t('settings.group_form_cancel') }}</el-button>
+            >{{ $t('settings.form_cancel') }}</el-button>
             <el-button
               type="success"
               class="formButton"
               size="small"
               @click="handleSubmitGroupForm"
-            >{{ $t('settings.group_form_confirm') }}</el-button>
+            >{{ $t('settings.form_confirm') }}</el-button>
           </div>
         </div>
       </div>
@@ -141,6 +148,7 @@ export default {
       selectedGeofence: null,
       geofenceName: '',
       geofenceDescription: '',
+      geofenceSpeedLimit: 0,
       geofenceColor: '',
       geofenceIcon: '',
       geofenceFill: false,
@@ -199,6 +207,7 @@ export default {
       this.selectedGeofence = row
       this.geofenceName = row.name
       this.geofenceDescription = row.description
+      this.geofenceSpeedLimit = row.attributes.speedLimit ? Math.round(row.attributes.speedLimit * 1.85200) : 0
       this.geofenceIcon = row.attributes.icon ? row.attributes.icon : 'marker'
       this.geofenceColor = row.attributes.color ? row.attributes.color : '#3232b4'
       this.geofenceFill = row.attributes.fill != null ? row.attributes.fill : true
@@ -222,11 +231,13 @@ export default {
         }
       } else if (this.getType(this.selectedGeofence) === 'geofence') {
         geofence.attributes = {
+          speedLimit: this.geofenceSpeedLimit / 1.85200,
           color: this.geofenceColor,
           fill: this.geofenceFill
         }
       } else {
         geofence.attributes = {
+          speedLimit: this.geofenceSpeedLimit / 1.85200,
           color: this.geofenceColor
         }
       }
@@ -270,6 +281,7 @@ export default {
     clearFormData() {
       this.geofenceName = ''
       this.geofenceDescription = ''
+      this.geofenceSpeedLimit = 0
       this.geofenceIcon = ''
       this.geofenceColor = ''
     },
@@ -283,7 +295,11 @@ export default {
 
 <style scoped lang="scss">
   @import '../../../styles/element-variables.scss';
-
+  .form-item-block {
+    width: 100%;
+    display: table;
+    margin-bottom: 10px
+  }
   .formButton {
     float: right;
     margin-top: 10px;
@@ -334,7 +350,7 @@ export default {
   .form-item-block {
     width: 100%;
     display: table;
-    margin-bottom: 10px
+    margin-bottom: 5px
   }
 
   .form-item-row {

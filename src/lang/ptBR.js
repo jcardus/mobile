@@ -237,6 +237,7 @@ export default {
     geofence_form_icon: 'Icon',
     geofence_form_color: 'Cor',
     geofence_form_options: 'Opções',
+    geofence_form_speedlimit: 'Limite de Velocidade',
     groups: 'Grupos',
     group_edit: 'Editar Grupo',
     group_add: 'Adicionar Grupo',
