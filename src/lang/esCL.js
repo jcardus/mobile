@@ -87,6 +87,7 @@ export default {
     login_password_warn: 'La contraseña no puede tener menos de 6 dígitos',
     login_user_password_invalid: 'Usuário o contraseña inválidos.',
     login_user: 'Usuario',
+    network_error: 'No se puede establecer la conexión con el servidor.',
     forgotPassword: 'Olvidó su clave?',
     register: 'Nuevo usuário?'
   },
