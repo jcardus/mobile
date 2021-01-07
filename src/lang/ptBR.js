@@ -74,7 +74,10 @@ export default {
     login_password: 'Palavra-chave',
     login_button: 'Entrar',
     login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos',
-    login_user: 'Utilizador'
+    login_user: 'Utilizador',
+    login_user_password_invalid: 'Não existe nenhuma conta com o utilizador ou password indicados. Por favor verifique as credenciais e tente novamente.',
+    login_user_disabled: 'O utilizador encontra-se bloqueado.',
+    network_error: 'Não foi possível estabelecer ligação com o servidor.'
   },
   profile: {
     user_account: 'Utilizador',
@@ -237,6 +240,7 @@ export default {
     geofence_form_icon: 'Icon',
     geofence_form_color: 'Cor',
     geofence_form_options: 'Opções',
+    geofence_form_speedlimit: 'Limite de Velocidade',
     groups: 'Grupos',
     group_edit: 'Editar Grupo',
     group_add: 'Adicionar Grupo',
