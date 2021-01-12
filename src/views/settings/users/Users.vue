@@ -123,6 +123,25 @@
                 </el-tab-pane>
                 <el-tab-pane>
                   <span slot="label">
+                    <i class="fas fa-bell"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedAlerts"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.alerts'), $t('report.select_groups')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="filteredAlerts"
+                    >
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
                     <i class="far fa-sticky-note"></i>
                   </span>
                   <el-form-item>
@@ -262,6 +281,7 @@ export default {
         userDevices: [],
         userSelectedDrivers: [],
         userSelectedGeofences: [],
+        userSelectedAlerts: [],
         userSelectedGroups: [],
         userSelectedDevices: [],
         userSelectedReports: []
@@ -299,11 +319,21 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user', 'users', 'drivers', 'groups', 'devices', 'geofences']),
+    ...mapGetters(['user', 'users', 'drivers', 'groups', 'devices', 'geofences', 'alerts']),
     filteredUsers() {
       return this.users.filter(data => !data.token).filter(data => !this.search ||
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
         data.email.toLowerCase().includes(this.search.toLowerCase()))
+    },
+    filteredAlerts() {
+      return this.alerts.map(alert => {
+        const notification = alert.notification
+        Vue.$log.debug(notification)
+        if (notification.type === 'alarm') {
+          return { 'id': notification.id, 'name': this.$t('settings.alert_' + notification.attributes.alarms) }
+        }
+        return { 'id': notification.id, 'name': this.$t('settings.alert_' + notification.type) }
+      })
     },
     permissions() {
       return this.user.attributes.permissions ? this.user.attributes.permissions.map(p => {
@@ -336,11 +366,14 @@ export default {
       this.userForm.userDrivers = []
       this.userForm.userGeofences = []
       this.userForm.userGroups = []
+      this.userForm.userAlerts = []
+      this.userForm.userDevices = []
       this.userForm.userSelectedDrivers = []
       this.userForm.userSelectedGeofences = []
       this.userForm.userSelectedGroups = []
       this.userForm.userSelectedReports = []
       this.userForm.userSelectedDevices = []
+      this.userForm.userSelectedAlerts = []
       this.isOpenUserForm = !this.isOpenUserForm
     },
     async handleEdit(row) {
@@ -364,6 +397,9 @@ export default {
         })
         await traccar.devicesByUser(self.selectedUser.id).then(function(response) {
           self.userForm.userDevices = self.userForm.userSelectedDevices = response.data.map(d => d.id)
+        })
+        await traccar.alertsByUser(self.selectedUser.id).then(function(response) {
+          self.userForm.userAlerts = self.userForm.userSelectedAlerts = response.data.map(a => a.id)
         })
         await traccar.geofencesByUser(self.selectedUser.id).then(function(response) {
           self.userForm.userGeofences = self.userForm.userSelectedGeofences = response.data.map(g => g.id)
@@ -561,6 +597,25 @@ export default {
       await traccar.deleteAllPermissions(driversPermissionsToRemove)
       await traccar.addAllPermissions(driversPermissionsToAdd)
 
+      const alertsToRemove = this.userForm.userAlerts.filter(x => !self.userForm.userSelectedAlerts.includes(x))
+      const alertsToAdd = this.userForm.userSelectedAlerts.filter(x => !self.userForm.userAlerts.includes(x))
+
+      const alertsPermissionsToRemove = alertsToRemove.map(d => {
+        return {
+          userId: user.id,
+          notificationId: d
+        }
+      })
+      const alertsPermissionsToAdd = alertsToAdd.map(d => {
+        return {
+          userId: user.id,
+          notificationId: d
+        }
+      })
+
+      await traccar.deleteAllPermissions(alertsPermissionsToRemove)
+      await traccar.addAllPermissions(alertsPermissionsToAdd)
+
       const devicesToRemove = this.userForm.userDevices.filter(x => !self.userForm.userSelectedDevices.includes(x))
       const devicesToAdd = this.userForm.userSelectedDevices.filter(x => !self.userForm.userDevices.includes(x))
 
@@ -601,6 +656,10 @@ export default {
 <style lang="scss" scoped>
   @import '../../../styles/element-variables.scss';
 
+  .el-transfer-panel {
+    width: 250px;
+  }
+
   .form-item-row {
     display: table-row;
   }
@@ -626,7 +685,7 @@ export default {
     margin-right: 10px;
   }
   .modal {
-    width: 600px;
+    width: 700px;
     margin: 0 auto;
     padding: 15px;
     background-color: #fff;

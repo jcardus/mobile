@@ -256,6 +256,10 @@ export const traccar = {
   alertsByDevice: function(deviceId) {
     return get(alerts + '?deviceId=' + deviceId, { withCredentials: true })
   },
+  alertsByUser: function(userId) {
+    Vue.$log.debug('alertsByUser')
+    return get(alerts + '?userId=' + userId, { withCredentials: true })
+  },
   alerts() {
     return get(alerts, { withCredentials: true })
   },
