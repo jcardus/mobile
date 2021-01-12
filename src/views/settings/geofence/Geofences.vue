@@ -85,14 +85,21 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('settings.group_name')"
+        :label="$t('settings.geofence_name')"
         prop="name"
         sortable
       >
       </el-table-column>
       <el-table-column
-        :label="$t('settings.group_description')"
+        :label="$t('settings.geofence_description')"
         prop="description"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column
+        :label="$t('settings.geofence_speed_Limit')"
+        :formatter="speedLimitRenderer"
+        prop="attributes.speedLimit"
         sortable
       >
       </el-table-column>
@@ -176,6 +183,17 @@ export default {
     }
   },
   methods: {
+    speedLimitRenderer(row, column, speedLimit) {
+      if (this.getType(row) === 'poi') {
+        return '-'
+      }
+
+      if (!speedLimit || speedLimit === '0') {
+        return ''
+      }
+
+      return Math.round(speedLimit * 1.852)
+    },
     load() {
       this.count += 10
     },

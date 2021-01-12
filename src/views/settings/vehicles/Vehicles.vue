@@ -334,7 +334,7 @@ export default {
     },
     alertSpeedRenderer(row, column, cellValue) {
       if (cellValue) {
-        return Math.round(cellValue * 1.85200) + ' Km/h'
+        return Math.round(cellValue * 1.85200)
       } else {
         return ''
       }
