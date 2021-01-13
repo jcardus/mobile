@@ -21,11 +21,20 @@
                   <el-form-item :label="$t('settings.user_email')">
                     <el-input v-model="userForm.email" />
                   </el-form-item>
-                  <el-form-item :label="$t('settings.user_language')">
-                    <el-select v-model="userForm.lang">
-                      <el-option v-for="lang in languages" :key="lang.value" :label="lang.text" :value="lang.value" />
-                    </el-select>
-                  </el-form-item>
+                  <div class="form-item-block">
+                    <div class="form-item-row">
+                      <el-form-item class="form-item-block-left" :label="$t('settings.user_language')">
+                        <el-select v-model="userForm.lang">
+                          <el-option v-for="lang in languages" :key="lang.value" :label="lang.text" :value="lang.value" />
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item class="form-item-block-right" :label="$t('settings.user_timezone')">
+                        <el-select v-model="userForm.timezone">
+                          <el-option v-for="timezone in timezones" :key="timezone.value" :label="timezone.text" :value="timezone.value" />
+                        </el-select>
+                      </el-form-item>
+                    </div>
+                  </div>
                   <div class="form-item-block">
                     <div class="form-item-row">
                       <el-form-item class="form-item-block-left" :label="$t('settings.user_password')">
@@ -259,6 +268,8 @@ import { vm } from '@/main'
 import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
+import { languages } from '@/lang'
+import { timezones } from '@/utils/consts'
 
 export default {
   name: 'Users',
@@ -275,6 +286,7 @@ export default {
         password: '',
         userType: '',
         lang: '',
+        timezone: '',
         userDrivers: [],
         userGeofences: [],
         userGroups: [],
@@ -304,13 +316,8 @@ export default {
       },
       passwordType: 'password',
       loading: false,
-      languages: [
-        { value: 'en-GB', text: 'English (UK)' },
-        { value: 'fr-FR', text: 'Française (Frace)' },
-        { value: 'es-CL', text: 'Español (Chile)' },
-        { value: 'pt-PT', text: 'Português (PT)' },
-        { value: 'pt-BR', text: 'Português (BR)' }
-      ],
+      languages: languages,
+      timezones: timezones,
       filteredDevices(query, item) {
         if (item.attributes.license_plate) {
           return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.attributes.license_plate.toLowerCase().indexOf(query.toLowerCase()) > -1
@@ -363,6 +370,7 @@ export default {
       this.userForm.phone = ''
       this.userForm.password = ''
       this.userForm.lang = this.user.attributes.lang
+      this.userForm.timezone = this.user.attributes.timezone
       this.userForm.userDrivers = []
       this.userForm.userGeofences = []
       this.userForm.userGroups = []
@@ -388,6 +396,7 @@ export default {
         this.userForm.phone = row.phone
         this.userForm.password = row.password
         this.userForm.lang = row.attributes.lang
+        this.userForm.timezone = row.attributes.timezone ? row.attributes.timezone : this.user.attributes.timezone
         this.userForm.userType = row.readonly ? 'operator' : 'manager'
         await traccar.driversByUser(this.selectedUser.id).then(function(response) {
           self.userForm.userDrivers = self.userForm.userSelectedDrivers = response.data.map(d => d.id)
@@ -439,6 +448,7 @@ export default {
               readonly: this.userForm.userType === 'operator',
               deviceReadonly: this.userForm.userType === 'manager',
               attributes: {
+                timezone: this.userForm.timezone,
                 lang: this.userForm.lang,
                 permissions: this.userForm.userSelectedReports,
                 inactiveVehiclesEmail: this.userForm.userType === 'manager'
@@ -474,6 +484,7 @@ export default {
             user.deviceReadonly = this.userForm.userType === 'manager'
             user.attributes.permissions = this.userForm.userSelectedReports.filter(a => this.permissions.map(p => p.id).includes(a))
             user.attributes.lang = this.userForm.lang
+            user.attributes.timezone = this.userForm.timezone
             // If operator set inactiveVehiclesEmail allways to false
             if (this.userForm.userType === 'operator') {
               user.attributes.inactiveVehiclesEmail = false

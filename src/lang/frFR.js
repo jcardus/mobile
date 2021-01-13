@@ -346,6 +346,7 @@ export default {
     user_email: 'Email',
     user_phone: 'Phone',
     user_language: 'Language',
+    user_timezone: 'Timezone',
     user_type: 'Profile',
     user_password: 'Password',
     user_form_type_placeholder: 'Select Profile',
