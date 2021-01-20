@@ -61,7 +61,8 @@
 import { mapGetters } from 'vuex'
 import { appOffline } from '@/utils/utils'
 import { traccar } from '@/api/traccar-api'
-import { setLanguage } from '@/lang'
+import { languages, setLanguage } from '@/lang'
+import { timezones } from '@/utils/consts'
 
 export default {
   name: 'Profile',
@@ -69,21 +70,8 @@ export default {
     return {
       dirty: false,
       dialogVisible: false,
-      languages: [
-        { value: 'en-GB', text: 'English (UK)' },
-        { value: 'fr-FR', text: 'Française (Frace)' },
-        { value: 'es-CL', text: 'Español (Chile)' },
-        { value: 'pt-PT', text: 'Português (PT)' },
-        { value: 'pt-BR', text: 'Português (BR)' }
-      ],
-      timezones: [
-        { value: 'Europe/Lisbon', text: 'Europe/Lisbon' },
-        { value: 'Africa/Luanda', text: 'Africa/Luanda' },
-        { value: 'Africa/Maputo', text: 'Africa/Maputo' },
-        { value: 'Africa/Casablanca', text: 'Africa/Casablanca' },
-        { value: 'America/Santiago', text: 'America/Santiago' },
-        { value: 'America/Sao_Paulo', text: 'America/São Paulo' }
-      ],
+      languages: languages,
+      timezones: timezones,
       rules: {
         name: [
           { required: true, message: this.$t('profile.user_name_required'), trigger: 'blur' }
