@@ -36,6 +36,14 @@ const messages = {
   }
 }
 
+export const languages = [
+  { value: 'en-GB', text: 'English (UK)' },
+  { value: 'fr-FR', text: 'Française (Frace)' },
+  { value: 'es-CL', text: 'Español (Chile)' },
+  { value: 'pt-PT', text: 'Português (PT)' },
+  { value: 'pt-BR', text: 'Português (BR)' }
+]
+
 export function setLanguage(lang) {
   if (lang) {
     i18n.locale = lang.replace('-', '')

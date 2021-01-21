@@ -92,7 +92,8 @@ export default {
     login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos',
     login_user: 'Utilizador',
     login_user_password_invalid: 'Não existe nenhuma conta com o utilizador ou password indicados. Por favor verifique as credenciais e tente novamente.',
-    login_user_disabled: 'O utilizador encontra-se bloqueado.'
+    login_user_disabled: 'O utilizador encontra-se bloqueado.',
+    network_error: 'Não foi possível estabelecer ligação com o servidor.'
   },
   alerts: {
     title: 'Alertas',
@@ -208,7 +209,7 @@ export default {
     vehicle_name: 'Nome',
     vehicle_licenseplate: 'Matrícula',
     vehicle_model: 'Modelo',
-    vehicle_speed_limit: 'Limite',
+    vehicle_speed_limit: 'Limite (Km/h)',
     vehicle_form_name: 'Nome',
     vehicle_form_group: 'Grupo',
     vehicle_form_groups_placeholder: 'Seleccionar Grupo',
@@ -236,6 +237,7 @@ export default {
     geofences_title: 'Balizas',
     geofence_name: 'Nome',
     geofence_description: 'Descrição',
+    geofence_speed_Limit: 'Limite de Velocidade (Km/h)',
     geofences_type_geofences: 'Balizas:',
     geofences_type_linegeofences: 'Corredores:',
     geofences_type_pois: 'POIs:',
@@ -277,6 +279,7 @@ export default {
     geofence_form_icon: 'Icon',
     geofence_form_color: 'Cor',
     geofence_form_options: 'Opções',
+    geofence_form_speedlimit: 'Limite de Velocidade (Km/h)',
     zone: 'Zonas',
     groups: 'Grupos',
     group_edit: 'Editar Grupo',
@@ -343,6 +346,7 @@ export default {
     user_email: 'Email',
     user_phone: 'Telemóvel',
     user_language: 'Idioma',
+    user_timezone: 'Fuso horário',
     user_type: 'Perfil',
     user_password: 'Palavra-chave',
     user_form_type_placeholder: 'Seleccionar Perfil',
@@ -353,7 +357,17 @@ export default {
     user_updated: 'Utilizador actualizado com sucesso!',
     user_create_not_allowed: 'Não tem permissões para criar utilizadores.',
     user_edit_not_allowed: 'Não tem permissões para editar utilizadores.',
-    user_duplicated_entry: 'Utilizador já existe.'
+    user_duplicated_entry: 'Utilizador já existe.',
+    temporary_links: 'Acessos Temporários',
+    expiration_date: 'Data de Expiração',
+    user_temporary_link: 'Acesso',
+    temporary_link_add: 'Criar Acesso Temporário',
+    temporary_link_edit: 'Editar Acesso Temporário',
+    temporary_link_created: 'Acesso temporário criado com sucesso!',
+    temporary_link_create_not_allowed: 'Não tem permissões para criar acessos temporários.',
+    temporary_link_deleted: 'O acesso temporário foi apagado.',
+    temporary_link_delete_info: 'Pretende apagar o acesso temporário  ',
+    temporary_link_delete_title: 'Apagar Acesso Temporário'
   },
   geofence: {
     showGeofences: 'Ver Balizas',

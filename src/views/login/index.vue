@@ -205,6 +205,8 @@ export default {
               let message = this.$t('login.login_user_password_invalid')
               if (exception.response && exception.response.status === 400) {
                 message = this.$t('login.login_user_disabled')
+              } else if (exception.code === 'NetworkError') {
+                message = this.$t('login.network_error')
               }
               this.$message({
                 message: message,

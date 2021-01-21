@@ -15,3 +15,11 @@ export const mapboxSprite = 'https://api.mapbox.com/styles/v1/mapbox/streets-v11
 export const mapboxAccessToken = 'pk.eyJ1IjoiamNhcmRlaXJhMiIsImEiOiJjang4OXJmN2UwaGNxM3BwbjY2ZGFjdGw1In0.6NPI_KuClrH_OrP4NN3oeQ'
 export const detailedZoom = 13
 
+export const timezones = [
+  { value: 'Europe/Lisbon', text: 'Europe/Lisbon' },
+  { value: 'Africa/Luanda', text: 'Africa/Luanda' },
+  { value: 'Africa/Maputo', text: 'Africa/Maputo' },
+  { value: 'Africa/Casablanca', text: 'Africa/Casablanca' },
+  { value: 'America/Santiago', text: 'America/Santiago' },
+  { value: 'America/Sao_Paulo', text: 'America/São Paulo' }
+]

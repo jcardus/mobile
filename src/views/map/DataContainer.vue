@@ -57,7 +57,7 @@ export default {
   components: { VehicleTable, AlertTable, GeofenceTable, DriverTable, LogoSvg },
   data() {
     return {
-      selectedTab: this.$route.path,
+      selectedTab: this.$route ? this.$route.path : '/map',
       filterKey: ''
     }
   },

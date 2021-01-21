@@ -21,11 +21,20 @@
                   <el-form-item :label="$t('settings.user_email')">
                     <el-input v-model="userForm.email" />
                   </el-form-item>
-                  <el-form-item :label="$t('settings.user_language')">
-                    <el-select v-model="userForm.lang">
-                      <el-option v-for="lang in languages" :key="lang.value" :label="lang.text" :value="lang.value" />
-                    </el-select>
-                  </el-form-item>
+                  <div class="form-item-block">
+                    <div class="form-item-row">
+                      <el-form-item class="form-item-block-left" :label="$t('settings.user_language')">
+                        <el-select v-model="userForm.lang">
+                          <el-option v-for="lang in languages" :key="lang.value" :label="lang.text" :value="lang.value" />
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item class="form-item-block-right" :label="$t('settings.user_timezone')">
+                        <el-select v-model="userForm.timezone">
+                          <el-option v-for="timezone in timezones" :key="timezone.value" :label="timezone.text" :value="timezone.value" />
+                        </el-select>
+                      </el-form-item>
+                    </div>
+                  </div>
                   <div class="form-item-block">
                     <div class="form-item-row">
                       <el-form-item class="form-item-block-left" :label="$t('settings.user_password')">
@@ -43,6 +52,26 @@
                       </el-form-item>
                     </div>
                   </div>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="fas fa-car"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedDevices"
+                      :filter-method="filteredDevices"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.vehicles'), $t('report.select_vehicles')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="devices"
+                    >
+                    </el-transfer>
+                  </el-form-item>
                 </el-tab-pane>
                 <el-tab-pane>
                   <span slot="label">
@@ -97,6 +126,25 @@
                         label: 'name'
                       }"
                       :data="geofences"
+                    >
+                    </el-transfer>
+                  </el-form-item>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label">
+                    <i class="fas fa-bell"></i>
+                  </span>
+                  <el-form-item>
+                    <el-transfer
+                      v-model="userForm.userSelectedAlerts"
+                      filterable
+                      :filter-placeholder="$t('report.selector_search')"
+                      :titles="[$t('settings.alerts'), $t('report.select_groups')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="filteredAlerts"
                     >
                     </el-transfer>
                   </el-form-item>
@@ -220,6 +268,8 @@ import { vm } from '@/main'
 import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
+import { languages } from '@/lang'
+import { timezones } from '@/utils/consts'
 
 export default {
   name: 'Users',
@@ -236,12 +286,16 @@ export default {
         password: '',
         userType: '',
         lang: '',
+        timezone: '',
         userDrivers: [],
         userGeofences: [],
         userGroups: [],
+        userDevices: [],
         userSelectedDrivers: [],
         userSelectedGeofences: [],
+        userSelectedAlerts: [],
         userSelectedGroups: [],
+        userSelectedDevices: [],
         userSelectedReports: []
       },
       userTypes: [
@@ -262,21 +316,31 @@ export default {
       },
       passwordType: 'password',
       loading: false,
-      languages: [
-        { value: 'en-GB', text: 'English (UK)' },
-        { value: 'fr-FR', text: 'Française (Frace)' },
-        { value: 'es-CL', text: 'Español (Chile)' },
-        { value: 'pt-PT', text: 'Português (PT)' },
-        { value: 'pt-BR', text: 'Português (BR)' }
-      ]
+      languages: languages,
+      timezones: timezones,
+      filteredDevices(query, item) {
+        if (item.attributes.license_plate) {
+          return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.attributes.license_plate.toLowerCase().indexOf(query.toLowerCase()) > -1
+        }
+      }
     }
   },
   computed: {
-    ...mapGetters(['user', 'users', 'drivers', 'groups', 'geofences']),
+    ...mapGetters(['user', 'users', 'drivers', 'groups', 'devices', 'geofences', 'alerts']),
     filteredUsers() {
-      return this.users.filter(data => !this.search ||
+      return this.users.filter(data => !data.token).filter(data => !this.search ||
         data.name.toLowerCase().includes(this.search.toLowerCase()) ||
         data.email.toLowerCase().includes(this.search.toLowerCase()))
+    },
+    filteredAlerts() {
+      return this.alerts.map(alert => {
+        const notification = alert.notification
+        Vue.$log.debug(notification)
+        if (notification.type === 'alarm') {
+          return { 'id': notification.id, 'name': this.$t('settings.alert_' + notification.attributes.alarms) }
+        }
+        return { 'id': notification.id, 'name': this.$t('settings.alert_' + notification.type) }
+      })
     },
     permissions() {
       return this.user.attributes.permissions ? this.user.attributes.permissions.map(p => {
@@ -306,13 +370,18 @@ export default {
       this.userForm.phone = ''
       this.userForm.password = ''
       this.userForm.lang = this.user.attributes.lang
+      this.userForm.timezone = this.user.attributes.timezone
       this.userForm.userDrivers = []
       this.userForm.userGeofences = []
       this.userForm.userGroups = []
+      this.userForm.userAlerts = []
+      this.userForm.userDevices = []
       this.userForm.userSelectedDrivers = []
       this.userForm.userSelectedGeofences = []
       this.userForm.userSelectedGroups = []
       this.userForm.userSelectedReports = []
+      this.userForm.userSelectedDevices = []
+      this.userForm.userSelectedAlerts = []
       this.isOpenUserForm = !this.isOpenUserForm
     },
     async handleEdit(row) {
@@ -327,12 +396,19 @@ export default {
         this.userForm.phone = row.phone
         this.userForm.password = row.password
         this.userForm.lang = row.attributes.lang
+        this.userForm.timezone = row.attributes.timezone ? row.attributes.timezone : this.user.attributes.timezone
         this.userForm.userType = row.readonly ? 'operator' : 'manager'
         await traccar.driversByUser(this.selectedUser.id).then(function(response) {
           self.userForm.userDrivers = self.userForm.userSelectedDrivers = response.data.map(d => d.id)
         })
         await traccar.groupsByUser(self.selectedUser.id).then(function(response) {
           self.userForm.userGroups = self.userForm.userSelectedGroups = response.data.map(g => g.id)
+        })
+        await traccar.devicesByUser(self.selectedUser.id).then(function(response) {
+          self.userForm.userDevices = self.userForm.userSelectedDevices = response.data.map(d => d.id)
+        })
+        await traccar.alertsByUser(self.selectedUser.id).then(function(response) {
+          self.userForm.userAlerts = self.userForm.userSelectedAlerts = response.data.map(a => a.id)
         })
         await traccar.geofencesByUser(self.selectedUser.id).then(function(response) {
           self.userForm.userGeofences = self.userForm.userSelectedGeofences = response.data.map(g => g.id)
@@ -372,6 +448,7 @@ export default {
               readonly: this.userForm.userType === 'operator',
               deviceReadonly: this.userForm.userType === 'manager',
               attributes: {
+                timezone: this.userForm.timezone,
                 lang: this.userForm.lang,
                 permissions: this.userForm.userSelectedReports,
                 inactiveVehiclesEmail: this.userForm.userType === 'manager'
@@ -407,6 +484,7 @@ export default {
             user.deviceReadonly = this.userForm.userType === 'manager'
             user.attributes.permissions = this.userForm.userSelectedReports.filter(a => this.permissions.map(p => p.id).includes(a))
             user.attributes.lang = this.userForm.lang
+            user.attributes.timezone = this.userForm.timezone
             // If operator set inactiveVehiclesEmail allways to false
             if (this.userForm.userType === 'operator') {
               user.attributes.inactiveVehiclesEmail = false
@@ -529,6 +607,44 @@ export default {
 
       await traccar.deleteAllPermissions(driversPermissionsToRemove)
       await traccar.addAllPermissions(driversPermissionsToAdd)
+
+      const alertsToRemove = this.userForm.userAlerts.filter(x => !self.userForm.userSelectedAlerts.includes(x))
+      const alertsToAdd = this.userForm.userSelectedAlerts.filter(x => !self.userForm.userAlerts.includes(x))
+
+      const alertsPermissionsToRemove = alertsToRemove.map(d => {
+        return {
+          userId: user.id,
+          notificationId: d
+        }
+      })
+      const alertsPermissionsToAdd = alertsToAdd.map(d => {
+        return {
+          userId: user.id,
+          notificationId: d
+        }
+      })
+
+      await traccar.deleteAllPermissions(alertsPermissionsToRemove)
+      await traccar.addAllPermissions(alertsPermissionsToAdd)
+
+      const devicesToRemove = this.userForm.userDevices.filter(x => !self.userForm.userSelectedDevices.includes(x))
+      const devicesToAdd = this.userForm.userSelectedDevices.filter(x => !self.userForm.userDevices.includes(x))
+
+      const devicesPermissionsToRemove = devicesToRemove.map(d => {
+        return {
+          userId: user.id,
+          deviceId: d
+        }
+      })
+      const devicesPermissionsToAdd = devicesToAdd.map(d => {
+        return {
+          userId: user.id,
+          deviceId: d
+        }
+      })
+
+      await traccar.deleteAllPermissions(devicesPermissionsToRemove)
+      await traccar.addAllPermissions(devicesPermissionsToAdd)
     },
     userDeleted(id) {
       this.$log.debug('user deleted')
@@ -550,6 +666,10 @@ export default {
 
 <style lang="scss" scoped>
   @import '../../../styles/element-variables.scss';
+
+  .el-transfer-panel {
+    width: 250px;
+  }
 
   .form-item-row {
     display: table-row;
@@ -576,7 +696,7 @@ export default {
     margin-right: 10px;
   }
   .modal {
-    width: 600px;
+    width: 700px;
     margin: 0 auto;
     padding: 15px;
     background-color: #fff;

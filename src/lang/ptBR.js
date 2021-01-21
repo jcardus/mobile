@@ -74,7 +74,10 @@ export default {
     login_password: 'Palavra-chave',
     login_button: 'Entrar',
     login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos',
-    login_user: 'Utilizador'
+    login_user: 'Utilizador',
+    login_user_password_invalid: 'Não existe nenhuma conta com o utilizador ou password indicados. Por favor verifique as credenciais e tente novamente.',
+    login_user_disabled: 'O utilizador encontra-se bloqueado.',
+    network_error: 'Não foi possível estabelecer ligação com o servidor.'
   },
   profile: {
     user_account: 'Utilizador',
@@ -174,7 +177,7 @@ export default {
     vehicle_model: 'Modelo',
     vehicle_form_total_kms: 'Total de Kms',
     vehicle_form_fuel_tank_capacity: 'Capacidade do Depósito (L)',
-    vehicle_speed_limit: 'Limite de Velocidade',
+    vehicle_speed_limit: 'Limite de Velocidade (Km/h)',
     vehicle_form_name: 'Nome',
     vehicle_form_model: 'Modelo',
     vehicle_form_speed_limit: 'Limite de Velocidade (Km/h)',
@@ -196,6 +199,7 @@ export default {
     geofences_title: 'Cercas Eletrônicas',
     geofence_name: 'Nome',
     geofence_description: 'Descrição',
+    geofence_speed_Limit: 'Limite de Velocidade (Km/h)',
     geofences_type_geofences: 'Cercas Eletrônicas:',
     geofences_type_linegeofences: 'Corredores:',
     geofences_type_pois: 'POIs:',
@@ -237,6 +241,7 @@ export default {
     geofence_form_icon: 'Icon',
     geofence_form_color: 'Cor',
     geofence_form_options: 'Opções',
+    geofence_form_speedlimit: 'Limite de Velocidade (Km/h)',
     groups: 'Grupos',
     group_edit: 'Editar Grupo',
     group_add: 'Adicionar Grupo',
@@ -301,6 +306,7 @@ export default {
     user_email: 'Email',
     user_phone: 'Telemóvel',
     user_language: 'Idioma',
+    user_timezone: 'Fuso horário',
     user_type: 'Perfil',
     user_password: 'Palavra-chave',
     user_form_type_placeholder: 'Seleccionar Perfil',
@@ -311,7 +317,17 @@ export default {
     user_updated: 'Utilizador actualizado com sucesso!',
     user_create_not_allowed: 'Não tem permissões para criar utilizadores.',
     user_edit_not_allowed: 'Não tem permissões para editar utilizadores.',
-    user_duplicated_entry: 'Utilizador já existe.'
+    user_duplicated_entry: 'Utilizador já existe.',
+    temporary_links: 'Acessos Temporários',
+    expiration_date: 'Data de Expiração',
+    user_temporary_link: 'Acesso',
+    temporary_link_add: 'Criar Acesso Temporário',
+    temporary_link_edit: 'Editar Acesso Temporário',
+    temporary_link_created: 'Acesso temporário criado com sucesso!',
+    temporary_link_create_not_allowed: 'Não tem permissões para criar acessos temporários.',
+    temporary_link_deleted: 'O acesso temporário foi apagado.',
+    temporary_link_delete_info: 'Pretende apagar o acesso temporário  ',
+    temporary_link_delete_title: 'Apagar Acesso Temporário'
   },
   geofence: {
     showGeofences: 'Ver Cercas Eletrônicas',
