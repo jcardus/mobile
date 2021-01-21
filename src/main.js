@@ -213,7 +213,14 @@ export const vm = new Vue({
   router: router,
   store,
   i18n,
-  render: h => h(lnglat.__isMobile() ? (window.location.pathname === '/googlelogin/' ? GoogleLogin : AppMobile) : App)
+  render: h => {
+    try {
+      return h(lnglat.__isMobile() ? (window.location.pathname === '/googlelogin/' ? GoogleLogin : AppMobile) : App)
+    } catch (e) {
+      console.error(e)
+      return e
+    }
+  }
 })
 
 import('./common')
