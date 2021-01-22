@@ -76,7 +76,6 @@ import booleanContains from '@turf/boolean-contains'
 import * as helpers from '@turf/helpers'
 import bboxPolygon from '@turf/bbox-polygon'
 import bbox from '@turf/bbox'
-import { checkFuelThresholds } from '@/utils/device'
 
 export default {
   name: 'CurrentPositionData',
@@ -273,8 +272,7 @@ export default {
           Vue.$log.debug('Fuel MAX VALUE', max.attributes.fuel)
           Vue.$log.debug('Fuel MIN VALUE', min.attributes.fuel)
 
-          checkFuelThresholds(max.attributes.fuel, this.device)
-          checkFuelThresholds(min.attributes.fuel, this.device)
+          // checkFuelThresholds(min.attributes.fuel, this.device)
         }
         this.drawAll(positions)
         this.getRouteTrips(positions)
