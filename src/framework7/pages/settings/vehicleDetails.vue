@@ -124,7 +124,7 @@ export default {
     const selectedId = parseInt(this.$f7route.params.deviceId)
     const p = this.findFeatureByDeviceId(selectedId)
     this.selectedVehicle = this.devices.find((d) => d.id === selectedId)
-    this.$log.debug(this.selectedVehicle)
+    this.$log.debug('vehicleDetails mounted', this.selectedVehicle.name)
     this.vehicleName = this.selectedVehicle.name
     this.vehicleModel = this.selectedVehicle.model
     this.vehicleTotalKms = (p.properties.totalDistance / 1000).toFixed(2)
