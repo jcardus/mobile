@@ -52,7 +52,7 @@ Vue.config.errorHandler = (err, vm, info) => {
 Vue.use(LoadScript)
 Vue.use(elTableInfiniteScroll)
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isProduction = process.env.ENV === 'production'
 const options = {
   isEnabled: true,
   logLevel: isProduction ? 'info' : 'debug',

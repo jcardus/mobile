@@ -242,7 +242,7 @@ const actions = {
           }
           TrackJS.addMetadata('user', state.user.name)
           const hostName = getServerHost()
-          Vue.$log.info('opening websocket ', state)
+          Vue.$log.info('opening websocket ', state, hostName)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
             store: store,
             format: 'json',

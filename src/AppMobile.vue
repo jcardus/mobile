@@ -155,31 +155,33 @@ export default {
     serverBus.$on('message', this.message)
     window.addEventListener('orientationchange', this.orientationChange)
   },
-  mounted() {
+  async mounted() {
     try {
-      this.$log.debug('AppMobile', this.user)
-      document.getElementById('favicon').href = partner.getFavIcon()
-      document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
-      this.toastNewVersion = this.$f7.toast.create({
-        text: this.$t('layout.newVersion'),
-        closeButton: true,
-        closeButtonColor: 'white',
-        on: {
-          close: reload
-        }
-      })
-      this.$store.dispatch('user/checkSession').then(() => {
-        if (this.user.name !== '') {
-          this.$log.info('closing login screen...', this.user)
-          this.$f7.loginScreen.close('#loginScreen', false)
-        } else {
-          this.$log.debug('opening login screen...', this.$f7.loginScreen)
-          this.$f7.loginScreen.open('#loginScreen', false)
-          this.$f7.preloader.hide()
-        }
-      })
+      this.$log.debug('mounted AppMobile', this.user, this.version, process.env)
+      if (!location.href.startsWith('capacitor://')) {
+        document.getElementById('favicon').href = partner.getFavIcon()
+        document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
+
+        this.toastNewVersion = this.$f7.toast.create({
+          text: this.$t('layout.newVersion'),
+          closeButton: true,
+          closeButtonColor: 'white',
+          on: {
+            close: reload
+          }
+        })
+      }
+      await this.$store.dispatch('user/checkSession')
+      if (this.user.name !== '') {
+        this.$log.info('closing login screen...', this.user)
+        this.$f7.loginScreen.close('#loginScreen', false)
+      } else {
+        this.$log.debug('opening login screen...', this.$f7.loginScreen)
+        this.$f7.loginScreen.open('#loginScreen', false)
+        this.$f7.preloader.hide()
+      }
     } catch (e) {
-      Vue.$log.error(e)
+      Vue.$log.error('error in AppMobile mounted', e)
     }
   },
   methods: {

@@ -162,6 +162,14 @@ module.exports = {
           config.devtool('source-map')
         }
       )
+    config.plugins.delete('progress')
+    // optionally replace with another progress output plugin
+    // `npm i -D simple-progress-webpack-plugin` to use
+    config.plugin('simple-progress-webpack-plugin').use(require.resolve('simple-progress-webpack-plugin'), [
+      {
+        format: 'verbose' // options are minimal, compact, expanded, verbose
+      }
+    ])
   },
   pages: {
     index: {
