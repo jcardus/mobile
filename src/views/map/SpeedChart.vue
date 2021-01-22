@@ -25,7 +25,8 @@ export default {
       chart: null,
       currentTrip: null,
       speedChartVisible: true,
-      fuelChartVisible: true
+      fuelChartVisible: true,
+      rpmChartVisible: true
     }
   },
   computed: {
@@ -40,11 +41,13 @@ export default {
     serverBus.$on(event.tripChanged, this.onTripChanged)
     serverBus.$on(event.toogleSpeedChart, this.onToogleSpeedChart)
     serverBus.$on(event.toogleFuelChart, this.onToogleFuelChart)
+    serverBus.$on(event.toogleRPMChart, this.onToogleRPMChart)
   },
   beforeDestroy() {
     serverBus.$off(event.tripChanged, this.onTripChanged)
     serverBus.$off(event.toogleSpeedChart, this.onToogleSpeedChart)
     serverBus.$off(event.toogleFuelChart, this.onToogleFuelChart)
+    serverBus.$off(event.toogleRPMChart, this.onToogleRPMChart)
   },
   mounted() {
     Vue.$log.debug('SpeedChart created')
@@ -63,14 +66,20 @@ export default {
             borderWidth: 1,
             fill: true,
             data: this.chartData
-          },
-          {
+          }, {
             borderColor: 'rgba(249, 178, 24, 1)',
-            borderWidth: 1,
+            borderWidth: 2,
             fill: false,
             data: this.chartDataFuelSensor,
             type: 'line',
             yAxisID: 'fuel-y-axis'
+          }, {
+            borderColor: color('blue').alpha(1).rgbString(),
+            borderWidth: 2,
+            fill: false,
+            data: this.chartDataRPM,
+            type: 'line',
+            yAxisID: 'rpm-x-axis'
           }]
         },
         options: {
@@ -132,7 +141,13 @@ export default {
                 if (label) {
                   label += ': '
                 }
-                label += (Math.round(tooltipItem.yLabel) + ' km/h')
+                if (tooltipItem.datasetIndex === 0) {
+                  label += (Math.round(tooltipItem.yLabel) + ' km/h')
+                } else if (tooltipItem.datasetIndex === 1) {
+                  label += (tooltipItem.yLabel + '%')
+                } else if (tooltipItem.datasetIndex === 2) {
+                  label += (tooltipItem.yLabel + ' rpm')
+                }
                 return label
               }
             }
@@ -173,6 +188,19 @@ export default {
                 labelString: 'Km/h'
               }
             }, {
+              id: 'rpm-x-axis',
+              display: true,
+              ticks: {
+                precision: 1
+              },
+              gridLines: {
+                display: true
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'rpm'
+              }
+            }, {
               id: 'fuel-y-axis',
               type: 'linear',
               position: 'right',
@@ -200,6 +228,7 @@ export default {
         if (this.chart.data && this.chart.data.datasets[0]) {
           this.chart.data.datasets[0].data = this.speedChartVisible ? sharedData.getChartData() : []
           this.chart.data.datasets[1].data = this.fuelChartVisible ? sharedData.getChartDataFuelLevel() : []
+          this.chart.data.datasets[2].data = this.rpmChartVisible ? sharedData.getChartDataRPM() : []
           if (this.trips && this.trips[this.currentTrip]) {
             this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
             this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
@@ -232,6 +261,15 @@ export default {
       } else {
         this.addData(1, sharedData.getChartDataFuelLevel())
         this.fuelChartVisible = true
+      }
+    },
+    onToogleRPMChart() {
+      if (this.rpmChartVisible) {
+        this.removeData(2)
+        this.rpmChartVisible = false
+      } else {
+        this.addData(2, sharedData.getChartDataRPM())
+        this.rpmChartVisible = true
       }
     },
     addData(index, data) {

@@ -13,13 +13,22 @@
           <i class="fas fa-tachometer-alt" style="color: white"></i>
         </el-tag>
         <el-tag
-          style="margin-right: 15px"
+          style="margin-right: 5px"
           size="small"
           :type="tagFuelChartColor()"
           effect="dark"
           @click="toggleFuelChart"
         >
           <i class="fas fa-gas-pump" style="color: white"></i>
+        </el-tag>
+        <el-tag
+          style="margin-right: 15px"
+          size="small"
+          :type="tagRPMChartColor()"
+          effect="dark"
+          @click="toggleRPMChart"
+        >
+          <i class="fab fa-cloudscale" style="color: white; font-size: 15px"></i>
         </el-tag>
         <i class="fas fa-times" style="color: gray" @click="toggleChanged"></i>
       </span>
@@ -87,7 +96,8 @@ export default {
         className: 'popup-content'
       }),
       isSpeedChartVisible: true,
-      isFuelChartVisible: true
+      isFuelChartVisible: true,
+      isRPMChartVisible: true
     }
   },
   static() {
@@ -231,9 +241,16 @@ export default {
     tagFuelChartColor() {
       return this.isFuelChartVisible ? 'warning' : 'info'
     },
+    tagRPMChartColor() {
+      return this.isRPMChartVisible ? 'primary' : 'info'
+    },
     toggleFuelChart() {
       serverBus.$emit(event.toogleFuelChart)
       this.isFuelChartVisible = !this.isFuelChartVisible
+    },
+    toggleRPMChart() {
+      serverBus.$emit(event.toogleRPMChart)
+      this.isRPMChartVisible = !this.isRPMChartVisible
     },
     toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
@@ -247,9 +264,8 @@ export default {
       if (positions && positions.length > 1) {
         Vue.$log.debug('got ', positions.length, ' positions')
 
-        Vue.$log.debug('Check Fuel')
         const positionsWithFuelLevel = positions.filter(p => p.attributes.fuel)
-
+        Vue.$log.debug('Check Fuel - positionsWithFuelLevel:' + positionsWithFuelLevel.length)
         if (positionsWithFuelLevel.length > 0) {
           const max = positionsWithFuelLevel.reduce((a, b) => a.attributes.fuel > b.attributes.fuel ? a : b)
           const min = positionsWithFuelLevel.reduce((a, b) => a.attributes.fuel < b.attributes.fuel ? a : b)

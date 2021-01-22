@@ -6,6 +6,7 @@ export class SharedData {
   chartLabels = null
   chartData = null
   chartDataFuelSensor = null
+  chartDataRPM = null
   positionIndex = null
   setPositionIndex(arr) {
     this.positionIndex = arr
@@ -16,9 +17,10 @@ export class SharedData {
   setChartLabels(labels) {
     this.chartLabels = labels
   }
-  setChartData(data, dataFuelSensor) {
+  setChartData(data, dataFuelSensor, dataRPM) {
     this.chartData = data
     this.chartDataFuelSensor = dataFuelSensor
+    this.chartDataRPM = dataRPM
   }
   getChartLabels() {
     return this.chartLabels
@@ -28,6 +30,9 @@ export class SharedData {
   }
   getChartDataFuelLevel() {
     return this.chartDataFuelSensor
+  }
+  getChartDataRPM() {
+    return this.chartDataRPM
   }
   setPositions(positions) {
     Vue.$log.debug('setting ', positions.length, ' positions...')
