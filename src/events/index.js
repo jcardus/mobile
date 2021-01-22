@@ -18,4 +18,5 @@ export const routePlay = 'routePlay'
 export const routeMatchFinished = 'routeMatchFinished'
 
 export const toogleFuelChart = 'toogleFuelChart'
+export const toogleRPMChart = 'toogleRPMChart'
 export const toogleSpeedChart = 'toogleSpeedChart'

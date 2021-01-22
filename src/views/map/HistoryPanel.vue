@@ -4,7 +4,7 @@
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
-      <div style="padding-left:48px; padding-right: 65px">
+      <div :style="`padding-left:${sliderLeftPadding}px; padding-right: 65px`">
         <label>
           <input
             v-model="embeddedSliderPos"
@@ -70,9 +70,15 @@ export default {
       set(newVal) {
         vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
       }
+    },
+    sliderLeftPadding() {
+      return 108
     }
   },
   watch: {
+    sliderPosStyle() {
+      return 'padding-left:48px; padding-right: 65px'
+    },
     embeddedSliderPos(newValue) {
       this.sliderPos(newValue)
     },
@@ -151,10 +157,14 @@ export default {
       const series = sharedData.getPositions().map(x => {
         return { y: x.speed * 1.852, x: this.$moment(x.fixTime).toDate() }
       })
-      const seriesFuelSensor = sharedData.getPositions().map(x => {
+      const seriesFuelSensor = sharedData.getPositions().filter(p => p.fuelLevel).map(x => {
         return { y: x.fuelLevel, x: this.$moment(x.fixTime).toDate() }
       })
-      sharedData.setChartData(series, seriesFuelSensor)
+      const seriesRPM = sharedData.getPositions()
+        .filter(p => (p.attributes.xpert && p.attributes.xpert.filter(x => x.type === '1').length > 0)).map(x => {
+          return { y: (x.attributes.xpert.filter(x => x.type === '1'))[0].rpm, x: this.$moment(x.fixTime).toDate() }
+        })
+      sharedData.setChartData(series, seriesFuelSensor, seriesRPM)
       this.updateChart = !this.updateChart
     },
     click: function() {

@@ -20,7 +20,8 @@ const name = defaultSettings.title || '' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 const port = 8080
-
+console.log('node_env:', process.env.NODE_ENV)
+console.log('env:', process.env.ENV)
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   pwa: {
@@ -108,6 +109,7 @@ module.exports = {
       return {
         plugins: [
           new webpack.DefinePlugin({
+            'process.mode': '"' + process.env.ENV + '"',
             'process.env': {
               PACKAGE_VERSION: '"' + version + '"' }}),
           new ScriptExtHtmlWebpackPlugin({
@@ -160,6 +162,14 @@ module.exports = {
           config.devtool('source-map')
         }
       )
+    config.plugins.delete('progress')
+    // optionally replace with another progress output plugin
+    // `npm i -D simple-progress-webpack-plugin` to use
+    config.plugin('simple-progress-webpack-plugin').use(require.resolve('simple-progress-webpack-plugin'), [
+      {
+        format: 'verbose' // options are minimal, compact, expanded, verbose
+      }
+    ])
   },
   pages: {
     index: {

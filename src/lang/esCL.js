@@ -17,7 +17,8 @@ export default {
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Ajustes',
     duration: 'Duracción',
-    nodata: 'no hay datos para el periodo seleccionado.'
+    nodata: 'no hay datos para el periodo seleccionado.',
+    alerts: 'Alertas'
   },
   map: {
     geofence_create_title: 'Nueva geocerca',

@@ -16,6 +16,7 @@ export function getServerHost() {
     hostName.includes('192.168.1.') ||
     hostName.includes('172.20.10.') ||
     hostName.includes('localhost') ||
+    hostName.includes('api.pinme.io') ||
     hostName.includes('fleetmap'))
     ? 'api.pinme.io'
     : 'ws.' + hostName

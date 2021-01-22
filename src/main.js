@@ -52,7 +52,7 @@ Vue.config.errorHandler = (err, vm, info) => {
 Vue.use(LoadScript)
 Vue.use(elTableInfiniteScroll)
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isProduction = process.env.ENV === 'production'
 const options = {
   isEnabled: true,
   logLevel: isProduction ? 'info' : 'debug',
@@ -213,7 +213,14 @@ export const vm = new Vue({
   router: router,
   store,
   i18n,
-  render: h => h(lnglat.__isMobile() ? (window.location.pathname === '/googlelogin/' ? GoogleLogin : AppMobile) : App)
+  render: h => {
+    try {
+      return h(lnglat.__isMobile() ? (window.location.pathname === '/googlelogin/' ? GoogleLogin : AppMobile) : App)
+    } catch (e) {
+      console.error(e)
+      return e
+    }
+  }
 })
 
 import('./common')

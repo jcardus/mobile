@@ -4,6 +4,7 @@ const session = 'https://' + getServerHost() + '/api/session'
 
 export function login(data) {
   const body = 'email=' + encodeURIComponent(data.username) + '&password=' + encodeURIComponent(data.password)
+  console.log('login', session)
   return axios({
     withCredentials: true, // send cookies when cross-domain requests
     url: session,
