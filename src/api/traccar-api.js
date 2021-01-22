@@ -155,7 +155,7 @@ export const traccar = {
     delete device.poi
     delete device.driver
     delete device.position
-    Vue.$log.debug(device)
+    Vue.$log.debug('updateDevice', device.name)
     return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
   },
   updateDeviceAccumulators(deviceId, accumulators) {
@@ -164,7 +164,7 @@ export const traccar = {
       totalDistance: accumulators.totalDistance,
       hours: accumulators.hours
     }
-    Vue.$log.debug(body)
+    Vue.$log.debug('updateDeviceAccumulators', body)
     return axios.put(devices + '/' + deviceId + '/accumulators', body, { withCredentials: true })
   },
   updateUser(userId, user) {

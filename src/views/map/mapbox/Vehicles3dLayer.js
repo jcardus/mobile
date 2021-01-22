@@ -15,7 +15,7 @@ export const vehicles3d = {
   queue: {},
   tb: new Threebox({ defaultLights: true }),
   initObject(f) {
-    Vue.$log.debug(f)
+    Vue.$log.debug('vehicles3d init object', f)
     const { coordinates } = f.geometry
     const model = this.models[f.properties.category].duplicate()
     model.setRotation(360 - f.properties.course)

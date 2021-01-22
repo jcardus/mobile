@@ -295,7 +295,7 @@ export default {
             b = b['lastUpdate']
             return a === null ? 1 : (b === null ? -1 : (a === b ? 0 : a > b ? -1 : 1))
           case 'order_by_fuel_level':
-            self.$log.debug(a)
+            // self.$log.debug('order_by_fuel_level', a.name)
             a = a.position ? (a.position.fuelLevel ? a.position.fuelLevel : '') : ''
             b = b.position ? (b.position.fuelLevel ? b.position.fuelLevel : '') : ''
             return (a === b ? 0 : a > b ? -1 : 1)

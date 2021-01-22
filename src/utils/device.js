@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
 
 function lastEvents(e) {
-  Vue.$log.debug(e)
+  Vue.$log.debug('lastEvents', e)
 }
 
 export function lastIgnOff(pos) {
@@ -58,7 +58,7 @@ export function checkFuelThresholds(fuelLevel, device) {
   }
 
   if (toUpdate) {
-    Vue.$log.debug(device)
+    Vue.$log.debug('updating ', device.name)
     traccar.updateDevice(device.id, device)
       .then(() => {
         Vue.$log.debug('Fuel attributes updated', device)
