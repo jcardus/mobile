@@ -46,7 +46,6 @@
     "nprogress": "latest",
     "odometer": "latest",
     "three": "^0.123.0",
-    "trackjs": "^3.7.5",
     "vue": "latest",
     "vue-i18n": "^8.22.2",
     "vue-i18n-filter": "latest",

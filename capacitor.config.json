@@ -11,6 +11,7 @@
   },
   "cordova": {},
   "server": {
-    "hostname": "api.pinme.io"
+    "hostname": "api.pinme.io",
+    "allowNavigation": ["auth.pinme.io"]
   }
 }
