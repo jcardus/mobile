@@ -18,7 +18,7 @@ export function lastIgnOff(pos) {
 export function checkFuelThresholds(fuelLevel, device) {
   Vue.$log.debug('Fuel level received', fuelLevel)
   let toUpdate = false
-  if (!device.attributes.fuel_tank_capacity) {
+  if (!device.attributes.fuel_tank_capacity && !device.attributes.xpert) {
     toUpdate = true
     device.attributes.fuel_tank_capacity = 60
   }
