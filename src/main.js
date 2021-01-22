@@ -10,7 +10,6 @@ import VueStatic from 'vue-static'
 import i18n, { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import LoadScript from 'vue-plugin-load-script'
-import { TrackJS } from 'trackjs'
 import * as lnglat from './utils/lnglat'
 import * as event from './events'
 import './amplify'
@@ -27,11 +26,6 @@ const GoogleLogin = () => import('./views/login/GoogleLogin')
 
 console.log('app starting...', window.location)
 
-TrackJS.install({
-  token: 'f7e379c5f99b4f2d8c890acdbcd8ef4d',
-  version: process.env.PACKAGE_VERSION
-})
-
 Vue.config.errorHandler = (err, vm, info) => {
   // Log properties passed to the component if there are any
   if (vm.$options.propsData) {
@@ -46,7 +40,6 @@ Vue.config.errorHandler = (err, vm, info) => {
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
   console.error(err)
-  TrackJS.track(err)
 }
 
 Vue.use(LoadScript)

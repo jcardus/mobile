@@ -1,7 +1,6 @@
 import { login, logout } from '@/api/user'
 import { traccar } from '@/api/traccar-api'
 import { serverBus, vm } from '@/main'
-import { TrackJS } from 'trackjs'
 import Vue from 'vue'
 import { checkForUpdates } from '@/utils/utils'
 import store from '../index'
@@ -240,7 +239,7 @@ const actions = {
             })
             window.OneSignal.setExternalUserId(state.user.id, state.user.attributes.userIdAuthHash)
           }
-          TrackJS.addMetadata('user', state.user.name)
+          // TrackJS.addMetadata('user', state.user.name)
           const hostName = getServerHost()
           Vue.$log.info('opening websocket ', state, hostName)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
-import { TrackJS } from 'trackjs'
 import { serverBus } from '@/main'
 import { VuexPersistence } from 'vuex-persist'
 
@@ -118,7 +117,6 @@ const store = new Vuex.Store({
     SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true
       Vue.$log.warn('SOCKET_RECONNECT_ERROR', state)
-      TrackJS.track('SOCKET_RECONNECT_ERROR')
     }
   },
   modules: {

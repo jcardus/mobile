@@ -32,7 +32,6 @@ import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { checkForUpdates } from '@/utils/utils'
-import { TrackJS } from 'trackjs'
 import * as consts from '../../utils/consts'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import PoiPopUp from './PoiPopUp'
@@ -185,7 +184,6 @@ export default {
   },
   beforeDestroy() {
     Vue.$log.warn('VueMap beforeDestroy')
-    TrackJS.track('DESTROY')
     this.unsubscribeEvents()
   },
   mounted() {
@@ -281,7 +279,6 @@ export default {
         this.map.triggerRepaint()
       } else {
         this.$log.error('mapResize received but theres no map instance: ', this.map)
-        TrackJS.track('MAP')
       }
     },
     onMapLoad() {

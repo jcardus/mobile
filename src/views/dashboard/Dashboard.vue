@@ -6,7 +6,6 @@
 import * as QuickSightEmbedding from 'amazon-quicksight-embedding-sdk'
 import 'nprogress/nprogress.css'
 import NProgress from 'nprogress'
-import { TrackJS } from 'trackjs'
 import { isMobile } from '@/utils/lnglat'
 import * as partner from '../../utils/partner'
 import { serverBus } from '@/main'
@@ -84,7 +83,6 @@ export default {
       } catch (e) {
         this.$log.error(e)
         this.stopLoading()
-        TrackJS.track('DASHBOARD')
       }
     },
     stopLoading() {
