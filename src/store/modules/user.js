@@ -11,6 +11,9 @@ import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
 import api from '@/api/backend'
 import backend from '@/api/backend'
+import { Plugins } from '@capacitor/core'
+
+const { PushNotifications } = Plugins
 
 const state = {
   user: {
@@ -28,6 +31,9 @@ const state = {
 }
 
 const mutations = {
+  SET_FIREBASE_TOKEN(state, token) {
+    state.user.attributes.firebaseToken = token
+  },
   SET_EMAIL_AUTH_HASH(state, hash) {
     state.user.attributes.emailAuthHash = hash
   },
@@ -148,6 +154,49 @@ function initData(commit, state, dispatch) {
   })
 }
 
+async function setFirebaseToken(commit, state) {
+  // Request permission to use push notifications
+  // iOS will prompt user and return if they granted permission or not
+  // Android will just grant without prompting
+  PushNotifications.requestPermission().then(result => {
+    if (result.granted) {
+      PushNotifications.register()
+    } else {
+      Vue.$log.error(result)
+    }
+  })
+
+  PushNotifications.addListener(
+    'registration',
+    (token) => {
+      Vue.$log.debug('Push registration success, token: ' + token.value)
+      if (state.user.attributes.firebaseToken !== token.value) {
+        Vue.$log.debug('updating firebase token', token.value)
+        commit('SET_FIREBASE_TOKEN', token.value)
+        traccar.updateUser(state.user.id, state.user)
+      }
+    }
+  )
+
+  PushNotifications.addListener('registrationError', (error) => {
+    Vue.$log.debug('Error on registration: ' + JSON.stringify(error))
+  })
+
+  PushNotifications.addListener(
+    'pushNotificationReceived',
+    (notification) => {
+      Vue.$log.debug('Push received: ' + JSON.stringify(notification))
+    }
+  )
+
+  PushNotifications.addListener(
+    'pushNotificationActionPerformed',
+    (notification) => {
+      Vue.$log.debug('Push action performed: ' + JSON.stringify(notification))
+    }
+  )
+}
+
 const actions = {
   setOrderDevicesBy({ commit, state }, value) {
     commit('SET_ORDER_DEVICES_BY', value)
@@ -239,7 +288,8 @@ const actions = {
             })
             window.OneSignal.setExternalUserId(state.user.id, state.user.attributes.userIdAuthHash)
           }
-          // TrackJS.addMetadata('user', state.user.name)
+          // TODO: this will generate duplicate listeners...
+          await setFirebaseToken(commit, state)
           const hostName = getServerHost()
           Vue.$log.info('opening websocket ', state, hostName)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {

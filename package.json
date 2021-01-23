@@ -17,6 +17,7 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.4.13",
     "@aws-amplify/core": "^3.8.5",
+    "@capacitor/core": "^2.4.6",
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@mapbox/mapbox-gl-traffic": "latest",
@@ -65,7 +66,6 @@
     "@babel/core": "7.0.0",
     "@babel/register": "7.0.0",
     "@capacitor/cli": "^2.4.6",
-    "@capacitor/core": "^2.4.6",
     "@capacitor/ios": "^2.4.6",
     "@vue/cli-plugin-babel": "3.5.3",
     "@vue/cli-plugin-eslint": "^3.12.1",
