@@ -351,7 +351,7 @@ const actions = {
           }
         })
       } else {
-        this.$log.error('devices is null', state.devices)
+        Vue.$log.error('devices is null', state.devices)
       }
     })
   },
