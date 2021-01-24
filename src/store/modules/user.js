@@ -47,7 +47,7 @@ const mutations = {
     state.user.attributes = { ...state.user.attributes, alertsSearchPeriod }
   },
   SET_GEOFENCES(state, geofences) {
-    console.log('SET_GEOFENCES', geofences)
+    console.debug('SET_GEOFENCES', geofences)
     state.geofences = geofences
   },
   SET_DEVICES(state, devices) {
@@ -160,6 +160,7 @@ async function setFirebaseToken(commit, state) {
   // Android will just grant without prompting
   PushNotifications.requestPermission().then(result => {
     if (result.granted) {
+      Vue.$log.info('PushNotifications permission granted')
       PushNotifications.register()
     } else {
       Vue.$log.error(result)
@@ -169,9 +170,9 @@ async function setFirebaseToken(commit, state) {
   PushNotifications.addListener(
     'registration',
     (token) => {
-      Vue.$log.debug('Push registration success, token: ' + token.value)
+      Vue.$log.info('Push registration success, token: ' + token.value)
       if (state.user.attributes.firebaseToken !== token.value) {
-        Vue.$log.debug('updating firebase token', token.value)
+        Vue.$log.info('updating firebase token', token.value)
         commit('SET_FIREBASE_TOKEN', token.value)
         traccar.updateUser(state.user.id, state.user)
       }
@@ -179,20 +180,20 @@ async function setFirebaseToken(commit, state) {
   )
 
   PushNotifications.addListener('registrationError', (error) => {
-    Vue.$log.debug('Error on registration: ' + JSON.stringify(error))
+    Vue.$log.info('Error on registration: ' + JSON.stringify(error))
   })
 
   PushNotifications.addListener(
     'pushNotificationReceived',
     (notification) => {
-      Vue.$log.debug('Push received: ' + JSON.stringify(notification))
+      Vue.$log.info('Push received: ' + JSON.stringify(notification))
     }
   )
 
   PushNotifications.addListener(
     'pushNotificationActionPerformed',
     (notification) => {
-      Vue.$log.debug('Push action performed: ' + JSON.stringify(notification))
+      Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
     }
   )
 }
@@ -291,7 +292,7 @@ const actions = {
           // TODO: this will generate duplicate listeners...
           await setFirebaseToken(commit, state)
           const hostName = getServerHost()
-          Vue.$log.info('opening websocket ', state, hostName)
+          Vue.$log.debug('opening websocket ', hostName)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
             store: store,
             format: 'json',
