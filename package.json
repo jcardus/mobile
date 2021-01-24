@@ -17,6 +17,7 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.4.13",
     "@aws-amplify/core": "^3.8.5",
+    "@capacitor-community/fcm": "^1.0.8",
     "@capacitor/core": "^2.4.6",
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",

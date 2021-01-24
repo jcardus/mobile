@@ -13,7 +13,7 @@ import api from '@/api/backend'
 import backend from '@/api/backend'
 import { Plugins } from '@capacitor/core'
 
-const { PushNotifications } = Plugins
+const { PushNotifications, FCMPlugin } = Plugins
 
 const state = {
   user: {
@@ -161,7 +161,7 @@ async function setFirebaseToken(commit, state) {
   PushNotifications.requestPermission().then(result => {
     if (result.granted) {
       Vue.$log.info('PushNotifications permission granted')
-      PushNotifications.register()
+      PushNotifications.register().then(d => console.log('register result', d))
     } else {
       Vue.$log.error(result)
     }
@@ -170,12 +170,18 @@ async function setFirebaseToken(commit, state) {
   PushNotifications.addListener(
     'registration',
     (token) => {
-      Vue.$log.info('Push registration success, token: ' + token.value)
-      if (state.user.attributes.firebaseToken !== token.value) {
-        Vue.$log.info('updating firebase token', token.value)
-        commit('SET_FIREBASE_TOKEN', token.value)
-        traccar.updateUser(state.user.id, state.user)
-      }
+      Vue.$log.info('Push registration success, APNS token: ' + token.value)
+      FCMPlugin
+        .getToken()
+        .then((r) => {
+          Vue.$log.info(`FCM Token ${r.token}`)
+          if (state.user.attributes.firebaseToken !== r.token) {
+            Vue.$log.info('updating firebase token', r.token)
+            commit('SET_FIREBASE_TOKEN', r.token)
+            traccar.updateUser(state.user.id, state.user)
+          }
+        })
+        .catch((err) => console.log(err))
     }
   )
 

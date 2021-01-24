@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>730179247410-9fjj4q4ft77tgh5rrsrkur2pb0hd2f2u.apps.googleusercontent.com</string>
+	<string>218052201497-27fuda922siafb8uql7m1rirk9jrhtu3.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.730179247410-9fjj4q4ft77tgh5rrsrkur2pb0hd2f2u</string>
+	<string>com.googleusercontent.apps.218052201497-27fuda922siafb8uql7m1rirk9jrhtu3</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDeGquqR5c0wA0bmhxyFD3wFlzLrPZDqDw</string>
+	<string>AIzaSyBgJjh0hPL1hUpGd2wlKiKTt2MKM5UO23k</string>
 	<key>GCM_SENDER_ID</key>
-	<string>730179247410</string>
+	<string>218052201497</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.fleetmap.manager</string>
 	<key>PROJECT_ID</key>
-	<string>pinme-9e6a3</string>
+	<string>fleetmap-fe45f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>pinme-9e6a3.appspot.com</string>
+	<string>fleetmap-fe45f.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:730179247410:ios:47d555aefcbda121ab0b2b</string>
-	<key>DATABASE_URL</key>
-	<string>https://pinme-9e6a3.firebaseio.com</string>
+	<string>1:218052201497:ios:a97f1b7ad6c2c565766e88</string>
 </dict>
 </plist>
