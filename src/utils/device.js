@@ -12,7 +12,9 @@ export function lastIgnOff(pos) {
     [pos.deviceId],
     ['Ignition'],
     lastEvents
-  )
+  ).then(r => {
+    // const positionsReceived = r.map(d => d.data).flat()
+  })
 }
 
 export function checkFuelThresholds(fuelLevel, device) {

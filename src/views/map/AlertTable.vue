@@ -27,6 +27,8 @@
     <div class="mobileScroll">
       <el-table
         id="alertTable"
+        v-loading="loading"
+        v-el-table-infinite-scroll="load"
         style="padding: 5px"
         :cell-style="cellStyle"
         :data="filteredEvents"
@@ -95,7 +97,10 @@ export default {
   data() {
     return {
       selectedAlertType: '',
-      alertsSearchPeriod: 'last_one_hour'
+      alertsSearchPeriod: 'last_one_hour',
+      selected: false,
+      loading: false,
+      count: 10
     }
   },
   computed: {
@@ -124,7 +129,7 @@ export default {
       events = events.sort((a, b) => {
         return (a.timestamp === b.timestamp ? 0 : a.timestamp > b.timestamp ? -1 : 1)
       })
-      return events
+      return events.slice(0, this.count)
     },
     getVehicleName(row) {
       if (row.vehicle) {
@@ -150,6 +155,9 @@ export default {
     }
   },
   methods: {
+    load() {
+      this.count += 10
+    },
     cellStyle(row) {
       let result = 'padding: 0; '
       if (row.columnIndex === 0 && row.row.isNew) {
@@ -164,15 +172,23 @@ export default {
         return item.notification.type
       }
     },
-    getAlerts() {
+    loadAlerts() {
+      if (this.alerts.length === 0) {
+        this.getAlerts()
+      }
+    },
+    async getAlerts() {
       this.$log.debug('Refresh events list')
+      this.loading = true
       const hours = this.getSearchHours()
       this.$log.debug(hours)
-      this.$store.dispatch('transient/fetchEvents', {
+      await this.$store.dispatch('transient/fetchEvents', {
         start: Vue.moment().subtract(hours, 'hour').toDate(),
         end: new Date(),
         types: this.alerts
       })
+
+      this.loading = false
     },
     getSearchHours() {
       switch (this.alertsSearchPeriod) {
