@@ -61,7 +61,7 @@
                   >{{ $t('login.forgotPassword') }}</el-link>
                 </el-col>
               </el-row>
-              <el-row style="margin-top: 15px;width:50%">
+              <el-row v-if="!isCapacitor" style="margin-top: 15px;width:50%">
                 <google-button />
                 <el-link
                   plain
@@ -121,6 +121,9 @@ export default {
     }
   },
   computed: {
+    isCapacitor() {
+      return location.href.startsWith('capacitor://')
+    },
     registerUrl() {
       return signUp()
     },

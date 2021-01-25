@@ -144,10 +144,10 @@ export function getDeviceState(position) {
 }
 
 export function calculateFuelLevel(adc1CacheValues, position, device) {
-  if (device.attributes.fuel_tank_capacity &&
-    device.attributes.fuel_low_threshold &&
-    device.attributes.fuel_high_threshold &&
-    position.attributes.fuel) {
+  if ('fuel_tank_capacity' in device.attributes &&
+    'fuel_low_threshold' in device.attributes &&
+    'fuel_high_threshold' in device.attributes &&
+    'fuel' in position.attributes) {
     // Calculate FuelLevel
     if (position.attributes.ignition) {
       if (adc1CacheValues.length === 5) {
@@ -155,16 +155,21 @@ export function calculateFuelLevel(adc1CacheValues, position, device) {
       }
 
       adc1CacheValues.push(position.attributes.fuel)
-      const adc1CalculatedValue = (adc1CacheValues.reduce((total, value) => total + value, 0)) / adc1CacheValues.length
 
-      const level = Math.round(((device.attributes.fuel_low_threshold - adc1CalculatedValue) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
+      if (device.attributes.xpert) {
+        position.fuelLevel = Math.round(position.attributes.fuel)
+        position.adc1CacheValues = adc1CacheValues
+      } else {
+        const adc1CalculatedValue = (adc1CacheValues.reduce((total, value) => total + value, 0)) / adc1CacheValues.length
+        const level = Math.round(((device.attributes.fuel_low_threshold - adc1CalculatedValue) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
 
-      if (level >= 0 && level <= 100) {
-        position.fuelLevel = level
-        position.adc1CacheValues = adc1CacheValues
-      } else if (device.position) {
-        position.fuelLevel = device.position.fuelLevel
-        position.adc1CacheValues = adc1CacheValues
+        if (level >= 0 && level <= 100) {
+          position.fuelLevel = level
+          position.adc1CacheValues = adc1CacheValues
+        } else if (device.position) {
+          position.fuelLevel = device.position.fuelLevel
+          position.adc1CacheValues = adc1CacheValues
+        }
       }
     }
   }

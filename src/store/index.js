@@ -79,16 +79,16 @@ const store = new Vuex.Store({
     },
     SOCKET_ONOPEN(state, event) {
       state.socket.isConnected = true
-      Vue.$log.info(state)
-      Vue.$log.info(event)
+      Vue.$log.debug(state)
+      Vue.$log.debug(event)
     },
     SOCKET_ONCLOSE(state, event) {
       state.socket.isConnected = false
-      Vue.$log.info(state)
+      Vue.$log.debug(state)
       Vue.$log.info(event)
     },
     SOCKET_ONERROR(state, event) {
-      Vue.$log.info(state)
+      Vue.$log.debug(state)
       Vue.$log.info(event)
     },
     SOCKET_ONMESSAGE(state, message) {

@@ -10,6 +10,7 @@ import ptPTLocale from './ptPT'
 import esCLLocale from './esCL'
 import frFRLocale from './frFR'
 import store from '../store'
+import moment from 'moment'
 
 Vue.use(VueI18n)
 
@@ -46,9 +47,13 @@ export const languages = [
 
 export function setLanguage(lang) {
   if (lang) {
-    i18n.locale = lang.replace('-', '')
-    Vue.config.lang = lang.slice(2)
-    Vue.moment.locale(lang.slice(2))
+    const locale = lang.replace('-', '')
+    const language = locale.slice(0, 2)
+    i18n.locale = locale
+    console.log('setting locale and lang', locale, language)
+    Vue.config.lang = language
+    Vue.moment.locale(language)
+    moment.locale(language)
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.842",
+  "version": "1.0.843",
   "scripts": {
     "build": "vue-cli-service build",
     "build:capacitor": "vue-cli-service build --mode capacitor",
@@ -17,6 +17,8 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.4.13",
     "@aws-amplify/core": "^3.8.5",
+    "@capacitor-community/fcm": "^1.0.8",
+    "@capacitor/core": "^2.4.6",
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@mapbox/mapbox-gl-traffic": "latest",
@@ -64,6 +66,8 @@
   "devDependencies": {
     "@babel/core": "7.0.0",
     "@babel/register": "7.0.0",
+    "@capacitor/cli": "^2.4.6",
+    "@capacitor/ios": "^2.4.6",
     "@vue/cli-plugin-babel": "3.5.3",
     "@vue/cli-plugin-eslint": "^3.12.1",
     "@vue/cli-plugin-pwa": "^4.5.9",

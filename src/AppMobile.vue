@@ -66,7 +66,7 @@
           </f7-list>
           <f7-list>
             <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
-            <f7-list-item>
+            <f7-list-item v-if="!isCapacitor">
               <f7-link
                 :href="googleLogin"
                 external

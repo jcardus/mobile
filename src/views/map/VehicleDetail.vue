@@ -17,7 +17,9 @@
         {{ device.position && device.position.address }}
         <div style="padding-top: 5px;">
           <div v-if="device.position.ignition || device.position.speed > 2" style="color:#32325D;">
-            {{ Math.round(device.position.speed * 1.852) }} km/h,
+            <i class="fas fa-tachometer-alt speedIcon" style="padding-right:2px"></i>{{ Math.round(device.position.speed * 1.852) }} km/h
+            <span v-if="device.position.fuelLevel"><i :class="fuelLevelStatus(device.position.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ device.position.fuelLevel ? device.position.fuelLevel : '' }}%</span>
+            <span v-if="device.position.attributes.rpm"><i class="fab fa-cloudscale rpmIcon" style="padding-right:2px; padding-left:8px"></i>{{ device.position.attributes.rpm ? device.position.attributes.rpm : '' }} rpm</span>
           </div>
           <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
           <span v-if="routePoint" style="float:right">{{ device.lastUpdate | moment('LL') }} {{ device.lastUpdate | moment('LTS') }}</span>
@@ -134,6 +136,10 @@ export default {
     }
   },
   methods: {
+    fuelLevelStatus(fuelLevel) {
+      const fuelLevelStatus = fuelLevel > 40 ? 'fuelLevelNormalIcon' : (fuelLevel > 20 ? 'fuelLevelLowIcon' : 'fuelLevelVeryLowIcon')
+      return 'fas fa-gas-pump ' + fuelLevelStatus
+    },
     toggleFollow() {
       let value = null
       if (!this.followVehicle || this.device.id !== this.followVehicle.id) {
@@ -310,5 +316,20 @@ export default {
   }
   .mapboxgl-popup-content {
     min-width: 270px;
+  }
+  .fuelLevelNormalIcon {
+    color: $--color-success
+  }
+  .fuelLevelLowIcon {
+    color: $--color-warning
+  }
+  .fuelLevelVeryLowIcon {
+    color: $--color-danger
+  }
+  .speedIcon {
+    color: $--color-success
+  }
+  .rpmIcon {
+    color: $--color-primary
   }
 </style>

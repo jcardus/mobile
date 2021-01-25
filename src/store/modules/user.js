@@ -11,6 +11,9 @@ import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
 import api from '@/api/backend'
 import backend from '@/api/backend'
+import { Plugins } from '@capacitor/core'
+
+const { PushNotifications, FCMPlugin } = Plugins
 
 const state = {
   user: {
@@ -28,6 +31,9 @@ const state = {
 }
 
 const mutations = {
+  SET_FIREBASE_TOKEN(state, token) {
+    state.user.attributes.firebaseToken = token
+  },
   SET_EMAIL_AUTH_HASH(state, hash) {
     state.user.attributes.emailAuthHash = hash
   },
@@ -41,7 +47,7 @@ const mutations = {
     state.user.attributes = { ...state.user.attributes, alertsSearchPeriod }
   },
   SET_GEOFENCES(state, geofences) {
-    console.log('SET_GEOFENCES', geofences)
+    console.debug('SET_GEOFENCES', geofences)
     state.geofences = geofences
   },
   SET_DEVICES(state, devices) {
@@ -148,6 +154,56 @@ function initData(commit, state, dispatch) {
   })
 }
 
+async function setFirebaseToken(commit, state) {
+  // Request permission to use push notifications
+  // iOS will prompt user and return if they granted permission or not
+  // Android will just grant without prompting
+  PushNotifications.requestPermission().then(result => {
+    if (result.granted) {
+      Vue.$log.info('PushNotifications permission granted')
+      PushNotifications.register().then(d => console.log('register result', d))
+    } else {
+      Vue.$log.error(result)
+    }
+  })
+
+  PushNotifications.addListener(
+    'registration',
+    (token) => {
+      Vue.$log.info('Push registration success, APNS token: ' + token.value)
+      FCMPlugin
+        .getToken()
+        .then((r) => {
+          Vue.$log.info(`FCM Token ${r.token}`)
+          if (state.user.attributes.firebaseToken !== r.token) {
+            Vue.$log.info('updating firebase token', r.token)
+            commit('SET_FIREBASE_TOKEN', r.token)
+            traccar.updateUser(state.user.id, state.user)
+          }
+        })
+        .catch((err) => console.log(err))
+    }
+  )
+
+  PushNotifications.addListener('registrationError', (error) => {
+    Vue.$log.info('Error on registration: ' + JSON.stringify(error))
+  })
+
+  PushNotifications.addListener(
+    'pushNotificationReceived',
+    (notification) => {
+      Vue.$log.info('Push received: ' + JSON.stringify(notification))
+    }
+  )
+
+  PushNotifications.addListener(
+    'pushNotificationActionPerformed',
+    (notification) => {
+      Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
+    }
+  )
+}
+
 const actions = {
   setOrderDevicesBy({ commit, state }, value) {
     commit('SET_ORDER_DEVICES_BY', value)
@@ -239,9 +295,10 @@ const actions = {
             })
             window.OneSignal.setExternalUserId(state.user.id, state.user.attributes.userIdAuthHash)
           }
-          // TrackJS.addMetadata('user', state.user.name)
+          // TODO: this will generate duplicate listeners...
+          await setFirebaseToken(commit, state)
           const hostName = getServerHost()
-          Vue.$log.info('opening websocket ', state, hostName)
+          Vue.$log.debug('opening websocket ', hostName)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
             store: store,
             format: 'json',
@@ -274,13 +331,14 @@ const actions = {
         Vue.$log.error(e)
         commit('CLEAR_USER')
         try {
-          const result = await Auth.signIn(username.trim(), password)
+          const result = await Auth.signIn(username.trim().toLowerCase(), password)
           await api.getJSessionId()
           window.location.href = '/'
           Vue.$log.debug(result)
         } catch (e) {
-          Vue.$log.error(e)
-          reject(e)
+          const errorMessage = e.message || e
+          Vue.$log.error(errorMessage)
+          reject(errorMessage)
         }
       })
     })
@@ -351,7 +409,7 @@ const actions = {
           }
         })
       } else {
-        this.$log.error('devices is null', state.devices)
+        Vue.$log.error('devices is null', state.devices)
       }
     })
   },
