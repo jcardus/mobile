@@ -5,7 +5,7 @@
         <i class="el-icon-place"></i>
         <span slot="title">{{ $t('route.map') }}</span>
       </el-menu-item>
-      <el-menu-item index="/dashboard/index">
+      <el-menu-item @click="openDashboard">
         <i class="el-icon-menu"></i>
         <span slot="title">{{ $t('route.dashboard') }}</span>
       </el-menu-item>
@@ -56,6 +56,11 @@ export default {
     },
     externalMaintenance() {
       return permission.checkUserPermission('externalmaintenance')
+    }
+  },
+  methods: {
+    openDashboard() {
+      window.open('/#dashboard')
     }
   }
 }
