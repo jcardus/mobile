@@ -184,7 +184,7 @@ export function followLine(route, feature, endingCourse) {
       animatingFeatures.push(feature)
     }
     layerManager.refreshLayers()
-    if (!animating) { _animate() } else { Vue.$log.info('skip animation call, len:', animating) }
+    if (!animating) { _animate() } else { Vue.$log.debug('skip animation call, len:', animating) }
   } else {
     Vue.$log.debug('ignoring', feature.properties.text, '(', feature.properties.animating, ')', arc.length, ' positions')
     serverBus.$emit('routeMatchFinished')
