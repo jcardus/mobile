@@ -72,7 +72,7 @@ export default {
       }
     },
     sliderLeftPadding() {
-      return 108
+      return this.device.attributes.xpert ? 108 : 48
     }
   },
   watch: {

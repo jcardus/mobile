@@ -7,7 +7,7 @@ import { Chart } from 'chart.js'
 // eslint-disable-next-line no-unused-vars
 import { annotationPlugin } from 'chartjs-plugin-annotation' // this unused import must be here
 import Vue from 'vue'
-import { serverBus, sharedData } from '../../main'
+import { serverBus, sharedData, vm } from '../../main'
 import * as lnglat from '../../utils/lnglat'
 import * as event from '../../events'
 import { mapGetters } from 'vuex'
@@ -30,7 +30,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['trips'])
+    ...mapGetters(['trips']),
+    device() {
+      return vm.$data.currentDevice
+    }
   },
   watch: {
     update() {
@@ -189,7 +192,7 @@ export default {
               }
             }, {
               id: 'rpm-x-axis',
-              display: true,
+              display: this.device.attributes.xpert,
               ticks: {
                 precision: 1
               },

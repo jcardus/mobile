@@ -157,7 +157,7 @@ export function calculateFuelLevel(adc1CacheValues, position, device) {
       adc1CacheValues.push(position.attributes.fuel)
 
       if (device.attributes.xpert) {
-        position.fuelLevel = position.attributes.fuel
+        position.fuelLevel = Math.round(position.attributes.fuel)
         position.adc1CacheValues = adc1CacheValues
       } else {
         const adc1CalculatedValue = (adc1CacheValues.reduce((total, value) => total + value, 0)) / adc1CacheValues.length
