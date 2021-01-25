@@ -143,7 +143,7 @@ export function getDeviceState(position) {
   } return 'Idle'
 }
 
-export function calculateFuelLevel(adc1CacheValues, position, device) {
+export function calculateFuelLevel(adc1CacheValues, position, lastPosition, device) {
   if ('fuel_tank_capacity' in device.attributes &&
     'fuel_low_threshold' in device.attributes &&
     'fuel_high_threshold' in device.attributes &&
@@ -166,8 +166,8 @@ export function calculateFuelLevel(adc1CacheValues, position, device) {
         if (level >= 0 && level <= 100) {
           position.fuelLevel = level
           position.adc1CacheValues = adc1CacheValues
-        } else if (device.position) {
-          position.fuelLevel = device.position.fuelLevel
+        } else if (lastPosition) {
+          position.fuelLevel = lastPosition.fuelLevel
           position.adc1CacheValues = adc1CacheValues
         }
       }

@@ -292,7 +292,7 @@ export default {
           let lastPosition = null
           positions.forEach(function(p) {
             const adc1CacheValues = lastPosition === null || !(lastPosition.adc1CacheValues) ? [] : lastPosition.adc1CacheValues
-            utils.calculateFuelLevel(adc1CacheValues, p, self.device)
+            utils.calculateFuelLevel(adc1CacheValues, p, lastPosition, self.device)
             lastPosition = p
           })
           sharedData.setPositions(positions)
