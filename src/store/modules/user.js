@@ -331,13 +331,14 @@ const actions = {
         Vue.$log.error(e)
         commit('CLEAR_USER')
         try {
-          const result = await Auth.signIn(username.trim(), password)
+          const result = await Auth.signIn(username.trim().toLowerCase(), password)
           await api.getJSessionId()
           window.location.href = '/'
           Vue.$log.debug(result)
         } catch (e) {
-          Vue.$log.error(e)
-          reject(e)
+          const errorMessage = e.message || e
+          Vue.$log.error(errorMessage)
+          reject(errorMessage)
         }
       })
     })
