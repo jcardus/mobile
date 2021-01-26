@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
 
+/*
 function lastEvents(e) {
   Vue.$log.debug('lastEvents', e)
 }
 
-export function lastIgnOff(pos) {
+ export function lastIgnOff(pos) {
   traccar.report_events(
     Vue.moment().subtract(10, 'day').toDate(),
     pos.fixTime,
@@ -15,7 +16,7 @@ export function lastIgnOff(pos) {
   ).then(r => {
     // const positionsReceived = r.map(d => d.data).flat()
   })
-}
+}*/
 
 export function checkFuelThresholds(fuelLevel, device) {
   if (device.attributes.xpert) {
