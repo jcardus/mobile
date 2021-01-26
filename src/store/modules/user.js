@@ -204,6 +204,10 @@ async function setFirebaseToken(commit, state) {
   )
 }
 
+function isCapacitor() {
+  return window.location.href.startsWith('capacitor://')
+}
+
 const actions = {
   setOrderDevicesBy({ commit, state }, value) {
     commit('SET_ORDER_DEVICES_BY', value)
@@ -296,8 +300,9 @@ const actions = {
             })
             window.OneSignal.setExternalUserId(state.user.id, state.user.attributes.userIdAuthHash)
           }
-          // TODO: this will generate duplicate listeners...
-          await setFirebaseToken(commit, state)
+          if (isCapacitor()) {
+            await setFirebaseToken(commit, state)
+          }
           const hostName = getServerHost()
           Vue.$log.debug('opening websocket ', hostName)
           Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {

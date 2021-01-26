@@ -26,12 +26,8 @@ export const constantRoutes = [
   },
   {
     path: '/dashboard',
-    component: Layout,
-    children: [
-      { path: 'index',
-        component: () => import('../views/dashboard/DashboardContainer'),
-        meta: { title: 'route.dashboard', icon: 'fa fa-dashboard' }
-      }]
+    component: () => import('../views/dashboard/DashboardContainer'),
+    meta: { title: 'route.dashboard', icon: 'fa fa-dashboard' }
   },
   {
     path: '/alerts',
