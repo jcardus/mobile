@@ -75,6 +75,7 @@ export default {
             fill: false,
             data: this.chartDataFuelSensor,
             type: 'line',
+            cubicInterpolationMode: 'monotone',
             yAxisID: 'fuel-y-axis'
           }, {
             borderColor: color('blue').alpha(1).rgbString(),
@@ -82,6 +83,7 @@ export default {
             fill: false,
             data: this.chartDataRPM,
             type: 'line',
+            cubicInterpolationMode: 'monotone',
             yAxisID: 'rpm-x-axis'
           }]
         },

@@ -161,8 +161,10 @@ export default {
         return { y: x.fuelLevel, x: this.$moment(x.fixTime).toDate() }
       })
       const seriesRPM = sharedData.getPositions()
-        .filter(p => (p.attributes.xpert && p.attributes.xpert.filter(x => x.type === '1').length > 0)).map(x => {
-          return { y: (x.attributes.xpert.filter(x => x.type === '1'))[0].rpm, x: this.$moment(x.fixTime).toDate() }
+        .filter(p => (p.attributes.xpert &&
+          (p.attributes.xpert.filter(x => x.type === '1').length > 0) ||
+          !p.attributes.ignition)).map(x => {
+          return { y: (!x.attributes.ignition ? 0 : (x.attributes.xpert.filter(x => x.type === '1'))[0].rpm), x: this.$moment(x.fixTime).toDate() }
         })
       sharedData.setChartData(series, seriesFuelSensor, seriesRPM)
       this.updateChart = !this.updateChart
