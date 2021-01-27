@@ -129,12 +129,12 @@ function initData(commit, state, dispatch) {
                 .then(() => {
                   dispatch('fetchAlerts').then(() => {
                     commit('SET_ALERT_SEARCH_PERIOD', 'last_one_hour')
-                    dispatch('transient/fetchEvents', {
+                    /* dispatch('transient/fetchEvents', {
                       start: Vue.moment().subtract(1, 'hour').toDate(),
                       end: new Date(),
                       types: state.alerts
                     }, { root: true })
-                      .catch(e => Vue.$log.warn(e, 'moving on...'))
+                      .catch(e => Vue.$log.warn(e, 'moving on...'))*/
                   })
                 })
                 .finally(() => {
@@ -220,19 +220,23 @@ const actions = {
   },
   setDeviceLastIgnOff({ commit, state }, { device, fixTime }) {
     if (!settings.getLastIgnitionOff) return
+
     const end = new Date()
     const start = Vue.moment(fixTime).subtract(60, 'day').toDate()
-    traccar.report_events(start, end, [device.id], ['ignitionOff']).then((d) => {
-      if (d.data && d.data.length > 0) {
-        const lastIgnOff = d.data.splice(-1)[0]
+    traccar.report_events(start, end, [device.id], ['ignitionOff']).then(r => {
+      const eventsReceived = r.map(d => d.data).flat()
+      if (eventsReceived.length > 0) {
+        const lastIgnOff = eventsReceived.splice(-1)[0]
         Vue.$log.debug('lastIgnOff', device, lastIgnOff)
-        traccar.position(lastIgnOff.positionId).then(r => {
-          Vue.$log.debug('lastIgnOff Position ', r.data[0])
-          if (r.data[0]) {
+        device.lastUpdate = lastIgnOff.serverTime
+        commit('SET_DEVICE', device)
+        /* traccar.position(lastIgnOff.deviceId, lastIgnOff.positionId).then(r => {
+          if (r.data.length > 0) {
+            Vue.$log.debug('lastIgnOff Position ', r.data[0])
             device.lastUpdate = r.data[0].fixTime
             commit('SET_DEVICE', device)
           }
-        })
+        })*/
       }
     })
   },

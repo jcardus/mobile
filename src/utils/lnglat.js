@@ -314,7 +314,7 @@ export function updateDevice(position, feature, device) {
     device.lastUpdate = position.fixTime
   }
   const adc1CacheValues = device.position && device.position.adc1CacheValues ? device.position.adc1CacheValues : []
-  utils.calculateFuelLevel(adc1CacheValues, position, device)
+  utils.calculateFuelLevel(adc1CacheValues, position, device.position, device)
   // moment is expensive so we cache this value
   position.fixDays = Vue.moment().diff(Vue.moment(device.lastUpdate), 'days')
   device.poi = findNearestPOI(position)

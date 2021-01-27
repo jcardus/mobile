@@ -13,6 +13,7 @@ export const alarmHardBraking = 'hardBraking'
 export const alarmHardCornering = 'hardCornering'
 export const alarmPowerCut = 'powerCut'
 export const alarmShock = 'shock'
+export const alarmPowerOn = 'powerOn'
 
 export const unitAlarmTypes = [
   alarmSOS,
@@ -23,7 +24,8 @@ export const unitAlarmTypes = [
   alarmHardBraking,
   alarmHardCornering,
   alarmPowerCut,
-  alarmShock
+  alarmShock,
+  alarmPowerOn
 ]
 
 export const alertTypes = [
@@ -40,5 +42,6 @@ export const alertTypes = [
   alarmHardBraking,
   alarmHardCornering,
   alarmPowerCut,
-  alarmShock
+  alarmShock,
+  alarmPowerOn
 ]

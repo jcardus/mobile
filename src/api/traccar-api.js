@@ -141,9 +141,15 @@ export const traccar = {
   report_events(from, to, deviceIds, types) {
     from = from.toISOString()
     to = to.toISOString()
-    deviceIds = deviceIds.map(d => 'deviceId=' + d).join('&')
     types = types.map(n => 'type=' + encodeURI(n)).join('&')
-    return axios.get(`${events}?${deviceIds}&${types}&from=${from}&to=${to}`, { withCredentials: true }) // send cookies when cross-domain requests)
+
+    if (deviceIds.length > 100) {
+      const splitedDeviceIds = utils.chunkArray(deviceIds, 100)
+      const allUrls = splitedDeviceIds.map(pIds => get(`${events}?${pIds.map(d => 'deviceId=' + d).join('&')}&${types}&from=${from}&to=${to}`, { withCredentials: true }))
+      return invokeApiAll(allUrls)
+    } else {
+      return invokeApiAll([get(`${events}?${deviceIds.map(d => 'deviceId=' + d).join('&')}&${types}&from=${from}&to=${to}`, { withCredentials: true })])
+    }
   },
   devices: function(onFulfill, onError) {
     invokeApi(devices, onFulfill, onError)

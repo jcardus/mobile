@@ -177,6 +177,7 @@ export default {
     alert_hardCornering: 'Hard Cornering',
     alert_powerCut: 'Power Cut',
     alert_shock: 'Shock',
+    alert_powerOn: 'Power Take-Off',
     alert_deleted: 'Alert has been deleted',
     alert_delete_info: 'Do you want to delete the alert ',
     alert_delete_title: 'Delete Alert',

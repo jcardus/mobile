@@ -72,15 +72,16 @@ const actions = {
   setDataLoaded({ commit }) {
     commit('SET_DATA_LOADED')
   },
-  fetchEvents({ commit, rootGetters }, { start, end, types }) {
-    traccar.report_events(
+  async fetchEvents({ commit, rootGetters }, { start, end, types }) {
+    const r = await traccar.report_events(
       start,
       end,
       rootGetters.devices.map(d => d.id),
       types.map(a => a.notification.type)
-    ).then(({ data }) => {
-      commit('SET_EVENTS', notifications.convertEvents(data, false))
-    }).catch((e) => Vue.$log.error(e))
+    )
+
+    const eventsReceived = r.map(d => d.data).flat()
+    commit('SET_EVENTS', notifications.convertEvents(eventsReceived, false))
   },
   addEvents({ commit }, events) {
     Vue.$log.debug('Commit addevent')

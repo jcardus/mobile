@@ -330,25 +330,32 @@ export default {
       }
     },
     eventsLoaded: function() {
-      this.eventsSource.features = this.processEvents(this.events)
+      // this.eventsSource.features = this.processEvents(this.events)
       this.refreshEvents()
     },
-    newEventReceived: function(event) {
+    /* newEventReceived: function(event) {
       traccar.position(event.positionId).then(r => {
         const geojson = eventsLayer.getFeatureGeojson(event, r.data[0])
         Vue.$log.debug('adding... ', geojson)
         this.eventsSource.features.push(geojson)
         this.refreshEvents()
       })
-    },
-    eventSelected: function(event) {
+    },*/
+    eventSelected: async function(event) {
       const featureSelected = eventsLayer.findFeatureSelected()
       if (featureSelected !== undefined) {
         featureSelected.properties.selected = false
         this.eventPopUps[0].remove()
         this.eventPopUps.splice(0)
       }
-      const feature = eventsLayer.findFeatureById(event.id)
+      let feature = eventsLayer.findFeatureById(event.id)
+      if (!feature) {
+        const r = await traccar.position(event.positionId)
+        feature = eventsLayer.getFeatureGeojson(event, r.data[0])
+        Vue.$log.debug('adding... ', feature)
+        this.eventsSource.features.push(feature)
+      }
+
       if (feature) {
         feature.properties.selected = true
 
@@ -555,7 +562,6 @@ export default {
       this.$static.map.on('data', this.onData)
       this.$static.map.on('styleimagemissing', this.styleImageMissing)
 
-      serverBus.$on(event.newEventReceived, this.newEventReceived)
       serverBus.$on(event.modelsLoaded, this.finishLoading)
       serverBus.$on(event.dataLoaded, this.initData)
       serverBus.$on(event.mapShow, this.mapResize)
@@ -609,7 +615,6 @@ export default {
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('data', this.onData)
-      serverBus.$off(event.newEventReceived, this.newEventReceived)
       serverBus.$off(event.modelsLoaded, this.finishLoading)
       serverBus.$off(event.deviceChanged, this.deviceChanged)
       serverBus.$off(event.deviceSelected, this.deviceSelected)

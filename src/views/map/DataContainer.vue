@@ -8,7 +8,7 @@
       <img v-else :class="'logo ' + logoClassType" height="44" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs v-model="selectedTab" stretch>
-        <el-tab-pane name="/map">
+        <el-tab-pane name="map">
           <span slot="label">
             <i class="fas fa-car"></i>
           </span>
@@ -16,25 +16,25 @@
             :filter-key="filterKey"
           />
         </el-tab-pane>
-        <el-tab-pane>
+        <el-tab-pane name="drivers">
           <span slot="label">
             <i class="fas fa-address-card"></i>
           </span>
           <driver-table :filter-key="filterKey"></driver-table>
         </el-tab-pane>
-        <el-tab-pane>
+        <el-tab-pane name="geofence">
           <span slot="label">
             <i class="fas fa-map-marked"></i>
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
-        <el-tab-pane name="/alerts">
+        <el-tab-pane name="alerts">
           <span slot="label">
             <el-badge :value="unreadItems" :hidden="unreadItems === 0" :max="99">
               <i class="fas fa-bell"></i>
             </el-badge>
           </span>
-          <alert-table :filter-key="filterKey"></alert-table>
+          <alert-table ref="alertsTable" :filter-key="filterKey"></alert-table>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -57,7 +57,7 @@ export default {
   components: { VehicleTable, AlertTable, GeofenceTable, DriverTable, LogoSvg },
   data() {
     return {
-      selectedTab: '/map',
+      selectedTab: 'map',
       filterKey: ''
     }
   },
@@ -81,6 +81,13 @@ export default {
     },
     logoClassType() {
       return this.isMobile ? 'logoMobile' : 'logoDesktop'
+    }
+  },
+  watch: {
+    'selectedTab': function(val) { // Monitor switch status-plan
+      if (val === 'alerts') {
+        this.$refs.alertsTable.loadAlerts()
+      }
     }
   }
 }

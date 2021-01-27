@@ -138,6 +138,7 @@ export default {
     alert_hardCornering: 'Viragem Brusca',
     alert_powerCut: 'Corte de Corrente',
     alert_shock: 'Acidente',
+    alert_powerOn: 'Tomada de Força',
     alert_deleted: 'O Alerta foi apagado.',
     alert_delete_info: 'Pretende apagar o alerta de ',
     alert_delete_title: 'Apagar Alerta',
