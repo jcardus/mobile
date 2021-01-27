@@ -65,6 +65,9 @@ function getNotificationImage(type) {
   if (type === alertType.alarmSOS) {
     return 'fas fa-exclamation-circle'
   }
+  if (type === alertType.alarmPowerOn) {
+    return 'fas fa-cog'
+  }
   return ''
 }
 
