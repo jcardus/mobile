@@ -220,7 +220,7 @@
 
             </el-table-column>
             <el-table-column v-if="isInorOutGeofence(props.row)" label="">
-              <template slot-scope="scope">
+              <!--template slot-scope="scope">
                 <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
                   <el-button
                     size="small"
@@ -229,7 +229,7 @@
                     @click="handleAssociateGeofences(scope.row, props.row)"
                   ><i class="fas fa-map-marked"></i></el-button>
                 </el-tooltip>
-              </template>
+              </template-->
             </el-table-column>
           </el-table>
         </template>
@@ -278,20 +278,20 @@
               @click="handleDelete(scope.row)"
             ><i class="fas fa-trash-alt"></i></el-button>
           </el-tooltip>
-          <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
+          <!--el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
             <el-button
               v-if="isInorOutGeofence(scope.row) && !isMobile"
               size="small"
               type="primary"
               @click="handleAssociateGeofences(null, scope.row)"
             ><i class="fas fa-map-marked"></i></el-button>
-          </el-tooltip>
+          </el-tooltip-->
           <el-dropdown v-if="isMobile">
             <i class="fas fa-ellipsis-v"></i>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.alert_edit') }}</el-dropdown-item>
               <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.alert_delete') }}</el-dropdown-item>
-              <el-dropdown-item v-if="isInorOutGeofence(scope.row)" @click.native="handleAssociateGeofences(null, scope.row)">{{ $t('settings.alert_associate_geofences') }}</el-dropdown-item>
+              <!--el-dropdown-item v-if="isInorOutGeofence(scope.row)" @click.native="handleAssociateGeofences(null, scope.row)">{{ $t('settings.alert_associate_geofences') }}</el-dropdown-item-->
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -343,7 +343,8 @@ export default {
         { value: alertType.alarmHardAcceleration, text: this.$t('settings.alert_hardAcceleration') },
         { value: alertType.alarmHardBraking, text: this.$t('settings.alert_hardBraking') },
         { value: alertType.alarmHardCornering, text: this.$t('settings.alert_hardCornering') },
-        { value: alertType.alarmShock, text: this.$t('settings.alert_shock') }
+        { value: alertType.alarmShock, text: this.$t('settings.alert_shock') },
+        { value: alertType.alarmPowerOn, text: this.$t('settings.alert_powerOn') }
       ]
     }
   },
