@@ -35,6 +35,7 @@ export default {
   },
   mounted() {
     this.$log.info('Dashboard')
+    document.getElementById('title').innerHTML = partner.getTitle() + ' Dashboard'
     this.load()
   },
   beforeDestroy() {
