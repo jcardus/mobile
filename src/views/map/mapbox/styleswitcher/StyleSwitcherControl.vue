@@ -33,7 +33,9 @@ export default {
         { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v10' },
         { title: 'Light', uri: 'mapbox://styles/mapbox/light-v9' },
         { title: 'Outdoors', uri: 'mapbox://styles/mapbox/outdoors-v11' },
-        { title: 'Satellite', uri: {
+        { title: 'Satellite', uri: 'mapbox://styles/mapbox/satellite-streets-v11' },
+        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v11' },
+        { title: 'Here', uri: {
           version: 8,
           sources: {
             'raster-tiles': {
@@ -54,8 +56,7 @@ export default {
             }
           ],
           glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
-        }},
-        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v11' }
+        }}
       ]
     }
   },
