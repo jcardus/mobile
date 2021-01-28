@@ -62,10 +62,12 @@ export default {
                 url = url.replace('us-east-1.quicksight.aws.amazon.com', partner.getQuicksightHostName())
               }
             }
+            const locale = getLanguageI18n().replace('PT', 'BR').replace('CL', 'ES')
+            this.$log.info('using locale', locale)
             const options = {
               url: url,
               container: containerDiv,
-              locale: getLanguageI18n().replace('PT', 'BR') // currently just portuguese from Brasil
+              locale: locale
             }
             this.$log.debug(options)
             if (!isMobile()) {
