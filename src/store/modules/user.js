@@ -291,12 +291,8 @@ const actions = {
         .catch(e => console.error('initData', e))
         .finally(async() => {
           setLanguage(state.user.attributes.lang)
-          if (!state.user.attributes.emailAuthHash) {
-            await dispatch('setEmailAuthHash')
-          }
-          if (!state.user.attributes.userIdAuthHash) {
-            await dispatch('setUserIdAuthHash')
-          }
+          await dispatch('setEmailAuthHash')
+          await dispatch('setUserIdAuthHash')
           if (window.OneSignal) {
             window.OneSignal.setEmail(state.user.email, {
               emailAuthHash: state.user.attributes.emailAuthHash
