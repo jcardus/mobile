@@ -73,14 +73,17 @@ const actions = {
   setMaxPos({ commit }, max) {
     commit('SET_MAX_POS', max)
   },
-  toggleGeofences({ commit, state }) {
-    commit('TOGGLE_GEOFENCES')
+  setGeofencesVisible({ state }) {
     vm.$static.map.setLayoutProperty('geofences-fill', 'visibility',
       state.showGeofences ? 'visible' : 'none')
     vm.$static.map.setLayoutProperty('geofences', 'visibility',
       state.showGeofences ? 'visible' : 'none')
     vm.$static.map.setLayoutProperty('geofences-labels', 'visibility',
       state.showGeofences ? 'visible' : 'none')
+  },
+  toggleGeofences({ commit, dispatch }) {
+    commit('TOGGLE_GEOFENCES')
+    dispatch('setGeofencesVisible')
   },
   toggleLineGeofences({ commit, state }) {
     commit('TOGGLE_LINEGEOFENCES')
