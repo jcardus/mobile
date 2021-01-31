@@ -113,7 +113,7 @@ export default {
           )
       )
 
-      return geofences.slice(0, this.count)
+      return geofences
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredGeofences: function() {
@@ -128,7 +128,7 @@ export default {
       }
       geofences = geofences.sort((a, b) => (a.name > b.name) ? 1 : -1)
 
-      return geofences
+      return geofences.slice(0, this.count)
     },
     showPOIsLayer: {
       get() { return !!vm.$store.state.map.showPOIs },
