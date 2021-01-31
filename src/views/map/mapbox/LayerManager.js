@@ -185,12 +185,14 @@ export default {
       })
     }
     if (!map.getLayer(geofencesLayerId)) {
+      Vue.$log.debug('adding geofences layer', store.state.map.showGeofences)
       map.addLayer(geofencesLayer.geofences)
       map.addLayer(geofencesLayer.geofencesFill)
       map.addLayer(geofencesLayer.geofencesLabels)
       map.addLayer(geofencesLayer.geofencesLines)
       map.addLayer(geofencesLayer.geofencesLinesLabels)
       map.addLayer(geofencesLayer.pois)
+      store.dispatch('map/setGeofencesVisible').then()
     }
   },
   onClickTouchUnclustered(e) {
