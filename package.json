@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.849",
+  "version": "1.0.850",
   "scripts": {
     "build": "vue-cli-service build",
     "build:capacitor": "vue-cli-service build --mode capacitor",
