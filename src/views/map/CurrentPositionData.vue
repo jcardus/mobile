@@ -410,6 +410,26 @@ export default {
       const totalSeconds = timeLocations.reduce((a, b) => a + b.time, 0)
       const avgSpeed = Math.round((timeLocations.reduce((a, b) => a + (b.speed * b.time), 0) / totalSeconds) * 10) / 10
 
+      // Calculate fuel consumption
+      let fuelConsumption = 0
+      if (this.device.attributes.xpert) {
+        try {
+          const locationsWithFuel = locations.filter(l => l.attributes.fuel && l.attributes.ignition)
+          if (locationsWithFuel.length > 0) {
+            const startFuelLevel = locationsWithFuel[0].attributes.fuel
+            const endFuelLevel = locationsWithFuel[locationsWithFuel.length - 1].attributes.fuel
+
+            Vue.$log.debug('StartFuelLevel:' + startFuelLevel + ' EndFuelLevel:' + endFuelLevel)
+            Vue.$log.debug('Min:' + locationsWithFuel.reduce((min, p) => p.y < min ? p.y : min, locationsWithFuel[0].attributes.fuel))
+            Vue.$log.debug('Max:' + locationsWithFuel.reduce((max, p) => p.y > max ? p.y : max, locationsWithFuel[0].attributes.fuel))
+
+            fuelConsumption = Math.round((startFuelLevel - endFuelLevel) * this.device.attributes.fuel_tank_capacity / 100)
+          }
+        } catch (e) {
+          Vue.$log.error(e)
+        }
+      }
+
       // Calculate stopTime of last trip
       if (this.trips.length > 0) {
         const lastTrip = this.trips[this.trips.length - 1]
@@ -453,7 +473,10 @@ export default {
         trip_stop_time: 0,
         trip_distance: distance,
         trip_avg_speed: avgSpeed,
-        endPoi: this.findNearestPOI(locations[locations.length - 1])
+        endPoi: this.findNearestPOI(locations[locations.length - 1]),
+        xpert: this.device.attributes.xpert,
+        fuel_consumption: fuelConsumption,
+        avg_fuel_consumption: Math.round(distance > 0 ? fuelConsumption * 100 / distance : 0)
       }
     },
     getSpeedTrips(positions) {

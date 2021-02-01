@@ -218,7 +218,7 @@ export default {
       return this.isMobile ? 'large' : 'mini'
     },
     height() {
-      if (this.historyMode) { return 90 }
+      if (this.historyMode) { return 108 }
 
       const historyModeHeight = this.historyMode ? styles.vehicleListHeaderHeightHistoryMode : styles.vehicleListHeaderHeight
       return 'calc(100vh - ' + historyModeHeight + ')'
