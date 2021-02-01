@@ -18,5 +18,6 @@ module.exports = {
   debugRoutes: false,
   mapBoxRouteMatch: false,
   getLastIgnitionOff: false,
-  maxDevicesForAlerts: 400
+  maxDevicesForAlerts: 400,
+  checkFuelThresholds: false
 }

@@ -69,6 +69,9 @@ export default {
     edit_poi: 'Editar',
     delete_poi: 'Apagar'
   },
+  tripsTable: {
+    trip: 'Viaje'
+  },
   dashboard: {
     startdate: 'Fecha de inicio',
     enddate: 'Fecha de fin',
