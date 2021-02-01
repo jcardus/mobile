@@ -10,7 +10,7 @@ module.exports = {
   showLabels: false,
   driverChatEnabled: false,
   fabricateIgnition: true,
-  animateMarkers: true,
+  animateMarkers: false,
   maxMarkersForAnimation: 250,
   showVehicleList: true,
   showSlider: true,
