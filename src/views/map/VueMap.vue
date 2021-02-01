@@ -116,7 +116,7 @@ export default {
     ...mapGetters([
       'followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'events', 'drivers',
       'showLabels', 'isPlaying', 'vehicles3dEnabled', 'deviceById', 'deviceByName',
-      'loading', 'zoom', 'center', 'mapType', 'mapStyle'
+      'loading', 'zoom', 'center', 'mapType', 'mapStyle', 'devices'
     ]),
     userLoggedIn() {
       return this.name !== ''
@@ -208,7 +208,8 @@ export default {
     ...mapMutations('map', ['setCenter', 'setZoom']),
     ...mapActions('transient', ['setLoading']),
     shouldAnimate(feature) {
-      return settings.animateMarkers &&
+      return this.devices.length < settings.maxMarkersForAnimation &&
+        settings.animateMarkers &&
         !this.loading &&
         !this.historyMode &&
         lnglat.contains(
@@ -759,6 +760,7 @@ export default {
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
             vehicles3d.updateCoords(feature)
+            layerManager.refreshLayers()
           }
           this.updateDeviceAndFeature(feature, device, position)
           vehicles3d.updateColor(feature)

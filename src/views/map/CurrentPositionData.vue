@@ -410,6 +410,27 @@ export default {
       const totalSeconds = timeLocations.reduce((a, b) => a + b.time, 0)
       const avgSpeed = Math.round((timeLocations.reduce((a, b) => a + (b.speed * b.time), 0) / totalSeconds) * 10) / 10
 
+      // Calculate fuel consumption
+      let fuelConsumption = 0
+      if (this.device.attributes.xpert) {
+        try {
+          const locationsFuelLevel = locations.filter(l => l.attributes.fuel && l.attributes.ignition).map(l => l.attributes.fuel)
+          if (locationsFuelLevel.length > 5) {
+            const startFuelLevel = Math.max(...locationsFuelLevel.slice(0, 5))
+            const endFuelLevel = Math.min(...locationsFuelLevel.slice(-5))
+            Vue.$log.debug('startFuelLevel:' + startFuelLevel + ' endFuelLevel:' + endFuelLevel)
+            fuelConsumption = Math.round((startFuelLevel - endFuelLevel) * this.device.attributes.fuel_tank_capacity / 100)
+          } else if (locationsFuelLevel.length > 0) {
+            const startFuelLevel = locationsFuelLevel[0]
+            const endFuelLevel = locationsFuelLevel[locationsFuelLevel.length - 1]
+            Vue.$log.debug('startFuelLevel:' + startFuelLevel + ' endFuelLevel:' + endFuelLevel)
+            fuelConsumption = Math.round((startFuelLevel - endFuelLevel) * this.device.attributes.fuel_tank_capacity / 100)
+          }
+        } catch (e) {
+          Vue.$log.error(e)
+        }
+      }
+
       // Calculate stopTime of last trip
       if (this.trips.length > 0) {
         const lastTrip = this.trips[this.trips.length - 1]
@@ -453,7 +474,10 @@ export default {
         trip_stop_time: 0,
         trip_distance: distance,
         trip_avg_speed: avgSpeed,
-        endPoi: this.findNearestPOI(locations[locations.length - 1])
+        endPoi: this.findNearestPOI(locations[locations.length - 1]),
+        xpert: this.device.attributes.xpert,
+        fuel_consumption: fuelConsumption,
+        avg_fuel_consumption: Math.round(distance > 0 ? fuelConsumption * 100 / distance : 0)
       }
     },
     getSpeedTrips(positions) {

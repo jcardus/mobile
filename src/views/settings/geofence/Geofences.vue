@@ -149,7 +149,7 @@ export default {
   name: 'Geofences',
   data() {
     return {
-      count: 10,
+      count: 20,
       isOpenGeofenceForm: false,
       isNewGeofence: true,
       selectedGeofence: null,
