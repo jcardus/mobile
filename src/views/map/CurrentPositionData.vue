@@ -414,15 +414,16 @@ export default {
       let fuelConsumption = 0
       if (this.device.attributes.xpert) {
         try {
-          const locationsWithFuel = locations.filter(l => l.attributes.fuel && l.attributes.ignition)
-          if (locationsWithFuel.length > 0) {
-            const startFuelLevel = locationsWithFuel[0].attributes.fuel
-            const endFuelLevel = locationsWithFuel[locationsWithFuel.length - 1].attributes.fuel
-
-            Vue.$log.debug('StartFuelLevel:' + startFuelLevel + ' EndFuelLevel:' + endFuelLevel)
-            Vue.$log.debug('Min:' + locationsWithFuel.reduce((min, p) => p.y < min ? p.y : min, locationsWithFuel[0].attributes.fuel))
-            Vue.$log.debug('Max:' + locationsWithFuel.reduce((max, p) => p.y > max ? p.y : max, locationsWithFuel[0].attributes.fuel))
-
+          const locationsFuelLevel = locations.filter(l => l.attributes.fuel && l.attributes.ignition).map(l => l.attributes.fuel)
+          if (locationsFuelLevel.length > 5) {
+            const startFuelLevel = Math.max(...locationsFuelLevel.slice(0, 5))
+            const endFuelLevel = Math.min(...locationsFuelLevel.slice(-5))
+            Vue.$log.debug('startFuelLevel:' + startFuelLevel + ' endFuelLevel:' + endFuelLevel)
+            fuelConsumption = Math.round((startFuelLevel - endFuelLevel) * this.device.attributes.fuel_tank_capacity / 100)
+          } else if (locationsFuelLevel.length > 0) {
+            const startFuelLevel = locationsFuelLevel[0]
+            const endFuelLevel = locationsFuelLevel[locationsFuelLevel.length - 1]
+            Vue.$log.debug('startFuelLevel:' + startFuelLevel + ' endFuelLevel:' + endFuelLevel)
             fuelConsumption = Math.round((startFuelLevel - endFuelLevel) * this.device.attributes.fuel_tank_capacity / 100)
           }
         } catch (e) {
