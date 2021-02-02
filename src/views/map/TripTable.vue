@@ -18,11 +18,11 @@
         >
           <template slot-scope="scope">
             <div
-              style="display: flow-root; margin-top: 5px; border-radius:10px; padding-left: 5px; padding-bottom: 5px;padding-right: 5px"
+              style="display: flow-root; margin-top: 5px; border-radius:10px; padding-left: 3px; padding-bottom: 5px;padding-right: 3px"
               :class="currentTrip===scope.row ? 'tripSelectedBackground' : ''"
             >
               <div :class="getTripIndexClass(scope.row)" style="background-color: #FFFFFF ; border-radius:10px">
-                <span style="font-size: 12px">{{ scope.$index + 1 }}ª</span>
+                <span style="font-size: 12px">{{ scope.$index + 1 }}ª {{ $t('tripsTable.trip') }}</span>
               </div>
               <el-row>
                 <el-col :span="24" class="colTripData">

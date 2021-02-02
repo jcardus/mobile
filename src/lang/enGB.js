@@ -75,6 +75,9 @@ export default {
     edit_poi: 'Edit',
     delete_poi: 'Delete'
   },
+  tripsTable: {
+    trip: 'Trip'
+  },
   dashboard: {
     startdate: 'Start date',
     enddate: 'End Date',

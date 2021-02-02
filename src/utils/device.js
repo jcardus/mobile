@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
+import settings from '@/settings'
 
 /*
 function lastEvents(e) {
@@ -19,7 +20,7 @@ function lastEvents(e) {
 }*/
 
 export function checkFuelThresholds(fuelLevel, device) {
-  if (device.attributes.xpert) {
+  if (device.attributes.xpert || !settings.checkFuelThresholds) {
     return
   }
   Vue.$log.debug('Fuel level received', fuelLevel)

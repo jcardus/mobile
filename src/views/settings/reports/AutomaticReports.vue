@@ -28,9 +28,9 @@
       </div>
       <div class="reportOptions">
         <el-radio-group v-if="trip_report.isactive" v-model="trip_report.periodicity">
-          <el-radio label="daily">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio label="weekly">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio label="monthly">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+          <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+          <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
         </el-radio-group>
       </div>
       <div>
@@ -45,9 +45,9 @@
       </div>
       <div class="reportOptions">
         <el-radio-group v-if="location_report.isactive" v-model="location_report.periodicity">
-          <el-radio label="daily">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio label="weekly">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio label="monthly">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+          <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+          <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
         </el-radio-group>
       </div>
       <div>
@@ -62,9 +62,9 @@
       </div>
       <div class="reportOptions">
         <el-radio-group v-if="zone_report.isactive" v-model="zone_report.periodicity">
-          <el-radio label="daily">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio label="weekly">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio label="monthly">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+          <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+          <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
         </el-radio-group>
       </div>
       <div>
@@ -79,9 +79,9 @@
       </div>
       <div class="reportOptions">
         <el-radio-group v-if="speeding_report.isactive" v-model="speeding_report.periodicity">
-          <el-radio value="daily" label="daily">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio value="weekly" label="weekly">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio value="monthly" label="monthly">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          <el-radio value="daily" label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+          <el-radio value="weekly" label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+          <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
         </el-radio-group>
       </div>
     </el-form>

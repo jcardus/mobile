@@ -57,6 +57,9 @@ export default {
   poiTable: {
     showPOIs: 'Ver POIs'
   },
+  tripsTable: {
+    trip: 'Viagem'
+  },
   dashboard: {
     startdate: 'Data de Início',
     enddate: 'Data de Fim',
