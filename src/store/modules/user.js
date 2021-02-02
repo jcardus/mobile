@@ -357,6 +357,7 @@ const actions = {
         vm.reset()
         delete Vue.prototype.$socket
         try {
+          window.OneSignal.logoutEmail()
           await Auth.signOut()
         } catch (e) {
           Vue.$log.error(e)
