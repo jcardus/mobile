@@ -348,23 +348,22 @@ const actions = {
       })
     })
   },
-  logout({ commit }) {
-    return new Promise((resolve) => {
-      logout().catch((e) => {
+  async logout({ commit }) {
+    try {
+      await logout()
+    } catch (e) {
+      Vue.$log.error(e)
+    } finally {
+      commit('CLEAR_USER')
+      vm.reset()
+      delete Vue.prototype.$socket
+      try {
+        await window.OneSignal.logoutEmail()
+        await Auth.signOut()
+      } catch (e) {
         Vue.$log.error(e)
-      }).finally(async() => {
-        commit('CLEAR_USER')
-        vm.reset()
-        delete Vue.prototype.$socket
-        try {
-          window.OneSignal.logoutEmail()
-          await Auth.signOut()
-        } catch (e) {
-          Vue.$log.error(e)
-        }
-        resolve()
-      })
-    })
+      }
+    }
   },
   connect({ commit }) {
     commit('CONNECT')
