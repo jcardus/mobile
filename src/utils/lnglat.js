@@ -89,6 +89,14 @@ export function lineDistance(route) {
 export function isMobile() {
   return __isMobile()
 }
+
+export function isSafari() {
+  return navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+    navigator.userAgent &&
+    navigator.userAgent.indexOf('CriOS') === -1 &&
+    navigator.userAgent.indexOf('FxiOS') === -1
+}
+
 export class MapboxCustomControl {
   constructor(id) {
     this.id = id

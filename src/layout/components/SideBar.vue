@@ -40,9 +40,14 @@
 
 import * as partner from '../../utils/partner'
 import * as permission from '../../utils/permission'
+import { mapGetters } from 'vuex'
 
 export default {
   computed: {
+    ...mapGetters(['user']),
+    customReport() {
+      return this.user.attributes.customReport
+    },
     tollsReport() {
       return partner.hasTolls()
     },
