@@ -13,7 +13,8 @@ export default {
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Configurações',
     duration: 'Duração',
-    nodata: 'Não existem dados para o período seleccionado'
+    nodata: 'Não existem dados para o período seleccionado',
+    report_events: 'Relatório de eventos'
   },
   map: {
     geofence_create_title: 'Nova Cerca Eletrônica',

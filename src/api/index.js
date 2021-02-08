@@ -1,4 +1,5 @@
 import { awsConfig } from '@/amplify'
+import { isSafari } from '@/utils/lnglat'
 
 export function getGoogleRedirect() {
   return window.location.hostname === 'localhost' ? 'fleetmap.io' : window.location.hostname
@@ -12,12 +13,7 @@ export function getBackendHost() {
 
 export function getServerHost() {
   const hostName = window.location.hostname
-  return (process.env.NODE_ENV === 'development' ||
-    hostName.includes('192.168.1.') ||
-    hostName.includes('172.20.10.') ||
-    hostName.includes('localhost') ||
-    hostName.includes('api.pinme.io') ||
-    hostName.includes('fleetmap'))
+  return !isSafari()
     ? 'api.pinme.io'
     : 'ws.' + hostName
 }

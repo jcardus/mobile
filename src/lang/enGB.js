@@ -15,6 +15,7 @@ export default {
     report_speeding_beta: 'Relatório de Excessos de Velocidade BETA',
     report_tolls: 'Relatório de Portagens',
     report_timerange: 'Informe uso fuera de horario',
+    report_events: 'Informe de eventos',
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Settings',
     duration: 'Duration',

@@ -12,6 +12,7 @@ export default {
     report_location_title: 'Informe de posiciones',
     report_zone_crossing: 'Informe de zonas',
     report_speeding: 'Informe de excesos de velocidad',
+    report_events: 'Informe de eventos',
     report_speeding_beta: 'Informe de excesos de velocidad BETA',
     report_tolls: 'Informe de peajes',
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
