@@ -1,6 +1,5 @@
 <template>
   <iframe
-    scrolling="no"
     seamless="seamless"
     :src="source"
     style="width:99%;height:99%"
