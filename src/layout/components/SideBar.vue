@@ -21,7 +21,7 @@
           <el-menu-item v-if="tollsReport" index="/reports/report_tolls">{{ $t('route.report_tolls') }}</el-menu-item>
           <el-menu-item v-if="has_customreport_vistawaste_activity" index="/reports/customreport_vistawaste_activity">{{ $t('route.customreport_vistawaste_activity_title') }}</el-menu-item>
           <el-menu-item v-if="customReports" index="/reports/report_custom">{{ $t('route.custom_reports') }}</el-menu-item>
-          <el-menu-item v-if="customReport" :index="'/reports/'+customReport"></el-menu-item>
+          <el-menu-item v-if="customReport" index="/reports/report_custom">{{ customReport }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-menu-item v-if="externalMaintenance" index="/settings/external/index">

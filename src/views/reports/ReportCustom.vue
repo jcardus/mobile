@@ -9,12 +9,16 @@
 
 <script>
 import { getServerHost } from '@/api'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ReportCustom',
   computed: {
+    ...mapGetters(['user']),
     source() {
-      return `https://${getServerHost()}/backend/api?externalreports`
+      return this.user.attributes.customReport
+        ? this.user.attributes.customReportUrl
+        : `https://${getServerHost()}/backend/api?externalreports`
     }
   }
 }
