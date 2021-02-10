@@ -49,8 +49,11 @@ import { popUps } from '@/utils/lnglat'
 import { hexToRgb } from '@/utils/images'
 import { checkFuelThresholds } from '@/utils/device'
 import { getServerHost } from '@/api'
+import * as notifications from '@/utils/notifications'
+import * as alertType from '@/alerts/alertType'
+import { newEventReceived } from '@/events'
 
-let socket
+let socketReconnect = 0
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
 // match anything which looks like a decimal degrees coordinate pair
@@ -209,6 +212,44 @@ export default {
   methods: {
     ...mapMutations('map', ['setCenter', 'setZoom']),
     ...mapActions('transient', ['setLoading']),
+    connectSocket() {
+      const hostName = getServerHost()
+      Vue.$log.debug('opening websocket ', hostName)
+      const socket = new WebSocket('wss://' + hostName + '/api/socket')
+      const events = ['onclose', 'onerror', 'onopen']
+      events.forEach((eventType) => {
+        socket[eventType] = (event) => {
+          const mutation = 'SOCKET_ON' + event.type.toUpperCase()
+          this.$store.commit(mutation)
+          if (event.type === 'close') {
+            this.$log.warn('socket closed!')
+            setTimeout(() => {
+              this.connectSocket()
+              this.$store.commit('SOCKET_RECONNECT', socketReconnect++)
+            }, 6000)
+          }
+        }
+      })
+      socket['onmessage'] = (event) => {
+        Vue.$log.debug(event)
+        const data = JSON.parse(event.data)
+        if (data.positions) {
+          this.updateMarkers(data.positions)
+        }
+        if (data.events) {
+          Vue.$log.debug('SOCKET_ONMESSAGE event Received')
+          const events = notifications.convertEvents(data.events, true)
+          this.$store.dispatch('transient/addEvents', events).then(() => {})
+          for (let i = 0; i < events.length; i++) {
+            const event = events[i]
+            if (event.type === alertType.alarmSOS) {
+              event.device.alarmSOSReceived = true
+            }
+            serverBus.$emit(newEventReceived, event)
+          }
+        }
+      }
+    },
     shouldAnimate(feature) {
       return this.devices.length < settings.maxMarkersForAnimation &&
         settings.animateMarkers &&
@@ -574,23 +615,8 @@ export default {
       serverBus.$on(event.eventSelected, this.eventSelected)
       serverBus.$on(event.eventsLoaded, this.eventsLoaded)
 
-      const hostName = getServerHost()
-      Vue.$log.debug('opening websocket ', hostName)
-      socket = new WebSocket('wss://' + hostName + '/api/socket')
-      socket.addEventListener('message', (event) => {
-        if (event.data.positions) {
-          this.positionsWebsocket = event.positions
-          self.updateMarkers(self.map)
-        }
-      })
-
       this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
-          case 'SOCKET_ONMESSAGE':
-            if (state.socket.message.positions) {
-              self.updateMarkers(self.map)
-            }
-            break
           case 'map/TOGGLE_TABLE_COLLAPSED':
             setTimeout(self.mapResize, 500)
             break
@@ -609,6 +635,7 @@ export default {
         }
       })
       window.addEventListener('resize', this.mapResize)
+      this.connectSocket()
     },
     unsubscribeEvents() {
       this.$static.map.off('load', this.onMapLoad)
@@ -683,12 +710,12 @@ export default {
         })
       })
     },
-    updateMarkers() {
-      if (!this.positions) {
+    updateMarkers(positions) {
+      if (!positions) {
         this.$log.warn('updateMarkers canceled, positions is undefined')
         return
       }
-      this.processPositions(this.positions)
+      this.processPositions(positions)
     },
     getCategory(category) {
       if (!category) { return 'default' }
