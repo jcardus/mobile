@@ -48,7 +48,9 @@ import store from '@/store'
 import { popUps } from '@/utils/lnglat'
 import { hexToRgb } from '@/utils/images'
 import { checkFuelThresholds } from '@/utils/device'
+import { getServerHost } from '@/api'
 
+let socket
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
 const coordinatesGeocoder = function(query) {
 // match anything which looks like a decimal degrees coordinate pair
@@ -142,7 +144,7 @@ export default {
     geofencesSource() { return this.$root.$static.geofencesSource },
     eventsSource() { return this.$root.$static.eventsSource },
     positions() {
-      return this.$root.$store.state.socket.message.positions
+      return this.positionsWebsocket
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -571,6 +573,17 @@ export default {
       serverBus.$on(event.deviceChanged, this.deviceChanged)
       serverBus.$on(event.eventSelected, this.eventSelected)
       serverBus.$on(event.eventsLoaded, this.eventsLoaded)
+
+      const hostName = getServerHost()
+      Vue.$log.debug('opening websocket ', hostName)
+      socket = new WebSocket('wss://' + hostName + '/api/socket')
+      socket.addEventListener('message', (event) => {
+        if (event.data.positions) {
+          this.positionsWebsocket = event.positions
+          self.updateMarkers(self.map)
+        }
+      })
+
       this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
           case 'SOCKET_ONMESSAGE':

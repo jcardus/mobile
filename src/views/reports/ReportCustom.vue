@@ -2,7 +2,7 @@
   <iframe
     seamless="seamless"
     :src="source"
-    style="width:99%;height:99%"
+    style="width:100%;height:99%"
   ></iframe>
 </template>
 

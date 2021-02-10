@@ -3,9 +3,6 @@ import { traccar } from '@/api/traccar-api'
 import { serverBus, vm } from '@/main'
 import Vue from 'vue'
 import { checkForUpdates } from '@/utils/utils'
-import store from '../index'
-import VueNativeSock from 'vue-native-websocket'
-import { getServerHost } from '@/api'
 import settings from '../../settings'
 import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
@@ -302,14 +299,6 @@ const actions = {
           if (isCapacitor()) {
             await setFirebaseToken(commit, state)
           }
-          const hostName = getServerHost()
-          Vue.$log.debug('opening websocket ', hostName)
-          Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
-            store: store,
-            format: 'json',
-            reconnection: true,
-            reconnectionDelay: 6000
-          })
           resolve()
         })
     })
