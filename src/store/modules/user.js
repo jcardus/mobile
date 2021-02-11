@@ -1,5 +1,4 @@
-import { login, logout } from '@/api/user'
-import { traccar } from '@/api/traccar-api'
+import { traccar, login, logout } from '@/api/traccar-api'
 import { serverBus, vm } from '@/main'
 import Vue from 'vue'
 import { checkForUpdates } from '@/utils/utils'
@@ -339,16 +338,20 @@ const actions = {
   },
   async logout({ commit }) {
     try {
+      Vue.$log.debug('logout one signal')
+      window.OneSignal.logoutEmail()
+        .then(r => Vue.$log.debug('onesignal response', r))
+        .catch(e => Vue.$log.error('onseginal error', e))
       await logout()
     } catch (e) {
       Vue.$log.error(e)
     } finally {
       commit('CLEAR_USER')
       vm.reset()
-      delete Vue.prototype.$socket
       try {
-        await window.OneSignal.logoutEmail()
-        await Auth.signOut()
+        Vue.$log.debug('deleting socket')
+        delete window.socket
+        Vue.$log.debug('Auth signout', await Auth.signOut())
       } catch (e) {
         Vue.$log.error(e)
       }
@@ -480,12 +483,20 @@ const actions = {
   processDevices() {
   },
   async setEmailAuthHash({ state, commit }) {
-    const r = await backend.getEmailAuthHash(state.user.email, state.user.attributes.lastHost)
-    commit('SET_EMAIL_AUTH_HASH', r.data)
+    try {
+      const r = await backend.getEmailAuthHash(state.user.email, state.user.attributes.lastHost)
+      commit('SET_EMAIL_AUTH_HASH', r.data)
+    } catch (e) {
+      Vue.$log.error(e)
+    }
   },
   async setUserIdAuthHash({ state, commit }) {
-    const r = await backend.getEmailAuthHash(state.user.id, state.user.attributes.lastHost)
-    commit('SET_USERID_AUTH_HASH', r.data)
+    try {
+      const r = await backend.getEmailAuthHash(state.user.id, state.user.attributes.lastHost)
+      commit('SET_USERID_AUTH_HASH', r.data)
+    } catch (e) {
+      Vue.$log.error(e)
+    }
   }
 }
 export default {

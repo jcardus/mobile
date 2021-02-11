@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { getServerHost } from './index'
+import { getServerHost, isDevEnv } from './index'
 import store from '../store'
 import Vue from 'vue'
 import * as utils from '@/utils/utils'
 
 const serverHost = getServerHost()
-const baseUrl = 'https://' + serverHost + '/api/'
+const baseUrl = `${isDevEnv() ? 'http' : 'https'}` + '://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
 const route = baseUrl + 'reports/route'
 const events = baseUrl + 'reports/events'
@@ -18,8 +18,37 @@ const groups = baseUrl + 'groups'
 const users = baseUrl + 'users'
 const server = baseUrl + 'server'
 const drivers = baseUrl + 'drivers'
+const session = baseUrl + 'session'
 const s3_report_lambda_url = 'https://' + serverHost + '/api_reports'
 const api_helper_lambda_url = 'https://' + serverHost + '/api_helper'
+
+export function login(data) {
+  const body = 'email=' + encodeURIComponent(data.username) + '&password=' + encodeURIComponent(data.password)
+  console.log('login', session)
+  return axios({
+    withCredentials: true, // send cookies when cross-domain requests
+    url: session,
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data: body
+  })
+}
+export function logout() {
+  return axios({
+    withCredentials: true, // send cookies when cross-domain requests
+    timeout: 5000,
+    url: session,
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+export function getSession() {
+  return axios.get(session, { withCredentials: true })
+}
 
 /**
  * @deprecated

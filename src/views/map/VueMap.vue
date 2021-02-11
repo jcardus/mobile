@@ -48,7 +48,7 @@ import store from '@/store'
 import { popUps } from '@/utils/lnglat'
 import { hexToRgb } from '@/utils/images'
 import { checkFuelThresholds } from '@/utils/device'
-import { getServerHost } from '@/api'
+import { getServerHost, isDevEnv } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
@@ -99,6 +99,12 @@ const coordinatesGeocoder = function(query) {
   }
 
   return geocodes
+}
+
+function getSocketUrl() {
+  const hostName = getServerHost()
+  Vue.$log.debug('websocket ', hostName)
+  return `${isDevEnv() ? 'ws' : 'wss'}://${hostName}/api/socket`
 }
 
 export default {
@@ -213,9 +219,8 @@ export default {
     ...mapMutations('map', ['setCenter', 'setZoom']),
     ...mapActions('transient', ['setLoading']),
     connectSocket() {
-      const hostName = getServerHost()
-      Vue.$log.debug('opening websocket ', hostName)
-      const socket = new WebSocket('wss://' + hostName + '/api/socket')
+      const socket = new WebSocket(getSocketUrl())
+      window.socket = socket
       const events = ['onclose', 'onerror', 'onopen']
       events.forEach((eventType) => {
         socket[eventType] = (event) => {
