@@ -439,10 +439,8 @@ export default {
 
       for (const id of devicesToAdd) {
         const vehicle = self.devices.find(d => d.id === id)
-        const v = { ...vehicle }
-        v.groupId = self.selectedGroup.id
-        await traccar.updateDevice(vehicle.id, v)
         vehicle.groupId = self.selectedGroup.id
+        await traccar.updateDevice(vehicle.id, vehicle)
       }
 
       const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))
