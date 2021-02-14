@@ -24,7 +24,7 @@ const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
 const GoogleLogin = () => import('./views/login/GoogleLogin')
 
-console.log('app starting...', window.location)
+console.log('app starting...', process.env)
 
 Vue.config.errorHandler = (err, vm, info) => {
   // Log properties passed to the component if there are any

@@ -84,6 +84,23 @@
           <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
         </el-radio-group>
       </div>
+      <div v-if="devicesWithFuelSensor">
+        <el-tooltip class="item" :content="$t('settings.activate_automatic_refueling_report')">
+          <el-switch
+            v-model="refueling_report.isactive"
+            :active-text="$t('route.report_refueling')"
+            style="padding-right:10px"
+            @change="dirty=true"
+          ></el-switch>
+        </el-tooltip>
+      </div>
+      <div v-if="devicesWithFuelSensor" class="reportOptions">
+        <el-radio-group v-if="refueling_report.isactive" v-model="refueling_report.periodicity">
+          <el-radio value="daily" label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+          <el-radio value="weekly" label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+          <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+        </el-radio-group>
+      </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button :loading="loading" type="primary" :disabled="!dirty" @click="submit">{{ $t('profile.user_update_button') }}</el-button>
@@ -121,6 +138,10 @@ export default {
       speeding_report: {
         isactive: false,
         periodicity: 'daily'
+      },
+      refueling_report: {
+        isactive: false,
+        periodicity: 'daily'
       }
     }
   },
@@ -129,6 +150,10 @@ export default {
     isMobile() { return lnglat.isMobile() },
     devices: function() {
       return vm.$store.getters.devices
+    },
+    devicesWithFuelSensor: function() {
+      Vue.$log.debug('devicesWithFuelSensor', this.devices)
+      return this.devices.filter(d => d.attributes.xpert).length > 0
     }
   },
   mounted() {
@@ -150,6 +175,9 @@ export default {
     if (this.user.attributes.speeding_report !== undefined) {
       this.speeding_report = this.user.attributes.speeding_report
     }
+    if (this.user.attributes.refueling_report !== undefined) {
+      this.refueling_report = this.user.attributes.refueling_report
+    }
   },
   methods: {
     submit() {
@@ -159,6 +187,7 @@ export default {
       this.user.attributes.location_report = this.location_report
       this.user.attributes.zone_report = this.zone_report
       this.user.attributes.speeding_report = this.speeding_report
+      this.user.attributes.refueling_report = this.refueling_report
       traccar.updateUser(this.user.id, this.user
       ).then(({ data }) => {
         this.dirty = false

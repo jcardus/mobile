@@ -11,8 +11,17 @@ export function getBackendHost() {
   return `${backendProd}.${backendUrl}`
 }
 
+export function isDevEnv() {
+  console.log(window.location.href)
+  return window.location.hostname.includes('localhost') &&
+    window.location.href.includes('devServer')
+}
+
 export function getServerHost() {
   const hostName = window.location.hostname
+  if (isDevEnv()) {
+    return 'traccar-dev.us-east-1.elasticbeanstalk.com'
+  }
   return !isSafari()
     ? 'api.pinme.io'
     : 'ws.' + hostName

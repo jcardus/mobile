@@ -1,11 +1,7 @@
-import { login, logout } from '@/api/user'
-import { traccar } from '@/api/traccar-api'
+import { traccar, login, logout } from '@/api/traccar-api'
 import { serverBus, vm } from '@/main'
 import Vue from 'vue'
 import { checkForUpdates } from '@/utils/utils'
-import store from '../index'
-import VueNativeSock from 'vue-native-websocket'
-import { getServerHost } from '@/api'
 import settings from '../../settings'
 import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
@@ -302,14 +298,6 @@ const actions = {
           if (isCapacitor()) {
             await setFirebaseToken(commit, state)
           }
-          const hostName = getServerHost()
-          Vue.$log.debug('opening websocket ', hostName)
-          Vue.use(VueNativeSock, 'wss://' + hostName + '/api/socket', {
-            store: store,
-            format: 'json',
-            reconnection: true,
-            reconnectionDelay: 6000
-          })
           resolve()
         })
     })
@@ -350,16 +338,20 @@ const actions = {
   },
   async logout({ commit }) {
     try {
+      Vue.$log.debug('logout one signal')
+      window.OneSignal.logoutEmail()
+        .then(r => Vue.$log.debug('onesignal response', r))
+        .catch(e => Vue.$log.error('onseginal error', e))
       await logout()
     } catch (e) {
       Vue.$log.error(e)
     } finally {
       commit('CLEAR_USER')
       vm.reset()
-      delete Vue.prototype.$socket
       try {
-        await window.OneSignal.logoutEmail()
-        await Auth.signOut()
+        Vue.$log.debug('deleting socket')
+        // delete window.socket
+        Vue.$log.debug('Auth signout', await Auth.signOut())
       } catch (e) {
         Vue.$log.error(e)
       }
@@ -382,37 +374,41 @@ const actions = {
         result.push(alarm_data)
       })
       commit('SET_ALERTS', result)
-      if (state.devices && state.devices.length < settings.maxDevicesForAlerts) {
-        state.devices.forEach(d => {
-          traccar.alertsByDevice(d.id)
-            .then(({ data }) => {
-              data.forEach(a => {
-                const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
-                if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+      if (state.devices) {
+        if (state.devices.length < settings.maxDevicesForAlerts) {
+          state.devices.forEach(d => {
+            traccar.alertsByDevice(d.id)
+              .then(({ data }) => {
+                data.forEach(a => {
+                  const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
+                  if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
+                    traccar.geofencesByDevice(d.id, function(geofences) {
+                      alert.devices.push({ data: d, geofences: geofences })
+                    })
+                  } else {
+                    alert.devices.push({ data: d })
+                  }
+                })
+              })
+              .catch(e => Vue.$log.error(e, d, 'moving on...'))
+          })
+
+          state.alerts.forEach(a => {
+            if (a.notification.always === true) {
+              state.devices.forEach(d => {
+                if (a.notification.type === 'geofenceExit' || a.notification.type === 'geofenceEnter') {
                   traccar.geofencesByDevice(d.id, function(geofences) {
-                    alert.devices.push({ data: d, geofences: geofences })
+                    a.devices.push({ data: d, geofences: geofences })
                   })
                 } else {
-                  alert.devices.push({ data: d })
+                  a.devices.push({ data: d })
                 }
               })
-            })
-            .catch(e => Vue.$log.error(e, d, 'moving on...'))
-        })
-
-        state.alerts.forEach(a => {
-          if (a.notification.always === true) {
-            state.devices.forEach(d => {
-              if (a.notification.type === 'geofenceExit' || a.notification.type === 'geofenceEnter') {
-                traccar.geofencesByDevice(d.id, function(geofences) {
-                  a.devices.push({ data: d, geofences: geofences })
-                })
-              } else {
-                a.devices.push({ data: d })
-              }
-            })
-          }
-        })
+            }
+          })
+        } else {
+          Vue.$log.error('skip SET_ALERTS devices:', state.devices.length)
+        }
       } else {
         Vue.$log.error('devices is null', state.devices)
       }
@@ -491,12 +487,20 @@ const actions = {
   processDevices() {
   },
   async setEmailAuthHash({ state, commit }) {
-    const r = await backend.getEmailAuthHash(state.user.email, state.user.attributes.lastHost)
-    commit('SET_EMAIL_AUTH_HASH', r.data)
+    try {
+      const r = await backend.getEmailAuthHash(state.user.email, state.user.attributes.lastHost)
+      commit('SET_EMAIL_AUTH_HASH', r.data)
+    } catch (e) {
+      Vue.$log.error(e)
+    }
   },
   async setUserIdAuthHash({ state, commit }) {
-    const r = await backend.getEmailAuthHash(state.user.id, state.user.attributes.lastHost)
-    commit('SET_USERID_AUTH_HASH', r.data)
+    try {
+      const r = await backend.getEmailAuthHash(state.user.id, state.user.attributes.lastHost)
+      commit('SET_USERID_AUTH_HASH', r.data)
+    } catch (e) {
+      Vue.$log.error(e)
+    }
   }
 }
 export default {

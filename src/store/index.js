@@ -18,9 +18,6 @@ import map from './modules/map'
 import settings from './modules/settings'
 import transient from './modules/transient'
 import user from './modules/user'
-import * as notifications from '../utils/notifications'
-import * as alertType from '../alerts/alertType'
-import { newEventReceived } from '@/events'
 
 const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
@@ -82,10 +79,9 @@ const store = new Vuex.Store({
       Vue.$log.debug(state)
       Vue.$log.debug(event)
     },
-    SOCKET_ONCLOSE(state, event) {
+    SOCKET_ONCLOSE(state) {
       state.socket.isConnected = false
       Vue.$log.debug(state)
-      Vue.$log.info(event)
     },
     SOCKET_ONERROR(state, event) {
       Vue.$log.debug(state)
@@ -94,18 +90,6 @@ const store = new Vuex.Store({
     SOCKET_ONMESSAGE(state, message) {
       state.socket.message = message
       state.lastUpdate = Date.now()
-      if (state.socket.message.events) {
-        Vue.$log.debug('SOCKET_ONMESSAGE event Received')
-        const events = notifications.convertEvents(state.socket.message.events, true)
-        store.dispatch('transient/addEvents', events).then(() => {})
-        for (let i = 0; i < events.length; i++) {
-          const event = events[i]
-          if (event.type === alertType.alarmSOS) {
-            event.device.alarmSOSReceived = true
-          }
-          serverBus.$emit(newEventReceived, event)
-        }
-      }
     },
     SOCKET_RECONNECT(state, count) {
       if (count === 4) {
