@@ -219,6 +219,7 @@ export default {
     ...mapMutations('map', ['setCenter', 'setZoom']),
     ...mapActions('transient', ['setLoading']),
     connectSocket() {
+      delete window.socket
       const socket = new WebSocket(getSocketUrl())
       window.socket = socket
       const events = ['onclose', 'onerror', 'onopen']
@@ -294,6 +295,7 @@ export default {
         this.finishLoading()
         NProgress.done()
         this.initialized = true
+        this.connectSocket()
       })
     },
     finishLoading() {
@@ -640,7 +642,6 @@ export default {
         }
       })
       window.addEventListener('resize', this.mapResize)
-      this.connectSocket()
     },
     unsubscribeEvents() {
       this.$static.map.off('load', this.onMapLoad)
