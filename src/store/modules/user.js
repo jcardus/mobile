@@ -350,7 +350,7 @@ const actions = {
       vm.reset()
       try {
         Vue.$log.debug('deleting socket')
-        // delete window.socket
+        delete window.socket
         Vue.$log.debug('Auth signout', await Auth.signOut())
       } catch (e) {
         Vue.$log.error(e)
