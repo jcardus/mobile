@@ -1,32 +1,7 @@
 import styles from '../styles/element-variables.scss'
-import store from '@/store'
 import Vue from 'vue'
 import * as lnglat from './lnglat'
-
-function initFreshChat() {
-  window.fcWidget.init({
-    config: {
-      cssNames: {
-        widget: 'fc_chat_widget_frame',
-        open: 'fc_open',
-        expanded: 'fc_expanded'
-      }
-    },
-    token: getFreshChatToken(),
-    locale: getFreshChatLocale(),
-    host: 'https://wchat.eu.freshchat.com' })
-  window.fcWidget.user.setFirstName(store.getters.user.name)
-  window.fcWidget.user.setEmail(store.getters.user.email)
-}
-
-function initialize(i, t) {
-  let e // noinspection CommaExpressionJS
-  i.getElementById(t) ? initFreshChat() : ((e = i.createElement('script')).id = t, e.async = !0, e.src = 'https://wchat.eu.freshchat.com/js/widget.js', e.onload = initFreshChat, i.head.appendChild(e))
-}
-
-function initiateCall() {
-  initialize(document, 'freshchat-js-sdk')
-}
+import VueFbCustomerChat from 'vue-fb-customer-chat'
 
 function initSurvey(token) {
   const s = document.createElement('script')
@@ -35,23 +10,11 @@ function initSurvey(token) {
   const e = document.getElementsByTagName('script')[0]
   e.parentNode.insertBefore(s, e)
 }
-
-function getFreshChatLocale() {
-  switch (hostname) {
-    case 'web.fleetrack.cl':
-      return 'es-LA'
-    default:
-      return 'pt'
-  }
-}
-
-function getFreshChatToken() {
-  switch (hostname) {
-    case 'web.fleetrack.cl':
-      return 'b4913a05-9e33-4575-a7f9-a5ae4dda8dd4'
-    default:
-      return '022233f4-44bb-44b6-bdb3-7ff6a0a61515'
-  }
+function initFacebookChat() {
+  Vue.use(VueFbCustomerChat, {
+    page_id: 344629353112186,
+    locale: 'es_CL'
+  })
 }
 
 export function initSupportChat() {
@@ -60,16 +23,11 @@ export function initSupportChat() {
     case 'web.fleetrack.cl':
       initSurvey('60bd590459b33f47d8dd8abccc0dc8d7')
       if (!lnglat.isMobile()) {
-        initiateCall()
+        initFacebookChat()
       }
       break
     case 'wuizy.co.ao':
       initSurvey('51e321bab007a7f8e6b0575f91f20939')
-      if (store.getters.user.email === 'it@tvsd.co.mz') {
-        initiateCall()
-      } else {
-        Vue.$log.warn(store.getters.user.name)
-      }
       break
     default:
   }

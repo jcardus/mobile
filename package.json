@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.863",
+  "version": "1.0.864",
   "scripts": {
     "build": "vue-cli-service build",
     "build:capacitor": "vue-cli-service build --mode capacitor",
@@ -49,6 +49,7 @@
     "odometer": "latest",
     "three": "^0.123.0",
     "vue": "latest",
+    "vue-fb-customer-chat": "^0.2.0",
     "vue-i18n": "^8.22.2",
     "vue-i18n-filter": "latest",
     "vue-moment": "^4.1.0",
