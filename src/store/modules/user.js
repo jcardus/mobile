@@ -407,7 +407,7 @@ const actions = {
             }
           })
         } else {
-          Vue.$log.error('skip SET_ALERTS devices:', state.devices.length)
+          Vue.$log.warn('skip SET_ALERTS devices:', state.devices.length)
         }
       } else {
         Vue.$log.error('devices is null', state.devices)
