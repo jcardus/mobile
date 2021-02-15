@@ -1,6 +1,7 @@
 import { saveAs } from 'file-saver'
-import XLSX from 'xlsx'
 import Vue from 'vue'
+
+const xlsxInit = Vue.loadScript('https://unpkg.com/xlsx/dist/xlsx.full.min.js')
 
 function generateArray(table) {
   const out = []
@@ -79,6 +80,7 @@ function sheet_from_array_of_arrays(data) {
         v: data[R][C]
       }
       if (cell.v == null) continue
+      // eslint-disable-next-line no-undef
       const cell_ref = XLSX.utils.encode_cell({
         c: C,
         r: R
@@ -88,6 +90,7 @@ function sheet_from_array_of_arrays(data) {
       else if (typeof cell.v === 'boolean') cell.t = 'b'
       else if (cell.v instanceof Date) {
         cell.t = 'n'
+        // eslint-disable-next-line no-undef
         cell.z = XLSX.SSF._table[14]
         cell.v = datenum(cell.v)
       } else cell.t = 's'
@@ -95,6 +98,7 @@ function sheet_from_array_of_arrays(data) {
       ws[cell_ref] = cell
     }
   }
+  // eslint-disable-next-line no-undef
   if (range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range)
   return ws
 }
@@ -132,6 +136,7 @@ export function export_table_to_excel(id) {
   wb.SheetNames.push(ws_name)
   wb.Sheets[ws_name] = ws
 
+  // eslint-disable-next-line no-undef
   var wbout = XLSX.write(wb, {
     bookType: 'xlsx',
     bookSST: false,
@@ -143,7 +148,7 @@ export function export_table_to_excel(id) {
   }), 'test.xlsx')
 }
 
-export function export_json_to_excel({
+export async function export_json_to_excel({
   multiHeader = [],
   header,
   data,
@@ -152,6 +157,7 @@ export function export_json_to_excel({
   autoWidth = true,
   bookType = 'xlsx'
 } = {}) {
+  await xlsxInit
   /* original data */
   filename = filename || 'excel-list'
   data = [...data]
@@ -169,6 +175,7 @@ export function export_json_to_excel({
   if (merges.length > 0) {
     if (!ws['!merges']) ws['!merges'] = []
     merges.forEach(item => {
+      // eslint-disable-next-line no-undef
       ws['!merges'].push(XLSX.utils.decode_range(item))
     })
   }
@@ -207,6 +214,7 @@ export function export_json_to_excel({
   wb.SheetNames.push(ws_name)
   wb.Sheets[ws_name] = ws
 
+  // eslint-disable-next-line no-undef
   const wbout = XLSX.write(wb, {
     bookType: bookType,
     bookSST: false,

@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.867",
+  "version": "1.0.868",
   "scripts": {
     "build": "vue-cli-service build",
     "build:capacitor": "vue-cli-service build --mode capacitor",
@@ -61,8 +61,7 @@
     "vue-timers": "latest",
     "vuejs-logger": "^1.5.5",
     "vuex": "^3.6.0",
-    "vuex-persist": "latest",
-    "xlsx": "^0.16.9"
+    "vuex-persist": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
