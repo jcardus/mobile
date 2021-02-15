@@ -7,6 +7,7 @@ const version = JSON.parse(packageJson).version || 0
 const webpack = require('webpack')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin')
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -122,7 +123,8 @@ module.exports = {
               search: /version/ig,
               replace: version
             }]
-          }])
+          }]),
+          new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] })
         ],
         name: name,
         resolve: {
