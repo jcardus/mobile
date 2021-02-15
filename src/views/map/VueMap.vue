@@ -806,12 +806,12 @@ export default {
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
             vehicles3d.updateCoords(feature)
-            layerManager.refreshLayers()
           }
           this.updateDeviceAndFeature(feature, device, position)
           vehicles3d.updateColor(feature)
         }
       }
+      layerManager.refreshLayers()
     },
     getMatch: function(coordinates, radius, route, timestamps, feature, position) {
       const self = this
