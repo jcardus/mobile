@@ -90,7 +90,7 @@
     "replace-in-file-webpack-plugin": "^1.0.6",
     "runjs": "^4.3.2",
     "sass": "^1.30.0",
-    "sass-loader": "latest",
+    "sass-loader": "^10.1.1",
     "script-loader": "^0.7.2",
     "serve-static": "^1.13.2",
     "simple-progress-webpack-plugin": "^1.1.2",
