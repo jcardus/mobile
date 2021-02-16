@@ -631,14 +631,14 @@ export default {
     },
     unsubscribeEvents() {
       this.$static.map.off('load', this.onMapLoad)
-      this.$static.map.off('touchstart', consts.vehiclesLayer, this.onTouchUnclustered)
-      this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
+      this.$static.map.off('touchstart', vehiclesLayer, this.onTouchUnclustered)
+      this.$static.map.off('click', vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
-      this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
-      this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
+      this.$static.map.off('mouseenter', vehiclesLayer, this.mouseEnter)
+      this.$static.map.off('mouseleave', vehiclesLayer, this.mouseLeave)
       this.$static.map.off('touchstart', 'pois', this.onClickTouchPois)
       this.$static.map.off('click', 'pois', this.onClickTouchPois)
       this.$static.map.off('mouseenter', 'pois', this.mouseEnter)
