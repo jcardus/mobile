@@ -1,7 +1,8 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.870",
+  "version": "1.0.871",
+  "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
     "build:capacitor": "vue-cli-service build --mode capacitor",
@@ -90,10 +91,9 @@
     "replace-in-file-webpack-plugin": "^1.0.6",
     "runjs": "^4.3.2",
     "sass": "^1.30.0",
-    "sass-loader": "^10.1.1",
+    "sass-loader": "10.1.1",
     "script-loader": "^0.7.2",
     "serve-static": "^1.13.2",
-    "simple-progress-webpack-plugin": "^1.1.2",
     "vue-template-compiler": "latest"
   },
   "browserslist": [
