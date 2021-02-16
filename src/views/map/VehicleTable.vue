@@ -328,11 +328,6 @@ export default {
     }
   },
   mounted() {
-    document.getElementById('btnMoving').addEventListener(event.touchstart, this.filterStateOn)
-    document.getElementById('btnOff').addEventListener(event.touchstart, this.filterStateOff)
-    document.getElementById('btnIdle').addEventListener(event.touchstart, this.filterStateIdle)
-    document.getElementById('btnAll').addEventListener(event.touchstart, this.filterStateAll)
-    document.getElementById('btnUnknown').addEventListener(event.touchstart, this.filterStateUnknown)
     serverBus.$on(event.deviceSelectedOnMap, this.deviceSelectedOnMap)
     serverBus.$on(event.showRoutesChanged, this.showRoutesChanged)
   },
