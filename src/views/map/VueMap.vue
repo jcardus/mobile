@@ -522,17 +522,6 @@ export default {
         this.$log.error(e)
       }
     },
-    showHideDevices: function(show) {
-      if (!show) {
-        this.$static.map.setLayoutProperty(consts.vehiclesLayer, 'visibility', 'none')
-        this.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', 'none')
-      } else {
-        this.$static.map.setLayoutProperty(consts.vehiclesLayer, 'visibility', 'visible')
-        if (this.showLabels) {
-          this.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', 'visible')
-        }
-      }
-    },
     addControls: function() {
       const map = this.$static.map
       this.$log.debug('adding mapcontrols...')
@@ -578,9 +567,6 @@ export default {
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
-    },
-    onPitch: function() {
-      this.showHideDevices(this.$static.map.getPitch() === 0)
     },
     subscribeEvents() {
       const self = this
@@ -697,7 +683,7 @@ export default {
       }
     },
     onData(e) {
-      if (e.sourceId !== lnglat.positionsSource || !e.isSourceLoaded) return
+      if (!e.isSourceLoaded) return
       layerManager.refreshLayers()
     },
     onTouchUnclustered: function(e) {
