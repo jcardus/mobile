@@ -145,6 +145,8 @@ export default {
     alert_powerCut: 'Corte de Corrente',
     alert_shock: 'Acidente',
     alert_powerOn: 'Tomada de Força',
+    alert_deviceFuelDrop: 'Perda de Combustível',
+    alert_driverChanged: 'Mudança de Motorista',
     alert_deleted: 'O Alerta foi apagado.',
     alert_delete_info: 'Pretende apagar o alerta de ',
     alert_delete_title: 'Apagar Alerta',

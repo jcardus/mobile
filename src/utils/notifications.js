@@ -1,4 +1,4 @@
-import { vm } from '../main'
+import { vm } from '@/main'
 import Vue from 'vue'
 import * as alertType from '@/alerts/alertType'
 
@@ -41,14 +41,18 @@ export function convertEvents(events, isNew) {
 }
 
 function getNotificationContent(notification) {
-  if (notification.type === 'geofenceExit' || notification.type === 'geofenceEnter') {
+  if (notification.type === alertType.geofenceExit || notification.type === alertType.geofenceEnter) {
     const geofence = vm.$store.getters.geofences.find(g => g.id === notification.geofenceId)
 
     return geofence.name
   }
-  if (notification.type === 'deviceOverspeed') {
+  if (notification.type === alertType.deviceOverspeed) {
     return Math.round(notification.attributes.speed * 1.85200) + ' Km/h (Max. ' + ~~(notification.attributes.speedLimit * 1.852) + ' km/h)'
   }
+  if (notification.type === alertType.deviceFuelDrop) {
+    return ' > ' + notification.attributes.fuelDropThreshold + '%'
+  }
+
   return ''
 }
 
@@ -68,15 +72,23 @@ function getNotificationImage(type) {
   if (type === alertType.alarmPowerOn) {
     return 'fas fa-cog'
   }
+  if (type === alertType.deviceFuelDrop) {
+    return 'fas fa-gas-pump'
+  }
+  if (type === alertType.driverChanged) {
+    return 'fa-address-card'
+  }
   return ''
 }
 
 function getNotificationColor(type) {
-  if (type === alertType.ignitionOn || type === alertType.geofenceEnter) {
+  if (type === alertType.ignitionOn || type === alertType.geofenceEnter ||
+    type === alertType.driverChanged) {
     return 'green'
   }
   if (type === alertType.ignitionOff || type === alertType.geofenceExit ||
-    type === alertType.alarmSOS || type === alertType.deviceOverspeed) {
+    type === alertType.alarmSOS || type === alertType.deviceOverspeed ||
+    type === alertType.deviceFuelDrop) {
     return 'red'
   }
   return 'black'

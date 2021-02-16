@@ -4,6 +4,8 @@ export const geofenceEnter = 'geofenceEnter'
 export const deviceOverspeed = 'deviceOverspeed'
 export const ignitionOn = 'ignitionOn'
 export const ignitionOff = 'ignitionOff'
+export const deviceFuelDrop = 'deviceFuelDrop'
+export const driverChanged = 'driverChanged'
 export const alarmSOS = 'sos'
 export const alarmGPSAntennaCut = 'gpsAntennaCut'
 export const alarmTow = 'tow'
@@ -34,6 +36,8 @@ export const alertTypes = [
   deviceOverspeed,
   ignitionOn,
   ignitionOff,
+  deviceFuelDrop,
+  driverChanged,
   alarmSOS,
   alarmGPSAntennaCut,
   alarmTow,
