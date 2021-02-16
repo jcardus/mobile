@@ -16,10 +16,11 @@
                       *.zdassets.com *.amazon.com *.mapillary.com *.freshchat.com *.amazonaws.com onesignal.com *.here.com;
           style-src   'unsafe-inline' 'unsafe-eval' 'self'
                       *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.able-on.mobi *.fleetmap.io *.fleetmap.co.mz
-                      *.fontawesome.com *.onesignal.com *.googleapis.com *.freshchat.com onesignal.com;
+                      *.fontawesome.com *.onesignal.com *.googleapis.com onesignal.com *.mapbox.com
+                      ;
           script-src  'unsafe-eval' 'self' 'unsafe-inline'
                       *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.able-on.mobi *.fleetmap.io *.fleetmap.co.mz
-                      *.survicate.com *.freshchat.com *.fontawesome.com *.onesignal.com onesignal.com *.facebook.net unpkg.com
+                      *.survicate.com *.freshchat.com *.fontawesome.com *.onesignal.com onesignal.com *.facebook.net unpkg.com *.mapbox.com
                       ;
           worker-src 'self' blob:
                       *.wuizy.co.ao *.fleetrack.cl *.pinme.io *.fleetmap.io *.fleetmap.co.mz *.able-on.mobi *.onesignal.com onesignal.com;
@@ -35,6 +36,16 @@
     <title id="title"></title>
     <script async src="https://kit.fontawesome.com/2418515d96.js"></script>
     <script async src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"></script>
+    <% if (process.env.NODE_ENV === 'production') {%>
+    <script src="//unpkg.com/vue@2.6.12/dist/vue.js"></script>
+    <script src="//unpkg.com/element-ui@2.14.1/lib/index.js"></script>
+    <script src="//unpkg.com/element-ui@2.14.1/lib/umd/locale/en.js"></script>
+    <script src="//unpkg.com/element-ui@2.14.1/lib/umd/locale/es.js"></script>
+    <script src="//unpkg.com/element-ui@2.14.1/lib/umd/locale/pt.js"></script>
+    <script src="https://unpkg.com/three@0.125.2/build/three.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <% } %>
   </head>
   <noscript>
     <p> Fleetrack SPA. IRARRAZAVAL 2821 A 408. Ñuñoa CL13100 7750000. Chile. info@fleetrack.cl </p>

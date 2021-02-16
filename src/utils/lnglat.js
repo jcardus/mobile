@@ -7,7 +7,6 @@ import * as helpers from '@turf/helpers'
 import { vm } from '@/main'
 import styles from '../styles/element-variables.scss'
 import store from '../store'
-import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import { positionsSource } from './consts'
 import * as angles from 'angles'
 import Vue from 'vue'
@@ -220,13 +219,6 @@ export function updateDonuts() {
     markersOnScreen = newMarkers
   } catch (e) {
     console.error(e)
-  }
-}
-
-export function removeAdd3dLayer() {
-  if (store.getters.vehicles3dEnabled) {
-    vm.$static.map.removeLayer(vehicles3d.id)
-    vm.$static.map.addLayer(vehicles3d)
   }
 }
 
