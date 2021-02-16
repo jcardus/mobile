@@ -683,8 +683,8 @@ export default {
       }
     },
     onData(e) {
-      if (!e.isSourceLoaded) return
-      layerManager.refreshLayers()
+      // if (!e.isSourceLoaded) return
+      // layerManager.refreshLayers()
     },
     onTouchUnclustered: function(e) {
       this.$log.debug('touchUnclustered', e)
