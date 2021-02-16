@@ -106,16 +106,10 @@ export default {
       this.$f7.preloader.show()
       location.reload()
     },
-    logout() {
+    async logout() {
       this.$f7.preloader.show()
-      this.$store.dispatch('user/logout').then(
-        () => {
-        },
-        () => {
-        }
-      ).finally(() => {
-        location.reload()
-      })
+      this.$log.info('logout', await this.$store.dispatch('user/logout'))
+      location.reload()
     }
   }
 }
