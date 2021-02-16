@@ -183,6 +183,8 @@ export default {
     alert_powerCut: 'Power Cut',
     alert_shock: 'Shock',
     alert_powerOn: 'Power Take-Off',
+    alert_deviceFuelDrop: 'Fuel Drop',
+    alert_driverChanged: 'Driver Changed',
     alert_deleted: 'Alert has been deleted',
     alert_delete_info: 'Do you want to delete the alert ',
     alert_delete_title: 'Delete Alert',

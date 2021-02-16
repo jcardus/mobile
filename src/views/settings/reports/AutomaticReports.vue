@@ -152,7 +152,6 @@ export default {
       return vm.$store.getters.devices
     },
     devicesWithFuelSensor: function() {
-      Vue.$log.debug('devicesWithFuelSensor', this.devices)
       return this.devices.filter(d => d.attributes.xpert).length > 0
     }
   },

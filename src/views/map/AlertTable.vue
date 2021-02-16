@@ -56,7 +56,7 @@
               <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 20px"></i>{{ scope.row.device.name }}</span></div>
               <div style="line-height: normal">
                 <span style="font-size: 12px">
-                  <i v-if="scope.row.device.driver.name !== ''" class="fas fa-user driverIcon"></i>
+                  <i v-if="scope.row.device.driver.name !== ''" class="fas fa-user listIcon"></i>
                   {{ scope.row.device.driver.name }}
                 </span>
               </div>
@@ -64,6 +64,7 @@
                 <span style="font-size: 12px">
                   <i v-if="scope.row.type === 'geofenceExit' || scope.row.type === 'geofenceEnter'" class="fas fa-map-marked listIcon" style="width: 20px"></i>
                   <i v-if="scope.row.type === 'deviceOverspeed'" class="fas fa-tachometer-alt listIcon" style="width: 20px"></i>
+                  <i v-if="scope.row.type === 'deviceFuelDrop'" class="fas fa-gas-pump listIcon" style="width: 20px"></i>
                   {{ scope.row.content }}
                 </span>
               </div>
