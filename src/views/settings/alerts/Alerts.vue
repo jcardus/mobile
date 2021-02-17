@@ -213,23 +213,9 @@
               sortable=""
             >
               <template slot-scope="scope">
-                {{ scope.row.geofences.filter(g => g.area.startsWith('POLYGON')).length }}<i class="fas fa-draw-polygon" style="padding-left: 5px; padding-right: 25px"></i>
-                {{ scope.row.geofences.filter(g => g.area.startsWith('CIRCLE')).length }}<i class="fas fa-map-marker-alt" style="padding-left: 5px; padding-right: 25px"></i>
-                {{ scope.row.geofences.filter(g => g.area.startsWith('LINESTRING')).length }}<i class="fas fa-wave-square" style="padding-left: 5px; padding-right: 25px"></i>
+                <span v-html="vehicleGeofences(scope.row)"></span>
               </template>
 
-            </el-table-column>
-            <el-table-column v-if="isInorOutGeofence(props.row)" label="">
-              <!--template slot-scope="scope">
-                <el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
-                  <el-button
-                    size="small"
-                    class="alertFormButton"
-                    type="primary"
-                    @click="handleAssociateGeofences(scope.row, props.row)"
-                  ><i class="fas fa-map-marked"></i></el-button>
-                </el-tooltip>
-              </template-->
             </el-table-column>
           </el-table>
         </template>
@@ -335,6 +321,8 @@ export default {
         { value: alertType.deviceOverspeed, text: this.$t('settings.alert_deviceOverspeed') },
         { value: alertType.ignitionOn, text: this.$t('settings.alert_ignitionOn') },
         { value: alertType.ignitionOff, text: this.$t('settings.alert_ignitionOff') },
+        { value: alertType.deviceFuelDrop, text: this.$t('settings.alert_deviceFuelDrop') },
+        { value: alertType.driverChanged, text: this.$t('settings.alert_driverChanged') },
         { value: alertType.alarmSOS, text: this.$t('settings.alert_sos') },
         { value: alertType.alarmPowerCut, text: this.$t('settings.alert_powerCut') },
         { value: alertType.alarmTow, text: this.$t('settings.alert_tow') },
@@ -349,7 +337,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['alerts', 'geofences']),
+    ...mapGetters(['alerts', 'geofences', 'groups']),
     isMobile() { return lnglat.isMobile() },
     devices: function() {
       return vm.$store.getters.devices.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)
@@ -560,7 +548,7 @@ export default {
       } else {
         const alert = this.selectedAlert.notification
         alert.always = this.allVehicles.length === 1
-        alert.notificators = this.notificatorsGroup.toString()
+        alert.notificators = Array.from(new Set(this.notificatorsGroup)).join(',')
 
         traccar.updateAlert(alert.id, alert, this.alertUpdated)
       }
@@ -589,6 +577,10 @@ export default {
           traccar.addPermission(permission, function() { })
         })
       }
+      if (newAlert.type === alertType.deviceFuelDrop) {
+        this.addFuelDropThreshold(newAlert)
+      }
+
       this.$message({
         type: 'success',
         message: this.$t('settings.alert_created')
@@ -596,42 +588,40 @@ export default {
       this.clearFormData()
       this.$store.dispatch('user/fetchAlerts')
     },
-    alertUpdated: function(updatedAlert) {
+    alertUpdated: async function(updatedAlert) {
       const self = this
       if (updatedAlert.always === false) {
-        this.selectedAlert.devices.forEach(v => {
+        for (const v of this.selectedAlert.devices) {
           const permission = {
             deviceId: v.data.id,
             notificationId: updatedAlert.id
           }
-          traccar.deletePermission(permission, function() { })
-        })
+          await traccar.deletePermission(permission, function() {
+          })
+        }
 
         const alert = this.alerts.find(a => a.notification.id === updatedAlert.id)
-
         alert.devices = []
         this.selectedDevices.forEach(id => {
           this.$log.debug(updatedAlert)
           if (updatedAlert.always === false) {
             const d = self.devices.find(d => d.id === id)
-            if (updatedAlert.type === 'geofenceExit' || updatedAlert.type === 'geofenceEnter') {
-              traccar.geofencesByDevice(id, function(geofences) {
-                alert.devices.push({ data: d, geofences: geofences })
-              })
-            } else {
-              alert.devices.push({ data: d })
-            }
+            alert.devices.push({ data: d })
           }
         })
 
         // Connect device <-> notification
-        this.selectedDevices.forEach(v => {
+        for (const v of this.selectedDevices) {
           const permission = {
             deviceId: v,
             notificationId: updatedAlert.id
           }
-          traccar.addPermission(permission, function() { })
-        })
+          await traccar.addPermission(permission, function() {
+          })
+        }
+      }
+      if (updatedAlert.type === alertType.deviceFuelDrop) {
+        await this.addFuelDropThreshold(updatedAlert)
       }
       this.$message({
         type: 'success',
@@ -639,6 +629,25 @@ export default {
       })
 
       this.clearFormData()
+    },
+    async addFuelDropThreshold(alert) {
+      const self = this
+      if (alert.always === false) {
+        for (const id of this.selectedDevices) {
+          const d = self.devices.find(d => d.id === id)
+          if (d.position && d.position.attributes.fuel && !d.attributes.fuelDropThreshold) {
+            d.attributes.fuelDropThreshold = 20
+            await traccar.updateDevice(d.id, d)
+          }
+        }
+      } else {
+        for (const d of this.devices) {
+          if (d.position && d.position.attributes.fuel && !d.attributes.fuelDropThreshold) {
+            d.attributes.fuelDropThreshold = 20
+            await traccar.updateDevice(d.id, d)
+          }
+        }
+      }
     },
     handleEdit(row) {
       this.isNewAlert = false
@@ -651,7 +660,7 @@ export default {
       }
 
       const notificators = row.notification.notificators.split(',')
-      notificators.forEach(n => this.notificatorsGroup.push(n))
+      this.notificatorsGroup.push(...new Set(notificators))
 
       this.selectedGeofences = []
 
@@ -696,6 +705,37 @@ export default {
       } else {
         return 'font-size: 14px'
       }
+    },
+    vehicleGeofences(row) {
+      const self = this
+      this.$log.debug(row)
+      const geofencesIds = []
+      const group = this.groups.find(g => g.id === row.data.groupId)
+      geofencesIds.push(...row.data.geofenceIds)
+      if (group && group.geofences) {
+        this.$log.debug(group.geofences)
+        geofencesIds.push(...group.geofences.geofences)
+        geofencesIds.push(...group.geofences.pois)
+        geofencesIds.push(...group.geofences.linegeofences)
+      }
+
+      this.$log.debug(geofencesIds)
+
+      const vehicleGeofences = []
+      geofencesIds.forEach(id => {
+        const geofence = self.geofences.find(g => g.id === id)
+        if (!vehicleGeofences.includes(geofence)) {
+          vehicleGeofences.push(geofence)
+        }
+      })
+
+      const polygon = vehicleGeofences.filter(g => g.area.startsWith('POLYGON')).length
+      const poi = vehicleGeofences.filter(g => g.area.startsWith('CIRCLE')).length
+      const line = vehicleGeofences.filter(g => g.area.startsWith('LINESTRING')).length
+
+      return polygon.toString() + '<i class="fas fa-draw-polygon" style="padding-left: 5px; padding-right: 25px"></i>' +
+        poi.toString() + '<i class="fas fa-map-marker-alt" style="padding-left: 5px; padding-right: 25px"></i>' +
+        line.toString() + '<i class="fas fa-wave-square" style="padding-left: 5px; padding-right: 25px"></i>'
     }
   }
 }

@@ -522,17 +522,6 @@ export default {
         this.$log.error(e)
       }
     },
-    showHideDevices: function(show) {
-      if (!show) {
-        this.$static.map.setLayoutProperty(consts.vehiclesLayer, 'visibility', 'none')
-        this.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', 'none')
-      } else {
-        this.$static.map.setLayoutProperty(consts.vehiclesLayer, 'visibility', 'visible')
-        if (this.showLabels) {
-          this.$static.map.setLayoutProperty(consts.vehiclesLayer + 'labels', 'visibility', 'visible')
-        }
-      }
-    },
     addControls: function() {
       const map = this.$static.map
       this.$log.debug('adding mapcontrols...')
@@ -578,9 +567,6 @@ export default {
       } else {
         Vue.$log.debug('ignoring moveend', this.isPlaying)
       }
-    },
-    onPitch: function() {
-      this.showHideDevices(this.$static.map.getPitch() === 0)
     },
     subscribeEvents() {
       const self = this
@@ -645,14 +631,14 @@ export default {
     },
     unsubscribeEvents() {
       this.$static.map.off('load', this.onMapLoad)
-      this.$static.map.off('touchstart', consts.vehiclesLayer, this.onTouchUnclustered)
-      this.$static.map.off('click', consts.vehiclesLayer, this.onClickTouchUnclustered)
+      this.$static.map.off('touchstart', vehiclesLayer, this.onTouchUnclustered)
+      this.$static.map.off('click', vehiclesLayer, this.onClickTouchUnclustered)
       this.$static.map.off('touchstart', 'clusters', this.onClickTouch)
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
-      this.$static.map.off('mouseenter', consts.vehiclesLayer, this.mouseEnter)
-      this.$static.map.off('mouseleave', consts.vehiclesLayer, this.mouseLeave)
+      this.$static.map.off('mouseenter', vehiclesLayer, this.mouseEnter)
+      this.$static.map.off('mouseleave', vehiclesLayer, this.mouseLeave)
       this.$static.map.off('touchstart', 'pois', this.onClickTouchPois)
       this.$static.map.off('click', 'pois', this.onClickTouchPois)
       this.$static.map.off('mouseenter', 'pois', this.mouseEnter)
@@ -697,8 +683,8 @@ export default {
       }
     },
     onData(e) {
-      if (e.sourceId !== lnglat.positionsSource || !e.isSourceLoaded) return
-      layerManager.refreshLayers()
+      // if (!e.isSourceLoaded) return
+      // layerManager.refreshLayers()
     },
     onTouchUnclustered: function(e) {
       this.$log.debug('touchUnclustered', e)
@@ -806,12 +792,12 @@ export default {
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
             vehicles3d.updateCoords(feature)
-            layerManager.refreshLayers()
           }
           this.updateDeviceAndFeature(feature, device, position)
           vehicles3d.updateColor(feature)
         }
       }
+      layerManager.refreshLayers()
     },
     getMatch: function(coordinates, radius, route, timestamps, feature, position) {
       const self = this

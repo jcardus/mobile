@@ -13,7 +13,7 @@ function initSurvey(token) {
 function initFacebookChat() {
   Vue.use(VueFbCustomerChat, {
     page_id: 344629353112186,
-    locale: 'es_CL'
+    locale: 'es_ES'
   })
 }
 

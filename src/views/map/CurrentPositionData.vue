@@ -77,6 +77,7 @@ import * as helpers from '@turf/helpers'
 import bboxPolygon from '@turf/bbox-polygon'
 import bbox from '@turf/bbox'
 import { checkFuelThresholds } from '@/utils/device'
+import { removeAdd3dLayer } from '@/views/map/mapbox/LayerManager'
 
 export default {
   name: 'CurrentPositionData',
@@ -304,7 +305,7 @@ export default {
         serverBus.$emit('message', this.$t('route.nodata'))
       }
       Vue.$log.debug(this.trips)
-      lnglat.removeAdd3dLayer()
+      removeAdd3dLayer()
       this.loadingRoutes = false
     },
     onPositionsError() {

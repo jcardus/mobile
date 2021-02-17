@@ -17,6 +17,7 @@
           <el-tooltip :content="$t('vehicleTable.all_vehicles')" placement="bottom">
             <el-button
               id="btnAll"
+              class="fixMobile"
               :round="true"
               :size="buttonSize"
               @click="handleFilterState(null)"
@@ -26,6 +27,7 @@
           <el-tooltip :content="$t('vehicleTable.moving_vehicles')" placement="bottom">
             <el-button
               id="btnMoving"
+              class="fixMobile"
               type="success"
               :round="true"
               :size="buttonSize"
@@ -36,6 +38,7 @@
           <el-tooltip :content="$t('vehicleTable.idle_vehicles')" placement="bottom">
             <el-button
               id="btnIdle"
+              class="fixMobile"
               type="warning"
               :round="true"
               :size="buttonSize"
@@ -46,6 +49,7 @@
           <el-tooltip :content="$t('vehicleTable.stopped_vehicles')" placement="bottom">
             <el-button
               id="btnOff"
+              class="fixMobile"
               type="danger"
               :round="true"
               :size="buttonSize"
@@ -56,6 +60,7 @@
           <el-tooltip :content="$t('vehicleTable.disconnected_vehicles')" placement="bottom">
             <el-button
               id="btnUnknown"
+              class="fixMobile"
               type="info"
               :round="true"
               :size="buttonSize"
@@ -328,11 +333,6 @@ export default {
     }
   },
   mounted() {
-    document.getElementById('btnMoving').addEventListener(event.touchstart, this.filterStateOn)
-    document.getElementById('btnOff').addEventListener(event.touchstart, this.filterStateOff)
-    document.getElementById('btnIdle').addEventListener(event.touchstart, this.filterStateIdle)
-    document.getElementById('btnAll').addEventListener(event.touchstart, this.filterStateAll)
-    document.getElementById('btnUnknown').addEventListener(event.touchstart, this.filterStateUnknown)
     serverBus.$on(event.deviceSelectedOnMap, this.deviceSelectedOnMap)
     serverBus.$on(event.showRoutesChanged, this.showRoutesChanged)
   },
@@ -478,6 +478,11 @@ export default {
 <style lang="scss">
   @import '../../styles/element-variables.scss';
 
+  @media screen and (max-width: 768px) {
+    .fixMobile {
+      padding: 1px !important
+    }
+  }
   .roadIcon {
     width: 20px;
     color: black

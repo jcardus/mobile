@@ -54,6 +54,21 @@ export function setLanguage(lang) {
     Vue.config.lang = language
     Vue.moment.locale(language)
     moment.locale(language)
+    if (process.env.NODE_ENV === 'production') {
+      switch (language) {
+        case 'es':
+          // eslint-disable-next-line no-undef
+          ELEMENT.locale(ELEMENT.lang.es)
+          break
+        case 'pt':
+          // eslint-disable-next-line no-undef
+          ELEMENT.locale(ELEMENT.lang.pt)
+          break
+        default:
+          // eslint-disable-next-line no-undef
+          ELEMENT.locale(ELEMENT.lang.en)
+      }
+    }
   }
 }
 

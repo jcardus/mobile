@@ -22,7 +22,7 @@ export function getServerHost() {
   if (isDevEnv()) {
     return 'traccar-dev.us-east-1.elasticbeanstalk.com'
   }
-  return !isSafari()
+  return (!isSafari() || hostName === 'localhost')
     ? 'api.pinme.io'
     : 'ws.' + hostName
 }

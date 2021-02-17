@@ -82,6 +82,13 @@ function refreshLayersVisibility() {
   setVisible(buildings3d, store.state.map.show3dBuildings)
 }
 
+export function removeAdd3dLayer() {
+  if (store.getters.vehicles3dEnabled) {
+    vm.$static.map.removeLayer(vehicles3d.id)
+    vm.$static.map.addLayer(vehicles3d)
+  }
+}
+
 export default {
   updateFeature(feature, position) {
     feature.properties = { ...feature.properties, ...position }

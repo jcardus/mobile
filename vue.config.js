@@ -5,8 +5,8 @@ const fs = require('fs')
 const packageJson = fs.readFileSync('./package.json')
 const version = JSON.parse(packageJson).version || 0
 const webpack = require('webpack')
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin')
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -93,7 +93,7 @@ module.exports = {
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
-  productionSourceMap: true,
+  productionSourceMap: false,
   devServer: {
     disableHostCheck: true,
     https: false,
@@ -107,14 +107,17 @@ module.exports = {
   configureWebpack: () => {
     if (process.env.NODE_ENV === 'production') {
       return {
+        externals: {
+          three: 'THREE',
+          'element-ui': 'Element',
+          vue: 'Vue',
+          'mapbox-gl': 'mapboxgl'
+        },
         plugins: [
           new webpack.DefinePlugin({
             'process.mode': '"' + process.env.ENV + '"',
             'process.env': {
               PACKAGE_VERSION: '"' + version + '"' }}),
-          new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'async'
-          }),
           new ReplaceInFileWebpackPlugin([{
             dir: 'dist',
             files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js'],
@@ -122,7 +125,8 @@ module.exports = {
               search: /version/ig,
               replace: version
             }]
-          }])
+          }]),
+          new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] })
         ],
         name: name,
         resolve: {
@@ -136,10 +140,7 @@ module.exports = {
         plugins: [
           new webpack.DefinePlugin({
             'process.env': {
-              PACKAGE_VERSION: '"' + version + '"' }}),
-          new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'async'
-          })
+              PACKAGE_VERSION: '"' + version + '"' }})
         ],
         name: name,
         resolve: {
@@ -149,27 +150,6 @@ module.exports = {
         }
       }
     }
-  },
-  chainWebpack(config) {
-    config
-      // https://webpack.js.org/configuration/devtool/#development
-      .when(process.env.NODE_ENV === 'development',
-        config => config.devtool('eval-source-map')
-      )
-    config
-      .when(process.env.NODE_ENV !== 'development',
-        config => {
-          config.devtool('source-map')
-        }
-      )
-    config.plugins.delete('progress')
-    // optionally replace with another progress output plugin
-    // `npm i -D simple-progress-webpack-plugin` to use
-    config.plugin('simple-progress-webpack-plugin').use(require.resolve('simple-progress-webpack-plugin'), [
-      {
-        format: 'verbose' // options are minimal, compact, expanded, verbose
-      }
-    ])
   },
   pages: {
     index: {
