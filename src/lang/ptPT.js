@@ -340,6 +340,7 @@ export default {
     report_periodicity_daily: 'Diariamente',
     report_periodicity_weekly: 'Semanalmente',
     report_periodicity_monthly: 'Mensalmente',
+    report_by_group: 'Receber um email para cada grupo de veículos',
     uniqueId_duplicated: 'Chave RFID duplicada!',
     pois_title: 'POIs',
     add: 'Adicionar',

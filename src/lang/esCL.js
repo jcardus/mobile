@@ -326,6 +326,7 @@ export default {
     report_periodicity_daily: 'Recibe diariamente',
     report_periodicity_weekly: 'Recibe semanalmente',
     report_periodicity_monthly: 'Recibe mensualmente',
+    report_by_group: 'Reciba un e-mail para cada grupo de vehículos',
     uniqueId_duplicated: 'RFID Key duplicated!',
     pois_title: 'POIs',
     add: 'Adicionar',
