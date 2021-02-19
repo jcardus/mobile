@@ -383,10 +383,11 @@ const actions = {
                   const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
                   if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
                     traccar.geofencesByDevice(d.id, function(geofences) {
-                      alert.devices.push({ data: d, geofences: geofences })
+                      d.geofences = geofences
+                      alert.devices.push(d)
                     })
                   } else {
-                    alert.devices.push({ data: d })
+                    alert.devices.push(d)
                   }
                 })
               })
@@ -398,10 +399,11 @@ const actions = {
               state.devices.forEach(d => {
                 if (a.notification.type === 'geofenceExit' || a.notification.type === 'geofenceEnter') {
                   traccar.geofencesByDevice(d.id, function(geofences) {
-                    a.devices.push({ data: d, geofences: geofences })
+                    d.geofences = geofences
+                    a.devices.push(d)
                   })
                 } else {
-                  a.devices.push({ data: d })
+                  a.devices.push(d)
                 }
               })
             }

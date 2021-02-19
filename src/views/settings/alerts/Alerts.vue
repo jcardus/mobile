@@ -71,10 +71,11 @@
             highlight-current-row
             :data="props.row.devices"
             :show-header="false"
+            cell-class-name="cellInfo"
           >
             <el-table-column
               v-if="isInorOutGeofence(props.row)"
-              prop="geofences"
+              prop="id"
               sortable=""
               width="50"
             >
@@ -85,25 +86,32 @@
             </el-table-column>
             <el-table-column
               v-if="isDeviceOverspeed(props.row)"
-              prop="data.attributes.speedLimit"
+              prop="attributes.speedLimit"
               sortable=""
               width="50"
             >
               <template slot-scope="scope">
                 <el-tooltip :content="$t('settings.alert_overspeed_warning')" placement="top">
-                  <i v-if="scope.row.data.attributes.speedLimit === 0 || !scope.row.data.attributes.speedLimit" class="fas fa-exclamation-triangle"></i></el-tooltip>
+                  <i v-if="scope.row.attributes.speedLimit === 0 || !scope.row.attributes.speedLimit" class="fas fa-exclamation-triangle"></i></el-tooltip>
               </template>
             </el-table-column>
             <el-table-column
-              prop="data.name"
+              prop="name"
               label="Vehicles"
               sortable=""
             >
             </el-table-column>
             <el-table-column
               v-if="isDeviceOverspeed(props.row)"
-              prop="data.attributes.speedLimit"
+              prop="attributes.speedLimit"
               :formatter="alertSpeedRenderer"
+              sortable=""
+            >
+            </el-table-column>
+            <el-table-column
+              v-if="isDeviceFuelDrop(props.row)"
+              prop="attributes.fuelDropThreshold"
+              :formatter="fuelDropThreasholdRenderer"
               sortable=""
             >
             </el-table-column>
@@ -115,7 +123,6 @@
               <template slot-scope="scope">
                 <span v-html="vehicleGeofences(scope.row)"></span>
               </template>
-
             </el-table-column>
           </el-table>
         </template>
@@ -254,6 +261,9 @@ export default {
     isDeviceOverspeed: function(row) {
       return row.notification.type === alertType.deviceOverspeed
     },
+    isDeviceFuelDrop: function(row) {
+      return row.notification.type === alertType.deviceFuelDrop
+    },
     isInorOutGeofence: function(row) {
       return row.notification.type === alertType.geofenceExit || row.notification.type === alertType.geofenceEnter
     },
@@ -266,6 +276,13 @@ export default {
     alertSpeedRenderer(row, column, cellValue) {
       if (cellValue) {
         return Math.round(cellValue * 1.85200) + ' Km/h'
+      } else {
+        return ''
+      }
+    },
+    fuelDropThreasholdRenderer(row, column, cellValue) {
+      if (cellValue) {
+        return cellValue + '%'
       } else {
         return ''
       }
@@ -350,7 +367,7 @@ export default {
       if (updatedAlert.always === false) {
         for (const v of this.selectedAlert.devices) {
           const permission = {
-            deviceId: v.data.id,
+            deviceId: v.id,
             notificationId: updatedAlert.id
           }
           await traccar.deletePermission(permission, function() {
@@ -363,7 +380,7 @@ export default {
           this.$log.debug(updatedAlert)
           if (updatedAlert.always === false) {
             const d = self.devices.find(d => d.id === id)
-            alert.devices.push({ data: d })
+            alert.devices.push(d)
           }
         })
 
@@ -413,7 +430,7 @@ export default {
       if (row.notification.always) {
         this.allVehicles.push('always')
       } else {
-        row.devices.forEach(d => this.selectedDevices.push(d.data.id))
+        row.devices.forEach(d => this.selectedDevices.push(d.id))
       }
 
       const notificators = row.notification.notificators.split(',')
@@ -467,7 +484,7 @@ export default {
       const self = this
       this.$log.debug(row)
       const geofencesIds = []
-      const group = this.groups.find(g => g.id === row.data.groupId)
+      const group = this.groups.find(g => g.id === row.groupId)
       if (group && group.geofences) {
         this.$log.debug(group.geofences)
         geofencesIds.push(...group.geofences.geofences)
@@ -501,6 +518,9 @@ export default {
 <style lang="scss">
   @import '../../../styles/element-variables.scss';
 
+  .cellInfo {
+    font-size: 12px;
+  }
   .alertFormButton {
     float: right;
     margin-right: 10px;
