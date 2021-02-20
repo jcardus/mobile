@@ -2,7 +2,7 @@
   <div>
     <h3>{{ $t('settings.automatic_reports') }}</h3>
     <el-form ref="user" :model="user" label-width="auto">
-      <div>
+      <div class="reportType">
         <el-tooltip :content="$t('profile.inactive_vehicles_email_tooltip')">
           <el-switch
             v-model="inactiveVehiclesEmail"
@@ -16,7 +16,7 @@
       <div class="reportOptions">
         <span v-if="inactiveVehiclesEmail">{{ $t('profile.inactive_vehicles_email_tooltip') }}</span>
       </div>
-      <div>
+      <div class="reportType">
         <el-tooltip class="item" :content="$t('settings.activate_automatic_trip_report')">
           <el-switch
             v-model="trip_report.isactive"
@@ -26,14 +26,17 @@
           ></el-switch>
         </el-tooltip>
       </div>
-      <div class="reportOptions">
-        <el-radio-group v-if="trip_report.isactive" v-model="trip_report.periodicity">
-          <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
-        </el-radio-group>
+      <div v-if="trip_report.isactive" class="reportOptions">
+        <div class="periodicityOptions">
+          <el-radio-group v-model="trip_report.periodicity">
+            <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+            <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+            <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          </el-radio-group>
+        </div>
+        <div><el-checkbox v-model="trip_report.byGroup" @change="dirty=true">{{ $t('settings.report_by_group') }}</el-checkbox></div>
       </div>
-      <div>
+      <div class="reportType">
         <el-tooltip class="item" :content="$t('settings.activate_automatic_location_report')">
           <el-switch
             v-model="location_report.isactive"
@@ -43,14 +46,17 @@
           ></el-switch>
         </el-tooltip>
       </div>
-      <div class="reportOptions">
-        <el-radio-group v-if="location_report.isactive" v-model="location_report.periodicity">
-          <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
-        </el-radio-group>
+      <div v-if="location_report.isactive" class="reportOptions">
+        <div class="periodicityOptions">
+          <el-radio-group v-model="location_report.periodicity">
+            <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+            <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+            <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          </el-radio-group>
+        </div>
+        <div><el-checkbox v-model="location_report.byGroup" @change="dirty=true">{{ $t('settings.report_by_group') }}</el-checkbox></div>
       </div>
-      <div>
+      <div class="reportType">
         <el-tooltip class="item" :content="$t('settings.activate_automatic_zone_report')">
           <el-switch
             v-model="zone_report.isactive"
@@ -60,14 +66,17 @@
           ></el-switch>
         </el-tooltip>
       </div>
-      <div class="reportOptions">
-        <el-radio-group v-if="zone_report.isactive" v-model="zone_report.periodicity">
-          <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
-        </el-radio-group>
+      <div v-if="zone_report.isactive" class="reportOptions">
+        <div class="periodicityOptions">
+          <el-radio-group v-model="zone_report.periodicity">
+            <el-radio label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+            <el-radio label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+            <el-radio label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          </el-radio-group>
+        </div>
+        <div><el-checkbox v-model="zone_report.byGroup" @change="dirty=true">{{ $t('settings.report_by_group') }}</el-checkbox></div>
       </div>
-      <div>
+      <div class="reportType">
         <el-tooltip class="item" :content="$t('settings.activate_automatic_speeding_report')">
           <el-switch
             v-model="speeding_report.isactive"
@@ -77,14 +86,17 @@
           ></el-switch>
         </el-tooltip>
       </div>
-      <div class="reportOptions">
-        <el-radio-group v-if="speeding_report.isactive" v-model="speeding_report.periodicity">
-          <el-radio value="daily" label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio value="weekly" label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
-        </el-radio-group>
+      <div v-if="speeding_report.isactive" class="reportOptions">
+        <div class="periodicityOptions">
+          <el-radio-group v-model="speeding_report.periodicity">
+            <el-radio value="daily" label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+            <el-radio value="weekly" label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+            <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          </el-radio-group>
+        </div>
+        <div><el-checkbox v-model="speeding_report.byGroup" @change="dirty=true">{{ $t('settings.report_by_group') }}</el-checkbox></div>
       </div>
-      <div v-if="devicesWithFuelSensor">
+      <div v-if="devicesWithFuelSensor" class="reportType">
         <el-tooltip class="item" :content="$t('settings.activate_automatic_refueling_report')">
           <el-switch
             v-model="refueling_report.isactive"
@@ -94,12 +106,15 @@
           ></el-switch>
         </el-tooltip>
       </div>
-      <div v-if="devicesWithFuelSensor" class="reportOptions">
-        <el-radio-group v-if="refueling_report.isactive" v-model="refueling_report.periodicity">
-          <el-radio value="daily" label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
-          <el-radio value="weekly" label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
-          <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
-        </el-radio-group>
+      <div v-if="devicesWithFuelSensor && refueling_report.isactive" class="reportOptions">
+        <div class="periodicityOptions">
+          <el-radio-group v-model="refueling_report.periodicity">
+            <el-radio value="daily" label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+            <el-radio value="weekly" label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+            <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          </el-radio-group>
+        </div>
+        <div><el-checkbox v-model="refueling_report.byGroup" @change="dirty=true">{{ $t('settings.report_by_group') }}</el-checkbox></div>
       </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -125,23 +140,28 @@ export default {
       inactiveVehiclesEmail: false,
       trip_report: {
         isactive: false,
-        periodicity: 'daily'
+        periodicity: 'daily',
+        byGroup: false
       },
       location_report: {
         isactive: false,
-        periodicity: 'daily'
+        periodicity: 'daily',
+        byGroup: false
       },
       zone_report: {
         isactive: false,
-        periodicity: 'daily'
+        periodicity: 'daily',
+        byGroup: false
       },
       speeding_report: {
         isactive: false,
-        periodicity: 'daily'
+        periodicity: 'daily',
+        byGroup: false
       },
       refueling_report: {
         isactive: false,
-        periodicity: 'daily'
+        periodicity: 'daily',
+        byGroup: false
       }
     }
   },
@@ -211,8 +231,15 @@ export default {
 <style scoped lang="scss">
   @import '../../../styles/element-variables.scss';
 
+  .reportType{
+    margin-top:10px;
+    margin-bottom: 10px;
+  }
   .reportOptions{
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+  .periodicityOptions {
+    margin-bottom: 5px;
   }
 </style>

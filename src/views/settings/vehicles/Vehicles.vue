@@ -65,6 +65,41 @@
           </div>
         </div>
       </div>
+      <div v-if="isOpenAssociateGeofencesForm">
+        <div class="overlay">
+          <div class="modal">
+            <h2>{{ $t('settings.vehicle_associate_geofences') }}</h2>
+            <el-form>
+              <el-form-item>
+                <el-transfer
+                  v-model="vehicleGeofences"
+                  filterable
+                  :filter-placeholder="$t('settings.search')"
+                  :titles="[$t('settings.geofences'), $t('settings.transfer_selected')]"
+                  :props="{
+                    key: 'id',
+                    label: 'name'
+                  }"
+                  :data="geofences"
+                >
+                </el-transfer>
+              </el-form-item>
+            </el-form>
+            <el-button
+              type="info"
+              class="formButton"
+              size="small"
+              @click="handleCancelAssociateGeofencesForm"
+            >{{ $t('settings.form_cancel') }}</el-button>
+            <el-button
+              type="success"
+              class="formButton"
+              size="small"
+              @click="handleSubmitAssociateGeofencesForm"
+            >{{ $t('settings.form_save') }}</el-button>
+          </div>
+        </div>
+      </div>
     </transition>
 
     <el-table
@@ -123,6 +158,14 @@
           <el-button :loading="downloadLoading" icon="el-icon-document" type="primary" @click="handleDownload">Excel</el-button>
         </template>
         <template slot-scope="scope">
+          <el-tooltip :content="$t('settings.vehicle_associate_geofences')" placement="top">
+            <el-button
+              size="small"
+              type="primary"
+              class="formButton"
+              @click="handleAssociateGeofences(scope.row)"
+            ><i class="fas fa-map-marked"></i></el-button>
+          </el-tooltip>
           <el-tooltip :content="$t('settings.edit')" placement="top">
             <el-button
               size="small"
@@ -154,12 +197,14 @@ export default {
     return {
       count: 10,
       isOpenVehicleForm: false,
+      isOpenAssociateGeofencesForm: false,
       selectedVehicle: null,
       vehicleName: '',
       vehicleModel: '',
       vehicleSpeedLimit: 0,
       vehicleTotalKms: 0,
       vehicleFuelTankCapacity: 0,
+      vehicleGeofences: [],
       selectedGroup: null,
       selectedCategory: null,
       search: '',
@@ -175,7 +220,7 @@ export default {
         (data.model && data.model.toLowerCase().includes(this.search.toLowerCase()))
       )
     },
-    ...mapGetters(['groups']),
+    ...mapGetters(['groups', 'geofences']),
     isMobile() {
       return lnglat.isMobile()
     },
@@ -256,6 +301,32 @@ export default {
         this.downloadLoading = false
       })
     },
+    handleCancelAssociateGeofencesForm() {
+      this.isOpenAssociateGeofencesForm = false
+    },
+    async handleSubmitAssociateGeofencesForm() {
+      Vue.$log.debug(this.vehicleGeofences)
+      for (const g of this.selectedVehicle.geofences) {
+        if (!this.vehicleGeofences.includes(g.id)) {
+          const permission = {
+            deviceId: this.selectedVehicle.id,
+            geofenceId: g.id
+          }
+          await traccar.deletePermission(permission)
+        }
+      }
+      for (const gId of this.vehicleGeofences) {
+        const geofence = this.selectedVehicle.geofences.find(g => g.id === gId)
+        if (!geofence) {
+          const permission = {
+            deviceId: this.selectedVehicle.id,
+            geofenceId: gId
+          }
+          await traccar.addPermission(permission)
+        }
+      }
+      this.isOpenAssociateGeofencesForm = false
+    },
     handleCancelVehicleForm() {
       this.isOpenVehicleForm = false
       this.clearFormData()
@@ -318,6 +389,16 @@ export default {
       serverBus.$emit('deviceChanged', this.selectedVehicle)
       this.clearFormData()
     },
+    handleAssociateGeofences(row) {
+      const self = this
+      this.selectedVehicle = row
+      traccar.geofencesByDevice(row.id, function(result) {
+        Vue.$log.debug(result)
+        self.selectedVehicle.geofences = result
+        self.vehicleGeofences = result.map(g => g.id)
+        self.isOpenAssociateGeofencesForm = true
+      })
+    },
     handleEdit(row) {
       const p = this.findFeatureByDeviceId(row.id)
       this.selectedVehicle = row
@@ -367,6 +448,10 @@ export default {
 <style lang="scss">
   @import '../../../styles/element-variables.scss';
 
+  .el-form-item {
+    margin-bottom: 15px
+  }
+
   .form-item-block {
     width: 100%;
     display: table;
@@ -392,7 +477,7 @@ export default {
     margin-right: 10px;
   }
   .modal {
-    width: 500px;
+    width: 600px;
     margin: 0 auto;
     padding: 15px;
     background-color: #fff;
