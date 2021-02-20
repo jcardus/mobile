@@ -8,7 +8,11 @@ export function convertEvents(events, isNew) {
     return alertType.alertTypes.includes(currentAlertType)
   })
   filteredData.sort(function(a, b) {
-    return Date.parse(b.serverTime) - Date.parse(a.serverTime)
+    const diff = Date.parse(b.serverTime) - Date.parse(a.serverTime)
+    if (diff === 0) {
+      return b.id - a.id
+    }
+    return diff
   })
 
   filteredData.forEach(e => {

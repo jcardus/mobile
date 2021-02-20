@@ -57,106 +57,6 @@
           </div>
         </div>
       </div>
-      <div v-if="isOpenGeofencesForm">
-        <div class="overlay">
-          <div class="modal">
-            <h2 v-if="selectedDevice">{{ selectedDevice.name }}</h2>
-            <h2 v-else>{{ $t('settings.alert_form_all_vehicles') }}</h2>
-            <el-form>
-              <el-form-item :label="$t('settings.alert_form_geofences')">
-                <el-select
-                  v-model="selectedGeofences"
-                  style="float: left; width: 70%; height: 35px"
-                  multiple
-                  collapse-tags
-                  :placeholder="$t('settings.alert_form_geofences_placeholder')"
-                  value=""
-                >
-                  <el-option v-for="item in areaGeofences" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-                <el-tooltip content="Seleccionar Todos" placement="top">
-                  <el-button
-                    class="alertSelectButton"
-                    size="small"
-                    @click="handleSelectAll('GEOFENCE')"
-                  ><i class="fas fa-check-double"></i></el-button>
-                </el-tooltip>
-                <el-tooltip content="Remover Todos" placement="top">
-                  <el-button
-                    class="alertSelectButton"
-                    size="small"
-                    @click="handleDeselectAll('GEOFENCE')"
-                  ><i class="fas fa-times"></i></el-button>
-                </el-tooltip>
-              </el-form-item>
-              <el-form-item :label="$t('settings.alert_form_pois')">
-                <el-select
-                  v-model="selectedPOIs"
-                  style="float: left; width: 70%; height: 35px"
-                  multiple
-                  collapse-tags
-                  :placeholder="$t('settings.alert_form_pois_placeholder')"
-                  value=""
-                >
-                  <el-option v-for="item in pois" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-                <el-tooltip content="Seleccionar Todos" placement="top">
-                  <el-button
-                    class="alertSelectButton"
-                    size="small"
-                    @click="handleSelectAll('POI')"
-                  ><i class="fas fa-check-double"></i></el-button>
-                </el-tooltip>
-                <el-tooltip content="Remover Todos" placement="top">
-                  <el-button
-                    class="alertSelectButton"
-                    size="small"
-                    @click="handleDeselectAll('POI')"
-                  ><i class="fas fa-times"></i></el-button>
-                </el-tooltip>
-              </el-form-item>
-              <el-form-item :label="$t('settings.alert_form_linegeofences')">
-                <el-select
-                  v-model="selectedLineGeofences"
-                  style="float: left; width: 70%; height: 35px"
-                  multiple
-                  collapse-tags
-                  :placeholder="$t('settings.alert_form_linegeofences_placeholder')"
-                  value=""
-                >
-                  <el-option v-for="item in lineGeofences" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-                <el-tooltip content="Seleccionar Todos" placement="top">
-                  <el-button
-                    class="alertSelectButton"
-                    size="small"
-                    @click="handleSelectAll('LINE')"
-                  ><i class="fas fa-check-double"></i></el-button>
-                </el-tooltip>
-                <el-tooltip content="Remover Todos" placement="top">
-                  <el-button
-                    class="alertSelectButton"
-                    size="small"
-                    @click="handleDeselectAll('LINE')"
-                  ><i class="fas fa-times"></i></el-button>
-                </el-tooltip>
-              </el-form-item>
-            </el-form>
-            <el-button
-              type="info"
-              class="alertFormButton"
-              size="small"
-              @click="handleCancelGeofenceForm"
-            >{{ $t('settings.alert_form_cancel') }}</el-button>
-            <el-button
-              type="success"
-              class="alertFormButton"
-              size="small"
-              @click="handleSubmitGeofenceForm"
-            >{{ $t('settings.alert_form_confirm') }}</el-button>
-          </div>
-        </div>
-      </div>
     </transition>
     <el-table
       :key="alertTableKey"
@@ -171,10 +71,11 @@
             highlight-current-row
             :data="props.row.devices"
             :show-header="false"
+            cell-class-name="cellInfo"
           >
             <el-table-column
               v-if="isInorOutGeofence(props.row)"
-              prop="geofences"
+              prop="id"
               sortable=""
               width="50"
             >
@@ -185,25 +86,32 @@
             </el-table-column>
             <el-table-column
               v-if="isDeviceOverspeed(props.row)"
-              prop="data.attributes.speedLimit"
+              prop="attributes.speedLimit"
               sortable=""
               width="50"
             >
               <template slot-scope="scope">
                 <el-tooltip :content="$t('settings.alert_overspeed_warning')" placement="top">
-                  <i v-if="scope.row.data.attributes.speedLimit === 0 || !scope.row.data.attributes.speedLimit" class="fas fa-exclamation-triangle"></i></el-tooltip>
+                  <i v-if="scope.row.attributes.speedLimit === 0 || !scope.row.attributes.speedLimit" class="fas fa-exclamation-triangle"></i></el-tooltip>
               </template>
             </el-table-column>
             <el-table-column
-              prop="data.name"
+              prop="name"
               label="Vehicles"
               sortable=""
             >
             </el-table-column>
             <el-table-column
               v-if="isDeviceOverspeed(props.row)"
-              prop="data.attributes.speedLimit"
+              prop="attributes.speedLimit"
               :formatter="alertSpeedRenderer"
+              sortable=""
+            >
+            </el-table-column>
+            <el-table-column
+              v-if="isDeviceFuelDrop(props.row)"
+              prop="attributes.fuelDropThreshold"
+              :formatter="fuelDropThreasholdRenderer"
               sortable=""
             >
             </el-table-column>
@@ -215,7 +123,6 @@
               <template slot-scope="scope">
                 <span v-html="vehicleGeofences(scope.row)"></span>
               </template>
-
             </el-table-column>
           </el-table>
         </template>
@@ -264,20 +171,11 @@
               @click="handleDelete(scope.row)"
             ><i class="fas fa-trash-alt"></i></el-button>
           </el-tooltip>
-          <!--el-tooltip :content="$t('settings.alert_associate_geofences')" placement="top">
-            <el-button
-              v-if="isInorOutGeofence(scope.row) && !isMobile"
-              size="small"
-              type="primary"
-              @click="handleAssociateGeofences(null, scope.row)"
-            ><i class="fas fa-map-marked"></i></el-button>
-          </el-tooltip-->
           <el-dropdown v-if="isMobile">
             <i class="fas fa-ellipsis-v"></i>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="handleEdit(scope.row)">{{ $t('settings.alert_edit') }}</el-dropdown-item>
               <el-dropdown-item @click.native="handleDelete(scope.row)">{{ $t('settings.alert_delete') }}</el-dropdown-item>
-              <!--el-dropdown-item v-if="isInorOutGeofence(scope.row)" @click.native="handleAssociateGeofences(null, scope.row)">{{ $t('settings.alert_associate_geofences') }}</el-dropdown-item-->
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -304,7 +202,6 @@ export default {
     return {
       alertTableKey: 0,
       isOpenAlertForm: false,
-      isOpenGeofencesForm: false,
       isNewAlert: true,
       selectedAlert: null,
       selectedType: null,
@@ -312,9 +209,6 @@ export default {
       allVehicles: [],
       selectedDevices: [],
       selectedDevice: null,
-      selectedGeofences: [],
-      selectedPOIs: [],
-      selectedLineGeofences: [],
       alertTypes: [
         { value: alertType.geofenceExit, text: this.$t('settings.alert_geofenceExit') },
         { value: alertType.geofenceEnter, text: this.$t('settings.alert_geofenceEnter') },
@@ -367,6 +261,9 @@ export default {
     isDeviceOverspeed: function(row) {
       return row.notification.type === alertType.deviceOverspeed
     },
+    isDeviceFuelDrop: function(row) {
+      return row.notification.type === alertType.deviceFuelDrop
+    },
     isInorOutGeofence: function(row) {
       return row.notification.type === alertType.geofenceExit || row.notification.type === alertType.geofenceEnter
     },
@@ -383,6 +280,13 @@ export default {
         return ''
       }
     },
+    fuelDropThreasholdRenderer(row, column, cellValue) {
+      if (cellValue) {
+        return cellValue + '%'
+      } else {
+        return ''
+      }
+    },
     devicesRenderer(row, column, cellValue) {
       if (row.notification.always) {
         return 'Todos'
@@ -393,136 +297,6 @@ export default {
     handleAddAlert() {
       this.isNewAlert = true
       this.isOpenAlertForm = !this.isOpenAlertForm
-    },
-    handleAssociateGeofences(device, alert) {
-      this.selectedAlert = alert
-      if (device) {
-        device.geofences.forEach(g => {
-          if (g.area.startsWith('CIRCLE')) {
-            this.selectedPOIs.push(g.id)
-          } else if (g.area.startsWith('LINESTRING')) {
-            this.selectedLineGeofences.push(g.id)
-          } else {
-            this.selectedGeofences.push(g.id)
-          }
-        })
-        this.selectedDevice = device.data
-      }
-
-      this.isOpenGeofencesForm = true
-    },
-    handleCancelGeofenceForm() {
-      this.isOpenGeofencesForm = false
-      this.clearFormData()
-    },
-    async handleSubmitGeofenceForm() {
-      try {
-        this.isOpenGeofencesForm = false
-        const self = this
-        if (this.selectedDevice) {
-          this.associateGeofences(this.selectedDevice)
-          this.clearFormData()
-        } else {
-          const geofencePermissionsToRemove = this.selectedAlert.devices.map(d => {
-            return d.geofences.map(geofence => {
-              if (!self.selectedGeofences.includes(geofence.id) &&
-                !self.selectedPOIs.includes(geofence.id) &&
-                !self.selectedLineGeofences.includes(geofence.id)) {
-                return {
-                  deviceId: d.data.id,
-                  geofenceId: geofence.id
-                }
-              }
-            })
-          }).flat().filter(a => a !== undefined)
-          const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
-          const geofencePermissionsToAdd = this.selectedAlert.devices.map(d => {
-            return allGeofences.map(g => {
-              return {
-                deviceId: d.data.id,
-                geofenceId: g
-              }
-            })
-          }).flat().filter(a => a !== undefined)
-          await traccar.deleteAllPermissions(geofencePermissionsToRemove)
-          await traccar.addAllPermissions(geofencePermissionsToAdd)
-          const deviceGeofences = self.geofences.filter(g => allGeofences.includes(g.id))
-          self.alerts.forEach(a => {
-            self.$log.debug('Alert:', a)
-            if (a.notification.id === self.selectedAlert.notification.id) {
-              a.devices.forEach(d => {
-                d.geofences = deviceGeofences
-              })
-            }
-          })
-        }
-      } catch (e) {
-        this.$alert(e)
-      }
-    },
-    associateGeofences(device) {
-      const self = this
-      // Disconnect current device <-> geofence
-      traccar.geofencesByDevice(device.id, function(geofences) {
-        geofences.forEach(geofence => {
-          if (!self.selectedGeofences.includes(geofence.id) &&
-            !self.selectedPOIs.includes(geofence.id) &&
-            !self.selectedLineGeofences.includes(geofence.id)) {
-            const permission = {
-              deviceId: device.id,
-              geofenceId: geofence.id
-            }
-            traccar.deletePermission(permission, function() {})
-          }
-        })
-
-        const allGeofences = self.selectedGeofences.concat(self.selectedPOIs.concat(self.selectedLineGeofences))
-
-        allGeofences.forEach(g => {
-          const permission = {
-            deviceId: device.id,
-            geofenceId: g
-          }
-          traccar.addPermission(permission, function() { })
-        })
-
-        const deviceGeofences = self.geofences.filter(g => allGeofences.includes(g.id))
-
-        self.alerts.forEach(a => {
-          if (a.notification.id === self.selectedAlert.notification.id) {
-            a.devices.forEach(d => {
-              if (d.data.id === device.id) {
-                d.geofences = deviceGeofences
-              }
-            })
-          }
-        })
-      })
-    },
-    handleSelectAll(type) {
-      if (type === 'GEOFENCE') {
-        this.selectedGeofences = []
-        this.areaGeofences.forEach(p => this.selectedGeofences.push(p.id))
-      }
-      if (type === 'POI') {
-        this.selectedPOIs = []
-        this.pois.forEach(p => this.selectedPOIs.push(p.id))
-      }
-      if (type === 'LINE') {
-        this.selectedLineGeofences = []
-        this.lineGeofences.forEach(p => this.selectedLineGeofences.push(p.id))
-      }
-    },
-    handleDeselectAll(type) {
-      if (type === 'GEOFENCE') {
-        this.selectedGeofences = []
-      }
-      if (type === 'POI') {
-        this.selectedPOIs = []
-      }
-      if (type === 'LINE') {
-        this.selectedLineGeofences = []
-      }
     },
     handleCancelAlertForm() {
       this.isOpenAlertForm = false
@@ -593,7 +367,7 @@ export default {
       if (updatedAlert.always === false) {
         for (const v of this.selectedAlert.devices) {
           const permission = {
-            deviceId: v.data.id,
+            deviceId: v.id,
             notificationId: updatedAlert.id
           }
           await traccar.deletePermission(permission, function() {
@@ -606,7 +380,7 @@ export default {
           this.$log.debug(updatedAlert)
           if (updatedAlert.always === false) {
             const d = self.devices.find(d => d.id === id)
-            alert.devices.push({ data: d })
+            alert.devices.push(d)
           }
         })
 
@@ -656,7 +430,7 @@ export default {
       if (row.notification.always) {
         this.allVehicles.push('always')
       } else {
-        row.devices.forEach(d => this.selectedDevices.push(d.data.id))
+        row.devices.forEach(d => this.selectedDevices.push(d.id))
       }
 
       const notificators = row.notification.notificators.split(',')
@@ -710,8 +484,7 @@ export default {
       const self = this
       this.$log.debug(row)
       const geofencesIds = []
-      const group = this.groups.find(g => g.id === row.data.groupId)
-      geofencesIds.push(...row.data.geofenceIds)
+      const group = this.groups.find(g => g.id === row.groupId)
       if (group && group.geofences) {
         this.$log.debug(group.geofences)
         geofencesIds.push(...group.geofences.geofences)
@@ -722,6 +495,7 @@ export default {
       this.$log.debug(geofencesIds)
 
       const vehicleGeofences = []
+      vehicleGeofences.push(...row.geofences)
       geofencesIds.forEach(id => {
         const geofence = self.geofences.find(g => g.id === id)
         if (!vehicleGeofences.includes(geofence)) {
@@ -729,13 +503,13 @@ export default {
         }
       })
 
-      const polygon = vehicleGeofences.filter(g => g.area.startsWith('POLYGON')).length
-      const poi = vehicleGeofences.filter(g => g.area.startsWith('CIRCLE')).length
-      const line = vehicleGeofences.filter(g => g.area.startsWith('LINESTRING')).length
+      const polygon = vehicleGeofences.filter(g => g.area.startsWith('POLYGON'))
+      const poi = vehicleGeofences.filter(g => g.area.startsWith('CIRCLE'))
+      const line = vehicleGeofences.filter(g => g.area.startsWith('LINESTRING'))
 
-      return polygon.toString() + '<i class="fas fa-draw-polygon" style="padding-left: 5px; padding-right: 25px"></i>' +
-        poi.toString() + '<i class="fas fa-map-marker-alt" style="padding-left: 5px; padding-right: 25px"></i>' +
-        line.toString() + '<i class="fas fa-wave-square" style="padding-left: 5px; padding-right: 25px"></i>'
+      return polygon.length.toString() + '<i class="fas fa-draw-polygon" style="padding-left: 5px; padding-right: 25px"></i>' +
+        poi.length.toString() + '<i class="fas fa-map-marker-alt" style="padding-left: 5px; padding-right: 25px"></i>' +
+        line.length.toString() + '<i class="fas fa-wave-square" style="padding-left: 5px; padding-right: 25px"></i>'
     }
   }
 }
@@ -744,6 +518,9 @@ export default {
 <style lang="scss">
   @import '../../../styles/element-variables.scss';
 
+  .cellInfo {
+    font-size: 12px;
+  }
   .alertFormButton {
     float: right;
     margin-right: 10px;
