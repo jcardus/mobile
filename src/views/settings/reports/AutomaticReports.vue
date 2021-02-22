@@ -116,6 +116,26 @@
         </div>
         <div><el-checkbox v-model="refueling_report.byGroup" @change="dirty=true">{{ $t('settings.report_by_group') }}</el-checkbox></div>
       </div>
+      <div v-if="devicesWithFuelSensor" class="reportType">
+        <el-tooltip class="item" :content="$t('settings.activate_automatic_fueldrop_report')">
+          <el-switch
+            v-model="fueldrop_report.isactive"
+            :active-text="$t('route.report_fueldrop')"
+            style="padding-right:10px"
+            @change="dirty=true"
+          ></el-switch>
+        </el-tooltip>
+      </div>
+      <div v-if="devicesWithFuelSensor && fueldrop_report.isactive" class="reportOptions">
+        <div class="periodicityOptions">
+          <el-radio-group v-model="fueldrop_report.periodicity">
+            <el-radio value="daily" label="daily" @change="dirty=true">{{ $t('settings.report_periodicity_daily') }}</el-radio>
+            <el-radio value="weekly" label="weekly" @change="dirty=true">{{ $t('settings.report_periodicity_weekly') }}</el-radio>
+            <el-radio value="monthly" label="monthly" @change="dirty=true">{{ $t('settings.report_periodicity_monthly') }}</el-radio>
+          </el-radio-group>
+        </div>
+        <div><el-checkbox v-model="fueldrop_report.byGroup" @change="dirty=true">{{ $t('settings.report_by_group') }}</el-checkbox></div>
+      </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button :loading="loading" type="primary" :disabled="!dirty" @click="submit">{{ $t('profile.user_update_button') }}</el-button>
@@ -162,6 +182,11 @@ export default {
         isactive: false,
         periodicity: 'daily',
         byGroup: false
+      },
+      fueldrop_report: {
+        isactive: false,
+        periodicity: 'daily',
+        byGroup: false
       }
     }
   },
@@ -197,6 +222,9 @@ export default {
     if (this.user.attributes.refueling_report !== undefined) {
       this.refueling_report = this.user.attributes.refueling_report
     }
+    if (this.user.attributes.fueldrop_report !== undefined) {
+      this.fueldrop_report = this.user.attributes.fueldrop_report
+    }
   },
   methods: {
     submit() {
@@ -207,6 +235,7 @@ export default {
       this.user.attributes.zone_report = this.zone_report
       this.user.attributes.speeding_report = this.speeding_report
       this.user.attributes.refueling_report = this.refueling_report
+      this.user.attributes.fueldrop_report = this.fueldrop_report
       traccar.updateUser(this.user.id, this.user
       ).then(({ data }) => {
         this.dirty = false
