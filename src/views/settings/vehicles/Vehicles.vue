@@ -40,6 +40,14 @@
                 <div class="form-item-row">
                   <el-form-item class="form-item-block-left el-input-number-fix" :label="$t('settings.vehicle_form_total_kms')">
                     <el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
+                    <el-tooltip :content="$t('settings.vehicle_form_by_date')" placement="top">
+                      <el-button
+                        circle
+                        size="small"
+                        style="margin-left: 5px"
+                        @click="handleUpdateVehicleKms()"
+                      ><i class="fa fa-calendar"></i></el-button>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item class="form-item-block-right el-input-number-fix" :label="$t('settings.vehicle_form_fuel_tank_capacity')">
                     <el-input-number v-model="vehicleFuelTankCapacity" :min="0" :precision="0" />
@@ -97,6 +105,39 @@
               size="small"
               @click="handleSubmitAssociateGeofencesForm"
             >{{ $t('settings.form_save') }}</el-button>
+          </div>
+        </div>
+      </div>
+      <div v-if="isOpenVehicleKmsForm">
+        <div class="overlay">
+          <div class="modalFormKms">
+            <h2>{{ $t('settings.vehicle_kms_form') }}</h2>
+            <el-form>
+              <el-form-item :label="$t('settings.vehicle_kms_form_date')">
+                <el-date-picker
+                  v-model="vehicleDateKms"
+                  type="datetime"
+                  :placeholder="$t('settings.vehicle_kms_form_date_placeholder')"
+                >
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item :label="$t('settings.vehicle_kms_form_total_kms')">
+                <el-input-number v-model="vehicleKms" :min="0" :precision="1" />
+              </el-form-item>
+            </el-form>
+            <el-button
+              type="info"
+              class="formButton"
+              size="small"
+              @click="handleCancelVehicleKmsForm"
+            >{{ $t('settings.form_cancel') }}</el-button>
+            <el-button
+              :loading="loading"
+              type="success"
+              class="formButton"
+              size="small"
+              @click="handleSubmitVehicleKmsForm"
+            >{{ $t('settings.form_confirm') }}</el-button>
           </div>
         </div>
       </div>
@@ -197,19 +238,23 @@ export default {
     return {
       count: 10,
       isOpenVehicleForm: false,
+      isOpenVehicleKmsForm: false,
       isOpenAssociateGeofencesForm: false,
       selectedVehicle: null,
       vehicleName: '',
       vehicleModel: '',
       vehicleSpeedLimit: 0,
       vehicleTotalKms: 0,
+      vehicleDateKms: new Date(),
+      vehicleKms: 0,
       vehicleFuelTankCapacity: 0,
       vehicleGeofences: [],
       selectedGroup: null,
       selectedCategory: null,
       search: '',
       groupsFilter: null,
-      downloadLoading: false
+      downloadLoading: false,
+      loading: false
     }
   },
   computed: {
@@ -326,6 +371,53 @@ export default {
         }
       }
       this.isOpenAssociateGeofencesForm = false
+    },
+    handleUpdateVehicleKms() {
+      this.vehicleDateKms = new Date()
+      this.vehicleDateKms.setHours(0, 0, 0, 0)
+      this.vehicleKms = 0
+      this.loading = false
+      this.isOpenVehicleForm = false
+      this.isOpenVehicleKmsForm = true
+    },
+    handleCancelVehicleKmsForm() {
+      this.isOpenVehicleKmsForm = false
+      this.isOpenVehicleForm = true
+    },
+    async handleSubmitVehicleKmsForm() {
+      this.loading = true
+      const h = this.$createElement
+
+      try {
+        const response = await traccar.summary(this.selectedVehicle.id, this.vehicleDateKms, new Date())
+        if (response.data) {
+          const incrementKms = response.data[0].distance
+
+          const vKms = Math.round(incrementKms / 1000)
+          const date = this.$moment(this.vehicleDateKms).format('YYYY-MM-DD HH:mm:ss')
+          this.loading = false
+          await this.$msgbox({
+            message: h('p', null, [
+              h('span', null, date + ' - ' + this.vehicleKms + ' kms'),
+              h('br'),
+              h('span', null, this.$t('settings.vehicle_kms_traveled') + ' ' + date + ' - ' + vKms + ' kms'),
+              h('br'),
+              h('span', null, this.$t('settings.vehicle_kms_current') + ' - ' + (this.vehicleKms + vKms) + ' kms')
+            ]),
+            title: this.$t('settings.vehicle_kms'),
+            showCancelButton: false,
+            showClose: false,
+            confirmButtonText: 'OK'
+          })
+
+          this.vehicleTotalKms = this.vehicleKms + vKms
+        }
+      } catch (e) {
+        Vue.$log.error(e)
+      }
+
+      this.isOpenVehicleKmsForm = false
+      this.isOpenVehicleForm = true
     },
     handleCancelVehicleForm() {
       this.isOpenVehicleForm = false
@@ -478,6 +570,15 @@ export default {
   }
   .modal {
     width: 600px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px 3px;
+    transition: all 0.2s ease-in;
+  }
+  .modalFormKms {
+    width: 300px;
     margin: 0 auto;
     padding: 15px;
     background-color: #fff;
