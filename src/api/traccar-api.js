@@ -11,6 +11,7 @@ const route = baseUrl + 'reports/route'
 const events = baseUrl + 'reports/events'
 const positions = baseUrl + 'positions'
 const trips = baseUrl + 'reports/trips'
+const summary = baseUrl + 'reports/summary'
 const geoFences = baseUrl + 'geofences'
 const alerts = baseUrl + 'notifications'
 const permissions = baseUrl + 'permissions'
@@ -213,6 +214,11 @@ export const traccar = {
       .catch(reason => {
         Vue.$log.error(reason)
       })
+  },
+  summary: function(deviceId, from, to) {
+    from = Vue.moment(from).startOf('day').toDate()
+    to = Vue.moment(to).endOf('day').toDate()
+    return axios.get(summary + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true })
   },
   positions(positionIds) {
     if (positionIds) {
