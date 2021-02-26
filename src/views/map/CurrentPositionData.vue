@@ -375,7 +375,7 @@ export default {
           startPos = false
           continue
         }
-        if (position.attributes.ignition || position.speed > 0) {
+        if (position.attributes.ignition || position.speed > 10) {
           continue
         }
         Vue.$log.debug('stopping trip because on default ', position)
