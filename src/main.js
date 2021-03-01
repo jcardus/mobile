@@ -25,7 +25,6 @@ import elTableInfiniteScroll from 'el-table-infinite-scroll'
 
 const AppMobile = () => import('./AppMobile')
 const App = () => import('./App')
-const GoogleLogin = () => import('./views/login/GoogleLogin')
 
 console.log('app starting...', process.env)
 
@@ -234,7 +233,7 @@ export const vm = new Vue({
   i18n,
   render: h => {
     try {
-      return h(lnglat.__isMobile() ? (window.location.pathname === '/googlelogin/' ? GoogleLogin : AppMobile) : App)
+      return h(lnglat.__isMobile() ? AppMobile : App)
     } catch (e) {
       console.error(e)
       return e

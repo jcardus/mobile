@@ -1,17 +1,12 @@
 <template>
-  <a v-if="withLink" :href="googleUrl">
-    <div class="google-btn">
-      <div class="google-icon-wrapper">
-        <img alt="" class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
-      </div>
-      <p class="btn-text"><b>Google sign in</b></p>
-    </div>
-  </a>
-  <div v-else class="google-btn">
-    <div class="google-icon-wrapper">
+  <div class="google-btn">
+    <div>
       <img alt="" class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
     </div>
-    <p class="btn-text"><b>Sign in with google</b></p>
+    <div class="btn-text"><b>
+      {{ $t('login.signInWithGoogle') }}
+    </b>
+    </div>
   </div>
 </template>
 <script>
@@ -37,44 +32,30 @@ export default {
   $google-blue: #4285f4;
   $button-active-blue: #1669F2;
 
-  .google-btn {
-    height: 42px;
-    background-color: $google-blue;
-    border-radius: 2px;
-    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
-  .google-icon-wrapper {
-    position: absolute;
-    margin-top: 1px;
-    margin-left: 1px;
-    width: 40px;
-    height: 40px;
-    border-radius: 2px;
-    background-color: $white;
-  }
   .google-icon {
-    position: absolute;
-    margin-top: 11px;
-    margin-left: 11px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 11px;
+    padding-bottom: 11px;
     width: 18px;
     height: 18px;
   }
   .btn-text {
-    margin: auto;
-    padding-left: 50px;
-    padding-right: 10px;
-    padding-top: 11px;
-    color: $white;
+    padding-left: 16px;
+    padding-right: 8px;
+    color: #808080;
     font-size: 14px;
-    letter-spacing: 0.2px;
     font-family: "Roboto",serif;
   }
-  &:hover {
-     box-shadow: 0 0 6px $google-blue;
-   }
-  &:active {
-     background: $button-active-blue;
-   }
+  .google-btn {
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.25);
+    display:flex;
+    flex-direction: row;
+    height: 40px;
+    border-radius: 2px;
+    align-items: center;
+    border: 1px solid;
+    border-color: rgba(0,0,0,.05);;
   }
-
-  @import url(https://fonts.googleapis.com/css?family=Roboto:500);
+  @import url(https://fonts.googleapis.com/css?family=Roboto);
 </style>

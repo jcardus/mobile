@@ -103,7 +103,8 @@ export default {
     login_user_disabled: 'Username is disabled',
     network_error: 'Could not connect to the server.',
     register: 'Novo utilizador?',
-    forgotPassword: 'Esqueceu a password?'
+    forgotPassword: 'Esqueceu a password?',
+    signInWithGoogle: 'Google sign in'
   },
   alerts: {
     title: 'Alerts',

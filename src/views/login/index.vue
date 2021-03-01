@@ -12,7 +12,7 @@
         <div class="parentDiv">
           <div class="loginFormDiv">
             <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-              <div class="title-container">
+              <div ref="loginRow" class="title-container">
                 <logo-svg v-if="hasSVG" class="logo"></logo-svg>
                 <img v-else class="logo" :src="logoImage" alt="">
               </div>
@@ -61,14 +61,15 @@
                   >{{ $t('login.forgotPassword') }}</el-link>
                 </el-col>
               </el-row>
-              <el-row v-if="!isCapacitor" style="margin-top: 15px;width:50%">
+              <div :style="`margin-top: 15px;width:${buttonWidth}px`">
                 <google-button />
+                <img :src="appleImageSrc" style="margin-top:10px" alt="">
                 <el-link
                   plain
                   type="primary"
                   :href="registerUrl"
                 >{{ $t('login.register') }}</el-link>
-              </el-row>
+              </div>
               <div style="padding-top: 15px">
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
               </div>
@@ -104,6 +105,8 @@ export default {
       }
     }
     return {
+      buttonWidth: 0,
+      appleImageSrc: '',
       loginForm: {
         username: '',
         password: ''
@@ -171,6 +174,9 @@ export default {
     } else if (this.loginForm.password && this.loginForm.password === '') {
       this.$refs.password.focus()
     }
+    console.log(this.$refs.loginRow.clientWidth)
+    this.buttonWidth = (this.$refs.loginRow.clientWidth / 2) >= 240 ? this.$refs.loginRow.clientWidth / 2 : 240
+    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?height=40&width=${Math.trunc(this.buttonWidth)}&locale=${navigator.language}_${navigator.language.toUpperCase()}`
   },
   methods: {
     checkCapslock({ shiftKey, key } = {}) {

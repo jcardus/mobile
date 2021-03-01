@@ -89,6 +89,7 @@ export default {
     notifications: 'Notificaciones'
   },
   login: {
+    signInWithGoogle: 'Iniciar sesión con Google',
     login_password: 'Contraseña',
     login_button: 'Iniciar',
     login_password_warn: 'La contraseña no puede tener menos de 6 dígitos',
