@@ -12,7 +12,7 @@
         <div class="parentDiv">
           <div class="loginFormDiv">
             <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-              <div class="title-container">
+              <div ref="loginRow" class="title-container">
                 <logo-svg v-if="hasSVG" class="logo"></logo-svg>
                 <img v-else class="logo" :src="logoImage" alt="">
               </div>
@@ -61,13 +61,17 @@
                   >{{ $t('login.forgotPassword') }}</el-link>
                 </el-col>
               </el-row>
-              <el-row v-if="!isCapacitor" style="margin-top: 15px;width:50%">
+              <div :style="`margin-top: 15px`">
                 <google-button />
+                <apple-button :width="buttonWidth" />
+              </div>
+              <el-row>
                 <el-link
                   plain
                   type="primary"
                   :href="registerUrl"
-                >{{ $t('login.register') }}</el-link>
+                >{{ $t('login.register') }}
+                </el-link>
               </el-row>
               <div style="padding-top: 15px">
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
@@ -88,10 +92,11 @@ import { cdnUrl } from '@/utils/consts'
 import LogoSvg from '../../layout/components/LogoSvg'
 import GoogleButton from './GoogleButton'
 import { forgotPassword, signUp } from '@/api'
+import AppleButton from '@/views/login/AppleButton'
 
 export default {
   name: 'Login',
-  components: { GoogleButton, LogoSvg },
+  components: { GoogleButton, LogoSvg, AppleButton },
   data() {
     const validateUsername = (rule, value, callback) => {
       callback()
@@ -104,6 +109,8 @@ export default {
       }
     }
     return {
+      buttonWidth: 0,
+      appleImageSrc: '',
       loginForm: {
         username: '',
         password: ''
@@ -121,9 +128,6 @@ export default {
     }
   },
   computed: {
-    isCapacitor() {
-      return location.href.startsWith('capacitor://')
-    },
     registerUrl() {
       return signUp()
     },

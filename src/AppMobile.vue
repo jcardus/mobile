@@ -66,12 +66,11 @@
           </f7-list>
           <f7-list>
             <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
-            <f7-list-item v-if="!isCapacitor">
-              <f7-link
-                :href="googleLogin"
-                external
-                style="margin: auto;"
-              ><google-button :with-link="false" @click="googleSignIn"></google-button></f7-link>
+            <google-button style="width:220px;margin:auto;"></google-button>
+            <f7-list-item>
+              <f7-link style="margin:auto;">
+                <apple-button :width="220"></apple-button>
+              </f7-link>
             </f7-list-item>
           </f7-list>
           <f7-block></f7-block>
@@ -102,10 +101,11 @@ import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
 import { getGoogleLogin } from './api'
 import * as event from './events'
+import AppleButton from '@/views/login/AppleButton'
 
 export default {
   name: 'AppMobile',
-  components: { GoogleButton, DataContainer },
+  components: { AppleButton, GoogleButton, DataContainer },
   data() {
     return {
       username: '',
@@ -286,7 +286,7 @@ export default {
     background-color: #055AE5;
     margin-left: 15px;
     margin-right: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 2px;
     color: white;
     border-radius: 20px;
   }

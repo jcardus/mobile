@@ -54,31 +54,19 @@
                   <span slot="label">
                     <i class="fas fa-address-card"></i>
                   </span>
-                  <el-form-item :label="$t('settings.drivers')">
-                    <el-select
+                  <el-form-item>
+                    <el-transfer
                       v-model="selectedDrivers"
-                      style="float: left; width: 70%; height: 35px"
-                      multiple
-                      collapse-tags
-                      :placeholder="$t('settings.group_select_drivers_placeholder')"
-                      value=""
+                      filterable
+                      :filter-placeholder="$t('settings.search')"
+                      :titles="[$t('settings.drivers'), $t('settings.transfer_selected')]"
+                      :props="{
+                        key: 'id',
+                        label: 'name'
+                      }"
+                      :data="drivers"
                     >
-                      <el-option v-for="item in drivers" :key="item.id" :label="item.name" :value="item.id" />
-                    </el-select>
-                    <el-tooltip :content="$t('settings.select_all')" placement="top">
-                      <el-button
-                        class="alertSelectButton"
-                        size="small"
-                        @click="handleSelectAll('DRIVER')"
-                      ><i class="fas fa-check-double"></i></el-button>
-                    </el-tooltip>
-                    <el-tooltip :content="$t('settings.deselect_all')" placement="top">
-                      <el-button
-                        class="alertSelectButton"
-                        size="small"
-                        @click="handleDeselectAll('DRIVER')"
-                      ><i class="fas fa-times"></i></el-button>
-                    </el-tooltip>
+                    </el-transfer>
                   </el-form-item>
                 </el-tab-pane>
                 <el-tab-pane>
@@ -353,10 +341,6 @@ export default {
         this.selectedLineGeofences = []
         this.selectedLineGeofences = this.lineGeofences.map(l => l.id)
       }
-      if (type === 'DRIVER') {
-        this.selectedDrivers = []
-        this.selectedDrivers = this.drivers.map(d => d.id)
-      }
     },
     handleDeselectAll(type) {
       if (type === 'GEOFENCE') {
@@ -367,9 +351,6 @@ export default {
       }
       if (type === 'LINE') {
         this.selectedLineGeofences = []
-      }
-      if (type === 'DRIVERS') {
-        this.selectedDrivers = []
       }
     },
     handleCancelGroupForm() {
@@ -443,19 +424,22 @@ export default {
         await traccar.updateDevice(vehicle.id, vehicle)
       }
 
-      const driversToRemove = this.selectedGroup.drivers.filter(x => !self.selectedDrivers.includes(x))
-      const driversToAdd = this.selectedDrivers.filter(x => !self.selectedGroup.drivers.includes(x))
+      const driversToRemove = this.selectedGroup.drivers.filter(id => !self.selectedDrivers.includes(id))
+      const driversToAdd = this.selectedDrivers.filter(id => !self.selectedGroup.drivers.includes(id))
 
-      const driverPermissionsToRemove = driversToRemove.map(d => {
+      Vue.$log.debug(driversToRemove)
+      Vue.$log.debug(driversToAdd)
+
+      const driverPermissionsToRemove = driversToRemove.map(id => {
         return {
           groupId: self.selectedGroup.id,
-          driverId: d
+          driverId: id
         }
       })
-      const driverPermissionsToAdd = driversToAdd.map(d => {
+      const driverPermissionsToAdd = driversToAdd.map(id => {
         return {
           groupId: self.selectedGroup.id,
-          driverId: d
+          driverId: id
         }
       })
 
