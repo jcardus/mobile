@@ -70,7 +70,9 @@
                   plain
                   type="primary"
                   :href="registerUrl"
-                >{{ $t('login.register') }}</el-link></el-row>
+                >{{ $t('login.register') }}
+                </el-link>
+              </el-row>
               <div style="padding-top: 15px">
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
               </div>
