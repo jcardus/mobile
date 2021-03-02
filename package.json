@@ -48,7 +48,7 @@
     "normalize.css": "latest",
     "nprogress": "latest",
     "odometer": "latest",
-    "three": "^0.123.0",
+    "three": "latest",
     "vue": "latest",
     "vue-fb-customer-chat": "^0.2.0",
     "vue-i18n": "^8.22.2",
