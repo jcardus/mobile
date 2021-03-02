@@ -1,7 +1,6 @@
 import Amplify from '@aws-amplify/core'
 import { Auth } from '@aws-amplify/auth'
 import { getPartnerData } from '@/utils/partner'
-import { getGoogleRedirect } from '@/api'
 
 export const awsConfig = {
   aws_project_region: 'us-east-1',
@@ -10,8 +9,8 @@ export const awsConfig = {
   aws_user_pools_id: 'us-east-1_XEJ1DMDIJ',
   aws_user_pools_web_client_id: getPartnerData().cognitoClientId,
   oauth: {
-    redirectSignIn: `https://${getGoogleRedirect()}/`,
-    redirectSignOut: `https://${getGoogleRedirect()}/`,
+    redirectSignIn: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
+    redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
     domain: 'auth.fleetmap.io',
     scope: [
       'phone',
@@ -26,5 +25,5 @@ export const awsConfig = {
 }
 
 Amplify.configure(awsConfig)
-Auth.configure(awsConfig)
+console.log(Auth.configure(awsConfig))
 

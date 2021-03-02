@@ -93,6 +93,7 @@ export default {
     logout: 'Sair'
   },
   login: {
+    signInWithGoogle: 'Iniciar sessão com a Google',
     login_password: 'Palavra-chave',
     login_button: 'Entrar',
     login_password_warn: 'A Palavra-chave não pode ter menos de 6 dígitos',

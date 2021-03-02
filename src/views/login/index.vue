@@ -61,15 +61,16 @@
                   >{{ $t('login.forgotPassword') }}</el-link>
                 </el-col>
               </el-row>
-              <div :style="`margin-top: 15px;width:${buttonWidth}px`">
+              <div :style="`margin-top: 15px`">
                 <google-button />
-                <img :src="appleImageSrc" style="margin-top:10px" alt="">
+                <apple-button :width="buttonWidth" />
+              </div>
+              <el-row>
                 <el-link
                   plain
                   type="primary"
                   :href="registerUrl"
-                >{{ $t('login.register') }}</el-link>
-              </div>
+                >{{ $t('login.register') }}</el-link></el-row>
               <div style="padding-top: 15px">
                 <el-tag size="mini" effect="plain" style="float:right">v{{ version }}</el-tag>
               </div>
@@ -89,10 +90,11 @@ import { cdnUrl } from '@/utils/consts'
 import LogoSvg from '../../layout/components/LogoSvg'
 import GoogleButton from './GoogleButton'
 import { forgotPassword, signUp } from '@/api'
+import AppleButton from '@/views/login/AppleButton'
 
 export default {
   name: 'Login',
-  components: { GoogleButton, LogoSvg },
+  components: { GoogleButton, LogoSvg, AppleButton },
   data() {
     const validateUsername = (rule, value, callback) => {
       callback()
@@ -124,9 +126,6 @@ export default {
     }
   },
   computed: {
-    isCapacitor() {
-      return location.href.startsWith('capacitor://')
-    },
     registerUrl() {
       return signUp()
     },
@@ -174,9 +173,6 @@ export default {
     } else if (this.loginForm.password && this.loginForm.password === '') {
       this.$refs.password.focus()
     }
-    console.log(this.$refs.loginRow.clientWidth)
-    this.buttonWidth = (this.$refs.loginRow.clientWidth / 2) >= 240 ? this.$refs.loginRow.clientWidth / 2 : 240
-    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?height=40&width=${Math.trunc(this.buttonWidth)}&locale=${navigator.language}_${navigator.language.toUpperCase()}`
   },
   methods: {
     checkCapslock({ shiftKey, key } = {}) {

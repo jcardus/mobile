@@ -1,16 +1,19 @@
 <template>
-  <div class="google-btn">
+  <div class="google-btn" @click="click">
     <div>
       <img alt="" class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
     </div>
-    <div class="btn-text"><b>
-      {{ $t('login.signInWithGoogle') }}
-    </b>
+    <div class="btn-text">
+      <a @click="click">
+        <b>
+          {{ $t('login.signInWithGoogle') }}
+        </b>
+      </a>
     </div>
   </div>
 </template>
 <script>
-import { getGoogleLogin } from '@/api'
+import { Auth } from '@aws-amplify/auth'
 
 export default {
   name: 'GoogleButton',
@@ -20,9 +23,9 @@ export default {
       type: Boolean
     }
   },
-  computed: {
-    googleUrl() {
-      return getGoogleLogin()
+  methods: {
+    async click() {
+      console.log(await Auth.federatedSignIn({ provider: 'Google' }))
     }
   }
 }
@@ -39,6 +42,8 @@ export default {
     padding-bottom: 11px;
     width: 18px;
     height: 18px;
+    display: inline-block;
+    vertical-align: middle;
   }
   .btn-text {
     padding-left: 16px;
@@ -48,6 +53,8 @@ export default {
     font-family: "Roboto",serif;
   }
   .google-btn {
+    width: 220px;
+    cursor:pointer;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,.25);
     display:flex;
     flex-direction: row;
