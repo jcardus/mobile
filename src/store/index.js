@@ -4,7 +4,7 @@ import getters from './getters'
 import { serverBus } from '@/main'
 import { VuexPersistence } from 'vuex-persist'
 
-const excludedMudations = ['TOGGLE_HISTORY_MODE', 'TOGGLE_CONNECTION_OK']
+const excludedMudations = ['TOGGLE_HISTORY_MODE', 'TOGGLE_CONNECTION_OK', 'SET_TIME']
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
