@@ -346,7 +346,7 @@ export default {
     name_required: 'O campo nome é obrigatório',
     email_format_invalid: 'Por favor indique um e-mail válido',
     email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.',
-    users: 'Users',
+    users: 'Usuarios',
     user_edit: 'Edit User',
     user_add: 'Add User',
     user_name: 'Nombre',
