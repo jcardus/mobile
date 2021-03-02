@@ -297,7 +297,7 @@ export default {
   },
   methods: {
     load() {
-      this.count += 10
+      this.count += 20
     },
     filterHandler(value, row, column) {
       const property = column['property']

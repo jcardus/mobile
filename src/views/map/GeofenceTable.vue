@@ -154,7 +154,7 @@ export default {
   },
   methods: {
     load() {
-      this.count += 10
+      this.count += 20
     },
     poiSelected: function(poi) {
       if (poi && this.showPOIsLayer) {

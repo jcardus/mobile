@@ -187,7 +187,7 @@ export default {
   },
   methods: {
     load() {
-      this.count += 10
+      this.count += 20
     },
     handleDownload() {
       this.downloadLoading = true
