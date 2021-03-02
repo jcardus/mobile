@@ -4,7 +4,7 @@
     <div style="padding-left: 6px;padding-right: 6px;">
       <div style="float: right">
         <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
-          <div slot="content">{{ device.position.latitude }}<br />{{ device.position.longitude }}</div>
+          <div slot="content">{{ currentPosition.latitude }}<br />{{ currentPosition.longitude }}</div>
           <i class="fas fa-globe coordsIcon" @click="copy()"></i>
         </el-tooltip></div>
       <div class="title">
@@ -14,15 +14,15 @@
         {{ device.model }}
       </div>
       <div class="content">
-        {{ device.position && device.position.address }}
+        {{ currentPosition && currentPosition.address }}
         <div style="padding-top: 5px;">
-          <div v-if="device.position.ignition || device.position.speed > 2" style="color:#32325D;">
-            <i class="fas fa-tachometer-alt speedIcon" style="padding-right:2px"></i>{{ Math.round(device.position.speed * 1.852) }} km/h
-            <span v-if="device.position.fuelLevel"><i :class="fuelLevelStatus(device.position.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ device.position.fuelLevel ? device.position.fuelLevel : '' }}%</span>
-            <span v-if="device.position.attributes.rpm"><i class="fab fa-cloudscale rpmIcon" style="padding-right:2px; padding-left:8px"></i>{{ device.position.attributes.rpm ? device.position.attributes.rpm : '' }} rpm</span>
+          <div v-if="currentPosition.ignition || currentPosition.speed > 2" style="color:#32325D;">
+            <i class="fas fa-tachometer-alt speedIcon" style="padding-right:2px"></i>{{ Math.round(currentPosition.speed * 1.852) }} km/h
+            <span v-if="currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
+            <span v-if="currentPosition.attributes.rpm"><i class="fab fa-cloudscale rpmIcon" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span>
           </div>
-          <span>{{ device.lastUpdate | moment('from', currentTime) }}</span>
-          <span v-if="routePoint" style="float:right">{{ device.lastUpdate | moment('LL') }} {{ device.lastUpdate | moment('LTS') }}</span>
+          <span v-if="!routePoint">{{ device.lastUpdate | moment('from', currentTime) }}</span>
+          <span v-if="routePoint">{{ currentPosition.fixTime | moment('LL') }} {{ currentPosition.fixTime | moment('LTS') }}</span>
         </div>
         <IOdometer
           class="iOdometer"
@@ -44,7 +44,7 @@
           @click="showRoutesChanged"
         >{{ $t('vehicleDetail.show_route') }}</el-button>
         <el-button
-          v-if="device.position.attributes.ignition && followVehicleEnabled"
+          v-if="currentPosition.attributes.ignition && followVehicleEnabled"
           icon="el-icon-video-camera"
           style="float:right"
           type="text"
@@ -80,6 +80,7 @@ export default {
     return {
       routeMatch: true,
       device: null,
+      position: null,
       feature: null,
       i: 0,
       sliderVisible: false,
@@ -96,7 +97,7 @@ export default {
   computed: {
     ...mapGetters(['historyMode', 'currentTime', 'followVehicle', 'followVehicleEnabled']),
     totalDistance() {
-      let result = this.device.position.attributes.totalDistance / 1000
+      let result = this.currentPosition.attributes.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
       return result
     },
@@ -113,6 +114,9 @@ export default {
     },
     isMobile() {
       return lnglat.isMobile()
+    },
+    currentPosition() {
+      return this.position ? this.position : this.device.position
     }
   },
   beforeDestroy() {
@@ -148,9 +152,9 @@ export default {
       this.$store.dispatch('map/followVehicle', value)
     },
     copy() {
-      navigator.clipboard.writeText(this.device.position.latitude + ',' + this.device.position.longitude)
+      navigator.clipboard.writeText(this.currentPosition.latitude + ',' + this.currentPosition.longitude)
       if (isMobile()) {
-        serverBus.$emit('message', this.device.position.latitude + ',' + this.device.position.longitude)
+        serverBus.$emit('message', this.currentPosition.latitude + ',' + this.currentPosition.longitude)
       }
     },
     clickDriver() {

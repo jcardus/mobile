@@ -956,7 +956,7 @@ export default {
         { hover: true })
       const position = { ...feature.properties }
       position.attributes = { ...feature.properties }
-      lnglat.updateDevice(position, feature, this.device)
+      // lnglat.updateDevice(position, feature, this.device)
       lnglat.showPopup(feature, this.device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
       if (this.lastPopup) {
         this.lastPopup.$destroy()
@@ -966,6 +966,7 @@ export default {
         i18n: i18n,
         data: {
           device: this.device,
+          position: position,
           feature: feature,
           routePoint: true
         },
