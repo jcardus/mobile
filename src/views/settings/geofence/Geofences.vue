@@ -195,7 +195,7 @@ export default {
       return Math.round(speedLimit * 1.852)
     },
     load() {
-      this.count += 10
+      this.count += 20
     },
     getImageSrc(imgType) {
       return './img/icons/pois/' + imgType + '-blue.svg'

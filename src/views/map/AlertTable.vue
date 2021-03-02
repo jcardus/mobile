@@ -157,7 +157,7 @@ export default {
   },
   methods: {
     load() {
-      this.count += 10
+      this.count += 20
     },
     cellStyle(row) {
       let result = 'padding: 0; '

@@ -342,8 +342,7 @@ export default {
   },
   methods: {
     load() {
-      Vue.$log.debug('LoadMore')
-      this.count += 10
+      this.count += 20
     },
     fuelLevelClick() {
       if (this.fuelMetric === 'percentage') {
