@@ -237,7 +237,9 @@ export default {
         }
       })
       socket['onmessage'] = (event) => {
-        Vue.$log.debug(event)
+        if (socketReconnect > 0) {
+          socketReconnect = 0
+        }
         const data = JSON.parse(event.data)
         if (data.positions) {
           this.updateMarkers(data.positions)
