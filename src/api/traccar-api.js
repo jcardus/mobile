@@ -411,7 +411,7 @@ export const traccar = {
   getSession() {
     return invokeApi(baseUrl + 'session')
   },
-  getInitData: function(user) {
+  getInitData(user) {
     const requestDevices = axios.get(devices, { withCredentials: true })
     const requestGeofences = axios.get(geoFences, { withCredentials: true })
     const requestGroups = axios.get(groups + '?userId=' + user.id, { withCredentials: true })

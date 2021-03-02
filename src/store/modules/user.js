@@ -149,6 +149,7 @@ function initData(commit, state, dispatch) {
       })
       .catch((e) => {
         Vue.$log.error(e)
+        serverBus.$emit('dataLoaded')
         reject(e)
       })
   })
