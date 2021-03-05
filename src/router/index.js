@@ -55,7 +55,7 @@ export const constantRoutes = [
       },
       {
         path: 'report_trip',
-        component: () => import('../views/reports/ReportTrip'),
+        component: () => import('../views/reports/Frame'),
         name: 'TripReport',
         meta: { title: 'route.report_trip_title' }
       },
@@ -73,7 +73,7 @@ export const constantRoutes = [
       },
       {
         path: 'report_speeding',
-        component: () => import('../views/reports/ReportSpeeding'),
+        component: () => import('../views/reports/Frame'),
         name: 'Speeding Report',
         meta: { title: 'route.report_speeding' }
       },

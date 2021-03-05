@@ -104,11 +104,15 @@ function getAvatar(name) {
 }
 
 function initData(commit, state, dispatch) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async(resolve, reject) => {
     const user = state.user
     user.attributes.lastHost = window.location.hostname
     user.attributes.lastLogin = new Date()
-    traccar.updateUser(user.id, user)
+    try {
+      await traccar.updateUser(user.id, user)
+    } catch (e) {
+      Vue.$log.error(e)
+    }
     traccar.getInitData(user)
       .then(responses => {
         dispatch('setGeofences', responses[1].data).then(() => {
@@ -145,6 +149,7 @@ function initData(commit, state, dispatch) {
       })
       .catch((e) => {
         Vue.$log.error(e)
+        serverBus.$emit('dataLoaded')
         reject(e)
       })
   })
