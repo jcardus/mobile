@@ -24,6 +24,10 @@
           <el-menu-item v-if="customReport" index="/reports/report_custom">{{ customReport }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
+      <el-menu-item v-if="manageSchedules" index="/schedules/schedules">
+        <i class="el-icon-date"></i>
+        <span slot="title">{{ $t('route.schedules') }}</span>
+      </el-menu-item>
       <el-menu-item v-if="externalMaintenance" index="/settings/external/index">
         <i class="el-icon-truck"></i>
         <span slot="title">{{ $t('route.maintenance') }}</span>
@@ -58,6 +62,9 @@ export default {
     },
     externalMaintenance() {
       return permission.checkUserPermission('externalmaintenance')
+    },
+    manageSchedules() {
+      return permission.checkUserPermission('manage_schedules')
     }
   },
   methods: {

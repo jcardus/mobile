@@ -24,7 +24,8 @@ export default {
     nodata: 'Não existem dados para o período seleccionado.',
     alerts: 'Alerts',
     custom_reports: 'Relatórios Custom',
-    maintenance: 'Módulo de Manutenção'
+    maintenance: 'Módulo de Manutenção',
+    schedules: 'Schedules'
   },
   map: {
     geofence_create_error: 'Error creating geofence',

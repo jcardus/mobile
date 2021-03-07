@@ -17,7 +17,8 @@ export default {
     settings: 'Configurações',
     duration: 'Duração',
     nodata: 'Não existem dados para o período seleccionado',
-    report_events: 'Relatório de eventos'
+    report_events: 'Relatório de eventos',
+    schedules: 'Agendamentos'
   },
   map: {
     geofence_create_title: 'Nova Cerca Eletrônica',

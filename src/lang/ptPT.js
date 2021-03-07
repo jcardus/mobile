@@ -22,7 +22,8 @@ export default {
     settings: 'Definições',
     settings_map: 'Mapa',
     duration: 'Duração',
-    nodata: 'Não existem dados para o período seleccionado.'
+    nodata: 'Não existem dados para o período seleccionado.',
+    schedules: 'Agendamentos'
   },
   map: {
     geofence_create_error: 'Erro a criar baliza',
