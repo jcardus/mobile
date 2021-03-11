@@ -38,8 +38,9 @@
               </div>
               <div class="form-item-block">
                 <div class="form-item-row">
-                  <el-form-item class="form-item-block-left el-input-number-fix" :label="$t('settings.vehicle_form_total_kms')">
-                    <el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
+                  <el-form-item class="form-item-block-left el-input-number-fix" :label="$t('settings.vehicle_form_speed_limit')">
+                    <el-input-number v-model="vehicleSpeedLimit" :min="0" :precision="0" />
+                    <!--<el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
                     <el-tooltip :content="$t('settings.vehicle_form_by_date')" placement="top">
                       <el-button
                         circle
@@ -47,16 +48,13 @@
                         style="margin-left: 5px"
                         @click="handleUpdateVehicleKms()"
                       ><i class="fa fa-calendar"></i></el-button>
-                    </el-tooltip>
+                    </el-tooltip>-->
                   </el-form-item>
                   <el-form-item class="form-item-block-right el-input-number-fix" :label="$t('settings.vehicle_form_fuel_tank_capacity')">
                     <el-input-number v-model="vehicleFuelTankCapacity" :min="0" :precision="0" />
                   </el-form-item>
                 </div>
               </div>
-              <el-form-item class="el-input-number-fix" :label="$t('settings.vehicle_form_speed_limit')">
-                <el-input-number v-model="vehicleSpeedLimit" :min="0" :precision="0" />
-              </el-form-item>
             </el-form>
             <el-button
               type="info"
@@ -199,20 +197,28 @@
           <el-button :loading="downloadLoading" icon="el-icon-document" type="primary" @click="handleDownload">Excel</el-button>
         </template>
         <template slot-scope="scope">
-          <el-tooltip :content="$t('settings.vehicle_associate_geofences')" placement="top">
-            <el-button
-              size="small"
-              type="primary"
-              class="formButton"
-              @click="handleAssociateGeofences(scope.row)"
-            ><i class="fas fa-map-marked"></i></el-button>
-          </el-tooltip>
           <el-tooltip :content="$t('settings.edit')" placement="top">
             <el-button
-              size="small"
-              class="formButton"
+
+              size="mini"
               @click="handleEdit(scope.row)"
             ><i class="fas fa-edit"></i></el-button>
+          </el-tooltip>
+          <el-tooltip :content="$t('settings.vehicle_edit_kms')" placement="top">
+            <el-button
+
+              size="mini"
+              type="info"
+              @click="handleUpdateVehicleKms(scope.row)"
+            ><i class="fas fa-road"></i></el-button>
+          </el-tooltip>
+          <el-tooltip :content="$t('settings.vehicle_associate_geofences')" placement="top">
+            <el-button
+
+              size="mini"
+              type="primary"
+              @click="handleAssociateGeofences(scope.row)"
+            ><i class="fas fa-map-marked"></i></el-button>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -372,20 +378,23 @@ export default {
       }
       this.isOpenAssociateGeofencesForm = false
     },
-    handleUpdateVehicleKms() {
+    handleUpdateVehicleKms(row) {
+      this.selectedVehicle = row
+      const p = this.findFeatureByDeviceId(row.id)
+      if (p) {
+        this.vehicleKms = p.properties.attributes.totalDistance / 1000
+      }
       this.vehicleDateKms = new Date()
-      this.vehicleDateKms.setHours(0, 0, 0, 0)
-      this.vehicleKms = 0
       this.loading = false
-      this.isOpenVehicleForm = false
       this.isOpenVehicleKmsForm = true
     },
     handleCancelVehicleKmsForm() {
       this.isOpenVehicleKmsForm = false
-      this.isOpenVehicleForm = true
+      this.clearFormData()
     },
     async handleSubmitVehicleKmsForm() {
       this.loading = true
+      const self = this
       const h = this.$createElement
 
       try {
@@ -396,7 +405,7 @@ export default {
           const vKms = Math.round(incrementKms / 1000)
           const date = this.$moment(this.vehicleDateKms).format('YYYY-MM-DD HH:mm:ss')
           this.loading = false
-          await this.$msgbox({
+          this.$msgbox({
             message: h('p', null, [
               h('span', null, date + ' - ' + this.vehicleKms + ' kms'),
               h('br'),
@@ -405,19 +414,46 @@ export default {
               h('span', null, this.$t('settings.vehicle_kms_current') + ' - ' + (this.vehicleKms + vKms) + ' kms')
             ]),
             title: this.$t('settings.vehicle_kms'),
-            showCancelButton: false,
+            showCancelButton: true,
             showClose: false,
             confirmButtonText: 'OK'
-          })
+          }).then(action => {
+            this.$log.debug(action)
+            self.vehicleTotalKms = self.vehicleKms + vKms
 
-          this.vehicleTotalKms = this.vehicleKms + vKms
+            const accumulator = {
+              deviceId: self.selectedVehicle.id,
+              totalDistance: self.vehicleTotalKms * 1000
+            }
+
+            traccar.updateDeviceAccumulators(self.selectedVehicle.id, accumulator).then(() => {
+              this.$message({
+                message: this.$t('settings.vehicle_kms_updated'),
+                type: 'success',
+                duration: 5 * 1000
+              })
+              this.isOpenVehicleKmsForm = false
+            }).catch(reason => {
+              if (reason.response.data.startsWith('Manager access required')) {
+                this.$message({
+                  message: this.$t('settings.vehicle_edit_not_allowed'),
+                  type: 'warning',
+                  duration: 5 * 1000
+                })
+              } else {
+                Vue.$log.error(reason)
+                this.$alert(reason)
+              }
+              this.isOpenVehicleKmsForm = false
+            })
+          }).catch(() => {
+
+          })
         }
       } catch (e) {
         Vue.$log.error(e)
+        this.isOpenVehicleKmsForm = false
       }
-
-      this.isOpenVehicleKmsForm = false
-      this.isOpenVehicleForm = true
     },
     handleCancelVehicleForm() {
       this.isOpenVehicleForm = false
@@ -442,15 +478,7 @@ export default {
         category: this.selectedCategory
       }
 
-      const accumulator = {
-        deviceId: this.selectedVehicle.id,
-        totalDistance: this.vehicleTotalKms * 1000
-      }
-
       try {
-        if (this.selectedVehicle.position) {
-          await traccar.updateDeviceAccumulators(this.selectedVehicle.id, accumulator)
-        }
         await traccar.updateDevice(this.selectedVehicle.id, v)
         this.vehicleUpdated(v)
       } catch (reason) {
@@ -527,6 +555,8 @@ export default {
       this.vehicleModel = ''
       this.vehicleSpeedLimit = 0
       this.vehicleTotalKms = 0
+      this.vehicleKms = 0
+      this.vehicleDateKms = null
       this.vehicleFuelTankCapacity = 0
     },
     doNothing(scope) {
@@ -563,10 +593,8 @@ export default {
     width: 200px;
     display: table-cell;
   }
-
-  .formButton {
-    float: right;
-    margin-right: 10px;
+  .el-button--small {
+    padding: 9px 9px;
   }
   .modal {
     width: 600px;
@@ -609,8 +637,15 @@ export default {
     font-size: 12px
   }
 
+  .formButton {
+    float: right;
+    margin-right: 10px;
+  }
   .el-input-number-fix {
     width: 200px;
     text-align: left;
+  }
+  .el-button--mini {
+    padding: 7px 7px;
   }
 </style>

@@ -12,9 +12,19 @@
                   <span slot="label">
                     <i class="fas fa-user"></i>
                   </span>
-                  <el-select v-model="userForm.userType" value="" :placeholder="$t('settings.user_form_type_placeholder')">
-                    <el-option v-for="type in userTypes" :key="type.value" :value="type.value" :label="$t('profile.'+type.text)" />
-                  </el-select>
+
+                  <div class="form-item-block">
+                    <div class="form-item-row">
+                      <el-form-item class="form-item-block-left">
+                        <el-select v-model="userForm.userType" value="" :placeholder="$t('settings.user_form_type_placeholder')">
+                          <el-option v-for="type in userTypes" :key="type.value" :value="type.value" :label="$t('profile.'+type.text)" />
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item class="form-item-block-right">
+                        <el-checkbox v-if="userForm.userType === 'manager'" v-model="userForm.manageDevices">{{ $t('settings.user_form_manage_devices') }}</el-checkbox>
+                      </el-form-item>
+                    </div>
+                  </div>
                   <el-form-item :label="$t('settings.user_name')">
                     <el-input v-model="userForm.name" />
                   </el-form-item>
@@ -285,6 +295,7 @@ export default {
         phone: '',
         password: '',
         userType: '',
+        manageDevices: false,
         lang: '',
         timezone: '',
         userDrivers: [],
@@ -369,6 +380,7 @@ export default {
       this.userForm.email = ''
       this.userForm.phone = ''
       this.userForm.password = ''
+      this.userForm.manageDevices = false
       this.userForm.lang = this.user.attributes.lang
       this.userForm.timezone = this.user.attributes.timezone
       this.userForm.userDrivers = []
@@ -398,6 +410,7 @@ export default {
         this.userForm.lang = row.attributes.lang
         this.userForm.timezone = row.attributes.timezone ? row.attributes.timezone : this.user.attributes.timezone
         this.userForm.userType = row.readonly ? 'operator' : 'manager'
+        this.userForm.manageDevices = !row.deviceReadonly
         await traccar.driversByUser(this.selectedUser.id).then(function(response) {
           self.userForm.userDrivers = self.userForm.userSelectedDrivers = response.data.map(d => d.id)
         })
@@ -446,7 +459,7 @@ export default {
               phone: this.userForm.phone,
               password: this.userForm.password,
               readonly: this.userForm.userType === 'operator',
-              deviceReadonly: this.userForm.userType === 'manager',
+              deviceReadonly: !this.userForm.manageDevices,
               attributes: {
                 timezone: this.userForm.timezone,
                 lang: this.userForm.lang,
@@ -481,7 +494,7 @@ export default {
             user.phone = this.userForm.phone
             user.password = this.userForm.password
             user.readonly = this.userForm.userType === 'operator'
-            user.deviceReadonly = this.userForm.userType === 'manager'
+            user.deviceReadonly = !this.userForm.manageDevices
             user.attributes.permissions = this.userForm.userSelectedReports.filter(a => this.permissions.map(p => p.id).includes(a))
             user.attributes.lang = this.userForm.lang
             user.attributes.timezone = this.userForm.timezone
