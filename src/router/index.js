@@ -111,7 +111,7 @@ export const constantRoutes = [
   {
     path: '/schedules',
     component: Layout,
-    children: [{ path: 'schedules', component: () => import('../views/schedules/Frame'), name: 'Schedules', meta: { title: 'route.schedules', icon: 'fa fa-dashboard' }}]
+    children: [{ path: 'schedules', component: () => import('../views/reports/Frame'), name: 'Schedules', meta: { title: 'route.schedules', icon: 'fa fa-dashboard' }}]
   },
   {
     path: '/settings',

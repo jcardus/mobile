@@ -64,7 +64,7 @@ export default {
       return permission.checkUserPermission('externalmaintenance')
     },
     manageSchedules() {
-      return permission.checkUserPermission('manage_schedules')
+      return permission.checkUserPermission('scheduler')
     }
   },
   methods: {
