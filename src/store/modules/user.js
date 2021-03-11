@@ -277,7 +277,7 @@ const actions = {
               commit('SET_USER', s)
               resolve()
               dispatch('setUser')
-            }).catch(e => Vue.$log.error(e))
+            }).catch(e => resolve(e))
           })
           .catch(e => {
             Vue.$log.warn('no session, should go to login', e)
