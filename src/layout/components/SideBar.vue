@@ -44,6 +44,7 @@
 import * as partner from '../../utils/partner'
 import * as permission from '../../utils/permission'
 import { mapGetters } from 'vuex'
+import store from '@/store'
 
 export default {
   computed: {
@@ -64,7 +65,7 @@ export default {
       return permission.checkUserPermission('externalmaintenance')
     },
     manageSchedules() {
-      return permission.checkUserPermission('manage_schedules')
+      return store.getters.user.attributes['scheduler']
     }
   },
   methods: {
