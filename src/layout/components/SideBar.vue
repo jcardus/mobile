@@ -24,7 +24,7 @@
           <el-menu-item v-if="customReport" index="/reports/report_custom">{{ customReport }}</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-menu-item v-if="manageSchedules" index="/schedules/schedules">
+      <el-menu-item v-if="manageSchedules" index="/scheduler">
         <i class="el-icon-date"></i>
         <span slot="title">{{ $t('route.schedules') }}</span>
       </el-menu-item>
@@ -44,6 +44,7 @@
 import * as partner from '../../utils/partner'
 import * as permission from '../../utils/permission'
 import { mapGetters } from 'vuex'
+import store from '@/store'
 
 export default {
   computed: {
@@ -64,7 +65,7 @@ export default {
       return permission.checkUserPermission('externalmaintenance')
     },
     manageSchedules() {
-      return permission.checkUserPermission('manage_schedules')
+      return store.getters.user.attributes['scheduler']
     }
   },
   methods: {

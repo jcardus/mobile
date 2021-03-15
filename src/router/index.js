@@ -109,9 +109,9 @@ export const constantRoutes = [
     children: [{ path: 'index', component: () => import('../views/settings/external/index'), name: 'Maintenance', meta: { title: 'route.maintenance', icon: 'fas fa-cog' }}]
   },
   {
-    path: '/schedules',
+    path: '/scheduler',
     component: Layout,
-    children: [{ path: 'schedules', component: () => import('../views/schedules/Frame'), name: 'Schedules', meta: { title: 'route.schedules', icon: 'fa fa-dashboard' }}]
+    children: [{ path: '', component: () => import('../views/reports/Frame'), name: 'Scheduler', meta: { title: 'route.schedules', icon: 'fa fa-dashboard' }}]
   },
   {
     path: '/settings',
