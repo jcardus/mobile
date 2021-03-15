@@ -34,6 +34,10 @@ const messages = {
   esCL: {
     ...esCLLocale,
     ...elementEsLocale
+  },
+  esES: {
+    ...esCLLocale,
+    ...elementEsLocale
   }
 }
 
@@ -79,14 +83,14 @@ export function getLanguageI18n() {
 
 export function getLanguage() {
   if (store) {
-    const chooseLanguage = store.getters.user.attributes && store.getters.user.attributes.lang
+    const chooseLanguage = store.getters.name && store.getters.user.attributes && store.getters.user.attributes.lang
     if (chooseLanguage) return chooseLanguage.replace('-', '')
   }
   const language = (navigator.language || navigator.browserLanguage).toLowerCase().replace('-', '')
   const locales = Object.keys(messages)
   for (const locale of locales) {
     if (locale.toLowerCase().indexOf(language) > -1) {
-      console.log('getting locale from browser', locale)
+      console.log('getting locale from browser', locale, language)
       return locale
     }
   }

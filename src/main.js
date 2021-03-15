@@ -60,6 +60,7 @@ const options = {
 
 Vue.use(VueLogger, options)
 Vue.config.lang = getLanguage().slice(2)
+console.log('lang', Vue.config.lang)
 if (isProduction) {
   switch (Vue.config.lang) {
     case 'ES':
