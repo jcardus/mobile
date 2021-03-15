@@ -34,6 +34,10 @@ const messages = {
   esCL: {
     ...esCLLocale,
     ...elementEsLocale
+  },
+  esES: {
+    ...esCLLocale,
+    ...elementEsLocale
   }
 }
 
