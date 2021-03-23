@@ -101,7 +101,7 @@ export default {
       alertsSearchPeriod: 'last_one_hour',
       selected: false,
       loading: false,
-      count: 10
+      count: 20
     }
   },
   computed: {

@@ -200,7 +200,7 @@ export default {
   },
   data() {
     return {
-      count: 10,
+      count: 20,
       show: true,
       animating: false,
       data: [],
