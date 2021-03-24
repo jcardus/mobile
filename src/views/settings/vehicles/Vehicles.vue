@@ -242,7 +242,7 @@ export default {
   name: 'Vehicles',
   data() {
     return {
-      count: 10,
+      count: 20,
       isOpenVehicleForm: false,
       isOpenVehicleKmsForm: false,
       isOpenAssociateGeofencesForm: false,
