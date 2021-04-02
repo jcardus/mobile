@@ -17,7 +17,7 @@ export default {
     report_fueldrop: 'Relatório de perda de combustível',
     report_speeding_beta: 'Relatórios de excexsos de velocidade BETA',
     report_tolls: 'Relatório de Portagens',
-    report_events: 'Informe de eventos',
+    report_events: 'Relatório de eventos',
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Definições',
     settings_map: 'Mapa',
