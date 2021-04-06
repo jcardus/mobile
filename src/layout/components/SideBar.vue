@@ -20,6 +20,7 @@
           <el-menu-item index="/reports/report_speeding">{{ $t('route.report_speeding') }}</el-menu-item>
           <el-menu-item index="/reports/report_event">{{ $t('route.report_events') }}</el-menu-item>
           <el-menu-item index="/reports/report_refueling">{{ $t('route.report_refueling') }}</el-menu-item>
+          <el-menu-item index="/reports/report_fuelconsumption">{{ $t('route.report_fuelconsumption') }}</el-menu-item>
           <el-menu-item index="/reports/report_fueldrop">{{ $t('route.report_fueldrop') }}</el-menu-item>
           <el-menu-item v-if="tollsReport" index="/reports/report_tolls">{{ $t('route.report_tolls') }}</el-menu-item>
           <el-menu-item v-if="has_customreport_vistawaste_activity" index="/reports/customreport_vistawaste_activity">{{ $t('route.customreport_vistawaste_activity_title') }}</el-menu-item>
