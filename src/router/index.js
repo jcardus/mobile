@@ -78,6 +78,12 @@ export const constantRoutes = [
         meta: { title: 'route.report_events' }
       },
       {
+        path: 'report_activity',
+        component: () => import('../views/reports/Frame'),
+        name: 'Activity Report',
+        meta: { title: 'route.report_activity' }
+      },
+      {
         path: 'report_fuelconsumption',
         component: () => import('../views/reports/Frame'),
         name: 'FuelConsumption Report',

@@ -18,6 +18,7 @@ export default {
     report_tolls: 'Relatório de Portagens',
     report_timerange: 'Informe uso fuera de horario',
     report_events: 'Events Report',
+    report_activity: 'Activity Report',
     report_fuelconsumption: 'Fuel Consumption Report',
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Settings',
