@@ -19,6 +19,7 @@
           <el-menu-item index="/reports/report_zone">{{ $t('route.report_zone_crossing') }}</el-menu-item>
           <el-menu-item index="/reports/report_speeding">{{ $t('route.report_speeding') }}</el-menu-item>
           <el-menu-item index="/reports/report_event">{{ $t('route.report_events') }}</el-menu-item>
+          <el-menu-item index="/reports/report_activity">{{ $t('route.report_activity') }}</el-menu-item>
           <el-menu-item index="/reports/report_refueling">{{ $t('route.report_refueling') }}</el-menu-item>
           <el-menu-item index="/reports/report_fuelconsumption">{{ $t('route.report_fuelconsumption') }}</el-menu-item>
           <el-menu-item index="/reports/report_fueldrop">{{ $t('route.report_fueldrop') }}</el-menu-item>

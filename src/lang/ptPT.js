@@ -18,6 +18,7 @@ export default {
     report_speeding_beta: 'Relatórios de excexsos de velocidade BETA',
     report_tolls: 'Relatório de Portagens',
     report_events: 'Relatório de eventos',
+    report_activity: 'Relatório de actividade',
     report_fuelconsumption: 'Relatório de consumos de combustível',
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Definições',

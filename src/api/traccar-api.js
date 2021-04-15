@@ -237,15 +237,11 @@ export const traccar = {
   position(positionId) {
     return get(positions + '?id=' + positionId)
   },
-  trips: function(devices, from, to, onFulfill) {
+  trips: function(devices, from, to) {
     const yesterday = new Date()
     yesterday.setDate(new Date().getDate() - 1)
-    axios.get(trips + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
+    return axios.get(trips + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
       { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
   },
   stopReceiving: function() {
   },

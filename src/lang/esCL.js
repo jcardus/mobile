@@ -15,6 +15,7 @@ export default {
     report_refueling: 'Informe de cargas',
     report_fueldrop: 'Fuel Drop Report',
     report_events: 'Informe de eventos',
+    report_activity: 'Informe de actividade',
     report_speeding_beta: 'Informe de excesos de velocidad BETA',
     report_tolls: 'Informe de peajes',
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',

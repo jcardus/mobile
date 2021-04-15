@@ -13,11 +13,12 @@ export default {
     report_speeding: 'Relatório de excessos de velocidade',
     report_refueling: 'Relatório de abastecimentos',
     report_fueldrop: 'Relatório de perda de combustível',
+    report_events: 'Relatório de Eventos',
+    report_activity: 'Relatório de actividade',
     customreport_vistawaste_activity_title: 'Relatório de Actividade Vista Waste',
     settings: 'Configurações',
     duration: 'Duração',
     nodata: 'Não existem dados para o período seleccionado',
-    report_events: 'Relatório de eventos',
     schedules: 'Agendamentos'
   },
   map: {
