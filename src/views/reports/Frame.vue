@@ -8,7 +8,7 @@
 <script>
 import { isDevEnv } from '@/api'
 
-const baseUrl = isDevEnv() ? 'http://localhost:3000' : 'http://localhost:3000'
+const baseUrl = isDevEnv() ? 'http://localhost:3000' : 'https://fleetmap-reports.web.app'
 export default {
   name: 'Frame',
   computed: {
