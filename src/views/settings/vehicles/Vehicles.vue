@@ -378,13 +378,22 @@ export default {
       }
       this.isOpenAssociateGeofencesForm = false
     },
-    handleUpdateVehicleKms(row) {
+    async handleUpdateVehicleKms(row) {
       this.selectedVehicle = row
-      const p = this.findFeatureByDeviceId(row.id)
-      if (p) {
-        this.vehicleKms = p.properties.attributes.totalDistance / 1000
+      const feature = this.findFeatureByDeviceId(row.id)
+      let p
+      if (feature) {
+        p = feature.properties
+      } else {
+        const response = await traccar.positions()
+        p = response.data.find(a => a.deviceId === this.selectedVehicle.id)
       }
-      this.vehicleDateKms = new Date()
+
+      if (p) {
+        this.vehicleKms = p.attributes.totalDistance / 1000
+      }
+
+      this.vehicleDateKms = null
       this.loading = false
       this.isOpenVehicleKmsForm = true
     },
@@ -396,60 +405,69 @@ export default {
       this.loading = true
       const self = this
       const h = this.$createElement
+      let incrementKms = 0
+      const messages = []
 
       try {
-        const response = await traccar.summary(this.selectedVehicle.id, this.vehicleDateKms, new Date())
-        if (response.data) {
-          const incrementKms = response.data[0].distance
+        if (this.vehicleDateKms) {
+          const response = await traccar.trips([this.selectedVehicle.id], this.vehicleDateKms, new Date())
+          if (response.data) {
+            incrementKms = Math.round(response.data.reduce((a, b) => a + b.distance, 0) / 1000)
+            const date = this.$moment(this.vehicleDateKms).format('YYYY-MM-DD HH:mm:ss')
 
-          const vKms = Math.round(incrementKms / 1000)
-          const date = this.$moment(this.vehicleDateKms).format('YYYY-MM-DD HH:mm:ss')
-          this.loading = false
-          this.$msgbox({
-            message: h('p', null, [
+            messages.push(
               h('span', null, date + ' - ' + this.vehicleKms + ' kms'),
               h('br'),
-              h('span', null, this.$t('settings.vehicle_kms_traveled') + ' ' + date + ' - ' + vKms + ' kms'),
+              h('span', null, this.$t('settings.vehicle_kms_traveled') + ' ' + date + ' - ' + incrementKms + ' kms'),
               h('br'),
-              h('span', null, this.$t('settings.vehicle_kms_current') + ' - ' + (this.vehicleKms + vKms) + ' kms')
-            ]),
-            title: this.$t('settings.vehicle_kms'),
-            showCancelButton: true,
-            showClose: false,
-            confirmButtonText: 'OK'
-          }).then(action => {
-            this.$log.debug(action)
-            self.vehicleTotalKms = self.vehicleKms + vKms
+              h('span', null, this.$t('settings.vehicle_kms_current') + ' - ' + (this.vehicleKms + incrementKms) + ' kms')
+            )
+          }
+        } else {
+          messages.push(
+            h('span', null, this.$t('settings.vehicle_kms_current') + ' - ' + (this.vehicleKms + incrementKms) + ' kms')
+          )
+        }
 
-            const accumulator = {
-              deviceId: self.selectedVehicle.id,
-              totalDistance: self.vehicleTotalKms * 1000
-            }
+        this.loading = false
+        this.$msgbox({
+          message: h('p', null, messages),
+          title: this.$t('settings.vehicle_kms'),
+          showCancelButton: true,
+          showClose: false,
+          confirmButtonText: 'OK'
+        }).then(action => {
+          this.$log.debug(action)
+          self.vehicleTotalKms = self.vehicleKms + incrementKms
 
-            traccar.updateDeviceAccumulators(self.selectedVehicle.id, accumulator).then(() => {
+          const accumulator = {
+            deviceId: self.selectedVehicle.id,
+            totalDistance: self.vehicleTotalKms * 1000
+          }
+
+          traccar.updateDeviceAccumulators(self.selectedVehicle.id, accumulator).then(() => {
+            this.$message({
+              message: this.$t('settings.vehicle_kms_updated'),
+              type: 'success',
+              duration: 5 * 1000
+            })
+            this.isOpenVehicleKmsForm = false
+          }).catch(reason => {
+            if (reason.response.data.startsWith('Manager access required')) {
               this.$message({
-                message: this.$t('settings.vehicle_kms_updated'),
-                type: 'success',
+                message: this.$t('settings.vehicle_edit_not_allowed'),
+                type: 'warning',
                 duration: 5 * 1000
               })
-              this.isOpenVehicleKmsForm = false
-            }).catch(reason => {
-              if (reason.response.data.startsWith('Manager access required')) {
-                this.$message({
-                  message: this.$t('settings.vehicle_edit_not_allowed'),
-                  type: 'warning',
-                  duration: 5 * 1000
-                })
-              } else {
-                Vue.$log.error(reason)
-                this.$alert(reason)
-              }
-              this.isOpenVehicleKmsForm = false
-            })
-          }).catch(() => {
-
+            } else {
+              Vue.$log.error(reason)
+              this.$alert(reason)
+            }
+            this.isOpenVehicleKmsForm = false
           })
-        }
+        }).catch(() => {
+
+        })
       } catch (e) {
         Vue.$log.error(e)
         this.isOpenVehicleKmsForm = false
