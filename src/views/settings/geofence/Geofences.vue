@@ -111,6 +111,11 @@
             @chage="doNothing(scope)"
           />
         </template>
+      </el-table-column>
+      <el-table-column align="right" label="">
+        <template slot="header">
+          <el-button :loading="downloadLoading" icon="el-icon-document" type="primary" @click="handleDownload">Excel</el-button>
+        </template>
         <template slot-scope="scope">
           <el-tooltip :content="$t('settings.delete')" placement="top">
             <el-button
@@ -149,6 +154,7 @@ export default {
   name: 'Geofences',
   data() {
     return {
+      downloadLoading: false,
       count: 20,
       isOpenGeofenceForm: false,
       isNewGeofence: true,
@@ -183,6 +189,26 @@ export default {
     }
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      import('../../../utils/ExportExcel').then(excel => {
+        const tHeader = [
+          this.$t('settings.geofence_name'),
+          this.$t('settings.geofence_description')
+        ]
+        const data = this.filteredGeofences.map(v => [
+          v.name,
+          v.description])
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '',
+          autoWidth: false,
+          bookType: 'xlsx'
+        })
+        this.downloadLoading = false
+      })
+    },
     speedLimitRenderer(row, column, speedLimit) {
       if (this.getType(row) === 'poi') {
         return '-'

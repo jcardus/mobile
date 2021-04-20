@@ -4,10 +4,11 @@
       v-model="selectedAlertType"
       clearable
       style="width: 100%; margin-bottom: 3px"
+      multiple="true"
       :placeholder="$t('alerts.title')"
       value=""
     >
-      <el-option v-for="item in alerts" :key="item.notification.id" :label="$t('settings.alert_'+getAlertType(item))" :value="item" />
+      <el-option v-for="item in userAlertTypes" :key="item" :label="$t('settings.alert_'+item)" :value="item" />
     </el-select>
     <div v-if="!historyMode">
       <el-select
@@ -97,7 +98,7 @@ export default {
   },
   data() {
     return {
-      selectedAlertType: '',
+      selectedAlertType: [],
       alertsSearchPeriod: 'last_one_hour',
       selected: false,
       loading: false,
@@ -124,8 +125,7 @@ export default {
         })
       }
       if (this.selectedAlertType) {
-        const alertType = this.getAlertType(this.selectedAlertType)
-        events = events.filter(e => e.type === alertType)
+        events = events.filter(e => this.selectedAlertType.includes(e.type))
       }
       events = events.sort((a, b) => {
         return (a.timestamp === b.timestamp ? 0 : a.timestamp > b.timestamp ? -1 : 1)
@@ -138,6 +138,9 @@ export default {
       }
 
       return ''
+    },
+    userAlertTypes() {
+      return alertType.alertTypes.filter(a => this.alerts.map(a => this.getAlertType(a)).includes(a))
     },
     alertsSearchPeriods: function() {
       return [{
