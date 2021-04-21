@@ -4,7 +4,7 @@
       v-model="selectedAlertType"
       clearable
       style="width: 100%; margin-bottom: 3px"
-      multiple="true"
+      :multiple="true"
       :placeholder="$t('alerts.title')"
       value=""
     >
