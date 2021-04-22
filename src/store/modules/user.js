@@ -344,9 +344,7 @@ const actions = {
   async logout({ commit }) {
     try {
       Vue.$log.debug('logout one signal')
-      window.OneSignal.logoutEmail()
-        .then(r => Vue.$log.debug('onesignal response', r))
-        .catch(e => Vue.$log.error('onseginal error', e))
+      Vue.$log.debug(await window.OneSignal.logoutEmail())
       await logout()
     } catch (e) {
       Vue.$log.error(e)
