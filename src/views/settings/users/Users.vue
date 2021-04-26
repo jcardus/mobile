@@ -495,7 +495,7 @@ export default {
             user.password = this.userForm.password
             user.readonly = this.userForm.userType === 'operator'
             user.deviceReadonly = !this.userForm.manageDevices
-            user.attributes.permissions = this.userForm.userSelectedReports.filter(a => this.permissions.map(p => p.id).includes(a))
+            user.attributes.permissions = this.userForm.userSelectedReports && this.userForm.userSelectedReports.filter(a => this.permissions.map(p => p.id).includes(a))
             user.attributes.lang = this.userForm.lang
             user.attributes.timezone = this.userForm.timezone
             // If operator set inactiveVehiclesEmail allways to false
