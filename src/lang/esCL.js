@@ -124,7 +124,7 @@ export default {
     daily_reports_tooltip: 'Email enviado diariamente com informação da actividade dos veículos',
     weekly_reports_tooltip: 'Email enviado semanalmente com informação da actividade dos veículos',
     monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos',
-    user_type_admin: 'Administrator',
+    user_type_admin: 'Administrador',
     user_type_manager: 'Gerente',
     user_type_operator: 'Operador'
   },
