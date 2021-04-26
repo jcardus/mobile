@@ -129,6 +129,7 @@ export default {
     user_type_operator: 'Operador'
   },
   settings: {
+    user_form_manage_devices: 'Permitir cambiar la configuración del los dispositivos',
     icons3d: 'Íconos 3D',
     showLabels: 'Mostrar nombre del vehículo',
     search: 'Procurar...',
@@ -354,8 +355,8 @@ export default {
     email_format_invalid: 'Por favor indique um e-mail válido',
     email_or_phone_required: 'Pelo menos um destes campos deverá ser preenchido com um valor válido.',
     users: 'Usuarios',
-    user_edit: 'Edit User',
-    user_add: 'Add User',
+    user_edit: 'Editar Usuário',
+    user_add: 'Agregar Usário',
     user_name: 'Nombre',
     user_email: 'E-mail',
     user_phone: 'Teléfono',
