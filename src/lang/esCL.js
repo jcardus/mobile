@@ -123,7 +123,10 @@ export default {
     inactive_vehicles_email_tooltip: 'Será enviado un email de alerta indicando los equipos que no comunicam hace más de 48 horas',
     daily_reports_tooltip: 'Email enviado diariamente com informação da actividade dos veículos',
     weekly_reports_tooltip: 'Email enviado semanalmente com informação da actividade dos veículos',
-    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos'
+    monthly_reports_tooltip: 'Email enviado mensalmente com informação da actividade dos veículos',
+    user_type_admin: 'Administrador',
+    user_type_manager: 'Gerente',
+    user_type_operator: 'Operador'
   },
   settings: {
     icons3d: 'Íconos 3D',
@@ -358,7 +361,7 @@ export default {
     user_phone: 'Teléfono',
     user_language: 'Idioma',
     user_timezone: 'Huso horario',
-    user_type: 'Profile',
+    user_type: 'Perfil',
     user_password: 'Contraseña',
     user_form_type_placeholder: 'Select Profile',
     user_deleted: 'User has been deleted.',
