@@ -181,6 +181,7 @@
         :formatter="alertSpeedRenderer"
         prop="attributes.speedLimit"
         sortable=""
+        align="right"
       >
       </el-table-column>
       <el-table-column
