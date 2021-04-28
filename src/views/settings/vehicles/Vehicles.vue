@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%; width: calc(100vw - 80px)">
     <transition name="modal">
       <div v-if="isOpenVehicleForm">
         <div class="overlay">
@@ -181,9 +181,18 @@
         :formatter="alertSpeedRenderer"
         prop="attributes.speedLimit"
         sortable=""
+        align="right"
       >
       </el-table-column>
-      <el-table-column label="" width="250px" align="right">
+      <el-table-column
+        v-if="!isMobile"
+        :formatter="totalKmsRenderer"
+        :label="$t('settings.vehicle_kms')"
+        align="right"
+        prop="id"
+      >
+      </el-table-column>
+      <el-table-column label="" align="right">
         <template slot="header" slot-scope="scope">
           <el-input
             v-model="search"
@@ -558,6 +567,12 @@ export default {
         return ''
       }
     },
+    totalKmsRenderer(row, column, cellValue) {
+      console.log(vm.$static.positionsSource.features)
+      const p = this.findFeatureByDeviceId(cellValue)
+      console.log('feature', p, 'cellValue', cellValue)
+      return p && p.properties && p.properties.attributes && Math.round(p.properties.attributes.totalDistance / 1000)
+    },
     groupRenderer(row, column, cellValue) {
       if (cellValue) {
         const group = vm.$store.state.user.groups.find((g) => g.id === cellValue)
@@ -585,7 +600,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../../../styles/element-variables.scss';
 
   .el-form-item {
@@ -652,7 +667,11 @@ export default {
   }
 
   .el-table  td:last-child {
-    font-size: 12px
+    font-size: 12px;
+  }
+
+  .el-table .el-cell {
+    word-break: normal !important;
   }
 
   .formButton {
