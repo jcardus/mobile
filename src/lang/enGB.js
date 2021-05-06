@@ -357,6 +357,8 @@ export default {
     activate_automatic_speeding_report: 'Overspeed report - Enable automatic report',
     activate_automatic_refueling_report: 'Refueling report - Enable automatic report',
     activate_automatic_fueldrop_report: 'Fuel drop report - Enable automatic report',
+    activate_automatic_activity_report: 'Activity report - Enable automatic report',
+    activate_automatic_events_report: 'Events report - Enable automatic report',
     report_periodicity_daily: 'Receive daily',
     report_periodicity_weekly: 'Receive weekly',
     report_periodicity_monthly: 'Receive monthly',

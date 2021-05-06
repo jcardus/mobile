@@ -341,6 +341,8 @@ export default {
     activate_automatic_zone_report: 'Informe de zonas - Habilitar informes automáticos',
     activate_automatic_speeding_report: 'Informe de excesos de velocidad - Habilitar informes automáticos',
     activate_automatic_refueling_report: 'Informe de Cargas - Habilitar informes automáticos',
+    activate_automatic_activity_report: 'Informe de Actividade - Habilitar informes automáticos',
+    activate_automatic_events_report: 'Informe de Eventos - Habilitar informes automáticos',
     activate_automatic_fueldrop_report: 'Fuel drop report - Enable automatic report',
     report_periodicity_daily: 'Recibe diariamente',
     report_periodicity_weekly: 'Recibe semanalmente',
