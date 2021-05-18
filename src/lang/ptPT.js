@@ -355,6 +355,8 @@ export default {
     activate_automatic_speeding_report: 'Relatório de excesso de velocidade - Activar relatório automático',
     activate_automatic_refueling_report: 'Relatório de abastecimentos - Activar relatório automático',
     activate_automatic_fueldrop_report: 'Relatório de perda de combustível - Activar relatório automático',
+    activate_automatic_activity_report: 'Relatório de actividade - Activar relatório automático',
+    activate_automatic_events_report: 'Relatório de eventos - Activar relatório automático',
     report_periodicity_daily: 'Diariamente',
     report_periodicity_weekly: 'Semanalmente',
     report_periodicity_monthly: 'Mensalmente',

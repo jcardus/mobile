@@ -343,14 +343,17 @@ export default {
           this.$t('settings.vehicle_licenseplate'),
           this.$t('settings.vehicle_group'),
           this.$t('settings.vehicle_model'),
-          this.$t('settings.vehicle_speed_limit')
+          this.$t('settings.vehicle_speed_limit'),
+          this.$t('settings.vehicle_kms')
         ]
         const data = this.filteredDevices.map(v => [
           v.name,
           v.attributes.license_plate,
           this.groups.find(g => g.id === v.groupId) ? this.groups.find(g => g.id === v.groupId).name : '',
           v.model,
-          Math.round(v.attributes.speedLimit * 1.852)])
+          Math.round(v.attributes.speedLimit * 1.852),
+          this.totalKmsRenderer(null, null, v.id)]
+        )
         excel.export_json_to_excel({
           header: tHeader,
           data,
