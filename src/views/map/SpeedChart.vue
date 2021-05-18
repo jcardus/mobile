@@ -235,9 +235,13 @@ export default {
           this.chart.data.datasets[1].data = this.fuelChartVisible ? sharedData.getChartDataFuelLevel() : []
           this.chart.data.datasets[2].data = this.rpmChartVisible ? sharedData.getChartDataRPM() : []
           if (this.trips && this.trips[this.currentTrip]) {
-            this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
-            this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
-            this.$log.debug('creating annotation', this.chart.annotation.elements['a-box-1'])
+            try {
+              this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
+              this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
+              this.$log.debug('creating annotation', this.chart.annotation.elements['a-box-1'])
+            } catch (e) {
+              this.$log.error(e)
+            }
           }
         }
         this.chart.update()
