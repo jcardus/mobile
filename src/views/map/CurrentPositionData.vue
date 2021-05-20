@@ -170,7 +170,6 @@ export default {
         return [this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD'), this.$moment(vm.$data.routeMaxDate).format('YYYY-MM-DD')]
       },
       set(newVal) {
-        console.log('NEW DATE VALUE', newVal)
         vm.$data.routeMinDate = this.$moment(newVal[0], 'YYYY-MM-DD').toDate()
         vm.$data.routeMaxDate = this.$moment(newVal[1], 'YYYY-MM-DD').toDate()
       }
@@ -382,15 +381,12 @@ export default {
 
         trips.forEach(function(t, index) {
           let fuelConsumption = 0
-          Vue.$log.debug(t.startTime, t.endTime)
 
           const stop = stops.length + 1 > index ? stops[index + 1] : null
 
           const locations = positions.filter(p => {
             return Vue.moment(p.fixTime) >= Vue.moment(t.startTime) && Vue.moment(p.fixTime) <= Vue.moment(t.endTime)
           })
-
-          Vue.$log.debug('trip positions', locations.length)
 
           if (self.device.attributes.xpert) {
             const xpertMessages = locations.map(p => p.attributes.xpert).flat().filter(p => p)
