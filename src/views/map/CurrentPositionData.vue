@@ -4,7 +4,7 @@
     <span style="font-style: italic; float: right">
       <span style="float:right; padding-left: 10px">
         <el-tag
-          style="margin-right: 5px"
+          style="margin-right: 5px; height: 28px"
           size="small"
           :type="tagSpeedChartColor()"
           effect="dark"
@@ -13,7 +13,7 @@
           <i class="fas fa-tachometer-alt" style="color: white"></i>
         </el-tag>
         <el-tag
-          style="margin-right: 5px"
+          style="margin-right: 5px; height: 28px"
           size="small"
           :type="tagFuelChartColor()"
           effect="dark"
@@ -22,7 +22,7 @@
           <i class="fas fa-gas-pump" style="color: white"></i>
         </el-tag>
         <el-tag
-          style="margin-right: 15px"
+          style="margin-right: 15px; height: 28px"
           size="small"
           :type="tagRPMChartColor()"
           effect="dark"
@@ -33,21 +33,22 @@
         <i class="fas fa-times" style="color: gray" @click="toggleChanged"></i>
       </span>
     </span>
-    <div style="padding-top: 5px; overflow: hidden; width:100%">
+    <div v-if="!isMobile" style="float: right">
+      <el-date-picker v-model="_dateRange" size="mini" type="daterange" range-separator="a"></el-date-picker>
+    </div>
+    <div v-if="isMobile" style="padding-top: 5px; overflow: hidden; width:100%">
       <div style="float:left; ">
         <label>
-          <input v-if="isMobile" v-model="_minDate" type="date">
-          <el-date-picker v-else v-model="_minDate"></el-date-picker>
+          <input v-model="_minDate" type="date">
         </label>
       </div>
       <div style="float:right">
         <label>
-          <input v-if="isMobile" v-model="_maxDate" style="float: right" type="date">
-          <el-date-picker v-else v-model="_maxDate"></el-date-picker>
+          <input v-model="_maxDate" style="float: right" type="date">
         </label>
       </div>
     </div>
-    <div class="textFormat" style="padding-top: 5px; overflow: hidden; width: 100%; white-space: nowrap;">
+    <div class="textFormat" style="padding-top: 3px; overflow: hidden; width: 100%; white-space: nowrap;">
       {{ formattedDate }} {{ formatAddress }}
     </div>
 
@@ -164,6 +165,16 @@ export default {
     showRoutes() {
       return this.historyMode
     },
+    _dateRange: {
+      get() {
+        return [this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD'), this.$moment(vm.$data.routeMaxDate).format('YYYY-MM-DD')]
+      },
+      set(newVal) {
+        console.log('NEW DATE VALUE', newVal)
+        vm.$data.routeMinDate = this.$moment(newVal[0], 'YYYY-MM-DD').toDate()
+        vm.$data.routeMaxDate = this.$moment(newVal[1], 'YYYY-MM-DD').toDate()
+      }
+    },
     _minDate: {
       get() {
         return this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD')
@@ -195,6 +206,9 @@ export default {
       this.datesChanged()
     },
     _maxDate() {
+      this.datesChanged()
+    },
+    _dataRange() {
       this.datesChanged()
     }
   },
@@ -228,6 +242,7 @@ export default {
       console.log(this.$route.query.date)
       this._maxDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
       this._minDate = this.$moment(this.$route.query.date, 'YYYY-MM-DD hh:mm:ss')
+      this._dateRange = [this._minDate, this._maxDate]
       this.datesChanged()
     }
   },
@@ -256,7 +271,7 @@ export default {
     toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
     },
-    onPositions(positions) {
+    async onPositions(positions) {
       Vue.$log.debug('positions before filter ', positions)
       const self = this
       positions = utils.filterPositions(positions)
@@ -276,7 +291,8 @@ export default {
           checkFuelThresholds(min.attributes.fuel, this.device)
         }
         this.drawAll(positions)
-        this.getRouteTrips(positions)
+        // this.getRouteTrips(positions)
+        await this.getTrips(vm.$data.routeMinDate, vm.$data.routeMaxDate, positions)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
         this.filterTrips().then(() => {
           Vue.$log.debug('after filter got ', this.trips.length, ' trips')
@@ -351,6 +367,63 @@ export default {
     getRoute(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
+    },
+    async getTrips(from, to, positions) {
+      const self = this
+      this.trips.length = 0
+      Vue.$log.debug('getting trips from ', from, ' to ', to)
+      const responseTrips = await traccar.trips([this.device.id], from, to)
+      const responseStops = await traccar.stops([this.device.id], from, to)
+
+      if (responseTrips.data) {
+        const trips = responseTrips.data
+        const stops = responseStops.data ? responseStops.data : []
+        const fuelInfo = this.device.attributes.xpert || positions[0].attributes.fuel
+
+        trips.forEach(function(t, index) {
+          let fuelConsumption = 0
+          Vue.$log.debug(t.startTime, t.endTime)
+
+          const stop = stops.length + 1 > index ? stops[index + 1] : null
+
+          const locations = positions.filter(p => {
+            return Vue.moment(p.fixTime) >= Vue.moment(t.startTime) && Vue.moment(p.fixTime) <= Vue.moment(t.endTime)
+          })
+
+          Vue.$log.debug('trip positions', locations.length)
+
+          if (self.device.attributes.xpert) {
+            const xpertMessages = locations.map(p => p.attributes.xpert).flat().filter(p => p)
+            const xpertEndTripMessage = xpertMessages.filter(x => x.type === '3')
+            if (xpertEndTripMessage.length > 1) {
+              const diff = xpertEndTripMessage[xpertEndTripMessage.length - 1].total_fuel - xpertEndTripMessage[0].total_fuel
+              console.log('Diff:', diff)
+              fuelConsumption = Math.round(diff)
+            }
+          } else {
+            fuelConsumption = t.spentFuel < 0 ? 0 : t.spentFuel
+          }
+
+          const tripDistance = Math.round(t.distance) / 1000
+
+          self.trips.push({
+            positions: locations,
+            idlePositions: [],
+            trip_start_fixtime: self.$moment(t.startTime).format('DD-MM-YYYY HH:mm:ss'),
+            trip_end_fixtime: self.$moment(t.endTime).format('DD-MM-YYYY HH:mm:ss'),
+            trip_end_address: t.endAddress,
+            trip_driving_time: t.duration / 1000,
+            trip_idle_time: stop ? (stop.engineHours / 1000) : 0,
+            trip_stop_time: stop ? (new Date(stop.endTime) - new Date(stop.startTime)) / 1000 : 0,
+            trip_distance: tripDistance,
+            trip_avg_speed: Math.round(t.averageSpeed * 1.85200),
+            endPoi: self.findNearestPOI(locations[locations.length - 1]),
+            fuelInfo: fuelInfo,
+            fuel_consumption: fuelConsumption,
+            avg_fuel_consumption: Math.round(tripDistance > 0 ? fuelConsumption * 100 / tripDistance : 0)
+          })
+        })
+      }
     },
     getRouteTrips(positions) {
       this.trips.length = 0
