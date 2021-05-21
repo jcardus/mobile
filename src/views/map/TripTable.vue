@@ -73,17 +73,17 @@
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="scope.row.xpert ? 8 : 12" class="colTripData">
+                <el-col :span="scope.row.fuelInfo ? 8 : 12" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.trip_distance }}km</span>
                   </div>
                 </el-col>
-                <el-col :span="scope.row.xpert ? 8 : 12" class="colTripData">
+                <el-col :span="scope.row.fuelInfo ? 8 : 12" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.trip_avg_speed }}km/h </span>
                   </div>
                 </el-col>
-                <el-col v-if="scope.row.xpert" :span="8" class="colTripData">
+                <el-col v-if="scope.row.fuelInfo" :span="8" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-gas-pump" style="color: #13ce66"></i> {{ scope.row.fuel_consumption }}L</span><span style="font-size: 10px"> ({{ scope.row.avg_fuel_consumption }}L\100)</span>
                   </div>
@@ -108,7 +108,7 @@
       </div>
       <div>
         <div style="width: 50%; float:left"><span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ totalKms }} km</span></div>
-        <div v-if="trips[0].xpert" style="width: 50%; float:left"><span style="font-size: 12px"><i class="fas fa-gas-pump" style="color: #13ce66"></i> {{ totalFuelConsumption }}L</span><span style="font-size: 10px"> ({{ avgFuelConsumption }}L\100)</span></div>
+        <div v-if="trips[0].fuelInfo" style="width: 50%; float:left"><span style="font-size: 12px"><i class="fas fa-gas-pump" style="color: #13ce66"></i> {{ totalFuelConsumption }}L</span><span style="font-size: 10px"> ({{ avgFuelConsumption }}L\100)</span></div>
       </div>
     </div>
   </div>
@@ -144,7 +144,7 @@ export default {
       return Math.round(this.trips.reduce((sum, t) => sum + t.trip_distance, 0))
     },
     totalFuelConsumption() {
-      return Math.round(this.trips.reduce((sum, t) => sum + t.fuel_consumption, 0))
+      return Math.round(this.trips.reduce((sum, t) => sum + (t.fuel_consumption < 0 ? 0 : t.fuel_consumption), 0))
     },
     avgFuelConsumption() {
       const totalKms = this.totalKms

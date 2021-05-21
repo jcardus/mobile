@@ -11,6 +11,7 @@ const route = baseUrl + 'reports/route'
 const events = baseUrl + 'reports/events'
 const positions = baseUrl + 'positions'
 const trips = baseUrl + 'reports/trips'
+const stops = baseUrl + 'reports/stops'
 const summary = baseUrl + 'reports/summary'
 const geoFences = baseUrl + 'geofences'
 const alerts = baseUrl + 'notifications'
@@ -191,6 +192,7 @@ export const traccar = {
     delete device.poi
     delete device.driver
     delete device.position
+    delete device.geofences
     Vue.$log.debug('updateDevice', device.name)
     return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
   },
@@ -241,6 +243,12 @@ export const traccar = {
     const yesterday = new Date()
     yesterday.setDate(new Date().getDate() - 1)
     return axios.get(trips + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
+      { withCredentials: true })
+  },
+  stops: function(devices, from, to) {
+    const yesterday = new Date()
+    yesterday.setDate(new Date().getDate() - 1)
+    return axios.get(stops + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
       { withCredentials: true })
   },
   stopReceiving: function() {

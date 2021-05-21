@@ -3,7 +3,7 @@
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
     <div v-if="userLoggedIn" id="historyMode" :style="heightHistoryPanel" class="historyPanel">
       <current-position-data v-if="historyMode" class="currentPositionData"></current-position-data>
-      <div v-if="historyMode" style="height: 10px"></div>
+      <div v-if="historyMode" style="height: 5px"></div>
       <history-panel v-if="historyMode" class="historyPanel"></history-panel>
     </div>
   </div>

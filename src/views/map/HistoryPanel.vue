@@ -1,6 +1,6 @@
 <template>
   <div v-show="historyMode" v-loading="loadingRoutes" class="historyPanel2">
-    <div style="position: relative; height:120px; padding-right: 20px">
+    <div style="position: relative; height:160px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
     <div v-if="!isMobile">
@@ -160,14 +160,17 @@ export default {
       const seriesFuelSensor = sharedData.getPositions().filter(p => p.fuelLevel).map(x => {
         return { y: x.fuelLevel, x: this.$moment(x.fixTime).toDate() }
       })
-      const seriesRPM = sharedData.getPositions()
-        .filter(p => (p.attributes.xpert &&
-          ((p.attributes.xpert.filter(x => x.type === '1').length > 0) ||
-          !p.attributes.ignition))).map(x => {
-          return { y: (!x.attributes.ignition ? 0 : (x.attributes.xpert.filter(x => x.type === '1'))[0].rpm), x: this.$moment(x.fixTime).toDate() }
-        })
+      const seriesRPM = this.getRPMValues()
       sharedData.setChartData(series, seriesFuelSensor, seriesRPM)
       this.updateChart = !this.updateChart
+    },
+    getRPMValues() {
+      return sharedData.getPositions()
+        .filter(p => (p.attributes.xpert &&
+          ((p.attributes.xpert.filter(x => x.type === '1').length > 0) ||
+            !p.attributes.ignition)) || p.attributes.rpm).map(x => {
+          return { y: (!x.attributes.ignition ? 0 : (x.attributes.rpm ? x.attributes.rpm : x.attributes.xpert.filter(x => x.type === '1')[0].rpm)), x: this.$moment(x.fixTime).toDate() }
+        })
     },
     click: function() {
       this.$store.dispatch('transient/togglePlaying')
