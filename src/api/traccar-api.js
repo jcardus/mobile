@@ -192,6 +192,7 @@ export const traccar = {
     delete device.poi
     delete device.driver
     delete device.position
+    delete device.geofences
     Vue.$log.debug('updateDevice', device.name)
     return axios.put(devices + '/' + deviceId, device, { withCredentials: true })
   },
