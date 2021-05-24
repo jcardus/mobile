@@ -240,14 +240,12 @@ export const traccar = {
     return get(positions + '?id=' + positionId)
   },
   trips: function(devices, from, to) {
-    const yesterday = new Date()
-    yesterday.setDate(new Date().getDate() - 1)
+    to = Vue.moment(to).endOf('day').toDate()
     return axios.get(trips + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
       { withCredentials: true })
   },
   stops: function(devices, from, to) {
-    const yesterday = new Date()
-    yesterday.setDate(new Date().getDate() - 1)
+    to = Vue.moment(to).endOf('day').toDate()
     return axios.get(stops + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
       { withCredentials: true })
   },
