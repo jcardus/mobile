@@ -38,21 +38,26 @@
               </div>
               <div class="form-item-block">
                 <div class="form-item-row">
-                  <el-form-item class="form-item-block-left el-input-number-fix" :label="$t('settings.vehicle_form_speed_limit')">
-                    <el-input-number v-model="vehicleSpeedLimit" :min="0" :precision="0" />
-                    <!--<el-input-number v-model="vehicleTotalKms" :min="0" :precision="1" />
-                    <el-tooltip :content="$t('settings.vehicle_form_by_date')" placement="top">
-                      <el-button
-                        circle
-                        size="small"
-                        style="margin-left: 5px"
-                        @click="handleUpdateVehicleKms()"
-                      ><i class="fa fa-calendar"></i></el-button>
-                    </el-tooltip>-->
-                  </el-form-item>
+                  <el-card style="width: 280px; margin-top: 20px" body-style="{ padding: '10px' }" shadow="never" class="box-card">
+                    <div>
+                      <el-form-item class="form-item-block-left el-input-number-fix" :label="$t('settings.vehicle_form_speed_limit')">
+                        <el-input-number v-model="vehicleSpeedLimit" style="width: 200px" :min="0" :precision="0" />
+                      </el-form-item>
+                    </div>
+                    <div>
+                      <el-form-item class="form-item-block-left el-input-number-fix" :label="$t('settings.vehicle_form_speed_minimal_duration')">
+                        <el-input-number v-model="vehicleOverspeedMinimalDuration" style="width: 200px" :min="0" :precision="0" />
+                      </el-form-item>
+                    </div>
+                  </el-card>
                   <el-form-item class="form-item-block-right el-input-number-fix" :label="$t('settings.vehicle_form_fuel_tank_capacity')">
                     <el-input-number v-model="vehicleFuelTankCapacity" :min="0" :precision="0" />
                   </el-form-item>
+                </div>
+              </div>
+              <div class="form-item-block">
+                <div class="form-item-row">
+
                 </div>
               </div>
             </el-form>
@@ -259,6 +264,7 @@ export default {
       vehicleName: '',
       vehicleModel: '',
       vehicleSpeedLimit: 0,
+      vehicleOverspeedMinimalDuration: 0,
       vehicleTotalKms: 0,
       vehicleDateKms: new Date(),
       vehicleKms: 0,
@@ -496,6 +502,7 @@ export default {
         groupId: this.selectedGroup,
         attributes: {
           speedLimit: this.vehicleSpeedLimit / 1.85200,
+          overspeedMinimalDuration: this.vehicleOverspeedMinimalDuration,
           license_plate: this.selectedVehicle.attributes.license_plate,
           'decoder.timezone': this.selectedVehicle.attributes['decoder.timezone'],
           has_immobilization: this.selectedVehicle.attributes.has_immobilization,
@@ -561,6 +568,7 @@ export default {
         this.vehicleTotalKms = p.properties.attributes.totalDistance / 1000
       }
       this.vehicleSpeedLimit = Math.round(row.attributes.speedLimit * 1.85200)
+      this.vehicleOverspeedMinimalDuration = row.attributes.overspeedMinimalDuration ? row.attributes.overspeedMinimalDuration : 0
       this.isOpenVehicleForm = !this.isOpenVehicleForm
     },
     alertSpeedRenderer(row, column, cellValue) {
@@ -590,6 +598,7 @@ export default {
       this.selectedCategory = null
       this.vehicleModel = ''
       this.vehicleSpeedLimit = 0
+      this.vehicleOverspeedMinimalDuration = 0
       this.vehicleTotalKms = 0
       this.vehicleKms = 0
       this.vehicleDateKms = null
