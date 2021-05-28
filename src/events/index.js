@@ -13,6 +13,7 @@ export const mapShow = 'mapShown'
 export const dashboardLoaded = 'dashboardLoaded'
 export const dataLoaded = 'dataLoaded'
 export const modelsLoaded = 'modelsLoaded'
+export const autoSliderChange = 'autoSliderChange'
 
 export const routePlay = 'routePlay'
 export const routeMatchFinished = 'routeMatchFinished'
