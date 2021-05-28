@@ -219,6 +219,7 @@ export default {
     vehicle_form_name: 'Nombre',
     vehicle_form_model: 'Modelo',
     vehicle_form_speed_limit: 'Límite de Velocidad (Km/h)',
+    vehicle_form_speed_minimal_duration: 'Duração Minima (segundos)',
     vehicle_form_by_date: 'Set by date',
     vehicle_kms_form: 'Edit Vehicle Kms',
     vehicle_kms_form_date: 'Data',

@@ -232,6 +232,7 @@ export default {
     vehicle_form_groups_placeholder: 'Select group',
     vehicle_form_model: 'Model',
     vehicle_form_speed_limit: 'Speed Limit (Km/h)',
+    vehicle_form_speed_minimal_duration: 'Speed Minimal Duration (seconds)',
     vehicle_form_by_date: 'Set by date',
     vehicle_kms_form: 'Edit Vehicle Kms',
     vehicle_kms_form_date: 'Date',

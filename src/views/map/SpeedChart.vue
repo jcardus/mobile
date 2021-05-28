@@ -219,12 +219,19 @@ export default {
                 max: 100
               }
             }]
-          }
+          },
+          onClick: this.chartClickEvent
         }
       })
     }
   },
   methods: {
+    chartClickEvent(e, array) {
+      if (array.length > 0) {
+        serverBus.$emit(event.posChanged, array[0]._index)
+        serverBus.$emit(event.autoSliderChange, Vue.moment(sharedData.positions[array[0]._index].fixTime).unix())
+      }
+    },
     updateChart() {
       if (this.chart) {
         if (this.chart.data) {
