@@ -543,7 +543,7 @@ export default {
           accessToken: mapboxgl.accessToken,
           unit: 'metric'
         })
-        map.addControl(directions, 'top-left')
+        map.addControl(directions, 'top-right')
       }
       this.$static.draw = new MapboxDraw({
         displayControlsDefault: false,
