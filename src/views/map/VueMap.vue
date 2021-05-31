@@ -542,9 +542,7 @@ export default {
         const directions = new MapboxDirections({
           accessToken: mapboxgl.accessToken,
           unit: 'metric',
-          geocoder: {
-            language: 'pt'
-          }
+          language: 'pt'
         })
         map.addControl(directions, 'top-right')
       }
