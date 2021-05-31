@@ -541,7 +541,10 @@ export default {
         map.addControl(new RulerControl(), 'top-left')
         const directions = new MapboxDirections({
           accessToken: mapboxgl.accessToken,
-          unit: 'metric'
+          unit: 'metric',
+          geocoder: {
+            language: 'pt'
+          }
         })
         map.addControl(directions, 'top-right')
       }
