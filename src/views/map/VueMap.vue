@@ -52,6 +52,7 @@ import { getServerHost, isDevEnv } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
+import MapboxDirections from '@mapbox/mapbox-gl-directions'
 
 let socketReconnect = 0
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
@@ -537,6 +538,11 @@ export default {
         }), 'top-left')
         map.addControl(new mapboxgl.NavigationControl(), 'top-left')
         map.addControl(new RulerControl(), 'top-left')
+        const directions = new MapboxDirections({
+          accessToken: mapboxgl.accessToken,
+          unit: 'metric'
+        })
+        map.addControl(directions, 'top-left')
       }
       this.$static.draw = new MapboxDraw({
         displayControlsDefault: false,
