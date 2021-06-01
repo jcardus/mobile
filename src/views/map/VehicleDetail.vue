@@ -36,6 +36,7 @@
           :selected-device="device"
           style="float:left"
         ></immobilize-button>
+
         <el-button
           v-if="!routePoint"
           icon="el-icon-video-play"
@@ -43,6 +44,13 @@
           style="float:right"
           @click="showRoutesChanged"
         >{{ $t('vehicleDetail.show_route') }}</el-button>
+        <!--el-button
+          v-if="!routePoint"
+          icon="el-icon-discover"
+          type="text"
+          style="float:right"
+          @click="directionsClicked"
+        >{{ $t('vehicleDetail.directions') }}</el-button-->
         <el-button
           v-if="currentPosition.attributes.ignition && followVehicleEnabled"
           icon="el-icon-video-camera"
@@ -225,6 +233,9 @@ export default {
     },
     showRoutesChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
+    },
+    directionsClicked() {
+      serverBus.$emit('directionsTo', this.currentPosition.longitude + ',' + this.currentPosition.latitude)
     }
   }
 }

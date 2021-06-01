@@ -6,6 +6,21 @@
       <div v-if="historyMode" style="height: 5px"></div>
       <history-panel v-if="historyMode" class="historyPanel"></history-panel>
     </div>
+    <div
+      id="showDirections"
+      ref="directions"
+      class="mapboxgl-ctrl mapboxgl-ctrl-group"
+    >
+      <button
+        :style="showDirections?'background-color: dimgray':''"
+        class="mapboxgl-ctrl-icon"
+        @click="showDirections = !showDirections"
+      >
+        <svg viewBox="0 0 18 18" xml:space="preserve" width="18" height="18">
+          <path d="M7.4 2.5c-2.7 0-4.9 2.2-4.9 4.9s2.2 4.9 4.9 4.9c1 0 1.8-.2 2.5-.8l3.7 3.7c.2.2.4.3.8.3.7 0 1.1-.4 1.1-1.1 0-.3-.1-.5-.3-.8L11.4 10c.4-.8.8-1.6.8-2.5.1-2.8-2.1-5-4.8-5zm0 1.6c1.8 0 3.2 1.4 3.2 3.2s-1.4 3.2-3.2 3.2-3.3-1.3-3.3-3.1 1.4-3.3 3.3-3.3z" />
+        </svg>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -15,10 +30,9 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import '@mapbox/mapbox-gl-traffic/mapbox-gl-traffic.css'
 import mapboxgl from 'mapbox-gl'
-import RulerControl from 'mapbox-gl-controls/lib/ruler'
+
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { serverBus, vm } from '@/main'
 import settings from '../../settings'
 import * as lnglat from '../../utils/lnglat'
@@ -26,7 +40,7 @@ import { MapboxCustomControl } from '@/utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
 import HistoryPanel from './HistoryPanel'
-import i18n, { getLanguageI18n } from '../../lang'
+import i18n, { getLanguage } from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
@@ -52,60 +66,29 @@ import { getServerHost, isDevEnv } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
+import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions'
+import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css'
 
 let socketReconnect = 0
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
-const coordinatesGeocoder = function(query) {
-// match anything which looks like a decimal degrees coordinate pair
-  const matches = query.match(
-    /^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
-  )
-  if (!matches) {
-    return null
-  }
-
-  function coordinateFeature(lng, lat) {
-    return {
-      center: [lng, lat],
-      geometry: {
-        type: 'Point',
-        coordinates: [lng, lat]
-      },
-      place_name: 'Lat: ' + lat + ' Lng: ' + lng,
-      place_type: ['coordinate'],
-      properties: {},
-      type: 'Feature'
-    }
-  }
-
-  const coord1 = Number(matches[1])
-  const coord2 = Number(matches[2])
-  const geocodes = []
-
-  if (coord1 < -90 || coord1 > 90) {
-    // must be lng, lat
-    geocodes.push(coordinateFeature(coord1, coord2))
-  }
-
-  if (coord2 < -90 || coord2 > 90) {
-    // must be lat, lng
-    geocodes.push(coordinateFeature(coord2, coord1))
-  }
-
-  if (geocodes.length === 0) {
-    // else could be either lng, lat or lat, lng
-    geocodes.push(coordinateFeature(coord1, coord2))
-    geocodes.push(coordinateFeature(coord2, coord1))
-  }
-
-  return geocodes
-}
 
 function getSocketUrl() {
   const hostName = getServerHost()
   Vue.$log.debug('websocket ', hostName)
   return `${isDevEnv() ? 'ws' : 'wss'}://${hostName}/api/socket`
 }
+
+const directions = new MapboxDirections({
+  accessToken: consts.mapboxAccessToken,
+  unit: 'metric',
+  language: getLanguage().slice(0, 2),
+  controls: {
+    profileSwitcher: false
+  },
+  interactive: true,
+  placeholderDestination: 'Local de destino',
+  placeholderOrigin: 'Local de origem'
+})
 
 export default {
   name: 'VueMap',
@@ -120,7 +103,8 @@ export default {
       parentHeight: 0,
       imageDownloadQueue: [],
       loadingCount: 0,
-      initialized: false
+      initialized: false,
+      showDirections: false
     }
   },
   computed: {
@@ -175,6 +159,13 @@ export default {
     '$route'(to) {
       if (to.name === 'Map') {
         setTimeout(() => serverBus.$emit(event.mapShow), 500)
+      }
+    },
+    showDirections() {
+      if (this.showDirections) {
+        this.map.addControl(directions, 'top-right')
+      } else {
+        this.map.removeControl(directions)
       }
     }
   },
@@ -382,6 +373,12 @@ export default {
         }
       }
     },
+    directionsTo(coord) {
+      if (!this.showDirections) {
+        this.showDirections = true
+      }
+      setTimeout(() => { directions.setOrigin(coord) }, 500)
+    },
     eventsLoaded: function() {
       // this.eventsSource.features = this.processEvents(this.events)
       this.refreshEvents()
@@ -528,15 +525,8 @@ export default {
       const map = this.$static.map
       this.$log.debug('adding mapcontrols...')
       if (!this.isMobile) {
-        map.addControl(new MapboxGeocoder({
-          accessToken: mapboxgl.accessToken,
-          mapboxgl: mapboxgl,
-          collapsed: true,
-          language: getLanguageI18n(),
-          localGeocoder: coordinatesGeocoder
-        }), 'top-left')
         map.addControl(new mapboxgl.NavigationControl(), 'top-left')
-        map.addControl(new RulerControl(), 'top-left')
+        map.addControl({ onAdd: () => this.$refs.directions }, 'top-left')
       }
       this.$static.draw = new MapboxDraw({
         displayControlsDefault: false,
@@ -609,6 +599,7 @@ export default {
       serverBus.$on(event.deviceChanged, this.deviceChanged)
       serverBus.$on(event.eventSelected, this.eventSelected)
       serverBus.$on(event.eventsLoaded, this.eventsLoaded)
+      serverBus.$on(event.directionsTo, this.directionsTo)
 
       this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
@@ -1020,9 +1011,4 @@ export default {
   }
   *:focus{ outline: none; }
 
-  .fc_chat_widget_frame {
-    right:0 !important;
-    bottom:5px !important;
-    min-width:50px !important;
-  }
 </style>

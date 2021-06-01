@@ -474,7 +474,7 @@ export default {
   }
 
 </style>
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../../styles/element-variables.scss';
 
   @media screen and (max-width: 768px) {
