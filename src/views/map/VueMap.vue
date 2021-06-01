@@ -6,7 +6,11 @@
       <div v-if="historyMode" style="height: 5px"></div>
       <history-panel v-if="historyMode" class="historyPanel"></history-panel>
     </div>
-    <div id="showDirections" ref="directions" class="mapboxgl-ctrl mapboxgl-ctrl-group">
+    <div
+      id="showDirections"
+      ref="directions"
+      class="mapboxgl-ctrl mapboxgl-ctrl-group"
+    >
       <button
         :style="showDirections?'background-color: dimgray':''"
         class="mapboxgl-ctrl-icon"
