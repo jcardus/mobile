@@ -520,7 +520,7 @@ export default {
       this.$log.debug('adding mapcontrols...')
       if (!this.isMobile) {
         map.addControl(new mapboxgl.NavigationControl(), 'top-left')
-        map.addControl({ onAdd: () => this.$refs.directions })
+        map.addControl({ onAdd: () => this.$refs.directions }, 'top-left')
       }
       this.$static.draw = new MapboxDraw({
         displayControlsDefault: false,
