@@ -377,7 +377,7 @@ export default {
       if (!this.showDirections) {
         this.showDirections = true
       }
-      setTimeout(() => { directions.setDestination(coord) }, 1000)
+      setTimeout(() => { directions.setOrigin(coord) }, 500)
     },
     eventsLoaded: function() {
       // this.eventsSource.features = this.processEvents(this.events)
