@@ -373,6 +373,12 @@ export default {
         }
       }
     },
+    directionsTo(coord) {
+      if (!this.showDirections) {
+        this.showDirections = true
+      }
+      setTimeout(() => { directions.setDestination(coord) }, 1000)
+    },
     eventsLoaded: function() {
       // this.eventsSource.features = this.processEvents(this.events)
       this.refreshEvents()
@@ -593,6 +599,7 @@ export default {
       serverBus.$on(event.deviceChanged, this.deviceChanged)
       serverBus.$on(event.eventSelected, this.eventSelected)
       serverBus.$on(event.eventsLoaded, this.eventsLoaded)
+      serverBus.$on(event.directionsTo, this.directionsTo)
 
       this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {

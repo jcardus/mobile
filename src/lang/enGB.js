@@ -74,7 +74,8 @@ export default {
   vehicleDetail: {
     show_route: 'Show route',
     follow: 'Seguir',
-    unfollow: 'Parar'
+    unfollow: 'Parar',
+    directions: 'Direcções'
   },
   poiTable: {
     showPOIs: 'Show POIs',
