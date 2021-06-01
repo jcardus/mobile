@@ -44,13 +44,13 @@
           style="float:right"
           @click="showRoutesChanged"
         >{{ $t('vehicleDetail.show_route') }}</el-button>
-        <el-button
+        <!--el-button
           v-if="!routePoint"
           icon="el-icon-discover"
           type="text"
           style="float:right"
           @click="directionsClicked"
-        >{{ $t('vehicleDetail.directions') }}</el-button>
+        >{{ $t('vehicleDetail.directions') }}</el-button-->
         <el-button
           v-if="currentPosition.attributes.ignition && followVehicleEnabled"
           icon="el-icon-video-camera"
