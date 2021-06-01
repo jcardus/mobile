@@ -41,6 +41,10 @@
         <i class="el-icon-setting"></i>
         <span slot="title">{{ $t('route.settings') }}</span>
       </el-menu-item>
+      <el-menu-item @click="logout()">
+        <i class="el-icon-switch-button"></i>
+        <span slot="title">{{ $t('navbar.logout') }}</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -76,6 +80,11 @@ export default {
   methods: {
     openDashboard() {
       window.open('/#dashboard')
+    },
+    async logout() {
+      this.loading = true
+      await this.$store.dispatch('user/logout')
+      window.location.reload()
     }
   }
 }
