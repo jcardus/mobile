@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="right-menu">
+    <!--div class="right-menu">
       <el-dropdown trigger="click" @command="handleCommand">
         <span class="el-dropdown-link">
           <el-avatar v-if="!$route.path.includes('dashboard')" size="large">{{ avatar }}</el-avatar>
@@ -16,7 +16,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <div v-if="offline">Offline...</div>
-    </div>
+    </div-->
     <el-dialog v-if="user.id !== 0" :title="$t('profile.user_account')" :visible.sync="dialogVisible" :before-close="handleClose" @open="dirty=false">
       <el-form ref="user" :model="user" :rules="rules" label-width="auto">
         <el-form-item :label="$t('profile.user_name')" prop="name">

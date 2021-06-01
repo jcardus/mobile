@@ -15,7 +15,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import '@mapbox/mapbox-gl-traffic/mapbox-gl-traffic.css'
 import mapboxgl from 'mapbox-gl'
-import RulerControl from 'mapbox-gl-controls/lib/ruler'
+
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
@@ -26,7 +26,7 @@ import { MapboxCustomControl } from '@/utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
 import HistoryPanel from './HistoryPanel'
-import i18n, { getLanguageI18n } from '../../lang'
+import i18n, { getLanguage, getLanguageI18n } from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
@@ -538,11 +538,18 @@ export default {
           localGeocoder: coordinatesGeocoder
         }), 'top-left')
         map.addControl(new mapboxgl.NavigationControl(), 'top-left')
-        map.addControl(new RulerControl(), 'top-left')
+        // map.addControl(new RulerControl(), 'top-left')
+
         const directions = new MapboxDirections({
           accessToken: mapboxgl.accessToken,
           unit: 'metric',
-          language: 'pt'
+          language: getLanguage().slice(0, 2),
+          controls: {
+            profileSwitcher: false
+          },
+          interactive: false,
+          placeholderDestination: 'Local de destino',
+          placeholderOrigin: 'Local de origem'
         })
         map.addControl(directions, 'top-right')
       }
@@ -1028,9 +1035,4 @@ export default {
   }
   *:focus{ outline: none; }
 
-  .fc_chat_widget_frame {
-    right:0 !important;
-    bottom:5px !important;
-    min-width:50px !important;
-  }
 </style>

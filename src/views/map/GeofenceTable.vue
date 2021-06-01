@@ -50,7 +50,7 @@
         <el-table-column label="" width="40">
           <template slot-scope="scope">
             <i v-if="!(getType(scope.row)==='poi')" :style="'color: '+(scope.row.attributes.color ? scope.row.attributes.color : '#3232b4')" :class="geofenceImageType(scope.row)"></i>
-            <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.svg'">
+            <img v-if="getType(scope.row)==='poi'" :src="'img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.svg'" alt="">
           </template>
         </el-table-column>
         <el-table-column
@@ -105,15 +105,13 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     geofences: function() {
-      const geofences = vm.$store.state.user.geofences.filter(g => g &&
+      return vm.$store.state.user.geofences.filter(g => g &&
           (
             (g.area.startsWith('POLYGON') && this.showGeofenceLayer) ||
             (g.area.startsWith('CIRCLE') && this.showPOIsLayer) ||
             (g.area.startsWith('LINESTRING') && this.showLineGeofenceLayer)
           )
       )
-
-      return geofences
     },
     geofencesSource() { return this.$root.$static.geofencesSource },
     filteredGeofences: function() {
@@ -243,7 +241,7 @@ export default {
     -webkit-overflow-scrolling: touch;
   }
 </style>
-<style>
+<style scoped>
   ::-webkit-scrollbar {
     width: 5px;
   }
