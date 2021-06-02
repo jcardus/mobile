@@ -18,7 +18,7 @@
         {{ properties.content }}
       </div>
       <div style="padding-top: 5px;padding-bottom: 5px;">
-        <span>{{ properties.timestamp | moment('from', currentTime) }}</span>
+        <span>{{ new Date(properties.timestamp).toLocaleString() }}</span>
       </div>
     </div>
   </div>

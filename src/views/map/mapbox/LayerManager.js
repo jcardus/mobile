@@ -48,10 +48,6 @@ function addAnimationSource(feature) {
   }
 }
 
-export function hideRouteLayer() {
-  hideLayer(routePlayLayer)
-}
-
 export function hideLayer(layer, hide) {
   setVisible(layer, !hide)
 }
@@ -99,6 +95,9 @@ export default {
     refreshSources()
     refreshLayersVisibility()
     updateDonuts()
+  },
+  hideLayer(layer, hide) {
+    setVisible(layer, !hide)
   },
   addLayers(map) {
     if (store.getters.vehicles3dEnabled) {
