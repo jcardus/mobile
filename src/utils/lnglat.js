@@ -311,11 +311,11 @@ export function hidePopup(device) {
 }
 
 export function showEventPopup(feature, newPopup, eventPopupOnClose) {
-  this.eventPopUps[1] = newPopup
+  this.eventPopUps.push(newPopup
     .setLngLat(feature.geometry.coordinates.slice())
     .setHTML('<div id="vue-event-popup"></div>')
     .addTo(vm.$static.map)
-    .on('close', eventPopupOnClose)
+    .on('close', eventPopupOnClose))
   const PP = Vue.extend(EventPopUp)
   const vuePopup = new PP({
     i18n: i18n,
@@ -329,7 +329,8 @@ export function showEventPopup(feature, newPopup, eventPopupOnClose) {
 
 export function hideEventPopup() {
   if (eventPopUps.length > 0) {
-    eventPopUps[1].remove()
+    eventPopUps.forEach(e => e.remove())
+    eventPopUps.splice(0, eventPopUps.length)
   }
 }
 
