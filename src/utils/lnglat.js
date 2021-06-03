@@ -311,7 +311,7 @@ export function hidePopup(device) {
 }
 
 export function showEventPopup(feature, newPopup, eventPopupOnClose) {
-  this.eventPopUps.push(newPopup
+  eventPopUps.push(newPopup
     .setLngLat(feature.geometry.coordinates.slice())
     .setHTML('<div id="vue-event-popup"></div>')
     .addTo(vm.$static.map)
