@@ -293,14 +293,12 @@ export default {
       groupName: '',
       loading: false,
       filteredDevices(query, item) {
-        if (item.license_plate) {
-          return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 || item.license_plate.toLowerCase().indexOf(query.toLowerCase()) > -1
-        }
+        return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 || (item.license_plate && item.license_plate.toLowerCase().indexOf(query.toLowerCase()) > -1)
       }
     }
   },
   computed: {
-    ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'groups', 'users']),
+    ...mapGetters(['dataLoaded', 'geofences', 'drivers', 'users']),
     isMobile() { return lnglat.isMobile() },
     filteredGroups() {
       return this.groups.filter(data => !this.search ||
@@ -325,6 +323,9 @@ export default {
     },
     lineGeofences: function() {
       return this.geofences.filter(g => g.area.startsWith('LINESTRING'))
+    },
+    groups() {
+      return vm.$store.getters.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     }
   },
   methods: {

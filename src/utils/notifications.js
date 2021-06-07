@@ -16,13 +16,7 @@ export function convertEvents(events, isNew) {
   })
 
   filteredData.forEach(e => {
-    e.device = vm.$store.getters.devices.find(d => d.id === e.deviceId)
-    e.content = getNotificationContent(e)
-    e.type = e.type === 'alarm' ? e.attributes.alarm : e.type
-    e.description = vm.$t('settings.alert_' + e.type)
-    e.image = getNotificationImage(e.type)
-    e.color = getNotificationColor(e.type)
-    e.isNew = isNew
+    this.addEventInfo(e, isNew)
   })
 
   return filteredData.filter(e => e.device !== undefined)
@@ -42,6 +36,16 @@ export function convertEvents(events, isNew) {
       isNew: isNew
     }
   })*/
+}
+
+export function addEventInfo(e, isNew = false) {
+  e.device = vm.$store.getters.devices.find(d => d.id === e.deviceId)
+  e.content = getNotificationContent(e)
+  e.type = e.type === 'alarm' ? e.attributes.alarm : e.type
+  e.description = vm.$t('settings.alert_' + e.type)
+  e.image = getNotificationImage(e.type)
+  e.color = getNotificationColor(e.type)
+  e.isNew = isNew
 }
 
 function getNotificationContent(notification) {

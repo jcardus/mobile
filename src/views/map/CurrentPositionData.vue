@@ -22,13 +22,22 @@
           <i class="fas fa-gas-pump" style="color: white"></i>
         </el-tag>
         <el-tag
-          style="margin-right: 15px; height: 28px"
+          style="margin-right: 5px; height: 28px"
           size="small"
           :type="tagRPMChartColor()"
           effect="dark"
           @click="toggleRPMChart"
         >
           <i class="fab fa-cloudscale" style="color: white; font-size: 15px"></i>
+        </el-tag>
+        <el-tag
+          style="margin-right: 15px; height: 28px"
+          size="small"
+          :type="tagEventsChartColor()"
+          effect="dark"
+          @click="toggleEventChart"
+        >
+          <i class="fas fa-bell" style="color: white; font-size: 15px"></i>
         </el-tag>
         <i class="fas fa-times" style="color: gray" @click="toggleChanged"></i>
       </span>
@@ -69,7 +78,8 @@ import mapboxgl from 'mapbox-gl'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import layerManager from './mapbox/LayerManager'
-import styles from '../../styles/element-variables.scss'
+import routeLayers from './mapbox/layers/RouteLayers'
+import * as notifications from '../../utils/notifications'
 import VehicleDetail from '@/views/map/VehicleDetail'
 import i18n from '@/lang'
 import store from '@/store'
@@ -99,7 +109,8 @@ export default {
       }),
       isSpeedChartVisible: true,
       isFuelChartVisible: true,
-      isRPMChartVisible: true
+      isRPMChartVisible: true,
+      isEventsChartVisible: true
     }
   },
   static() {
@@ -128,8 +139,14 @@ export default {
     routeIdleSource() {
       return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i + 'idle'
     },
+    routeEventsSource() {
+      return 'route-' + this.device.id + '-' + this.currentTrip + '-' + this.i + 'events'
+    },
     allTripsSource() {
-      return 'allTrips-'
+      return 'allTrips'
+    },
+    allTripsArrowsSource() {
+      return 'allTrips-arrows'
     },
     positions: {
       get() {
@@ -167,11 +184,11 @@ export default {
     },
     _dateRange: {
       get() {
-        return [this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD'), this.$moment(vm.$data.routeMaxDate).format('YYYY-MM-DD')]
+        return [vm.$data.routeMinDate, vm.$data.routeMaxDate]
       },
       set(newVal) {
-        vm.$data.routeMinDate = this.$moment(newVal[0], 'YYYY-MM-DD').toDate()
-        vm.$data.routeMaxDate = this.$moment(newVal[1], 'YYYY-MM-DD').toDate()
+        vm.$data.routeMinDate = new Date(newVal[0])
+        vm.$data.routeMaxDate = new Date(newVal[1])
       }
     },
     _minDate: {
@@ -222,6 +239,7 @@ export default {
     window.removeEventListener('resize', this.resizeDiv)
     serverBus.$off(event.posChanged, this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
+    serverBus.$off(event.toogleEventChart, this.onToogleEventChart)
     const lastPos = vm.$data.currentDevice.position
     // put the vehicle back where it was...
     if (lastPos) {
@@ -259,6 +277,9 @@ export default {
     tagRPMChartColor() {
       return this.isRPMChartVisible ? 'primary' : 'info'
     },
+    tagEventsChartColor() {
+      return this.isEventsChartVisible ? 'danger' : 'info'
+    },
     toggleFuelChart() {
       serverBus.$emit(event.toogleFuelChart)
       this.isFuelChartVisible = !this.isFuelChartVisible
@@ -266,6 +287,11 @@ export default {
     toggleRPMChart() {
       serverBus.$emit(event.toogleRPMChart)
       this.isRPMChartVisible = !this.isRPMChartVisible
+    },
+    toggleEventChart() {
+      this.isEventsChartVisible = !this.isEventsChartVisible
+      serverBus.$emit(event.toogleEventChart)
+      layerManager.hideLayer(this.routeEventsSource, !this.isEventsChartVisible)
     },
     toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
@@ -291,6 +317,7 @@ export default {
         }
         this.drawAll(positions)
         // this.getRouteTrips(positions)
+        await this.getEvents(vm.$data.routeMinDate, vm.$data.routeMaxDate, positions)
         await this.getTrips(vm.$data.routeMinDate, vm.$data.routeMaxDate, positions)
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
         this.filterTrips().then(() => {
@@ -303,6 +330,7 @@ export default {
             this.getSpeedTrips(positions)
           } else {
             this.drawTrip()
+            this.drawEventsPoints()
           }
 
           let lastPosition = null
@@ -349,6 +377,13 @@ export default {
           vm.$static.map.removeLayer(this.routeIdleSource)
           vm.$static.map.removeSource(this.routeIdleSource)
         }
+        if (vm.$static.map.getLayer(this.routeEventsSource)) {
+          Vue.$log.debug('removing ', this.routeEventsSource)
+          vm.$static.map.off('mouseenter', this.routeEventsSource, this.onEventMouseEnter)
+          vm.$static.map.off('mouseleave', this.routeEventsSource, this.onEventMouseLeave)
+          vm.$static.map.removeLayer(this.routeEventsSource)
+          vm.$static.map.removeSource(this.routeEventsSource)
+        }
       }
       this.i = 0
       if (this.startMaker) { this.startMaker.remove() }
@@ -357,15 +392,28 @@ export default {
       if (!keepMain) {
         if (this.map.getLayer(this.allTripsSource)) {
           this.map.removeLayer(this.allTripsSource)
-          this.map.removeLayer(this.allTripsSource + 'arrows')
+          this.map.removeLayer(this.allTripsArrowsSource)
           this.map.removeSource(this.allTripsSource)
-          this.map.removeSource(this.allTripsSource + 'arrows')
+          this.map.removeSource(this.allTripsArrowsSource)
         }
       }
     },
     getRoute(from, to) {
       Vue.$log.debug('getting route from ', from, ' to ', to)
       traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
+    },
+    async getEvents(from, to, positions) {
+      Vue.$log.debug('getting events from ', from, ' to ', to)
+      const fromDate = Vue.moment(from).startOf('day').toDate()
+      const toDate = Vue.moment(to).endOf('day').toDate()
+      const responseEvents = await traccar.report_events(fromDate, toDate, [this.device.id], ['geofenceExit',
+        'geofenceEnter', 'deviceOverspeed', 'deviceFuelDrop', 'driverChanged', 'alarm'])
+      const events = responseEvents.map(d => d.data).flat()
+      Vue.$log.debug('events ', events)
+      events.forEach(e => {
+        const p = positions.find(p => p.id === e.positionId)
+        p.events ? p.events.push(e) : p.events = [e]
+      })
     },
     async getTrips(from, to, positions) {
       const self = this
@@ -393,7 +441,6 @@ export default {
             const xpertEndTripMessage = xpertMessages.filter(x => x.type === '3')
             if (xpertEndTripMessage.length > 1) {
               const diff = xpertEndTripMessage[xpertEndTripMessage.length - 1].total_fuel - xpertEndTripMessage[0].total_fuel
-              console.log('Diff:', diff)
               fuelConsumption = Math.round(diff)
             }
           } else {
@@ -584,6 +631,7 @@ export default {
         })
         this.drawTrip()
         this.drawIdlePoints()
+        this.drawEventsPoints()
         this.drawSpeedTrip()
       } else {
         Vue.$log.debug('Use road speed limit')
@@ -698,26 +746,7 @@ export default {
         type: 'geojson',
         data: alertsGeoJSON
       })
-      vm.$static.map.addLayer({
-        id: this.routeSpeedSource,
-        type: 'line',
-        source: this.routeSpeedSource,
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': 'red',
-          'line-opacity': 0.5,
-          'line-width': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 3,
-            22, 12
-          ]
-        }
-      })
+      vm.$static.map.addLayer(routeLayers.speedLayer(this.routeSpeedSource))
       vm.$static.map.getSource(this.routeSpeedSource).setData(alertsGeoJSON)
       this.drawSpeedMarkers()
       // vehicle should be on top of the route, so we remove and add the layer
@@ -758,6 +787,35 @@ export default {
       const idlePointsGeoJSON = lnglat.getGeoJSONFeaturesColletion(features)
       this.createIdleLayer(idlePointsGeoJSON)
     },
+    drawEventsPoints() {
+      this.$log.debug(this.currentTrip)
+      if (this.currentTrip < 0) return
+
+      const features = this.trips[this.currentTrip].positions.filter(p => p.events).map(p => {
+        return p.events.map(e => {
+          notifications.addEventInfo(e)
+
+          return {
+            type: 'Feature',
+            properties: {
+              id: e.id,
+              type: e.type,
+              description: e.description,
+              device: e.device.name,
+              content: e.content,
+              icon: e.image,
+              color: e.color ? e.color : '#3232b4',
+              timestamp: p.fixTime,
+              selected: false
+            },
+            geometry: { type: 'Point', coordinates: [p.longitude, p.latitude] }
+          }
+        })
+      }
+      ).flat()
+      const eventsPointsGeoJSON = lnglat.getGeoJSONFeaturesColletion(features)
+      this.createEventsLayer(eventsPointsGeoJSON)
+    },
     distance(p, q) {
       const dx = p.x - q.x
       const dy = p.y - q.y
@@ -787,17 +845,17 @@ export default {
       this.startMaker = new mapboxgl.Marker(el)
         .setLngLat(start)
       this.startMaker.addTo(vm.$static.map)
-      const lastPos = positions[positions.length - 1]
-      if (lastPos.attributes.ignition === false || (lastPos.attributes.power && lastPos.attributes.power < 13)) {
-        el = document.createElement('div')
-        el.className = 'marker finish ' + (d > 10 ? '' : 'rotr')
-        hour = this.$moment(positions[positions.length - 1].fixTime).format('HH:mm')
-        Vue.$log.debug('adding end position on ', positions[positions.length - 1].deviceTime, hour)
-        el.innerHTML = '<span><b>' + hour + '</b></span>'
-        this.endMarker = new mapboxgl.Marker(el)
-          .setLngLat(end)
-        this.endMarker.addTo(vm.$static.map)
-      }
+      // const lastPos = positions[positions.length - 1]
+      // if (lastPos.attributes.ignition === false || (lastPos.attributes.power && lastPos.attributes.power < 13)) {
+      el = document.createElement('div')
+      el.className = 'marker finish ' + (d > 10 ? '' : 'rotr')
+      hour = this.$moment(positions[positions.length - 1].fixTime).format('HH:mm')
+      Vue.$log.debug('adding end position on ', positions[positions.length - 1].deviceTime, hour)
+      el.innerHTML = '<span><b>' + hour + '</b></span>'
+      this.endMarker = new mapboxgl.Marker(el)
+        .setLngLat(end)
+      this.endMarker.addTo(vm.$static.map)
+      // }
     },
     drawSpeedMarkers() {
       Vue.$log.debug('Draw Speed Markers')
@@ -879,26 +937,7 @@ export default {
         data: routeGeoJSON
       })
       Vue.$log.debug('adding layer', this.routeSource)
-      vm.$static.map.addLayer({
-        id: this.routeSource,
-        type: 'line',
-        source: this.routeSource,
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-opacity': 0.5,
-          'line-color': styles.primary,
-          'line-width': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            12, 6,
-            22, 12
-          ]
-        }
-      })
+      vm.$static.map.addLayer(routeLayers.routeLayer(this.routeSource))
       vm.$static.map.getSource(this.routeSource).setData(routeGeoJSON)
     },
     createIdleLayer(idleGeoJSON) {
@@ -907,24 +946,20 @@ export default {
         data: idleGeoJSON
       })
       Vue.$log.debug('adding idle layer', idleGeoJSON)
-      vm.$static.map.addLayer({
-        id: this.routeIdleSource,
-        type: 'circle',
-        source: this.routeIdleSource,
-        paint: {
-          'circle-radius': {
-            'base': 1.75,
-            'stops': [
-              [12, 5],
-              [22, 20]
-            ]
-          },
-          'circle-color': '#F9B218'
-        }
-      })
-
+      vm.$static.map.addLayer(routeLayers.idleLayer(this.routeIdleSource))
       vm.$static.map.on('mouseenter', this.routeIdleSource, this.onIdleMouseEnter)
       vm.$static.map.on('mouseleave', this.routeIdleSource, this.onIdleMouseLeave)
+    },
+    createEventsLayer(eventsGeoJSON) {
+      vm.$static.map.addSource(this.routeEventsSource, {
+        type: 'geojson',
+        data: eventsGeoJSON
+      })
+      Vue.$log.debug('adding events layer', eventsGeoJSON)
+      vm.$static.map.addLayer(routeLayers.eventsLayer(this.routeEventsSource))
+      vm.$static.map.on('mouseenter', this.routeEventsSource, this.onEventMouseEnter)
+      vm.$static.map.on('mouseleave', this.routeEventsSource, this.onEventMouseLeave)
+      layerManager.hideLayer(this.routeEventsSource, !this.isEventsChartVisible)
     },
     onIdleMouseEnter(e) {
       vm.$static.map.getCanvas().style.cursor = 'pointer'
@@ -945,83 +980,41 @@ export default {
       vm.$static.map.getCanvas().style.cursor = ''
       this.popup.remove()
     },
+    onEventMouseEnter(e) {
+      vm.$static.map.getCanvas().style.cursor = 'pointer'
+      lnglat.showEventPopup(e.features[0], new mapboxgl.Popup({
+        offset: [0, -20]
+      }), function() {})
+    },
+    onEventMouseLeave() {
+      vm.$static.map.getCanvas().style.cursor = ''
+      lnglat.hideEventPopup()
+    },
     createAllTripsLayer(routeGeoJSON, points) {
       if (vm.$static.map.getLayer(this.allTripsSource)) {
         this.map.removeLayer(this.allTripsSource)
-        this.map.removeLayer(this.allTripsSource + 'arrows')
+        this.map.removeLayer(this.allTripsArrowsSource)
         this.map.removeSource(this.allTripsSource)
-        this.map.removeSource(this.allTripsSource + 'arrows')
+        this.map.removeSource(this.allTripsArrowsSource)
       }
       Vue.$log.debug('adding source ', this.allTripsSource)
       vm.$static.map.addSource(this.allTripsSource, {
         type: 'geojson',
         data: routeGeoJSON
       })
-      vm.$static.map.addSource(this.allTripsSource + 'arrows', {
+      vm.$static.map.addSource(this.allTripsArrowsSource, {
         type: 'geojson',
         data: points
       })
-      vm.$static.map.addLayer({
-        id: this.allTripsSource,
-        type: 'line',
-        source: this.allTripsSource,
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': 'darkslategrey',
-          'line-width': 2,
-          'line-opacity': 0.8
-        }
-      })
-      vm.$static.map.addLayer({
-        id: this.allTripsSource + 'arrows',
-        type: 'symbol',
-        source: this.allTripsSource + 'arrows',
-        layout: {
-          'text-rotate': ['-', ['get', 'course'], 90],
-          'text-field': '➤',
-          'text-size': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            6, 13,
-            11, 19
-          ],
-          'symbol-spacing': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            6, 6,
-            11, 12
-          ],
-          'text-keep-upright': false
-        },
-        paint: {
-          'text-color': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            styles.primary,
-            'darkslategrey'
-          ],
-          'text-halo-color': 'hsl(55, 11%, 96%)',
-          'text-halo-width': 1,
-          'text-opacity': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            1,
-            0.8
-          ]
-        }
-      })
-      vm.$static.map.on('mouseenter', this.allTripsSource + 'arrows', this.mouseEnterArrow)
-      vm.$static.map.on('mouseleave', this.allTripsSource + 'arrows', this.mouseLeaveArrow)
+      vm.$static.map.addLayer(routeLayers.tripsLayer(this.allTripsSource))
+      vm.$static.map.addLayer(routeLayers.tripsArrowsLayer(this.allTripsArrowsSource))
+      vm.$static.map.on('mouseenter', this.allTripsArrowsSource, this.mouseEnterArrow)
+      vm.$static.map.on('mouseleave', this.allTripsArrowsSource, this.mouseLeaveArrow)
     },
     mouseEnterArrow(e) {
       const feature = e.features[0]
       this.lastArrowEntered = feature.id
-      vm.$static.map.setFeatureState({ source: this.allTripsSource + 'arrows', id: feature.id },
+      vm.$static.map.setFeatureState({ source: this.allTripsArrowsSource, id: feature.id },
         { hover: true })
       const position = { ...feature.properties }
       position.attributes = { ...feature.properties }
@@ -1046,9 +1039,12 @@ export default {
     mouseLeaveArrow() {
       lnglat.hidePopup(this.device)
       if (this.lastArrowEntered) {
-        vm.$static.map.setFeatureState({ source: this.allTripsSource + 'arrows', id: this.lastArrowEntered },
+        vm.$static.map.setFeatureState({ source: this.allTripsArrowsSource, id: this.lastArrowEntered },
           { hover: false })
       }
+    },
+    showRoutePositionPopup() {
+
     },
     drawIteration(routeGeoJSON) {
       this.createLayers(routeGeoJSON)
@@ -1154,6 +1150,7 @@ export default {
           this.removeLayers(true)
           this.currentTrip = t
           this.drawTrip()
+          this.drawEventsPoints()
           this.drawIdlePoints()
           this.drawSpeedTrip()
         }
@@ -1173,6 +1170,9 @@ export default {
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
       }
     }
+  },
+  onToogleEventChart() {
+    routeLayers.hideEventsLayer()
   }
 }
 </script>

@@ -49,7 +49,6 @@ import { checkForUpdates } from '@/utils/utils'
 import * as consts from '../../utils/consts'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import PoiPopUp from './PoiPopUp'
-import EventPopUp from './EventPopUp'
 import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
 import { animate } from '@/utils/animation'
@@ -414,11 +413,16 @@ export default {
         this.flyToFeature(feature)
       }
     },
-    showEventPopUp(e) {
-      const self = this
-      this.eventPopUps.push(new mapboxgl.Popup({
+    showEventPopUp(feature) {
+      // const self = this
+
+      const popup = new mapboxgl.Popup({
         offset: [0, -20]
       })
+
+      lnglat.showEventPopup(feature, popup, this.eventPopupOnClose)
+
+      /* this.eventPopUps.push(
         .setLngLat(e.geometry.coordinates.slice())
         .setHTML('<div id="vue-event-popup"></div>')
         .addTo(this.map)
@@ -437,7 +441,14 @@ export default {
           lngLat: e.geometry.coordinates
         }
       })
-      vm.$mount('#vue-event-popup')
+      vm.$mount('#vue-event-popup')*/
+    },
+    eventPopupOnClose() {
+      const featureSelected = eventsLayer.findFeatureSelected()
+      if (featureSelected !== undefined) {
+        featureSelected.properties.selected = false
+      }
+      this.refreshEvents()
     },
     areaSelected: function(object) {
       const feature = geofencesLayer.findFeatureById(object.id)

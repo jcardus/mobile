@@ -161,7 +161,8 @@ export default {
         return { y: x.fuelLevel, x: this.$moment(x.fixTime).toDate() }
       })
       const seriesRPM = this.getRPMValues()
-      sharedData.setChartData(series, seriesFuelSensor, seriesRPM)
+      const seriesEvents = this.getEventsValues()
+      sharedData.setChartData(series, seriesFuelSensor, seriesRPM, seriesEvents)
       this.updateChart = !this.updateChart
     },
     getRPMValues() {
@@ -171,6 +172,12 @@ export default {
             !p.attributes.ignition)) || p.attributes.rpm).map(x => {
           return { y: (!x.attributes.ignition ? 0 : (x.attributes.rpm ? x.attributes.rpm : x.attributes.xpert.filter(x => x.type === '1')[0].rpm)), x: this.$moment(x.fixTime).toDate() }
         })
+    },
+    getEventsValues() {
+      return sharedData.getPositions().map(x => {
+        return x.events ? { r: x.events.length + 2, y: 0, x: this.$moment(x.fixTime).toDate(), label: this.$t('settings.alert_' + (x.events[0].type === 'alarm' ? x.events[0].attributes.alarm : x.events[0].type)) }
+          : { r: 0, y: 0, x: this.$moment(x.fixTime).toDate() }
+      })
     },
     click: function() {
       this.$store.dispatch('transient/togglePlaying')

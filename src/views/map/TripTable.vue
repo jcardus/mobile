@@ -73,17 +73,26 @@
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="scope.row.fuelInfo ? 8 : 12" class="colTripData">
+                <el-col :span="12" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.trip_distance }}km</span>
                   </div>
                 </el-col>
-                <el-col :span="scope.row.fuelInfo ? 8 : 12" class="colTripData">
+                <el-col :span="12" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.trip_avg_speed }}km/h </span>
                   </div>
                 </el-col>
-                <el-col v-if="scope.row.fuelInfo" :span="8" class="colTripData">
+              </el-row>
+              <el-row>
+                <el-col :span="12" class="colTripData">
+                  <div>
+                    <span style="font-size: 12px">
+                      <i class="fas fa-bell" style="width: 15px; color: black"></i>{{ scope.row.positions.reduce((a,b) => a + (b.events ? b.events.length : 0), 0) }}
+                    </span>
+                  </div>
+                </el-col>
+                <el-col v-if="scope.row.fuelInfo" :span="12" class="colTripData">
                   <div>
                     <span style="font-size: 12px"><i class="fas fa-gas-pump" style="color: #13ce66"></i> {{ scope.row.fuel_consumption }}L</span><span style="font-size: 10px"> ({{ scope.row.avg_fuel_consumption }}L\100)</span>
                   </div>

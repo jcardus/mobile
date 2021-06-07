@@ -11,6 +11,8 @@ import { positionsSource } from './consts'
 import * as angles from 'angles'
 import Vue from 'vue'
 import * as utils from '@/utils/utils'
+import EventPopUp from '../views/map/EventPopUp'
+import i18n from '../lang'
 
 const gray = ['==', ['get', 'color'], 'gray']
 const green = ['==', ['get', 'color'], 'green']
@@ -305,6 +307,30 @@ export function showPopup(feature, device, newPopup) {
 export function hidePopup(device) {
   if (popUps[device.id]) {
     popUps[device.id].remove()
+  }
+}
+
+export function showEventPopup(feature, newPopup, eventPopupOnClose) {
+  eventPopUps.push(newPopup
+    .setLngLat(feature.geometry.coordinates.slice())
+    .setHTML('<div id="vue-event-popup"></div>')
+    .addTo(vm.$static.map)
+    .on('close', eventPopupOnClose))
+  const PP = Vue.extend(EventPopUp)
+  const vuePopup = new PP({
+    i18n: i18n,
+    data: {
+      properties: feature.properties,
+      lngLat: feature.geometry.coordinates
+    }
+  })
+  vuePopup.$mount('#vue-event-popup')
+}
+
+export function hideEventPopup() {
+  if (eventPopUps.length > 0) {
+    eventPopUps.forEach(e => e.remove())
+    eventPopUps.splice(0, eventPopUps.length)
   }
 }
 

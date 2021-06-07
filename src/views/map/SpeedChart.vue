@@ -26,7 +26,8 @@ export default {
       currentTrip: null,
       speedChartVisible: true,
       fuelChartVisible: true,
-      rpmChartVisible: true
+      rpmChartVisible: true,
+      eventChartVisible: true
     }
   },
   computed: {
@@ -45,12 +46,14 @@ export default {
     serverBus.$on(event.toogleSpeedChart, this.onToogleSpeedChart)
     serverBus.$on(event.toogleFuelChart, this.onToogleFuelChart)
     serverBus.$on(event.toogleRPMChart, this.onToogleRPMChart)
+    serverBus.$on(event.toogleEventChart, this.onToogleEventChart)
   },
   beforeDestroy() {
     serverBus.$off(event.tripChanged, this.onTripChanged)
     serverBus.$off(event.toogleSpeedChart, this.onToogleSpeedChart)
     serverBus.$off(event.toogleFuelChart, this.onToogleFuelChart)
     serverBus.$off(event.toogleRPMChart, this.onToogleRPMChart)
+    serverBus.$off(event.toogleEventChart, this.onToogleEventChart)
   },
   mounted() {
     Vue.$log.debug('SpeedChart created')
@@ -84,7 +87,16 @@ export default {
             data: this.chartDataRPM,
             type: 'line',
             cubicInterpolationMode: 'monotone',
-            yAxisID: 'rpm-x-axis'
+            yAxisID: 'rpm-y-axis'
+          },
+          {
+            borderColor: color('red').alpha(1).rgbString(),
+            borderWidth: 2,
+            fill: false,
+            data: this.chartDataEvents,
+            type: 'bubble',
+            cubicInterpolationMode: 'monotone',
+            yAxisID: 'speed-y-axis'
           }]
         },
         options: {
@@ -144,14 +156,16 @@ export default {
               label: function(tooltipItem, data) {
                 let label = data.datasets[tooltipItem.datasetIndex].label || ''
                 if (label) {
-                  label += ': '
+                  label += ':'
                 }
                 if (tooltipItem.datasetIndex === 0) {
-                  label += (Math.round(tooltipItem.yLabel) + ' km/h')
+                  label += ' ' + (Math.round(tooltipItem.yLabel) + ' km/h')
                 } else if (tooltipItem.datasetIndex === 1) {
-                  label += (tooltipItem.yLabel + '%')
+                  label += ' ' + (tooltipItem.yLabel + '%')
                 } else if (tooltipItem.datasetIndex === 2) {
-                  label += (tooltipItem.yLabel + ' rpm')
+                  label += ' ' + (tooltipItem.yLabel + ' rpm')
+                } else if (tooltipItem.datasetIndex === 3 && data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].label) {
+                  label += ' ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].label
                 }
                 return label
               }
@@ -181,6 +195,7 @@ export default {
               }
             }],
             yAxes: [{
+              id: 'speed-y-axis',
               ticks: {
                 precision: 1
               },
@@ -193,7 +208,7 @@ export default {
                 labelString: 'Km/h'
               }
             }, {
-              id: 'rpm-x-axis',
+              id: 'rpm-y-axis',
               display: this.device.attributes.xpert,
               ticks: {
                 precision: 1
@@ -241,11 +256,11 @@ export default {
           this.chart.data.datasets[0].data = this.speedChartVisible ? sharedData.getChartData() : []
           this.chart.data.datasets[1].data = this.fuelChartVisible ? sharedData.getChartDataFuelLevel() : []
           this.chart.data.datasets[2].data = this.rpmChartVisible ? sharedData.getChartDataRPM() : []
+          this.chart.data.datasets[3].data = this.rpmChartVisible ? sharedData.getChartDataEvents() : []
           if (this.trips && this.trips[this.currentTrip]) {
             try {
               this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
               this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
-              this.$log.debug('creating annotation', this.chart.annotation.elements['a-box-1'])
             } catch (e) {
               this.$log.error(e)
             }
@@ -286,6 +301,15 @@ export default {
       } else {
         this.addData(2, sharedData.getChartDataRPM())
         this.rpmChartVisible = true
+      }
+    },
+    onToogleEventChart() {
+      if (this.eventChartVisible) {
+        this.removeData(3)
+        this.eventChartVisible = false
+      } else {
+        this.addData(3, sharedData.getChartDataEvents())
+        this.eventChartVisible = true
       }
     },
     addData(index, data) {
