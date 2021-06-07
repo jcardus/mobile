@@ -184,11 +184,11 @@ export default {
     },
     _dateRange: {
       get() {
-        return [this.$moment(vm.$data.routeMinDate).format('YYYY-MM-DD'), this.$moment(vm.$data.routeMaxDate).format('YYYY-MM-DD')]
+        return [vm.$data.routeMinDate, vm.$data.routeMaxDate]
       },
       set(newVal) {
-        vm.$data.routeMinDate = this.$moment(newVal[0], 'YYYY-MM-DD').toDate()
-        vm.$data.routeMaxDate = this.$moment(newVal[1], 'YYYY-MM-DD').toDate()
+        vm.$data.routeMinDate = new Date(newVal[0])
+        vm.$data.routeMaxDate = new Date(newVal[1])
       }
     },
     _minDate: {
