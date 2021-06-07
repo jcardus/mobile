@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.933",
+  "version": "1.0.934",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -37,7 +37,7 @@
     "angles": "latest",
     "axios": "latest",
     "chart.js": "2.9.4",
-    "chartjs-plugin-annotation": "latest",
+    "chartjs-plugin-annotation": "0.5.7",
     "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "^2.14.1",
     "file-saver": "^2.0.5",
