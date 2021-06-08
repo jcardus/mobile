@@ -72,7 +72,7 @@ export default {
       }
     },
     sliderLeftPadding() {
-      return this.device.attributes.xpert ? 108 : 48
+      return this.device.attributes.xpert ? 108 : 44
     }
   },
   watch: {
@@ -174,9 +174,13 @@ export default {
         })
     },
     getEventsValues() {
-      return sharedData.getPositions().map(x => {
-        return x.events ? { r: x.events.length + 2, y: 0, x: this.$moment(x.fixTime).toDate(), label: this.$t('settings.alert_' + (x.events[0].type === 'alarm' ? x.events[0].attributes.alarm : x.events[0].type)) }
-          : { r: 0, y: 0, x: this.$moment(x.fixTime).toDate() }
+      return sharedData.getPositions().filter(p => p.events).map(x => {
+        return {
+          r: x.events.length + 2,
+          y: 0,
+          x: this.$moment(x.fixTime).toDate(),
+          label: this.$t('settings.alert_' + (x.events[0].type === 'alarm' ? x.events[0].attributes.alarm : x.events[0].type))
+        }
       })
     },
     click: function() {

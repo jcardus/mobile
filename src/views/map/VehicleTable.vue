@@ -334,11 +334,9 @@ export default {
   },
   mounted() {
     serverBus.$on(event.deviceSelectedOnMap, this.deviceSelectedOnMap)
-    serverBus.$on(event.showRoutesChanged, this.showRoutesChanged)
   },
   beforeDestroy() {
     serverBus.$off(event.deviceSelectedOnMap, this.deviceSelectedOnMap)
-    serverBus.$off(event.showRoutesChanged, this.showRoutesChanged)
   },
   methods: {
     load() {
@@ -360,19 +358,6 @@ export default {
         return device.position.fuelLevel + '%'
       } else {
         return Math.round(device.attributes.fuel_tank_capacity * (device.position.fuelLevel / 100)) + 'L'
-      }
-    },
-    showRoutesChanged() {
-      this.$log.debug('ShowRoutesChanged')
-      if (!this.historyMode) {
-        this.$log.debug('Not HistoryMode toggleRowExpansion')
-        const table = this.$refs.vehicleTable
-        table.toggleRowExpansion(this.selectedDevice, false)
-        this.selectedDevice = null
-      } else {
-        this.$log.debug('HistoryMode toggleRowExpansion')
-        const table = this.$refs.vehicleTable
-        table.toggleRowExpansion(this.selectedDevice, true)
       }
     },
     getBgColor: function(device) {

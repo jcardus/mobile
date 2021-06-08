@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.933",
+  "version": "1.0.937",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -36,8 +36,9 @@
     "amazon-quicksight-embedding-sdk": "^1.0.12",
     "angles": "latest",
     "axios": "latest",
-    "chart.js": "2.9.4",
-    "chartjs-plugin-annotation": "latest",
+    "chart.js": "^3.3.2",
+    "chartjs-adapter-moment": "^1.0.0",
+    "chartjs-plugin-annotation": "^1.0.2",
     "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "^2.14.1",
     "file-saver": "^2.0.5",

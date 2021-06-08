@@ -44,6 +44,7 @@ const mutations = {
   },
   TOGGLE_HISTORY_MODE: (state) => {
     state.historyMode = !state.historyMode
+    state.trips.splice(0)
     serverBus.$emit(event.showRoutesChanged)
     setTimeout(() => serverBus.$emit(event.mapShow), 500)
   }
