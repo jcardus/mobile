@@ -46,6 +46,7 @@ export default {
     }
   },
   created() {
+    serverBus.$on(event.posChanged, this.onPosChanged)
     serverBus.$on(event.tripChanged, this.onTripChanged)
     serverBus.$on(event.toogleSpeedChart, this.onToogleSpeedChart)
     serverBus.$on(event.toogleFuelChart, this.onToogleFuelChart)
@@ -53,6 +54,7 @@ export default {
     serverBus.$on(event.toogleEventChart, this.onToogleEventChart)
   },
   beforeDestroy() {
+    serverBus.$off(event.posChanged, this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
     serverBus.$off(event.toogleSpeedChart, this.onToogleSpeedChart)
     serverBus.$off(event.toogleFuelChart, this.onToogleFuelChart)
@@ -71,6 +73,7 @@ export default {
           datasets: [
             {
               backgroundColor: 'rgba(61, 153, 61, 0.5)',
+              pointBackgroundColor: 'rgba(61, 153, 61, 0.3)',
               borderColor: 'rgba(61, 153, 61, 1)',
               borderWidth: 1,
               fill: true,
@@ -108,7 +111,6 @@ export default {
         },
         options: {
           onClick: this.chartClickEvent,
-          pointBackgroundColor: '#fff',
           radius: 1,
           plugins: {
             legend: {
@@ -150,6 +152,15 @@ export default {
               drawTime: 'afterDatasetsDraw', // (default)
               events: ['click'],
               annotations: {
+                cursor: {
+                  xMin: 0,
+                  xMax: 0,
+                  type: 'box',
+                  backgroundColor: 'rgba(255, 0, 34, 1)',
+                  borderColor: 'rgba(255, 0, 34, 1)',
+                  borderWidth: 1,
+                  xScaleID: 'xAxis'
+                },
                 box1: {
                   xMin: 0,
                   xMax: 0,
@@ -214,8 +225,12 @@ export default {
     }
   },
   methods: {
+    onPosChanged(i) {
+      this.chart.options.plugins.annotation.annotations.cursor.xMin = new Date(sharedData.getPositions()[i].fixTime)
+      this.chart.options.plugins.annotation.annotations.cursor.xMax = new Date(sharedData.getPositions()[i].fixTime)
+      this.chart.update()
+    },
     chartClickEvent(e, array) {
-      console.log(e, array)
       if (array.length > 0) {
         serverBus.$emit(event.posChanged, array[0].index)
         serverBus.$emit(event.autoSliderChange, Vue.moment(sharedData.positions[array[0].index].fixTime).unix())
