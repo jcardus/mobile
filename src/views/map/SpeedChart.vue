@@ -120,16 +120,28 @@ export default {
               bodyFontSize: 14,
               caretSize: 10,
               callbacks: {
-                label: function(tooltipItem) {
-                  let label = ''
-                  if (tooltipItem.datasetIndex === 0) {
-                    label += ' ' + (Math.round(tooltipItem.formattedValue) + ' km/h')
-                  } else if (tooltipItem.datasetIndex === 1) {
-                    label += ' ' + (tooltipItem.label + '%')
-                  } else if (tooltipItem.datasetIndex === 2) {
-                    label += ' ' + (tooltipItem.label + ' rpm')
+                title(tooltipItems) {
+                  switch (tooltipItems[0].datasetIndex) {
+                    case 3:
+                      return tooltipItems[0].raw.x.toLocaleString()
+                    default:
+                      return tooltipItems[0].label || ''
                   }
-                  return label
+                },
+                label(tooltipItem) {
+                  const label = tooltipItem.formattedValue
+                  switch (tooltipItem.datasetIndex) {
+                    case 0:
+                      return Math.round(tooltipItem.formattedValue) + ' km/h'
+                    case 1:
+                      return label + '%'
+                    case 2:
+                      return tooltipItem.label + ' rpm'
+                    case 3:
+                      return tooltipItem.raw.label
+                    default:
+                      return label
+                  }
                 }
               }
             },
