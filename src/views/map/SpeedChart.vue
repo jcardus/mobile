@@ -3,14 +3,19 @@
 </template>
 
 <script>
-import { Chart } from 'chart.js'
+import { Chart, Tooltip, CategoryScale, LinearScale, TimeScale, LineController, PointElement, LineElement, BubbleController, Filler } from 'chart.js'
 // eslint-disable-next-line no-unused-vars
-import { annotationPlugin } from 'chartjs-plugin-annotation' // this unused import must be here
+import annotationPlugin from 'chartjs-plugin-annotation' // this unused import must be here
 import Vue from 'vue'
-import { serverBus, sharedData, vm } from '../../main'
+import { serverBus, sharedData, vm } from '@/main'
 import * as lnglat from '../../utils/lnglat'
 import * as event from '../../events'
 import { mapGetters } from 'vuex'
+import 'chartjs-adapter-moment'
+
+Chart.register(annotationPlugin)
+
+Chart.register(Tooltip, CategoryScale, LinearScale, LineController, PointElement, LineElement, BubbleController, TimeScale, Filler)
 
 export default {
   name: 'SpeedChart',
@@ -22,7 +27,6 @@ export default {
   },
   data() {
     return {
-      chart: null,
       currentTrip: null,
       speedChartVisible: true,
       fuelChartVisible: true,
@@ -60,127 +64,98 @@ export default {
     const speedChart = document.getElementById('speedChart')
     if (!speedChart) return
     const ctx = speedChart.getContext('2d')
-    const color = Chart.helpers.color
     if (!this.chart) {
       this.chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: this.labels,
-          datasets: [{
-            backgroundColor: color('LightGreen').alpha(0.5).rgbString(),
-            borderColor: color('green').alpha(1).rgbString(),
-            borderWidth: 1,
-            fill: true,
-            data: this.chartData
-          }, {
-            borderColor: 'rgba(249, 178, 24, 1)',
-            borderWidth: 2,
-            fill: false,
-            data: this.chartDataFuelSensor,
-            type: 'line',
-            cubicInterpolationMode: 'monotone',
-            yAxisID: 'fuel-y-axis'
-          }, {
-            borderColor: color('blue').alpha(1).rgbString(),
-            borderWidth: 2,
-            fill: false,
-            data: this.chartDataRPM,
-            type: 'line',
-            cubicInterpolationMode: 'monotone',
-            yAxisID: 'rpm-y-axis'
-          },
-          {
-            borderColor: color('red').alpha(1).rgbString(),
-            borderWidth: 2,
-            fill: false,
-            data: this.chartDataEvents,
-            type: 'bubble',
-            cubicInterpolationMode: 'monotone',
-            yAxisID: 'speed-y-axis'
-          }]
+          datasets: [
+            {
+              backgroundColor: 'rgba(61, 153, 61, 0.5)',
+              borderColor: 'rgba(61, 153, 61, 1)',
+              borderWidth: 1,
+              fill: true,
+              data: this.chartData,
+              yAxisID: 'speed'
+            },
+            {
+              borderColor: 'rgba(249, 178, 24, 1)',
+              borderWidth: 2,
+              fill: false,
+              data: this.chartDataFuelSensor,
+              type: 'line',
+              cubicInterpolationMode: 'monotone',
+              yAxisID: 'fuel'
+            },
+            {
+              borderColor: 'rgba(0, 0, 255, 1)',
+              borderWidth: 2,
+              fill: false,
+              data: this.chartDataRPM,
+              type: 'line',
+              cubicInterpolationMode: 'monotone',
+              yAxisID: 'rpm'
+            },
+            {
+              borderColor: 'rgba(255,0,0,1)',
+              borderWidth: 2,
+              fill: false,
+              data: this.chartDataEvents,
+              type: 'bubble',
+              cubicInterpolationMode: 'monotone',
+              yAxisID: 'speed'
+            }
+          ]
         },
         options: {
-          annotation: {
-            // Defines when the annotations are drawn.
-            // This allows positioning of the annotation relative to the other
-            // elements of the graph.
-            //
-            // Should be one of: afterDraw, afterDatasetsDraw, beforeDatasetsDraw
-            // See http://www.chartjs.org/docs/#advanced-usage-creating-plugins
-            drawTime: 'afterDatasetsDraw', // (default)
-
-            // Mouse events to enable on each annotation.
-            // Should be an array of one or more browser-supported mouse events
-            // See https://developer.mozilla.org/en-US/docs/Web/Events
-            events: ['click'],
-
-            // Double-click speed in ms used to distinguish single-clicks from
-            // double-clicks whenever you need to capture both. When listening for
-            // both click and dblclick, click events will be delayed by this
-            // amount.
-            dblClickSpeed: 350, // ms (default)
-
-            // Array of annotation configuration objects
-            // See below for detailed descriptions of the annotation options
-            annotations: [{
-              type: 'box',
-
-              // optional annotation ID (must be unique)
-              id: 'a-box-1',
-
-              // ID of the X scale to bind onto
-              xScaleID: 'x-axis-0',
-              backgroundColor: 'rgba(56, 135, 190, 0.5)',
-              borderColor: 'rgb(56, 135, 190)',
-              borderWidth: 1
-            }]
-          },
-          elements: {
-            point: {
-              radius: 0
-            }
-          },
-          legend: {
-            display: false
-          },
+          pointBackgroundColor: '#fff',
+          radius: 1,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(52, 152, 219, 0.8)',
+              mode: 'nearest',
+              intersect: false,
+              bodyFontSize: 14,
+              caretSize: 10,
+              callbacks: {
+                label: function(tooltipItem) {
+                  let label = ''
+                  if (tooltipItem.datasetIndex === 0) {
+                    label += ' ' + (Math.round(tooltipItem.formattedValue) + ' km/h')
+                  } else if (tooltipItem.datasetIndex === 1) {
+                    label += ' ' + (tooltipItem.label + '%')
+                  } else if (tooltipItem.datasetIndex === 2) {
+                    label += ' ' + (tooltipItem.label + ' rpm')
+                  }
+                  return label
+                }
+              }
+            },
+            annotation: {
+              drawTime: 'afterDatasetsDraw', // (default)
+              events: ['click'],
+              annotations: {
+                box1: {
+                  xMin: 0,
+                  xMax: 0,
+                  type: 'box',
+                  backgroundColor: 'rgba(56, 135, 190, 0.5)',
+                  borderColor: 'rgb(56, 135, 190)',
+                  borderWidth: 1,
+                  xScaleID: 'xAxis'
+                }
+              }
+            }},
           aspectRatio: 9,
           maintainAspectRatio: false,
-          tooltips: {
-            backgroundColor: 'rgba(52, 152, 219, 0.8)',
-            mode: 'nearest',
-            position: 'nearest',
-            intersect: false,
-            bodyFontSize: 14,
-            caretSize: 10,
-            callbacks: {
-              label: function(tooltipItem, data) {
-                let label = data.datasets[tooltipItem.datasetIndex].label || ''
-                if (label) {
-                  label += ':'
-                }
-                if (tooltipItem.datasetIndex === 0) {
-                  label += ' ' + (Math.round(tooltipItem.yLabel) + ' km/h')
-                } else if (tooltipItem.datasetIndex === 1) {
-                  label += ' ' + (tooltipItem.yLabel + '%')
-                } else if (tooltipItem.datasetIndex === 2) {
-                  label += ' ' + (tooltipItem.yLabel + ' rpm')
-                } else if (tooltipItem.datasetIndex === 3 && data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].label) {
-                  label += ' ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].label
-                }
-                return label
-              }
-            }
-          },
           scales: {
-            xAxes: [{
+            xAxis: {
               display: !lnglat.isMobile(),
-              gridLines: {
-                display: false
-              },
               type: 'time',
               time: {
                 minUnit: 'hour',
-                // parser: timeFormat,
                 round: 'second',
                 tooltipFormat: 'll HH:mm:ss',
                 displayFormats: {
@@ -188,54 +163,39 @@ export default {
                   hour: 'HH:mm',
                   day: 'D MMM'
                 }
-              },
-              scaleLabel: {
-                display: false,
-                labelString: 'Date'
               }
-            }],
-            yAxes: [{
-              id: 'speed-y-axis',
-              ticks: {
-                precision: 1
-              },
+            },
+            speed: {
+              position: 'left',
               display: true,
-              gridLines: {
+              grid: {
                 display: true
               },
-              scaleLabel: {
+              title: {
                 display: true,
-                labelString: 'Km/h'
-              }
-            }, {
-              id: 'rpm-y-axis',
-              display: this.device.attributes.xpert,
-              ticks: {
-                precision: 1
+                text: 'Km/h'
+              }},
+            rpm: {
+              display: false,
+              grid: {
+                display: false
               },
-              gridLines: {
-                display: true
-              },
-              scaleLabel: {
-                display: true,
-                labelString: 'rpm'
+              title: {
+                text: 'rpm',
+                display: false
               }
-            }, {
-              id: 'fuel-y-axis',
+            },
+            fuel: {
+              grid: {
+                display: false
+              },
               type: 'linear',
               position: 'right',
-              scaleLabel: {
-                display: true,
-                labelString: 'Fuel %'
-              },
-              ticks: {
-                precision: 1,
-                min: 0,
-                max: 100
-              }
-            }]
-          },
-          onClick: this.chartClickEvent
+              title: { text: 'Fuel %', display: true },
+              min: 0,
+              max: 100
+            }
+          }
         }
       })
     }
@@ -254,13 +214,13 @@ export default {
         }
         if (this.chart.data && this.chart.data.datasets[0]) {
           this.chart.data.datasets[0].data = this.speedChartVisible ? sharedData.getChartData() : []
-          this.chart.data.datasets[1].data = this.fuelChartVisible ? sharedData.getChartDataFuelLevel() : []
-          this.chart.data.datasets[2].data = this.rpmChartVisible ? sharedData.getChartDataRPM() : []
-          this.chart.data.datasets[3].data = this.rpmChartVisible ? sharedData.getChartDataEvents() : []
+          if (this.chart.data.datasets[1]) { this.chart.data.datasets[1].data = this.fuelChartVisible ? sharedData.getChartDataFuelLevel() : [] }
+          if (this.chart.data.datasets[2]) { this.chart.data.datasets[2].data = this.rpmChartVisible ? sharedData.getChartDataRPM() : [] }
+          if (this.chart.data.datasets[3]) { this.chart.data.datasets[3].data = this.rpmChartVisible ? sharedData.getChartDataEvents() : [] }
           if (this.trips && this.trips[this.currentTrip]) {
             try {
-              this.chart.annotation.elements['a-box-1'].options.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
-              this.chart.annotation.elements['a-box-1'].options.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
+              this.chart.options.plugins.annotation.annotations.box1.xMin = this.$moment(this.trips[this.currentTrip].positions[0].fixTime).toDate()
+              this.chart.options.plugins.annotation.annotations.box1.xMax = this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].fixTime).toDate()
             } catch (e) {
               this.$log.error(e)
             }
@@ -317,8 +277,10 @@ export default {
       this.chart.update()
     },
     removeData(index) {
-      this.chart.data.datasets[index].data = []
-      this.chart.update()
+      if (this.chart.data.datasets[index]) {
+        this.chart.data.datasets[index].data = []
+        this.chart.update()
+      }
     }
   }
 }
