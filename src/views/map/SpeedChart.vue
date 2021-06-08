@@ -107,6 +107,7 @@ export default {
           ]
         },
         options: {
+          onClick: this.chartClickEvent,
           pointBackgroundColor: '#fff',
           radius: 1,
           plugins: {
@@ -214,9 +215,10 @@ export default {
   },
   methods: {
     chartClickEvent(e, array) {
+      console.log(e, array)
       if (array.length > 0) {
-        serverBus.$emit(event.posChanged, array[0]._index)
-        serverBus.$emit(event.autoSliderChange, Vue.moment(sharedData.positions[array[0]._index].fixTime).unix())
+        serverBus.$emit(event.posChanged, array[0].index)
+        serverBus.$emit(event.autoSliderChange, Vue.moment(sharedData.positions[array[0].index].fixTime).unix())
       }
     },
     updateChart() {
