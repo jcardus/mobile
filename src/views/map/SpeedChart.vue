@@ -73,7 +73,6 @@ export default {
           datasets: [
             {
               backgroundColor: 'rgba(61, 153, 61, 0.5)',
-              pointBackgroundColor: 'rgba(61, 153, 61, 0.3)',
               borderColor: 'rgba(61, 153, 61, 1)',
               borderWidth: 1,
               fill: true,
@@ -110,6 +109,7 @@ export default {
           ]
         },
         options: {
+          pointBackgroundColor: '#fff',
           onClick: this.chartClickEvent,
           radius: 1,
           plugins: {
