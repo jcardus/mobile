@@ -4,6 +4,7 @@
 
 <script>
 import { Chart, Tooltip, CategoryScale, LinearScale, TimeScale, LineController, PointElement, LineElement, BubbleController, Filler } from 'chart.js'
+import { getRelativePosition } from 'chart.js/helpers'
 // eslint-disable-next-line no-unused-vars
 import annotationPlugin from 'chartjs-plugin-annotation' // this unused import must be here
 import Vue from 'vue'
@@ -234,6 +235,9 @@ export default {
       if (array.length > 0) {
         serverBus.$emit(event.posChanged, array[0].index)
         serverBus.$emit(event.autoSliderChange, Vue.moment(sharedData.positions[array[0].index].fixTime).unix())
+      } else {
+        const canvasPosition = getRelativePosition(e, this.chart)
+        serverBus.$emit(event.autoSliderChange, Math.round(this.chart.scales.xAxis.getValueForPixel(canvasPosition.x) / 1000))
       }
     },
     updateChart() {
