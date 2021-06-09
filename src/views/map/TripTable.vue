@@ -75,7 +75,7 @@
               <el-row>
                 <el-col :span="12" class="colTripData">
                   <div>
-                    <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ scope.row.trip_distance }}km</span>
+                    <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ Math.round(scope.row.trip_distance) }}km</span>
                   </div>
                 </el-col>
                 <el-col :span="12" class="colTripData">
