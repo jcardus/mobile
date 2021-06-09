@@ -417,7 +417,7 @@ export default {
     },
     async getTrips(from, to, positions) {
       const self = this
-      this.trips.length = 0
+      this.trips = []
       Vue.$log.debug('getting trips from ', from, ' to ', to)
       const responseTrips = await traccar.trips([this.device.id], from, to)
       const responseStops = await traccar.stops([this.device.id], from, to)
