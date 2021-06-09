@@ -417,7 +417,7 @@ export default {
     },
     async getTrips(from, to, positions) {
       const self = this
-      this.$store.commit('transient/SET_TRIPS', [])
+      const _trips = []
       Vue.$log.debug('getting trips from ', from, ' to ', to)
       const responseTrips = await traccar.trips([this.device.id], from, to)
       const responseStops = await traccar.stops([this.device.id], from, to)
@@ -449,7 +449,7 @@ export default {
 
           const tripDistance = Math.round(t.distance) / 1000
 
-          self.trips.push({
+          _trips.push({
             positions: locations,
             idlePositions: [],
             trip_start_fixtime: self.$moment(t.startTime).format('DD-MM-YYYY HH:mm:ss'),
@@ -467,6 +467,7 @@ export default {
           })
         })
       }
+      this.$store.commit('transient/SET_TRIPS', _trips)
     },
     getRouteTrips(positions) {
       this.trips.length = 0
