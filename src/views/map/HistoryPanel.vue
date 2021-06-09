@@ -166,12 +166,25 @@ export default {
       this.updateChart = !this.updateChart
     },
     getRPMValues() {
-      return sharedData.getPositions()
-        .filter(p => (p.attributes.xpert &&
-          ((p.attributes.xpert.filter(x => x.type === '1').length > 0) ||
-            !p.attributes.ignition)) || p.attributes.rpm).map(x => {
-          return { y: (!x.attributes.ignition ? 0 : (x.attributes.rpm ? x.attributes.rpm : x.attributes.xpert.filter(x => x.type === '1')[0].rpm)), x: this.$moment(x.fixTime).toDate() }
+      if (this.device.attributes.xpert || sharedData.getPositions().find(p => p.attributes.rpm)) {
+        let currentRPM = 0
+        return sharedData.getPositions().map(p => {
+          if ((p.attributes.xpert &&
+            ((p.attributes.xpert.filter(x => x.type === '1').length > 0) ||
+              !p.attributes.ignition)) || p.attributes.rpm) {
+            currentRPM = (!p.attributes.ignition ? 0 : (p.attributes.rpm ? p.attributes.rpm : p.attributes.xpert.filter(x => x.type === '1')[0].rpm))
+          } else {
+            currentRPM = (!p.attributes.ignition ? 0 : currentRPM)
+          }
+          return { y: currentRPM, x: this.$moment(p.fixTime).toDate() }
         })
+      }
+      /* return sharedData.getPositions()
+        .filter(p => (p.attributes.xpert &&
+          p.attributes.xpert.filter(x => x.type === '1').length > 0) ||
+            !p.attributes.ignition || p.attributes.rpm).map(x => {
+          return { y: (!x.attributes.ignition ? 0 : (x.attributes.rpm ? x.attributes.rpm : x.attributes.xpert.filter(x => x.type === '1')[0].rpm)), x: this.$moment(x.fixTime).toDate() }
+        })*/
     },
     getEventsValues() {
       return sharedData.getPositions().filter(p => p.events).map(x => {
