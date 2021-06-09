@@ -75,12 +75,12 @@
               <el-row>
                 <el-col :span="12" class="colTripData">
                   <div>
-                    <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ Math.round(scope.row.trip_distance) }}km</span>
+                    <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ Math.round(scope.row.trip_distance) }} km</span>
                   </div>
                 </el-col>
                 <el-col :span="12" class="colTripData">
                   <div>
-                    <span style="font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.trip_avg_speed }}km/h </span>
+                    <span style="font-size: 12px"><i class="fas fa-tachometer-alt" style="color: #13ce66"></i> {{ scope.row.trip_avg_speed }} km/h </span>
                   </div>
                 </el-col>
               </el-row>
