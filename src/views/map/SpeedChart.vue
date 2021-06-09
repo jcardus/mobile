@@ -140,7 +140,7 @@ export default {
                     case 1:
                       return label + '%'
                     case 2:
-                      return tooltipItem.label + ' rpm'
+                      return label + ' rpm'
                     case 3:
                       return tooltipItem.raw.label
                     default:
@@ -201,16 +201,15 @@ export default {
                 text: 'Km/h'
               }},
             rpm: {
+              position: 'left',
               display: false,
               grid: {
                 display: false
               },
-              title: {
-                text: 'rpm',
-                display: false
-              }
+              title: { text: 'rpm', display: true }
             },
             fuel: {
+              display: true,
               grid: {
                 display: false
               },
@@ -232,13 +231,13 @@ export default {
       this.chart.update()
     },
     chartClickEvent(e, array) {
-      if (array.length > 0) {
-        serverBus.$emit(event.posChanged, array[0].index)
+      /* if (array.length > 0) {
+        //serverBus.$emit(event.posChanged, array[0].index)
         serverBus.$emit(event.autoSliderChange, Vue.moment(sharedData.positions[array[0].index].fixTime).unix())
-      } else {
-        const canvasPosition = getRelativePosition(e, this.chart)
-        serverBus.$emit(event.autoSliderChange, Math.round(this.chart.scales.xAxis.getValueForPixel(canvasPosition.x) / 1000))
-      }
+      } else {*/
+      const canvasPosition = getRelativePosition(e, this.chart)
+      serverBus.$emit(event.autoSliderChange, Math.round(this.chart.scales.xAxis.getValueForPixel(canvasPosition.x) / 1000))
+      // }
     },
     updateChart() {
       if (this.chart) {
@@ -283,8 +282,10 @@ export default {
         this.removeData(1)
         this.fuelChartVisible = false
       } else {
-        this.addData(1, sharedData.getChartDataFuelLevel())
+        const seriesFuel = sharedData.getChartDataFuelLevel()
+        this.addData(1, seriesFuel)
         this.fuelChartVisible = true
+        this.fuelScaleVisible = seriesFuel && seriesFuel.lenght > 0
       }
     },
     onToogleRPMChart() {
@@ -292,8 +293,13 @@ export default {
         this.removeData(2)
         this.rpmChartVisible = false
       } else {
-        this.addData(2, sharedData.getChartDataRPM())
+        const seriesRPM = sharedData.getChartDataRPM()
+        this.addData(2, seriesRPM)
         this.rpmChartVisible = true
+        this.$log.debug('chart.scales', this.chart.scales.rpm)
+        this.chart.scales.rpm.display = true
+        this.$log.debug('chart.scales', this.chart.scales.rpm)
+        this.chart.update()
       }
     },
     onToogleEventChart() {

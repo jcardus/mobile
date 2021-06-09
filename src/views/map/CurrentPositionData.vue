@@ -43,7 +43,7 @@
       </span>
     </span>
     <div v-if="!isMobile" style="float: right">
-      <el-date-picker v-model="_dateRange" size="mini" type="daterange" range-separator="a"></el-date-picker>
+      <el-date-picker v-model="_dateRange" :disabled="loadingRoutes" size="mini" type="daterange" range-separator="a"></el-date-picker>
     </div>
     <div v-if="isMobile" style="padding-top: 5px; overflow: hidden; width:100%">
       <div style="float:left; ">
