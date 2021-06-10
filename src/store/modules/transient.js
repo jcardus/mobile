@@ -12,10 +12,14 @@ const state = {
   isPlaying: false,
   trips: [],
   portrait: true,
-  loading: false
+  loading: false,
+  summary: []
 }
 
 const mutations = {
+  SET_SUMMARY(state, value) {
+    state.summary = value
+  },
   SET_LOADING(state, value) {
     state.loading = value
   },

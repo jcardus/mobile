@@ -421,6 +421,8 @@ export default {
       Vue.$log.debug('getting trips from ', from, ' to ', to)
       const responseTrips = await traccar.trips([this.device.id], from, to)
       const responseStops = await traccar.stops([this.device.id], from, to)
+      const { summary } = await traccar.summary([this.device.id], from, to)
+      this.$store.commit('transient/SET_SUMMARY', summary)
 
       if (responseTrips.data) {
         const trips = responseTrips.data
