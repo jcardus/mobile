@@ -1,4 +1,5 @@
 const getters = {
+  totalDistance: state => state.transient.totalDistance,
   summary: state => state.transient.summary,
   user: state => state.user.user,
   avatar: state => state.user.user.attributes && state.user.user.attributes.avatar,
