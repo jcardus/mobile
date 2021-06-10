@@ -138,7 +138,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['geofences', 'trips']),
+    ...mapGetters(['geofences', 'trips', 'totalDistance']),
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
       set(value) { vm.$data.loadingRoutes = value }
@@ -150,7 +150,7 @@ export default {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
     totalKms() {
-      return Math.round(this.trips.reduce((sum, t) => sum + t.trip_distance, 0))
+      return Math.round(this.totalDistance / 1000)
     },
     totalFuelConsumption() {
       return Math.round(this.trips.reduce((sum, t) => sum + (t.fuel_consumption < 0 ? 0 : t.fuel_consumption), 0))

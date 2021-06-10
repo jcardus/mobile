@@ -12,10 +12,18 @@ const state = {
   isPlaying: false,
   trips: [],
   portrait: true,
-  loading: false
+  loading: false,
+  summary: [],
+  totalDistance: 0
 }
 
 const mutations = {
+  SET_TOTAL_DISTANCE(state, value) {
+    state.totalDistance = value
+  },
+  SET_SUMMARY(state, value) {
+    state.summary = value
+  },
   SET_LOADING(state, value) {
     state.loading = value
   },

@@ -217,7 +217,7 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
-  summary: function(deviceId, from, to) {
+  summary: (deviceId, from, to) => {
     from = Vue.moment(from).startOf('day').toDate()
     to = Vue.moment(to).endOf('day').toDate()
     return axios.get(summary + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true })

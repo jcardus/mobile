@@ -421,6 +421,10 @@ export default {
       Vue.$log.debug('getting trips from ', from, ' to ', to)
       const responseTrips = await traccar.trips([this.device.id], from, to)
       const responseStops = await traccar.stops([this.device.id], from, to)
+      const { data } = await traccar.summary([this.device.id], from, to)
+      if (data[0] && data[0].distance) {
+        this.$store.commit('transient/SET_TOTAL_DISTANCE', data[0].distance)
+      }
 
       if (responseTrips.data) {
         const trips = responseTrips.data
