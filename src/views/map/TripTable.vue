@@ -150,7 +150,7 @@ export default {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
     },
     totalKms() {
-      return this.summary.totalDistance[0] && Math.round(this.summary.totalDistance[0] / 1000)
+      return this.summary.distance[0] && Math.round(this.summary.distance[0] / 1000)
     },
     totalFuelConsumption() {
       return Math.round(this.trips.reduce((sum, t) => sum + (t.fuel_consumption < 0 ? 0 : t.fuel_consumption), 0))
