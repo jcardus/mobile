@@ -49,7 +49,6 @@ import { checkForUpdates } from '@/utils/utils'
 import * as consts from '../../utils/consts'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import PoiPopUp from './PoiPopUp'
-import { vehicles3d } from './mapbox/Vehicles3dLayer'
 import * as event from '../../events'
 import { animate } from '@/utils/animation'
 import geofencesLayer from './mapbox/layers/GeofencesLayer'
@@ -758,9 +757,6 @@ export default {
           this.$store.dispatch('user/setDeviceLastIgnOff', { device, fixTime: position.fixTime })
         }
       }
-      if (this.vehicles3dEnabled) {
-        vehicles3d.addFModel(feature)
-      }
       this.updateDeviceAndFeature(feature, device, position)
       return feature
     },
@@ -795,10 +791,8 @@ export default {
             feature.geometry.coordinates = [position.longitude, position.latitude]
             feature.properties.course = position.course
             if (lnglat.popUps[device.id]) { lnglat.popUps[device.id].setLngLat(feature.geometry.coordinates) }
-            vehicles3d.updateCoords(feature)
           }
           this.updateDeviceAndFeature(feature, device, position)
-          vehicles3d.updateColor(feature)
         }
       }
       layerManager.refreshLayers()

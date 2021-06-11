@@ -3,7 +3,6 @@ import Vue from 'vue'
 import store from '@/store'
 import vehicleLayer from '@/views/map/mapbox/VehiclesLayer'
 import vehicleLabelsLayer from '@/views/map/mapbox/VehicleLabelsLayer'
-import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import { positionsSource } from '@/utils/consts'
 import * as consts from '@/utils/consts'
 import vehiclesLayer from '@/views/map/mapbox/VehiclesLayer'
@@ -68,7 +67,6 @@ function refreshSources() {
 function refreshLayersVisibility() {
   if (store.getters.vehicles3dEnabled) {
     const on3d = vm.$static.map.getPitch() > 0
-    hideLayer(vehicles3d.id, !on3d)
     hideLayer(vehiclesLayer.id, on3d)
   }
   setVisible(vehicleLabelsLayer.id,
@@ -79,10 +77,6 @@ function refreshLayersVisibility() {
 }
 
 export function removeAdd3dLayer() {
-  if (store.getters.vehicles3dEnabled) {
-    vm.$static.map.removeLayer(vehicles3d.id)
-    vm.$static.map.addLayer(vehicles3d)
-  }
 }
 
 export default {
@@ -100,9 +94,6 @@ export default {
     setVisible(layer, !hide)
   },
   addLayers(map) {
-    if (store.getters.vehicles3dEnabled) {
-      map.addLayer(vehicles3d)
-    }
     if (!map.getSource(positionsSource)) {
       map.addSource(positionsSource, {
         type: 'geojson',

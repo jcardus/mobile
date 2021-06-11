@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.946",
+  "version": "1.0.947",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -12,7 +12,7 @@
     "dev": "vue-cli-service serve",
     "dev:ios": "npx cap copy ios && npx cap open ios",
     "new": "plop",
-    "preview": "node build/index.js --preview  --report",
+    "preview": "vue-cli-service build --preview  --report",
     "test:ci": "npm run lint && npm run test:unit"
   },
   "dependencies": {
@@ -50,7 +50,6 @@
     "normalize.css": "latest",
     "nprogress": "latest",
     "odometer": "latest",
-    "three": "latest",
     "vue": "latest",
     "vue-fb-customer-chat": "^0.2.0",
     "vue-i18n": "^8.22.2",

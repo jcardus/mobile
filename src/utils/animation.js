@@ -6,7 +6,6 @@ import settings from '../settings'
 import Vue from 'vue'
 import * as angles from 'angles'
 import * as consts from './consts'
-import { vehicles3d } from '@/views/map/mapbox/Vehicles3dLayer'
 import store from '../store'
 
 const minDistanceRouteMatch = 0.001
@@ -17,23 +16,15 @@ import layerManager from '@/views/map/mapbox/LayerManager'
 
 const animatingFeatures = []
 
-function in3dMode() {
-  return vm.$static.map.getPitch() > 0 && store.getters.vehicles3dEnabled
-}
-
 export function updateFeature(feature = vm.$static.currentFeature) {
-  if (in3dMode()) {
-    vehicles3d.updateCoords(feature)
+  lnglat.updateBearing(feature)
+  if (store.getters.historyMode) {
+    layerManager.updateRoutePlayLayerSource(feature)
   } else {
-    lnglat.updateBearing(feature)
-    if (store.getters.historyMode) {
-      layerManager.updateRoutePlayLayerSource(feature)
-    } else {
-      if (!layerManager.getAnimationLayer(feature)) {
-        layerManager.addAnimationLayer(feature)
-      }
-      layerManager.updateAnimLayerSource(feature)
+    if (!layerManager.getAnimationLayer(feature)) {
+      layerManager.addAnimationLayer(feature)
     }
+    layerManager.updateAnimLayerSource(feature)
   }
 }
 
