@@ -5,6 +5,7 @@
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
+    "report": "vue-cli-service build --report",
     "build:capacitor": "vue-cli-service build --mode capacitor",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "lint": "eslint --ext .js,.vue src",
