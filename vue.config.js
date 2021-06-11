@@ -105,8 +105,18 @@ module.exports = {
     }
   },
   configureWebpack: () => {
+    const common = {
+      devtool: 'source-map',
+      name: name,
+      resolve: {
+        alias: {
+          '@': resolve('src')
+        }
+      }
+    }
     if (process.env.NODE_ENV === 'production') {
       return {
+        ...common,
         externals: {
           three: 'THREE',
           'element-ui': 'Element',
@@ -127,27 +137,16 @@ module.exports = {
             }]
           }]),
           new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] })
-        ],
-        name: name,
-        resolve: {
-          alias: {
-            '@': resolve('src')
-          }
-        }
+        ]
       }
     } else {
       return {
+        ...common,
         plugins: [
           new webpack.DefinePlugin({
             'process.env': {
               PACKAGE_VERSION: '"' + version + '"' }})
-        ],
-        name: name,
-        resolve: {
-          alias: {
-            '@': resolve('src')
-          }
-        }
+        ]
       }
     }
   },
