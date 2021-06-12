@@ -5,13 +5,6 @@ if (workbox) {
   // precache this. This is all we need for precaching
   // eslint-disable-next-line no-undef
   workbox.precaching.precacheAndRoute(self.__precacheManifest)
-
-  // Make sure to return a specific response for all navigation requests.
-  // Since we have a SPA here, this should be index.html always.
-  // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
-  // eslint-disable-next-line no-undef
-  workbox.routing.registerNavigationRoute('/index.html')
-
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
     new RegExp('https:\/\/kit-free\.fontawesome\.com/.*'),
@@ -31,13 +24,6 @@ if (workbox) {
   // eslint-disable-next-line no-undef
   workbox.routing.registerRoute(
     new RegExp('https://.*\\.amazonaws\\.com/v1/.*'),
-    // eslint-disable-next-line no-undef
-    new workbox.strategies.NetworkOnly()
-  )
-
-  // eslint-disable-next-line no-undef
-  workbox.routing.registerRoute(
-    new RegExp('https://capture\\.trackjs\\.com/.*'),
     // eslint-disable-next-line no-undef
     new workbox.strategies.NetworkOnly()
   )
