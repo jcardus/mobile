@@ -118,7 +118,6 @@ module.exports = {
       return {
         ...common,
         externals: {
-          three: 'THREE',
           'element-ui': 'Element',
           vue: 'Vue',
           'mapbox-gl': 'mapboxgl'
