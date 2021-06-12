@@ -579,9 +579,7 @@ export default {
       }
     },
     totalKmsRenderer(row, column, cellValue) {
-      console.log(vm.$static.positionsSource.features)
       const p = this.findFeatureByDeviceId(cellValue)
-      console.log('feature', p, 'cellValue', cellValue)
       return p && p.properties && p.properties.attributes && Math.round(p.properties.attributes.totalDistance / 1000)
     },
     groupRenderer(row, column, cellValue) {
