@@ -25,7 +25,7 @@ console.log('env:', process.env.ENV)
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   pwa: {
-    name: 'Pinme',
+    name: name,
     themeColor: '#F8F9FE',
     msTileColor: '#F8F9FE',
     appleMobileWebAppCapable: 'yes',
