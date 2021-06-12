@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.975",
+  "version": "1.0.976",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
