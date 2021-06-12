@@ -129,7 +129,7 @@ module.exports = {
               PACKAGE_VERSION: '"' + version + '"' }}),
           new ReplaceInFileWebpackPlugin([{
             dir: 'dist',
-            files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js'],
+            files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js', 'index.html'],
             rules: [{
               search: /version/ig,
               replace: version
