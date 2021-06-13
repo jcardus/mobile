@@ -36,11 +36,6 @@
     <link id="favicon" rel="icon" href="">
     <title id="title"></title>
     <% if (process.env.NODE_ENV === 'production') {%>
-    <script>
-      if (screen.width<728) {
-        window.location.href = window.location.href = '//m.' + window.location.hostname
-      }
-    </script>
     <script src="//unpkg.com/vue@2.6.12/dist/vue.js"></script>
     <script src="//unpkg.com/element-ui@2.14.1/lib/index.js"></script>
     <script src="//unpkg.com/element-ui@2.14.1/lib/umd/locale/en.js"></script>
