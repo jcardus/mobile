@@ -343,8 +343,8 @@ const actions = {
   },
   async logout({ commit }) {
     try {
-      Vue.$log.debug('logout one signal')
-      Vue.$log.debug(await window.OneSignal.logoutEmail())
+      Vue.$log.info('logout one signal')
+      Vue.$log.info(await window.OneSignal.logoutEmail())
       await logout()
     } catch (e) {
       Vue.$log.error(e)
@@ -352,9 +352,9 @@ const actions = {
       commit('CLEAR_USER')
       vm.reset()
       try {
-        Vue.$log.debug('deleting socket')
+        Vue.$log.info('deleting socket')
         delete window.socket
-        Vue.$log.debug('Auth signout', await Auth.signOut())
+        Vue.$log.info('Auth signout', await Auth.signOut())
       } catch (e) {
         Vue.$log.error(e)
       }
