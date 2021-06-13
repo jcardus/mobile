@@ -33,7 +33,7 @@ export function initSupportChat() {
   }
 }
 
-export const hostname = window.location.hostname.replace('dev.', '')
+export const hostname = window.location.hostname.replace('dev.', '').replace('m', '')
 
 export function getFavIcon() {
   return '/img/favicon/' + hostname + '.png'
