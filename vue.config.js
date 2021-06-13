@@ -91,7 +91,7 @@ module.exports = {
    */
   publicPath: '/',
   outputDir: 'dist',
-  assetsDir: 'static',
+  assetsDir: 'staticmobile',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: true,
   devServer: {
