@@ -24,7 +24,6 @@ import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
 
 const AppMobile = () => import('./AppMobile')
-const App = () => import('./App')
 
 console.log('app starting...', process.env)
 
@@ -234,7 +233,7 @@ export const vm = new Vue({
   i18n,
   render: h => {
     try {
-      return h(lnglat.__isMobile() ? AppMobile : App)
+      return h(AppMobile)
     } catch (e) {
       console.error(e)
       return e
