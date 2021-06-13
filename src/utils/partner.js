@@ -1,39 +1,6 @@
 import styles from '../styles/element-variables.scss'
-import Vue from 'vue'
-import * as lnglat from './lnglat'
-import VueFbCustomerChat from 'vue-fb-customer-chat'
 
-function initSurvey(token) {
-  const s = document.createElement('script')
-  s.src = `https://survey.survicate.com/workspaces/${token}/web_surveys.js`
-  s.async = true
-  const e = document.getElementsByTagName('script')[0]
-  e.parentNode.insertBefore(s, e)
-}
-function initFacebookChat() {
-  Vue.use(VueFbCustomerChat, {
-    page_id: 344629353112186,
-    locale: 'es_ES'
-  })
-}
-
-export function initSupportChat() {
-  switch (hostname) {
-    case 'mac.pinme.io':
-    case 'web.fleetrack.cl':
-      initSurvey('60bd590459b33f47d8dd8abccc0dc8d7')
-      if (!lnglat.isMobile()) {
-        initFacebookChat()
-      }
-      break
-    case 'wuizy.co.ao':
-      initSurvey('51e321bab007a7f8e6b0575f91f20939')
-      break
-    default:
-  }
-}
-
-export const hostname = window.location.hostname.replace('dev.', '').replace('m', '')
+export const hostname = window.location.hostname.replace('dev.', '')
 
 export function getFavIcon() {
   return '/img/favicon/' + hostname + '.png'

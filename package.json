@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "1.0.987",
+  "version": "1.0.988",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -52,7 +52,6 @@
     "nprogress": "latest",
     "odometer": "latest",
     "vue": "latest",
-    "vue-fb-customer-chat": "^0.2.0",
     "vue-i18n": "^8.22.2",
     "vue-i18n-filter": "latest",
     "vue-moment": "^4.1.0",
