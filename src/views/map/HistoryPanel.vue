@@ -3,23 +3,6 @@
     <div style="position: relative; height:160px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
-    <div v-if="!isMobile">
-      <div :style="`padding-left:${sliderLeftPadding}px; padding-right: 65px`">
-        <label>
-          <input
-            v-model="embeddedSliderPos"
-            type="range"
-            :max="maxPos"
-            :min="minPos"
-          />
-        </label>
-      </div>
-      <div class="playButtons">
-        <i :style="'display:' + (isPlaying ? 'none' : 'initial')" class="fas fa-backward" @click="clickBackward"></i>
-        <i :class="'fas fa-' + (isPlaying ? 'pause' : 'play')" style="padding-left: 10px; padding-right: 10px" @click="click"></i>
-        <i :style="'visibility:' + (isPlaying ? 'hidden' : 'visible')" class="fas fa-forward" @click="clickForward"></i>
-      </div>
-    </div>
   </div>
 </template>
 

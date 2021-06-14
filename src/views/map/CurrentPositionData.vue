@@ -21,31 +21,10 @@
         >
           <i class="fas fa-gas-pump" style="color: white"></i>
         </el-tag>
-        <el-tag
-          style="margin-right: 5px; height: 28px"
-          size="small"
-          :type="tagRPMChartColor()"
-          effect="dark"
-          @click="toggleRPMChart"
-        >
-          <i class="fab fa-cloudscale" style="color: white; font-size: 15px"></i>
-        </el-tag>
-        <el-tag
-          style="margin-right: 15px; height: 28px"
-          size="small"
-          :type="tagEventsChartColor()"
-          effect="dark"
-          @click="toggleEventChart"
-        >
-          <i class="fas fa-bell" style="color: white; font-size: 15px"></i>
-        </el-tag>
         <i class="fas fa-times" style="color: gray" @click="toggleChanged"></i>
       </span>
     </span>
-    <div v-if="!isMobile" style="float: right">
-      <el-date-picker v-model="_dateRange" :disabled="loadingRoutes" size="mini" type="daterange" range-separator="a"></el-date-picker>
-    </div>
-    <div v-if="isMobile" style="padding-top: 5px; overflow: hidden; width:100%">
+    <div style="padding-top: 5px; overflow: hidden; width:100%">
       <div style="float:left; ">
         <label>
           <input v-model="_minDate" type="date">

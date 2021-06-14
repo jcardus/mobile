@@ -534,10 +534,6 @@ export default {
     addControls: function() {
       const map = this.$static.map
       this.$log.debug('adding mapcontrols...')
-      if (!this.isMobile) {
-        map.addControl(new mapboxgl.NavigationControl(), 'top-left')
-        map.addControl({ onAdd: () => this.$refs.directions }, 'top-left')
-      }
       this.$static.draw = new MapboxDraw({
         displayControlsDefault: false,
         controls: {
@@ -559,7 +555,6 @@ export default {
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n, store: store })
       _vm.$mount('#style-switcher-div')
-      map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left')
     },
     onMoveEnd() {
       if (!this.isPlaying) {
