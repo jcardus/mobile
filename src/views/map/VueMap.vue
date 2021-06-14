@@ -40,7 +40,7 @@ import { MapboxCustomControl } from '@/utils/lnglat'
 import Vue from 'vue'
 import { traccar } from '@/api/traccar-api'
 import HistoryPanel from './HistoryPanel'
-import i18n, { getLanguage } from '../../lang'
+import i18n from '../../lang'
 import StyleSwitcherControl from './mapbox/styleswitcher/StyleSwitcherControl'
 import CurrentPositionData from './CurrentPositionData'
 import NProgress from 'nprogress'
@@ -64,8 +64,6 @@ import { getServerHost, isDevEnv } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
-import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions'
-import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css'
 
 let socketReconnect = 0
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
@@ -75,18 +73,6 @@ function getSocketUrl() {
   Vue.$log.debug('websocket ', hostName)
   return `${isDevEnv() ? 'ws' : 'wss'}://${hostName}/api/socket`
 }
-
-const directions = new MapboxDirections({
-  accessToken: consts.mapboxAccessToken,
-  unit: 'metric',
-  language: getLanguage().slice(0, 2),
-  controls: {
-    profileSwitcher: false
-  },
-  interactive: true,
-  placeholderDestination: 'Local de destino',
-  placeholderOrigin: 'Local de origem'
-})
 
 export default {
   name: 'VueMap',
@@ -157,13 +143,6 @@ export default {
     '$route'(to) {
       if (to.name === 'Map') {
         setTimeout(() => serverBus.$emit(event.mapShow), 500)
-      }
-    },
-    showDirections() {
-      if (this.showDirections) {
-        this.map.addControl(directions, 'top-right')
-      } else {
-        this.map.removeControl(directions)
       }
     }
   },
@@ -371,24 +350,10 @@ export default {
         }
       }
     },
-    directionsTo(coord) {
-      if (!this.showDirections) {
-        this.showDirections = true
-      }
-      setTimeout(() => { directions.setOrigin(coord) }, 500)
-    },
     eventsLoaded: function() {
       // this.eventsSource.features = this.processEvents(this.events)
       this.refreshEvents()
     },
-    /* newEventReceived: function(event) {
-      traccar.position(event.positionId).then(r => {
-        const geojson = eventsLayer.getFeatureGeojson(event, r.data[0])
-        Vue.$log.debug('adding... ', geojson)
-        this.eventsSource.features.push(geojson)
-        this.refreshEvents()
-      })
-    },*/
     eventSelected: async function(event) {
       const featureSelected = eventsLayer.findFeatureSelected()
       if (featureSelected !== undefined) {
