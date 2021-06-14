@@ -78,7 +78,7 @@
             <f7-list-item></f7-list-item>
           </f7-list>
           <f7-block-footer>
-            {{ version }} {{ domain }}
+            m{{ version }} {{ domain }}
           </f7-block-footer>
         </div>
       </f7-page>

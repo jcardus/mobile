@@ -72,7 +72,7 @@ module.exports = {
         'sizes': '512x512',
         'type': 'image/png'
       }],
-      'start_url': '/index.html',
+      'start_url': '/mobile/index.html',
       'display': 'standalone',
       'background_color': '#F8F9FE',
       'theme_color': '#F8F9FE',
@@ -89,9 +89,9 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: '/mobile/',
   outputDir: 'dist',
-  assetsDir: 'static',
+  assetsDir: 'staticmobile',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: true,
   devServer: {
