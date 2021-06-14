@@ -9,7 +9,7 @@ export const awsConfig = {
   aws_user_pools_id: 'us-east-1_XEJ1DMDIJ',
   aws_user_pools_web_client_id: getPartnerData().cognitoClientId,
   oauth: {
-    redirectSignIn: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
+    redirectSignIn: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/',
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
     domain: 'auth.fleetmap.io',
     scope: [
