@@ -39,6 +39,11 @@ export function getOneSignalAppId() {
 }
 
 export function getPartnerData() {
+  const defaultParams = {
+    oneSignalAppId: 'd48134b7-ab16-4065-9ff8-54a3465f258a',
+    cognitoClientId: '27us7b46g301msohnugokeg6s5'
+  }
+
   switch (window.location.hostname) {
     case 'www.fleetmap.co.mz':
       return { cognitoClientId: '5n1pfl8gs7svbmptr325dpmdbh', oneSignalAppId: '25875ecc-70f6-414e-b9df-2c64eb8e2459' }
@@ -53,17 +58,12 @@ export function getPartnerData() {
       return { oneSignalAppId: 'd209de76-98c2-4721-aad4-168c4a8f4e66', cognitoClientId: '6ukv9e4jf844s439he87su3slp' }
     case 'mac.pinme.io':
       return { oneSignalAppId: 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2' }
-    case 'localhost':
-      return { oneSignalAppId: '5be94b69-6e16-42ff-bca4-96b0454296ba', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
     case 'pinme.io':
       return { oneSignalAppId: '610e8c3c-0939-42ad-a9e4-ce321a5d13bc' }
     case 'dev.fleetmap.io':
-      return { oneSignalAppId: '2cef0590-22af-4d29-85f0-1edaa5279b9c', cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc' }
+      return { ...defaultParams, oneSignalAppId: '2cef0590-22af-4d29-85f0-1edaa5279b9c' }
     default:
-      return {
-        oneSignalAppId: 'd48134b7-ab16-4065-9ff8-54a3465f258a',
-        cognitoClientId: '27us7b46g301msohnugokeg6s5'
-      }
+      return defaultParams
   }
 }
 

@@ -5,7 +5,6 @@ import localeEN from 'element-ui/lib/locale/lang/en'
 import localePT from 'element-ui/lib/locale/lang/pt'
 import localeES from 'element-ui/lib/locale/lang/es'
 import store from './store'
-import router from './router'
 import './routeInterceptor'
 import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
@@ -228,7 +227,6 @@ export const vm = new Vue({
       this.$log.debug('reset end')
     }
   },
-  router: router,
   store,
   i18n,
   render: h => {

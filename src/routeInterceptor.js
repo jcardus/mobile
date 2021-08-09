@@ -1,15 +1,11 @@
-import router from './router'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import Vue from 'vue'
-import * as lnglat from './utils/lnglat'
 import store from './store'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect', '/googlelogin/', '/register'] // no redirect whitelist
-
-let firstLoad = true
 
 export async function routerBeforeEach(next, to) {
   const hasToken = store.getters.user.name !== ''
@@ -34,19 +30,4 @@ export async function routerBeforeEach(next, to) {
       next(`/login?redirect=${to.path}`)
     }
   }
-}
-
-if (!lnglat.__isMobile()) {
-  router.beforeEach(async(to, from, next) => {
-    if (firstLoad) {
-      await store.dispatch('user/checkSession')
-      firstLoad = false
-    }
-    NProgress.start()
-    await routerBeforeEach(next, to)
-  })
-
-  router.afterEach(() => {
-    NProgress.done()
-  })
 }
