@@ -59,8 +59,12 @@ export function getPartnerData() {
         cognitoClientId: '4mnfj8aa585q67fq7v3cufuh09'
       }
     case 'wuizy.co.ao':
-      return { ...defaultParams,
-        oneSignalAppId: 'd209de76-98c2-4721-aad4-168c4a8f4e66', cognitoClientId: '6ukv9e4jf844s439he87su3slp' }
+      return {
+        oauth_domain: 'accounts.fleetmap.io',
+        aws_user_pools_id: 'us-east-1_SWTiH7d38',
+        oneSignalAppId: 'd209de76-98c2-4721-aad4-168c4a8f4e66',
+        cognitoClientId: '2gcl7rh96fvf73vpo871sb6nb9'
+      }
     case 'mac.pinme.io':
       return { ...defaultParams,
         oneSignalAppId: 'b4ab3ecd-1a5e-4f8e-8dff-3d50d27e11f2' }
