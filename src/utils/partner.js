@@ -62,7 +62,7 @@ export function getPartnerData() {
     default:
       return {
         oneSignalAppId: 'd48134b7-ab16-4065-9ff8-54a3465f258a',
-        cognitoClientId: '1oaoqf2q0cln86t4efrvnnb0mc'
+        cognitoClientId: '27us7b46g301msohnugokeg6s5'
       }
   }
 }
