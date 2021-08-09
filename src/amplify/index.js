@@ -6,17 +6,16 @@ export const awsConfig = {
   aws_project_region: 'us-east-1',
   aws_cognito_identity_pool_id: 'us-east-1:b886ef89-6a90-4903-96fc-25af82fc629a',
   aws_cognito_region: 'us-east-1',
-  aws_user_pools_id: 'us-east-1_XEJ1DMDIJ',
+  aws_user_pools_id: getPartnerData().aws_user_pools_id,
   aws_user_pools_web_client_id: getPartnerData().cognitoClientId,
   oauth: {
-    redirectSignIn: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/',
+    redirectSignIn: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile',
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
-    domain: 'auth.fleetmap.io',
+    domain: getPartnerData().oauth_domain,
     scope: [
       'phone',
       'email',
       'openid',
-      'profile',
       'aws.cognito.signin.user.admin'
     ],
     responseType: 'code'
