@@ -75,7 +75,8 @@
           </f7-list>
           <f7-block></f7-block>
           <f7-list>
-            <f7-list-item></f7-list-item>
+            <f7-button :external="true" :href="signUp">{{ $t('login.register') }}</f7-button>
+            <f7-button :external="true" :href="forgetPassword">{{ $t('login.forgotPassword') }}</f7-button>
           </f7-list>
           <f7-block-footer>
             m{{ version }} {{ domain }}
@@ -99,7 +100,7 @@ import { appOffline } from './utils/utils'
 import { mapGetters } from 'vuex'
 import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
-import { getGoogleLogin } from './api'
+import { forgotPassword, getGoogleLogin, signUp } from './api'
 import * as event from './events'
 import AppleButton from '@/views/login/AppleButton'
 
@@ -120,6 +121,12 @@ export default {
   },
   computed: {
     ...mapGetters(['unreadItems', 'user', 'portrait']),
+    signUp() {
+      return signUp()
+    },
+    forgetPassword() {
+      return forgotPassword()
+    },
     isCapacitor() {
       return location.href.startsWith('capacitor://')
     },

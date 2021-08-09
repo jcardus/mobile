@@ -9,7 +9,7 @@ export const awsConfig = {
   aws_user_pools_id: getPartnerData().aws_user_pools_id,
   aws_user_pools_web_client_id: getPartnerData().cognitoClientId,
   oauth: {
-    redirectSignIn: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile',
+    redirectSignIn: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/',
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
     domain: getPartnerData().oauth_domain,
     scope: [
