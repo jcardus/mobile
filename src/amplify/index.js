@@ -4,7 +4,7 @@ import { getPartnerData } from '@/utils/partner'
 
 export const awsConfig = {
   aws_project_region: 'us-east-1',
-  aws_cognito_identity_pool_id: 'us-east-1:63d476f8-7f0f-4c4c-9051-24e5ef63cf17',
+  aws_cognito_identity_pool_id: 'us-east-1:b886ef89-6a90-4903-96fc-25af82fc629a',
   aws_cognito_region: 'us-east-1',
   aws_user_pools_id: 'us-east-1_XEJ1DMDIJ',
   aws_user_pools_web_client_id: getPartnerData().cognitoClientId,
