@@ -16,7 +16,7 @@ export function convertEvents(events, isNew) {
   })
 
   filteredData.forEach(e => {
-    this.addEventInfo(e, isNew)
+    addEventInfo(e, isNew)
   })
 
   return filteredData.filter(e => e.device !== undefined)
