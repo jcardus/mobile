@@ -5,11 +5,9 @@
     <f7-list>
       <f7-list-item :title="$t('settings.version')" :after="version">
       </f7-list-item>
-      <f7-list-item :title="$t('vehicleList.column_lastUpdate')" :after="lastUpdate.format('LLL')">
-      </f7-list-item>
       <f7-list-item :title="$t('settings.connection')" :after="connected">
       </f7-list-item>
-      <f7-list-item :title="$t('login.login_user')" :after="$store.state.user.email">
+      <f7-list-item :title="$t('login.login_user')" :after="user">
       </f7-list-item>
       <f7-list-item title="Url" :after="host">
       </f7-list-item>
@@ -27,8 +25,8 @@ export default {
     host() {
       return hostname
     },
-    lastUpdate() {
-      return this.$moment(this.$store.state.lastUpdate)
+    user() {
+      return this.$store.getters.user.name
     },
     offline() {
       return appOffline()

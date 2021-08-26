@@ -34,9 +34,51 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { serverBus } from '../../../main'
-
+import { serverBus } from '@/main'
+export const geofenceExit = 'geofenceExit'
+export const geofenceEnter = 'geofenceEnter'
+export const deviceOverspeed = 'deviceOverspeed'
+export const ignitionOn = 'ignitionOn'
+export const ignitionOff = 'ignitionOff'
+export const deviceFuelDrop = 'deviceFuelDrop'
+export const driverChanged = 'driverChanged'
+export const alarmSOS = 'sos'
+export const alarmGPSAntennaCut = 'gpsAntennaCut'
+export const alarmTow = 'tow'
+export const alarmHighRpm = 'highRpm'
+export const alarmHardAcceleration = 'hardAcceleration'
+export const alarmHardBraking = 'hardBraking'
+export const alarmHardCornering = 'hardCornering'
+export const alarmPowerCut = 'powerCut'
+export const alarmShock = 'shock'
+export const alarmPowerOn = 'powerOn'
+export const alarmTemperature = 'temperature'
+export const alarmBreakdown = 'breakdown'
 export default {
+  data() {
+    return {
+      alertTypes: [
+        geofenceExit,
+        geofenceEnter,
+        deviceOverspeed,
+        ignitionOn,
+        ignitionOff,
+        deviceFuelDrop,
+        driverChanged,
+        alarmSOS,
+        alarmGPSAntennaCut,
+        alarmTow,
+        alarmHighRpm,
+        alarmHardAcceleration,
+        alarmHardBraking,
+        alarmHardCornering,
+        alarmPowerCut,
+        alarmShock,
+        alarmPowerOn,
+        alarmBreakdown
+      ]
+    }
+  },
   computed: {
     ...mapGetters(['events', 'alerts'])
   },
@@ -46,6 +88,11 @@ export default {
   methods: {
     pageShown() {
       this.$store.dispatch('resetUnreadItems')
+      this.$store.dispatch('transient/fetchEvents', {
+        start: new Date(new Date().setHours(-2)),
+        end: new Date(),
+        types: this.alertTypes
+      })
     }
   }
 }

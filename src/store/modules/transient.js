@@ -81,14 +81,13 @@ const actions = {
   setDataLoaded({ commit }) {
     commit('SET_DATA_LOADED')
   },
-  async fetchEvents({ commit, rootGetters }, { start, end, types }) {
+  async fetchEvents({ commit, rootGetters }, { start, end }) {
     const r = await traccar.report_events(
       start,
       end,
       rootGetters.devices.map(d => d.id),
-      types.map(a => a.notification.type)
+      []
     )
-
     const eventsReceived = r.map(d => d.data).flat()
     commit('SET_EVENTS', notifications.convertEvents(eventsReceived, false))
   },
