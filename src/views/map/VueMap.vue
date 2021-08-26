@@ -260,15 +260,6 @@ export default {
         NProgress.done()
         this.setLoading(false)
         if (this.isMobile) { this.$f7.preloader.hide() }
-        if (!this.isMobile && this.$route.query.vehicleName) {
-          this.$log.debug(this.$route.query.vehicleName)
-          const device = this.deviceByName(this.$route.query.vehicleName)
-          if (device) {
-            serverBus.$emit(event.deviceSelectedOnMap, device)
-            this.deviceSelected(device)
-            this.$store.dispatch('transient/toggleHistoryMode')
-          }
-        }
         layerManager.refreshLayers()
       } else {
         if (this.isMobile && this.userLoggedIn && this.loadingCount < 3) {
