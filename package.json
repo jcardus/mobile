@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -19,6 +19,7 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.4.13",
     "@aws-amplify/core": "^3.8.5",
+    "@bugfender/sdk": "^1.5.0",
     "@capacitor-community/fcm": "^1.0.8",
     "@capacitor/core": "^2.4.6",
     "@mapbox/mapbox-gl-draw": "^1.2.0",

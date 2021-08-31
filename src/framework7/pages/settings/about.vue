@@ -26,7 +26,7 @@ export default {
       return hostname
     },
     user() {
-      return this.$store.getters.user.name
+      return this.$store.getters.user.name + ' ' + this.$store.getters.user.email
     },
     offline() {
       return appOffline()
