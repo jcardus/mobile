@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management web interface",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -25,6 +25,8 @@
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@mapbox/mapbox-gl-traffic": "latest",
+    "@sentry/browser": "^6.12.0",
+    "@sentry/tracing": "^6.12.0",
     "@turf/along": "latest",
     "@turf/area": "latest",
     "@turf/bbox": "latest",

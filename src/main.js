@@ -21,14 +21,27 @@ import * as partner from './utils/partner'
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
-import { Bugfender } from '@bugfender/sdk'
 
 const AppMobile = () => import('./AppMobile')
 
 console.log('app starting...', process.env)
 
-Bugfender.init({
-  appKey: 'SzObWaWZSXTacSGtexP0R2a73fUTtkAS'
+import * as Sentry from '@sentry/browser'
+import { Integrations } from '@sentry/tracing'
+
+Sentry.init({
+  dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749',
+
+  // Alternatively, use `process.env.npm_package_version` for a dynamic release version
+  // if your build tool supports it.
+  release: 'my-project-name@2.3.12',
+  integrations: [new Integrations.BrowserTracing()],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0
+
 })
 
 Vue.config.errorHandler = (err, vm, info) => {
