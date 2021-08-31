@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { isDevEnv } from './index'
+import { getServerHost, isDevEnv } from './index'
 import store from '../store'
 import Vue from 'vue'
 import * as utils from '@/utils/utils'
 
-const serverHost = window.location.hostname
+const serverHost = getServerHost()
 const baseUrl = `${isDevEnv() ? 'http' : 'https'}` + '://' + serverHost + '/api/'
 const devices = baseUrl + 'devices'
 const route = baseUrl + 'reports/route'
