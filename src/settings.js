@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Pinme',
+  title: 'Fleetmap',
   /**
    * @type {boolean} true | false
    * @description Snap routes to road (road match)
