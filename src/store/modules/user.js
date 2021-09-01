@@ -299,8 +299,8 @@ const actions = {
               window.OneSignal.setEmail(state.user.email, {
                 emailAuthHash: state.user.attributes.emailAuthHash
               }))
-            Vue.$log.info('OneSignal setExternalUserId', state.user.attributes.userIdAuthHash,
-              window.OneSignal.setExternalUserId(state.user.id, state.user.attributes.userIdAuthHash))
+            Vue.$log.info('OneSignal setExternalUserId', state.user.id,
+              window.OneSignal.setExternalUserId(state.user.id + '', state.user.attributes.userIdAuthHash))
           }
           if (isCapacitor()) {
             await setFirebaseToken(commit, state)
