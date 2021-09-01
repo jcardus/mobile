@@ -41,7 +41,7 @@ export default {
     },
     getIcon() {
       const device = this.devices.find(d => d.id === this.selectedDevice.id)
-      return device && device.attributes.immobilized ? 'img/icons/immobilizationOn.svg' : 'img/icons/immobilizationOff.svg'
+      return device && device.attributes.immobilized ? '/img/icons/immobilizationOn.svg' : '/img/icons/immobilizationOff.svg'
     }
   },
   methods: {

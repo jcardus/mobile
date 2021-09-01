@@ -424,7 +424,7 @@ export function addImageToMap(icon, uniqueColor, imageName) {
   canvas.height = 27
   const ctx = canvas.getContext('2d')
   const image = document.createElement('img')
-  image.src = './img/icons/pois/' + icon + '-blue.svg'
+  image.src = '/img/icons/pois/' + icon + '-blue.svg'
   ctx.drawImage(image, 0, 0)
   const imgd = ctx.getImageData(0, 0, 27, 27)
   const pix = imgd.data

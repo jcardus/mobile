@@ -31,7 +31,7 @@
       >
         <div slot="media" style="width:30px">
           <i v-if="!(getType(item)==='poi')" slot="media" :style="'color: '+(item.attributes.color ? item.attributes.color : '#3232b4')" :class="geofenceImageType(item)"></i>
-          <img v-if="getType(item)==='poi'" slot="media" :src="'img/icons/pois/' +(item.attributes.icon ? item.attributes.icon : 'marker')+'-blue.svg'">
+          <img v-if="getType(item)==='poi'" slot="media" :src="'/img/icons/pois/' +(item.attributes.icon ? item.attributes.icon : 'marker')+'-blue.svg'">
         </div>
         <f7-swipeout-actions right>
           <f7-swipeout-button color="blue" @click="onGeofenceEdit(item)">{{ $t('geofence.edit_geofence') }}</f7-swipeout-button>
