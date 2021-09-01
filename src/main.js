@@ -12,7 +12,6 @@ import VueStatic from 'vue-static'
 import i18n, { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
 import LoadScript from 'vue-plugin-load-script'
-import * as lnglat from './utils/lnglat'
 import * as event from './events'
 import './amplify'
 import VueTimers from 'vue-timers'
@@ -172,11 +171,6 @@ Vue.use(VueI18nFilter)
 Framework7.use(Framework7Vue)
 
 Vue.use(VueTimers)
-
-if (lnglat.__isMobile()) {
-  Vue.$log.debug('loading inobounce...')
-  Vue.loadScript('/lib/inobounce.min.js')
-}
 
 Vue.$log.debug('starting main instance...', location.href)
 export const sharedData = new SharedData()
