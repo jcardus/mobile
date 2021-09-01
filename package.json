@@ -44,7 +44,7 @@
     "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "^2.14.1",
     "file-saver": "^2.0.5",
-    "fleetmap-partners": "^1.0.4",
+    "fleetmap-partners": "^1.0.9",
     "framework7": "^5.7.14",
     "framework7-vue": "^5.7.14",
     "mapbox-gl": "latest",
