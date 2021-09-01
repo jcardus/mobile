@@ -111,10 +111,12 @@ export let regServiceWorker
 
 window.OneSignal = window.OneSignal || []
 window.OneSignal.push(() => {
-  window.OneSignal.init({
+  const config = {
     appId: partner.getOneSignalAppId(),
     allowLocalhostAsSecureOrigin: process.env.ENV !== 'production'
-  })
+  }
+  console.log('onesignal config', config)
+  window.OneSignal.init(config)
 })
 
 if ('serviceWorker' in navigator) {

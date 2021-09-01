@@ -295,6 +295,7 @@ const actions = {
           await dispatch('setEmailAuthHash')
           await dispatch('setUserIdAuthHash')
           if (window.OneSignal) {
+            Vue.$log.info('OneSignal setEmail', state.user.email)
             window.OneSignal.setEmail(state.user.email, {
               emailAuthHash: state.user.attributes.emailAuthHash
             })
