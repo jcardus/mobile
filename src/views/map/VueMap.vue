@@ -469,7 +469,7 @@ export default {
         this.$static.map.setZoom(this.zoom)
         this.$static.map.setCenter(this.center)
       } catch (e) {
-        this.$log.error(e)
+        this.$log.warn(e.message, 'setting zoom and center, should happen only on the first time')
       }
     },
     addControls: function() {

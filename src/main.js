@@ -29,6 +29,7 @@ import * as Sentry from '@sentry/browser'
 import { Integrations } from '@sentry/tracing'
 
 Sentry.init({
+  Vue,
   dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749',
 
   // Alternatively, use `process.env.npm_package_version` for a dynamic release version
