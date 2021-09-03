@@ -47,5 +47,6 @@ export const alertTypes = [
   alarmHardCornering,
   alarmPowerCut,
   alarmShock,
-  alarmPowerOn
+  alarmPowerOn,
+  'test'
 ]

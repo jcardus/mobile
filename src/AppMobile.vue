@@ -242,6 +242,7 @@ export default {
       }).open()
     },
     showNotifications(event) {
+      new Audio('/sound/doorbell.wav').play().catch(e => console.error(e))
       this.$f7.notification.create({
         icon: '<img width="20" height="20" src="' + partner.getFavIcon() + '" alt=""/>',
         titleRightText: '',

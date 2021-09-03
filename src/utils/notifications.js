@@ -19,7 +19,7 @@ export function convertEvents(events, isNew) {
     addEventInfo(e, isNew)
   })
 
-  return filteredData.filter(e => e.device !== undefined)
+  return filteredData
   /*
   return filteredData.map(a => {
     const alarmType = a.type === 'alarm' ? a.attributes.alarm : a.type
@@ -103,9 +103,9 @@ function getNotificationColor(type) {
 }
 
 export function getMessage(event) {
-  Vue.$log.debug(event.type, ' device: ', event.device.name)
-  let result = event.device.name
-  if (event.content.length > 0) {
+  Vue.$log.debug(event.type, ' device: ', event.device)
+  let result = event.device && event.device.name
+  if (event.content) {
     result += ' - ' + event.content
   }
   return result

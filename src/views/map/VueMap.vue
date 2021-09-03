@@ -200,7 +200,7 @@ export default {
         if (data.events) {
           Vue.$log.debug('SOCKET_ONMESSAGE event Received')
           const events = notifications.convertEvents(data.events, true)
-          this.$store.dispatch('transient/addEvents', events).then(() => {})
+          this.$store.dispatch('transient/addEvents', events).then().catch(e => this.$log.error(e))
           for (let i = 0; i < events.length; i++) {
             const event = events[i]
             if (event.type === alertType.alarmSOS) {

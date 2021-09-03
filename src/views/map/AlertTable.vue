@@ -54,11 +54,11 @@
           <template slot-scope="scope">
             <div style="padding: 10px 0">
               <div style="line-height: normal"><i :style="'width: 20px; font-size: 12px; color: '+(scope.row.color ? scope.row.color : '#3232b4')" :class="scope.row.image"></i><span style="font-weight: bold">{{ scope.row.description }}</span></div>
-              <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 20px"></i>{{ scope.row.device.name }}</span></div>
+              <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 20px"></i>{{ scope.row.device && scope.row.device.name }}</span></div>
               <div style="line-height: normal">
                 <span style="font-size: 12px">
-                  <i v-if="scope.row.device.driver.name !== ''" class="fas fa-user listIcon"></i>
-                  {{ scope.row.device.driver.name }}
+                  <i v-if="scope.row.device && scope.row.device.driver.name !== ''" class="fas fa-user listIcon"></i>
+                  {{ scope.row.device && scope.row.device.driver.name }}
                 </span>
               </div>
               <div style="line-height: normal">
