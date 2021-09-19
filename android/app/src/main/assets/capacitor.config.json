@@ -1,0 +1,20 @@
+{
+  "appId": "com.fleetmap.manager",
+  "appName": "Manager",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  },
+  "cordova": {},
+  "server": {
+    "hostname": "localhost",
+    "allowNavigation": ["auth.pinme.io"]
+  }
+}
