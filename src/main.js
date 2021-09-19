@@ -5,7 +5,6 @@ import localeEN from 'element-ui/lib/locale/lang/en'
 import localePT from 'element-ui/lib/locale/lang/pt'
 import localeES from 'element-ui/lib/locale/lang/es'
 import store from './store'
-import './routeInterceptor'
 import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
@@ -20,6 +19,7 @@ import * as partner from './utils/partner'
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
+import { Capacitor } from '@capacitor/core'
 
 const AppMobile = () => import('./AppMobile')
 
@@ -109,45 +109,46 @@ export const serverBus = new Vue()
 export let newServiceWorker
 export let regServiceWorker
 
-window.OneSignal = window.OneSignal || []
-window.OneSignal.push(() => {
-  const config = {
-    appId: partner.getOneSignalAppId(),
-    allowLocalhostAsSecureOrigin: process.env.ENV !== 'production'
-  }
-  console.log('onesignal config', config)
-  window.OneSignal.init(config)
-})
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    if (registrations.length === 0) {
-      navigator.serviceWorker.register('/OneSignalSDKWorker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
+if (!Capacitor.isNative) {
+  window.OneSignal = window.OneSignal || []
+  window.OneSignal.push(() => {
+    const config = {
+      appId: partner.getOneSignalAppId(),
+      allowLocalhostAsSecureOrigin: process.env.ENV !== 'production'
     }
-    for (const reg of registrations) {
-      reg.addEventListener('updatefound', () => {
-        Vue.$log.debug('A wild service worker has appeared in reg.installing!')
-        newServiceWorker = reg.installing
-        newServiceWorker.addEventListener('statechange', () => {
-          console.log('new state', newServiceWorker.state)
-          // Has network.state changed?
-          if (newServiceWorker.state === 'installed') {
-            if (navigator.serviceWorker.controller) {
-              serverBus.$emit('updateAvailable')
+    console.log('onesignal config', config)
+    window.OneSignal.init(config)
+  })
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      if (registrations.length === 0) {
+        navigator.serviceWorker.register('/OneSignalSDKWorker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
+      }
+      for (const reg of registrations) {
+        reg.addEventListener('updatefound', () => {
+          Vue.$log.debug('A wild service worker has appeared in reg.installing!')
+          newServiceWorker = reg.installing
+          newServiceWorker.addEventListener('statechange', () => {
+            console.log('new state', newServiceWorker.state)
+            // Has network.state changed?
+            if (newServiceWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                serverBus.$emit('updateAvailable')
+              }
             }
-          }
+          })
         })
-      })
-    }
-  })
+      }
+    })
 
-  navigator.serviceWorker.addEventListener('controllerchange', (e) => {
-    Vue.$log.warn(navigator.serviceWorker, e)
-  })
-} else {
-  Vue.$log.warn('no service Worker support, weird browser...')
+    navigator.serviceWorker.addEventListener('controllerchange', (e) => {
+      Vue.$log.warn(navigator.serviceWorker, e)
+    })
+  } else {
+    Vue.$log.warn('no service Worker support, weird browser...')
+  }
 }
-
 const moment = require('moment')
 require('moment/locale/pt')
 require('moment/locale/es')
@@ -173,7 +174,7 @@ Framework7.use(Framework7Vue)
 
 Vue.use(VueTimers)
 
-Vue.$log.debug('starting main instance...', location.href)
+Vue.$log.info('starting main instance...', location.href)
 export const sharedData = new SharedData()
 
 export const vm = new Vue({
@@ -244,14 +245,7 @@ export const vm = new Vue({
   },
   store,
   i18n,
-  render: h => {
-    try {
-      return h(AppMobile)
-    } catch (e) {
-      console.error(e)
-      return e
-    }
-  }
+  render: h => h(AppMobile)
 })
 
 import('./common')

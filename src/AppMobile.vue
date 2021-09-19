@@ -103,6 +103,7 @@ import GoogleButton from './views/login/GoogleButton'
 import { forgotPassword, getGoogleLogin, signUp } from './api'
 import * as event from './events'
 import AppleButton from '@/views/login/AppleButton'
+import { Capacitor } from '@capacitor/core'
 
 export default {
   name: 'AppMobile',
@@ -128,7 +129,7 @@ export default {
       return forgotPassword()
     },
     isCapacitor() {
-      return location.href.startsWith('capacitor://')
+      return Capacitor.isNative
     },
     googleLogin() {
       return getGoogleLogin()
@@ -167,7 +168,7 @@ export default {
   },
   async mounted() {
     try {
-      this.$log.debug('mounted AppMobile', this.user, this.version, process.env)
+      this.$log.info('mounted AppMobile', this.user, this.version, process.env)
       if (!location.href.startsWith('capacitor://')) {
         document.getElementById('favicon').href = partner.getFavIcon()
         document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
