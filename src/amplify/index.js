@@ -1,6 +1,7 @@
 import Amplify from '@aws-amplify/core'
 import { Auth } from '@aws-amplify/auth'
 import { getPartnerData } from 'fleetmap-partners'
+import { Capacitor } from '@capacitor/core'
 
 const partnerData = getPartnerData(window.location.hostname)
 export const awsConfig = {
@@ -23,7 +24,10 @@ export const awsConfig = {
   },
   federationTarget: 'COGNITO_USER_POOLS'
 }
-
+if (Capacitor.isNative) {
+  console.log(awsConfig)
+  awsConfig.oauth.redirectSignIn = 'https://fleetmap.io/'
+}
 Amplify.configure(awsConfig)
 console.log(Auth.configure(awsConfig))
 
