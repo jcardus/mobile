@@ -129,15 +129,15 @@ export default {
       return geofences.slice(0, this.count)
     },
     showPOIsLayer: {
-      get() { return !!vm.$store.state.map.showPOIs },
+      get() { return vm.$store.state.map.showPOIs },
       set() { this.togglePOIs() }
     },
     showGeofenceLayer: {
-      get() { return !!vm.$store.state.map.showGeofences },
+      get() { return vm.$store.state.map.showGeofences },
       set() { this.toggleGeofences() }
     },
     showLineGeofenceLayer: {
-      get() { return !!vm.$store.state.map.showLineGeofences },
+      get() { return vm.$store.state.map.showLineGeofences },
       set() { this.toggleLineGeofences() }
     },
     isPOISelected() {

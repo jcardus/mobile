@@ -7,9 +7,9 @@ import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
 import api from '@/api/backend'
 import backend from '@/api/backend'
-import { Plugins, Capacitor } from '@capacitor/core'
-
-const { PushNotifications, FCMPlugin } = Plugins
+import { Capacitor } from '@capacitor/core'
+import { PushNotifications } from '@capacitor/push-notifications'
+import { FCM } from '@capacitor-community/fcm'
 
 const state = {
   user: {
@@ -159,8 +159,8 @@ async function setFirebaseToken(commit, state) {
   // Request permission to use push notifications
   // iOS will prompt user and return if they granted permission or not
   // Android will just grant without prompting
-  PushNotifications.requestPermission().then(result => {
-    if (result.granted) {
+  PushNotifications.requestPermissions().then(result => {
+    if (result) {
       Vue.$log.info('PushNotifications permission granted')
       PushNotifications.register().then(d => console.log('register result', d))
     } else {
@@ -172,7 +172,7 @@ async function setFirebaseToken(commit, state) {
     'registration',
     (token) => {
       Vue.$log.info('Push registration success, APNS token: ' + token.value)
-      FCMPlugin
+      FCM
         .getToken()
         .then((r) => {
           Vue.$log.info(`FCM Token ${r.token}`)
@@ -206,7 +206,7 @@ async function setFirebaseToken(commit, state) {
 }
 
 function isCapacitor() {
-  return window.location.href.startsWith('capacitor://')
+  return Capacitor.isNativePlatform()
 }
 
 const actions = {
