@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -21,9 +21,10 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.4.13",
     "@aws-amplify/core": "^3.8.5",
-    "@capacitor-community/fcm": "^1.0.8",
-    "@capacitor/android": "^2.4.6",
-    "@capacitor/core": "^2.4.6",
+    "@capacitor-community/fcm": "^2.0.1",
+    "@capacitor/android": "^3.2.3",
+    "@capacitor/app": "^1.0.3",
+    "@capacitor/core": "^3.2.3",
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@mapbox/mapbox-gl-traffic": "latest",

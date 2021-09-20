@@ -7,7 +7,7 @@ import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
 import api from '@/api/backend'
 import backend from '@/api/backend'
-import { Plugins } from '@capacitor/core'
+import { Plugins, Capacitor } from '@capacitor/core'
 
 const { PushNotifications, FCMPlugin } = Plugins
 
@@ -345,8 +345,10 @@ const actions = {
   },
   async logout({ commit }) {
     try {
-      Vue.$log.info('logout one signal')
-      window.OneSignal.logoutEmail()
+      if (!Capacitor.isNative) {
+        Vue.$log.info('logout one signal')
+        window.OneSignal.logoutEmail()
+      }
       await logout()
     } catch (e) {
       Vue.$log.error(e)

@@ -21,6 +21,8 @@ import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
 import { Capacitor } from '@capacitor/core'
 import AppMobile from './AppMobile'
+import { Auth } from '@aws-amplify/auth'
+import { App } from '@capacitor/app'
 
 console.log('app starting...', process.env)
 
@@ -108,7 +110,7 @@ export const serverBus = new Vue()
 export let newServiceWorker
 export let regServiceWorker
 
-if (!Capacitor.isNative) {
+if (!Capacitor.isNativePlatform()) {
   window.OneSignal = window.OneSignal || []
   window.OneSignal.push(() => {
     const config = {
@@ -147,7 +149,16 @@ if (!Capacitor.isNative) {
   } else {
     Vue.$log.warn('no service Worker support, weird browser...')
   }
+} else {
+  Vue.$log.info('listening for appUrlOpen')
+  App.addListener('appUrlOpen', async(data) => {
+    Vue.$log.info('appUrlOpen', data)
+    // noinspection JSAccessibilityCheck
+    await Auth._handleAuthResponse(data.url)
+    window.location.href = '/'
+  })
 }
+
 const moment = require('moment')
 require('moment/locale/pt')
 require('moment/locale/es')
