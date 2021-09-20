@@ -23,6 +23,7 @@ import { Capacitor } from '@capacitor/core'
 import AppMobile from './AppMobile'
 import { Auth } from '@aws-amplify/auth'
 import { App } from '@capacitor/app'
+import { f7 } from 'framework7-vue'
 
 console.log('app starting...', process.env)
 
@@ -106,6 +107,7 @@ if (isProduction) {
 }
 
 export const serverBus = new Vue()
+Framework7.use(Framework7Vue)
 
 export let newServiceWorker
 export let regServiceWorker
@@ -153,6 +155,7 @@ if (!Capacitor.isNativePlatform()) {
   Vue.$log.info('listening for appUrlOpen')
   App.addListener('appUrlOpen', async(data) => {
     Vue.$log.info('appUrlOpen', data)
+    f7.dialog.preloader()
     // noinspection JSAccessibilityCheck
     await Auth._handleAuthResponse(data.url)
     window.location.href = '/'
@@ -179,8 +182,6 @@ Vue.use(VueStatic, {
 })
 
 Vue.use(VueI18nFilter)
-
-Framework7.use(Framework7Vue)
 
 Vue.use(VueTimers)
 
