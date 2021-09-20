@@ -96,7 +96,6 @@ import * as notifications from './utils/notifications'
 import { serverBus } from './main'
 import { reload } from './utils/utils'
 import * as partner from './utils/partner'
-import { appOffline } from './utils/utils'
 import { mapGetters } from 'vuex'
 import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
@@ -113,7 +112,7 @@ export default {
       username: '',
       password: '',
       f7params: {
-        name: 'Pinme', // App name
+        name: 'Manager', // App name
         theme: 'auto', // Automatic theme detection
         routes: routes
       },
@@ -146,9 +145,6 @@ export default {
     ios() {
       return this.$device.ios
     },
-    offline() {
-      return appOffline()
-    },
     imageSrc() {
       return `${cdnUrl}/images/login_1.jpg`
     }
@@ -169,7 +165,7 @@ export default {
   async mounted() {
     try {
       this.$log.info('mounted AppMobile', this.user, this.version, process.env)
-      if (!location.href.startsWith('capacitor://')) {
+      if (!Capacitor.isNative) {
         document.getElementById('favicon').href = partner.getFavIcon()
         document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
 

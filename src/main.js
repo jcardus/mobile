@@ -20,8 +20,7 @@ import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
 import { Capacitor } from '@capacitor/core'
-
-const AppMobile = () => import('./AppMobile')
+import AppMobile from './AppMobile'
 
 console.log('app starting...', process.env)
 
@@ -195,6 +194,7 @@ export const vm = new Vue({
     }
   },
   created() {
+    Vue.$log.info('vm')
     serverBus.$on(event.newEventReceived, () => {
       store.dispatch('incUnreadItems').then(() => {})
     })
