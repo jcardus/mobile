@@ -156,6 +156,17 @@ function initData(commit, state, dispatch) {
 }
 
 async function setFirebaseToken(commit, state) {
+  FCM
+    .getToken()
+    .then((r) => {
+      Vue.$log.info(`FCM Token ${r.token}`)
+      if (state.user.attributes.firebaseToken !== r.token) {
+        Vue.$log.info('updating firebase token', r.token)
+        commit('SET_FIREBASE_TOKEN', r.token)
+        traccar.updateUser(state.user.id, state.user)
+      }
+    })
+    .catch((err) => console.log(err))
   // Request permission to use push notifications
   // iOS will prompt user and return if they granted permission or not
   // Android will just grant without prompting
@@ -172,17 +183,6 @@ async function setFirebaseToken(commit, state) {
     'registration',
     (token) => {
       Vue.$log.info('Push registration success, APNS token: ' + token.value)
-      FCM
-        .getToken()
-        .then((r) => {
-          Vue.$log.info(`FCM Token ${r.token}`)
-          if (state.user.attributes.firebaseToken !== r.token) {
-            Vue.$log.info('updating firebase token', r.token)
-            commit('SET_FIREBASE_TOKEN', r.token)
-            traccar.updateUser(state.user.id, state.user)
-          }
-        })
-        .catch((err) => console.log(err))
     }
   )
 
