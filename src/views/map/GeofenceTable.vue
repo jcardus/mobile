@@ -79,6 +79,7 @@ import { traccar } from '@/api/traccar-api'
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
 import styles from '../../styles/element-variables.scss'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'GeofenceTable',
@@ -94,6 +95,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     map: function() { return vm.$static.map },
     buttonRound() {
       return !this.isMobile
@@ -105,7 +107,7 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     geofences: function() {
-      return vm.$store.state.user.geofences.filter(g => g &&
+      return this.user.geofences && this.user.geofences.filter(g => g &&
           (
             (g.area.startsWith('POLYGON') && this.showGeofenceLayer) ||
             (g.area.startsWith('CIRCLE') && this.showPOIsLayer) ||
@@ -124,20 +126,20 @@ export default {
           })
         })
       }
-      geofences = geofences.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      geofences = geofences && geofences.sort((a, b) => (a.name > b.name) ? 1 : -1)
 
-      return geofences.slice(0, this.count)
+      return geofences && geofences.slice(0, this.count)
     },
     showPOIsLayer: {
-      get() { return vm.$store.state.map.showPOIs },
+      get() { return this.$store.state.map.showPOIs },
       set() { this.togglePOIs() }
     },
     showGeofenceLayer: {
-      get() { return vm.$store.state.map.showGeofences },
+      get() { return this.$store.state.map.showGeofences },
       set() { this.toggleGeofences() }
     },
     showLineGeofenceLayer: {
-      get() { return vm.$store.state.map.showLineGeofences },
+      get() { return this.$store.state.map.showLineGeofences },
       set() { this.toggleLineGeofences() }
     },
     isPOISelected() {
