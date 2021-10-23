@@ -10,6 +10,7 @@ import backend from '@/api/backend'
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
+import * as Sentry from '@sentry/vue'
 
 const state = {
   user: {
@@ -159,9 +160,9 @@ async function setFirebaseToken(commit, state) {
   FCM
     .getToken()
     .then((r) => {
-      Vue.$log.info(`FCM Token ${r.token}`)
+      Sentry.captureMessage(`FCM Token ${r.token}`)
       if (state.user.attributes.firebaseToken !== r.token) {
-        Vue.$log.info('updating firebase token', r.token)
+        Sentry.captureMessage('updating firebase token ' + r.token)
         commit('SET_FIREBASE_TOKEN', r.token)
         traccar.updateUser(state.user.id, state.user)
       }
