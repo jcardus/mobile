@@ -10,6 +10,7 @@ import backend from '@/api/backend'
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
+import * as Sentry from '@sentry/vue'
 
 const state = {
   user: {
@@ -159,12 +160,7 @@ async function setFirebaseToken(commit, state) {
   FCM
     .getToken()
     .then((r) => {
-      Vue.$log.info(`FCM Token ${r.token}`)
-      if (state.user.attributes.firebaseToken !== r.token) {
-        Vue.$log.info('updating firebase token', r.token)
-        commit('SET_FIREBASE_TOKEN', r.token)
-        traccar.updateUser(state.user.id, state.user)
-      }
+      Sentry.captureMessage(`ignoring this fcm token ${r.token}`)
     })
     .catch((err) => console.log(err))
   // Request permission to use push notifications
@@ -182,7 +178,12 @@ async function setFirebaseToken(commit, state) {
   PushNotifications.addListener(
     'registration',
     (token) => {
-      Vue.$log.info('Push registration success, APNS token: ' + token.value)
+      Sentry.captureMessage('Push registration success, token: ' + JSON.stringify(token))
+      if (state.user.attributes.firebaseToken !== token.value) {
+        Sentry.captureMessage('updating firebase token ' + token.value)
+        commit('SET_FIREBASE_TOKEN', token.value)
+        traccar.updateUser(state.user.id, state.user)
+      }
     }
   )
 

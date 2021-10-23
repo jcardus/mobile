@@ -33,17 +33,9 @@ import { Integrations } from '@sentry/tracing'
 Sentry.init({
   Vue,
   dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749',
-
-  // Alternatively, use `process.env.npm_package_version` for a dynamic release version
-  // if your build tool supports it.
-  release: 'my-project-name@2.3.12',
+  release: process.env.PACKAGE_VERSION,
   integrations: [new Integrations.BrowserTracing()],
-
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
   tracesSampleRate: 1.0
-
 })
 
 Vue.config.errorHandler = (err, vm, info) => {
