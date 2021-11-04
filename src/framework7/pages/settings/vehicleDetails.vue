@@ -35,16 +35,6 @@
         <option v-for="(opt) in categories" :key="opt.value" :value="opt.value" :selected="(opt.value === selectedCategory)">{{ opt.text }}</option>
       </f7-list-input>
       <f7-list-input
-        :label="$t('settings.vehicle_form_total_kms')"
-        type="number"
-        min="0"
-        step="0.01"
-        validate
-        :value="vehicleTotalKms"
-        @input="vehicleTotalKms = $event.target.value"
-      >
-      </f7-list-input>
-      <f7-list-input
         :label="$t('settings.vehicle_form_speed_limit')"
         type="number"
         min="0"
@@ -148,12 +138,7 @@ export default {
         id: vehicle.id,
         name: vehicle.name,
         groupId: vehicle.groupId,
-        attributes: {
-          speedLimit: vehicle.attributes.speedLimit,
-          license_plate: vehicle.attributes.license_plate,
-          'decoder.timezone': vehicle.attributes['decoder.timezone'],
-          has_immobilization: vehicle.attributes.has_immobilization
-        },
+        attributes: { ...vehicle.attributes },
         uniqueId: vehicle.uniqueId,
         phone: vehicle.phone,
         model: vehicle.model,
@@ -161,13 +146,7 @@ export default {
         category: vehicle.category
       }
 
-      const accumulator = {
-        deviceId: vehicle.id,
-        totalDistance: this.vehicleTotalKms * 1000
-      }
-
       try {
-        await traccar.updateDeviceAccumulators(vehicle.id, accumulator)
         await traccar.updateDevice(vehicle.id, v)
         this.vehicleUpdated(v)
       } catch (reason) {
