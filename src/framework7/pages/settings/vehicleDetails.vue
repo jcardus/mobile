@@ -35,6 +35,12 @@
         <option v-for="(opt) in categories" :key="opt.value" :value="opt.value" :selected="(opt.value === selectedCategory)">{{ opt.text }}</option>
       </f7-list-input>
       <f7-list-input
+        :label="$t('settings.vehicle_notes')"
+        type="text"
+        :value="vehicleNotes"
+        @input="vehicleNotes = $event.target.value"
+      ></f7-list-input>
+      <f7-list-input
         :label="$t('settings.vehicle_form_speed_limit')"
         type="number"
         min="0"
@@ -84,7 +90,8 @@ export default {
       vehicleSpeedLimit: 0,
       vehicleTotalKms: 0,
       selectedGroup: null,
-      selectedCategory: null
+      selectedCategory: null,
+      vehicleNotes: ''
     }
   },
   computed: {
@@ -121,6 +128,7 @@ export default {
     this.vehicleSpeedLimit = Math.round(this.selectedVehicle.attributes.speedLimit * 1.85200)
     this.selectedCategory = this.selectedVehicle.category
     this.selectedGroup = this.selectedVehicle.groupId
+    this.vehicleNotes = this.selectedVehicle.attributes.notes
   },
   methods: {
     findFeatureByDeviceId(deviceId) {
@@ -133,12 +141,13 @@ export default {
       vehicle.category = this.selectedCategory
       vehicle.model = this.vehicleModel
       vehicle.attributes.speedLimit = this.vehicleSpeedLimit / 1.85200
+      vehicle.attributes.notes = this.vehicleNotes
 
       const v = {
         id: vehicle.id,
         name: vehicle.name,
         groupId: vehicle.groupId,
-        attributes: { ...vehicle.attributes },
+        attributes: vehicle.attributes,
         uniqueId: vehicle.uniqueId,
         phone: vehicle.phone,
         model: vehicle.model,
