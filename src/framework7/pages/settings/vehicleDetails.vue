@@ -35,7 +35,7 @@
         <option v-for="(opt) in categories" :key="opt.value" :value="opt.value" :selected="(opt.value === selectedCategory)">{{ opt.text }}</option>
       </f7-list-input>
       <f7-list-input
-        :label="$t('settings.vehicle_notes')"
+        :label="notesLabel"
         type="text"
         :value="vehicleNotes"
         @input="vehicleNotes = $event.target.value"
@@ -96,6 +96,12 @@ export default {
   },
   computed: {
     ...mapGetters(['devices']),
+    notesLabel() {
+      if (this.selectedVehicle.attributes.integration === 'monitrip') {
+        return 'Licença de Viagem'
+      }
+      return this.$t('settings.vehicle_notes')
+    },
     groups: function() {
       return vm.$store.state.user.groups.sort((a, b) => (a.name > b.name) ? 1 : -1)
     },
