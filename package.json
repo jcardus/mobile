@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.vue src",
     "build:stage": "vue-cli-service build --mode staging",
     "dev": "vue-cli-service serve",
-    "dev:ios": "ENVIRONMENT=ios npx cap sync ios && npx cap copy ios && npx cap open ios",
+    "dev:ios": "ENVIRONMENT=ios npx cap copy ios && npx cap open ios",
     "dev:android": "npx cap sync android && npx cap copy android",
     "serve:mobile": "npx cap serve",
     "new": "plop",

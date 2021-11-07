@@ -130,12 +130,6 @@ function initData(commit, state, dispatch) {
                 .then(() => {
                   dispatch('fetchAlerts').then(() => {
                     commit('SET_ALERT_SEARCH_PERIOD', 'last_one_hour')
-                    /* dispatch('transient/fetchEvents', {
-                      start: Vue.moment().subtract(1, 'hour').toDate(),
-                      end: new Date(),
-                      types: state.alerts
-                    }, { root: true })
-                      .catch(e => Vue.$log.warn(e, 'moving on...'))*/
                   })
                 })
                 .finally(() => {
@@ -160,7 +154,15 @@ async function setFirebaseToken(commit, state) {
   FCM
     .getToken()
     .then((r) => {
-      Sentry.captureMessage(`ignoring this fcm token ${r.token}`)
+      if (Capacitor.getPlatform() === 'ios') {
+        if (state.user.attributes.firebaseToken !== r.token) {
+          Sentry.captureMessage(`updating firebase token ${r.token}`)
+          commit('SET_FIREBASE_TOKEN', r.token)
+          traccar.updateUser(state.user.id, state.user)
+        }
+      } else {
+        Sentry.captureMessage(`ignoring this fcm token ${r.token}`)
+      }
     })
     .catch((err) => console.log(err))
   // Request permission to use push notifications
@@ -179,10 +181,14 @@ async function setFirebaseToken(commit, state) {
     'registration',
     (token) => {
       Sentry.captureMessage('Push registration success, token: ' + JSON.stringify(token))
-      if (state.user.attributes.firebaseToken !== token.value) {
-        Sentry.captureMessage('updating firebase token ' + token.value)
-        commit('SET_FIREBASE_TOKEN', token.value)
-        traccar.updateUser(state.user.id, state.user)
+      if (Capacitor.getPlatform() === 'android') {
+        if (state.user.attributes.firebaseToken !== token.value) {
+          Sentry.captureMessage('updating firebase token ' + token.value)
+          commit('SET_FIREBASE_TOKEN', token.value)
+          traccar.updateUser(state.user.id, state.user)
+        }
+      } else {
+        Sentry.captureMessage(`ignoring this fcm token ${token.value}`)
       }
     }
   )
