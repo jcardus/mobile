@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.vue src",
     "build:stage": "vue-cli-service build --mode staging",
     "dev": "vue-cli-service serve",
-    "dev:ios": "npx cap copy ios && npx cap open ios",
+    "dev:ios": "ENVIRONMENT=ios npx cap copy ios && npx cap open ios",
     "dev:android": "npx cap sync android && npx cap copy android",
     "serve:mobile": "npx cap serve",
     "new": "plop",
@@ -75,9 +75,9 @@
   "devDependencies": {
     "@babel/core": "7.0.0",
     "@babel/register": "7.0.0",
+    "@capacitor/android": "^3.2.3",
     "@capacitor/cli": "^3.2.3",
     "@capacitor/ios": "^3.2.3",
-    "@capacitor/android": "^3.2.3",
     "@vue/cli-plugin-babel": "3.5.3",
     "@vue/cli-plugin-eslint": "^3.12.1",
     "@vue/cli-plugin-pwa": "^4.5.9",
@@ -104,6 +104,7 @@
     "sass-loader": "10.1.1",
     "script-loader": "^0.7.2",
     "serve-static": "^1.13.2",
+    "typescript": "^4.4.4",
     "vue-template-compiler": "latest",
     "webpack-version-file": "^0.1.6"
   },
