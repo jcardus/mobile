@@ -75,7 +75,7 @@
           </f7-list>
           <f7-block></f7-block>
           <f7-list>
-            <f7-button :external="true" :href="signUp">{{ $t('login.register') }}</f7-button>
+            <f7-button v-if="platform !== 'ios'" :external="true" :href="signUp">{{ $t('login.register') }}</f7-button>
             <f7-button :external="true" :href="forgetPassword">{{ $t('login.forgotPassword') }}</f7-button>
           </f7-list>
           <f7-block-footer>
@@ -129,6 +129,9 @@ export default {
     },
     isCapacitor() {
       return Capacitor.isNative
+    },
+    platform() {
+      return Capacitor.getPlatform()
     },
     googleLogin() {
       return getGoogleLogin()

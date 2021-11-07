@@ -108,7 +108,7 @@ export default {
               this.$f7.dialog.alert(this.$t('settings.driver_add_not_allowed'), this.$t('settings.driver_edit_title'))
             } else {
               Vue.$log.error(reason)
-              this.$alert(reason)
+              this.$f7.dialog.alert(reason && reason.message)
             }
           })
       } else {
