@@ -270,13 +270,12 @@ const actions = {
   removeUser({ commit }, user) {
     commit('REMOVE_USER', user)
   },
-  async checkSession({ dispatch, commit }) {
+  async checkSession({ dispatch }) {
     Vue.$log.info('user/checkSession')
     try { await api.getJSessionId() } catch (e) { Vue.$log.error('no cognito session', e) }
     try { dispatch('setUser', await getSession().then(d => d.data)) } catch (e) {
       Vue.$log.warn('no session, should go to login', e)
-      commit('SET_USER', {})
-      // return dispatch('clearUser')
+      return dispatch('clearUser')
     }
   },
   setUser({ commit, state, dispatch }, user) {
