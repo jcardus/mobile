@@ -1,8 +1,5 @@
 <template>
   <div class="mainContainer">
-    <div style="float: right">
-      <i :class="tableCollapsed?'el-icon-s-unfold':'el-icon-s-fold'" :style="`color:${colors.info}`" @click="$store.dispatch('map/toggleTableCollapsed')"></i>
-    </div>
     <div v-if="!tableCollapsed" class="dd-body-inner">
       <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType"></logo-svg>
       <img v-else :class="'logo ' + logoClassType" height="44" :src="logoImage" alt="">

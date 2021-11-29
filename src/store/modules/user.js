@@ -11,6 +11,7 @@ import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import * as Sentry from '@sentry/vue'
+import { getSession } from '../../api/traccar-api'
 
 const state = {
   user: {
@@ -269,31 +270,17 @@ const actions = {
   removeUser({ commit }, user) {
     commit('REMOVE_USER', user)
   },
-  checkSession({ dispatch, commit }) {
-    return new Promise((resolve) => {
-      Vue.$log.info('user/checkSession')
-      traccar.getSession().then((s) => {
-        commit('SET_USER', s)
-        resolve()
-        dispatch('setUser')
-      }).catch((e) => {
-        Vue.$log.warn('no session, checking cognito', e)
-        api.getJSessionId('')
-          .then(() => {
-            traccar.getSession().then((s) => {
-              commit('SET_USER', s)
-              resolve()
-              dispatch('setUser')
-            }).catch(e => resolve(e))
-          })
-          .catch(e => {
-            Vue.$log.warn('no session, should go to login', e)
-            dispatch('clearUser').then(() => resolve())
-          })
-      })
-    })
+  async checkSession({ dispatch, commit }) {
+    Vue.$log.info('user/checkSession')
+    try { await api.getJSessionId() } catch (e) { Vue.$log.error('no cognito session', e) }
+    try { dispatch('setUser', await getSession().then(d => d.data)) } catch (e) {
+      Vue.$log.warn('no session, should go to login', e)
+      commit('SET_USER', {})
+      // return dispatch('clearUser')
+    }
   },
-  setUser({ commit, state, dispatch }) {
+  setUser({ commit, state, dispatch }, user) {
+    commit('SET_USER', user)
     return new Promise((resolve) => {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
