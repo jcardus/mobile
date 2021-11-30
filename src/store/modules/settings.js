@@ -11,7 +11,8 @@ const state = {
   speedThreshold: '0',
   showLabels: false,
   vehicles3d: false,
-  followVehicle: false
+  followVehicle: false,
+  showFullDate: false
 }
 
 const mutations = {
