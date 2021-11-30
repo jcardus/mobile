@@ -21,8 +21,8 @@
             <span v-if="currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
             <span v-if="currentPosition.attributes.rpm"><i class="fab fa-cloudscale rpmIcon" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span>
           </div>
-          <span v-if="!routePoint">{{ device.lastUpdate | moment('from', currentTime) }}</span>
-          <span v-if="routePoint">{{ currentPosition.fixTime | moment('LL') }} {{ currentPosition.fixTime | moment('LTS') }}</span>
+          <span v-if="!routePoint">{{ formatLastUpdate(device.lastUpdate) }}</span>
+          <span v-if="routePoint">{{ formatLastUpdate(currentPosition.fixTime) }}</span>
         </div>
         <IOdometer
           class="iOdometer"
@@ -148,6 +148,9 @@ export default {
     }
   },
   methods: {
+    formatLastUpdate(value) {
+      return vm.$store.getters.showFullDate ? new Date(value).toLocaleString() : vm.$moment(value).fromNow()
+    },
     fuelLevelStatus(fuelLevel) {
       const fuelLevelStatus = fuelLevel > 40 ? 'fuelLevelNormalIcon' : (fuelLevel > 20 ? 'fuelLevelLowIcon' : 'fuelLevelVeryLowIcon')
       return 'fas fa-gas-pump ' + fuelLevelStatus

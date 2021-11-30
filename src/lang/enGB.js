@@ -143,6 +143,7 @@ export default {
     user_type_operator: 'Operator'
   },
   settings: {
+    showFullDate: 'Mostrar data/hora da última comunicação',
     vehicle_notes: 'Observações',
     icons3d: '3D icons',
     showLabels: 'Show vehicles name',

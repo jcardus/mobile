@@ -70,6 +70,7 @@
       </el-row>
     </div>
     <div class="mobileScroll">
+      <!--suppress HtmlUnknownAttribute -->
       <el-table
         id="vehicleTable"
         ref="vehicleTable"
@@ -131,7 +132,7 @@
               <span style="font-size: 12px; word-break: normal; white-space: nowrap;"><i class="fas fa-home addressIcon"></i>{{ scope.row.position && scope.row.position.address }}</span>
             </div>
             <div style="padding-bottom: 8px; line-height: normal; float:left">
-              <span v-if="scope.row.lastUpdate" style="font-size: 12px"><i class="fas fa-clock timeIcon" style="width: 20px"></i>{{ scope.row.lastUpdate | moment('from', currentTime) }}</span>
+              <span v-if="scope.row.lastUpdate" style="font-size: 12px"><i class="fas fa-clock timeIcon" style="width: 20px"></i>{{ scope.row.lastUpdate | formatLastUpdate }}</span>
             </div>
             <immobilize-button
               style="padding:0;float: right"
@@ -162,6 +163,9 @@ export default {
   name: 'VehicleTable',
   components: { ImmobilizeButton, TripTable },
   filters: {
+    formatLastUpdate(value) {
+      return vm.$store.getters.showFullDate ? new Date(value).toLocaleString() : vm.$moment(value).fromNow()
+    },
     translate(value) {
       return vm.$t(value)
     },

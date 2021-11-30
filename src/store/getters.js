@@ -1,4 +1,5 @@
 const getters = {
+  showFullDate: state => state.settings.showFullDate,
   totalDistance: state => state.transient.totalDistance,
   summary: state => state.transient.summary,
   user: state => state.user.user,

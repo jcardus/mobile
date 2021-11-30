@@ -6,6 +6,9 @@
       <f7-list-item>
         {{ $t('settings.showLabels') }}<f7-toggle :checked="showLabels" @change="saveShowLabels($event.target.checked)"></f7-toggle>
       </f7-list-item>
+      <f7-list-item>
+        {{ $t('settings.showFullDate') }}<f7-toggle :checked="showFullDate" @change="saveShowFullDate($event.target.checked)"></f7-toggle>
+      </f7-list-item>
     </f7-list>
     <f7-block-title style="font-size: 15px">{{ $t('settings.route_history') }}</f7-block-title>
     <f7-list no-hairlines-md>
@@ -46,11 +49,17 @@ export default {
   data() {
     return {
       showLabels: this.$store.state.settings.showLabels,
+      showFullDate: this.$store.state.settings.showFullDate,
       matchRoutes: this.$store.state.settings.matchRoutes,
       icons3d: this.$store.getters.vehicles3dEnabled,
       speedAlerts: this.$store.state.settings.viewSpeedAlerts,
       useRoadLimit: this.$store.state.settings.maxSpeedType,
       speedThreshold: this.$store.state.settings.speedThreshold
+    }
+  },
+  computed: {
+    shoFullDate() {
+      return this.$store.state.settings.showFullDate
     }
   },
   methods: {
@@ -60,7 +69,10 @@ export default {
     },
     saveShowLabels(value) {
       this.showLabels = value
-      this.$store.dispatch('settings/setShowLabels', value)
+      this.$store.commit('settings/setShowLabels', value)
+    },
+    saveShowFullDate(value) {
+      this.$store.commit('settings/CHANGE_SETTING', { key: 'showFullDate', value })
     },
     saveMatchRoutes(value) {
       this.matchRoutes = value
