@@ -35,9 +35,7 @@ function auth(action) {
 export function getGoogleLogin() {
   return auth('oauth2/authorize')
 }
-export function signUp() {
-  return auth('signup')
-}
+
 export function forgotPassword() {
   return auth('forgotPassword')
 }

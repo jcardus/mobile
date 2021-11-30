@@ -12,6 +12,16 @@
       >
       </f7-list-input>
       <f7-list-input
+        :label="$t('settings.driver_uniqueId')"
+        type="text"
+        :value="uniqueId"
+        clear-button
+        required
+        validate
+        @input="uniqueId = $event.target.value"
+      >
+      </f7-list-input>
+      <f7-list-input
         :label="$t('settings.driver_email')"
         type="text"
         :value="driverEmail"
@@ -25,6 +35,14 @@
         :value="driverPhone"
         clear-button
         @input="driverPhone = $event.target.value"
+      >
+      </f7-list-input>
+      <f7-list-input
+        :label="$t('settings.driver_notes')"
+        type="text"
+        :value="driverNotes"
+        clear-button
+        @input="driverNotes = $event.target.value"
       >
       </f7-list-input>
     </f7-list>
@@ -54,7 +72,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import { traccar } from '@/api/traccar-api'
-import Vue from 'vue'
 
 export default {
   name: 'DriverDetails',
@@ -64,7 +81,9 @@ export default {
       selectedDriver: null,
       driverName: '',
       driverEmail: '',
-      driverPhone: ''
+      driverPhone: '',
+      driverNotes: '',
+      uniqueId: ''
     }
   },
   computed: {
@@ -77,6 +96,7 @@ export default {
       this.driverName = ''
       this.driverEmail = ''
       this.driverPhone = ''
+      this.uniqueId = ''
     } else {
       this.isNewDriver = false
       this.selectedDriver = this.drivers.find(d => d.id === selectedId)
@@ -84,50 +104,50 @@ export default {
       this.driverName = this.selectedDriver.name
       this.driverEmail = this.selectedDriver.attributes.email
       this.driverPhone = this.selectedDriver.attributes.phone
+      this.uniqueId = this.selectedDriver.uniqueId
+      this.driverNotes = this.selectedDriver.attributes.notes
     }
   },
   methods: {
     handleCancelDriverForm() {
       this.$f7router.back()
     },
-    handleSubmitDriverForm() {
+    async handleSubmitDriverForm() {
       if (this.isNewDriver) {
         const newDriver = {
           name: this.driverName,
           attributes: {
             email: this.driverEmail,
-            phone: this.driverPhone
+            phone: this.driverPhone,
+            notes: this.notes
           },
-          uniqueId: this.driverPhone.length > 0 ? this.driverPhone : this.driverEmail
+          uniqueId: this.uniqueId
         }
-
-        traccar.addDriver(newDriver)
-          .then(response => this.driverCreated(response.data))
-          .catch(reason => {
-            if (reason.response.data.startsWith('Account is readonly')) {
-              this.$f7.dialog.alert(this.$t('settings.driver_add_not_allowed'), this.$t('settings.driver_edit_title'))
-            } else {
-              Vue.$log.error(reason)
-              this.$f7.dialog.alert(reason && reason.message)
-            }
-          })
+        try {
+          this.drivers.push(await traccar.addDriver(newDriver).then(d => d.data))
+          this.$f7.dialog.alert(this.$t('settings.driver_created'), this.$t('settings.driver_add_title'))
+          this.$f7router.back()
+        } catch (reason) {
+          if (reason.response.data.startsWith('Account is readonly')) {
+            this.$f7.dialog.alert(this.$t('settings.driver_add_not_allowed'), this.$t('settings.driver_edit_title'))
+          } else {
+            this.$f7.dialog.alert(reason && reason.response && reason.response.data, reason)
+          }
+        }
       } else {
         const driver = this.selectedDriver
         driver.name = this.driverName
         driver.attributes.email = this.driverEmail
         driver.attributes.phone = this.driverPhone
-
-        traccar.updateDriver(driver.id, driver, this.driverUpdated)
+        driver.attributes.notes = this.driverNotes
+        driver.uniqueId = this.uniqueId
+        try {
+          await traccar.updateDriver(driver.id, driver)
+          this.$f7.dialog.alert(this.$t('settings.driver_updated'), this.$t('settings.driver_edit_title'))
+        } catch (e) {
+          this.$f7.dialog.alert(e && e.response && e.response.data, e)
+        }
       }
-    },
-    driverUpdated: function() {
-      this.$f7.dialog.alert(this.$t('settings.driver_updated'), this.$t('settings.driver_edit_title'))
-      this.$f7router.back()
-    },
-    driverCreated: function(newDriver) {
-      this.drivers.push(newDriver)
-      this.$f7.dialog.alert(this.$t('settings.driver_created'), this.$t('settings.driver_add_title'))
-      this.$f7router.back()
     }
   }
 }

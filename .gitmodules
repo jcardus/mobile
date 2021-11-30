@@ -1,0 +1,6 @@
+[submodule "ios"]
+	path = ios
+	url = https://github.com/fleetmap-io/manager-ios
+[submodule "android"]
+	path = android
+	url = https://github.com/fleetmap-io/manager-android

@@ -335,6 +335,7 @@ export default {
     group_delete_not_allowed: 'You do not have permission to delete groups.',
     drivers: 'Drivers',
     driver_name: 'Name',
+    driver_notes: 'Observações',
     driver_uniqueId: 'RFID Key',
     driver_email: 'E-Mail',
     driver_phone: 'Phone',

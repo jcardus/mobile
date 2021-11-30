@@ -7,7 +7,7 @@
       <f7-toolbar :bottom="true" labels tabbar>
         <f7-link tab-link="#view-map" tab-link-active icon-ios="f7:map_fill" icon-aurora="f7:map_fill" icon-md="material:map" :text="$t('route.map')"></f7-link>
         <f7-link tab-link="#view-reports" icon-ios="f7:doc_plaintext" icon-aurora="f7:doc_plaintext" icon-md="material:notes" :text="$t('route.reports')"></f7-link>
-        <f7-link v-if="!isCapacitor" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-ios="f7:rectangle_grid_2x2" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
+        <f7-link v-if="hostname === 'wuizy.co.ao'" tab-link="#view-dashboard" icon-aurora="f7:dashboard" icon-ios="f7:rectangle_grid_2x2" icon-md="material:dashboard" :text="$t('route.dashboard')"></f7-link>
         <f7-link tab-link="#view-settings" icon-ios="f7:gear" icon-aurora="f7:gear" icon-md="material:settings" :text="$t('route.settings')"></f7-link>
         <f7-link tab-link="#view-alerts">
           <f7-icon ios="f7:bell_fill" aurora="f7:bell_fill" md="material:notifications">
@@ -75,7 +75,6 @@
           </f7-list>
           <f7-block></f7-block>
           <f7-list>
-            <f7-button v-if="platform !== 'ios'" :external="true" :href="signUp">{{ $t('login.register') }}</f7-button>
             <f7-button :external="true" :href="forgetPassword">{{ $t('login.forgotPassword') }}</f7-button>
           </f7-list>
           <f7-block-footer>
@@ -99,7 +98,7 @@ import * as partner from './utils/partner'
 import { mapGetters } from 'vuex'
 import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
-import { forgotPassword, getGoogleLogin, signUp } from './api'
+import { forgotPassword, getGoogleLogin } from './api'
 import * as event from './events'
 import AppleButton from '@/views/login/AppleButton'
 import { Capacitor } from '@capacitor/core'
@@ -121,14 +120,14 @@ export default {
   },
   computed: {
     ...mapGetters(['unreadItems', 'user', 'portrait']),
-    signUp() {
-      return signUp()
+    hostname() {
+      return window.location.hostname
     },
     forgetPassword() {
       return forgotPassword()
     },
     isCapacitor() {
-      return Capacitor.isNative
+      return Capacitor.isNativePlatform()
     },
     platform() {
       return Capacitor.getPlatform()
@@ -168,7 +167,7 @@ export default {
   async mounted() {
     try {
       this.$log.info('mounted AppMobile', this.user, this.version, process.env)
-      if (!Capacitor.isNative) {
+      if (!Capacitor.isNativePlatform()) {
         document.getElementById('favicon').href = partner.getFavIcon()
         document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
 
