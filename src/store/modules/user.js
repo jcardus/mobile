@@ -11,7 +11,7 @@ import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import * as Sentry from '@sentry/vue'
-import { getSession } from '../../api/traccar-api'
+import { getSession } from '@/api/traccar-api'
 
 const state = {
   user: {
@@ -53,7 +53,6 @@ const mutations = {
   },
   SET_USER(state, token) {
     state.user = token
-    state.user.attributes.avatar = getAvatar(token.name)
   },
   CLEAR_USER(state) {
     state.user = {
@@ -98,11 +97,6 @@ const mutations = {
     const index = state.devices.indexOf(device)
     state.devices.splice(index, 1, device)
   }
-}
-
-function getAvatar(name) {
-  const nameSplit = name.split(' ')
-  return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
 }
 
 function initData(commit, state, dispatch) {
