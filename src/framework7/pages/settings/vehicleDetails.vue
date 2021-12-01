@@ -49,6 +49,15 @@
       >
       </f7-list-input>
     </f7-list>
+    <f7-block v-if="selectedVehicle && selectedVehicle.attributes.integration === 'monitrip'">
+      <f7-row>
+        <f7-col>
+          <f7-button raised outline @click="clickMonitrip">
+            {{ `Monitriip ${selectedVehicle.attributes.monitrip ? 'Terminar' : 'Iniciar'} Viagem` }}
+          </f7-button>
+        </f7-col>
+      </f7-row>
+    </f7-block>
     <f7-block>
       <f7-row>
         <f7-col>
@@ -97,7 +106,7 @@ export default {
   computed: {
     ...mapGetters(['devices']),
     notesLabel() {
-      if (this.selectedVehicle.attributes.integration === 'monitrip') {
+      if (this.selectedVehicle && this.selectedVehicle.attributes.integration === 'monitrip') {
         return 'Licença de Viagem'
       }
       return this.$t('settings.vehicle_notes')
@@ -126,17 +135,34 @@ export default {
   mounted() {
     const selectedId = parseInt(this.$f7route.params.deviceId)
     const p = this.findFeatureByDeviceId(selectedId)
+    this.vehicleTotalKms = p && (p.properties.totalDistance / 1000).toFixed(2)
     this.selectedVehicle = this.devices.find((d) => d.id === selectedId)
     this.$log.debug('vehicleDetails mounted', this.selectedVehicle.name)
     this.vehicleName = this.selectedVehicle.name
     this.vehicleModel = this.selectedVehicle.model
-    this.vehicleTotalKms = (p.properties.totalDistance / 1000).toFixed(2)
     this.vehicleSpeedLimit = Math.round(this.selectedVehicle.attributes.speedLimit * 1.85200)
     this.selectedCategory = this.selectedVehicle.category
     this.selectedGroup = this.selectedVehicle.groupId
     this.vehicleNotes = this.selectedVehicle.attributes.notes
   },
   methods: {
+    clickMonitrip() {
+      this.$f7.dialog.confirm(
+        `Deseja ${this.selectedVehicle.attributes.monitrip ? 'terminar' : 'iniciar'} a viagem?`,
+        'Monitriip',
+        async() => {
+          if (!this.vehicleNotes) {
+            this.$f7.dialog.alert('Por favor introduza a licença de viagem.')
+            return
+          }
+          this.selectedVehicle.attributes.monitrip = !this.selectedVehicle.attributes.monitrip
+          this.selectedVehicle.attributes.notes = this.vehicleNotes
+          await traccar.updateDevice(this.selectedVehicle.id, this.selectedVehicle)
+          this.$f7.dialog.alert(`Viagem ${this.selectedVehicle.attributes.monitrip ? 'iniciada' : 'terminada'} com sucesso.`, 'Monitriip')
+          this.$f7router.back()
+        }
+      )
+    },
     findFeatureByDeviceId(deviceId) {
       return lnglat.findFeatureByDeviceId(deviceId)
     },

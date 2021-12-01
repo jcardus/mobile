@@ -29,6 +29,7 @@
           :link="'/settings/vehicleDetails/' + item.id"
           :subtitle="item.attributes.license_plate"
           :after="groupName(item.groupId)"
+          :text="item.attributes.monitrip ? `Viagem iniciada (${item.attributes.notes})` : ''"
         >
         </f7-list-item>
       </ul>
