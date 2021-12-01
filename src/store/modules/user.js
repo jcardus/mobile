@@ -11,7 +11,6 @@ import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import * as Sentry from '@sentry/vue'
-import { getSession } from '@/api/traccar-api'
 
 const state = {
   user: {
@@ -53,6 +52,7 @@ const mutations = {
   },
   SET_USER(state, token) {
     state.user = token
+    state.user.attributes.avatar = getAvatar(token.name)
   },
   CLEAR_USER(state) {
     state.user = {
@@ -97,6 +97,11 @@ const mutations = {
     const index = state.devices.indexOf(device)
     state.devices.splice(index, 1, device)
   }
+}
+
+function getAvatar(name) {
+  const nameSplit = name.split(' ')
+  return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
 }
 
 function initData(commit, state, dispatch) {
@@ -264,16 +269,29 @@ const actions = {
   removeUser({ commit }, user) {
     commit('REMOVE_USER', user)
   },
-  async checkSession({ dispatch }) {
-    Vue.$log.info('user/checkSession')
-    try { await api.getJSessionId() } catch (e) { Vue.$log.error('no cognito session', e) }
-    try {
-      await getSession().then(d => d.data)
-      await dispatch('setUser')
-    } catch (e) {
-      Vue.$log.warn('no session, should go to login', e)
-      return dispatch('clearUser')
-    }
+  checkSession({ dispatch, commit }) {
+    return new Promise((resolve) => {
+      Vue.$log.info('user/checkSession')
+      traccar.getSession().then((s) => {
+        commit('SET_USER', s)
+        resolve()
+        dispatch('setUser')
+      }).catch((e) => {
+        Vue.$log.warn('no session, checking cognito', e)
+        api.getJSessionId('')
+          .then(() => {
+            traccar.getSession().then((s) => {
+              commit('SET_USER', s)
+              resolve()
+              dispatch('setUser')
+            }).catch(e => resolve(e))
+          })
+          .catch(e => {
+            Vue.$log.warn('no session, should go to login', e)
+            dispatch('clearUser').then(() => resolve())
+          })
+      })
+    })
   },
   setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {
@@ -334,7 +352,7 @@ const actions = {
   },
   async logout({ commit }) {
     try {
-      if (!Capacitor.isNativePlatform()) {
+      if (!Capacitor.isNative) {
         Vue.$log.info('logout one signal')
         window.OneSignal.logoutEmail()
       }
