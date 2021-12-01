@@ -107,7 +107,7 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     geofences: function() {
-      return this.user.geofences && this.user.geofences.filter(g => g &&
+      return this.user && this.user.geofences && this.user.geofences.filter(g => g &&
           (
             (g.area.startsWith('POLYGON') && this.showGeofenceLayer) ||
             (g.area.startsWith('CIRCLE') && this.showPOIsLayer) ||

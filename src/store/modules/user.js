@@ -267,13 +267,15 @@ const actions = {
   async checkSession({ dispatch }) {
     Vue.$log.info('user/checkSession')
     try { await api.getJSessionId() } catch (e) { Vue.$log.error('no cognito session', e) }
-    try { dispatch('setUser', await getSession().then(d => d.data)) } catch (e) {
+    try {
+      await getSession().then(d => d.data)
+      dispatch('setUser')
+    } catch (e) {
       Vue.$log.warn('no session, should go to login', e)
       return dispatch('clearUser')
     }
   },
-  setUser({ commit, state, dispatch }, user) {
-    commit('SET_USER', user)
+  setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
