@@ -49,16 +49,16 @@
       >
       </f7-list-input>
     </f7-list>
-    <f7-block v-if="selectedVehicle && selectedVehicle.attributes.integration === 'monitrip'">
-      <f7-row>
+
+    <f7-block>
+      <f7-row v-if="selectedVehicle && selectedVehicle.attributes.integration === 'monitrip'">
         <f7-col>
           <f7-button raised outline @click="clickMonitrip">
             {{ `Monitriip ${selectedVehicle.attributes.monitrip ? 'Terminar' : 'Iniciar'} Viagem` }}
           </f7-button>
         </f7-col>
       </f7-row>
-    </f7-block>
-    <f7-block>
+      <div style="height:10px"></div>
       <f7-row>
         <f7-col>
           <f7-button
@@ -87,6 +87,7 @@ import * as lnglat from '../../../utils/lnglat'
 import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
+import axios from 'axios'
 
 export default {
   name: 'VehicleDetails',
@@ -158,6 +159,7 @@ export default {
           this.selectedVehicle.attributes.monitrip = !this.selectedVehicle.attributes.monitrip
           this.selectedVehicle.attributes.notes = this.vehicleNotes
           await traccar.updateDevice(this.selectedVehicle.id, this.selectedVehicle)
+          await axios.post('https://531ngeej5l.execute-api.us-east-1.amazonaws.com/Prod/', this.selectedVehicle)
           this.$f7.dialog.alert(`Viagem ${this.selectedVehicle.attributes.monitrip ? 'iniciada' : 'terminada'} com sucesso.`, 'Monitriip')
           this.$f7router.back()
         }
