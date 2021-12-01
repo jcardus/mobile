@@ -269,7 +269,7 @@ const actions = {
     try { await api.getJSessionId() } catch (e) { Vue.$log.error('no cognito session', e) }
     try {
       await getSession().then(d => d.data)
-      dispatch('setUser')
+      await dispatch('setUser')
     } catch (e) {
       Vue.$log.warn('no session, should go to login', e)
       return dispatch('clearUser')
@@ -334,7 +334,7 @@ const actions = {
   },
   async logout({ commit }) {
     try {
-      if (!Capacitor.isNative) {
+      if (!Capacitor.isNativePlatform()) {
         Vue.$log.info('logout one signal')
         window.OneSignal.logoutEmail()
       }
