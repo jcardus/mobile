@@ -1,12 +1,13 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.0.28",
+  "version": "2.0.29",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
     "report": "vue-cli-service build --report",
     "build:capacitor": "vue-cli-service build --mode capacitor --dest dist && npx cap copy",
+    "deploy:ios:beta": "vue-cli-service build --mode capacitor --dest dist && ENVIRONMENT=ios npx cap copy ios && cd ios/App && fastlane beta",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "lint": "eslint --ext .js,.vue src",
     "build:stage": "vue-cli-service build --mode staging",
