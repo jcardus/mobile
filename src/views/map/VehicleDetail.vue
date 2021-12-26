@@ -14,7 +14,7 @@
         {{ device.model }}
       </div>
       <div class="content">
-        {{ currentPosition && currentPosition.address }}
+        {{ currentPosition && currentPosition.address && currentPosition.address.replace('&\#39;', '\'') }}
         <div style="padding-top: 5px;">
           <div v-if="currentPosition.ignition || currentPosition.speed > 2" style="color:#32325D;">
             <i class="fas fa-tachometer-alt speedIcon" style="padding-right:2px"></i>{{ Math.round(currentPosition.speed * 1.852) }} km/h

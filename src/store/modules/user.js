@@ -156,12 +156,12 @@ async function setFirebaseToken(commit, state) {
     .then((r) => {
       if (Capacitor.getPlatform() === 'ios') {
         if (state.user.attributes.firebaseToken !== r.token) {
-          Sentry.captureMessage(`updating firebase token ${r.token}`)
+          // Sentry.captureMessage(`updating firebase token ${r.token}`)
           commit('SET_FIREBASE_TOKEN', r.token)
           traccar.updateUser(state.user.id, state.user)
         }
       } else {
-        Sentry.captureMessage(`ignoring this fcm token ${r.token}`)
+        // Sentry.captureMessage(`ignoring this fcm token ${r.token}`)
       }
     })
     .catch((err) => console.log(err))
