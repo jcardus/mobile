@@ -13,6 +13,9 @@
       <div class="subtitle">
         {{ device.model }}
       </div>
+      <div v-if="device.driver && device.driver.name" class="driver">
+        <i class="fas fa-user driverIcon" style="padding-right:2px; padding-left:2px"></i>{{ device.driver.name }}
+      </div>
       <div class="content">
         {{ currentPosition && currentPosition.address && currentPosition.address.replace('&\#39;', '\'') }}
         <div style="padding-top: 5px;">
@@ -348,6 +351,20 @@ export default {
     color: $--color-success
   }
   .rpmIcon {
+    color: $--color-primary
+  }
+  .driver {
+    font-size: 13px;
+    color: #32325D;
+    float:left;
+    width: 100%;
+    overflow: auto;
+    line-height: normal;
+    padding-bottom: 4px;
+  }
+  .driverIcon {
+    padding-left: 2px;
+    width: 18px;
     color: $--color-primary
   }
 </style>
