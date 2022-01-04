@@ -92,9 +92,10 @@ export default {
   methods: {
     pageActive() {
       this.$log.debug('reports mobile after in')
-      this.reports = [{ id: 'trip', title: this.$t('route.report_trip_title'), mrt: '/reports/report_trip.mrt' },
-        { id: 'location', mrt: '/reports/report_location.mrt', title: this.$t('route.report_location_title') },
-        { mrt: '/reports/report_zone_crossing.mrt', id: 'zone_crossing', title: this.$t('route.report_zone_crossing') }]
+      this.reports = [
+        { id: 'trip', title: this.$t('route.report_trip_title') },
+        { id: 'location', title: this.$t('route.report_location_title') },
+        { id: 'zone_crossing', title: this.$t('route.report_zone_crossing') }]
     },
     renderReport: function(report_id) {
       const report = this.reports.find(r => r.id === this.reportType)

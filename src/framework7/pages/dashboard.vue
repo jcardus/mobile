@@ -7,9 +7,9 @@
 </template>
 <script>
 import Dashboard from '../../views/dashboard/Dashboard'
-import { serverBus } from '../../main'
+import { serverBus } from '@/main'
 import { mapGetters } from 'vuex'
-import { dashboardLoaded } from '../../events'
+import { dashboardLoaded } from '@/events'
 
 export default {
   name: 'DashboardMobile',
@@ -33,9 +33,6 @@ export default {
   created() {
     this.$log.debug('DashboardMobile')
     serverBus.$on('dashboardActive', () => {
-      if (!this.showDashboard) {
-        this.$f7.preloader.show()
-      }
       this.showDashboard = true
       this.$log.debug('dashboardActive')
     })
