@@ -4,6 +4,7 @@ export default {
     reconnect: 'Deseja restabelecer a ligação com o servidor?'
   },
   route: {
+    report: 'Relatório',
     map: 'Mapa',
     dashboard: 'Dashboard',
     reports: 'Relatórios',
@@ -23,6 +24,7 @@ export default {
     alerts: 'Alertas'
   },
   map: {
+    loading: 'Carregando...',
     geofence_create_title: 'Nova Cerca Eletrônica',
     geofence_create_name: 'Por favor indique o nome da cerca eletrônica...',
     geofence_created: 'Cerca eletrônica criada com sucesso!',

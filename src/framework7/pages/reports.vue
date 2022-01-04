@@ -52,9 +52,9 @@
 
 import { vm, serverBus } from '@/main'
 import * as utils from '../../views/reports/utils/utils'
-import Vue from 'vue'
-import { traccar } from '@/api/traccar-api'
+import 'jspdf-autotable'
 import { mapGetters } from 'vuex'
+import { reports } from '@/api/reports'
 
 export default {
   name: 'Reports',
@@ -65,13 +65,13 @@ export default {
       dateEnd: null,
       loadingReport: false,
       popupTitle: '',
-      reportType: '',
+      reportType: null,
       selectedDevices: [],
       selectedGeofences: []
     }
   },
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(['user', 'devices']),
     devices() {
       return vm.$store.getters.devices.sort(function(a, b) {
         a = a.name.toLowerCase()
@@ -109,26 +109,53 @@ export default {
       this.$log.debug('Report triggering failed - ' + reason)
       setTimeout(utils.check_if_online, 2000, report_id, this.renderReport)
     },
-    submitReport() {
+    async submitReport() {
       if (!this.dateStart || !this.dateEnd) {
         this.$f7.dialog.alert(this.$t('report.validate_period'))
         return
       }
-      this.$log.debug('mobile reports submit')
-      this.$f7.dialog.preloader(this.$t('map.loading'))
-      const report_id = this.user.email + '_' + utils.generate_token(40)
-      const body = {
-        username: this.user.email,
-        platform: 'mobile',
-        report: this.reportType,
-        report_id: report_id,
-        selected_devices: this.selectedDevices,
-        selected_geofences: this.selectedGeofences,
-        date_from: this.$moment(this.dateStart).format('YYYY-MM-DD') + ' 00:00:00',
-        date_to: this.$moment(this.dateEnd).format('YYYY-MM-DD') + ' 23:59:59'
+      if (!this.reportType) {
+        this.$f7.dialog.alert(this.$t('report.validate_report'))
+        return
       }
-      Vue.$log.debug(body)
-      traccar.trigger_report(body, report_id, this.renderReport, this.errorHandler)
+      if (!this.selectedDevices.length) {
+        this.$f7.dialog.alert(this.$t('report.validate_vehicles'))
+        return
+      }
+      this.$f7.preloader.show()
+      const userData = {
+        ...this.$store.state.user,
+        devices: this.devices.filter(d => this.selectedDevices.indexOf(d.id) >= 0),
+        allWeek: true
+      }
+      let reportData
+      switch (this.reportType) {
+        case 'trip':
+          reportData = await reports.tripReport(this.dateStart, this.dateEnd, userData)
+          break
+        case 'location':
+          reportData = await reports.locationReport(this.dateStart, this.dateEnd, userData)
+          break
+        case 'zone_crossing':
+          userData.geofences = this.selectedGeofences.length > 0 ? this.geofences.filter(g => this.selectedGeofences.includes(g.id)) : this.geofences
+          reportData = await reports.zoneReport(this.dateStart, this.dateEnd, userData)
+      }
+      console.log(reportData)
+      this.$f7.preloader.hide()
+      if (!reportData || !reportData.length || !reportData[0].devices.length) { this.$f7.dialog.alert(this.$t('report.no_data')) } else {
+        let pdfDoc
+        switch (this.reportType) {
+          case 'trip':
+            pdfDoc = await reports.tripReportToPDF(userData, reportData[0])
+            break
+          case 'location':
+            pdfDoc = await reports.locationReportToPDF(userData, reportData[0])
+            break
+          case 'zone_crossing':
+            pdfDoc = await reports.zoneReportToPDF(userData, reportData[0])
+        }
+        pdfDoc.save(this.reportType + '.pdf')
+      }
     }
   }
 }

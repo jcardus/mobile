@@ -451,7 +451,10 @@ export default {
     date_end: 'End date',
     generate_report: 'Generate report',
     validate_period: 'Please select a period',
-    select_all: 'All'
+    validate_report: 'Por favor seleccione um relatório',
+    validate_vehicles: 'Por favor seleccione os veículos',
+    select_all: 'All',
+    no_data: 'Não há dados para o período / veículos seleccionados.'
   },
   layout: {
     deviceOnline: 'Device Online',
