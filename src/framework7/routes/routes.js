@@ -10,7 +10,6 @@ import AlertsSettingsPage from '../pages/settings/alerts'
 import DriversSettingsPage from '../pages/settings/drivers'
 import DriverDetailsPage from '../pages/settings/driverDetails'
 import AboutPage from '../pages/settings/about'
-import Viewer from '../pages/viewer'
 import MapMobileContainer from '../pages/MapMobileContainer'
 import DashboardPage from '../pages/dashboard'
 import alerts from '../pages/alerts'
@@ -81,10 +80,6 @@ const routes = [
   {
     path: '/settings/driverDetails/:driverId',
     component: DriverDetailsPage
-  },
-  {
-    path: '/viewer',
-    component: Viewer
   },
   {
     path: '/dashboard',

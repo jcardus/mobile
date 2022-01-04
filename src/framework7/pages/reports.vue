@@ -51,7 +51,6 @@
 <script>
 
 import { vm, serverBus } from '@/main'
-import * as utils from '../../views/reports/utils/utils'
 import 'jspdf-autotable'
 import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
@@ -104,11 +103,6 @@ export default {
     calendarChange(newValue) {
       this.dateStart = newValue[0]
       this.dateEnd = newValue[1]
-    },
-    errorHandler: function(report_id, reason) {
-      this.loadingReport = false
-      this.$log.debug('Report triggering failed - ' + reason)
-      setTimeout(utils.check_if_online, 2000, report_id, this.renderReport)
     },
     async submitReport() {
       if (!this.dateStart || !this.dateEnd) {

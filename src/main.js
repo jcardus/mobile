@@ -10,7 +10,6 @@ import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import i18n, { getLanguage } from './lang'
 import VueI18nFilter from 'vue-i18n-filter'
-import LoadScript from 'vue-plugin-load-script'
 import * as event from './events'
 import './amplify'
 import VueTimers from 'vue-timers'
@@ -54,7 +53,6 @@ Vue.config.errorHandler = (err, vm, info) => {
   console.error(err)
 }
 
-Vue.use(LoadScript)
 Vue.use(elTableInfiniteScroll)
 
 const isProduction = process.env.NODE_ENV !== 'development'
