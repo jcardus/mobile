@@ -445,7 +445,15 @@ export default {
     generate_report: 'Gerar relatório',
     period: 'Período',
     validate_period: 'Por favor seleccione o período.',
-    select_all: 'Todos'
+    select_all: 'Todos',
+    speeding: 'Excessos de Velocidade',
+    trip: 'Relatório de Viagens',
+    zone: 'Relatório de Zonas',
+    location: 'Relatório de Posições',
+    events: 'Relatório de Eventos',
+    activity: 'Relatório de Actividade',
+    kms: 'Relatório de Kms',
+    no_data: 'Não há dados para os veículos / período seleccionado.'
   },
   layout: {
     deviceOnline: 'Dispositivo Online',

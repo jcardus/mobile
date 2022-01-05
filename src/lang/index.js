@@ -98,7 +98,7 @@ export function getLanguage() {
 }
 const i18n = new VueI18n({
   locale: getLanguage(),
-  fallbackLocale: 'enGB',
+  fallbackLocale: 'ptPT',
   // set locale messages
   messages
 })

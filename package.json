@@ -1,13 +1,13 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.0.37",
+  "version": "2.0.38",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
     "report": "vue-cli-service build --report",
     "build:capacitor": "vue-cli-service build --mode capacitor --dest dist && npx cap copy",
-    "deploy:nogartel:android": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/localhost.png && ENVIRONMENT=android npx cap copy android && cd ios/App && fastlane beta",
+    "deploy:nogartel:android": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/localhost.png && ENVIRONMENT=android npx cap copy android && cd android && fastlane beta",
     "deploy:nogartel:ios:beta": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/api.pinme.io.png && ENVIRONMENT=ios npx cap copy ios && cd ios/App && fastlane beta",
     "deploy:nogartel:ios:release": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/api.pinme.io.png && ENVIRONMENT=ios npx cap copy ios && cd ios/App && fastlane release",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",

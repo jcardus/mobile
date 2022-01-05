@@ -70,7 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user', 'devices']),
+    ...mapGetters(['user']),
     devices() {
       return vm.$store.getters.devices.sort(function(a, b) {
         a = a.name.toLowerCase()
@@ -91,14 +91,8 @@ export default {
   methods: {
     pageActive() {
       this.$log.debug('reports mobile after in')
-      this.reports = [
-        { id: 'trip', title: this.$t('route.report_trip_title') },
-        { id: 'location', title: this.$t('route.report_location_title') },
-        { id: 'zone_crossing', title: this.$t('route.report_zone_crossing') }]
-    },
-    renderReport: function(report_id) {
-      const report = this.reports.find(r => r.id === this.reportType)
-      this.$f7.views.reports.router.navigate('/viewer', { props: { reportId: report_id, mrt: report.mrt }})
+      this.reports = ['trip', 'location', 'speeding', 'zone', 'activity', 'kms']
+        .map(r => { return { id: r, title: this.$t('report.' + r) } })
     },
     calendarChange(newValue) {
       this.dateStart = newValue[0]
@@ -106,14 +100,17 @@ export default {
     },
     async submitReport() {
       if (!this.dateStart || !this.dateEnd) {
+        // noinspection JSCheckFunctionSignatures
         this.$f7.dialog.alert(this.$t('report.validate_period'))
         return
       }
       if (!this.reportType) {
+        // noinspection JSCheckFunctionSignatures
         this.$f7.dialog.alert(this.$t('report.validate_report'))
         return
       }
       if (!this.selectedDevices.length) {
+        // noinspection JSCheckFunctionSignatures
         this.$f7.dialog.alert(this.$t('report.validate_vehicles'))
         return
       }
@@ -121,36 +118,20 @@ export default {
       const userData = {
         ...this.$store.state.user,
         devices: this.devices.filter(d => this.selectedDevices.indexOf(d.id) >= 0),
-        allWeek: true
+        allWeek: true,
+        geofences: this.selectedGeofences.length > 0 ? this.geofences.filter(g => this.selectedGeofences.includes(g.id)) : this.geofences,
+        useVehicleSpeedLimit: true,
+        eventTypes: []
       }
-      let reportData
-      switch (this.reportType) {
-        case 'trip':
-          reportData = await reports.tripReport(this.dateStart, this.dateEnd, userData)
-          break
-        case 'location':
-          reportData = await reports.locationReport(this.dateStart, this.dateEnd, userData)
-          break
-        case 'zone_crossing':
-          userData.geofences = this.selectedGeofences.length > 0 ? this.geofences.filter(g => this.selectedGeofences.includes(g.id)) : this.geofences
-          reportData = await reports.zoneReport(this.dateStart, this.dateEnd, userData)
-      }
-      console.log(reportData)
-      this.$f7.preloader.hide()
-      if (!reportData || !reportData.length || !reportData[0].devices.length) { this.$f7.dialog.alert(this.$t('report.no_data')) } else {
-        let pdfDoc
-        switch (this.reportType) {
-          case 'trip':
-            pdfDoc = await reports.tripReportToPDF(userData, reportData[0])
-            break
-          case 'location':
-            pdfDoc = await reports.locationReportToPDF(userData, reportData[0])
-            break
-          case 'zone_crossing':
-            pdfDoc = await reports.zoneReportToPDF(userData, reportData[0])
-        }
+      const reportData = await reports[this.reportType + 'Report'](this.dateStart, this.dateEnd, userData)
+      if (!reportData || !reportData.length || !reportData[0].devices.length) {
+        // noinspection JSCheckFunctionSignatures
+        this.$f7.dialog.alert(this.$t('report.no_data'))
+      } else {
+        const pdfDoc = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
         pdfDoc.save(this.reportType + '.pdf')
       }
+      this.$f7.preloader.hide()
     }
   }
 }
