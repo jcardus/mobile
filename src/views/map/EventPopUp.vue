@@ -27,7 +27,6 @@
 <script>
 
 import Vue from 'vue'
-import { getImage } from '@/utils/mapillary'
 
 export default {
   name: 'EventPopUp',
@@ -37,9 +36,6 @@ export default {
     }
   },
   mounted() {
-    getImage(this.lngLat).then((url) => {
-      this.imageUrl = url
-    })
     const lat = this.lngLat[1].toFixed(6)
     const lon = this.lngLat[0].toFixed(6)
     const ll = `${lat},${lon}`

@@ -53,7 +53,7 @@
     "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "^2.14.1",
     "file-saver": "^2.0.5",
-    "fleetmap-partners": "^1.0.42",
+    "fleetmap-partners": "^1.0.48",
     "fleetmap-reports": "^1.0.263",
     "framework7": "^5.7.14",
     "framework7-vue": "^5.7.14",

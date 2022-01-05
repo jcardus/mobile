@@ -68,14 +68,12 @@
 
 <script>
 
-import axios from 'axios'
 import * as lnglat from '../../utils/lnglat'
 import Vue from 'vue'
 import { serverBus, vm } from '@/main'
 import ImmobilizeButton from './ImmobilizeButton'
 import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
-import { clientId } from '@/utils/mapillary'
 import { mapGetters } from 'vuex'
 import { isMobile } from '@/utils/lnglat'
 
@@ -134,11 +132,9 @@ export default {
     Vue.$log.debug('VehicleDetail')
     serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$off('deviceSelected', this.deviceSelected)
-    serverBus.$off('animationEnd', this.devicePositionChanged)
   },
   created() {
     Vue.$log.debug('VehicleDetail')
-    serverBus.$on('animationEnd', this.devicePositionChanged)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
@@ -177,54 +173,8 @@ export default {
     loaded() {
       Vue.$log.debug('loaded')
     },
-    getUrl() {
-      const oldCoords = this.oldPosition || this.feature.geometry.coordinates
-      return 'https://a.mapillary.com/v3/images/?closeto=' + oldCoords.join(',') +
-              '&per_page=1&lookat=' + this.feature.geometry.coordinates.join(',') +
-              '&client_id=' + clientId +
-        (this.sequenceKey ? '&sequence_keys=' + this.sequenceKey : '')
-    },
     handleLoad(e, img) {
       this.imageUrl = img.src
-    },
-    updateImage: function() {
-      const self = this
-      axios.get(this.getUrl())
-        .then((response) => {
-          if (response.data.features.length > 0) {
-            Vue.$log.debug('got features: ', response.data.features)
-            self.sequenceKey = response.data.features[0].properties.sequence_key
-            if (self.key !== response.data.features[0].properties.key) {
-              self.key = response.data.features[0].properties.key
-              const img = new Image()
-              img.onload = e => this.handleLoad(e, img)
-              img.src = 'https://images.mapillary.com/' + self.key + '/thumb-320.jpg'
-            }
-          } else {
-            Vue.$log.debug('no mapillary found at ',
-              this.feature.geometry.coordinates[0], this.feature.geometry.coordinates[1])
-            self.sequenceKey = ''
-            this.imageUrl = ''
-          }
-        })
-        .catch(reason => {
-          Vue.$log.error(reason)
-        }).finally(() => {
-          self.fetching = false
-        })
-    },
-    devicePositionChanged(deviceId) {
-      if (this.device.id === deviceId) {
-        if (!lnglat.popUps[deviceId].closed) {
-          if (!this.fetching && this.lastImageUpdate < (new Date() - 3000)) {
-            this.fetching = true
-            Vue.$log.debug(this.device.name, 'updating mapillary')
-            this.lastImageUpdate = new Date()
-            this.updateImage()
-            this.oldPosition = this.feature.geometry.coordinates
-          } else { Vue.$log.debug(this.device.name, 'not updating mapillary, too recent') }
-        } else { Vue.$log.debug(this.device.name, 'not updating mapillary, popup closed') }
-      } else { Vue.$log.debug(this.device.name, 'not updating mapillary, other device') }
     },
     deviceSelected(device) {
       Vue.$log.debug('device selected ', device.id)

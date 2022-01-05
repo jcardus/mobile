@@ -22,7 +22,6 @@
 
 <script>
 import Vue from 'vue'
-import { getImage } from '@/utils/mapillary'
 import * as lnglat from '../../utils/lnglat'
 import { isMobile } from '@/utils/lnglat'
 import { serverBus } from '@/main'
@@ -41,9 +40,6 @@ export default {
     }
   },
   mounted() {
-    getImage(this.lngLat).then((url) => {
-      this.imageUrl = url
-    })
     const lat = this.lngLat[1].toFixed(6)
     const lon = this.lngLat[0].toFixed(6)
     const ll = `${lat},${lon}`
