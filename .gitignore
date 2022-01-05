@@ -37,3 +37,5 @@ amplify-gradle-config.json
 amplifyxc.config
 /public/img/gltf/
 /icons/
+/ios/App/fastlane/Preview.html
+/ios/App/fastlane/report.xml
