@@ -129,7 +129,7 @@ export default {
         this.$f7.dialog.alert(this.$t('report.no_data'))
       } else {
         const pdfDoc = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
-        pdfDoc.save(this.reportType + '.pdf')
+        window.open(pdfDoc.output('bloburl'), '_blank')
       }
       this.$f7.preloader.hide()
     }
