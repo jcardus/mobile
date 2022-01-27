@@ -1,7 +1,7 @@
 <template>
   <f7-page>
-    <f7-navbar :title="$t('route.reports')"></f7-navbar>
-    <f7-list id="mainList">
+    <f7-navbar :back-link="showPdf" :title="$t('route.reports')" @click:back="showPdf=false"></f7-navbar>
+    <f7-list v-if="!showPdf" id="mainList">
       <f7-list-item :title="$t('route.report')" smart-select :smart-select-params="{openIn: 'popover', closeOnSelect: 'true'}">
         <label>
           <select v-model="reportType" name="report">
@@ -45,6 +45,8 @@
         <f7-button large raised fill @click="submitReport">{{ $t('report.generate_report') }}</f7-button>
       </f7-block>
     </f7-list>
+    <vue-pdf-app v-else :pdf="pdfRef" style="height: 100vh">
+    </vue-pdf-app>
   </f7-page>
 </template>
 
@@ -54,11 +56,14 @@ import { vm, serverBus } from '@/main'
 import 'jspdf-autotable'
 import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
+import VuePdfApp from 'vue-pdf-app'
+import 'vue-pdf-app/dist/icons/main.css'
 
 export default {
   name: 'Reports',
   data() {
     return {
+      showPdf: false,
       reports: null,
       dateStart: null,
       dateEnd: null,
@@ -66,7 +71,8 @@ export default {
       popupTitle: '',
       reportType: null,
       selectedDevices: [],
-      selectedGeofences: []
+      selectedGeofences: [],
+      pdfRef: ''
     }
   },
   computed: {
@@ -82,6 +88,7 @@ export default {
       return vm.$store.state.user.geofences.filter(g => g) // filter null geofences...
     }
   },
+  components: { VuePdfApp },
   created() {
     serverBus.$on('reportsActive', this.pageActive)
   },
@@ -129,7 +136,8 @@ export default {
         this.$f7.dialog.alert(this.$t('report.no_data'))
       } else {
         const pdfDoc = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
-        window.open(pdfDoc.output('bloburl'), '_blank')
+        this.pdfRef = new Uint8Array(pdfDoc.output('arraybuffer'))
+        this.showPdf = true
       }
       this.$f7.preloader.hide()
     }
