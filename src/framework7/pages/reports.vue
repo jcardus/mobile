@@ -45,7 +45,7 @@
         <f7-button large raised fill @click="submitReport">{{ $t('report.generate_report') }}</f7-button>
       </f7-block>
     </f7-list>
-    <vue-pdf-app v-else :pdf="pdfRef" style="height: 100%">
+    <vue-pdf-app v-else :config="config" :pdf="pdfRef" style="height: 100%">
     </vue-pdf-app>
   </f7-page>
 </template>
@@ -58,12 +58,14 @@ import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
 import VuePdfApp from 'vue-pdf-app'
 import 'vue-pdf-app/dist/icons/main.css'
+import { Capacitor } from '@capacitor/core'
 
 export default {
   name: 'Reports',
   components: { VuePdfApp },
   data() {
     return {
+      config: { sidebar: !Capacitor.isNativePlatform },
       showPdf: false,
       reports: null,
       dateStart: null,
