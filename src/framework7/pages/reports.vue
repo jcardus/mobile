@@ -65,7 +65,7 @@ export default {
   components: { VuePdfApp },
   data() {
     return {
-      config: { sidebar: !Capacitor.isNativePlatform },
+      config: { sidebar: !Capacitor.isNativePlatform() },
       showPdf: false,
       reports: null,
       dateStart: null,
