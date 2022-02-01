@@ -24,7 +24,10 @@ export function getServerHost() {
   if (hostName === 'localhost') {
     return 'api.pinme.io'
   }
-  return hostName
+  if (hostName === 'plataforma.localizalia.com') {
+    return hostName
+  }
+  return 'ws.' + hostName
 }
 
 function auth(action) {
