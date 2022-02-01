@@ -21,10 +21,10 @@ export function getServerHost() {
   if (isDevEnv()) {
     return 'traccar-dev.us-east-1.elasticbeanstalk.com'
   }
-  if (hostName === 'localhost' || hostName === 'plataforma.localizalia.com') {
+  if (hostName === 'localhost') {
     return 'api.pinme.io'
   }
-  return 'ws.' + hostName
+  return hostName
 }
 
 function auth(action) {
