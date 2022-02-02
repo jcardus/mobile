@@ -58,14 +58,13 @@ import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
 import VuePdfApp from 'vue-pdf-app'
 import 'vue-pdf-app/dist/icons/main.css'
-import { Capacitor } from '@capacitor/core'
 
 export default {
   name: 'Reports',
   components: { VuePdfApp },
   data() {
     return {
-      config: { sidebar: !Capacitor.isNativePlatform() },
+      config: { sidebar: false },
       showPdf: false,
       reports: null,
       dateStart: null,
