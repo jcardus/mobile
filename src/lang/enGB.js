@@ -438,6 +438,7 @@ export default {
     delete_geofence: 'Delete'
   },
   report: {
+    close: 'Close',
     selector_search: 'Search',
     select_vehicles: 'Selected',
     select_vehicles_placeholder: 'Vehicles',

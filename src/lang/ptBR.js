@@ -397,6 +397,7 @@ export default {
     delete_geofence: 'Apagar'
   },
   report: {
+    close: 'Fechar',
     selector_search: 'Pesquisa',
     select_vehicles: 'Seleccionados',
     select_vehicles_placeholder: 'Veículos',

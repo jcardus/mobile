@@ -1,7 +1,7 @@
 <template>
   <f7-page>
-    <f7-navbar :back-link="showPdf" :title="$t('route.reports')" @click:back="showPdf=false"></f7-navbar>
-    <f7-list v-if="!showPdf" id="mainList">
+    <f7-navbar :title="$t('route.reports')"></f7-navbar>
+    <f7-list id="mainList">
       <f7-list-item :title="$t('route.report')" smart-select :smart-select-params="{openIn: 'popover', closeOnSelect: 'true'}">
         <label>
           <select v-model="reportType" name="report">
@@ -45,8 +45,17 @@
         <f7-button large raised fill @click="submitReport">{{ $t('report.generate_report') }}</f7-button>
       </f7-block>
     </f7-list>
-    <vue-pdf-app v-else :config="config" :pdf="pdfRef" style="height: calc(100vh - 200px)">
-    </vue-pdf-app>
+    <f7-popup :opened="showPdf" @popup:closed="showPdf = false">
+      <f7-page>
+        <f7-navbar>
+          <f7-nav-right>
+            <f7-link popup-close>{{ $t('report.close') }}</f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <vue-pdf-app :config="config" :pdf="pdfRef" style="height: 100%">
+        </vue-pdf-app>
+      </f7-page>
+    </f7-popup>
   </f7-page>
 </template>
 
