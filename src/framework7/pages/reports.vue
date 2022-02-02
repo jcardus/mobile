@@ -45,7 +45,7 @@
         <f7-button large raised fill @click="submitReport">{{ $t('report.generate_report') }}</f7-button>
       </f7-block>
     </f7-list>
-    <vue-pdf-app v-else :config="config" :pdf="pdfRef" style="height: 100%">
+    <vue-pdf-app v-else :config="config" :pdf="pdfRef" style="height: calc(100vh - 100px)">
     </vue-pdf-app>
   </f7-page>
 </template>
