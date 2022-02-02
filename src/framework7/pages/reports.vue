@@ -4,7 +4,7 @@
     <f7-list id="mainList">
       <f7-list-item :title="$t('route.report')" smart-select :smart-select-params="{openIn: 'popover', closeOnSelect: 'true'}">
         <label>
-          <select v-model="reportType" name="report">
+          <select v-model="reportType">
             <option v-for="report in reports" :key="report.id" :value="report.id">{{ report.title }}</option>
           </select>
         </label>
@@ -15,7 +15,7 @@
         :smart-select-params="{sortable:true, searchbar: true, searchbarPlaceholder: $t('vehicleList.search')}"
       >
         <label>
-          <select v-model="selectedDevices" multiple name="devices">
+          <select v-model="selectedDevices" multiple>
             <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.name }}</option>
           </select>
         </label>
@@ -27,7 +27,7 @@
         :smart-select-params="{searchbar: true, searchbarPlaceholder: $t('geofence.searchGeofence')}"
       >
         <label>
-          <select v-model="selectedGeofences" name="geofences" multiple>
+          <select v-model="selectedGeofences" multiple>
             <option v-for="geofence in geofences" :key="geofence.id" :value="geofence.id">{{ geofence.name }}</option>
           </select>
         </label>
@@ -72,12 +72,14 @@ export default {
   name: 'Reports',
   components: { VuePdfApp },
   data() {
+    const dateEnd = new Date()
+    dateEnd.setUTCHours(0, 0, 0, 0)
     return {
       config: { sidebar: false },
       showPdf: false,
       reports: null,
       dateStart: null,
-      dateEnd: null,
+      dateEnd,
       loadingReport: false,
       popupTitle: '',
       reportType: null,
@@ -113,7 +115,9 @@ export default {
     },
     calendarChange(newValue) {
       this.dateStart = newValue[0]
-      this.dateEnd = newValue[1]
+      if (newValue[1]) {
+        this.dateEnd.setDate(newValue[1].getDate() + 1)
+      }
     },
     async submitReport() {
       if (!this.dateStart || !this.dateEnd) {
