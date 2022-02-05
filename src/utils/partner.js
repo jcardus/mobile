@@ -27,12 +27,7 @@ export function getCSSName() {
 }
 
 export function getTitle() {
-  if (hostname === 'wuizy.co.ao') { return 'WuizyGo' }
-  if (hostname === 'web.fleetrack.cl') { return 'Fleetrack' }
-  if (hostname === 'www.fleetrackchile.com') { return 'Fleetrack' }
-  if (hostname === 'map.able-on.mobi') { return 'able-on' }
-  if (hostname === 'www.autotracker.cl') { return 'Auto Tracker' }
-  return 'Fleetmap'
+  return getPartnerData(window.location.hostname).title || 'Fleetmap'
 }
 
 export function getOneSignalAppId() {
