@@ -103,7 +103,9 @@ export default {
     login_user: 'Utilizador',
     login_user_password_invalid: 'Não existe nenhuma conta com o utilizador ou password indicados. Por favor verifique as credenciais e tente novamente.',
     login_user_disabled: 'O utilizador encontra-se bloqueado.',
-    network_error: 'Não foi possível estabelecer ligação com o servidor.'
+    network_error: 'Não foi possível estabelecer ligação com o servidor.',
+    register: 'Novo utilizador?',
+    forgotPassword: 'Esqueceu a password?'
   },
   alerts: {
     title: 'Alertas',
