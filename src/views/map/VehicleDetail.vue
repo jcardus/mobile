@@ -21,9 +21,25 @@
         <div style="padding-top: 5px;">
           <div v-if="currentPosition.ignition || currentPosition.speed > 2" style="color:#32325D;">
             <i class="fas fa-tachometer-alt speedIcon" style="padding-right:2px"></i>{{ Math.round(currentPosition.speed * 1.852) }} km/h
-            <span v-if="currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
-            <span v-if="currentPosition.attributes.rpm"><i class="fab fa-cloudscale rpmIcon" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span>
+            <span v-if="currentPosition.ignition && currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
+            <span v-if="currentPosition.ignition && currentPosition.attributes.rpm"><i class="fab fa-cloudscale rpmIcon" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span>
           </div>
+          <span v-if="currentPosition.attributes.temp1 && currentPosition.attributes.temp1 !== 175">
+            <i class="fas fa-thermometer-quarter rpmIcon" style="padding-right:2px; padding-left:2px"></i>  {{ currentPosition.attributes.temp1 }}ºC
+          </span>
+          <span v-if="currentPosition.attributes.temp2 && currentPosition.attributes.temp2 !== 175">
+            <i class="fas fa-thermometer-quarter rpmIcon" style="padding-right:2px; padding-left:2px"></i>  {{ currentPosition.attributes.temp2 }}ºC
+          </span>
+          <span v-if="currentPosition.attributes.doors">
+            <el-tooltip :content="$t('vehicleDetail.'+currentPosition.attributes.doors)">
+              <i :class="`fas fa-${currentPosition.attributes.doors === 'closed'?'':'un'}lock`" :style="`color:${currentPosition.attributes.doors === 'closed' ? '#ff0022':'#3D993D'}; padding-right:2px; padding-left:2px`"></i>
+            </el-tooltip>
+          </span>
+          <span v-if="currentPosition.attributes.rain">
+            <el-tooltip :content="$t('vehicleDetail.'+currentPosition.attributes.rain)">
+              <i class="fak fa-windshield--2-" :style="`color:${currentPosition.attributes.rain === 'rain'?'#3D993D':'#219FD7'}; padding-right:2px; padding-left:2px`"></i>
+            </el-tooltip>
+          </span>
           <span v-if="!routePoint">{{ formatLastUpdate(device.lastUpdate) }}</span>
           <span v-if="routePoint">{{ formatLastUpdate(currentPosition.fixTime) }}</span>
         </div>
@@ -140,11 +156,6 @@ export default {
   },
   mounted: function() {
     Vue.$log.debug('mounted VehicleDetail ', this.device.name, this.device, this.feature)
-    this.updateImage(this)
-    // odd width popups are blurry on Chrome, this enforces even widths
-    if (Math.ceil(this.$el.clientWidth) % 2) {
-      this.$el.style.width = (Math.ceil(this.$el.clientWidth) + 1) + 'px'
-    }
   },
   methods: {
     formatLastUpdate(value) {
