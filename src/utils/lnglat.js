@@ -344,7 +344,10 @@ export function updateDevice(position, feature, device) {
   // moment is expensive so we cache this value
   position.fixDays = Vue.moment().diff(Vue.moment(device.lastUpdate), 'days')
   device.poi = findNearestPOI(position)
-  device.driver = findDriver(position, device)
+  const driver = findDriver(position, device)
+  if (position.attributes.ignition) { device.driver = driver } else if (!device.driver && device.attributes.lastDriverUniqueId) {
+    device.driver = store.getters.drivers.find(d => d.uniqueId === device.attributes.lastDriverUniqueId)
+  }
   const immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
   if (immobilized !== device.attributes.immobilized) {
     device.attributes.commandPending = false
