@@ -8,7 +8,7 @@
     "report": "vue-cli-service build --report",
     "build:capacitor": "vue-cli-service build --mode capacitor --dest dist && npx cap copy",
     "build:android:nogartel": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/localhost.png && ENVIRONMENT=android npx cap copy android",
-    "deploy:nogartel:android": "cd android && export LC_ALL=en_US.UTF-8 && export LANG=en_US.UTF-8 && fastlane deploy",
+    "deploy:nogartel:android": "npm run-script build:capacitor && cd android && export LC_ALL=en_US.UTF-8 && export LANG=en_US.UTF-8 && fastlane deploy",
     "deploy:nogartel:ios:beta": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/api.pinme.io.png && ENVIRONMENT=ios npx cap copy ios && cd ios/App && fastlane beta",
     "deploy:nogartel:ios:release": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/api.pinme.io.png && ENVIRONMENT=ios npx cap copy ios && cd ios/App && fastlane release",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
