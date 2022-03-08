@@ -1,6 +1,8 @@
 <template>
-  <div>
-    {{ name }}
+  <div style="text-align: center">
+    <span style="float:left; padding-left: 10px">
+      {{ name }}
+    </span><i class="fas fa-times fa-2x" style="color: gray" @click="toggleChanged"></i>
     <span style="font-style: italic; float: right">
       <span style="float:right; padding-left: 10px">
         <el-tag
@@ -21,7 +23,6 @@
         >
           <i class="fas fa-gas-pump" style="color: white"></i>
         </el-tag>
-        <i class="fas fa-times" style="color: gray" @click="toggleChanged"></i>
       </span>
     </span>
     <div style="padding-top: 5px; overflow: hidden; width:100%">
@@ -391,7 +392,7 @@ export default {
       Vue.$log.debug('events ', events)
       events.forEach(e => {
         const p = positions.find(p => p.id === e.positionId)
-        p.events ? p.events.push(e) : p.events = [e]
+        p && p.events ? p.events.push(e) : p.events = [e]
       })
     },
     async getTrips(from, to, positions) {
