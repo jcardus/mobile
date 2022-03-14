@@ -56,12 +56,12 @@ export default {
         axios.get('https://' + getBackendHost() + '/Prod/quicksight?username=' + this.user.email + '&userid=' + this.user.id)
           .then(json => {
             const containerDiv = document.getElementById('quicksightContainer')
-            let url = json.data.EmbedUrl
-            if (isMobile()) {
+            const url = json.data.EmbedUrl
+            /* if (isMobile()) {
               if (this.$device.iphone) {
                 url = url.replace('us-east-1.quicksight.aws.amazon.com', partner.getQuicksightHostName())
               }
-            }
+            }*/
             const locale = getLanguageI18n().replace('PT', 'BR').replace('CL', 'ES')
             this.$log.info('using locale', locale)
             const options = {
