@@ -46,3 +46,7 @@ export function forgotPassword() {
 export function signOut() {
   return auth('logout')
 }
+
+export function signUp() {
+  return auth('signup')
+}

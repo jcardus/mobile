@@ -75,6 +75,7 @@
           </f7-list>
           <f7-block></f7-block>
           <f7-list>
+            <f7-button v-if="platform !== 'ios'" :external="true" :href="signUp">{{ $t('login.register') }}</f7-button>
             <f7-button :external="true" :href="forgetPassword">{{ $t('login.forgotPassword') }}</f7-button>
           </f7-list>
           <f7-block-footer>
@@ -98,7 +99,7 @@ import * as partner from './utils/partner'
 import { mapGetters } from 'vuex'
 import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
-import { forgotPassword, getGoogleLogin } from './api'
+import { forgotPassword, getGoogleLogin, signUp } from './api'
 import * as event from './events'
 import AppleButton from '@/views/login/AppleButton'
 import { Capacitor } from '@capacitor/core'
@@ -120,6 +121,9 @@ export default {
   },
   computed: {
     ...mapGetters(['unreadItems', 'user', 'portrait']),
+    signUp() {
+      return signUp()
+    },
     hostname() {
       return window.location.hostname
     },
