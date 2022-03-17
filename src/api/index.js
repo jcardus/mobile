@@ -24,7 +24,7 @@ export function getServerHost() {
   if (hostName === 'localhost') {
     return 'api.pinme.io'
   }
-  if (hostName === 'plataforma.localizalia.com') {
+  if (hostName === 'plataforma.localizalia.com' || hostName === 'moviflotte.com') {
     return hostName
   }
   return 'ws.' + hostName
