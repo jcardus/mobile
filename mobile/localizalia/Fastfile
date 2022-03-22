@@ -26,7 +26,13 @@ platform :android do
       )
     gradle(
       task: 'bundle',
-      build_type: 'Release'
+      build_type: 'Release',
+      properties: {
+                  "android.injected.signing.store.file" => "/Users/Shared/keystore",
+                  "android.injected.signing.store.password" => "password",
+                  "android.injected.signing.key.alias" => "key0",
+                  "android.injected.signing.key.password" => "password",
+                }
     )
     upload_to_play_store(track: 'beta')
   end
