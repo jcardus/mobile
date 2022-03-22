@@ -20,6 +20,6 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export APP_NAME=Localizalia
 export PACKAGE_NAME=com.fleetmap.localizalia
-export VESION_NAME=$npm_package_version
+export VERSION_NAME=$npm_package_version
 
 
