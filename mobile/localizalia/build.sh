@@ -18,6 +18,8 @@ cd android
 fastlane add_plugin versioning_android
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-fastlane build
+export APP_NAME=Localizalia
+export PACKAGE_NAME=com.fleetmap.localizalia
+export VESION_NAME=$npm_package_version
 
 

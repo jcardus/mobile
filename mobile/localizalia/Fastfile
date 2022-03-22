@@ -25,7 +25,7 @@ platform :android do
         gradle_file: "app/build.gradle" # optional
       )
     gradle(
-      task: 'assemble',
+      task: 'bundle',
       build_type: 'Release'
     )
     upload_to_play_store(track: 'beta')
