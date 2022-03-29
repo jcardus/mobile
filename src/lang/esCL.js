@@ -22,7 +22,7 @@ export default {
     settings: 'Ajustes',
     duration: 'Duracción',
     nodata: 'no hay datos para el periodo seleccionado.',
-    alerts: 'Alertas'
+    alerts: 'Alarmas'
   },
   map: {
     geofence_create_title: 'Nueva geocerca',
@@ -129,6 +129,8 @@ export default {
     user_type_operator: 'Operador'
   },
   settings: {
+    vehicle_notes: 'Notas',
+    showFullDate: 'Mostrar fecha / hora de la última comunicacion',
     user_form_manage_devices: 'Permitir cambiar la configuración del los dispositivos',
     icons3d: 'Íconos 3D',
     showLabels: 'Mostrar nombre del vehículo',
@@ -148,7 +150,7 @@ export default {
     title: 'Configuraciones',
     route_history: 'Histórico de Rota',
     route_match: 'Rota na estrada',
-    view_speed_alerts: 'Mostrar alertas de velocidad',
+    view_speed_alerts: 'Mostrar alarmas de velocidad',
     use_route_speed_limit: 'Usar límites de velocidad de carreteras',
     use_vehicle_speed_limit: 'Usar limite de velocidad del vehículo',
     max_speed_threshold: 'Tolerância Máxima en Km/hr',
@@ -158,7 +160,7 @@ export default {
     form_confirm: 'Confirmar',
     form_save: 'Guardar',
     transfer_selected: 'Selected',
-    alerts: 'Alertas',
+    alerts: 'Alarmas',
     alerts_type: 'Tipo',
     alerts_notificators: 'Vias',
     alert_ignitionOff: 'Motor apagado',
@@ -456,7 +458,7 @@ export default {
     newVersion: 'Una nueva versión de esta aplicación está disponible. Haga clic aquí para actualizar.'
   },
   alerts: {
-    title: 'Alertas',
+    title: 'Alarmas',
     get_alerts: 'Obtener Notificaciones'
   }
 }
