@@ -418,9 +418,10 @@ export default {
     delete_geofence: 'Apagar'
   },
   report: {
+    validate_report: 'Por favor seleccione un informe',
     select_all: 'Todos',
     speeding: 'Excesos de Velocidad',
-    trip: 'Viajens',
+    trip: 'Viajes',
     zone: 'Zonas',
     location: 'Posiciones',
     events: 'Eventos',
