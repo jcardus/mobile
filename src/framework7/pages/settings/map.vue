@@ -13,15 +13,6 @@
     <f7-block-title style="font-size: 15px">{{ $t('settings.route_history') }}</f7-block-title>
     <f7-list no-hairlines-md>
       <f7-list-item>
-        {{ $t('settings.route_match') }}<f7-toggle :checked="matchRoutes" @change="saveMatchRoutes($event.target.checked)"></f7-toggle>
-      </f7-list-item>
-      <f7-list-item>
-        {{ $t('settings.icons3d') }}<f7-toggle
-          :checked="icons3d"
-          @change="changeSettings('vehicles3d', $event.target.checked)"
-        ></f7-toggle>
-      </f7-list-item>
-      <f7-list-item>
         {{ $t('settings.view_speed_alerts') }}<f7-toggle :checked="speedAlerts" @change="saveSpeedAlerts($event.target.checked)"></f7-toggle>
       </f7-list-item>
       <!-- Additional "radio" prop to enable radio list item -->
@@ -31,15 +22,6 @@
       <f7-list-item style="padding-left: 50px" :disabled="!speedAlerts">
         {{ $t('settings.use_vehicle_speed_limit') }}<f7-radio value="vehicle" :disabled="!speedAlerts" name="useRoadLimit" :checked="useRoadLimit === 'vehicle'" @change="changeMaxSpeedType($event.target.value)"></f7-radio>
       </f7-list-item>
-      <f7-list-input
-        style="padding-left: 50px"
-        :disabled="!speedAlerts"
-        :label="$t('settings.max_speed_threshold')"
-        type="number"
-        :value="speedThreshold"
-        min="0"
-        @input="changeSpeedThreshold($event.target.value)"
-      ></f7-list-input>
     </f7-list>
   </f7-page>
 </template>

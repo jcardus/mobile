@@ -157,6 +157,8 @@ export default {
     map: 'Map',
     about: 'About',
     logout: 'Logout',
+    allVehicles: 'Todos os veículos',
+    vehicle: 'Vehicle',
     vehicles: 'Vehicles',
     pois: 'POIs',
     geofences: 'Geofences',

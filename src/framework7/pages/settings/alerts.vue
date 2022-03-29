@@ -26,7 +26,7 @@
         :key="item.id"
         :title="$t('settings.alert_' + item.notification.type)"
         :subtitle="item.notification.notificators"
-        :after="item.notification.always ? 'Todos os veículos' : item.devices.length + ' veículos'"
+        :after="item.notification.always ? $t('settings.allVehicles') : `${item.devices.length} ${$t('settings.vehicle')}(s)`"
       />
     </f7-list>
   </f7-page>

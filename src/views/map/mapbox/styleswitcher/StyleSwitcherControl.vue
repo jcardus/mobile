@@ -10,10 +10,6 @@
       >
         {{ style.title }}
       </button>
-      <button :class="geofencesVisible?'active':''" @click="toggleGeofences">Geofences</button>
-      <button :class="lineGeofencesVisible?'active':''" @click="toggleLineGeofences">Line</button>
-      <button :class="poisVisible?'active':''" @click="togglePOIs">POIs</button>
-      <button :class="buildingsVisible?'active':''" @click="toggleBuildings">3D Buildings</button>
     </div>
   </div>
 </template>
@@ -32,31 +28,8 @@ export default {
       styles: [
         { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v10' },
         { title: 'Light', uri: 'mapbox://styles/mapbox/light-v9' },
-        { title: 'Outdoors', uri: 'mapbox://styles/mapbox/outdoors-v11' },
         { title: 'Satellite', uri: 'mapbox://styles/mapbox/satellite-streets-v11' },
-        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v11' },
-        { title: 'Here', uri: {
-          version: 8,
-          sources: {
-            'raster-tiles': {
-              'type': 'raster',
-              'tiles': [
-                'https://1.aerial.maps.ls.hereapi.com/maptile/2.1/maptile/newest/hybrid.day/{z}/{x}/{y}/256/png8?apiKey=M9EVFxoBeQ4saN3podRuIL7lV0pXQiUpCjbpWaZjUtw'
-              ],
-              'tileSize': 256
-            }
-          },
-          layers: [
-            {
-              'id': 'simple-tiles',
-              'type': 'raster',
-              'source': 'raster-tiles',
-              'minzoom': 0,
-              'maxzoom': 22
-            }
-          ],
-          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
-        }}
+        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v11' }
       ]
     }
   },
