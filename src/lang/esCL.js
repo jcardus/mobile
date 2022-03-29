@@ -418,7 +418,16 @@ export default {
     delete_geofence: 'Apagar'
   },
   report: {
-    selector_search: 'Procurar',
+    select_all: 'Todos',
+    speeding: 'Excesos de Velocidad',
+    trip: 'Viajens',
+    zone: 'Zonas',
+    location: 'Posiciones',
+    events: 'Eventos',
+    activity: 'Actividad',
+    kms: 'Kms Totales',
+    no_data: 'No hay datos.',
+    selector_search: 'Buscar',
     select_vehicles: 'Seleccionados',
     select_vehicles_placeholder: 'Vehículos',
     select_groups: 'Seleccionados',
@@ -430,7 +439,6 @@ export default {
     date_end: 'Fecha de fin',
     generate_report: 'Generar informe',
     period: 'Periodo',
-    select_all: 'Todos',
     validate_period: 'Por favor seleccione un periodo'
   },
   layout: {
