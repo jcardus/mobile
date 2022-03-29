@@ -1,7 +1,7 @@
 vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
 cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/localhost.png
-cp mobile/localizalia/resources/icon.png resources/icon.png
+cp -r mobile/localizalia/resources/* resources
 export ENVIRONMENT=android
 export APP_NAME=Localizalia
 export PACKAGE_NAME=com.fleetmap.localizalia

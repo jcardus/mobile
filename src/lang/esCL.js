@@ -418,6 +418,7 @@ export default {
     delete_geofence: 'Apagar'
   },
   report: {
+    close: 'Cerrar',
     validate_vehicles: 'Por favor seleccione los vehículos',
     validate_report: 'Por favor seleccione un informe',
     select_all: 'Todos',

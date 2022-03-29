@@ -2,7 +2,7 @@
   <f7-page>
     <f7-navbar title="Mensagens">
       <f7-nav-right>
-        <f7-link popup-close>Fechar</f7-link>
+        <f7-link popup-close>{{ $t(reports.close) }}</f7-link>
       </f7-nav-right>
     </f7-navbar>
 
