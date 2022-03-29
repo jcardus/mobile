@@ -10,6 +10,7 @@ echo "version code: $VERSION_CODE"
 npx cap add android
 npx cap sync android
 npx cap copy
+cordova-res android --skip-config --copy
 mkdir android/fastlane
 cp mobile/localizalia/google-services.json android/app/google-services.json
 cp mobile/google-secret.json android/google-secret.json
