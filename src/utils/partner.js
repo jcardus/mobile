@@ -31,7 +31,7 @@ export function getTitle() {
 }
 
 export function getOneSignalAppId() {
-  return getPartnerData(window.location.hostname).oneSignalAppId
+  return getPartnerData(window.location.hostname).appId
 }
 
 export function hasSVG() {

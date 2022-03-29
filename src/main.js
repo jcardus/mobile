@@ -112,7 +112,6 @@ if (!Capacitor.isNativePlatform()) {
     console.log('onesignal config', config)
     window.OneSignal.init(config)
   })
-
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       if (registrations.length === 0) {
