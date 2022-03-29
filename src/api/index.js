@@ -1,4 +1,5 @@
 import { awsConfig } from '@/amplify'
+import { newDomains } from 'fleetmap-partners'
 
 export function getGoogleRedirect() {
   return window.location.hostname === 'localhost' ? 'fleetmap.io' : window.location.hostname
@@ -24,7 +25,7 @@ export function getServerHost() {
   if (hostName === 'localhost') {
     return 'api.pinme.io'
   }
-  if (hostName === 'plataforma.localizalia.com' || hostName === 'moviflotte.com') {
+  if (newDomains.find(d => d === hostName)) {
     return hostName
   }
   return 'ws.' + hostName
