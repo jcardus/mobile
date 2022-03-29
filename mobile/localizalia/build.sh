@@ -1,5 +1,6 @@
 rm -rf ./android
 cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/localhost.png
+cp mobile/localizalia/resources/icon.png resources/icon.png
 export ENVIRONMENT=android
 export APP_NAME=Localizalia
 export PACKAGE_NAME=com.fleetmap.localizalia
@@ -18,8 +19,6 @@ cd android
 fastlane add_plugin versioning_android
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-export APP_NAME=Localizalia
 export PACKAGE_NAME=com.fleetmap.localizalia
-export VERSION_NAME=$npm_package_version
 
 
