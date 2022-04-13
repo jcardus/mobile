@@ -16,7 +16,7 @@ cp mobile/localizalia/google-services.json android/app/google-services.json
 cp mobile/google-secret.json android/google-secret.json
 cp mobile/localizalia/AppFile android/fastlane/AppFile
 cp mobile/localizalia/Fastfile android/fastlane/Fastfile
-cp mobile/keystore  /Users/Shared
+cp mobile/keystore /Users/Shared
 cd android
 fastlane add_plugin versioning_android
 fastlane install_plugins
