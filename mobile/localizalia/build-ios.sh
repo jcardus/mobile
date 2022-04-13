@@ -18,12 +18,15 @@ mkdir ios/App/fastlane
 cp mobile/localizalia/ios/* ios/App/fastlane
 cp mobile/*.mobileprovision ios/App
 cp mobile/localizalia/ios/*.plist ios/App/App
+cp mobile/localizalia/ios/*.rb ios/App
 cd ios/App
+gem install xcodeproj
+ruby addGooglePlist.rb
 
 echo "add_plugin versioning"
-fastlane add_plugin versioning
-fastlane install_plugins
-fastlane beta
+#fastlane add_plugin versioning
+#fastlane install_plugins
+#fastlane beta
 
 
 
