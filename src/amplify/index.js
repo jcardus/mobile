@@ -16,7 +16,7 @@ export const awsConfig = {
   aws_user_pools_id: partnerData.aws_user_pools_id,
   aws_user_pools_web_client_id: process.env.COGNITO_CLIENT_ID || partnerData.cognitoClientId,
   oauth: {
-    redirectSignIn: Capacitor.isNativePlatform() ? 'https://fleetmap.io/' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
+    redirectSignIn: Capacitor.isNativePlatform() ? process.env.REDIRECT_SIGNIN || 'https://fleetmap.io/' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
     domain: process.env.AUTH_DOMAIN || partnerData.oauth_domain,
     scope: [
