@@ -13,7 +13,8 @@
   </div>
 </template>
 <script>
-import { Auth } from '@aws-amplify/auth'
+import { Browser } from '@capacitor/browser'
+import { getGoogleLogin } from '@/amplify'
 
 export default {
   name: 'GoogleButton',
@@ -25,7 +26,7 @@ export default {
   },
   methods: {
     async click() {
-      console.log(await Auth.federatedSignIn({ provider: 'Google' }))
+      await Browser.open({ url: getGoogleLogin() })
     }
   }
 }

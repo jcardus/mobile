@@ -22,6 +22,7 @@ const name = defaultSettings.title || '' // page title
 const port = 8080
 console.log('process.env.NODE_ENV:', process.env.NODE_ENV)
 console.log('process.env.ENV:', process.env.ENV)
+console.log('process.env.COGNITO_CLIENT_ID', process.env.COGNITO_CLIENT_ID)
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   pwa: {
@@ -105,48 +106,37 @@ module.exports = {
     }
   },
   configureWebpack: () => {
-    const common = {
+    return {
       devtool: 'source-map',
       name: name,
+      externals: {
+        'element-ui': 'Element',
+        vue: 'Vue',
+        'mapbox-gl': 'mapboxgl'
+      },
       resolve: {
         alias: {
           '@': resolve('src')
         }
-      }
-    }
-    if (process.env.NODE_ENV === 'production') {
-      return {
-        ...common,
-        externals: {
-          'element-ui': 'Element',
-          vue: 'Vue',
-          'mapbox-gl': 'mapboxgl'
-        },
-        plugins: [
-          new webpack.DefinePlugin({
-            'process.mode': '"' + process.env.ENV + '"',
-            'process.env': {
-              PACKAGE_VERSION: '"' + version + '"' }}),
-          new ReplaceInFileWebpackPlugin([{
-            dir: 'dist',
-            files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js', 'index.html'],
-            rules: [{
-              search: /version/ig,
-              replace: version
-            }]
-          }]),
-          new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] })
-        ]
-      }
-    } else {
-      return {
-        ...common,
-        plugins: [
-          new webpack.DefinePlugin({
-            'process.env': {
-              PACKAGE_VERSION: '"' + version + '"' }})
-        ]
-      }
+      },
+      plugins: [
+        new webpack.DefinePlugin({
+          'process.mode': '"' + process.env.ENV + '"',
+          'process.env': {
+            COGNITO_CLIENT_ID: `"${process.env.COGNITO_CLIENT_ID}"`,
+            AUTH_DOMAIN: `"${process.env.AUTH_DOMAIN}"`,
+            PACKAGE_VERSION: '"' + version + '"'
+          }}),
+        new ReplaceInFileWebpackPlugin([{
+          dir: 'dist',
+          files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js', 'index.html'],
+          rules: [{
+            search: /version/ig,
+            replace: version
+          }]
+        }]),
+        new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] })
+      ]
     }
   },
   pages: {

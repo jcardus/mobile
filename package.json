@@ -15,6 +15,7 @@
     "deploy:nogartel:ios:beta": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/api.pinme.io.png && ENVIRONMENT=ios npx cap copy ios && cd ios/App && export VERSION_NAME=$npm_package_version && echo VN echo $VERSION_NAME && fastlane beta",
     "deploy:ios:localizalia:beta": "mobile/localizalia/build-ios.sh",
     "deploy:nogartel:ios:release": "vue-cli-service build --mode capacitor --dest dist && cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/api.pinme.io.png && ENVIRONMENT=ios npx cap copy ios && cd ios/App && fastlane release",
+    "deploy:moviflotte": "mobile/moviflotte/build.sh",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "lint": "eslint --ext .js,.vue src",
     "build:stage": "vue-cli-service build --mode staging",
