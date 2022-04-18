@@ -66,8 +66,8 @@
           </f7-list>
           <f7-list>
             <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
-            <google-button style="width:220px;margin:auto;"></google-button>
-            <f7-list-item>
+            <google-button v-if="socialSignIn" style="width:220px;margin:auto;"></google-button>
+            <f7-list-item v-if="socialSignIn">
               <f7-link style="margin:auto;">
                 <apple-button :width="220"></apple-button>
               </f7-link>
@@ -121,6 +121,9 @@ export default {
   },
   computed: {
     ...mapGetters(['unreadItems', 'user', 'portrait']),
+    socialSignIn() {
+      return false
+    },
     signUp() {
       return signUp()
     },

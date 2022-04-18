@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import { Auth } from '@aws-amplify/auth'
+import { Browser } from '@capacitor/browser'
+import { getGoogleLogin } from '@/amplify'
 
 export default {
   name: 'AppleButton',
@@ -35,8 +36,8 @@ export default {
     this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?height=40&width=220&locale=${this.browserLocale}`
   },
   methods: {
-    appleLogin() {
-      Auth.federatedSignIn({ provider: 'SignInWithApple' })
+    async appleLogin() {
+      await Browser.open({ url: getGoogleLogin() })
     }
   }
 }
