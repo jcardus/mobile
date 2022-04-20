@@ -141,6 +141,7 @@ export default {
         driver.attributes.phone = this.driverPhone
         driver.attributes.notes = this.driverNotes
         driver.uniqueId = this.uniqueId
+        delete driver.vehicle
         try {
           await traccar.updateDriver(driver.id, driver)
           this.$f7.dialog.alert(this.$t('settings.driver_updated'), this.$t('settings.driver_edit_title'))
