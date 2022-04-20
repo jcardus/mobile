@@ -15,6 +15,8 @@
 <script>
 import { Browser } from '@capacitor/browser'
 import { getGoogleLogin } from '@/amplify'
+import { Capacitor } from '@capacitor/core'
+import { Auth } from '@aws-amplify/auth'
 
 export default {
   name: 'GoogleButton',
@@ -26,7 +28,11 @@ export default {
   },
   methods: {
     async click() {
-      await Browser.open({ url: getGoogleLogin() })
+      if (Capacitor.isNativePlatform()) {
+        await Browser.open({ url: getGoogleLogin() })
+      } else {
+        await Auth.federatedSignIn({ provider: 'Google' })
+      }
     }
   }
 }
