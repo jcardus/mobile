@@ -122,7 +122,7 @@ export default {
   computed: {
     ...mapGetters(['unreadItems', 'user', 'portrait']),
     socialSignIn() {
-      return false
+      return process.env.SOCIAL_SIGN_IN
     },
     signUp() {
       return signUp()

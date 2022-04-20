@@ -126,6 +126,7 @@ module.exports = {
             COGNITO_CLIENT_ID: `"${process.env.COGNITO_CLIENT_ID}"`,
             AUTH_DOMAIN: `"${process.env.AUTH_DOMAIN}"`,
             REDIRECT_SIGNIN: `"${process.env.REDIRECT_SIGNIN}"`,
+            SOCIAL_SIGN_IN: `"${process.env.SOCIAL_SIGN_IN}"`,
             PACKAGE_VERSION: '"' + version + '"'
           }}),
         new ReplaceInFileWebpackPlugin([{
