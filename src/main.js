@@ -1,9 +1,5 @@
 import 'normalize.css/normalize.css'
 import Vue from 'vue'
-import ElementUI from 'element-ui'
-import localeEN from 'element-ui/lib/locale/lang/en'
-import localePT from 'element-ui/lib/locale/lang/pt'
-import localeES from 'element-ui/lib/locale/lang/es'
 import store from './store'
 import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
@@ -69,31 +65,19 @@ const options = {
 Vue.use(VueLogger, options)
 Vue.config.lang = getLanguage().slice(2)
 console.log('lang', Vue.config.lang)
-if (isProduction) {
-  switch (Vue.config.lang) {
-    case 'ES':
-      // eslint-disable-next-line no-undef
-      ELEMENT.locale(ELEMENT.lang.es)
-      break
-    case 'PT':
-      // eslint-disable-next-line no-undef
-      ELEMENT.locale(ELEMENT.lang.pt)
-      break
-    default:
-      // eslint-disable-next-line no-undef
-      ELEMENT.locale(ELEMENT.lang.en)
-  }
-} else {
-  switch (Vue.config.lang) {
-    case 'ES':
-      Vue.use(ElementUI, { locale: localeES })
-      break
-    case 'PT':
-      Vue.use(ElementUI, { locale: localePT })
-      break
-    default:
-      Vue.use(ElementUI, { locale: localeEN })
-  }
+
+switch (Vue.config.lang) {
+  case 'ES':
+    // eslint-disable-next-line no-undef
+    ELEMENT.locale(ELEMENT.lang.es)
+    break
+  case 'PT':
+    // eslint-disable-next-line no-undef
+    ELEMENT.locale(ELEMENT.lang.pt)
+    break
+  default:
+    // eslint-disable-next-line no-undef
+    ELEMENT.locale(ELEMENT.lang.en)
 }
 
 export const serverBus = new Vue()

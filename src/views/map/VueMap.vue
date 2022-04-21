@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import '@mapbox/mapbox-gl-traffic/mapbox-gl-traffic.css'

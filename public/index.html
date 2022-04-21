@@ -36,14 +36,13 @@
     <% } %>
     <link id="favicon" rel="icon" href="">
     <title id="title"></title>
-    <% if (process.env.NODE_ENV === 'production') {%>
-      <script src="https://unpkg.com/vue@2.6.12/dist/vue.min.js"></script>
-      <script src="https://unpkg.com/element-ui@2.14.1/lib/index.js"></script>
-      <script src="https://unpkg.com/element-ui@2.14.1/lib/umd/locale/en.js"></script>
-      <script src="https://unpkg.com/element-ui@2.14.1/lib/umd/locale/es.js"></script>
-      <script src="https://unpkg.com/element-ui@2.14.1/lib/umd/locale/pt.js"></script>
-      <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.js"></script>
-    <% } %>
+    <script src="https://unpkg.com/vue@2.6.12/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui@2.14.1/lib/index.js"></script>
+    <script src="https://unpkg.com/element-ui@2.14.1/lib/umd/locale/en.js"></script>
+    <script src="https://unpkg.com/element-ui@2.14.1/lib/umd/locale/es.js"></script>
+    <script src="https://unpkg.com/element-ui@2.14.1/lib/umd/locale/pt.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.js"></script>
     <script async src="https://kit.fontawesome.com/2418515d96.js"></script>
   </head>
   <noscript>
