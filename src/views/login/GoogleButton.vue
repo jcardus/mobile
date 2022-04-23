@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     async click() {
-      window.location.hrerf = getGoogleLogin()
+      window.location.href = getGoogleLogin()
     }
   }
 }
