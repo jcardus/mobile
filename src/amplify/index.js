@@ -39,7 +39,7 @@ function auth(action) {
 }
 
 export function getGoogleLogin() {
-  return auth('oauth2/authorize')
+  return auth('oauth2/authorize') + '&identity_provider=Google'
 }
 export function signUp() {
   return auth('signup')
