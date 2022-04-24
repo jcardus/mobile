@@ -7,5 +7,5 @@ cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/api.pinme.io.png
 npx cap copy ios
 cd ios/App
 export VERSION_NAME=$npm_package_version
-echo VN echo $VERSION_NAME
+echo VN $VERSION_NAME
 fastlane beta

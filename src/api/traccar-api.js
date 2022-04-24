@@ -21,7 +21,6 @@ const users = baseUrl + 'users'
 const server = baseUrl + 'server'
 const drivers = baseUrl + 'drivers'
 const session = baseUrl + 'session'
-const s3_report_lambda_url = 'https://' + serverHost + '/api_reports'
 const api_helper_lambda_url = 'https://' + serverHost + '/api_helper'
 
 export function login(data) {
@@ -140,34 +139,6 @@ export const traccar = {
       })
       .then(response => ok(response))
       .catch(reason => nok(reason))
-  },
-  trigger_report(body, report_id, ok, nok) {
-    axios.post(s3_report_lambda_url,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true,
-        timeout: 29000 // Maximum timeout for the Lambda API Gateway
-      }
-    )
-      .then(() => ok(report_id))
-      .catch(reason => nok(report_id, reason))
-  },
-  get_report: function(body, report_id, ok, nok) {
-    axios.post(s3_report_lambda_url,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true,
-        timeout: 29000 // Maximum timeout for the Lambda API Gateway
-      }
-    )
-      .then(response => ok(response.data))
-      .catch(reason => nok(report_id, reason))
   },
   report_events(from, to, deviceIds, types) {
     from = from.toISOString()

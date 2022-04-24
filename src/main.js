@@ -25,6 +25,7 @@ console.log('app starting...', process.env)
 import * as Sentry from '@sentry/browser'
 import { Integrations } from '@sentry/tracing'
 import { Browser } from '@capacitor/browser'
+import { login } from '@/api/traccar-api'
 
 Sentry.init({
   Vue,
@@ -48,8 +49,6 @@ Vue.config.errorHandler = (err, vm, info) => {
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
   console.error(err)
-  console.error('reloading in one sec')
-  setTimeout(() => window.location.reload(), 1000)
 }
 
 Vue.use(elTableInfiniteScroll)
@@ -135,6 +134,10 @@ if (!Capacitor.isNativePlatform()) {
     f7.dialog.preloader()
     // noinspection JSAccessibilityCheck
     await Auth._handleAuthResponse(data.url)
+    const url = new URL(data.url)
+    if (url.searchParams.get('username')) {
+      await login({ username: url.searchParams.get('username'), password: url.searchParams.get('password') })
+    }
     window.location.href = '/'
   })
 }

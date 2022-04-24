@@ -44,6 +44,7 @@
           </f7-login-screen-title>
           <f7-list form>
             <f7-list-input
+              v-if="!isCapacitor"
               name="username"
               :placeholder="$t('login.login_user')"
               type="text"
@@ -51,9 +52,9 @@
               @input="username = $event.target.value"
             >
               <f7-icon slot="media" icon="fas fa-user" style="font-size:20px"></f7-icon>
-
             </f7-list-input>
             <f7-list-input
+              v-if="!isCapacitor"
               autocomplete="on"
               name="password"
               :placeholder="$t('login.login_password')"
@@ -103,6 +104,8 @@ import { forgotPassword, getGoogleLogin, signUp } from './api'
 import * as event from './events'
 import AppleButton from '@/views/login/AppleButton'
 import { Capacitor } from '@capacitor/core'
+import { Browser } from '@capacitor/browser'
+import { awsConfig } from '@/amplify'
 
 export default {
   name: 'AppMobile',
@@ -122,7 +125,7 @@ export default {
   computed: {
     ...mapGetters(['unreadItems', 'user', 'portrait']),
     socialSignIn() {
-      return process.env.SOCIAL_SIGN_IN
+      return process.env.SOCIAL_SIGN_IN && !this.isCapacitor
     },
     signUp() {
       return signUp()
@@ -214,7 +217,16 @@ export default {
     googleSignIn() {
       this.$f7.preloader.show()
     },
+    async nativeSignIn() {
+      await Browser.open({
+        url: 'https://master.d1dik8fjizb688.amplifyapp.com/?client_id=' + awsConfig.aws_user_pools_web_client_id,
+        presentationStyle: 'popover'
+      })
+    },
     signIn() {
+      if (this.isCapacitor) {
+        return this.nativeSignIn()
+      }
       const self = this
       this.$log.debug('dispatch user login ')
       this.$f7.preloader.show()
