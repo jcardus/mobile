@@ -64,7 +64,9 @@ export function formatDate(v) {
 }
 
 export function formatAddress(v) {
-  return (sharedData.getPositions() && sharedData.getPositions()[v]) ? sharedData.getPositions()[v].address : ''
+  return (sharedData.getPositions() && sharedData.getPositions()[v])
+    ? sharedData.getPositions()[v].address && sharedData.getPositions()[v].address.replace('&\#39;', '\'')
+    : ''
 }
 
 export function calculateTimeHHMM(idleSeconds) {

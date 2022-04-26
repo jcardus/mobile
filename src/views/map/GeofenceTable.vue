@@ -47,7 +47,7 @@
         :height="height"
         @current-change="poiSelected"
       >
-        <el-table-column label="" width="40">
+        <el-table-column label="" width="50">
           <template slot-scope="scope">
             <i v-if="!(getType(scope.row)==='poi')" :style="'color: '+(scope.row.attributes.color ? scope.row.attributes.color : '#3232b4')" :class="geofenceImageType(scope.row)"></i>
             <img v-if="getType(scope.row)==='poi'" :src="'/img/icons/pois/' +(scope.row.attributes.icon ? scope.row.attributes.icon : 'marker')+'-blue.svg'" alt="">
@@ -107,7 +107,7 @@ export default {
       return 'calc(100vh - ' + styles.vehicleListHeaderHeight + ')'
     },
     geofences: function() {
-      return this.user && this.user.geofences && this.user.geofences.filter(g => g &&
+      return this.$store.getters.geofences && this.$store.getters.geofences.filter(g => g &&
           (
             (g.area.startsWith('POLYGON') && this.showGeofenceLayer) ||
             (g.area.startsWith('CIRCLE') && this.showPOIsLayer) ||
