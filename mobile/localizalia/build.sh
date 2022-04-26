@@ -1,4 +1,4 @@
-#vue-cli-service build --mode capacitor --dest dist
+vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
 cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/localhost.png
 mkdir resources
@@ -10,6 +10,8 @@ export VERSION_NAME=$npm_package_version
 export VERSION_CODE=${VERSION_NAME//./}000000
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export COGNITO_CLIENT_ID=6udglokm8muv3j06tnledmo0ki
+export AUTH_DOMAIN=auth.localizalia.com
 echo "version code:" $VERSION_CODE
 
 npx cap add android
@@ -22,6 +24,7 @@ cp mobile/google-secret.json android/google-secret.json
 cp mobile/localizalia/AppFile android/fastlane/AppFile
 cp mobile/localizalia/Fastfile android/fastlane/Fastfile
 cp mobile/keystore /Users/Shared
+cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
 cd android
 fastlane add_plugin versioning_android
 fastlane install_plugins
