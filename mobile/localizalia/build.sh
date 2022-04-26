@@ -1,12 +1,17 @@
-vue-cli-service build --mode capacitor --dest dist
+#vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
 cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/localhost.png
+mkdir resources
 cp -r mobile/localizalia/resources/* resources
 export ENVIRONMENT=android
 export APP_NAME=Localizalia
 export PACKAGE_NAME=com.fleetmap.localizalia
-export VERSION_CODE=$npm_package_version
-echo "version code: $VERSION_CODE"
+export VERSION_NAME=$npm_package_version
+export VERSION_CODE=${VERSION_NAME//./}000000
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+echo "version code:" $VERSION_CODE
+
 npx cap add android
 npx cap sync android
 npx cap copy
@@ -20,8 +25,6 @@ cp mobile/keystore /Users/Shared
 cd android
 fastlane add_plugin versioning_android
 fastlane install_plugins
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export PACKAGE_NAME=com.fleetmap.localizalia
+fastlane beta
 
 
