@@ -3,6 +3,7 @@ version: 0.2
 phases:
   build:
     commands:
+      - sudo apt install android-sdk
       - aws s3api get-object --bucket secrets-fleetmap --key google-secret.json mobile/google-secret.json
       - npm install
       - npm run-script deploy:android:localizalia
