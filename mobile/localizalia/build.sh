@@ -8,7 +8,7 @@ export VERSION_CODE=${VERSION_NAME//./}000000
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-vue-cli-service build --mode capacitor --dest dist
+#vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
 cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/localhost.png
 mkdir resources
@@ -26,9 +26,13 @@ cp mobile/google-secret.json android/google-secret.json
 cp mobile/localizalia/AppFile android/fastlane/AppFile
 cp mobile/localizalia/Fastfile android/fastlane/Fastfile
 cp mobile/keystore /Users/Shared
-cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+cp mobile/Gemfile* android
+cp mobile/fastlane/* android/fastlane
+#cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
 cd android
-fastlane add_plugin versioning_android
+echo "fastlane add_plugin versioning_android"
+#fastlane add_plugin versioning_android
+echo "fastlane install_plugins"
 fastlane install_plugins
 fastlane beta
 
