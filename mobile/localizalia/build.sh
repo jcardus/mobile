@@ -8,7 +8,7 @@ export VERSION_CODE=${VERSION_NAME//./}00000
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-#vue-cli-service build --mode capacitor --dest dist
+vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
 cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/localhost.png
 mkdir resources
@@ -33,7 +33,7 @@ cd android
 echo "fastlane add_plugin versioning_android"
 #fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
-fastlane install_plugins
-fastlane beta
+bundle exec fastlane install_plugins
+bundle exec fastlane beta
 
 

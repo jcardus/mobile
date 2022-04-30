@@ -3,9 +3,9 @@ version: 0.2
 phases:
   build:
     commands:
-      - npm install
       - gem install bundler
       - bundle install
+      - npm install
       - npm run-script deploy:android:localizalia
       - chmod +x ./gradlew
       - ./gradlew assembleDebug
