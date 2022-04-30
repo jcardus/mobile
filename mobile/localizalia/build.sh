@@ -30,6 +30,8 @@ cp mobile/Gemfile* android
 cp mobile/fastlane/* android/fastlane
 cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
 cd android
+echo "bundle exec fastlane update"
+bundle exec fastlane update
 echo "fastlane add_plugin versioning_android"
 bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
