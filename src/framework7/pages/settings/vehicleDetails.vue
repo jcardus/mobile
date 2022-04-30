@@ -7,7 +7,7 @@
         type="text"
         :value="vehicleName"
         clear-button
-        @input="vehicleName = $event.target"
+        @input="vehicleName = $event.target.value"
       >
       </f7-list-input>
       <f7-list-input
