@@ -3,7 +3,8 @@ version: 0.2
 phases:
   build:
     commands:
-      - cd android
+      - npm install
+      - npm run-script deploy:android:localizalia
       - chmod +x ./gradlew
       - ./gradlew assembleDebug
 artifacts:
