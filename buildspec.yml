@@ -14,6 +14,9 @@ phases:
       - sudo mv android-sdk-linux /opt/
       - export ANDROID_HOME=/opt/android-sdk-linux
       - export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+      - mkdir $ANDROID_HOME/licenses
+      - echo 24333f8a63b6825ea9c5514f83c2829b004d1fee > $ANDROID_HOME/licenses/android-sdk-license
+      - /opt/android-sdk-linux/tools/android update sdk --no-ui
   build:
     commands:
       - npm install
