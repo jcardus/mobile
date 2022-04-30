@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Install started on `date`
       - aws s3api get-object --bucket secrets-fleetmap --key google-secret.json mobile/google-secret.json
-      - aws s3api get-object --bucket keystore --key google-secret.json mobile/keystore
+      - aws s3api get-object --bucket secrets-fleetmap --key keystore mobile/keystore
   pre_build:
     commands:
       - echo Pre Build started on `date`
