@@ -17,8 +17,6 @@ phases:
       - aws s3api get-object --bucket secrets-fleetmap --key google-secret.json mobile/google-secret.json
       - npm install
       - npm run-script deploy:android:localizalia
-      - chmod +x ./gradlew
-      - ./gradlew assembleDebug
 artifacts:
   files:
     - './android/app/build/outputs/**/*.apk'
