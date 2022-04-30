@@ -1,0 +1,8 @@
+{
+	"appId": "com.fleetmap.localizalia",
+	"appName": "Localizalia",
+	"webDir": "dist",
+	"server": {
+		"hostname": "localhost"
+	}
+}
