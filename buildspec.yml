@@ -4,6 +4,7 @@ phases:
   install:
     commands:
       - echo Install started on `date`
+      - aws s3api get-object --bucket secrets-fleetmap --key google-secret.json mobile/google-secret.json
   pre_build:
     commands:
       - echo Pre Build started on `date`
@@ -14,7 +15,6 @@ phases:
       - export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
   build:
     commands:
-      - aws s3api get-object --bucket secrets-fleetmap --key google-secret.json mobile/google-secret.json
       - npm install
       - npm run-script deploy:android:localizalia
 artifacts:
