@@ -129,7 +129,9 @@ if (!Capacitor.isNativePlatform()) {
 } else {
   Vue.$log.info('listening for appUrlOpen')
   App.addListener('appUrlOpen', async(data) => {
-    await Browser.close()
+    if (Capacitor.getPlatform() === 'ios') {
+      await Browser.close()
+    }
     Vue.$log.info('appUrlOpen', data)
     f7.dialog.preloader()
     // noinspection JSAccessibilityCheck
