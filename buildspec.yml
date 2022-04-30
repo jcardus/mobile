@@ -5,6 +5,7 @@ phases:
     commands:
       - npm install
       - gem install bundler
+      - bundle install
       - npm run-script deploy:android:localizalia
       - chmod +x ./gradlew
       - ./gradlew assembleDebug
