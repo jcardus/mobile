@@ -27,6 +27,7 @@ phases:
       - mobile/fastlane.sh
       - cd android
       - fastlane beta
+      - fastlane device_farm
 artifacts:
   files:
     - './android/app/build/outputs/apk/debug/app-debug.apk'
