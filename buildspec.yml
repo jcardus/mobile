@@ -19,7 +19,7 @@ phases:
   build:
     commands:
       - npm install
-      - bash mobile/localizalia/build.sh
+      - npm run-script deploy:android:nogartel
 artifacts:
   files:
     - './android/app/build/outputs/bundle/release/app-release.aab'

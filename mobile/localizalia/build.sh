@@ -25,13 +25,14 @@ cp mobile/localizalia/google-services.json android/app/google-services.json
 cp mobile/google-secret.json /etc/google-secret.json
 echo "copy AppFile"
 cp mobile/localizalia/AppFile android/fastlane/AppFile
-ls android/fastlane
+cat android/fastlane/AppFile
 cp mobile/localizalia/Fastfile android/fastlane/Fastfile
 echo "copy key store"
 cp mobile/keystore /etc/keystore
 cp mobile/Gemfile* android
 cp mobile/fastlane/* android/fastlane
 cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+ls android/fastlane
 cd android
 
 gem install bundler
