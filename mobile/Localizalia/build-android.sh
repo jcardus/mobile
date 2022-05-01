@@ -7,3 +7,5 @@ export HOST_NAME=plataforma.localizalia.com
 
 mobile/build-android.sh
 mobile/fastlane.sh
+bundle exec fastlane beta
+bundle exec fastlane device_farm
