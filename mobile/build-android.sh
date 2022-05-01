@@ -7,7 +7,7 @@ vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
 cp dist/img/logos/$HOST_NAME.png dist/img/logos/localhost.png
 mkdir resources
-cp -r mobile/$PACKAGE_NAME/resources/* resources
+cp -r mobile/$APP_NAME/resources/* resources
 
 echo "version code:" $VERSION_CODE
 
@@ -16,15 +16,17 @@ npx cap sync android
 npx cap copy
 cordova-res android --skip-config --copy
 mkdir android/fastlane
-cp mobile/localizalia/google-services.json android/app/google-services.json
+cp mobile/$APP_NAME/google-services.json android/app/google-services.json
 echo "copy google-secret"
 cp mobile/google-secret.json android
 cat /android/google-secret.json
 echo "copy key store"
 cp mobile/keystore /etc/keystore
 cp mobile/Gemfile* android
-cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
-ls android/fastlane
+cp mobile/$APP_NAME/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+sed -i 's/PACKAGE_NAME/$PACKAGE_NAME/' android/app/src/main/AndroidManifest.xml
+echo "android manifest:"
+cat android/app/src/main/AndroidManifest.xml
 cd android || exit
 
 gem install bundler
