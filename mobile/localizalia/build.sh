@@ -23,7 +23,9 @@ cordova-res android --skip-config --copy
 mkdir android/fastlane
 cp mobile/localizalia/google-services.json android/app/google-services.json
 cp mobile/google-secret.json /etc/google-secret.json
+echo "copy AppFile"
 cp mobile/localizalia/AppFile android/fastlane/AppFile
+ls android/fastlane
 cp mobile/localizalia/Fastfile android/fastlane/Fastfile
 echo "copy key store"
 cp mobile/keystore /etc/keystore
