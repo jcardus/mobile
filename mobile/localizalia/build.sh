@@ -39,11 +39,10 @@ bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
 bundle exec fastlane install_plugins
 echo "copy AppFile"
-cp ../mobile/localizalia/Fastfile fastlane
+cp ../mobile/Fastfile fastlane
 echo "json_key_file(\"google-secret.json\")" >> fastlane/Appfile
 echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
 echo "Appfile"
-cat fastlane/Appfile
 cat fastlane/Appfile
 bundle exec fastlane beta
 
