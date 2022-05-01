@@ -26,6 +26,8 @@ phases:
       - npm run-script deploy:android:localizalia
       - cd android
       - ./gradlew assembleDebug
+      - ../mobile/fastlane.sh
+      - fastlane beta
 artifacts:
   files:
     - './android/app/build/outputs/apk/debug/app-debug.apk'

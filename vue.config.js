@@ -127,6 +127,7 @@ module.exports = {
             AUTH_DOMAIN: `"${process.env.AUTH_DOMAIN}"`,
             REDIRECT_SIGNIN: `"${process.env.REDIRECT_SIGNIN}"`,
             SOCIAL_SIGN_IN: `"${process.env.SOCIAL_SIGN_IN}"`,
+            USER_POOL_ID: `"${process.env.USER_POOL_ID}"`,
             PACKAGE_VERSION: '"' + version + '"'
           }}),
         new ReplaceInFileWebpackPlugin([{

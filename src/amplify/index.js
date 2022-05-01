@@ -13,7 +13,7 @@ export const awsConfig = {
   aws_project_region: 'us-east-1',
   aws_cognito_identity_pool_id: 'us-east-1:b886ef89-6a90-4903-96fc-25af82fc629a',
   aws_cognito_region: 'us-east-1',
-  aws_user_pools_id: partnerData.aws_user_pools_id,
+  aws_user_pools_id: Capacitor.isNativePlatform() ? process.env.USER_POOL_ID : partnerData.aws_user_pools_id,
   aws_user_pools_web_client_id: Capacitor.isNativePlatform() ? process.env.COGNITO_CLIENT_ID : partnerData.cognitoClientId,
   oauth: {
     redirectSignIn: Capacitor.isNativePlatform() ? 'https://fleetmap.io/' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
