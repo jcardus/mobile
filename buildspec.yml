@@ -19,8 +19,8 @@ phases:
   build:
     commands:
       - npm install
-      - npm run-script deploy:android:localizalia
+      - bash mobile/localizalia/build.sh
 artifacts:
   files:
-    - './android/app/build/outputs/**/*.apk'
+    - './android/app/build/outputs/**/*.aab'
   discard-paths: yes
