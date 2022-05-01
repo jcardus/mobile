@@ -18,6 +18,7 @@
 
 import { vm } from '@/main'
 import { mapGetters } from 'vuex'
+import { getPartnerData } from 'fleetmap-partners'
 
 export default {
   name: 'StyleSwitcherControl',
@@ -42,6 +43,77 @@ export default {
     buildingsVisible() { return vm.$store.state.map.show3dBuildings }
   },
   mounted() {
+    if (getPartnerData(window.location.hostname).googleMap) {
+      this.styles = this.styles.concat([
+        { title: 'Google', uri: {
+          version: 8,
+          sources: {
+            'raster-tiles': {
+              'type': 'raster',
+              'tiles': [
+                `https://mt0.google.com/vt/lyrs=m&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
+                // 'https://mts1.google.com/vt/lyrs=s@186112443&hl=x-local&src=app&x={x}&y={y}&z={z}&s=Galile'
+              ],
+              'tileSize': 256
+            }
+          },
+          layers: [
+            {
+              'id': 'simple-tiles',
+              'type': 'raster',
+              'source': 'raster-tiles',
+              'minzoom': 0,
+              'maxzoom': 22
+            }
+          ],
+          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
+        }},
+        { title: 'Google Satellite', uri: {
+          version: 8,
+          sources: {
+            'raster-tiles': {
+              'type': 'raster',
+              'tiles': [
+                `https://mt0.google.com/vt/lyrs=s&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
+              ],
+              'tileSize': 256
+            }
+          },
+          layers: [
+            {
+              'id': 'simple-tiles',
+              'type': 'raster',
+              'source': 'raster-tiles',
+              'minzoom': 0,
+              'maxzoom': 22
+            }
+          ],
+          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
+        }},
+        { title: 'Google Hybrid', uri: {
+          version: 8,
+          sources: {
+            'raster-tiles': {
+              'type': 'raster',
+              'tiles': [
+                `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
+              ],
+              'tileSize': 256
+            }
+          },
+          layers: [
+            {
+              'id': 'simple-tiles',
+              'type': 'raster',
+              'source': 'raster-tiles',
+              'minzoom': 0,
+              'maxzoom': 22
+            }
+          ],
+          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
+        }}
+      ])
+    }
     document.addEventListener('click', event => {
       if (this.$refs.controlContainer.contains(event.target)) {
         this.btnVisible = true
