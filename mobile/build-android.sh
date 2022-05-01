@@ -8,6 +8,7 @@ export ENVIRONMENT=android
 vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
 cp dist/img/logos/$HOST_NAME.png dist/img/logos/localhost.png
+rm -rf resources
 mkdir resources
 cp -r mobile/$APP_NAME/resources/* resources
 
@@ -25,7 +26,7 @@ echo "copy key store"
 cp mobile/keystore /etc/keystore
 cp mobile/Gemfile* android
 echo sed "$PACKAGE_NAME"
-sed "s/PACKAGE_NAME/$PACKAGE_NAME/" mobile/AndroidManifest.xml > android/app/src/main/AndroidManifest.xml
+sed "s/PACKAGE_NAME/$PACKAGE_NAME/g" mobile/AndroidManifest.xml > android/app/src/main/AndroidManifest.xml
 echo "android manifest:"
 cat android/app/src/main/AndroidManifest.xml
 cd android || exit
