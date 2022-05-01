@@ -21,6 +21,6 @@ phases:
       - npm install
       - bash mobile/localizalia/build.sh
 artifacts:
-  file:
+  files:
     - './android/app/build/outputs/bundle/release/app-release.aab'
   discard-paths: yes
