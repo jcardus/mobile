@@ -21,7 +21,6 @@ mkdir android/fastlane
 cp mobile/$APP_NAME/google-services.json android/app/google-services.json
 echo "copy google-secret"
 cp mobile/google-secret.json android
-cat /android/google-secret.json
 echo "copy key store"
 cp mobile/keystore /etc/keystore
 cp mobile/Gemfile* android
