@@ -24,6 +24,7 @@ phases:
     commands:
       - npm install
       - npm run-script deploy:android:localizalia
+      - chmod +x mobile/fastlane.sh
       - mobile/fastlane.sh
       - cd android
       - fastlane beta
