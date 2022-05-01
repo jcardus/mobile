@@ -19,6 +19,27 @@ const green = ['==', ['get', 'color'], 'green']
 const yellow = ['==', ['get', 'color'], 'yellow']
 const red = ['==', ['get', 'color'], 'red']
 
+export const cdnUrl = 'https://d2alv66jwtleln.cloudfront.net'
+export const spriteUrl = cdnUrl + '/sprite/14/sprite'
+export const vehIconsUrl = cdnUrl + '/vehIcons'
+
+const imagesLoading = {}
+export function addVehicleImage(imageName) {
+  if (!imagesLoading[imageName]) {
+    imagesLoading[imageName] = true
+    vm.$static.map.loadImage(vehIconsUrl + `/${imageName}.png`, function(error, image) {
+      if (error) {
+        imagesLoading[imageName] = false
+        throw error
+      }
+      if (!vm.$static.map.hasImage(imageName)) {
+        vm.$static.map.addImage(imageName, image)
+      }
+      imagesLoading[imageName] = false
+    })
+  }
+}
+
 export function centerVehicle(feature) {
   vm.$static.map.flyTo({
     essential: true,

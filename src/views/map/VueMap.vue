@@ -655,19 +655,11 @@ export default {
         case 'helicopter':
         case 'bicycle':
         case 'person':
-        case 'boat':
         case 'tractor':
-        case 'bus':
-          return 'arrow'
         case '':
-        case 'car':
-        case 'van':
-        case 'pickup':
-          return 'default'
-        case 'truck':
-          return 'truck'
-        default:
           return 'arrow'
+        default:
+          return category
       }
     },
     positionToFeature(position, device) {
@@ -867,10 +859,17 @@ export default {
     },
     styleImageMissing(e) {
       const imageName = e.id
-      lnglat.addImageToMap(
-        imageName.slice(0, imageName.length - 6),
-        hexToRgb(imageName.slice(imageName.length - 6, imageName.length)),
-        imageName)
+      if (imageName.startsWith('red') ||
+        imageName.startsWith('yellow') ||
+        imageName.startsWith('gray') ||
+        imageName.startsWith('green')) {
+        lnglat.addVehicleImage(imageName)
+      } else {
+        lnglat.addImageToMap(
+          imageName.slice(0, imageName.length - 6),
+          hexToRgb(imageName.slice(imageName.length - 6, imageName.length)),
+          imageName)
+      }
     },
     animateTo(feature, position) {
       const line = [feature.geometry.coordinates, [position.longitude, position.latitude]]
