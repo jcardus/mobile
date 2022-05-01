@@ -25,7 +25,7 @@ phases:
       - npm install
       - npm run-script deploy:android:localizalia
       - cd android
-      - bundle exec fastlane device_farm
+      - ./gradlew assembleRelease
 artifacts:
   files:
     - './android/app/build/outputs/apk/release/app-release-unsigned.apk'
