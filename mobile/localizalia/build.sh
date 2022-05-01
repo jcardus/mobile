@@ -45,6 +45,8 @@ echo "fastlane add_plugin versioning_android"
 bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
 bundle exec fastlane install_plugins
+echo "appfile"
+cat fastlane/Appfile
 bundle exec fastlane beta
 
 
