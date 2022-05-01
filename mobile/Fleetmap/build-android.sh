@@ -6,4 +6,3 @@ export PACKAGE_NAME=com.fleetmap.manager
 export HOST_NAME=fleetmap.io
 
 mobile/build-android.sh
-mobile/fastlane.sh
