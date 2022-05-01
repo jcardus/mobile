@@ -1,6 +1,6 @@
 export VERSION_NAME=$npm_package_version
 #2097 000000
-export VERSION_CODE=${VERSION_NAME//./}000000
+export VERSION_CODE=210000${VERSION_NAME//./}
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export ENVIRONMENT=android
