@@ -30,7 +30,7 @@ cp mobile/keystore /etc/keystore
 cp mobile/Gemfile* android
 cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
 ls android/fastlane
-cd android
+cd android || exit
 
 gem install bundler
 bundle install
@@ -39,9 +39,11 @@ bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
 bundle exec fastlane install_plugins
 echo "copy AppFile"
-cp ../mobile/localizalia/AppFile fastlane
 cp ../mobile/localizalia/Fastfile fastlane
+echo "json_key_file(\"google-secret.json\")" >> fastlane/Appfile
+echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
 echo "Appfile"
+cat fastlane/Appfile
 cat fastlane/Appfile
 bundle exec fastlane beta
 
