@@ -28,6 +28,26 @@ echo sed "$PACKAGE_NAME"
 sed "s/PACKAGE_NAME/$PACKAGE_NAME/" mobile/AndroidManifest.xml > android/app/src/main/AndroidManifest.xml
 echo "android manifest:"
 cat android/app/src/main/AndroidManifest.xml
+cd android || exit
 
+gem install bundler
+bundle install
+echo "fastlane add_plugin versioning_android"
+bundle exec fastlane add_plugin versioning_android
+echo "fastlane install_plugins"
+bundle exec fastlane install_plugins
+echo "fastlane after plugins"
+ls fastlane
+echo "copy fastlane"
+cp ../mobile/Fastfile fastlane
+echo "fastlane dir"
+ls fastlane
+cat ../mobile/Fastfile
+echo "json_key_file(\"google-secret.json\")" >> fastlane/Appfile
+echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
+echo "Appfile"
+cat fastlane/Appfile
+bundle exec fastlane beta
+bundle exec fastlane device_farm
 
 
