@@ -26,8 +26,8 @@ phases:
       - npm install
       - npm run-script deploy:android:localizalia
       - cd android
-      - fastlane beta
-      - fastlane device_farm
+      - bundle exec fastlane beta
+      - bundle exec fastlane device_farm
 artifacts:
   files:
     - './android/app/build/outputs/apk/debug/app-debug.apk'
