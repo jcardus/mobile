@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Localizalia</string>
-    <string name="title_activity_main">Localizalia</string>
-    <string name="package_name">com.fleetmap.localizalia</string>
-    <string name="custom_url_scheme">com.fleetmap.localizalia</string>
-</resources>
