@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.10.3",
+  "version": "2.10.4",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -12,6 +12,7 @@
     "deploy:android:nogartel": "mobile/nogartel/build.sh",
     "deploy:nogartel:ios:beta": "mobile/nogartel.sh",
     "deploy:android": "bash mobile/build-android.sh",
+    "deploy:android:fleetmap": "bash mobile/Fleetmap/build-android.sh",
     "deploy:ios:localizalia:beta": "mobile/Localizalia/build-ios.sh",
     "deploy:moviflotte": "mobile/moviflotte/build.sh",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
