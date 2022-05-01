@@ -6,3 +6,4 @@ export PACKAGE_NAME=com.fleetmap.localizalia
 export HOST_NAME=plataforma.localizalia.com
 
 mobile/build-android.sh
+mobile/fastlane.sh
