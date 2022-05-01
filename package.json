@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "3.0.2",
+  "version": "2.1.00",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
