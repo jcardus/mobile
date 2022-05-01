@@ -24,7 +24,6 @@ phases:
     commands:
       - npm install
       - npm run-script deploy:android:localizalia
-      - cd android
 
 artifacts:
   files:
