@@ -23,8 +23,8 @@ cordova-res android --skip-config --copy
 mkdir android/fastlane
 cp mobile/localizalia/google-services.json android/app/google-services.json
 echo "copy google-secret"
-cp mobile/google-secret.json /etc/google-secret.json
-cat /etc/google-secret.json
+cp mobile/google-secret.json android
+cat /android/google-secret.json
 echo "copy AppFile"
 cp mobile/localizalia/AppFile android/fastlane/AppFile
 cat android/fastlane/AppFile
@@ -39,8 +39,8 @@ cd android
 
 gem install bundler
 bundle install
-escho "You can use fastlane run validate_play_store_json_key json_key:/path/to/your/downloaded/file.json"
-bundle exec fastlane run validate_play_store_json_key json_key:/etc/google-secret.json
+escho "validate json_key"
+bundle exec fastlane run validate_play_store_json_key json_key:google-secret.json
 echo "fastlane add_plugin versioning_android"
 bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
