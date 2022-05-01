@@ -48,5 +48,6 @@ echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
 echo "Appfile"
 cat fastlane/Appfile
 bundle exec fastlane beta
+bundle exec fastlane device_farm
 
 
