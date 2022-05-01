@@ -39,11 +39,12 @@ cd android
 
 gem install bundler
 bundle install
+escho "You can use fastlane run validate_play_store_json_key json_key:/path/to/your/downloaded/file.json"
+bundle exec fastlane run validate_play_store_json_key json_key:/etc/google-secret.json
 echo "fastlane add_plugin versioning_android"
 bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
 bundle exec fastlane install_plugins
-bundle exec fastlane supply init
 bundle exec fastlane beta
 
 
