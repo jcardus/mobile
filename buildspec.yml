@@ -2,6 +2,8 @@ version: 0.2
 env:
   variables:
     LC_ALL: "en_US.UTF-8"
+  exported-variables:
+    - LC_ALL
 phases:
   install:
     commands:
