@@ -1,4 +1,5 @@
 export VERSION_NAME=$npm_package_version
+#20970 00000
 export VERSION_CODE=${VERSION_NAME//./}00000
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
