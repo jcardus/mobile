@@ -3,6 +3,7 @@ export VERSION_NAME=$npm_package_version
 export VERSION_CODE=${VERSION_NAME//./}00000
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export ENVIRONMENT=android
 
 vue-cli-service build --mode capacitor --dest dist
 rm -rf ./android
