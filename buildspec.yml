@@ -24,9 +24,8 @@ phases:
     commands:
       - npm install
       - npm run-script deploy:android:localizalia
+      - mobile/fastlane.sh
       - cd android
-      - ./gradlew assembleDebug
-      - ../mobile/fastlane.sh
       - fastlane beta
 artifacts:
   files:
