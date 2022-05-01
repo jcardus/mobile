@@ -25,7 +25,7 @@ cp mobile/localizalia/google-services.json android/app/google-services.json
 cp mobile/google-secret.json android/google-secret.json
 cp mobile/localizalia/AppFile android/fastlane/AppFile
 cp mobile/localizalia/Fastfile android/fastlane/Fastfile
-cp mobile/keystore android/app
+cp mobile/keystore /etc/keystore
 cp mobile/Gemfile* android
 cp mobile/fastlane/* android/fastlane
 cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
@@ -33,8 +33,6 @@ cd android
 
 gem install bundler
 bundle install
-echo "bundle exec fastlane update"
-bundle exec fastlane update
 echo "fastlane add_plugin versioning_android"
 bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
