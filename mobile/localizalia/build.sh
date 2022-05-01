@@ -25,7 +25,7 @@ cp mobile/localizalia/google-services.json android/app/google-services.json
 cp mobile/google-secret.json android/google-secret.json
 cp mobile/localizalia/AppFile android/fastlane/AppFile
 cp mobile/localizalia/Fastfile android/fastlane/Fastfile
-cp mobile/keystore android
+cp mobile/keystore android/app
 cp mobile/Gemfile* android
 cp mobile/fastlane/* android/fastlane
 cp mobile/localizalia/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
