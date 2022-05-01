@@ -24,7 +24,8 @@ phases:
     commands:
       - npm install
       - npm run-script deploy:android:localizalia
+      - bundle exec fastlane device_farm
 artifacts:
   files:
-    - './android/app/build/outputs/bundle/release/app-release.aab'
+    - './android/app/build/outputs/apk/release/app-release-unsigned.apk'
   discard-paths: yes
