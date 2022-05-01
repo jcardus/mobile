@@ -34,17 +34,14 @@ cd android
 
 gem install bundler
 bundle install
-escho "validate json_key"
-bundle exec fastlane run validate_play_store_json_key json_key:google-secret.json
 echo "fastlane add_plugin versioning_android"
 bundle exec fastlane add_plugin versioning_android
 echo "fastlane install_plugins"
 bundle exec fastlane install_plugins
-cp mobile/fastlane/* fastlane
 echo "copy AppFile"
-cp mobile/localizalia/AppFile fastlane
-cp mobile/localizalia/Fastfile fastlane
-echo "appfile"
+cp ../mobile/localizalia/AppFile fastlane
+cp ../mobile/localizalia/Fastfile fastlane
+echo "Appfile"
 cat fastlane/Appfile
 bundle exec fastlane beta
 
