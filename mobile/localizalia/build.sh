@@ -22,7 +22,9 @@ npx cap copy
 cordova-res android --skip-config --copy
 mkdir android/fastlane
 cp mobile/localizalia/google-services.json android/app/google-services.json
+echo "copy google-secret"
 cp mobile/google-secret.json /etc/google-secret.json
+cat /etc/google-secret.json
 echo "copy AppFile"
 cp mobile/localizalia/AppFile android/fastlane/AppFile
 cat android/fastlane/AppFile
