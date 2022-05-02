@@ -51,7 +51,7 @@ export default {
     },
     saveShowLabels(value) {
       this.showLabels = value
-      this.$store.commit('settings/setShowLabels', value)
+      this.$store.commit('settings/SET_SHOW_LABELS', value)
     },
     saveShowFullDate(value) {
       this.$store.commit('settings/CHANGE_SETTING', { key: 'showFullDate', value })
