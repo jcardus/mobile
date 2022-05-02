@@ -14,6 +14,7 @@
         :label="$t('settings.vehicle_form_group')"
         type="select"
         placeholder="Please choose..."
+        :value="selectedGroup"
         @input="selectedGroup = $event.target.value"
       >
         <option v-for="(item) in groups" :key="item.id" :value="item.id" :selected="(item.id === selectedGroup)">{{ item.name }}</option>
