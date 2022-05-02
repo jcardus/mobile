@@ -651,13 +651,14 @@ export default {
       if (!category) { return 'default' }
       switch (category) {
         case 'motorcycle':
+        case 'bicycle':
           return 'moto'
         case 'helicopter':
-        case 'bicycle':
         case 'person':
-        case 'tractor':
-        case '':
           return 'arrow'
+        case '':
+        case 'car':
+          return 'default'
         default:
           return category
       }
