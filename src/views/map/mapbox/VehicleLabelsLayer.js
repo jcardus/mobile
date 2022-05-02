@@ -15,6 +15,8 @@ export default {
     'text-optional': true
   },
   paint: {
-    'text-color': 'black'
+    'text-halo-width': 0.2,
+    'text-halo-color': 'black',
+    'text-color': ['get', 'labelcolor']
   }
 }

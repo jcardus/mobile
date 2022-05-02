@@ -672,7 +672,8 @@ export default {
           category: this.getCategory(device.category),
           description: '<div id=\'vue-vehicle-popup\'></div>',
           bearing: this.map.getBearing(),
-          animating: false
+          animating: false,
+          labelcolor: device.attributes.routeColor
         },
         geometry: {
           'type': 'Point',
