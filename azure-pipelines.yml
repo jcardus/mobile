@@ -16,7 +16,7 @@ steps:
     echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
     sudo chown root:root $(caCertificate.secureFilePath)
     sudo chmod a+r $(caCertificate.secureFilePath)
-    sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
+    sudo ln -s /etc/ssl/certs/ $(caCertificate.secureFilePath)
 - task: Bash@3
   inputs:
     targetType: 'inline'
