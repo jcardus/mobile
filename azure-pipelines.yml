@@ -6,21 +6,27 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
-- task: DownloadSecureFile@1
-  name: caCertificate
-  displayName: 'Download CA certificate'
+- task: InstallAppleCertificate@2
   inputs:
-    secureFile: 'azuredevops.mobileprovision'
+    certSecureFile: apple-distribution.p12
+    #certPwd: # Optional
+    #keychain: 'temp' # Options: default, temp, custom
+    #keychainPassword: # Required when keychain == Custom || Keychain == Default
+    #customKeychainPath: # Required when keychain == Custom
+    #deleteCert: # Optional
+    #deleteCustomKeychain: # Optional
+    #signingIdentity: # Optional
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
+    provProfileSecureFile: # Required when provisioningProfileLocation == SecureFiles
+    provProfileSourceRepository: azuredevops.mobileprovision
+    removeProfile: true # Optional
 
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
-      echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
-      sudo chown root:root $(caCertificate.secureFilePath)
-      sudo chmod a+r $(caCertificate.secureFilePath)
-      sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
-      # Write your commands here
       npm install
       npm run-script deploy:ios:localizalia:beta
       
