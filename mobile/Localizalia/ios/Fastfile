@@ -7,18 +7,18 @@ platform :ios do
     update_code_signing_settings(
       use_automatic_signing: true
     )
-    #get_certificates
-    #get_provisioning_profile   # invokes sigh
-    #update_project_provisioning(
-     #   xcodeproj: "App.xcodeproj",
-     #   build_configuration: "Release",
-      #  profile: "match_AppStore_comfleetmaplocalizalia.mobileprovision"
-      #)
+    get_certificates
+    get_provisioning_profile   # invokes sigh
+    update_project_provisioning(
+        xcodeproj: "App.xcodeproj",
+        build_configuration: "Release",
+        profile: "azure-dev-ops"
+      )
       update_project_team(
         path: "App.xcodeproj",
         teamid: "57X9MD32BX"
       )
-#    increment_version_number_in_xcodeproj(xcodeproj: "App.xcodeproj")
+    increment_version_number_in_xcodeproj(xcodeproj: "App.xcodeproj")
     build_app(workspace: "App.xcworkspace", scheme: "App")
     #upload_to_testflight
   end
