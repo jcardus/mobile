@@ -26,14 +26,7 @@ cp mobile/*.mobileprovision ios/App
 cp mobile/localizalia/ios/*.plist ios/App
 cp mobile/localizalia/ios/*.rb ios/App
 cp mobile/*.entitlements ios/App/App
-cd ios/App
-gem install xcodeproj
-ruby addGooglePlist.rb
 
-echo "add_plugin versioning"
-fastlane add_plugin versioning
-fastlane install_plugins
-fastlane beta
 
 
 

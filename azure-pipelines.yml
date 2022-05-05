@@ -20,7 +20,16 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      npm install
-      FASTLANE_PASSWORD=$(FASTLANE_PASS) FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC) npm run-script deploy:ios:localizalia:beta
+      #npm install
+      npm run-script deploy:ios:localizalia:beta
+      export FASTLANE_PASSWORD=$(FASTLANE_PASS)
+      export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
+      cd ios/App
+      gem install xcodeproj
+      ruby addGooglePlist.rb
+      echo "add_plugin versioning"
+      fastlane add_plugin versioning
+      fastlane install_plugins
+      fastlane beta
       npm run-script deploy:ios:nogartel:beta
 
