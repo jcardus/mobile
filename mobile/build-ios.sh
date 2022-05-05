@@ -1,19 +1,12 @@
 export ENVIRONMENT=ios
-export APP_NAME=Localizalia
-export PACKAGE_NAME=com.fleetmap.localizalia
 export VERSION_CODE=$npm_package_version
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-export COGNITO_CLIENT_ID=6udglokm8muv3j06tnledmo0ki
-export AUTH_DOMAIN=auth.localizalia.com
 
-
-#vue-cli-service build --mode capacitor --dest dist
-echo "APP_SPECIFIC" $FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
-echo "PASS" $FASTLANE_PASS
+vue-cli-service build --mode capacitor --dest dist
 
 rm -rf ./ios
-cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/api.pinme.io.png
+cp dist/img/logos/$HOST_NAME.png dist/img/logos/localhost.png
 cp -r mobile/$APP_NAME/resources/* resources
 echo "version code: $VERSION_CODE"
 npx cap add ios
