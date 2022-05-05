@@ -5,10 +5,6 @@ trigger:
 pool:
   vmImage: 'macos-latest'
 
-variables:
- - name: FASTLANE_PASSWORD
-   value: $(FASTLANE_PASS)
-
 steps:
 - task: InstallAppleCertificate@2
   inputs:
@@ -30,6 +26,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      echo $(FASTLANE_PASS)
       npm install
-      npm run-script deploy:ios:localizalia:beta
+      export FASTLANE_PASSWORD=$(FASTLANE_PASS) && npm run-script deploy:ios:localizalia:beta
       
