@@ -22,8 +22,8 @@ steps:
     script: |
       #npm install
       npm run-script deploy:ios:localizalia:beta
-      export FASTLANE_PASSWORD=$(FASTLANE_PASS)
-      export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
+      FASTLANE_PASSWORD=$(FASTLANE_PASS)
+      FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
       cd ios/App
       gem install xcodeproj
       ruby addGooglePlist.rb
