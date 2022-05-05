@@ -8,7 +8,7 @@ export COGNITO_CLIENT_ID=6udglokm8muv3j06tnledmo0ki
 export AUTH_DOMAIN=auth.localizalia.com
 
 
-#vue-cli-service build --mode capacitor --dest dist
+vue-cli-service build --mode capacitor --dest dist
 echo "APP_SPECIFIC $FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"
 echo "PASS $FASTLANE_PASS"
 

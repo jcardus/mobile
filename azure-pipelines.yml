@@ -20,7 +20,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      #npm install
+      npm install
       npm run-script deploy:ios:localizalia:beta
       FASTLANE_PASSWORD=$(FASTLANE_PASS)
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
