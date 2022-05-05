@@ -9,8 +9,8 @@ export AUTH_DOMAIN=auth.localizalia.com
 
 
 #vue-cli-service build --mode capacitor --dest dist
-echo "APP_SPECIFIC" $FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
-echo "PASS" $FASTLANE_PASS
+echo "APP_SPECIFIC $FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"
+echo "PASS $FASTLANE_PASS"
 
 rm -rf ./ios
 cp dist/img/logos/plataforma.localizalia.com.png dist/img/logos/api.pinme.io.png
