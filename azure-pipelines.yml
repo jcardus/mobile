@@ -7,7 +7,7 @@ pool:
 
 variables:
  - name: FASTLANE_PASSWORD
-   value: $(FASTLANE_PASSWORD)
+   value: $(FASTLANE_PASS)
 
 steps:
 - task: InstallAppleCertificate@2
