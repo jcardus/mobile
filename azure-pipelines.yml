@@ -28,5 +28,5 @@ steps:
     script: |
       echo $(FASTLANE_PASS)
       npm install
-      export FASTLANE_PASSWORD=$(FASTLANE_PASS) && npm run-script deploy:ios:localizalia:beta
+      FASTLANE_PASSWORD=$(FASTLANE_PASS) && npm run-script deploy:ios:localizalia:beta
       
