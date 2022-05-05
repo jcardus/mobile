@@ -19,8 +19,7 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
-    provProfileSecureFile: # Required when provisioningProfileLocation == SecureFiles
-    provProfileSourceRepository: azuredevops.mobileprovision
+    provProfileSecureFile: 'azuredevops.mobileprovision'
     removeProfile: true # Optional
 
 - task: Bash@3
