@@ -95,11 +95,11 @@ platform :ios do
       version_number: ENV["PACKAGE_VERSION"]
     )
     build_app(workspace: "App.xcworkspace", scheme: "App")
-     update_project_provisioning(
-            xcodeproj: "App.xcodeproj",
-            build_configuration: "Release"
-          )
-    #upload_to_testflight
+     #update_project_provisioning(
+      #      xcodeproj: "App.xcodeproj",
+       #     build_configuration: "Release"
+        #  )
+    upload_to_testflight
   end
 
   lane :release do
