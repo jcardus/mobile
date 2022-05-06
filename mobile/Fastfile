@@ -76,3 +76,39 @@ platform :android do
     upload_to_play_store(skip_upload_apk: true)
   end
 end
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+
+  lane :beta do
+    update_code_signing_settings(
+      use_automatic_signing: false
+    )
+    #get_certificates
+    #get_provisioning_profile   # invokes sigh
+    update_project_provisioning(
+        xcodeproj: "App.xcodeproj",
+        build_configuration: "Release"
+      )
+      update_project_team(
+        path: "App.xcodeproj",
+        teamid: "57X9MD32BX"
+      )
+    increment_version_number_in_plist(
+      version_number: ENV["PACKAGE_VERSION"]
+    )
+    build_app(workspace: "App.xcworkspace", scheme: "App")
+    #upload_to_testflight
+  end
+
+  lane :release do
+    increment_version_number_in_xcodeproj(xcodeproj: "App.xcodeproj")
+    increment_build_number(build_number: app_store_build_number + 1, xcodeproj: "App.xcodeproj")
+    get_certificates           # invokes cert
+    get_provisioning_profile   # invokes sigh
+    build_app(workspace: "App.xcworkspace", scheme: "App")
+    upload_to_app_store  # upload your app to App Store Connect
+  end
+
+end
+

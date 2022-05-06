@@ -14,7 +14,7 @@ variables:
 steps:
 - task: InstallAppleCertificate@2
   inputs:
-    certSecureFile: apple-distribution.p12
+    certSecureFile: Certificados.p12
 
 - task: InstallAppleProvisioningProfile@1
   inputs:

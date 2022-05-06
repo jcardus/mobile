@@ -23,6 +23,12 @@ cp mobile/Gemfile* ios/App
 cd ios/App
 gem install xcodeproj
 ruby addGooglePlist.rb
+echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
+echo "apple_id(\"admin@fleetmap.io\")" >> fastlane/Appfile
+echo "itc_team_id(\"122303819\")" >> fastlane/Appfile
+echo "team_id(\"57X9MD32BX\")" >> fastlane/Appfile
+echo "Appfile"
+
 
 echo "add_plugin versioning"
 fastlane add_plugin versioning
