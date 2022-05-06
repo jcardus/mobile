@@ -7,8 +7,8 @@ platform :ios do
     update_code_signing_settings(
       use_automatic_signing: true
     )
-    get_certificates
-    get_provisioning_profile   # invokes sigh
+    #get_certificates
+    #get_provisioning_profile   # invokes sigh
     update_project_provisioning(
         xcodeproj: "App.xcodeproj",
         build_configuration: "Release",
