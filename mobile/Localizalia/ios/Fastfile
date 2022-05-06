@@ -17,7 +17,9 @@ platform :ios do
         path: "App.xcodeproj",
         teamid: "57X9MD32BX"
       )
-    increment_version_number_in_xcodeproj(xcodeproj: "App.xcodeproj")
+    increment_version_number_in_plist(
+      version_number: ENV["PACKAGE_VERSION"]
+    )
     build_app(workspace: "App.xcworkspace", scheme: "App")
     #upload_to_testflight
   end

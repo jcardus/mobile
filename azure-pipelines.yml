@@ -50,6 +50,12 @@ steps:
       echo "add_plugin versioning"
       bundle exec fastlane add_plugin versioning
       bundle exec fastlane install_plugins
+      export PACKAGE_VERSION=$(cat package.json \
+        | grep version \
+        | head -1 \
+        | awk -F: '{ print $2 }' \
+        | sed 's/[",]//g')
+      echo $PACKAGE_VERSION
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       bundle exec fastlane beta
 
