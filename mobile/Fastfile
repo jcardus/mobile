@@ -86,10 +86,7 @@ platform :ios do
     )
     #get_certificates
     #get_provisioning_profile   # invokes sigh
-    update_project_provisioning(
-        xcodeproj: "App.xcodeproj",
-        build_configuration: "Release"
-      )
+
       update_project_team(
         path: "App.xcodeproj",
         teamid: "57X9MD32BX"
@@ -98,6 +95,10 @@ platform :ios do
       version_number: ENV["PACKAGE_VERSION"]
     )
     build_app(workspace: "App.xcworkspace", scheme: "App")
+     update_project_provisioning(
+            xcodeproj: "App.xcodeproj",
+            build_configuration: "Release"
+          )
     #upload_to_testflight
   end
 
