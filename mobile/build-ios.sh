@@ -19,6 +19,7 @@ cp mobile/*.mobileprovision ios/App
 cp mobile/localizalia/ios/*.plist ios/App
 cp mobile/localizalia/ios/*.rb ios/App
 cp mobile/*.entitlements ios/App/App
+cp mobile/Gemfile* ios/App
 cd ios/App
 gem install xcodeproj
 ruby addGooglePlist.rb
