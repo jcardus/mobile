@@ -16,6 +16,10 @@ steps:
   inputs:
     certSecureFile: Certificados.p12
 
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: apple-dev.p12
+
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
