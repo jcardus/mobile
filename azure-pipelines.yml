@@ -22,6 +22,12 @@ steps:
     provProfileSecureFile: 'azuredevops.mobileprovision'
     removeProfile: true # Optional
 
+- task: DownloadSecureFile@1
+  name: provProfile
+  displayName: 'Download profile'
+  inputs:
+    secureFile: 'azuredevops.mobileprovision'
+
 task: Bash@3
   inputs:
     targetType: 'inline'
@@ -32,6 +38,7 @@ task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
+      FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       npm run-script deploy:ios:localizalia:beta
       cd ios/App
       gem install xcodeproj

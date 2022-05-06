@@ -11,8 +11,7 @@ platform :ios do
     #get_provisioning_profile   # invokes sigh
     update_project_provisioning(
         xcodeproj: "App.xcodeproj",
-        build_configuration: "Release",
-        profile: "azure-dev-ops"
+        build_configuration: "Release"
       )
       update_project_team(
         path: "App.xcodeproj",
