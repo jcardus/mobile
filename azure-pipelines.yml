@@ -11,14 +11,9 @@ variables:
   - name: FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
     value: $(FASTLANE_APP_SPECIFIC)
 
-steps:
 - task: InstallAppleCertificate@2
   inputs:
-    certSecureFile: Certificados.p12
-
-- task: InstallAppleCertificate@2
-  inputs:
-    certSecureFile: apple-dev.p12
+    certSecureFile: ios-dev.p12
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
@@ -60,6 +55,11 @@ steps:
         | awk -F: '{ print $2 }' \
         | sed 's/[",]//g')
       echo $PACKAGE_VERSION
+      echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
+      echo "apple_id(\"admin@fleetmap.io\")" >> fastlane/Appfile
+      echo "itc_team_id(\"122303819\")" >> fastlane/Appfile
+      echo "team_id(\"57X9MD32BX\")" >> fastlane/Appfile
+      echo "Appfile"
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       bundle exec fastlane beta
 
