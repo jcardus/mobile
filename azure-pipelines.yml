@@ -11,6 +11,7 @@ variables:
   - name: FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
     value: $(FASTLANE_APP_SPECIFIC)
 
+steps:
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: ios-dev.p12
