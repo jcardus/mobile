@@ -45,8 +45,8 @@ steps:
       gem install xcodeproj
       ruby addGooglePlist.rb
       echo "add_plugin versioning"
-      fastlane add_plugin versioning
-      fastlane install_plugins
+      bundle exec fastlane add_plugin versioning
+      bundle exec fastlane install_plugins
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
-      fastlane beta
+      bundle exec fastlane beta
 
