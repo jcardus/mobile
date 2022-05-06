@@ -32,12 +32,14 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      echo using profile $(provProfile.secureFilePath)
       npm install
 
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
+      echo using profile $(provProfile.secureFilePath)
       FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       npm run-script deploy:ios:localizalia:beta
       cd ios/App
