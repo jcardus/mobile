@@ -40,7 +40,6 @@ steps:
     targetType: 'inline'
     script: |
       echo using profile $(provProfile.secureFilePath)
-      FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       npm run-script deploy:ios:localizalia:beta
       cd ios/App
       gem install xcodeproj
@@ -48,5 +47,6 @@ steps:
       echo "add_plugin versioning"
       fastlane add_plugin versioning
       fastlane install_plugins
+      export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       fastlane beta
 
