@@ -15,7 +15,6 @@ npx cap copy
 cordova-res ios --skip-config --copy
 mkdir ios/App/fastlane
 cp mobile/Fastfile ios/App/fastlane
-cp mobile/*.mobileprovision ios/App
 cp mobile/localizalia/ios/*.plist ios/App
 cp mobile/localizalia/ios/*.rb ios/App
 cp mobile/*.entitlements ios/App/App
