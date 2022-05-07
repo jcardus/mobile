@@ -7,5 +7,6 @@ rm -rf ./ios
 rm -rf ./android
 rm -rf resources
 mkdir resources
+echo "cp -r mobile/$APP_NAME/resources/* resources"
 cp -r mobile/"$APP_NAME"/resources/* resources
 
