@@ -41,11 +41,12 @@ steps:
     targetType: 'inline'
     script: |
       echo using profile $(provProfile.secureFilePath)
-      npm run-script deploy:ios:localizalia:beta
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       export FASTLANE_PASSWORD=$(FASTLANE_PASS)
       export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
-      export FASTLANE_SESSION=${FASTLANE_SESSION}
+      npm run-script deploy:ios:localizalia
+      mobile/deploy-ios.sh
+      npm run-script deploy:ios:nogartel
       mobile/deploy-ios.sh
 
 
