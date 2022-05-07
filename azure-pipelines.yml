@@ -49,4 +49,8 @@ steps:
 - task: AppStoreRelease@1
   inputs:
     releaseTrack: TestFlight
+    authType: ServiceEndpoint
+    serviceEndpoint: appStore
+
+    
     
