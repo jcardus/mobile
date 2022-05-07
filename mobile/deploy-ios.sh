@@ -7,7 +7,7 @@ RPACKAGE_VERSION=$(cat package.json \
   | sed 's/[",]//g')
 echo "rpv$RPACKAGE_VERSION"
 
-export PACKAGE_VERSION="${RPACKAGE_VERSION##*( )}"
+PACKAGE_VERSION="$(echo "${RPACKAGE_VERSION}" | tr -d '[:space:]')"
 echo "pv$PACKAGE_VERSION"
 
 cd ios/App
