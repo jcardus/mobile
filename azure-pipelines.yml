@@ -46,3 +46,12 @@ steps:
       export FASTLANE_PASSWORD=$(FASTLANE_PASS)
       export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
       mobile/deploy-ios.sh
+
+- task: AppStoreRelease@1
+  inputs:
+    releaseTrack: TestFlight
+    authType: ServiceEndpoint
+    serviceEndpoint: appStore
+
+    
+    
