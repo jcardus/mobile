@@ -101,7 +101,7 @@ update_project_provisioning(
     )
     build_app(workspace: "App.xcworkspace", scheme: "App")
 
-    upload_to_testflight
+    #upload_to_testflight
   end
 
   lane :release do
