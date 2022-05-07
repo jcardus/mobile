@@ -45,13 +45,9 @@ steps:
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       export FASTLANE_PASSWORD=$(FASTLANE_PASS)
       export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
+      export FASTLANE_SESSION=${FASTLANE_SESSION}
       mobile/deploy-ios.sh
 
-- task: AppStoreRelease@1
-  inputs:
-    releaseTrack: TestFlight
-    authType: ServiceEndpoint
-    serviceEndpoint: appStore
 
-    
-    
+
+
