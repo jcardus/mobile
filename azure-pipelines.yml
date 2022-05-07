@@ -42,5 +42,6 @@ steps:
       echo using profile $(provProfile.secureFilePath)
       npm run-script deploy:ios:localizalia:beta
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
+      export FASTLANE_PASSWORD=$(FASTLANE_PASS)
+      export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
       mobile/deploy-ios.sh
-
