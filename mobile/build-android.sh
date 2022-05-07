@@ -5,13 +5,6 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export ENVIRONMENT=android
 
-vue-cli-service build --mode capacitor --dest dist
-rm -rf ./android
-cp dist/img/logos/$HOST_NAME.png dist/img/logos/localhost.png
-rm -rf resources
-mkdir resources
-cp -r mobile/$APP_NAME/resources/* resources
-
 echo "version code:" $VERSION_CODE
 
 npx cap add android

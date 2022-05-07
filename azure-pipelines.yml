@@ -48,7 +48,3 @@ steps:
       mobile/deploy-ios.sh
       npm run-script deploy:ios:nogartel
       mobile/deploy-ios.sh
-
-
-
-

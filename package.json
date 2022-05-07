@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.11.5",
+  "version": "2.11.6",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -10,7 +10,7 @@
     "build:android:nogartel": "cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/localhost.png && ENVIRONMENT=android npx cap copy android",
     "deploy:android:localizalia": "bash mobile/Localizalia/build-android.sh",
     "deploy:android:nogartel": "mobile/nogartel/build.sh",
-    "deploy:nogartel:ios:beta": "mobile/nogartel.sh",
+    "deploy:nogartel:ios": "mobile/nogartel.sh",
     "deploy:android": "bash mobile/build-android.sh",
     "deploy:android:fleetmap": "bash mobile/Manager/build-android.sh",
     "deploy:ios:localizalia": "mobile/Localizalia/build-ios.sh",
