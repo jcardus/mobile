@@ -32,7 +32,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      echo as $(FASTLANE_APP_SPECIFIC)
+      echo fs $(FASTLANE_SESSION)
       echo using profile $(provProfile.secureFilePath)
       npm install
 
