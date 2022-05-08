@@ -1,8 +1,3 @@
-export ENVIRONMENT=ios
-export VERSION_CODE=$npm_package_version
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-echo "version code: $VERSION_CODE"
 npx cap add ios
 npx cap sync ios
 npx cap copy

@@ -1,3 +1,4 @@
+echo "COGNITO_CLIENT_ID $COGNITO_CLIENT_ID"
 vue-cli-service build --mode capacitor --dest dist
 
 cp dist/img/logos/$HOST_NAME.png dist/img/logos/api.pinme.io.png
@@ -9,4 +10,17 @@ rm -rf resources
 mkdir resources
 echo "cp -r mobile/$APP_NAME/resources/* resources"
 cp -r mobile/"$APP_NAME"/resources/* resources
+
+if [ "$1" = 'ios' ]
+then
+  echo 'ios'
+  export ENVIRONMENT=ios
+  mobile/build-ios.sh
+else
+  echo 'android'
+  export ENVIRONMENT=android
+  mobile/build-android.sh
+fi
+
+
 

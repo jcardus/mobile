@@ -13,7 +13,7 @@
     "deploy:nogartel:ios": "mobile/nogartel.sh",
     "deploy:android": "bash mobile/build-android.sh",
     "deploy:android:fleetmap": "bash mobile/Manager/build-android.sh",
-    "deploy:ios:localizalia": "mobile/Localizalia/build-ios.sh",
+    "deploy:ios:localizalia": "mobile/Localizalia/build.sh ios",
     "deploy:ios:nogartel": "mobile/Localizalia/build-ios.sh",
     "deploy:moviflotte": "mobile/moviflotte/build.sh",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
