@@ -28,6 +28,12 @@ steps:
   inputs:
     secureFile: 'azuredevops.mobileprovision'
 
+- task: DownloadSecureFile@1
+  name: apiKey
+  displayName: 'Download api key'
+  inputs:
+    secureFile: 'AuthKey_BKMNZXA9H4.p8'
+
 - task: Bash@3
   inputs:
     name: 'Install'
@@ -45,6 +51,7 @@ steps:
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       export FASTLANE_PASSWORD=$(FASTLANE_PASS)
       export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
+      export APP_STORE_CONNECT_API_KEY_KEY_FILEPATH=$(apiKey.secureFilePath)
       npm run-script deploy:ios:localizalia
       mobile/deploy-ios.sh
       npm run-script deploy:ios:nogartel

@@ -15,7 +15,7 @@
     "deploy:android:fleetmap": "bash mobile/Manager/build-android.sh",
     "deploy:ios:localizalia": "mobile/Localizalia/build.sh ios",
     "deploy:ios:nogartel": "mobile/Localizalia/build-ios.sh",
-    "deploy:moviflotte": "mobile/moviflotte/build.sh",
+    "deploy:ios": "mobile/deploy-ios.sh",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "lint": "eslint --ext .js,.vue src",
     "build:stage": "vue-cli-service build --mode staging",

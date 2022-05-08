@@ -88,20 +88,20 @@ platform :ios do
     #get_certificates
     #get_provisioning_profile   # invokes sigh
 
-update_project_provisioning(
-            xcodeproj: "App.xcodeproj",
-            build_configuration: "Release"
-          )
-      update_project_team(
-        path: "App.xcodeproj",
-        teamid: "57X9MD32BX"
-      )
-    increment_version_number_in_plist(
-      version_number: ENV["PACKAGE_VERSION"]
-    )
-    build_app(workspace: "App.xcworkspace", scheme: "App")
+    update_project_provisioning(xcodeproj: "App.xcodeproj", build_configuration: "Release")
+    update_project_team(path: "App.xcodeproj", teamid: "57X9MD32BX")
 
-    upload_to_testflight
+    increment_version_number_in_plist(version_number: ENV["PACKAGE_VERSION"])
+
+    build_app(workspace: "App.xcworkspace", scheme: "App")
+    api_key = app_store_connect_api_key(
+      key_id: "BKMNZXA9H4",
+      issuer_id: "1b6339f6-d9c6-4f41-bf6e-5081d9bd7085",
+      key_filepath: "/Users/shared/AuthKey_BKMNZXA9H4.p8",
+      duration: 1200, # optional (maximum 1200)
+      in_house: false # optional but may be required if using match/sigh
+    )
+    upload_to_testflight(api_key: api_key)
   end
 
   lane :add_domain_to_entitlement do
@@ -123,7 +123,7 @@ update_project_provisioning(
     get_certificates           # invokes cert
     get_provisioning_profile   # invokes sigh
     build_app(workspace: "App.xcworkspace", scheme: "App")
-    upload_to_app_store  # upload your app to App Store Connect
+    upload_to_app_store
   end
 
 end
