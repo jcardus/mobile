@@ -22,17 +22,35 @@ steps:
   inputs:
     secureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
 
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
+    provProfileSecureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
+    removeProfile: true # Optional
+
 - task: DownloadSecureFile@1
   name: provProfileManager
   displayName: 'Download profile manager'
   inputs:
     secureFile: 'manager.mobileprovision'
 
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
+    provProfileSecureFile: 'manager.mobileprovision'
+    removeProfile: true # Optional
+
 - task: DownloadSecureFile@1
   name: provProfile
   displayName: 'Download profile'
   inputs:
     secureFile: 'azuredevops.mobileprovision'
+
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
+    provProfileSecureFile: 'azuredevops.mobileprovision'
+    removeProfile: true # Optional
 
 - task: DownloadSecureFile@1
   name: apiKey
