@@ -9,7 +9,7 @@ echo "rpv$RPACKAGE_VERSION"
 
 PACKAGE_VERSION="$(echo "${RPACKAGE_VERSION}" | tr -d '[:space:]')"
 echo "pv$PACKAGE_VERSION"
-
+cd ios/App
 bundle exec fastlane add_plugin versioning
 bundle exec fastlane install_plugins
 
