@@ -10,13 +10,6 @@ echo "rpv$RPACKAGE_VERSION"
 PACKAGE_VERSION="$(echo "${RPACKAGE_VERSION}" | tr -d '[:space:]')"
 echo "pv$PACKAGE_VERSION"
 
-cd ios/App
-gem install bundler
-bundle install
-gem install xcodeproj
-echo "ruby addGooglePlist.rb"
-ruby addGooglePlist.rb
-echo "add_plugin versioning"
 bundle exec fastlane add_plugin versioning
 bundle exec fastlane install_plugins
 
