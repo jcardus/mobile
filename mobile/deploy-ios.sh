@@ -5,7 +5,6 @@ RPACKAGE_VERSION=$(cat package.json \
   | head -1 \
   | awk -F: '{ print $2 }' \
   | sed 's/[",]//g')
-echo "rpv$RPACKAGE_VERSION"
 
 PACKAGE_VERSION="$(echo "${RPACKAGE_VERSION}" | tr -d '[:space:]')"
 echo "pv$PACKAGE_VERSION"
