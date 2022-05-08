@@ -23,6 +23,12 @@ steps:
     removeProfile: true # Optional
 
 - task: DownloadSecureFile@1
+  name: provProfileNogartel
+  displayName: 'Download profile nogartel'
+  inputs:
+    secureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
+
+- task: DownloadSecureFile@1
   name: provProfile
   displayName: 'Download profile'
   inputs:
@@ -54,5 +60,6 @@ steps:
       export APP_STORE_CONNECT_API_KEY_KEY_FILEPATH=$(apiKey.secureFilePath)
       npm run-script build:ios:localizalia
       mobile/deploy-ios.sh
+      export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileNogartel.secureFilePath)
       npm run-script build:ios:nogartel
       mobile/deploy-ios.sh
