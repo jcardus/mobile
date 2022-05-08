@@ -14,6 +14,7 @@ cd ios/App
 gem install bundler
 bundle install
 gem install xcodeproj
+echo "ruby addGooglePlist.rb"
 ruby addGooglePlist.rb
 echo "add_plugin versioning"
 bundle exec fastlane add_plugin versioning
