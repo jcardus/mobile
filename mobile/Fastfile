@@ -97,7 +97,6 @@ platform :ios do
     api_key = app_store_connect_api_key(
       key_id: "BKMNZXA9H4",
       issuer_id: "1b6339f6-d9c6-4f41-bf6e-5081d9bd7085",
-      key_filepath: "/Users/shared/AuthKey_BKMNZXA9H4.p8",
       duration: 1200, # optional (maximum 1200)
       in_house: false # optional but may be required if using match/sigh
     )
