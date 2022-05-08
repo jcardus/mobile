@@ -104,6 +104,19 @@ update_project_provisioning(
     upload_to_testflight
   end
 
+  lane :add_domain_to_entitlement do
+          require 'xcodeproj'
+          proj = Xcodeproj::Project.open('../App.xcodeproj')
+
+          proj.build_configurations.each do |config|
+              config.build_settings.store("CODE_SIGN_ENTITLEMENTS", "App/App.entitlements")
+          end
+
+          proj.recreate_user_schemes
+          proj.save
+
+        end
+
   lane :release do
     increment_version_number_in_xcodeproj(xcodeproj: "App.xcodeproj")
     increment_build_number(build_number: app_store_build_number + 1, xcodeproj: "App.xcodeproj")

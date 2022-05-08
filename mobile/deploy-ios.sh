@@ -18,4 +18,5 @@ echo "itc_team_id(\"122303819\")" >> fastlane/Appfile
 echo "team_id(\"57X9MD32BX\")" >> fastlane/Appfile
 echo "Appfile"
 export PACKAGE_VERSION=$PACKAGE_VERSION
+bundle exec fastlane ios add_domain_to_entitlement
 bundle exec fastlane ios beta
