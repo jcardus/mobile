@@ -16,17 +16,17 @@ steps:
   inputs:
     certSecureFile: ios-dev.p12
 
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
-    provProfileSecureFile: 'azuredevops.mobileprovision'
-    removeProfile: true # Optional
-
 - task: DownloadSecureFile@1
   name: provProfileNogartel
   displayName: 'Download profile nogartel'
   inputs:
     secureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
+
+- task: DownloadSecureFile@1
+  name: provProfileManager
+  displayName: 'Download profile manager'
+  inputs:
+    secureFile: 'manager.mobileprovision'
 
 - task: DownloadSecureFile@1
   name: provProfile
@@ -62,4 +62,7 @@ steps:
       mobile/deploy-ios.sh
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileNogartel.secureFilePath)
       npm run-script build:ios:nogartel
+      mobile/deploy-ios.sh
+      export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileManager.secureFilePath)
+      npm run-script build:ios:manager
       mobile/deploy-ios.sh
