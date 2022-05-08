@@ -6,6 +6,6 @@ export APP_NAME=Localizalia
 export PACKAGE_NAME=com.fleetmap.localizalia
 export HOST_NAME=plataforma.localizalia.com
 
-mobile/build.sh
+mobile/build.sh "$1"
 
 
