@@ -83,7 +83,9 @@ export default {
     delete_poi: 'Delete'
   },
   tripsTable: {
-    trip: 'Trip'
+    trip: 'Trip',
+    trips: 'Trips',
+    total: 'Totals'
   },
   dashboard: {
     startdate: 'Start date',

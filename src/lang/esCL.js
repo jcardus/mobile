@@ -74,7 +74,9 @@ export default {
     delete_poi: 'Eliminar'
   },
   tripsTable: {
-    trip: 'Viaje'
+    trip: 'Viaje',
+    trips: 'Viajes',
+    total: 'Totales'
   },
   dashboard: {
     startdate: 'Fecha de inicio',

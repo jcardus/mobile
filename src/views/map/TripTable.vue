@@ -108,7 +108,7 @@
         <span style="font-size: 12px">Totais</span>
       </div>
       <div>
-        <span style="font-size: 12px"><i class="fas fa-route"></i> {{ trips.length }} viagens</span>
+        <span style="font-size: 12px"><i class="fas fa-route"></i> {{ trips.length + ' ' + $t('tripsTable.trips') }}</span>
       </div>
       <div style="width: 100%">
         <div style="width: 33%; float:left"><span style="font-size: 12px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i> {{ calculateTime(totalDrivingTime) }}</span></div>

@@ -67,7 +67,9 @@ export default {
     showPOIs: 'Ver POIs'
   },
   tripsTable: {
-    trip: 'Viagem'
+    trip: 'Viagem',
+    trips: 'Viajens',
+    total: 'Totais'
   },
   dashboard: {
     startdate: 'Data de Início',

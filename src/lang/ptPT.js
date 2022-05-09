@@ -80,7 +80,9 @@ export default {
     delete_poi: 'Apagar'
   },
   tripsTable: {
-    trip: 'Viagem'
+    trip: 'Viagem',
+    trips: 'Viajens',
+    total: 'Totais'
   },
   dashboard: {
     startdate: 'Data de Início',
