@@ -1,5 +1,5 @@
 echo "export nogartel"
-#export USER_POOL_ID=us-east-1_olpbc774t
+export USER_POOL_ID=us-east-1_SWTiH7d38
 export APP_NAME=Nogartel
 export PACKAGE_NAME=com.fleetmap.nogartel
 export HOST_NAME=nogartel.fleetmap.io

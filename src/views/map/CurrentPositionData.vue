@@ -392,7 +392,9 @@ export default {
       Vue.$log.debug('events ', events)
       events.forEach(e => {
         const p = positions.find(p => p.id === e.positionId)
-        p && p.events ? p.events.push(e) : p.events = [e]
+        if (p) {
+          p.events ? p.events.push(e) : p.events = [e]
+        }
       })
     },
     async getTrips(from, to, positions) {
