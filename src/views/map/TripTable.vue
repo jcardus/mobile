@@ -10,7 +10,7 @@
         stripe
         @row-click="tripSelected"
       >
-        <div slot="empty">
+        <div v-if="loadingRoutes" slot="empty">
           <i class="el-icon-loading"></i>
         </div>
         <el-table-column
