@@ -22,14 +22,7 @@ export default {
     'icon-rotate': iconRotate,
     'icon-image': iconImage,
     'icon-allow-overlap': true,
-    'icon-size': {
-      stops: [
-        [1, 0.6],
-        [14, 0.7],
-        [15, 0.9],
-        [18, 1]
-      ]
-    }
+    'icon-size': 0.6
   },
   onAdd(map) {
     this.map = map
