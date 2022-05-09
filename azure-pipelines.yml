@@ -16,23 +16,17 @@ steps:
   inputs:
     certSecureFile: ios-dev.p12
 
-- task: DownloadSecureFile@1
-  name: provProfileNogartel
-  displayName: 'Download profile nogartel'
+- task: InstallAppleProvisioningProfile@1
   inputs:
-    secureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
+    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
+    provProfileSecureFile: 'azuredevops.mobileprovision'
+    removeProfile: true # Optional
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
     provProfileSecureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
     removeProfile: true # Optional
-
-- task: DownloadSecureFile@1
-  name: provProfileManager
-  displayName: 'Download profile manager'
-  inputs:
-    secureFile: 'manager.mobileprovision'
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
@@ -41,16 +35,22 @@ steps:
     removeProfile: true # Optional
 
 - task: DownloadSecureFile@1
+  name: provProfileManager
+  displayName: 'Download profile manager'
+  inputs:
+    secureFile: 'manager.mobileprovision'
+
+- task: DownloadSecureFile@1
+  name: provProfileNogartel
+  displayName: 'Download profile nogartel'
+  inputs:
+    secureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
+
+- task: DownloadSecureFile@1
   name: provProfile
   displayName: 'Download profile'
   inputs:
     secureFile: 'azuredevops.mobileprovision'
-
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
-    provProfileSecureFile: 'azuredevops.mobileprovision'
-    removeProfile: true # Optional
 
 - task: DownloadSecureFile@1
   name: apiKey
