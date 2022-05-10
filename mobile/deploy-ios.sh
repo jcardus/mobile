@@ -7,7 +7,7 @@ RPACKAGE_VERSION=$(cat package.json \
   | sed 's/[",]//g')
 
 PACKAGE_VERSION="$(echo "${RPACKAGE_VERSION}" | tr -d '[:space:]')"
-echo "pv$PACKAGE_VERSION"
+echo "$PACKAGE_VERSION"
 cd ios/App || exit
 bundle exec fastlane add_plugin versioning
 bundle exec fastlane install_plugins
@@ -19,4 +19,5 @@ echo "team_id(\"57X9MD32BX\")" >> fastlane/Appfile
 echo "Appfile"
 export PACKAGE_VERSION=$PACKAGE_VERSION
 bundle exec fastlane ios add_domain_to_entitlement
+bundle exec fastlane ios add_ui_background_modes
 bundle exec fastlane ios beta
