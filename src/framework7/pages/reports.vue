@@ -116,7 +116,8 @@ export default {
     calendarChange(newValue) {
       this.dateStart = newValue[0]
       if (newValue[1]) {
-        this.dateEnd.setDate(newValue[1].getDate() + 1)
+        this.dateEnd = newValue[1]
+        this.dateEnd.setHours(23, 59, 59)
       }
     },
     async submitReport() {
