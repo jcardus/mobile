@@ -9,7 +9,7 @@
     "build:capacitor": "vue-cli-service build --mode capacitor --dest dist && npx cap copy",
     "build:android:nogartel": "cp dist/img/logos/nogartel.fleetmap.io.png dist/img/logos/localhost.png && ENVIRONMENT=android npx cap copy android",
     "deploy:android:localizalia": "bash mobile/Localizalia/build.sh android",
-    "deploy:android:nogartel": "mobile/nogartel/build.sh",
+    "deploy:android:nogartel": "bash mobile/Nogartel/build.sh android",
     "deploy:nogartel:ios": "mobile/nogartel.sh",
     "deploy:android": "bash mobile/build-android.sh",
     "deploy:android:fleetmap": "bash mobile/Manager/build-android.sh",
