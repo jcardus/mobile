@@ -75,6 +75,7 @@ steps:
       npm install
 
 - task: Bash@3
+  displayName: 'Deploy'
   inputs:
     targetType: 'inline'
     script: |
