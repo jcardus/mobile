@@ -108,7 +108,7 @@
     </div>
     <div v-if="trips.length > 0" class="historyTotal">
       <div style="margin-top: 5px">
-        <span style="font-size: 12px">Totais</span>
+        <span style="font-size: 12px">{{ $t('tripsTable.total') }}</span>
       </div>
       <div>
         <span style="font-size: 12px"><i class="fas fa-route"></i> {{ trips.length + ' ' + $t('tripsTable.trips') }}</span>

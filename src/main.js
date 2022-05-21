@@ -137,7 +137,7 @@ if (!Capacitor.isNativePlatform()) {
     await Auth._handleAuthResponse(data.url)
     const url = new URL(data.url)
     if (url.searchParams.get('username')) {
-      await Vue.$store.dispatch('user/login', { username: url.searchParams.get('username'), password: url.searchParams.get('password') })
+      await store.dispatch('user/login', { username: url.searchParams.get('username'), password: url.searchParams.get('password') })
     }
     window.location.href = '/'
   })

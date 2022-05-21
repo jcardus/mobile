@@ -137,6 +137,8 @@ export default {
     form_save: 'Guardar',
     transfer_selected: 'Selecionados',
     alerts: 'Alertas',
+    alert_alarm: 'Alarme',
+    alert_maitenance: 'Manutenção',
     alerts_type: 'Tipo',
     alerts_notificators: 'Vias',
     alert_ignitionOff: 'Ignição Desligada',

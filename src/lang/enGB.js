@@ -180,6 +180,8 @@ export default {
     alerts: 'Alerts',
     alerts_type: 'Type',
     alerts_notificators: 'Notificators',
+    alert_alarm: 'Alarm',
+    alert_maitenance: 'Manutención',
     alert_ignitionOff: 'Ignition Off',
     alert_ignitionOn: 'Ignition On',
     alert_geofenceEnter: 'Geofence Enter',
