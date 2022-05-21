@@ -47,6 +47,12 @@ steps:
     secureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
 
 - task: DownloadSecureFile@1
+  name: provProfileWuizy
+  displayName: 'Download profile wuizy'
+  inputs:
+    secureFile: 'comfleetmapwuizy.mobileprovision'
+
+- task: DownloadSecureFile@1
   name: provProfile
   displayName: 'Download profile'
   inputs:
@@ -59,6 +65,7 @@ steps:
     secureFile: 'AuthKey_BKMNZXA9H4.p8'
 
 - task: Bash@3
+  displayName: 'Install'
   inputs:
     name: 'Install'
     targetType: 'inline'
@@ -87,3 +94,8 @@ steps:
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileManager.secureFilePath)
       npm run-script build:ios:manager
       mobile/deploy-ios.sh
+
+      export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileWuizy.secureFilePath)
+      npm run-script build:ios:wuizy
+      mobile/deploy-ios.sh
+
