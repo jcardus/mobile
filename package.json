@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.12.8",
+  "version": "2.12.9",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -16,6 +16,7 @@
     "build:ios:localizalia": "mobile/Localizalia/build.sh ios",
     "build:ios:nogartel": "mobile/Nogartel/build.sh ios",
     "build:ios:manager": "mobile/Manager/build.sh ios",
+    "build:ios:wuizy": "mobile/Wuizy/build.sh ios",
     "deploy:ios": "mobile/deploy-ios.sh",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "lint": "eslint --ext .js,.vue src",

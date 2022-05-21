@@ -72,15 +72,18 @@ steps:
     targetType: 'inline'
     script: |
       echo using profile $(provProfile.secureFilePath)
-      export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       export FASTLANE_PASSWORD=$(FASTLANE_PASS)
       export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
       export APP_STORE_CONNECT_API_KEY_KEY_FILEPATH=$(apiKey.secureFilePath)
+
+      export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfile.secureFilePath)
       npm run-script build:ios:localizalia
       mobile/deploy-ios.sh
+
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileNogartel.secureFilePath)
       npm run-script build:ios:nogartel
       mobile/deploy-ios.sh
+
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileManager.secureFilePath)
       npm run-script build:ios:manager
       mobile/deploy-ios.sh
