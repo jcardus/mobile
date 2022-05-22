@@ -25,7 +25,7 @@
         :key="index"
         :link="'/alertDetail/' + index"
         :title="item && item.device && item.device.name"
-        :after="item.timestamp | moment('calendar')"
+        :after="item && item.serverTime && new Date(item.serverTime).toLocaleString()"
         :subtitle="item.description"
       />
     </f7-list>

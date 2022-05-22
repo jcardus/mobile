@@ -133,7 +133,7 @@ export default {
   settings: {
     driver_add_title: 'Añadir Conductor',
     alert_alarm: 'Alarma',
-    alert_maitenance: 'Manutención',
+    alert_maintenance: 'Manutención',
     vehicle_notes: 'Notas',
     showFullDate: 'Mostrar fecha / hora de la última comunicacion',
     user_form_manage_devices: 'Permitir cambiar la configuración del los dispositivos',

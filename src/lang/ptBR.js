@@ -138,7 +138,7 @@ export default {
     transfer_selected: 'Selecionados',
     alerts: 'Alertas',
     alert_alarm: 'Alarme',
-    alert_maitenance: 'Manutenção',
+    alert_maintenance: 'Manutenção',
     alerts_type: 'Tipo',
     alerts_notificators: 'Vias',
     alert_ignitionOff: 'Ignição Desligada',
