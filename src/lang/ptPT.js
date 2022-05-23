@@ -142,6 +142,7 @@ export default {
     user_type_operator: 'Operador'
   },
   settings: {
+    alert_idle: 'Ralenti',
     icons3d: 'Ícones 3D',
     showLabels: 'Mostrar nome do veículo',
     search: 'Pesquisar...',

@@ -20,7 +20,7 @@ export function isDevEnv() {
 export function getServerHost() {
   const hostName = window.location.hostname
   if (isDevEnv()) {
-    return 'traccar-dev.us-east-1.elasticbeanstalk.com'
+    return 'localhost:8082'
   }
   if (hostName === 'localhost') {
     return 'api.pinme.io'
