@@ -10,7 +10,6 @@ import backend from '@/api/backend'
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
-import * as Sentry from '@sentry/vue'
 
 const state = {
   user: {
@@ -150,18 +149,14 @@ function initData(commit, state, dispatch) {
   })
 }
 
-async function setFirebaseToken(commit, state) {
+async function setFirebaseToken(dispatch, state) {
   FCM
     .getToken()
     .then((r) => {
       if (Capacitor.getPlatform() === 'ios') {
         if (state.user.attributes.firebaseToken !== r.token) {
-          // Sentry.captureMessage(`updating firebase token ${r.token}`)
-          commit('SET_FIREBASE_TOKEN', r.token)
-          traccar.updateUser(state.user.id, state.user)
+          dispatch('setFirebaseToken', r.token)
         }
-      } else {
-        // Sentry.captureMessage(`ignoring this fcm token ${r.token}`)
       }
     })
     .catch((err) => console.log(err))
@@ -180,15 +175,10 @@ async function setFirebaseToken(commit, state) {
   PushNotifications.addListener(
     'registration',
     (token) => {
-      Sentry.captureMessage('Push registration success, token: ' + JSON.stringify(token))
       if (Capacitor.getPlatform() === 'android') {
         if (state.user.attributes.firebaseToken !== token.value) {
-          Sentry.captureMessage('updating firebase token ' + token.value)
-          commit('SET_FIREBASE_TOKEN', token.value)
-          traccar.updateUser(state.user.id, state.user)
+          dispatch('setFirebaseToken', token.value)
         }
-      } else {
-        Sentry.captureMessage(`ignoring this fcm token ${token.value}`)
       }
     }
   )
@@ -217,6 +207,10 @@ function isCapacitor() {
 }
 
 const actions = {
+  async setFirebaseToken(state, value) {
+    await traccar.updateUser(state.user.id, state.user)
+    return backend.setFirebaseToken(value)
+  },
   setOrderDevicesBy({ commit, state }, value) {
     commit('SET_ORDER_DEVICES_BY', value)
     traccar.updateUser(state.user.id, state.user)
@@ -310,7 +304,7 @@ const actions = {
               window.OneSignal.setExternalUserId(state.user.id + '', state.user.attributes.userIdAuthHash))
           }
           if (isCapacitor()) {
-            await setFirebaseToken(commit, state)
+            await setFirebaseToken(dispatch, state)
           }
           resolve()
         })
@@ -519,6 +513,7 @@ const actions = {
     }
   }
 }
+
 export default {
   namespaced: true,
   state,

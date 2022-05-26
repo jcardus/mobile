@@ -27,6 +27,9 @@ export default {
     return this.axios.get(path, {
       withCredentials: true
     })
+  },
+  setFirebaseToken(token) {
+    return this.axios.post(`https://${getServerHost()}/pinmeapi/users/firebase`, { token })
   }
 }
 
