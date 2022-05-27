@@ -126,6 +126,7 @@ export default {
         { value: 'person', text: this.$t('settings.vehicle_icon_person') },
         { value: 'arrow', text: this.$t('settings.vehicle_icon_arrow') },
         { value: 'bus', text: this.$t('settings.vehicle_icon_bus') },
+        { value: 'minibus', text: this.$t('settings.vehicle_icon_minibus') },
         { value: 'tractor', text: this.$t('settings.vehicle_icon_tractor') },
         { value: 'helicopter', text: this.$t('settings.vehicle_icon_helicopter') },
         { value: 'motorcycle', text: this.$t('settings.vehicle_icon_motorcycle') },
