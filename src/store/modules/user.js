@@ -207,7 +207,7 @@ function isCapacitor() {
 }
 
 const actions = {
-  async setFirebaseToken(state, value) {
+  async setFirebaseToken({ state }, value) {
     await traccar.updateUser(state.user.id, state.user)
     return backend.setFirebaseToken(value)
   },
