@@ -9,6 +9,7 @@ import ptBRLocale from './ptBR'
 import ptPTLocale from './ptPT'
 import esCLLocale from './esCL'
 import frFRLocale from './frFR'
+import itITLocale from './itIT'
 import store from '../store'
 import moment from 'moment'
 
@@ -37,6 +38,10 @@ const messages = {
   },
   esES: {
     ...esCLLocale,
+    ...elementEsLocale
+  },
+  itIT: {
+    ...itITLocale,
     ...elementEsLocale
   }
 }
@@ -67,6 +72,10 @@ export function setLanguage(lang) {
         case 'pt':
           // eslint-disable-next-line no-undef
           ELEMENT.locale(ELEMENT.lang.pt)
+          break
+        case 'it':
+          // eslint-disable-next-line no-undef
+          ELEMENT.locale(ELEMENT.lang.es)
           break
         default:
           // eslint-disable-next-line no-undef
