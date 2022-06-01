@@ -43,7 +43,7 @@
                 </el-col>
                 <el-col :span="12" class="colTripData">
                   <div>
-                    <span style="font-size: 12px" :class="currentTrip===scope.row ? 'tripSelected' : ''">
+                    <span v-if="scope.row.trip_end_fixtime" style="font-size: 12px" :class="currentTrip===scope.row ? 'tripSelected' : ''">
                       <i class="fas fa-circle" style="width: 15px; color: #F5365C"></i> {{ formatTime(scope.row.trip_end_fixtime) }} </span>
                   </div>
                 </el-col>
@@ -78,7 +78,7 @@
               <el-row>
                 <el-col :span="12" class="colTripData">
                   <div>
-                    <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ Math.round(scope.row.trip_distance) }} km</span>
+                    <span style="font-size: 12px"><i class="fas fa-road" style="width: 15px; color: black"></i> {{ Math.round(scope.row.trip_distance/1000) }} km</span>
                   </div>
                 </el-col>
                 <el-col :span="12" class="colTripData">
@@ -111,7 +111,7 @@
         <span style="font-size: 12px">{{ $t('tripsTable.total') }}</span>
       </div>
       <div>
-        <span style="font-size: 12px"><i class="fas fa-route"></i> {{ trips.length + ' ' + $t('tripsTable.trips') }}</span>
+        <span style="font-size: 12px"><i class="fas fa-route"></i> {{ trips.length + ' ' + $t('tripsTable.trips') }} </span>
       </div>
       <div style="width: 100%">
         <div style="width: 33%; float:left"><span style="font-size: 12px"><i class="fas fa-car" style="width: 15px; color: #13ce66"></i> {{ calculateTime(totalDrivingTime) }}</span></div>
@@ -132,7 +132,6 @@ import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import styles from '../../styles/element-variables.scss'
 import * as utils from '../../utils/utils'
-
 export default {
   name: 'TripTable',
   data() {
@@ -199,47 +198,47 @@ export default {
 }
 </script>
 
-<style lang="scss">
-  @import '../../styles/element-variables.scss';
-  .mobileScroll {
-    -webkit-overflow-scrolling: touch;
-  }
-  .overlap{
-    top: -10px;
-    position: relative;
-    left: 10px;
-    width: 150px;
-    height: 22px;
-    vertical-align: top;
-    padding-left: 10px
-  }
-  .el-row {
-    line-height: normal;
-    padding-bottom: 1px;
-  }
-  .el-row::before {
-    content: none;
-  }
-  .el-row::after {
-    content: none;
-  }
-  .el-table td{
-    padding: 5px;
-  }
-  .tripSelected {
-    font-weight: bold;
-  }
-  .tripSelectedBackground {
-    background-color: rgba($--color-primary, 0.1);
-  }
-  .historyTotal {
-    height: 75px;
-    background-color: rgba($--color-primary, 0.1);
-    color: black;
-    padding-left: 5px;
-  }
-  .colTripData{
-    margin-bottom: 0;
-    justify-content: start;
-  }
+<style lang="scss" scoped>
+@import '../../styles/element-variables.scss';
+.mobileScroll {
+  -webkit-overflow-scrolling: touch;
+}
+.overlap{
+  top: -10px;
+  position: relative;
+  left: 10px;
+  width: 150px;
+  height: 22px;
+  vertical-align: top;
+  padding-left: 10px
+}
+.el-row {
+  line-height: normal;
+  padding-bottom: 1px;
+}
+.el-row::before {
+  content: none;
+}
+.el-row::after {
+  content: none;
+}
+.el-table td{
+  padding: 5px;
+}
+.tripSelected {
+  font-weight: bold;
+}
+.tripSelectedBackground {
+  background-color: rgba($--color-primary, 0.1);
+}
+.historyTotal {
+  height: 75px;
+  background-color: rgba($--color-primary, 0.1);
+  color: black;
+  padding-left: 5px;
+}
+.colTripData{
+  margin-bottom: 0;
+  justify-content: start;
+}
 </style>

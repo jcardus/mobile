@@ -69,6 +69,8 @@ import bboxPolygon from '@turf/bbox-polygon'
 import bbox from '@turf/bbox'
 import { checkFuelThresholds } from '@/utils/device'
 import { removeAdd3dLayer } from '@/views/map/mapbox/LayerManager'
+import { calculateIdlePositions, findNearestPOI } from '@/utils/positions'
+import { getCurrentTrip } from '@/utils/trips'
 
 export default {
   name: 'CurrentPositionData',
@@ -276,16 +278,16 @@ export default {
     toggleChanged() {
       vm.$store.dispatch('transient/toggleHistoryMode')
     },
-    async onPositions(positions) {
-      Vue.$log.debug('positions before filter ', positions)
+    async onPositions({ route, trips, stops }) {
+      Vue.$log.debug('positions before filter ', route)
       const self = this
-      positions = utils.filterPositions(positions)
-      Vue.$log.debug('positions after filter ', positions)
+      route = utils.filterPositions(route)
+      Vue.$log.debug('positions after filter ', route)
       this.removeLayers()
-      if (positions && positions.length > 1) {
-        Vue.$log.debug('got ', positions.length, ' positions')
+      if (route && route.length > 1) {
+        Vue.$log.debug('got ', route.length, ' positions')
 
-        const positionsWithFuelLevel = positions.filter(p => p.attributes.fuel)
+        const positionsWithFuelLevel = route.filter(p => p.attributes.fuel)
         Vue.$log.debug('Check Fuel - positionsWithFuelLevel:' + positionsWithFuelLevel.length)
         if (positionsWithFuelLevel.length > 0) {
           const max = positionsWithFuelLevel.reduce((a, b) => a.attributes.fuel > b.attributes.fuel ? a : b)
@@ -295,10 +297,16 @@ export default {
           Vue.$log.debug('Fuel MIN VALUE', min.attributes.fuel)
           checkFuelThresholds(min.attributes.fuel, this.device)
         }
-        this.drawAll(positions)
+        this.drawAll(route)
         // this.getRouteTrips(positions)
-        await this.getEvents(vm.$data.routeMinDate, vm.$data.routeMaxDate, positions)
-        await this.getTrips(vm.$data.routeMinDate, vm.$data.routeMaxDate, positions)
+        await this.getEvents(vm.$data.routeMinDate, vm.$data.routeMaxDate, route)
+        const _trips = this.getTrips(vm.$data.routeMinDate, vm.$data.routeMaxDate, route, trips, stops)
+
+        Vue.$log.debug('transformed into ', _trips.length, ' trips')
+
+        this.$store.commit('transient/SET_TOTAL_DISTANCE', _trips.reduce((a, b) => a + b.trip_distance, 0))
+        this.$store.commit('transient/SET_TRIPS', _trips)
+
         Vue.$log.debug('transformed into ', this.trips.length, ' trips')
         this.filterTrips().then(() => {
           Vue.$log.debug('after filter got ', this.trips.length, ' trips')
@@ -307,20 +315,20 @@ export default {
           })
           this.currentTrip = this.trips.length - 1
           if (vm.$store.state.settings.viewSpeedAlerts) {
-            this.getSpeedTrips(positions)
+            this.getSpeedTrips(route)
           } else {
             this.drawTrip()
             this.drawEventsPoints()
           }
 
           let lastPosition = null
-          positions.forEach(function(p) {
+          route.forEach(function(p) {
             const adc1CacheValues = lastPosition === null || !(lastPosition.adc1CacheValues) ? [] : lastPosition.adc1CacheValues
             utils.calculateFuelLevel(adc1CacheValues, p, lastPosition, self.device)
             lastPosition = p
           })
-          sharedData.setPositions(positions)
-          this.totalDistance = Math.round(lnglat.arrayDistance(positions.map(x => [x.longitude, x.latitude])))
+          sharedData.setPositions(route)
+          this.totalDistance = Math.round(lnglat.arrayDistance(route.map(x => [x.longitude, x.latitude])))
           Vue.$log.debug('emit routeFetched')
           serverBus.$emit('routeFetched')
         })
@@ -378,9 +386,10 @@ export default {
         }
       }
     },
-    getRoute(from, to) {
-      Vue.$log.debug('getting route from ', from, ' to ', to)
-      traccar.route(this.device.id, from, to, this.onPositions, this.onPositionsError)
+    async getRoute(from, to) {
+      Vue.$log.debug('getting route from', from, 'to', to)
+      const allInOne = await traccar.allInOne(this.device.id, from, to)
+      await this.onPositions(allInOne)
     },
     async getEvents(from, to, positions) {
       Vue.$log.debug('getting events from ', from, ' to ', to)
@@ -397,31 +406,21 @@ export default {
         }
       })
     },
-    async getTrips(from, to, positions) {
+    getTrips(from, to, positions, trips, stops) {
       const self = this
       const _trips = []
       Vue.$log.debug('getting trips from ', from, ' to ', to)
-      const responseTrips = await traccar.trips([this.device.id], from, to)
-      const responseStops = await traccar.stops([this.device.id], from, to)
-      const { data } = await traccar.summary([this.device.id], from, to)
-      if (data[0] && data[0].distance) {
-        this.$store.commit('transient/SET_TOTAL_DISTANCE', data[0].distance)
-      }
-
-      if (responseTrips.data) {
-        const trips = responseTrips.data
-        const stops = responseStops.data ? responseStops.data : []
+      if (trips) {
         const fuelInfo = this.device.attributes.xpert || positions[0].attributes.fuel
-
         trips.forEach(function(t, index) {
           let fuelConsumption = 0
-
           const stop = stops.length + 1 > index ? stops[index + 1] : null
-
+          const startTime = new Date(t.startTime).getTime()
+          const endTime = new Date(t.endTime).getTime()
           const locations = positions.filter(p => {
-            return Vue.moment(p.fixTime) >= Vue.moment(t.startTime) && Vue.moment(p.fixTime) <= Vue.moment(t.endTime)
+            const pDate = new Date(p.fixTime).getTime()
+            return pDate >= startTime && pDate <= endTime
           })
-
           if (self.device.attributes.xpert) {
             const xpertMessages = locations.map(p => p.attributes.xpert).flat().filter(p => p)
             const xpertEndTripMessage = xpertMessages.filter(x => x.type === '3')
@@ -432,28 +431,47 @@ export default {
           } else {
             fuelConsumption = t.spentFuel < 0 ? 0 : t.spentFuel
           }
-
-          const tripDistance = Math.round(t.distance) / 1000
-
+          const idlePositions = calculateIdlePositions(locations)
+          if (!idlePositions.length && stop && stop.engineHours) {
+            idlePositions.push({
+              latitude: locations[locations.length - 1].latitude,
+              longitude: locations[locations.length - 1].longitude,
+              idleTime: stop.engineHours,
+              idle_time: utils.calculateTimeHHMMSS(Math.round(stop.engineHours / 1000))
+            })
+          }
           _trips.push({
             positions: locations,
-            idlePositions: [],
+            idlePositions: idlePositions,
             trip_start_fixtime: self.$moment(t.startTime).format('DD-MM-YYYY HH:mm:ss'),
             trip_end_fixtime: self.$moment(t.endTime).format('DD-MM-YYYY HH:mm:ss'),
             trip_end_address: t.endAddress,
             trip_driving_time: t.duration / 1000,
-            trip_idle_time: stop ? (stop.engineHours / 1000) : 0,
+            trip_idle_time: idlePositions.reduce((a, b) => a + b.idleTime, 0) / 1000,
             trip_stop_time: stop ? (new Date(stop.endTime) - new Date(stop.startTime)) / 1000 : 0,
-            trip_distance: tripDistance,
+            trip_distance: t.distance,
             trip_avg_speed: Math.round(t.averageSpeed * 1.85200),
-            endPoi: self.findNearestPOI(locations[locations.length - 1]),
+            endPoi: findNearestPOI(locations[locations.length - 1]),
             fuelInfo: fuelInfo,
             fuel_consumption: fuelConsumption,
-            avg_fuel_consumption: Math.round(tripDistance > 0 ? fuelConsumption * 100 / tripDistance : 0)
+            avg_fuel_consumption: Math.round(t.distance > 0 ? fuelConsumption * 100 / (t.distance / 1000) : 0)
           })
         })
+        const endTime = trips.length && new Date(trips[trips.length - 1].endTime).getTime()
+        const locations = trips.length ? positions.filter(p => new Date(p.fixTime).getTime() >= endTime) : positions
+        const currentTrip = getCurrentTrip(this.device, locations, trips)
+
+        if (currentTrip) {
+          // Calculate stopTime of last trip
+          if (_trips.length > 0) {
+            const lastTrip = _trips[_trips.length - 1]
+            lastTrip.trip_stop_time = this.$moment(locations[0].fixTime).diff(this.$moment(lastTrip.positions[lastTrip.positions.length - 1].fixTime), 'seconds')
+          }
+
+          _trips.push(currentTrip)
+        }
       }
-      this.$store.commit('transient/SET_TRIPS', _trips)
+      return _trips
     },
     getRouteTrips(positions) {
       this.trips.length = 0
@@ -578,7 +596,7 @@ export default {
         trip_stop_time: 0,
         trip_distance: distance,
         trip_avg_speed: avgSpeed,
-        endPoi: this.findNearestPOI(locations[locations.length - 1]),
+        endPoi: findNearestPOI(locations[locations.length - 1]),
         xpert: this.device.attributes.xpert,
         fuel_consumption: fuelConsumption,
         avg_fuel_consumption: Math.round(distance > 0 ? fuelConsumption * 100 / distance : 0)
@@ -682,30 +700,6 @@ export default {
       this.drawTrip()
       this.drawIdlePoints()
       this.drawSpeedTrip()
-    },
-    findNearestPOI(position) {
-      if (this.pois.length === 0) { return null }
-
-      if (!position) { return null }
-
-      const a = this.pois.map(p => {
-        if (p.area) {
-          const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
-          const coord = str.trim().split(' ')
-          return {
-            id: p.id,
-            distance: Math.round(lnglat.coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude))
-          }
-        }
-        return {
-          id: p.id,
-          distance: Number.MAX_SAFE_INTEGER
-        }
-      }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
-
-      if (a.length > 0) {
-        return a[0].id
-      }
     },
     drawSpeedTrip() {
       if (!this.speedTrips || !this.speedTrips[this.currentTrip]) {

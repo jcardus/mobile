@@ -188,6 +188,12 @@ export const traccar = {
         Vue.$log.error(reason)
       })
   },
+  allInOne(deviceId, from, to) {
+    return axios.get(
+      `${baseUrl}reports/allinone?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}&type=route&type=trips&type=stops&type=summary`,
+      { withCredentials: true }
+    ).then(r => r.data)
+  },
   summary: (deviceId, from, to) => {
     from = Vue.moment(from).startOf('day').toDate()
     to = Vue.moment(to).endOf('day').toDate()
