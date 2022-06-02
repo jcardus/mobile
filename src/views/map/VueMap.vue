@@ -519,18 +519,6 @@ export default {
       this.$static.map.on('touchstart', 'pois', this.onClickTouchPois)
       this.$static.map.on('touchstart', vehiclesLayer.id, layerManager.onClickTouchUnclustered)
 
-      this.$static.map.on('click', 'clusters', this.onClickTouch)
-      this.$static.map.on('click', 'pois', this.onClickTouchPois)
-      this.$static.map.on('click', vehiclesLayer.id, layerManager.onClickTouchUnclustered)
-
-      this.$static.map.on('mouseenter', 'clusters', this.mouseEnter)
-      this.$static.map.on('mouseenter', 'pois', this.mouseEnter)
-      this.$static.map.on('mouseenter', vehiclesLayer.id, this.mouseEnter)
-
-      this.$static.map.on('mouseleave', 'clusters', this.mouseLeave)
-      this.$static.map.on('mouseleave', 'pois', this.mouseLeave)
-      this.$static.map.on('mouseleave', vehiclesLayer.id, this.mouseLeave)
-
       this.$static.map.on('draw.create', this.drawCreate)
       this.$static.map.on('draw.delete', this.drawDelete)
       this.$static.map.on('draw.update', this.drawUpdate)

@@ -989,8 +989,7 @@ export default {
       })
       vm.$static.map.addLayer(routeLayers.tripsLayer(this.allTripsSource))
       vm.$static.map.addLayer(routeLayers.tripsArrowsLayer(this.allTripsArrowsSource))
-      vm.$static.map.on('mouseenter', this.allTripsArrowsSource, this.mouseEnterArrow)
-      vm.$static.map.on('mouseleave', this.allTripsArrowsSource, this.mouseLeaveArrow)
+      vm.$static.map.on('touchstart', this.allTripsArrowsSource, this.mouseEnterArrow)
     },
     mouseEnterArrow(e) {
       const feature = e.features[0]
