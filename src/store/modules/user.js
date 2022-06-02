@@ -304,7 +304,11 @@ const actions = {
               window.OneSignal.setExternalUserId(state.user.id + '', state.user.attributes.userIdAuthHash))
           }
           if (isCapacitor()) {
-            await setFirebaseToken(dispatch, state)
+            try {
+              await setFirebaseToken(dispatch, state)
+            } catch (e) {
+              console.error(e)
+            }
           }
           resolve()
         })
