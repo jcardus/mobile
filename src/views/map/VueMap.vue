@@ -181,6 +181,8 @@ export default {
           this.$store.commit(mutation)
           if (event.type === 'close') {
             this.$log.warn('socket closed!')
+            traccar.positions().then(d => d.data)
+              .then(positions => this.updateMarkers(positions.sort((a, b) => a.fixTime === b.fixTime ? 0 : a.fixTime < b.fixTime ? -1 : 1)))
             setTimeout(() => {
               this.connectSocket()
               this.$store.commit('SOCKET_RECONNECT', socketReconnect++)
