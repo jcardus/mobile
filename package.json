@@ -89,7 +89,7 @@
   "devDependencies": {
     "@babel/core": "7.0.0",
     "@babel/register": "7.0.0",
-    "@capacitor/cli": "^3.2.3",
+    "@capacitor/cli": "^3.5.1",
     "@capacitor/ios": "^3.5.1",
     "@vue/cli-plugin-babel": "3.5.3",
     "@vue/cli-plugin-eslint": "^3.12.1",

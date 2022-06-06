@@ -29,7 +29,9 @@ export default {
     })
   },
   setFirebaseToken(token) {
-    return this.axios.post(`https://${getServerHost()}/pinmeapi/users/firebase`, { token })
+    return this.axios.post(`https://${getServerHost()}/pinmeapi/users/firebase`, token, {
+      withCredentials: true
+    })
   }
 }
 
