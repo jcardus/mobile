@@ -10,7 +10,6 @@ import backend from '@/api/backend'
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
-import { Device } from '@capacitor/device'
 
 const state = {
   user: {
@@ -210,7 +209,7 @@ function isCapacitor() {
 const actions = {
   async setFirebaseToken({ state }, value) {
     await traccar.updateUser(state.user.id, state.user)
-    return backend.setFirebaseToken({ token: value, user: state.user, device: await Device.getId() })
+    return backend.setFirebaseToken({ token: value, user: state.user })
   },
   setOrderDevicesBy({ commit, state }, value) {
     commit('SET_ORDER_DEVICES_BY', value)

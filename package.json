@@ -38,7 +38,6 @@
     "@capacitor/app": "^1.1.1",
     "@capacitor/browser": "^1.0.7",
     "@capacitor/core": "^3.5.1",
-    "@capacitor/device": "^1.1.2",
     "@capacitor/push-notifications": "^1.0.4",
     "@mapbox/mapbox-gl-draw": "^1.2.0",
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",
