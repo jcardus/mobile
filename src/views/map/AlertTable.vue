@@ -57,12 +57,6 @@
               <div style="line-height: normal"><span style="font-size: 12px"><i class="fas fa-car listIcon" style="width: 20px"></i>{{ scope.row.device && scope.row.device.name }}</span></div>
               <div style="line-height: normal">
                 <span style="font-size: 12px">
-                  <i v-if="scope.row.device && scope.row.device.driver.name !== ''" class="fas fa-user listIcon"></i>
-                  {{ scope.row.device && scope.row.device.driver.name }}
-                </span>
-              </div>
-              <div style="line-height: normal">
-                <span style="font-size: 12px">
                   <i v-if="scope.row.type === 'geofenceExit' || scope.row.type === 'geofenceEnter'" class="fas fa-map-marked listIcon" style="width: 20px"></i>
                   <i v-if="scope.row.type === 'deviceOverspeed'" class="fas fa-tachometer-alt listIcon" style="width: 20px"></i>
                   <i v-if="scope.row.type === 'deviceFuelDrop'" class="fas fa-gas-pump listIcon" style="width: 20px"></i>
@@ -99,7 +93,7 @@ export default {
   data() {
     return {
       selectedAlertType: [],
-      alertsSearchPeriod: 'last_one_hour',
+      alertsSearchPeriod: '',
       selected: false,
       loading: false,
       count: 20
@@ -121,10 +115,10 @@ export default {
         events = events.filter(function(row) {
           return Object.keys(row).some(function(key) {
             return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-          })
+          }) || row.device.name.toLowerCase().includes(filterKey.toLowerCase())
         })
       }
-      if (this.selectedAlertType) {
+      if (this.selectedAlertType.length > 0) {
         events = events.filter(e => this.selectedAlertType.includes(e.type))
       }
       events = events.sort((a, b) => {
@@ -185,11 +179,12 @@ export default {
       this.$log.debug('Refresh events list')
       this.loading = true
       const hours = this.getSearchHours()
-      this.$log.debug(hours)
+      const _alertTypes = this.selectedAlertType.length > 0 ? this.selectedAlertType : this.userAlertTypes
+
       await this.$store.dispatch('transient/fetchEvents', {
         start: Vue.moment().subtract(hours, 'hour').toDate(),
         end: new Date(),
-        types: this.alerts
+        types: [...new Set(_alertTypes.map(t => alertType.customAlarmTypes.includes(t) ? 'alarm' : t))]
       })
 
       this.loading = false
@@ -201,9 +196,9 @@ export default {
         case 'last_twelve_hours':
           return 12
         case 'last_twentyfour_hours':
+        default:
           return 24
       }
-      return 1
     },
     alertSelected: function(alert) {
       if (alert) {

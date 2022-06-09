@@ -25,7 +25,7 @@
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
-        <el-tab-pane name="alerts">
+        <el-tab-pane v-if="!isMobile" name="alerts">
           <span slot="label">
             <el-badge :value="unreadItems" :hidden="unreadItems === 0" :max="99">
               <i class="fas fa-bell"></i>

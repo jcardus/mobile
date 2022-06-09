@@ -86,6 +86,12 @@ function getNotificationImage(type) {
   if (type === alertType.driverChanged) {
     return 'fa-address-card'
   }
+  if (type === alertType.alarmIdle) {
+    return 'fas fa-pause'
+  }
+  if (type === alertType.maintenance) {
+    return 'fas fa-wrench'
+  }
   return ''
 }
 
