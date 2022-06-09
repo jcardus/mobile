@@ -78,7 +78,7 @@ steps:
     script: |
       echo fs $(FASTLANE_SESSION)
       echo using profile $(provProfile.secureFilePath)
-      npm install
+      npm install --legacy-peer-deps
 
 - task: Bash@3
   displayName: 'Deploy'
