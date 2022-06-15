@@ -1,7 +1,6 @@
 import { traccar, login, logout } from '@/api/traccar-api'
 import { serverBus, vm } from '@/main'
 import Vue from 'vue'
-import { checkForUpdates } from '@/utils/utils'
 import settings from '../../settings'
 import { setLanguage } from '@/lang'
 import { Auth } from '@aws-amplify/auth'
@@ -324,29 +323,20 @@ const actions = {
   },
   login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const user = response.data
-        commit('SET_USER', user)
-        dispatch('setUser').finally(() => {
-          checkForUpdates()
-          resolve()
+    return Auth.signIn(username.trim().toLowerCase(), password)
+      .then(() => api.getJSessionId().then(() => { window.location.href = '/' }))
+      .catch(e => {
+        const errorMessage = e.message || e
+        console.error(errorMessage)
+        return login({ username: username.trim(), password: password }).then(response => {
+          const user = response.data
+          commit('SET_USER', user)
+          return dispatch('setUser')
+        }).catch(async e => {
+          commit('CLEAR_USER')
+          throw e
         })
-      }).catch(async e => {
-        Vue.$log.error(e)
-        commit('CLEAR_USER')
-        try {
-          const result = await Auth.signIn(username.trim().toLowerCase(), password)
-          await api.getJSessionId()
-          window.location.href = '/'
-          Vue.$log.debug(result)
-        } catch (e) {
-          const errorMessage = e.message || e
-          Vue.$log.error(errorMessage)
-          reject(errorMessage)
-        }
       })
-    })
   },
   async logout({ commit }) {
     try {
