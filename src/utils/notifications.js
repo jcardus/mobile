@@ -5,7 +5,12 @@ import * as alertType from '@/alerts/alertType'
 export function convertEvents(events, isNew) {
   const filteredData = events.filter(a => {
     const currentAlertType = a.type === 'alarm' ? a.attributes.alarm : a.type
-    return alertType.alertTypes.includes(currentAlertType)
+    const alert = vm.$store.getters.alerts.find(a => a.notification.type === 'alarm'
+      ? a.notification.attributes.alarms === currentAlertType
+      : a.notification.type === currentAlertType)
+
+    return alertType.alertTypes.includes(currentAlertType) &&
+      (alert && (alert.notification.always || alert.devices.find(d => d.id === a.deviceId)))
   })
   filteredData.sort(function(a, b) {
     const diff = Date.parse(b.serverTime) - Date.parse(a.serverTime)
@@ -20,22 +25,6 @@ export function convertEvents(events, isNew) {
   })
 
   return filteredData
-  /*
-  return filteredData.map(a => {
-    const alarmType = a.type === 'alarm' ? a.attributes.alarm : a.type
-    return {
-      id: a.id,
-      positionId: a.positionId,
-      timestamp: a.serverTime,
-      title: vm.$store.getters.devices.find(d => d.id === a.deviceId).name,
-      content: getNotificationContent(a),
-      type: alarmType,
-      description: vm.$t('settings.alert_' + alarmType),
-      image: getNotificationImage(alarmType),
-      color: getNotificationColor(alarmType),
-      isNew: isNew
-    }
-  })*/
 }
 
 export function addEventInfo(e, isNew = false) {
