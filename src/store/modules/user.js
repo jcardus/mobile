@@ -254,29 +254,22 @@ const actions = {
   removeUser({ commit }, user) {
     commit('REMOVE_USER', user)
   },
-  checkSession({ dispatch, commit }) {
-    return new Promise((resolve) => {
-      Vue.$log.info('user/checkSession')
-      traccar.getSession().then((s) => {
-        commit('SET_USER', s)
-        resolve()
-        dispatch('setUser')
-      }).catch((e) => {
-        Vue.$log.warn('no session, checking cognito', e)
-        api.getJSessionId('')
-          .then(() => {
-            traccar.getSession().then((s) => {
-              commit('SET_USER', s)
-              resolve()
-              dispatch('setUser')
-            }).catch(e => resolve(e))
-          })
-          .catch(e => {
-            Vue.$log.warn('no session, should go to login', e)
-            dispatch('clearUser').then(() => resolve())
-          })
-      })
-    })
+  async checkSession({ dispatch, commit }) {
+    try {
+      const session = await Auth.currentSession()
+      const token = session.accessToken.getJwtToken()
+      commit('SET_COGNITO_TOKEN', token)
+      await api.getJSessionId(token)
+    } catch (e) {
+      console.warn('no cognito session', e)
+    }
+    try {
+      commit('SET_USER', await traccar.getSession())
+      await dispatch('setUser')
+    } catch (e) {
+      console.warn('no session, should go to login', e)
+      await dispatch('clearUser')
+    }
   },
   setUser({ commit, state, dispatch }) {
     return new Promise((resolve) => {

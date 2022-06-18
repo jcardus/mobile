@@ -1,23 +1,18 @@
 import { getServerHost } from './index'
 import axios from 'axios'
-import { Auth } from '@aws-amplify/auth'
-import Vue from 'vue'
 const url = 'https://' + getServerHost() + '/backend'
 
 export default {
   axios: axios.create(),
-  getJSessionId() {
-    return this.get('/api?username=1')
+  getJSessionId(token) {
+    return this.get('/api?username=1', token)
   },
   getCookie(jsessionid) {
     return this.axios.get(url + '/api?jsessionid=' + jsessionid, {
       withCredentials: true
     })
   },
-  async get(path) {
-    const session = await Auth.currentSession()
-    const token = session.accessToken.getJwtToken()
-    Vue.$store.commit('user/SET_COGNITO_TOKEN', token)
+  async get(path, token) {
     return this.axios.get(url + path, {
       withCredentials: true,
       headers: {

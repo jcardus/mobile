@@ -11,7 +11,7 @@
       </f7-list-item>
       <f7-list-item :title="$t('email')" :after="$store.getters.user.email">
       </f7-list-item>
-      <f7-list-item :title="$t('session')" :after="$store.getters.cognitoToken">
+      <f7-list-item :title="$t('session')" :after="$store.state.user.cognitoToken !== null ? 'cognito' : ''">
       </f7-list-item>
       <f7-list-item title="Url" :after="host">
       </f7-list-item>
