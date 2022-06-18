@@ -17,6 +17,7 @@ const state = {
     phone: '',
     attributes: {}
   },
+  cognitoToken: null,
   alerts: [],
   devices: [],
   groups: [],
@@ -26,8 +27,8 @@ const state = {
 }
 
 const mutations = {
-  SET_FIREBASE_TOKEN(state, token) {
-    state.user.attributes.firebaseToken = token
+  SET_COGNITO_TOKEN(state, token) {
+    state.cognitoToken = token
   },
   SET_EMAIL_AUTH_HASH(state, hash) {
     state.user.attributes.emailAuthHash = hash
@@ -67,15 +68,6 @@ const mutations = {
   SET_ALERTS(state, alerts) {
     Vue.$log.debug('SET_ALERTS', alerts)
     state.alerts = alerts
-  },
-  SET_GROUPS(state, groups) {
-    state.groups = groups
-  },
-  SET_DRIVERS(state, drivers) {
-    state.drivers = drivers
-  },
-  SET_USERS(state, users) {
-    state.users = users
   },
   ADD_DRIVER(state, driver) {
     state.drivers.push(driver)

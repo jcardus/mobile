@@ -1,4 +1,5 @@
 const getters = {
+  cognitoSession: state => state.user.cognitoToken,
   showFullDate: state => state.settings.showFullDate,
   totalDistance: state => state.transient.totalDistance,
   summary: state => state.transient.summary,

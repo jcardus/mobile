@@ -9,6 +9,10 @@
       </f7-list-item>
       <f7-list-item :title="$t('login.login_user')" :after="user">
       </f7-list-item>
+      <f7-list-item :title="$t('email')" :after="$store.getters.user.email">
+      </f7-list-item>
+      <f7-list-item :title="$t('session')" :after="$store.getters.cognitoToken">
+      </f7-list-item>
       <f7-list-item title="Url" :after="host">
       </f7-list-item>
     </f7-list>
@@ -26,7 +30,7 @@ export default {
       return hostname
     },
     user() {
-      return this.$store.getters.user.name + ' ' + this.$store.getters.user.email
+      return this.$store.getters.user.name
     },
     offline() {
       return appOffline()
