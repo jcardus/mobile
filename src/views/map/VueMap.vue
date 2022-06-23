@@ -48,6 +48,8 @@ import { getServerHost, isDevEnv } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
+import { getPartnerData } from 'fleetmap-partners'
+import { pinmeapi } from '@/api/pinme'
 
 let socketReconnect = 0
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
@@ -244,14 +246,16 @@ export default {
     initData() {
       Vue.$log.debug('VueMap')
       traccar.positions().then(({ data }) => {
-        this.processPositions(data)
-        this.geofencesSource.features = this.processGeofences(this.geofences)
-        this.refreshGeofences()
-        Vue.$log.debug('finishLoading')
-        this.finishLoading()
-        NProgress.done()
-        this.initialized = true
-        this.connectSocket()
+        this.getDevicesIgnitionOffDate().then((devicesIgnitionOffDate) => {
+          this.processPositions(data, devicesIgnitionOffDate)
+          this.geofencesSource.features = this.processGeofences(this.geofences)
+          this.refreshGeofences()
+          Vue.$log.debug('finishLoading')
+          this.finishLoading()
+          NProgress.done()
+          this.initialized = true
+          this.connectSocket()
+        })
       })
     },
     finishLoading() {
@@ -670,12 +674,6 @@ export default {
           'coordinates': [position.longitude, position.latitude]
         }
       }
-      if (!position.attributes.ignition) {
-        Vue.$log.debug(device.name, position, 'ignition off checking last one')
-        if (this.$moment().diff(this.$moment(position.fixTime), 'days') < 6) {
-          this.$store.dispatch('user/setDeviceLastIgnOff', { device, fixTime: position.fixTime })
-        }
-      }
       this.updateDeviceAndFeature(feature, device, position)
       return feature
     },
@@ -689,7 +687,17 @@ export default {
       this.updateDevice(position, feature, device)
       this.updateFeature(feature, position)
     },
-    processPositions(positions) {
+    async getDevicesIgnitionOffDate() {
+      try {
+        if (getPartnerData(window.location.hostname).showStopDate) {
+          return await pinmeapi.getAll()
+        }
+      } catch (error) {
+        Vue.$log.error(error)
+      }
+      return []
+    },
+    processPositions(positions, devicesIgnitionOffDate) {
       for (const position of positions) {
         const device = this.deviceById(position.deviceId)
         if (!device) {
@@ -701,6 +709,12 @@ export default {
         }
         let feature = this.findFeatureByDeviceId(position.deviceId)
         if (!feature) {
+          if (devicesIgnitionOffDate && devicesIgnitionOffDate.length) {
+            const deviceIgnitionOff = devicesIgnitionOffDate.find(d => d.deviceId === device.id)
+            if (!position.attributes.ignition && deviceIgnitionOff) {
+              device.lastStop = deviceIgnitionOff.ignitionOffDate
+            }
+          }
           feature = this.positionToFeature(position, device)
           this.positionsSource.features.push(feature)
         } else {

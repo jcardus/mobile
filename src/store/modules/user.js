@@ -211,28 +211,6 @@ const actions = {
       commit('SET_DEVICE', state.devices[0])
     }
   },
-  setDeviceLastIgnOff({ commit, state }, { device, fixTime }) {
-    if (!settings.getLastIgnitionOff) return
-
-    const end = new Date()
-    const start = Vue.moment(fixTime).subtract(60, 'day').toDate()
-    traccar.report_events(start, end, [device.id], ['ignitionOff']).then(r => {
-      const eventsReceived = r.map(d => d.data).flat()
-      if (eventsReceived.length > 0) {
-        const lastIgnOff = eventsReceived.splice(-1)[0]
-        Vue.$log.debug('lastIgnOff', device, lastIgnOff)
-        device.lastUpdate = lastIgnOff.serverTime
-        commit('SET_DEVICE', device)
-        /* traccar.position(lastIgnOff.deviceId, lastIgnOff.positionId).then(r => {
-          if (r.data.length > 0) {
-            Vue.$log.debug('lastIgnOff Position ', r.data[0])
-            device.lastUpdate = r.data[0].fixTime
-            commit('SET_DEVICE', device)
-          }
-        })*/
-      }
-    })
-  },
   updateDevice({ commit }, device) {
     commit('SET_DEVICE', device)
   },

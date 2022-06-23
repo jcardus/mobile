@@ -135,7 +135,12 @@
               <span style="font-size: 12px; word-break: normal; white-space: nowrap;"><i class="fas fa-home addressIcon"></i>{{ scope.row.position && scope.row.position.address && scope.row.position.address.replace('&\#39;', '\'') }}</span>
             </div>
             <div style="padding-bottom: 8px; line-height: normal; float:left">
-              <span v-if="scope.row.lastUpdate" style="font-size: 12px"><i class="fas fa-clock timeIcon" style="width: 20px"></i>{{ scope.row.lastUpdate | formatLastUpdate }}</span>
+              <span v-if="getDeviceState(scope.row)==='Stopped' && (scope.row.lastStop || scope.row.lastUpdate)" style="font-size: 12px">
+                <i :class="getClockClass(scope.row)" style="width: 20px"></i>{{ (scope.row.lastStop || scope.row.lastUpdate) | formatLastUpdate }}
+              </span>
+              <span v-if="getDeviceState(scope.row)!=='Stopped' && scope.row.lastUpdate" style="font-size: 12px">
+                <i :class="getClockClass(scope.row)" style="width: 20px"></i>{{ scope.row.lastUpdate | formatLastUpdate }}
+              </span>
             </div>
             <immobilize-button
               style="padding:0;float: right"
@@ -454,6 +459,19 @@ export default {
     getPOIName(poiId) {
       const poi = this.pois.find(p => p.id === poiId)
       return poi && poi.name
+    },
+    getClockClass(device) {
+      const state = this.getDeviceState(device)
+      if (state === 'Stopped') {
+        return 'fas fa-clock timeIcon stopIcon'
+      }
+      if (state === 'Moving') {
+        return 'fas fa-clock timeIcon movingIcon'
+      }
+      if (state === 'Idle') {
+        return 'fas fa-clock timeIcon idleIcon'
+      }
+      return 'fas fa-clock timeIcon'
     }
   }
 }

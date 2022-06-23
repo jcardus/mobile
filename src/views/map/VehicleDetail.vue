@@ -40,8 +40,9 @@
               <i class="fak fa-windshield--2-" :style="`color:${currentPosition.attributes.rain === 'rain'?'#3D993D':'#219FD7'}; padding-right:2px; padding-left:2px`"></i>
             </el-tooltip>
           </span>
-          <span v-if="!routePoint">{{ formatLastUpdate(device.lastUpdate) }}</span>
-          <span v-if="routePoint">{{ formatLastUpdate(currentPosition.fixTime) }}</span>
+          <span v-if="!routePoint && getDeviceState(device)==='Stopped' && device.lastStop">{{ device.lastStop | formatLastUpdate }}</span>
+          <span v-else-if="!routePoint">{{ device.lastUpdate | formatLastUpdate }}</span>
+          <span v-if="routePoint">{{ currentPosition.fixTime | moment('LL') }} {{ currentPosition.fixTime | moment('LTS') }}</span>
         </div>
         <IOdometer
           class="iOdometer"
@@ -92,10 +93,16 @@ import 'odometer/themes/odometer-theme-car.css'
 import IOdometer from 'vue-odometer'
 import { mapGetters } from 'vuex'
 import { isMobile } from '@/utils/lnglat'
+import * as utils from '@/utils/utils'
 
 export default {
   name: 'VehicleDetail',
   components: { IOdometer, ImmobilizeButton },
+  filters: {
+    formatLastUpdate(value) {
+      return vm.$store.getters.showFullDate ? new Date(value).toLocaleString() : vm.$moment(value).fromNow()
+    }
+  },
   static() {
     return {
       mly: null
@@ -158,8 +165,8 @@ export default {
     Vue.$log.debug('mounted VehicleDetail ', this.device.name, this.device, this.feature)
   },
   methods: {
-    formatLastUpdate(value) {
-      return vm.$store.getters.showFullDate ? new Date(value).toLocaleString() : vm.$moment(value).fromNow()
+    getDeviceState(device) {
+      return utils.getDeviceState(device.position)
     },
     fuelLevelStatus(fuelLevel) {
       const fuelLevelStatus = fuelLevel > 40 ? 'fuelLevelNormalIcon' : (fuelLevel > 20 ? 'fuelLevelLowIcon' : 'fuelLevelVeryLowIcon')
