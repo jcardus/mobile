@@ -51,10 +51,10 @@ export default {
     serverBus.$on('eventsActive', this.pageShown)
   },
   methods: {
-    pageShown() {
+    async pageShown() {
       this.$store.commit('transient/SET_LOADING', true)
-      this.$store.dispatch('resetUnreadItems')
-      this.$store.dispatch('transient/fetchEvents', {
+      await this.$store.dispatch('resetUnreadItems')
+      await this.$store.dispatch('transient/fetchEvents', {
         start: new Date(new Date().setHours(-2)),
         end: new Date(),
         types: [...new Set(this.userAlertTypes.map(t => alertType.customAlarmTypes.includes(t) ? 'alarm' : t))]
