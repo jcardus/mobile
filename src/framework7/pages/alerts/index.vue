@@ -1,5 +1,5 @@
 <template>
-  <f7-page>
+  <f7-page v-loading="loading">
     <f7-navbar :title="$t('route.alerts')">
       <f7-nav-right>
         <f7-link class="searchbar-enable" icon-ios="f7:search" icon-aurora="f7:search" icon-md="material:search"></f7-link>
@@ -42,7 +42,7 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['events', 'alerts']),
+    ...mapGetters(['events', 'alerts', 'loading']),
     userAlertTypes() {
       return alertType.alertTypes.filter(a => this.alerts.map(a => this.getAlertType(a)).includes(a))
     }
