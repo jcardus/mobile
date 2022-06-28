@@ -6,7 +6,7 @@
       <f7-list v-if="alert">
         <f7-list-item
           :title="alert.device && alert.device.name"
-          :after="alert.device && alert.device.position && new Date(alert.device.position.fixTime).toLocaleString()"
+          :after="position && new Date(position.fixTime).toLocaleString()"
         />
         <f7-list-item :after="alert.content" />
       </f7-list>
