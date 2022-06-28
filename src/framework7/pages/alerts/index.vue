@@ -52,14 +52,14 @@ export default {
   },
   methods: {
     pageShown() {
-      console.log(this.userAlertTypes)
-
+      this.$store.commit('transient/SET_LOADING', true)
       this.$store.dispatch('resetUnreadItems')
       this.$store.dispatch('transient/fetchEvents', {
         start: new Date(new Date().setHours(-2)),
         end: new Date(),
         types: [...new Set(this.userAlertTypes.map(t => alertType.customAlarmTypes.includes(t) ? 'alarm' : t))]
       })
+      this.$store.commit('transient/SET_LOADING', false)
     },
     getAlertType(item) {
       if (item.notification.type === 'alarm') {
