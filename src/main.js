@@ -25,6 +25,7 @@ console.log('app starting...', process.env)
 import * as Sentry from '@sentry/browser'
 import { Integrations } from '@sentry/tracing'
 import { Browser } from '@capacitor/browser'
+import { checkUpdate } from '@/utils/updates'
 
 Sentry.init({
   Vue,
@@ -141,6 +142,7 @@ if (!Capacitor.isNativePlatform()) {
     }
     window.location.href = '/'
   })
+  checkUpdate().then().catch(e => console.error(e))
 }
 
 const moment = require('moment')
