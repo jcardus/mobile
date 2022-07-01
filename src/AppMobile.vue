@@ -42,9 +42,8 @@
               <img class="logo" :src="logo" alt="">
             </div>
           </f7-login-screen-title>
-          <f7-list form>
+          <f7-list v-if="showLogin" form>
             <f7-list-input
-              v-if="!isCapacitor"
               name="username"
               :placeholder="$t('login.login_user')"
               type="text"
@@ -54,7 +53,6 @@
               <f7-icon slot="media" icon="fas fa-user" style="font-size:20px"></f7-icon>
             </f7-list-input>
             <f7-list-input
-              v-if="!isCapacitor"
               autocomplete="on"
               name="password"
               :placeholder="$t('login.login_password')"
@@ -100,7 +98,7 @@ import * as partner from './utils/partner'
 import { mapGetters } from 'vuex'
 import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
-import { forgotPassword, getGoogleLogin, signUp } from './api'
+import { forgotPassword, signUp } from './api'
 import * as event from './events'
 import AppleButton from '@/views/login/AppleButton'
 import { Capacitor } from '@capacitor/core'
@@ -142,8 +140,8 @@ export default {
     platform() {
       return Capacitor.getPlatform()
     },
-    googleLogin() {
-      return getGoogleLogin()
+    showLogin() {
+      return !this.isCapacitor || process.env.SOCIAL_SIGN_IN === false
     },
     domain() {
       return window.location.hostname

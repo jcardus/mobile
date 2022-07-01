@@ -5,6 +5,7 @@ export AUTH_DOMAIN=auth.localizalia.com
 export APP_NAME=Localizalia
 export PACKAGE_NAME=com.fleetmap.localizalia
 export HOST_NAME=plataforma.localizalia.com
+export SOCIAL_SIGN_IN=false
 
 mobile/build.sh "$1"
 
