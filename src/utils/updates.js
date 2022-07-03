@@ -1,11 +1,13 @@
 import { AppUpdate } from '@robingenz/capacitor-app-update'
+import { send } from '@/api/cloudwatch'
 
 export const checkUpdate = async() => {
   const currVersion = await getCurrentAppVersion()
   const availVersion = await getAvailableAppVersion()
-  console.log(currVersion, availVersion)
   if (currVersion !== availVersion) {
-    console.log('new version available!')
+    send(`new version available! ${currVersion} ${availVersion}`).then()
+  } else {
+    send(`no new version available! ${currVersion} ${availVersion}`).then()
   }
 }
 

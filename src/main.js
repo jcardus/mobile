@@ -19,6 +19,7 @@ import AppMobile from './AppMobile'
 import { Auth } from '@aws-amplify/auth'
 import { App } from '@capacitor/app'
 import { f7 } from 'framework7-vue'
+import { send } from './api/cloudwatch'
 
 console.log('app starting...', process.env)
 
@@ -49,6 +50,7 @@ Vue.config.errorHandler = (err, vm, info) => {
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
   console.error(err)
+  send(err).then()
 }
 
 Vue.use(elTableInfiniteScroll)
@@ -66,7 +68,6 @@ const options = {
 
 Vue.use(VueLogger, options)
 Vue.config.lang = getLanguage().slice(2)
-console.log('lang', Vue.config.lang)
 
 switch (Vue.config.lang) {
   case 'ES':
@@ -127,12 +128,11 @@ if (!Capacitor.isNativePlatform()) {
     Vue.$log.warn('no service Worker support, weird browser...')
   }
 } else {
-  Vue.$log.info('listening for appUrlOpen')
   App.addListener('appUrlOpen', async(data) => {
     if (Capacitor.getPlatform() === 'ios') {
       await Browser.close()
     }
-    Vue.$log.info('appUrlOpen', data)
+    send('appUrlOpen ' + JSON.stringify(data)).then()
     f7.dialog.preloader()
     // noinspection JSAccessibilityCheck
     await Auth._handleAuthResponse(data.url)
@@ -168,7 +168,7 @@ Vue.use(VueI18nFilter)
 
 Vue.use(VueTimers)
 
-Vue.$log.info('starting main instance...', location.href)
+// send('starting main instance... ' + location.href).then()
 export const sharedData = new SharedData()
 
 export const vm = new Vue({

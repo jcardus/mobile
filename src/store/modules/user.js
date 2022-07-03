@@ -9,6 +9,7 @@ import backend from '@/api/backend'
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
+import { send } from '@/api/cloudwatch'
 
 const state = {
   user: {
@@ -276,6 +277,7 @@ const actions = {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
         .finally(async() => {
+          send('user logged in: ' + state.user.email).then()
           setLanguage(state.user.attributes.lang)
           await dispatch('setEmailAuthHash')
           await dispatch('setUserIdAuthHash')

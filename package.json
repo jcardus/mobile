@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.15.9",
+  "version": "2.16.0",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -33,6 +33,7 @@
   "dependencies": {
     "@aws-amplify/auth": "^3.4.13",
     "@aws-amplify/core": "^3.8.5",
+    "@aws-sdk/client-cloudwatch-logs": "^3.121.0",
     "@capacitor-community/fcm": "^2.0.2",
     "@capacitor/android": "^3.2.3",
     "@capacitor/app": "^1.1.1",
