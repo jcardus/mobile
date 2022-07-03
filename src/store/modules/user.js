@@ -316,7 +316,7 @@ const actions = {
         console.log('session', session)
         const token = session.accessToken.getJwtToken()
         commit('SET_COGNITO_TOKEN', token)
-        api.getJSessionId(token).then(() => { window.location.href = '/' })
+        await api.getJSessionId(token)
       })
       .catch(e => {
         const errorMessage = e.message || e
