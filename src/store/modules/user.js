@@ -311,7 +311,13 @@ const actions = {
   login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
     return Auth.signIn(username.trim().toLowerCase(), password)
-      .then(() => api.getJSessionId().then(() => { window.location.href = '/' }))
+      .then(async() => {
+        const session = await Auth.currentSession()
+        console.log('session', session)
+        const token = session.accessToken.getJwtToken()
+        commit('SET_COGNITO_TOKEN', token)
+        api.getJSessionId(token).then(() => { window.location.href = '/' })
+      })
       .catch(e => {
         const errorMessage = e.message || e
         console.error(errorMessage)
