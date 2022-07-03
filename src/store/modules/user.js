@@ -316,7 +316,7 @@ const actions = {
         console.log('session', session)
         const token = session.accessToken.getJwtToken()
         commit('SET_COGNITO_TOKEN', token)
-        await api.getJSessionId(token)
+        api.getJSessionId(token).then(() => { window.location.href = Capacitor.isNativePlatform() ? '/' : '/mobile' })
       })
       .catch(e => {
         const errorMessage = e.message || e
