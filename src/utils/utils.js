@@ -1,5 +1,7 @@
 import { vm, newServiceWorker, sharedData } from '@/main'
 import Vue from 'vue'
+import { Capacitor } from '@capacitor/core'
+import { openAppStore, performImmediateUpdate } from '@/utils/updates'
 
 export class SharedData {
   positions = null
@@ -104,7 +106,9 @@ function filterPosition(p) {
 }
 
 export function reload() {
-  if (newServiceWorker) {
+  if (Capacitor.isNativePlatform()) {
+    if (Capacitor.getPlatform() === 'android') { performImmediateUpdate().then() } else { openAppStore().then() }
+  } else if (newServiceWorker) {
     Vue.$log.info(newServiceWorker, 'skipWaiting!')
     newServiceWorker.postMessage({ action: 'skipWaiting' })
     window.location.reload()
