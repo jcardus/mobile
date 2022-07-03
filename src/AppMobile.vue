@@ -56,11 +56,14 @@
               autocomplete="on"
               name="password"
               :placeholder="$t('login.login_password')"
-              type="password"
+              :type="showPassword?'text':'password'"
               :value="password"
               @input="password = $event.target.value"
             >
               <f7-icon slot="media" icon="fas fa-unlock-alt" style="font-size:20px"></f7-icon>
+              <div slot="content-end" @click="showPassword=!showPassword">
+                <f7-icon :icon="`fas fa-eye${showPassword?'-slash':''}`" style="font-size:20px"></f7-icon>
+              </div>
             </f7-list-input>
           </f7-list>
           <f7-list>
@@ -110,6 +113,7 @@ export default {
   components: { AppleButton, GoogleButton, DataContainer },
   data() {
     return {
+      showPassword: false,
       username: '',
       password: '',
       f7params: {
@@ -141,7 +145,7 @@ export default {
       return Capacitor.getPlatform()
     },
     showLogin() {
-      return !this.isCapacitor || process.env.SOCIAL_SIGN_IN === false
+      return !this.isCapacitor || process.env.SOCIAL_SIGN_IN === 'false'
     },
     domain() {
       return window.location.hostname
@@ -222,7 +226,7 @@ export default {
       })
     },
     signIn() {
-      if (this.isCapacitor) {
+      if (!this.showLogin) {
         return this.nativeSignIn()
       }
       const self = this
