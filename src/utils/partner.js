@@ -1,5 +1,6 @@
 import styles from '../styles/element-variables.scss'
-import { getPartnerData } from 'fleetmap-partners'
+import { getPartnerData, partnerData } from 'fleetmap-partners'
+import { Capacitor } from '@capacitor/core'
 
 export const hostname = window.location.hostname.replace('dev.', '')
 
@@ -28,6 +29,18 @@ export function getCSSName() {
 
 export function getTitle() {
   return getPartnerData(window.location.hostname).title || 'Fleetmap'
+}
+
+export function showStopDate() {
+  const data = _getPartnerData()
+  return data && data.showStopDate
+}
+
+function _getPartnerData() {
+  if (Capacitor.isNativePlatform()) {
+    return partnerData.find(p => process.env.COGNITO_CLIENT_ID === p.cognitoClientId)
+  }
+  return getPartnerData(window.location.hostname)
 }
 
 export function getOneSignalAppId() {

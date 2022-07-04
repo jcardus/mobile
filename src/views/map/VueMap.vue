@@ -48,8 +48,8 @@ import { getServerHost, isDevEnv } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
-import { getPartnerData } from 'fleetmap-partners'
 import { pinmeapi } from '@/api/pinme'
+import { showStopDate } from '@/utils/partner'
 
 let socketReconnect = 0
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
@@ -689,7 +689,7 @@ export default {
     },
     async getDevicesIgnitionOffDate() {
       try {
-        if (getPartnerData(window.location.hostname).showStopDate) {
+        if (showStopDate()) {
           return await pinmeapi.getAll()
         }
       } catch (error) {
