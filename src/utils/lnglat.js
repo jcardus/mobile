@@ -374,6 +374,9 @@ export function updateDevice(position, feature, device) {
     device.attributes.commandPending = false
   }
   device.attributes.immobilized = immobilized
+  if (device.position && device.position.attributes.ignition && !position.attributes.ignition) {
+    device.lastStop = position.fixTime
+  }
   device.position = position
 }
 
