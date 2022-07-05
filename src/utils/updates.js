@@ -16,7 +16,7 @@ export const checkUpdate = async() => {
 
 async function parseVersion(version) {
   try {
-    return parseInt(version.replaceAll('.', ''))
+    return parseInt(version.replace(/./g, ''))
   } catch (e) {
     await send('parseVersion: ' + e.message)
     console.error(e)
