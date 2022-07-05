@@ -255,7 +255,7 @@ const actions = {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
         .finally(async() => {
-          send('user logged in: ' + state.user.email).then()
+          await send('user logged in: ' + state.user.email)
           setLanguage(state.user.attributes.lang)
           await dispatch('setEmailAuthHash')
           await dispatch('setUserIdAuthHash')

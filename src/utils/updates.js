@@ -6,10 +6,10 @@ export const checkUpdate = async() => {
   const currVersion = parseVersion(await getCurrentAppVersion())
   const availVersion = parseVersion(await getAvailableAppVersion())
   if (currVersion < availVersion) {
-    send(`new version available! ${currVersion} ${availVersion}`).then()
+    await send(`new version available! ${currVersion} ${availVersion}`)
     serverBus.$emit('updateAvailable')
   } else {
-    send(`no new version available! ${currVersion} ${availVersion}`).then()
+    await send(`no new version available! ${currVersion} ${availVersion}`).then()
   }
 }
 

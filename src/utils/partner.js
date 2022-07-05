@@ -1,7 +1,6 @@
 import styles from '../styles/element-variables.scss'
 import { getPartnerData, getPartnerId, getPartnerHost } from 'fleetmap-partners'
 import { Capacitor } from '@capacitor/core'
-import { send } from '@/api/cloudwatch'
 
 export const hostname = window.location.hostname.replace('dev.', '')
 
@@ -39,7 +38,6 @@ export function showStopDate() {
 
 function _getPartnerData() {
   const hostname = Capacitor.isNativePlatform() ? getPartnerHost(getPartnerId(process.env.COGNITO_CLIENT_ID)) : window.location.hostname
-  send('got hostname ' + hostname).then()
   return getPartnerData(hostname)
 }
 
