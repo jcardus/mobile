@@ -9,7 +9,7 @@ export const checkUpdate = async() => {
     await send(`new version available! ${currVersion} ${availVersion}`)
     serverBus.$emit('updateAvailable')
   } else {
-    await send(`no new version available! ${await getCurrentAppVersion()} ${await getAvailableAppVersion()}
+    await send(`no new version available! ${(await getCurrentAppVersion()).replace(/./g, '')} ${await getAvailableAppVersion()}
       ${currVersion} ${availVersion}`)
   }
 }

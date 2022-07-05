@@ -1,5 +1,8 @@
 import { CloudWatchLogsClient, PutLogEventsCommand, CreateLogStreamCommand } from '@aws-sdk/client-cloudwatch-logs'
 import { Device } from '@capacitor/device'
+import { Capacitor } from '@capacitor/core'
+
+const native = Capacitor.isNativePlatform()
 const client = new CloudWatchLogsClient({
   region: 'us-east-1',
   credentials: {
@@ -18,7 +21,7 @@ let sequenceToken = null
 export const send = async(message) => {
   try {
     const device = await _info
-    message = `${device.uuid} - ${process.env.PACKAGE_VERSION} - ${message}`
+    message = `${device.uuid} - ${process.env.PACKAGE_VERSION} ${!native ? '- web' : ''} - ${message}`
     await _createLogStream
     const command = new PutLogEventsCommand({
       sequenceToken,
