@@ -18,7 +18,7 @@ let sequenceToken = null
 export const send = async(message) => {
   try {
     const device = await _info
-    message = device.uuid + ' - ' + message
+    message = `${device.uuid} - ${process.env.PACKAGE_VERSION} - ${message}`
     await _createLogStream
     const command = new PutLogEventsCommand({
       sequenceToken,

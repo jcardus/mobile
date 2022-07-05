@@ -50,7 +50,7 @@ Vue.config.errorHandler = (err, vm, info) => {
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
   console.error(err)
-  send(err).then()
+  send(err).then(() => send(infoMessage))
 }
 
 Vue.use(elTableInfiniteScroll)
