@@ -3,8 +3,8 @@ import { send } from '@/api/cloudwatch'
 import { serverBus } from '@/main'
 
 export const checkUpdate = async() => {
-  const currVersion = parseVersion(await getCurrentAppVersion())
-  const availVersion = parseVersion(await getAvailableAppVersion())
+  const currVersion = await parseVersion(await getCurrentAppVersion())
+  const availVersion = await parseVersion(await getAvailableAppVersion())
   if (currVersion < availVersion) {
     await send(`new version available! ${currVersion} ${availVersion}`)
     serverBus.$emit('updateAvailable')
@@ -14,10 +14,11 @@ export const checkUpdate = async() => {
   }
 }
 
-function parseVersion(version) {
+async function parseVersion(version) {
   try {
     return parseInt(version.replaceAll('.', ''))
   } catch (e) {
+    await send('parseVersion: ' + e.message)
     console.error(e)
     return 0
   }
