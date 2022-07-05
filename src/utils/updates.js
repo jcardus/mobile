@@ -9,14 +9,13 @@ export const checkUpdate = async() => {
     await send(`new version available! ${currVersion} ${availVersion}`)
     serverBus.$emit('updateAvailable')
   } else {
-    await send(`no new version available! ${(await getCurrentAppVersion()).replace(/./g, '')} ${await getAvailableAppVersion()}
-      ${currVersion} ${availVersion}`)
+    await send(`no new version available! ${currVersion} ${availVersion}`)
   }
 }
 
 async function parseVersion(version) {
   try {
-    return parseInt(version.replace(/./g, ''))
+    return parseInt(version.replace(/\./g, ''))
   } catch (e) {
     await send('parseVersion: ' + e.message)
     console.error(e)
