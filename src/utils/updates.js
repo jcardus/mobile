@@ -1,16 +1,15 @@
 import { AppUpdate, AppUpdateAvailability } from '@robingenz/capacitor-app-update'
 import { send } from '@/api/cloudwatch'
 import { serverBus } from '@/main'
-import store from '../store'
 
 export const checkUpdate = async() => {
   const currVersion = parseVersion(await getCurrentAppVersion())
   const availVersion = parseVersion(await getAvailableAppVersion())
   if (currVersion < availVersion) {
-    await send(`${store.getters.user.email}: new version available! ${currVersion} ${availVersion}`)
+    await send(`new version available! ${currVersion} ${availVersion}`)
     serverBus.$emit('updateAvailable')
   } else {
-    await send(`${store.getters.user.email}: no new version available! ${currVersion} ${availVersion}`)
+    await send(`no new version available! ${currVersion} ${availVersion}`)
   }
 }
 
