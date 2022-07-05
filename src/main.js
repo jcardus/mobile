@@ -43,7 +43,7 @@ Vue.config.errorHandler = (err, vm, info) => {
   }
 
   // Emit component name and also the lifecycle hook the error occurred in if present
-  let infoMessage = `Error in component: <${vm.$options.name} />\n`
+  let infoMessage = `Error in component: ${vm.$options.name}\n`
   if (info) {
     infoMessage += `Error occurred during lifecycle hook: ${info}\n`
   }

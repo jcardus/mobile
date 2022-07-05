@@ -277,7 +277,7 @@ export default {
       lnglat.updateDonuts()
     },
     updateAvailable() {
-      this.toastNewVersion.open()
+      // this.toastNewVersion.open()
     }
   }
 }
