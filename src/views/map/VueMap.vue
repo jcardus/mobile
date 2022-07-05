@@ -50,6 +50,7 @@ import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
 import { showStopDate } from '@/utils/partner'
+import { send } from '@/api/cloudwatch'
 
 let socketReconnect = 0
 const historyPanelHeight = lnglat.isMobile() ? 200 : 280
@@ -151,18 +152,23 @@ export default {
     Vue.$log.warn('VueMap beforeDestroy')
     this.unsubscribeEvents()
   },
-  mounted() {
-    this.$log.debug('VueMap')
-    NProgress.start()
-    this.parentHeight = this.$parent.$el.clientHeight
-    mapboxgl.accessToken = this.accessToken
-    this.$root.$static.map = new mapboxgl.Map({
-      container: 'map',
-      style: this.mapStyle,
-      attributionControl: false
-    })
-    this.setZoomAndCenter()
-    this.subscribeEvents()
+  async mounted() {
+    try {
+      this.$log.debug('VueMap')
+      NProgress.start()
+      this.parentHeight = this.$parent.$el.clientHeight
+      mapboxgl.accessToken = this.accessToken
+      this.$root.$static.map = new mapboxgl.Map({
+        container: 'map',
+        style: this.mapStyle,
+        attributionControl: false
+      })
+      this.setZoomAndCenter()
+      this.subscribeEvents()
+    } catch (e) {
+      console.error(e)
+      await send(e.message)
+    }
   },
   timers: {
     checkUpdates: { time: 60000, autostart: true, repeat: true },
