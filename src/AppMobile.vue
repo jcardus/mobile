@@ -107,6 +107,7 @@ import AppleButton from '@/views/login/AppleButton'
 import { Capacitor } from '@capacitor/core'
 import { Browser } from '@capacitor/browser'
 import { awsConfig } from '@/amplify'
+import { send } from '@/api/cloudwatch'
 
 export default {
   name: 'AppMobile',
@@ -277,7 +278,22 @@ export default {
       lnglat.updateDonuts()
     },
     updateAvailable() {
-      // this.toastNewVersion.open()
+      try {
+        if (!this.toastNewVersion) {
+          this.toastNewVersion = this.$f7.toast.create({
+            text: this.$t('layout.newVersion'),
+            closeButton: true,
+            closeButtonColor: 'white',
+            on: {
+              close: reload
+            }
+          })
+        }
+        this.toastNewVersion.open()
+      } catch (e) {
+        console.error(e)
+        send(e.message).then()
+      }
     }
   }
 }
