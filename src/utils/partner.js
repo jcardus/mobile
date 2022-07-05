@@ -1,6 +1,7 @@
 import styles from '../styles/element-variables.scss'
-import { getPartnerData, partnerData } from 'fleetmap-partners'
+import { getPartnerData, getPartnerId, getPartnerHost } from 'fleetmap-partners'
 import { Capacitor } from '@capacitor/core'
+import { send } from '@/api/cloudwatch'
 
 export const hostname = window.location.hostname.replace('dev.', '')
 
@@ -37,10 +38,9 @@ export function showStopDate() {
 }
 
 function _getPartnerData() {
-  if (Capacitor.isNativePlatform()) {
-    return partnerData.find(p => process.env.COGNITO_CLIENT_ID === p.cognitoClientId)
-  }
-  return getPartnerData(window.location.hostname)
+  const hostname = Capacitor.isNativePlatform() ? getPartnerHost(getPartnerId(process.env.COGNITO_CLIENT_ID)) : window.location.hostname
+  send('got hostname ' + hostname).then()
+  return getPartnerData(hostname)
 }
 
 export function getOneSignalAppId() {
