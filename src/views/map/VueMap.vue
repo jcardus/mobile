@@ -172,7 +172,6 @@ export default {
   },
   timers: {
     checkUpdates: { time: 60000, autostart: true, repeat: true },
-    ping: { time: 30000, autostart: true, repeat: true },
     setTime: { time: 5000, autostart: true, repeat: true }
   },
   methods: {
@@ -235,22 +234,17 @@ export default {
       // this will update VehicleTable
       this.$store.dispatch('user/refreshDevices')
     },
-    ping() {
-      if (this.userLoggedIn) {
-        traccar.ping()
-          .then(() => this.$store.dispatch('connectionOk', { state: true }))
-          .catch((e) => {
-            Vue.$log.warn(e)
-            this.$store.dispatch('connectionOk', { state: false })
-            NProgress.done()
-          })
-      }
-    },
     checkUpdates() {
       checkForUpdates()
     },
     initData() {
-      Vue.$log.debug('VueMap')
+      const map = this.$static.map
+      map.loadImage(consts.cdnUrl + '/images/stop-sign.png', function(error, image) {
+        if (error) { throw error }
+        if (!map.hasImage('stop-sign')) {
+          map.addImage('stop-sign', image)
+        }
+      })
       traccar.positions().then(({ data }) => {
         this.getDevicesIgnitionOffDate().then((devicesIgnitionOffDate) => {
           this.processPositions(data, devicesIgnitionOffDate)

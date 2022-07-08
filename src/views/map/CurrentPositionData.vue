@@ -86,7 +86,7 @@ export default {
       formattedDate: '',
       popup: new mapboxgl.Popup({
         closeButton: false,
-        closeOnClick: false,
+        closeOnClick: true,
         className: 'popup-content'
       }),
       isSpeedChartVisible: true,
@@ -318,7 +318,7 @@ export default {
             this.getSpeedTrips(route)
           } else {
             this.drawTrip()
-            this.drawEventsPoints()
+            this.drawEventsPoints(route)
           }
 
           let lastPosition = null
@@ -396,7 +396,7 @@ export default {
       const fromDate = Vue.moment(from).startOf('day').toDate()
       const toDate = Vue.moment(to).endOf('day').toDate()
       const responseEvents = await traccar.report_events(fromDate, toDate, [this.device.id], ['geofenceExit',
-        'geofenceEnter', 'deviceOverspeed', 'deviceFuelDrop', 'driverChanged', 'alarm'])
+        'geofenceEnter', 'deviceOverspeed', 'deviceFuelDrop', 'driverChanged', 'alarm', 'ignitionOff'])
       const events = responseEvents.map(d => d.data).flat()
       Vue.$log.debug('events ', events)
       events.forEach(e => {
@@ -635,8 +635,8 @@ export default {
           trips.push(currentSpeedTrips)
         })
         this.drawTrip()
-        this.drawIdlePoints()
-        this.drawEventsPoints()
+        this.drawIdlePoints(positions)
+        this.drawEventsPoints(positions)
         this.drawSpeedTrip()
       } else {
         Vue.$log.debug('Use road speed limit')
@@ -698,7 +698,7 @@ export default {
       })
 
       this.drawTrip()
-      this.drawIdlePoints()
+      // this.drawIdlePoints(positions)
       this.drawSpeedTrip()
     },
     drawSpeedTrip() {
@@ -758,21 +758,16 @@ export default {
         }
       }
     },
-    drawIdlePoints() {
-      this.$log.debug(this.currentTrip)
-      if (this.currentTrip < 0) return
-
-      const features = this.trips[this.currentTrip].idlePositions.map(p => {
+    drawIdlePoints(positions) {
+      const idlePositions = calculateIdlePositions(positions)
+      const features = idlePositions.map(p => {
         return { type: 'Feature', properties: { idle_time: p.idle_time }, geometry: { type: 'Point', coordinates: [p.longitude, p.latitude] }}
       })
       const idlePointsGeoJSON = lnglat.getGeoJSONFeaturesColletion(features)
       this.createIdleLayer(idlePointsGeoJSON)
     },
-    drawEventsPoints() {
-      this.$log.debug(this.currentTrip)
-      if (this.currentTrip < 0) return
-
-      const features = this.trips[this.currentTrip].positions.filter(p => p.events).map(p => {
+    drawEventsPoints(positions) {
+      const features = positions.filter(p => p.events).map(p => {
         return p.events.map(e => {
           notifications.addEventInfo(e)
 
@@ -946,7 +941,7 @@ export default {
       vm.$static.map.getCanvas().style.cursor = 'pointer'
 
       const coordinates = e.features[0].geometry.coordinates.slice()
-      const description = e.features[0].properties.idle_time
+      const description = `<span style="padding: 3px">${this.$t('Ralenti')}: ${e.features[0].properties.idle_time}</span>`
 
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
@@ -1130,8 +1125,8 @@ export default {
           this.removeLayers(true)
           this.currentTrip = t
           this.drawTrip()
-          this.drawEventsPoints()
-          this.drawIdlePoints()
+          this.drawEventsPoints(positions)
+          this.drawIdlePoints(positions)
           this.drawSpeedTrip()
         }
         vm.$static.currentFeature.properties.speed = positions[newPos].speed
@@ -1198,7 +1193,7 @@ export default {
     padding: 0;
     text-align: center;
     min-width: 70px;
-    color: white;
+    color: black;
     background-color: #F9B218;
   }
 </style>

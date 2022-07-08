@@ -29,14 +29,10 @@ export default {
       type: 'circle',
       source: id,
       paint: {
-        'circle-radius': {
-          'base': 1.75,
-          'stops': [
-            [12, 5],
-            [22, 20]
-          ]
-        },
-        'circle-color': '#F9B218'
+        'circle-radius': 10,
+        'circle-color': '#F9B218',
+        'circle-stroke-color': 'white',
+        'circle-stroke-width': 1
       }
     }
   },
@@ -62,16 +58,16 @@ export default {
       type: 'symbol',
       source: id,
       layout: {
+        'icon-size': ['case',
+          ['==', ['get', 'type'], 'ignitionOff'], 0.2,
+          1
+        ],
         'icon-image': ['case',
           ['==', ['get', 'type'], 'sos'], 'viewpoint-15',
           ['==', ['get', 'type'], 'deviceFuelDrop'], 'fuel-15',
+          ['==', ['get', 'type'], 'ignitionOff'], 'stop-sign',
           'embassy-15'
-        ],
-        'icon-offset': {
-          stops: [
-            [13, [0, -10]]
-          ]
-        }
+        ]
       }
     }
   },
@@ -122,12 +118,7 @@ export default {
         'text-keep-upright': false
       },
       paint: {
-        'text-color': [
-          'case',
-          ['boolean', ['feature-state', 'hover'], false],
-          styles.primary,
-          'darkslategrey'
-        ],
+        'text-color': ['case', ['==', ['get', 'ignition'], false], styles.danger, ['<', ['get', 'speed'], 2], styles.warning, 'darkslategrey'],
         'text-halo-color': 'hsl(55, 11%, 96%)',
         'text-halo-width': 1,
         'text-opacity': [

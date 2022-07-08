@@ -9,31 +9,9 @@
     >
       <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
     </f7-fab>
-    <div :style="`height: calc(100${vh} - ${height}px) `">
+    <div :style="`height: calc(100${vh})`">
       <VueMap></VueMap>
-      <f7-row v-if="historyMode" style="padding-left: 50px; padding-right: 90px; height: 20px"><f7-col>
-        <f7-range
-          v-if="showSlider"
-          id="range"
-          style="padding-left: 20px"
-          :value="sliderPos"
-          :max="MPos"
-          :min="mPos"
-          :disabled="isPlaying"
-          @range:change="sliderChanged"
-        /></f7-col>
-      </f7-row>
-      <f7-row v-if="historyMode">
-        <f7-col>
-          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="backward_fill" icon-size="40" @click="onClickBack"></f7-link>
-          <f7-link :icon-f7="(isPlaying ? 'pause' : 'play') + '_fill'" style="padding-left: 10px; padding-right: 5px" icon-size="40" @click="onClickPlay"></f7-link>
-          <f7-link :style="'display:' + (isPlaying ? 'none' : '')" icon-f7="forward_fill" icon-size="40" @click="onClickForward"></f7-link>
-        </f7-col>
-      </f7-row>
     </div>
-    <f7-menu v-if="offline" class="offline">
-      <f7-menu-item icon-f7="wifi_slash" class="offlineIcon" @click="clickOffline"></f7-menu-item>
-    </f7-menu>
   </f7-page>
 </template>
 
@@ -66,9 +44,6 @@ export default {
     },
     iphone() {
       return this.$device.iphone
-    },
-    height() {
-      return this.historyMode ? 70 : 0
     },
     vh() {
       return this.portrait ? '%' : 'vh'
