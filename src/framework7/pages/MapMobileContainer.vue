@@ -9,7 +9,7 @@
     >
       <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
     </f7-fab>
-    <div :style="`height: calc(100${vh})`">
+    <div :style="`height: calc(100${vh} - ${height}px))`">
       <VueMap></VueMap>
     </div>
   </f7-page>
@@ -44,6 +44,9 @@ export default {
     },
     iphone() {
       return this.$device.iphone
+    },
+    height() {
+      return this.historyMode ? 70 : 0
     },
     vh() {
       return this.portrait ? '%' : 'vh'
