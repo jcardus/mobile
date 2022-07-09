@@ -53,7 +53,7 @@ import { showStopDate } from '@/utils/partner'
 import { send } from '@/api/cloudwatch'
 
 let socketReconnect = 0
-const historyPanelHeight = lnglat.isMobile() ? 200 : 280
+const historyPanelHeight = 200
 
 function getSocketUrl() {
   const hostName = getServerHost()
