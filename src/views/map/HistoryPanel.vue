@@ -1,6 +1,7 @@
 <template>
+  <!--suppress HtmlUnknownAttribute -->
   <div v-show="historyMode" v-loading="loadingRoutes" class="historyPanel2">
-    <div style="position: relative; height:160px; padding-right: 20px">
+    <div style="position: relative; height:110px; padding-right: 20px">
       <speed-chart :update="updateChart" />
     </div>
   </div>
@@ -255,40 +256,5 @@ export default {
     font-size: 15px;
     margin: 0 !important;
     border-right:0;
-  }
-  .playButtons {
-    padding-top: 10px;
-    padding-right: 20px;
-    padding-left: 10px;
-    color:$--color-primary;
-    display: inline-block;
-    width: 100%;
-    text-align: center;
-    font-size:20px;
-  }
-
-  @media only screen and (min-width: 768px) {
-    input[type=range] {
-      -webkit-appearance: none;
-      width: 100%;
-    }
-    input[type=range]:focus {
-      outline: none;
-    }
-    input[type=range]::-webkit-slider-runnable-track {
-      height: 2px;
-      background: $--color-info;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      box-shadow: 2px 2px 4px $--color-info;
-      background: $--background-color-base;
-      border: 2px solid $--border-base;
-      height: 20px;
-      width: 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      -webkit-appearance: none;
-      margin-top: -10px;
-    }
   }
 </style>

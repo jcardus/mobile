@@ -934,8 +934,6 @@ export default {
       layerManager.hideLayer(this.routeEventsSource, !this.isEventsChartVisible)
     },
     onIdleMouseEnter(e) {
-      vm.$static.map.getCanvas().style.cursor = 'pointer'
-
       const coordinates = e.features[0].geometry.coordinates.slice()
       const description = `<span style="padding: 3px">${this.$t('Ralenti')}: ${e.features[0].properties.idle_time}</span>`
 
@@ -947,10 +945,6 @@ export default {
         .setLngLat(coordinates)
         .setHTML(description)
         .addTo(vm.$static.map)
-    },
-    onIdleMouseLeave() {
-      vm.$static.map.getCanvas().style.cursor = ''
-      this.popup.remove()
     },
     onEventMouseEnter(e) {
       vm.$static.map.getCanvas().style.cursor = 'pointer'
