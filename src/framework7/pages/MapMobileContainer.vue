@@ -9,9 +9,7 @@
     >
       <f7-icon ios="f7:menu" aurora="f7:menu" md="material:menu"></f7-icon>
     </f7-fab>
-    <div :style="`height: calc(100${vh} - ${height}px)`">
-      <VueMap></VueMap>
-    </div>
+    <VueMap></VueMap>
   </f7-page>
 </template>
 
@@ -129,13 +127,6 @@ export default {
 </script>
 
 <style scoped>
-  .offline {
-    float:right;
-    margin-top: 30px;
-  }
-  .offlineIcon {
-    background-color: rgba(0,0,0,0.6);
-  }
   .grid-align-center div[class*="col"] {
     text-align: center;
   }

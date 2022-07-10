@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div id="map" ref="map" class="divMapGL" :style="heightMap"></div>
-    <div v-if="userLoggedIn" id="historyMode" :style="heightHistoryPanel" class="historyPanel">
+    <div ref="historyMode" class="historyPanel">
       <current-position-data v-if="historyMode" class="currentPositionData"></current-position-data>
       <div v-if="historyMode" style="height: 5px"></div>
       <history-panel v-if="historyMode" class="historyPanel"></history-panel>
@@ -53,7 +53,6 @@ import { showStopDate } from '@/utils/partner'
 import { send } from '@/api/cloudwatch'
 
 let socketReconnect = 0
-const historyPanelHeight = 200
 
 function getSocketUrl() {
   const hostName = getServerHost()
@@ -75,7 +74,8 @@ export default {
       imageDownloadQueue: [],
       loadingCount: 0,
       initialized: false,
-      showDirections: false
+      showDirections: false,
+      historyPanelHeight: 0
     }
   },
   computed: {
@@ -84,14 +84,15 @@ export default {
       'showLabels', 'isPlaying', 'vehicles3dEnabled', 'deviceById', 'deviceByName',
       'loading', 'zoom', 'center', 'mapType', 'mapStyle', 'devices'
     ]),
+    loadingRoutes: {
+      get() { return vm.$data.loadingRoutes },
+      set(value) { vm.$data.loadingRoutes = value }
+    },
     userLoggedIn() {
       return this.name !== ''
     },
     heightMap() {
-      return this.historyMode ? 'height: calc(100% - ' + historyPanelHeight + 'px)' : 'height:100%'
-    },
-    heightHistoryPanel() {
-      return this.historyMode ? 'height: ' + historyPanelHeight + 'px' : 'height:0'
+      return 'height: calc(100% - ' + (this.historyPanelHeight) + 'px)'
     },
     popUps: {
       get: function() {
@@ -103,7 +104,7 @@ export default {
         return lnglat.eventPopUps
       }
     },
-    isMobile() { return lnglat.isMobile() },
+    isMobile() { return true },
     positionsSource() { return this.$root.$static.positionsSource },
     geofencesSource() { return this.$root.$static.geofencesSource },
     eventsSource() { return this.$root.$static.eventsSource },
@@ -127,6 +128,11 @@ export default {
     }
   },
   watch: {
+    loadingRoutes() {
+      if (this.historyMode) {
+        setTimeout(() => { this.historyPanelHeight = this.$refs.historyMode.offsetHeight }, 3000)
+      }
+    },
     '$route'(to) {
       if (to.name === 'Map') {
         setTimeout(() => serverBus.$emit(event.mapShow), 500)
@@ -137,10 +143,8 @@ export default {
     this.$log.info('VueMap', this.userLoggedIn)
     NProgress.configure({ showSpinner: false })
     this.setLoading(true)
-    if (this.isMobile) {
-      this.$prompt = this.$f7.dialog.prompt
-      this.$alert = this.$f7.dialog.alert
-    }
+    this.$prompt = this.$f7.dialog.prompt
+    this.$alert = this.$f7.dialog.alert
   },
   static() {
     return {
