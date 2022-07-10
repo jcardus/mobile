@@ -367,8 +367,6 @@ export default {
         }
         if (vm.$static.map.getLayer(this.routeEventsSource)) {
           Vue.$log.debug('removing ', this.routeEventsSource)
-          vm.$static.map.off('mouseenter', this.routeEventsSource, this.onEventMouseEnter)
-          vm.$static.map.off('mouseleave', this.routeEventsSource, this.onEventMouseLeave)
           vm.$static.map.removeLayer(this.routeEventsSource)
           vm.$static.map.removeSource(this.routeEventsSource)
         }
@@ -923,8 +921,7 @@ export default {
       })
       Vue.$log.debug('adding idle layer', idleGeoJSON)
       vm.$static.map.addLayer(routeLayers.idleLayer(this.routeIdleSource))
-      vm.$static.map.on('mouseenter', this.routeIdleSource, this.onIdleMouseEnter)
-      vm.$static.map.on('mouseleave', this.routeIdleSource, this.onIdleMouseLeave)
+      vm.$static.map.on('touchstart', this.routeIdleSource, this.onIdleMouseEnter)
     },
     createEventsLayer(eventsGeoJSON) {
       vm.$static.map.addSource(this.routeEventsSource, {
@@ -933,8 +930,7 @@ export default {
       })
       Vue.$log.debug('adding events layer', eventsGeoJSON)
       vm.$static.map.addLayer(routeLayers.eventsLayer(this.routeEventsSource))
-      vm.$static.map.on('mouseenter', this.routeEventsSource, this.onEventMouseEnter)
-      vm.$static.map.on('mouseleave', this.routeEventsSource, this.onEventMouseLeave)
+      vm.$static.map.on('touchstart', this.routeEventsSource, this.onEventMouseEnter)
       layerManager.hideLayer(this.routeEventsSource, !this.isEventsChartVisible)
     },
     onIdleMouseEnter(e) {

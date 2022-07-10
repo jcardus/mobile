@@ -133,6 +133,11 @@ export default {
         setTimeout(() => { this.historyPanelHeight = this.$refs.historyMode.offsetHeight }, 3000)
       }
     },
+    historyMode() {
+      if (!this.historyMode) {
+        this.historyPanelHeight = 0
+      }
+    },
     '$route'(to) {
       if (to.name === 'Map') {
         setTimeout(() => serverBus.$emit(event.mapShow), 500)
@@ -573,12 +578,8 @@ export default {
       this.$static.map.off('style.load', this.onStyleLoad)
       this.$static.map.off('move', this.onMove)
       this.$static.map.off('moveend', this.onMoveEnd)
-      this.$static.map.off('mouseenter', vehiclesLayer, this.mouseEnter)
-      this.$static.map.off('mouseleave', vehiclesLayer, this.mouseLeave)
       this.$static.map.off('touchstart', 'pois', this.onClickTouchPois)
       this.$static.map.off('click', 'pois', this.onClickTouchPois)
-      this.$static.map.off('mouseenter', 'pois', this.mouseEnter)
-      this.$static.map.off('mouseleave', 'pois', this.mouseLeave)
       this.$static.map.off('draw.create', this.drawCreate)
       this.$static.map.off('draw.delete', this.drawDelete)
       this.$static.map.off('draw.update', this.drawUpdate)
