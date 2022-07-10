@@ -186,7 +186,7 @@ export default {
         return this.$moment(vm.$data.routeMaxDate).format('YYYY-MM-DD')
       },
       set(newVal) {
-        vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').toDate()
+        vm.$data.routeMaxDate = this.$moment(newVal, 'YYYY-MM-DD').endOf('day').toDate()
       }
     },
     minDate() {
