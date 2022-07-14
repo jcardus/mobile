@@ -25,17 +25,9 @@
         </el-tag>
       </span>
     </span>
-    <div style="padding-top: 5px; overflow: hidden; width:100%">
-      <div style="float:left; ">
-        <label>
-          <input v-model="_minDate" type="date">
-        </label>
-      </div>
-      <div style="float:right">
-        <label>
-          <input v-model="_maxDate" style="float: right" type="date">
-        </label>
-      </div>
+    <div style="padding-top: 5px; width:100%">
+      <input v-model="_minDate" style="float:left; width:calc(50vw - 5px)" type="date">
+      <input v-model="_maxDate" style="float: right; width:calc(50vw - 5px)" type="date">
     </div>
     <div class="textFormat" style="padding-top: 3px; overflow: hidden; width: 100%; white-space: nowrap;">
       {{ formattedDate }} {{ formatAddress }}
