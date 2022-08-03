@@ -52,8 +52,6 @@
             <f7-link popup-close>{{ $t('report.close') }}</f7-link>
           </f7-nav-right>
         </f7-navbar>
-        <vue-pdf-app :config="config" :pdf="pdfRef" style="height: 100%">
-        </vue-pdf-app>
       </f7-page>
     </f7-popup>
   </f7-page>
@@ -65,12 +63,10 @@ import { vm, serverBus } from '@/main'
 import 'jspdf-autotable'
 import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
-import VuePdfApp from 'vue-pdf-app'
-import 'vue-pdf-app/dist/icons/main.css'
+import { Browser } from '@capacitor/browser'
 
 export default {
   name: 'Reports',
-  components: { VuePdfApp },
   data() {
     const dateEnd = new Date()
     dateEnd.setUTCHours(0, 0, 0, 0)
@@ -150,9 +146,9 @@ export default {
         // noinspection JSCheckFunctionSignatures
         this.$f7.dialog.alert(this.$t('report.no_data'))
       } else {
-        const pdfDoc = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
-        this.pdfRef = new Uint8Array(pdfDoc.output('arraybuffer'))
-        this.showPdf = true
+        const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
+        localStorage.setItem('pdf', pdf.output('datauristring'))
+        await Browser.open({ url: '/pdf' })
       }
       this.$f7.preloader.hide()
     }
