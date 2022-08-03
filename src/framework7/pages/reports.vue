@@ -158,7 +158,7 @@ export default {
           if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(url, '_blank') }
         }
       } catch (e) {
-        send('error generating report', e).then()
+        await send('error generating report', e)
         this.$f7.toast.create({
           text: e,
           destroyOnClose: true
