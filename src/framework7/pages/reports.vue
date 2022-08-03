@@ -149,11 +149,9 @@ export default {
       } else {
         const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
         localStorage.setItem('pdf', pdf.output('datauristring'))
-        if (Capacitor.isNativePlatform()) {
-          await Browser.open({ url: '/pdf' })
-        } else {
-          window.open('/pdf', '_blank')
-        }
+        const url = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ':' + window.location.port : ''}/pdf`
+        console.log('url', url)
+        if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(url, '_blank') }
       }
       this.$f7.preloader.hide()
     }
