@@ -153,7 +153,7 @@ export default {
           const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
           const { uuid } = await Device.getId()
           await axios.post('https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/', { id: uuid, name: pdf.output('datauristring') })
-          const url = 'https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/' + uuid
+          const url = 'https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/pdf/' + uuid
           if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(url, '_blank') }
         }
       } catch (e) {
