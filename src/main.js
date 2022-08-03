@@ -20,7 +20,6 @@ import { Auth } from '@aws-amplify/auth'
 import { App } from '@capacitor/app'
 import { f7 } from 'framework7-vue'
 import { send } from './api/cloudwatch'
-import Pdf from './framework7/pages/pdf'
 
 console.log('app starting...', process.env)
 
@@ -169,10 +168,6 @@ Vue.use(VueI18nFilter)
 
 Vue.use(VueTimers)
 
-let mainComponent = AppMobile
-if (window.location.pathname.endsWith('/pdf')) {
-  mainComponent = Pdf
-}
 export const sharedData = new SharedData()
 export const vm = new Vue({
   el: '#app',
@@ -243,7 +238,7 @@ export const vm = new Vue({
   },
   store,
   i18n,
-  render: h => h(mainComponent)
+  render: h => h(AppMobile)
 })
 
 import('./common')

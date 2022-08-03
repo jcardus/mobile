@@ -65,6 +65,8 @@ import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
 import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
+import axios from 'axios'
+import { Device } from '@capacitor/device'
 
 export default {
   name: 'Reports',
@@ -142,16 +144,23 @@ export default {
         useVehicleSpeedLimit: true,
         eventTypes: []
       }
-      const reportData = await reports[this.reportType + 'Report'](this.dateStart, this.dateEnd, userData)
-      if (!reportData || !reportData.length || !reportData[0].devices.length) {
-        // noinspection JSCheckFunctionSignatures
-        this.$f7.dialog.alert(this.$t('report.no_data'))
-      } else {
-        const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
-        localStorage.setItem('pdf', pdf.output('datauristring'))
-        const url = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ':' + window.location.port : ''}/pdf`
-        console.log('url', url)
-        if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(url, '_blank') }
+      try {
+        const reportData = await reports[this.reportType + 'Report'](this.dateStart, this.dateEnd, userData)
+        if (!reportData || !reportData.length || !reportData[0].devices.length) {
+          // noinspection JSCheckFunctionSignatures
+          this.$f7.dialog.alert(this.$t('report.no_data'))
+        } else {
+          const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
+          const { uuid } = await Device.getId()
+          await axios.post('https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/', { id: uuid, name: pdf.output('datauristring') })
+          const url = 'https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/' + uuid
+          if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(url, '_blank') }
+        }
+      } catch (e) {
+        this.$f7.toast.create({
+          text: e,
+          destroyOnClose: true
+        }).open()
       }
       this.$f7.preloader.hide()
     }
