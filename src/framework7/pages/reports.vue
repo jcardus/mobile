@@ -154,7 +154,7 @@ export default {
           const { uuid } = await Device.getId()
           const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
           await axios.post(url, pdf.output('blob'))
-          if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(url, '_blank') }
+          if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(pdf.output('bloburl'), '_blank') }
         }
       } catch (e) {
         this.$f7.toast.create({
