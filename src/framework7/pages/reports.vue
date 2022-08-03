@@ -67,6 +67,7 @@ import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
 import axios from 'axios'
 import { Device } from '@capacitor/device'
+import { send } from '@/api/cloudwatch'
 
 export default {
   name: 'Reports',
@@ -157,6 +158,7 @@ export default {
           if (Capacitor.isNativePlatform()) { await Browser.open({ url }) } else { window.open(url, '_blank') }
         }
       } catch (e) {
+        send('error generating report', e).then()
         this.$f7.toast.create({
           text: e,
           destroyOnClose: true
