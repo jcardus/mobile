@@ -64,6 +64,7 @@ import 'jspdf-autotable'
 import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
 import { Browser } from '@capacitor/browser'
+import { Capacitor } from '@capacitor/core'
 
 export default {
   name: 'Reports',
@@ -148,7 +149,11 @@ export default {
       } else {
         const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
         localStorage.setItem('pdf', pdf.output('datauristring'))
-        await Browser.open({ url: '/pdf' })
+        if (Capacitor.isNativePlatform()) {
+          await Browser.open({ url: '/pdf' })
+        } else {
+          window.open('/pdf', '_blank')
+        }
       }
       this.$f7.preloader.hide()
     }
