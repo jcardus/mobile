@@ -64,7 +64,6 @@ import 'jspdf-autotable'
 import { mapGetters } from 'vuex'
 import { reports } from '@/api/reports'
 import { Browser } from '@capacitor/browser'
-import { Capacitor } from '@capacitor/core'
 import axios from 'axios'
 import { Device } from '@capacitor/device'
 import { send } from '@/api/cloudwatch'
@@ -153,12 +152,8 @@ export default {
         } else {
           const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
           const { uuid } = await Device.getId()
-          let url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
-          if (Capacitor.isNativePlatform()) {
-            await axios.post(url, pdf.output('datauri'))
-          } else {
-            url = pdf.output('bloburi')
-          }
+          const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
+          await axios.post(url, pdf.output('datauri'))
           await Browser.open({ url })
         }
       } catch (e) {
