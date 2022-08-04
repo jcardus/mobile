@@ -152,14 +152,14 @@ export default {
           this.$f7.dialog.alert(this.$t('report.no_data'))
         } else {
           const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
+          const { uuid } = await Device.getId()
+          let url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
           if (Capacitor.isNativePlatform()) {
-            const { uuid } = await Device.getId()
-            const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
             await axios.post(url, pdf.output('datauri'))
-            await Browser.open({ url })
           } else {
-            window.open(pdf.output('bloburi'), '_blank')
+            url = pdf.output('bloburi')
           }
+          await Browser.open({ url })
         }
       } catch (e) {
         await send('error generating report', e)
