@@ -44,9 +44,6 @@
       <f7-block>
         <f7-button large raised fill @click="submitReport">{{ $t('report.generate_report') }}</f7-button>
       </f7-block>
-      <f7-block>
-        <f7-link v-if="url" :href="url" external>{{ $t('Abrir relatório') }}</f7-link>
-      </f7-block>
     </f7-list>
   </f7-page>
 </template>
@@ -153,15 +150,14 @@ export default {
           if (Capacitor.isNativePlatform()) {
             await Browser.open({ url })
           } else {
-            this.toastNewVersion = this.$f7.toast.create({
+            this.$f7.toast.create({
               text: this.$t('Clique aqui para vizualizar o relatório'),
               closeButton: true,
               closeButtonColor: 'white',
               on: {
                 close: async() => Browser.open({ url })
               }
-            })
-            this.url = url
+            }).open()
           }
         }
       } catch (e) {
