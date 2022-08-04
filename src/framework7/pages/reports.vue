@@ -150,14 +150,9 @@ export default {
           if (Capacitor.isNativePlatform()) {
             await Browser.open({ url })
           } else {
-            this.$f7.toast.create({
-              text: '',
-              closeButtonText: this.$t('Clique aqui para vizualizar o relatório'),
-              closeButton: true,
-              closeButtonColor: 'white',
-              on: {
-                close: async() => Browser.open({ url })
-              }
+            this.$f7.dialog.create({
+              closeByBackdropClick: true,
+              content: `<a class="link external" href="${url}" target="_blank">${this.$t('Clique aqui para vizualizar o relatório.')}</a>`
             }).open()
           }
         }
