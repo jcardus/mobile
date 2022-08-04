@@ -45,15 +45,6 @@
         <f7-button large raised fill @click="submitReport">{{ $t('report.generate_report') }}</f7-button>
       </f7-block>
     </f7-list>
-    <f7-popup :opened="showPdf" @popup:closed="showPdf = false">
-      <f7-page>
-        <f7-navbar>
-          <f7-nav-right>
-            <f7-link popup-close>{{ $t('report.close') }}</f7-link>
-          </f7-nav-right>
-        </f7-navbar>
-      </f7-page>
-    </f7-popup>
   </f7-page>
 </template>
 
@@ -67,6 +58,7 @@ import { Browser } from '@capacitor/browser'
 import axios from 'axios'
 import { Device } from '@capacitor/device'
 import { send } from '@/api/cloudwatch'
+import { Capacitor } from '@capacitor/core'
 
 export default {
   name: 'Reports',
@@ -84,7 +76,7 @@ export default {
       reportType: null,
       selectedDevices: [],
       selectedGeofences: [],
-      pdfRef: ''
+      url: ''
     }
   },
   computed: {
@@ -154,7 +146,11 @@ export default {
           const { uuid } = await Device.getId()
           const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
           await axios.post(url, pdf.output('datauri'))
-          await Browser.open({ url })
+          if (Capacitor.isNativePlatform()) {
+            await Browser.open({ url })
+          } else {
+            this.url = url
+          }
         }
       } catch (e) {
         this.$alert(e)
