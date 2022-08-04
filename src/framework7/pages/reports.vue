@@ -44,6 +44,9 @@
       <f7-block>
         <f7-button large raised fill @click="submitReport">{{ $t('report.generate_report') }}</f7-button>
       </f7-block>
+      <f7-block>
+        <f7-link v-if="url" :href="url" external>{{ $t('Abrir relatório') }}</f7-link>
+      </f7-block>
     </f7-list>
   </f7-page>
 </template>
