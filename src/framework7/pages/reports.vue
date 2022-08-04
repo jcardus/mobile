@@ -153,6 +153,14 @@ export default {
           if (Capacitor.isNativePlatform()) {
             await Browser.open({ url })
           } else {
+            this.toastNewVersion = this.$f7.toast.create({
+              text: this.$t('Clique aqui para vizualizar o relatório'),
+              closeButton: true,
+              closeButtonColor: 'white',
+              on: {
+                close: async() => Browser.open({ url })
+              }
+            })
             this.url = url
           }
         }
