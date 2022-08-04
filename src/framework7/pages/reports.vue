@@ -148,7 +148,8 @@ export default {
           const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
           const { uuid } = await Device.getId()
           const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
-          await axios.post(url, pdf.output('datauri'))
+          console.log(pdf.output('datauristring'))
+          await axios.post(url, pdf.output('datauristring'))
           if (Capacitor.isNativePlatform()) {
             await Browser.open({ url })
           } else {
