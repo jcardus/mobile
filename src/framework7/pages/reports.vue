@@ -157,11 +157,8 @@ export default {
           await Browser.open({ url })
         }
       } catch (e) {
+        this.$alert(e)
         await send('error generating report', e)
-        this.$f7.toast.create({
-          text: e,
-          destroyOnClose: true
-        }).open()
       }
       this.$f7.preloader.hide()
     }
