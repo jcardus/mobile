@@ -151,7 +151,8 @@ export default {
             await Browser.open({ url })
           } else {
             this.$f7.toast.create({
-              text: this.$t('Clique aqui para vizualizar o relatório'),
+              text: '',
+              closeButtonText: this.$t('Clique aqui para vizualizar o relatório'),
               closeButton: true,
               closeButtonColor: 'white',
               on: {
