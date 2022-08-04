@@ -61,7 +61,6 @@ import { Browser } from '@capacitor/browser'
 import axios from 'axios'
 import { Device } from '@capacitor/device'
 import { send } from '@/api/cloudwatch'
-import { Capacitor } from '@capacitor/core'
 
 export default {
   name: 'Reports',
@@ -148,13 +147,8 @@ export default {
           const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
           const { uuid } = await Device.getId()
           const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
-          console.log(pdf.output('datauristring'))
           await axios.post(url, pdf.output('datauristring'))
-          if (Capacitor.isNativePlatform()) {
-            await Browser.open({ url })
-          } else {
-            this.url = url
-          }
+          await Browser.open({ url })
         }
       } catch (e) {
         this.$alert(e)
