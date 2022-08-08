@@ -147,7 +147,7 @@ export default {
           const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
           console.log(pdf.output('datauristring'))
           await axios.post(url, pdf.output('datauristring'))
-          if (Capacitor.isNativePlatform()) {
+          if (Capacitor.getPlatform() === 'ios') {
             await Browser.open({ url })
           } else {
             this.$f7.dialog.create({

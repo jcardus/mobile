@@ -1,4 +1,6 @@
+// noinspection JSNonASCIINames,NonAsciiCharacters
 export default {
+  'Clique aqui para vizualizar o relatório.': 'Haga click aqui para vizualizar el informe',
   app: {
     connectionLost: 'Conexion terminada',
     reconnect: 'Desea restabelecer la conexión con el servidor?'
