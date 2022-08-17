@@ -1,12 +1,13 @@
 <template>
   <div class="vehicleDetail">
-    <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
       <div style="float: right">
         <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
-          <div slot="content">{{ currentPosition.latitude }}<br />{{ currentPosition.longitude }}</div>
-          <i class="fas fa-globe coordsIcon" @click="copy()"></i>
-        </el-tooltip></div>
+          <a :href="urlStreet" target="_blank">
+            <i class="fas fa-street-view coordsIcon"></i>
+          </a>
+        </el-tooltip>
+      </div>
       <div class="title">
         {{ device.name }}
       </div>
@@ -128,6 +129,9 @@ export default {
   },
   computed: {
     ...mapGetters(['historyMode', 'currentTime', 'followVehicle', 'followVehicleEnabled']),
+    urlStreet() {
+      return `https://www.google.com/maps/@?api=1&map_action=pano&heading=${this.currentPosition.course}&viewpoint=${this.currentPosition.latitude},${this.currentPosition.longitude}`
+    },
     totalDistance() {
       let result = this.currentPosition.attributes.totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
