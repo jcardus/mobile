@@ -4,9 +4,9 @@
     <div style="padding-left: 6px;padding-right: 6px;">
       <div style="float: right">
         <div slot="content">
-          <a :href="urlStreet" target="_blank">
+          <f7-link :href="urlStreet" target="_blank" @click="streetView">
             <i class="fas fa-street-view coordsIcon"></i>
-          </a>
+          </f7-link>
         </div>
       </div>
       <div class="title">
@@ -170,6 +170,9 @@ export default {
     Vue.$log.debug('mounted VehicleDetail ', this.device.name, this.device, this.feature)
   },
   methods: {
+    streetView() {
+      window.open(this.urlStreet, '_top')
+    },
     getDeviceState(device) {
       return utils.getDeviceState(device.position)
     },
