@@ -1,12 +1,13 @@
 <template>
   <div class="vehicleDetail">
+    <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
       <div style="float: right">
-        <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
+        <div slot="content">
           <a :href="urlStreet" target="_blank">
             <i class="fas fa-street-view coordsIcon"></i>
           </a>
-        </el-tooltip>
+        </div>
       </div>
       <div class="title">
         {{ device.name }}
