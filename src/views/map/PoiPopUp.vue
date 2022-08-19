@@ -3,8 +3,8 @@
     <img style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" />
     <div style="width:100%; float:right">
       <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
-        <div slot="content">{{ lngLat[1].toFixed(6) }}<br />{{ lngLat[0].toFixed(6) }}</div>
-        <i class="fas fa-globe coordsIcon" @click="copy()"></i>
+        <div slot="content"></div>
+        <i class="fas fa-street-view coordsIcon" @click="copy()"></i>
       </el-tooltip>
     </div>
     <div class="left">
@@ -12,7 +12,6 @@
     </div>
     <div class="right">
       <f7-link v-if="isMobile" href="#" @click="navigateTo">Navegar</f7-link>
-      <el-link v-else :href="navigateUrl" target="_blank">Navegar</el-link>
     </div>
     <div class="subtitle">
       {{ properties.description }}
@@ -23,8 +22,6 @@
 <script>
 import Vue from 'vue'
 import * as lnglat from '../../utils/lnglat'
-import { isMobile } from '@/utils/lnglat'
-import { serverBus } from '@/main'
 
 export default {
   name: 'PoiPopUp',
@@ -43,7 +40,7 @@ export default {
     const lat = this.lngLat[1].toFixed(6)
     const lon = this.lngLat[0].toFixed(6)
     const ll = `${lat},${lon}`
-    const start = (this.isMobile && this.$device.ios) ? 'maps' : 'https'
+    const start = this.$device.ios ? 'maps' : 'https'
     this.navigateUrl = `${start}://maps.google.com/maps?daddr=${ll}`
   },
   beforeDestroy() {
@@ -55,10 +52,8 @@ export default {
       return win.focus()
     },
     copy() {
-      navigator.clipboard.writeText(this.lngLat[1].toFixed(6) + ',' + this.lngLat[0].toFixed(6))
-      if (isMobile()) {
-        serverBus.$emit('message', this.lngLat[1].toFixed(6) + ',' + this.lngLat[0].toFixed(6))
-      }
+      const url = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${this.lngLat[1]},${this.lngLat[0]}`
+      window.open(url)
     }
   }
 }

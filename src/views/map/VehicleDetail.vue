@@ -248,7 +248,8 @@ export default {
   }
 
   .coordsIcon{
-    color: $--color-primary
+    color: $--color-primary;
+    font-size: 20px;
   }
 
   .marker {width:0; height:0;}

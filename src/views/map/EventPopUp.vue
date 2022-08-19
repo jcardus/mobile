@@ -4,7 +4,7 @@
     <div style="width:100%; float:right">
       <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
         <div slot="content">{{ lngLat[1].toFixed(6) }}<br />{{ lngLat[0].toFixed(6) }}</div>
-        <i class="fas fa-globe coordsIcon" @click="copy()"></i>
+        <i class="fas fa-street-view coordsIcon" @click="copy()"></i>
       </el-tooltip>
     </div>
     <div class="content">
@@ -44,6 +44,12 @@ export default {
   },
   beforeDestroy() {
     Vue.$log.debug('destroying EventPopUp', this.properties)
+  },
+  methods: {
+    copy() {
+      const url = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${this.lngLat[1]},${this.lngLat[0]}`
+      window.open(url)
+    }
   }
 }
 </script>
