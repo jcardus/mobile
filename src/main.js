@@ -24,16 +24,13 @@ import { send } from './api/cloudwatch'
 console.log('app starting...', process.env)
 
 import * as Sentry from '@sentry/browser'
-import { Integrations } from '@sentry/tracing'
 import { Browser } from '@capacitor/browser'
 import { checkUpdate } from '@/utils/updates'
 
 Sentry.init({
   Vue,
   dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749',
-  release: process.env.PACKAGE_VERSION,
-  integrations: [new Integrations.BrowserTracing()],
-  tracesSampleRate: 1.0
+  release: process.env.PACKAGE_VERSION
 })
 
 Vue.config.errorHandler = (err, vm, info) => {
