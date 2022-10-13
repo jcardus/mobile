@@ -4,6 +4,7 @@
     <div style="padding-left: 6px;padding-right: 6px;">
       <div style="float: right">
         <div slot="content">
+          <f7-link v-if="isMobile" href="#" style="padding-right: 10px" @click="navigateTo">Navegar</f7-link>
           <f7-link :href="urlStreet" target="_blank" @click="streetView">
             <i class="fas fa-street-view coordsIcon"></i>
           </f7-link>
@@ -166,10 +167,14 @@ export default {
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
-  mounted: function() {
-    Vue.$log.debug('mounted VehicleDetail ', this.device.name, this.device, this.feature)
-  },
   methods: {
+    navigateTo() {
+      const start = this.$device.ios ? 'maps' : 'https'
+      const ll = `${this.currentPosition.latitude},${this.currentPosition.longitude}`
+      const navigateUrl = `${start}://maps.google.com/maps?daddr=${ll}`
+      const win = window.open(navigateUrl, '_top')
+      return win.focus()
+    },
     streetView() {
       window.open(this.urlStreet, '_top')
     },

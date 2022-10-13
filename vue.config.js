@@ -107,7 +107,6 @@ module.exports = {
   },
   configureWebpack: () => {
     return {
-      devtool: 'source-map',
       name: name,
       externals: {
         'element-ui': 'Element',
@@ -132,15 +131,17 @@ module.exports = {
             accessKeyId: `"${process.env.accessKeyId}"`,
             secretAccessKey: `"${process.env.secretAccessKey}"`
           }}),
-        new ReplaceInFileWebpackPlugin([{
-          dir: 'dist',
-          files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js', 'index.html'],
-          rules: [{
-            search: /version/ig,
-            replace: version
-          }]
-        }]),
-        new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] })
+        new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] }),
+        ...(process.env.NODE_ENV === 'development' ? [] : [
+          new ReplaceInFileWebpackPlugin([{
+            dir: 'dist',
+            files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js', 'index.html'],
+            rules: [{
+              search: /version/ig,
+              replace: version
+            }]
+          }])
+        ])
       ]
     }
   },
