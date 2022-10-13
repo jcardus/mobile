@@ -4,7 +4,7 @@
     <div style="padding-left: 6px;padding-right: 6px;">
       <div style="float: right">
         <div slot="content">
-          <f7-link v-if="isMobile" href="#" style="padding-right: 10px" @click="navigateTo">Navegar</f7-link>
+          <f7-link href="#" style="padding-right: 10px" @click="navigateTo">Navegar</f7-link>
           <f7-link :href="urlStreet" target="_blank" @click="streetView">
             <i class="fas fa-street-view coordsIcon"></i>
           </f7-link>
