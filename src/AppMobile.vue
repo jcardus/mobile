@@ -68,7 +68,9 @@
           </f7-list>
           <f7-list>
             <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
-            <google-button v-if="socialSignIn || platform==='android'" style="width:220px;margin:auto;"></google-button>
+            <f7-list-item>
+              <google-button v-if="socialSignIn || platform==='android'" style="width:220px;margin:auto;"></google-button>
+            </f7-list-item>
             <f7-list-item v-if="socialSignIn && platform==='ios'">
               <f7-link style="margin:auto;">
                 <apple-button :width="220"></apple-button>
