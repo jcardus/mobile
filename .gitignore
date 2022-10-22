@@ -41,3 +41,5 @@ amplifyxc.config
 /ios/App/fastlane/report.xml
 /mobile/Localizalia/resources/android/icon/
 /mobile/Localizalia/resources/android/splash/
+android/
+resources/

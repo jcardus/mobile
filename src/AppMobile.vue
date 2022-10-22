@@ -68,8 +68,8 @@
           </f7-list>
           <f7-list>
             <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
-            <google-button v-if="socialSignIn" style="width:220px;margin:auto;"></google-button>
-            <f7-list-item v-if="socialSignIn">
+            <google-button v-if="socialSignIn || platform==='android'" style="width:220px;margin:auto;"></google-button>
+            <f7-list-item v-if="socialSignIn && platform==='ios'">
               <f7-link style="margin:auto;">
                 <apple-button :width="220"></apple-button>
               </f7-link>
@@ -128,7 +128,7 @@ export default {
   computed: {
     ...mapGetters(['unreadItems', 'user', 'portrait']),
     socialSignIn() {
-      return process.env.SOCIAL_SIGN_IN && !this.isCapacitor
+      return (process.env.SOCIAL_SIGN_IN && !this.isCapacitor) || Capacitor.getPlatform() === 'android'
     },
     signUp() {
       return signUp()
@@ -146,7 +146,7 @@ export default {
       return Capacitor.getPlatform()
     },
     showLogin() {
-      return Capacitor.getPlatform()==='android' || !this.isCapacitor || process.env.SOCIAL_SIGN_IN === 'false'
+      return Capacitor.getPlatform() === 'android' || !this.isCapacitor || process.env.SOCIAL_SIGN_IN === 'false'
     },
     domain() {
       return window.location.hostname
