@@ -146,7 +146,7 @@ export default {
       return Capacitor.getPlatform()
     },
     showLogin() {
-      return !this.isCapacitor || process.env.SOCIAL_SIGN_IN === 'false'
+      return Capacitor.getPlatform()==='android' || !this.isCapacitor || process.env.SOCIAL_SIGN_IN === 'false'
     },
     domain() {
       return window.location.hostname
