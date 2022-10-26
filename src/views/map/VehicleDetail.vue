@@ -135,7 +135,9 @@ export default {
       return `https://www.google.com/maps/@?api=1&map_action=pano&heading=${this.currentPosition.course}&viewpoint=${this.currentPosition.latitude},${this.currentPosition.longitude}`
     },
     totalDistance() {
-      let result = this.currentPosition.attributes.totalDistance / 1000
+      const ignoreOdometer = this.device.attributes['report.ignoreOdometer']
+      const totalDistance = !ignoreOdometer ? (this.currentPosition.attributes.odometer || this.currentPosition.attributes.totalDistance) : this.currentPosition.attributes.totalDistance
+      let result = totalDistance / 1000
       if (result.toFixed(1).slice(-1) === '0') { result += 0.1 }
       return result
     },
