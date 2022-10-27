@@ -113,7 +113,7 @@
               <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i>{{ scope.row.driver.name }}</span>
             </div>
             <div style="line-height: normal">
-              <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road roadIcon"></i>{{ scope.row.position.attributes.totalDistance / 1000 | formatNumber }} km</span>
+              <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road roadIcon"></i>{{ scope.row | formatTotalDistance }} km</span>
               <span v-if="scope.row.position && scope.row.position.fuelLevel" style="padding-left: 25px; font-size: 12px" @click="fuelLevelClick(scope.row)">
                 <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
                   <div slot="content">
@@ -171,6 +171,10 @@ export default {
   name: 'VehicleTable',
   components: { ImmobilizeButton, TripTable },
   filters: {
+    formatTotalDistance(device) {
+      const ignoreOdometer = device.attributes['report.ignoreOdometer']
+      return Math.round((!ignoreOdometer ? (device.position.attributes.odometer || device.position.attributes.totalDistance) : device.position.attributes.totalDistance) / 1000)
+    },
     formatLastUpdate(value) {
       return vm.$store.getters.showFullDate ? new Date(value).toLocaleString() : vm.$moment(value).fromNow()
     },
