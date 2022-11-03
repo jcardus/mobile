@@ -98,7 +98,6 @@ function getAvatar(name) {
 function initData(commit, state, dispatch) {
   return new Promise(async(resolve, reject) => {
     const user = state.user
-    user.attributes.lastHost = window.location.hostname
     user.attributes.lastLogin = new Date()
     try {
       await traccar.updateUser(user.id, user)
