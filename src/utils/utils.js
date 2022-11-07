@@ -2,7 +2,6 @@ import { vm, newServiceWorker, sharedData } from '@/main'
 import Vue from 'vue'
 import { Capacitor } from '@capacitor/core'
 import { checkUpdate, openAppStore, performImmediateUpdate } from '@/utils/updates'
-import { send } from '@/api/cloudwatch'
 
 export class SharedData {
   positions = null
@@ -120,19 +119,8 @@ export function reload() {
 }
 
 export function checkForUpdates() {
-  if (navigator.serviceWorker) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-      if (registrations.length === 0) {
-        Vue.$log.warn('no service worker registrations... thats not good...')
-      }
-      for (const reg of registrations) {
-        reg.update().then(() => Vue.$log.warn('done checking for updates...'))
-      }
-    })
-  } else if (Capacitor.isNativePlatform()) {
-    checkUpdate().then().catch(e => send(e.message).then())
-  } else {
-    send('no serviceWorker and not native, weird browser...').then()
+  if (Capacitor.isNativePlatform()) {
+    checkUpdate().then().catch(e => console.error(e))
   }
 }
 
