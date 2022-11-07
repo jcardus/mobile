@@ -122,6 +122,7 @@ module.exports = {
         new webpack.DefinePlugin({
           'process.mode': '"' + process.env.ENV + '"',
           'process.env': {
+            PACKAGE_NAME: `"${process.env.PACKAGE_NAME}"`,
             COGNITO_CLIENT_ID: `"${process.env.COGNITO_CLIENT_ID}"`,
             AUTH_DOMAIN: `"${process.env.AUTH_DOMAIN}"`,
             REDIRECT_SIGNIN: `"${process.env.REDIRECT_SIGNIN}"`,

@@ -30,7 +30,7 @@ import { checkUpdate } from '@/utils/updates'
 Sentry.init({
   Vue,
   dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749',
-  release: process.env.PACKAGE_VERSION
+  release: process.env.PACKAGE_VERSION + '_' + process.env.PACKAGE_NAME
 })
 
 Vue.config.errorHandler = (err, vm, info) => {
@@ -47,7 +47,6 @@ Vue.config.errorHandler = (err, vm, info) => {
   // This puts the additional error information in the Telemetry Timeline
   console.log(infoMessage)
   console.error(err)
-  send(err).then(() => send(infoMessage))
 }
 
 Vue.use(elTableInfiniteScroll)
