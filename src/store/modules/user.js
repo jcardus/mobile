@@ -98,12 +98,6 @@ function getAvatar(name) {
 function initData(commit, state, dispatch) {
   return new Promise(async(resolve, reject) => {
     const user = state.user
-    user.attributes.lastLogin = new Date()
-    try {
-      await traccar.updateUser(user.id, user)
-    } catch (e) {
-      Vue.$log.error(e)
-    }
     traccar.getInitData(user)
       .then(responses => {
         dispatch('setGeofences', responses[1].data).then(() => {
