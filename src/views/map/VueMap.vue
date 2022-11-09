@@ -733,7 +733,9 @@ export default {
           this.updateDeviceAndFeature(feature, device, position)
         }
       }
-      layerManager.refreshLayers()
+      if (this.loadingCount > 1) {
+        layerManager.refreshLayers()
+      }
     },
     getMatch: function(coordinates, radius, route, timestamps, feature, position) {
       const self = this
