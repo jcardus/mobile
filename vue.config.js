@@ -7,6 +7,7 @@ const version = JSON.parse(packageJson).version || 0
 const webpack = require('webpack')
 const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
+const SentryPlugin = require('@sentry/webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -134,6 +135,12 @@ module.exports = {
           }}),
         new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] }),
         ...(process.env.NODE_ENV === 'development' ? [] : [
+          new SentryPlugin({
+            org: 'pinme-97',
+            project: 'fleetmap',
+            release: version + '_' + (process.env.PACKAGE_NAME || 'mobile_web'),
+            include: './dist'
+          }),
           new ReplaceInFileWebpackPlugin([{
             dir: 'dist',
             files: ['OneSignalSDKWorker.js', 'OneSignalSDKUpdaterWorker.js', 'index.html'],
