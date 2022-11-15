@@ -78,8 +78,9 @@ platform :android do
 end
 
 platform :ios do
-  desc "Push a new beta build to TestFlight"
+  ENV['ITMSTRANSPORTER_FORCE_ITMS_PACKAGE_UPLOAD'] = 'true'
 
+  desc "Push a new beta build to TestFlight"
   lane :beta do
     update_code_signing_settings(
       use_automatic_signing: false,
