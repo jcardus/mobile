@@ -197,9 +197,11 @@ export default {
           this.$store.commit(mutation)
           if (event.type === 'close') {
             this.$log.warn('socket closed!')
-            traccar.positions().then(d => d.data)
-              .then(positions => this.updateMarkers(positions.sort((a, b) => a.fixTime === b.fixTime ? 0 : a.fixTime < b.fixTime ? -1 : 1)))
+            traccar.positions()
+              .then(d => d.data)
               .catch(e => console.warn('probably session timeoud out', e.message))
+              .then(positions => this.updateMarkers(positions.sort((a, b) => a.fixTime === b.fixTime ? 0 : a.fixTime < b.fixTime ? -1 : 1)))
+              .catch(e => console.error(e))
             setTimeout(() => {
               this.connectSocket()
               this.$store.commit('SOCKET_RECONNECT', socketReconnect++)
