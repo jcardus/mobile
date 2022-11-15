@@ -89,6 +89,7 @@ steps:
       export FASTLANE_PASSWORD=$(FASTLANE_PASS)
       export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
       export APP_STORE_CONNECT_API_KEY_KEY_FILEPATH=$(apiKey.secureFilePath)
+      export SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN)
 
       export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileManager.secureFilePath)
       npm run-script build:ios:manager
