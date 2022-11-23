@@ -44,7 +44,6 @@ const mutations = {
     state.user.attributes = { ...state.user.attributes, alertsSearchPeriod }
   },
   SET_GEOFENCES(state, geofences) {
-    console.debug('SET_GEOFENCES', geofences)
     state.geofences = geofences
   },
   SET_DEVICES(state, devices) {

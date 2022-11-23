@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.25.2",
+  "version": "2.25.3",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -35,7 +35,7 @@
     "@aws-amplify/core": "^3.8.5",
     "@aws-sdk/client-cloudwatch-logs": "^3.121.0",
     "@capacitor-community/fcm": "^2.0.2",
-    "@capacitor/android": "^3.2.3",
+    "@capacitor/android": "^4.5.0",
     "@capacitor/app": "^1.1.1",
     "@capacitor/browser": "^1.0.7",
     "@capacitor/core": "^3.5.1",
@@ -89,8 +89,8 @@
   "devDependencies": {
     "@babel/core": "7.0.0",
     "@babel/register": "7.0.0",
-    "@capacitor/cli": "^3.5.1",
-    "@capacitor/ios": "^3.5.1",
+    "@capacitor/cli": "^4.5.0",
+    "@capacitor/ios": "^4.5.0",
     "@sentry/webpack-plugin": "^1.20.0",
     "@vue/cli-plugin-babel": "3.5.3",
     "@vue/cli-plugin-eslint": "^3.12.1",
