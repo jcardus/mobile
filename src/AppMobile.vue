@@ -109,7 +109,6 @@ import AppleButton from '@/views/login/AppleButton'
 import { Capacitor } from '@capacitor/core'
 import { Browser } from '@capacitor/browser'
 import { awsConfig } from '@/amplify'
-import { send } from '@/api/cloudwatch'
 
 export default {
   name: 'AppMobile',
@@ -294,7 +293,6 @@ export default {
         this.toastNewVersion.open()
       } catch (e) {
         console.error(e)
-        send(e.message).then()
       }
     }
   }

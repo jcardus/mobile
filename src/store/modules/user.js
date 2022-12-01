@@ -9,7 +9,6 @@ import backend from '@/api/backend'
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
-import { send } from '@/api/cloudwatch'
 
 const state = {
   user: {
@@ -30,12 +29,6 @@ const state = {
 const mutations = {
   SET_COGNITO_TOKEN(state, token) {
     state.cognitoToken = token
-  },
-  SET_EMAIL_AUTH_HASH(state, hash) {
-    state.user.attributes.emailAuthHash = hash
-  },
-  SET_USERID_AUTH_HASH(state, hash) {
-    state.user.attributes.userIdAuthHash = hash
   },
   SET_ORDER_DEVICES_BY(state, orderDevicesBy) {
     state.user.attributes = { ...state.user.attributes, orderDevicesBy }
@@ -195,10 +188,6 @@ const actions = {
     await traccar.updateUser(state.user.id, state.user)
     return backend.setFirebaseToken({ token: value, user: state.user })
   },
-  setOrderDevicesBy({ commit, state }, value) {
-    commit('SET_ORDER_DEVICES_BY', value)
-    traccar.updateUser(state.user.id, state.user)
-  },
   refreshDevices({ commit, state }) {
     if (state.devices.length > 0) {
       commit('SET_DEVICE', state.devices[0])
@@ -212,18 +201,6 @@ const actions = {
   },
   setDevices({ commit }, devices) {
     commit('SET_DEVICES', devices)
-  },
-  addDriver({ commit }, driver) {
-    commit('ADD_DRIVER', driver)
-  },
-  removeDriver({ commit }, device) {
-    commit('REMOVE_DRIVER', device)
-  },
-  addUser({ commit }, user) {
-    commit('ADD_USER', user)
-  },
-  removeUser({ commit }, user) {
-    commit('REMOVE_USER', user)
   },
   async checkSession({ dispatch, commit }) {
     try {
@@ -247,18 +224,7 @@ const actions = {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))
         .finally(async() => {
-          await send('user logged in: ' + state.user.email)
           setLanguage(state.user.attributes.lang)
-          await dispatch('setEmailAuthHash')
-          await dispatch('setUserIdAuthHash')
-          if (window.OneSignal) {
-            Vue.$log.info('OneSignal setEmail', state.user.email,
-              window.OneSignal.setEmail(state.user.email, {
-                emailAuthHash: state.user.attributes.emailAuthHash
-              }))
-            Vue.$log.info('OneSignal setExternalUserId', state.user.id,
-              window.OneSignal.setExternalUserId(state.user.id + '', state.user.attributes.userIdAuthHash))
-          }
           if (isCapacitor()) {
             try {
               await setFirebaseToken(dispatch, state)
@@ -268,14 +234,6 @@ const actions = {
           }
           resolve()
         })
-    })
-  },
-  getUser({ commit }) {
-    return new Promise((resolve, reject) => {
-      traccar.getUser().then(r => {
-        const user = r.data
-        resolve(commit('SET_USER', user))
-      }).catch(e => reject(e))
     })
   },
   login({ commit, dispatch }, userInfo) {
@@ -303,10 +261,6 @@ const actions = {
   },
   async logout({ commit }) {
     try {
-      if (!Capacitor.isNative) {
-        Vue.$log.info('logout one signal')
-        window.OneSignal.logoutEmail()
-      }
       await logout()
     } catch (e) {
       Vue.$log.error(e)
@@ -324,9 +278,6 @@ const actions = {
   },
   connect({ commit }) {
     commit('CONNECT')
-  },
-  setAlerts({ commit }, alerts) {
-    commit('SET_ALERTS', alerts)
   },
   fetchAlerts({ commit, state }) {
     return traccar.alerts().then(response => {
@@ -452,22 +403,6 @@ const actions = {
     })
   },
   processDevices() {
-  },
-  async setEmailAuthHash({ state, commit }) {
-    try {
-      const r = await backend.getEmailAuthHash(state.user.email, state.user.attributes.lastHost)
-      commit('SET_EMAIL_AUTH_HASH', r.data)
-    } catch (e) {
-      Vue.$log.error(e)
-    }
-  },
-  async setUserIdAuthHash({ state, commit }) {
-    try {
-      const r = await backend.getEmailAuthHash(state.user.id, state.user.attributes.lastHost)
-      commit('SET_USERID_AUTH_HASH', r.data)
-    } catch (e) {
-      Vue.$log.error(e)
-    }
   }
 }
 

@@ -13,6 +13,7 @@
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import '@mapbox/mapbox-gl-traffic/mapbox-gl-traffic.css'
+import 'mapbox-gl/dist/mapbox-gl.css'
 import mapboxgl from 'mapbox-gl'
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
@@ -50,7 +51,6 @@ import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
 import { showStopDate } from '@/utils/partner'
-import { send } from '@/api/cloudwatch'
 
 let socketReconnect = 0
 
@@ -176,7 +176,6 @@ export default {
       this.subscribeEvents()
     } catch (e) {
       console.error(e)
-      await send(e.message)
     }
   },
   timers: {
@@ -856,7 +855,9 @@ export default {
       if (area.startsWith('POLYGON') || area.startsWith('LINE')) { return 'geofence' } else { return 'poi' }
     },
     onMove() {
-      layerManager.refreshLayers()
+      if (this.loadingCount > 1) {
+        layerManager.refreshLayers()
+      }
     },
     onClickTouchPois(e) {
       new mapboxgl.Popup()

@@ -109,11 +109,6 @@ module.exports = {
   configureWebpack: () => {
     return {
       name: name,
-      externals: {
-        'element-ui': 'Element',
-        vue: 'Vue',
-        'mapbox-gl': 'mapboxgl'
-      },
       resolve: {
         alias: {
           '@': resolve('src')
@@ -124,6 +119,7 @@ module.exports = {
           'process.mode': '"' + process.env.ENV + '"',
           'process.env': {
             PACKAGE_NAME: `"${process.env.PACKAGE_NAME}"`,
+            MAPBOX_TOKEN: `"${process.env.MAPBOX_TOKEN}"`,
             COGNITO_CLIENT_ID: `"${process.env.COGNITO_CLIENT_ID}"`,
             AUTH_DOMAIN: `"${process.env.AUTH_DOMAIN}"`,
             REDIRECT_SIGNIN: `"${process.env.REDIRECT_SIGNIN}"`,

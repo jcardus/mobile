@@ -1,16 +1,5 @@
 <template>
   <div>
-    <div v-if="!historyMode">
-      <el-select v-if="!isMobile" v-model="orderedBy" style="margin-bottom: 10px; width: 100%">
-        <el-option
-          v-for="item in orderBy"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-    </div>
     <div v-if="!historyMode" style="margin-bottom: 15px;">
       <el-row type="flex" justify="space-around">
         <el-col :span="4">
@@ -231,21 +220,14 @@ export default {
   },
   computed: {
     ...mapGetters(['loading', 'historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
-    orderedBy: {
-      get() { return this.$store.state.user.user && this.$store.state.user.user.attributes.orderDevicesBy },
-      set(value) { this.$store.dispatch('user/setOrderDevicesBy', value) }
-    },
+    orderedBy: () => 'order_by_vehicle',
     buttonSize() {
-      return this.isMobile ? 'large' : 'mini'
+      return 'large'
     },
     height() {
       if (this.historyMode) { return 108 }
-
       const historyModeHeight = this.historyMode ? styles.vehicleListHeaderHeightHistoryMode : styles.vehicleListHeaderHeight
       return 'calc(100vh - ' + historyModeHeight + ')'
-    },
-    isMobile() {
-      return lnglat.isMobile()
     },
     devicesOnCount() {
       return this.devicesOn.length

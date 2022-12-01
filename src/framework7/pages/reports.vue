@@ -57,7 +57,6 @@ import { reports } from '@/api/reports'
 import { Browser } from '@capacitor/browser'
 import axios from 'axios'
 import { Device } from '@capacitor/device'
-import { send } from '@/api/cloudwatch'
 import { Capacitor } from '@capacitor/core'
 
 export default {
@@ -158,7 +157,6 @@ export default {
         }
       } catch (e) {
         this.$alert(e)
-        await send('error generating report', e)
       }
       this.$f7.preloader.hide()
     }

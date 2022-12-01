@@ -10,7 +10,6 @@ import * as event from './events'
 import './amplify'
 import VueTimers from 'vue-timers'
 import { SharedData } from './utils/utils'
-import * as partner from './utils/partner'
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
@@ -19,18 +18,21 @@ import AppMobile from './AppMobile'
 import { Auth } from '@aws-amplify/auth'
 import { App } from '@capacitor/app'
 import { f7 } from 'framework7-vue'
-import { send } from './api/cloudwatch'
 
 console.log('app starting...', process.env)
 
+import Element from 'element-ui'
+
+Vue.use(Element)
 import * as Sentry from '@sentry/browser'
 import { Browser } from '@capacitor/browser'
 import { checkUpdate } from '@/utils/updates'
-
-Sentry.init({
-  Vue,
-  dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749'
-})
+if (process.env.NODE_ENV !== 'development') {
+  Sentry.init({
+    Vue,
+    dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749'
+  })
+}
 
 Vue.config.errorHandler = (err, vm, info) => {
   // Log properties passed to the component if there are any
@@ -63,19 +65,23 @@ const options = {
 
 Vue.use(VueLogger, options)
 Vue.config.lang = getLanguage().slice(2)
-
+import locale from 'element-ui/lib/locale'
+import langEs from 'element-ui/lib/locale/lang/es'
+import langPt from 'element-ui/lib/locale/lang/pt'
+import langEn from 'element-ui/lib/locale/lang/en'
 switch (Vue.config.lang) {
   case 'ES':
     // eslint-disable-next-line no-undef
-    ELEMENT.locale(ELEMENT.lang.es)
+    // configure language
+    locale.use(langEs)
     break
   case 'PT':
     // eslint-disable-next-line no-undef
-    ELEMENT.locale(ELEMENT.lang.pt)
+    locale.use(langPt)
     break
   default:
     // eslint-disable-next-line no-undef
-    ELEMENT.locale(ELEMENT.lang.en)
+    locale.use(langEn)
 }
 
 export const serverBus = new Vue()
@@ -85,15 +91,6 @@ export let newServiceWorker
 export let regServiceWorker
 
 if (!Capacitor.isNativePlatform()) {
-  window.OneSignal = window.OneSignal || []
-  window.OneSignal.push(() => {
-    const config = {
-      appId: partner.getOneSignalAppId(),
-      allowLocalhostAsSecureOrigin: process.env.ENV !== 'production'
-    }
-    console.log('onesignal config', config)
-    window.OneSignal.init(config)
-  })
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       if (registrations.length === 0) {
@@ -127,7 +124,6 @@ if (!Capacitor.isNativePlatform()) {
     if (Capacitor.getPlatform() === 'ios') {
       await Browser.close()
     }
-    send('appUrlOpen ' + JSON.stringify(data)).then()
     f7.dialog.preloader()
     // noinspection JSAccessibilityCheck
     await Auth._handleAuthResponse(data.url)
