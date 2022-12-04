@@ -12,6 +12,7 @@ import frFRLocale from './frFR'
 import itITLocale from './itIT'
 import store from '../store'
 import moment from 'moment'
+import _locale from 'element-ui/lib/locale'
 
 Vue.use(VueI18n)
 
@@ -67,19 +68,16 @@ export function setLanguage(lang) {
       switch (language) {
         case 'es':
           // eslint-disable-next-line no-undef
-          ELEMENT.locale(ELEMENT.lang.es)
+          // configure language
+          _locale.use(elementEsLocale)
           break
         case 'pt':
           // eslint-disable-next-line no-undef
-          ELEMENT.locale(ELEMENT.lang.pt)
-          break
-        case 'it':
-          // eslint-disable-next-line no-undef
-          ELEMENT.locale(ELEMENT.lang.es)
+          _locale.use(elementPtLocale)
           break
         default:
           // eslint-disable-next-line no-undef
-          ELEMENT.locale(ELEMENT.lang.en)
+          _locale.use(elementEnLocale)
       }
     }
   }
