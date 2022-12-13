@@ -790,6 +790,7 @@ export default {
     drawStartEnd() {
       this.$log.debug(this.currentTrip)
       if (this.currentTrip < 0) return
+      if (!this.trips[this.currentTrip]) return
       const positions = this.trips[this.currentTrip].positions
       const start = [positions[0].longitude, positions[0].latitude]
       const end = [positions[positions.length - 1].longitude, positions[positions.length - 1].latitude]
