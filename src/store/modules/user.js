@@ -209,13 +209,13 @@ const actions = {
       commit('SET_COGNITO_TOKEN', token)
       await api.getJSessionId(token)
     } catch (e) {
-      console.warn('no cognito session', e)
+      console.error('no cognito session', e.message, e)
     }
     try {
       commit('SET_USER', await traccar.getSession())
       await dispatch('setUser')
     } catch (e) {
-      console.warn('no session, should go to login', e)
+      console.error('no traccar session, should go to login', e.message, e)
       await dispatch('clearUser')
     }
   },

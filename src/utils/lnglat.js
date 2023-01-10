@@ -55,15 +55,11 @@ let currentState = null
 
 const colors = [styles.info, styles.success, styles.warning, styles.danger]
 
-const { body } = document
-const WIDTH = 768 // refer to Bootstrap's responsive design
-
 export const popUps = []
 export const eventPopUps = []
 
 export function __isMobile() {
-  const rect = body.getBoundingClientRect()
-  return rect.width - 1 < WIDTH && !location.href.includes('iosdashboard')
+  return true
 }
 export function getGeoJSON(coords) {
   return helpers.featureCollection([helpers.feature(coords)])
