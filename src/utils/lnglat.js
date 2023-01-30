@@ -365,7 +365,14 @@ export function updateDevice(position, feature, device) {
   if (position.attributes.ignition) { device.driver = driver } else if (!device.driver && device.attributes.lastDriverUniqueId) {
     device.driver = store.getters.drivers.find(d => d.uniqueId === device.attributes.lastDriverUniqueId)
   }
-  const immobilized = position.attributes.do1 || position.attributes.out1 || position.attributes.out2 || position.attributes.isImmobilizationOn
+  const immobilized = position.attributes.do1 ||
+    position.attributes.out1 ||
+    position.attributes.out2 ||
+    position.attributes.isImmobilizationOn ||
+    position.attributes.blocked ||
+    (position.attributes.result && position.attributes.result.startsWith('   Cut off the fuel supply Success! Speed:')) ||
+    position.attributes.result === '   Already in the state of fuel supply cut off, the command is not running!'
+
   if (immobilized !== device.attributes.immobilized) {
     device.attributes.commandPending = false
   }
