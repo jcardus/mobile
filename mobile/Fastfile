@@ -78,7 +78,7 @@ platform :android do
 end
 
 platform :ios do
-  ENV['ITMSTRANSPORTER_FORCE_ITMS_PACKAGE_UPLOAD'] = 'true'
+  ENV['ITMSTRANSPORTER_FORCE_ITMS_PACKAGE_UPLOAD'] = 'false'
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
