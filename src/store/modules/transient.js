@@ -14,15 +14,16 @@ const state = {
   portrait: true,
   loading: false,
   summary: [],
-  totalDistance: 0
+  totalDistance: 0,
+  lastUpdate: new Date()
 }
 
 const mutations = {
+  SET_LAST_UPDATE(state, lastUpdate) {
+    state.lastUpdate = lastUpdate
+  },
   SET_TOTAL_DISTANCE(state, value) {
     state.totalDistance = value
-  },
-  SET_SUMMARY(state, value) {
-    state.summary = value
   },
   SET_LOADING(state, value) {
     state.loading = value

@@ -209,6 +209,7 @@ export default {
         }
       })
       socket['onmessage'] = (event) => {
+        this.$store.commit('transient/SET_LAST_UPDATE', new Date())
         if (socketReconnect > 0) {
           socketReconnect = 0
         }
