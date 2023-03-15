@@ -1,0 +1,14 @@
+{
+
+  "writeKey": "a7867182185104484737-e84c1fb56e01541fc158195797b61913448c8c8992126bc4b536917caf277782",
+  "readKey": "a7867182185104484737-df9673860f46564994a8d54600c54fec5e4f83d3a6625527117a2bdcd6b3f93a",
+
+  "upload": {
+    "type": "js",
+    "files": "src/lang/frFR.js"
+  },
+
+  "download": {
+    "files": "src/lang/frFR.js"
+  }
+}
