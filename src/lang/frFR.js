@@ -57,6 +57,8 @@ export default {
     test: 'Notification de test'
   },
   login: {
+    forgotPassword: 'Mot de passe oublié?',
+    register: 'Nouvel utilisateur?',
     login_button: 'Se connecter',
     login_password: 'Mot de passe',
     login_password_warn: 'Le mot de passe ne doit pas comporter moins de 6 chiffres',
