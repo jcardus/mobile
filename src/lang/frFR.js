@@ -141,6 +141,7 @@ export default {
     weekly_reports_tooltip: "Email envoyé semanalmente avec des informations sur l'activité des véhicules"
   },
   report: {
+    trip: 'Rapport de voyage',
     date_end: 'Date de fin',
     date_start: 'Date de début',
     generate_report: 'Générer un rapport',
@@ -154,7 +155,13 @@ export default {
     select_vehicles: 'Sélectionné',
     select_vehicles_placeholder: 'Véhicules',
     selector_search: 'Rechercher',
-    validate_period: 'Veuillez sélectionner une période'
+    validate_period: 'Veuillez sélectionner une période',
+    zone: 'Rapport de zone',
+    location: 'Rapport de position',
+    events: 'Rapport d\'événement',
+    activity: 'Rapport d\'activité',
+    kms: 'Rapport de km',
+    no_data: 'Il n\'y a pas de données pour les véhicules / la période sélectionnés.'
   },
   route: {
     alerts: 'Alertes',
