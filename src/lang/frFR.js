@@ -1,4 +1,5 @@
 export default {
+  'Clique aqui para vizualizar o relatório.': 'Cliquez ici pour voir le rapport.',
   alerts: {
     get_alerts: 'Recevez des notifications',
     title: 'Alertes'
