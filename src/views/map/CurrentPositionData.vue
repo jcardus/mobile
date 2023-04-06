@@ -433,8 +433,8 @@ export default {
           _trips.push({
             positions: locations,
             idlePositions: idlePositions,
-            trip_start_fixtime: self.$moment(t.startTime).format('DD-MM-YYYY HH:mm:ss'),
-            trip_end_fixtime: self.$moment(t.endTime).format('DD-MM-YYYY HH:mm:ss'),
+            trip_start_fixtime: new Date(t.startTime),
+            trip_end_fixtime: t.endTime && new Date(t.endTime),
             trip_end_address: t.endAddress,
             trip_driving_time: t.duration / 1000,
             trip_idle_time: idlePositions.reduce((a, b) => a + b.idleTime, 0) / 1000,
