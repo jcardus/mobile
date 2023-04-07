@@ -22,7 +22,7 @@ export function getServerHost() {
   if (isDevEnv()) {
     return 'localhost:8082'
   }
-  if (hostName === 'localhost' || hostName === 'afconsultingsystems.com') {
+  if (hostName.startsWith('192.168.') || hostName === 'localhost' || hostName === 'afconsultingsystems.com') {
     return 'api.pinme.io'
   }
   if (newDomains.find(d => d === hostName)) { return hostName }

@@ -1,8 +1,7 @@
 <template>
   <div class="mainContainer">
     <div v-if="!tableCollapsed" class="dd-body-inner">
-      <logo-svg v-if="hasSVG" :class="'logo ' + logoClassType"></logo-svg>
-      <img v-else :class="'logo ' + logoClassType" height="44" :src="logoImage" alt="">
+      <img class="logo" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs v-model="selectedTab" stretch>
         <el-tab-pane name="map">
@@ -45,13 +44,12 @@ import GeofenceTable from './GeofenceTable'
 import DriverTable from './DriverTable'
 import VehicleTable from './VehicleTable'
 import * as partner from '../../utils/partner'
-import LogoSvg from '../../layout/components/LogoSvg'
 import { mapGetters } from 'vuex'
 import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'DataContainer',
-  components: { VehicleTable, AlertTable, GeofenceTable, DriverTable, LogoSvg },
+  components: { VehicleTable, AlertTable, GeofenceTable, DriverTable },
   data() {
     return {
       selectedTab: 'map',
@@ -75,9 +73,6 @@ export default {
     },
     logoImage() {
       return partner.getLogo()
-    },
-    logoClassType() {
-      return this.isMobile ? 'logoMobile' : 'logoDesktop'
     }
   },
   watch: {
@@ -95,19 +90,9 @@ export default {
     padding: 5px;
   }
   .logo {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .logoMobile {
-    margin-top: 25px;
     margin-bottom: 0;
   }
-  .logoDesktop {
-    margin-bottom: 5px;
-  }
   .input {
-    padding-top: 5px;
     color: #979797;
   }
 

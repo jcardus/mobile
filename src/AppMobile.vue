@@ -34,7 +34,7 @@
       <f7-page
         :no-toolbar="true"
         login-screen
-        :style="'margin-top: 0 !important;background-size: cover;background-image: url(\'' + imageSrc + '\')'"
+        :style="'margin-top: 0 !important;background-size: cover;background-color: #055ae5'"
       >
         <div class="login_form">
           <f7-login-screen-title>
@@ -101,7 +101,6 @@ import { serverBus } from './main'
 import { reload } from './utils/utils'
 import * as partner from './utils/partner'
 import { mapGetters } from 'vuex'
-import { cdnUrl } from './utils/consts'
 import GoogleButton from './views/login/GoogleButton'
 import { forgotPassword, signUp } from './api'
 import * as event from './events'
@@ -160,9 +159,6 @@ export default {
     },
     ios() {
       return this.$device.ios
-    },
-    imageSrc() {
-      return `${cdnUrl}/images/login_1.jpg`
     }
   },
   beforeDestroy() {
