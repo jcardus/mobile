@@ -34,7 +34,7 @@
       <f7-page
         :no-toolbar="true"
         login-screen
-        :style="'margin-top: 0 !important;background-size: cover;background-color: #055ae5'"
+        :style="'margin-top: 0 !important;background-size: cover;background-color: rgba(0, 0, 0, 0.5)'"
       >
         <div class="login_form">
           <f7-login-screen-title>

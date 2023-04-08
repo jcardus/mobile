@@ -118,6 +118,7 @@ module.exports = {
         new webpack.DefinePlugin({
           'process.mode': '"' + process.env.ENV + '"',
           'process.env': {
+            SERVER_HOST: `"${process.env.SERVER_HOST}"`,
             PACKAGE_NAME: `"${process.env.PACKAGE_NAME}"`,
             MAPBOX_TOKEN: `"${process.env.MAPBOX_TOKEN}"`,
             COGNITO_CLIENT_ID: `"${process.env.COGNITO_CLIENT_ID}"`,

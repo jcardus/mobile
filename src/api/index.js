@@ -1,9 +1,4 @@
 import { awsConfig } from '@/amplify'
-import { newDomains } from 'fleetmap-partners'
-
-export function getGoogleRedirect() {
-  return window.location.hostname === 'localhost' ? 'fleetmap.io' : window.location.hostname
-}
 
 export function getBackendHost() {
   const backendProd = 'xmjth8acs5'
@@ -11,22 +6,8 @@ export function getBackendHost() {
   return `${backendProd}.${backendUrl}`
 }
 
-export function isDevEnv() {
-  console.log(window.location.href)
-  return window.location.hostname.includes('localhost') &&
-    window.location.href.includes('devServer')
-}
-
 export function getServerHost() {
-  const hostName = window.location.hostname
-  if (isDevEnv()) {
-    return 'localhost:8082'
-  }
-  if (hostName.startsWith('192.168.') || hostName === 'localhost' || hostName === 'afconsultingsystems.com') {
-    return 'api.pinme.io'
-  }
-  if (newDomains.find(d => d === hostName)) { return hostName }
-  return 'ws.' + hostName
+  return process.env.SERVER_HOST || `ws.${window.location.hostname}`
 }
 
 function auth(action) {
