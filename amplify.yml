@@ -1,6 +1,5 @@
 version: 0.1
 frontend:
-  env:
   secrets-manager:
     MAPILLARY_TOKEN: arn:aws:secretsmanager:us-east-1:903002861645:secret:mapillary-mr4YB9:token
   phases:
