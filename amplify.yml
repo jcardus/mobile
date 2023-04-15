@@ -9,8 +9,7 @@ frontend:
     # IMPORTANT - Please verify your build commands
     build:
       commands:
-        - echo SERVER_HOST
-        - echo $(SERVER_HOST)
+        - echo $SERVER_HOST
         - npm run build
   artifacts:
     baseDirectory: dist
