@@ -120,17 +120,9 @@ module.exports = {
         new webpack.DefinePlugin({
           'process.mode': '"' + process.env.ENV + '"',
           'process.env': {
-            SERVER_HOST: `"${process.env.SERVER_HOST}"`,
-            PACKAGE_NAME: `"${process.env.PACKAGE_NAME}"`,
-            MAPBOX_TOKEN: `"${process.env.MAPBOX_TOKEN}"`,
-            COGNITO_CLIENT_ID: `"${process.env.COGNITO_CLIENT_ID}"`,
-            AUTH_DOMAIN: `"${process.env.AUTH_DOMAIN}"`,
-            REDIRECT_SIGNIN: `"${process.env.REDIRECT_SIGNIN}"`,
-            SOCIAL_SIGN_IN: `"${process.env.SOCIAL_SIGN_IN}"`,
-            USER_POOL_ID: `"${process.env.USER_POOL_ID}"`,
-            PACKAGE_VERSION: '"' + version + '"',
-            accessKeyId: `"${process.env.accessKeyId}"`,
-            secretAccessKey: `"${process.env.secretAccessKey}"`
+            SERVER_HOST: '"' + process.env.SERVER_HOST + '"',
+            MAPBOX_TOKEN: '"' + process.env.MAPBOX_TOKEN + '"',
+            PACKAGE_VERSION: '"' + version + '"'
           }}),
         new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] }),
         ...(process.env.NODE_ENV === 'development' ? [] : [
