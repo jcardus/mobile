@@ -23,7 +23,9 @@ const name = defaultSettings.title || '' // page title
 const port = 8080
 console.log('process.env.NODE_ENV:', process.env.NODE_ENV)
 console.log('process.env.ENV:', process.env.ENV)
-console.log('process.env.COGNITO_CLIENT_ID', process.env.COGNITO_CLIENT_ID)
+console.log('process.env.COGNITO_CLIENT_ID:', process.env.COGNITO_CLIENT_ID)
+console.log('process.env.SERVER_HOST:', process.env.SERVER_HOST)
+
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   pwa: {
