@@ -98,7 +98,7 @@ module.exports = {
   productionSourceMap: true,
   devServer: {
     disableHostCheck: true,
-    https: false,
+    https: true,
     port: port,
     open: true,
     overlay: {

@@ -1,7 +1,6 @@
 <template>
   <div class="mainContainer">
     <div v-if="!tableCollapsed" class="dd-body-inner">
-      <img class="logo" :src="logoImage" alt="">
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs v-model="selectedTab" stretch>
         <el-tab-pane name="map">

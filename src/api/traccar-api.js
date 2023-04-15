@@ -12,7 +12,6 @@ const events = baseUrl + 'reports/events'
 const positions = baseUrl + 'positions'
 const trips = baseUrl + 'reports/trips'
 const stops = baseUrl + 'reports/stops'
-const summary = baseUrl + 'reports/summary'
 const geoFences = baseUrl + 'geofences'
 const alerts = baseUrl + 'notifications'
 const permissions = baseUrl + 'permissions'
@@ -179,25 +178,29 @@ export const traccar = {
   updateUser(userId, user) {
     return axios.put(users + '/' + userId, user, { withCredentials: true })
   },
-  route: function(deviceId, from, to, onFulfill) {
-    from = Vue.moment(from).startOf('day').toDate()
-    to = Vue.moment(to).endOf('day').toDate()
-    axios.get(route + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true })
-      .then(response => onFulfill(response.data))
-      .catch(reason => {
-        Vue.$log.error(reason)
-      })
+  route(deviceId, from, to) {
+    return axios.get(
+      `${route}?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}`,
+      { withCredentials: true }
+    ).then(d => d.data)
+  },
+  trips(deviceId, from, to) {
+    return axios.get(
+      `${trips}?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}`,
+      { withCredentials: true }
+    ).then(d => d.data)
+  },
+  stops(deviceId, from, to) {
+    return axios.get(
+      `${stops}?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}`,
+      { withCredentials: true }
+    ).then(d => d.data)
   },
   allInOne(deviceId, from, to) {
     return axios.get(
       `${baseUrl}reports/allinone?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}&type=route&type=trips&type=stops&type=summary`,
       { withCredentials: true }
     ).then(r => r.data)
-  },
-  summary: (deviceId, from, to) => {
-    from = Vue.moment(from).startOf('day').toDate()
-    to = Vue.moment(to).endOf('day').toDate()
-    return axios.get(summary + '?nocache=' + new Date().toISOString() + '&deviceId=' + deviceId + '&from=' + from.toISOString() + '&to=' + to.toISOString(), { withCredentials: true })
   },
   positions(positionIds) {
     if (positionIds) {
@@ -215,18 +218,6 @@ export const traccar = {
   },
   position(positionId) {
     return get(positions + '?id=' + positionId)
-  },
-  trips: function(devices, from, to) {
-    to = Vue.moment(to).endOf('day').toDate()
-    return axios.get(trips + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
-      { withCredentials: true })
-  },
-  stops: function(devices, from, to) {
-    to = Vue.moment(to).endOf('day').toDate()
-    return axios.get(stops + '?from=' + from.toISOString() + devices.map(d => '&deviceId=' + d).join('') + '&to=' + to.toISOString(),
-      { withCredentials: true })
-  },
-  stopReceiving: function() {
   },
   newGeofence(name, description, area, onFulfill, onError) {
     const body = {

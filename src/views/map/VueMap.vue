@@ -45,7 +45,7 @@ import store from '@/store'
 import { popUps } from '@/utils/lnglat'
 import { hexToRgb } from '@/utils/images'
 import { checkFuelThresholds } from '@/utils/device'
-import { getServerHost, isDevEnv } from '@/api'
+import { getServerHost } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
@@ -57,7 +57,7 @@ let socketReconnect = 0
 function getSocketUrl() {
   const hostName = getServerHost()
   Vue.$log.debug('websocket ', hostName)
-  return `${isDevEnv() ? 'ws' : 'wss'}://${hostName}/api/socket`
+  return `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${hostName}/api/socket`
 }
 
 export default {

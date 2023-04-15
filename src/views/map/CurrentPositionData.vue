@@ -378,8 +378,16 @@ export default {
     },
     async getRoute(from, to) {
       Vue.$log.debug('getting route from', from, 'to', to)
-      const allInOne = await traccar.allInOne(this.device.id, from, to)
-      await this.onPositions(allInOne)
+      try {
+        const allInOne = await traccar.allInOne(this.device.id, from, to)
+        await this.onPositions(allInOne)
+      } catch (e) {
+        console.error('trying route', e)
+        const route = await traccar.route(this.device.id, from, to)
+        const trips = await traccar.trips(this.device.id, from, to)
+        const stops = await traccar.stops(this.device.id, from, to)
+        await this.onPositions({ route, trips, stops })
+      }
     },
     async getEvents(from, to, positions) {
       Vue.$log.debug('getting events from ', from, ' to ', to)
