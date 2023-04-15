@@ -20,6 +20,7 @@ import { App } from '@capacitor/app'
 import { f7 } from 'framework7-vue'
 
 console.log('app starting...', process.env)
+console.log('SERVER_HOST', process.env.SERVER_HOST)
 
 import Element from 'element-ui'
 
