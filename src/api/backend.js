@@ -1,6 +1,6 @@
 import { getServerHost } from './index'
 import axios from 'axios'
-const url = 'https://' + getServerHost() + '/backend'
+const url = `https://${getServerHost()}:${window.location.port}/backend`
 
 export default {
   axios: axios.create(),
