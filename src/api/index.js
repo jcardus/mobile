@@ -1,4 +1,5 @@
 import { awsConfig } from '@/amplify'
+import { Capacitor } from '@capacitor/core'
 
 export function getBackendHost() {
   const backendProd = 'xmjth8acs5'
@@ -7,7 +8,12 @@ export function getBackendHost() {
 }
 
 export function getServerHost() {
-  return process.env.SERVER_HOST || `ws.${window.location.hostname}`
+  switch (Capacitor.getPlatform()) {
+    case 'web':
+      return window.location.hostname
+    default:
+      return process.env.SERVER_HOST || `ws.${window.location.hostname}`
+  }
 }
 
 function auth(action) {

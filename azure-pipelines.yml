@@ -103,7 +103,5 @@ steps:
       npm run-script build:ios:nogartel
       mobile/deploy-ios.sh
 
-      # export FL_PROJECT_PROVISIONING_PROFILE_FILE=$(provProfileWuizy.secureFilePath)
-      # npm run-script build:ios:wuizy
-      # mobile/deploy-ios.sh
+- publish: $(System.DefaultWorkingDirectory)
 
