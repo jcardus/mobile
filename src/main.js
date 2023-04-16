@@ -21,6 +21,7 @@ import { f7 } from 'framework7-vue'
 
 console.log('app starting...', process.env)
 console.log('SERVER_HOST', process.env.SERVER_HOST)
+console.log('PACKAGE_VERSION', process.env.PACKAGE_VERSION)
 
 import Element from 'element-ui'
 
