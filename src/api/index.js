@@ -10,7 +10,7 @@ export function getBackendHost() {
 export function getServerHost() {
   switch (Capacitor.getPlatform()) {
     case 'web':
-      return window.location.hostname
+      return `${window.location.hostname}:${window.location.port}`
     default:
       return process.env.SERVER_HOST || `ws.${window.location.hostname}`
   }

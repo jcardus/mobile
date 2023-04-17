@@ -5,7 +5,7 @@ import Vue from 'vue'
 import * as utils from '@/utils/utils'
 
 const serverHost = getServerHost()
-const baseUrl = `${window.location.protocol}//${serverHost}:${window.location.port}/api/`
+const baseUrl = `${window.location.protocol}//${serverHost}/api/`
 const devices = baseUrl + 'devices'
 const route = baseUrl + 'reports/route'
 const events = baseUrl + 'reports/events'
