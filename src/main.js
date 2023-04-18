@@ -124,7 +124,7 @@ if (!Capacitor.isNativePlatform()) {
 } else {
   App.addListener('appUrlOpen', async(data) => {
     if (Capacitor.getPlatform() === 'ios') {
-      await Browser.close()
+      try { await Browser.close() } catch (e) { console.error(e) }
     }
     f7.dialog.preloader()
     // noinspection JSAccessibilityCheck
