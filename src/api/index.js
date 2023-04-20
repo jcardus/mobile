@@ -12,7 +12,7 @@ export function getServerHost() {
     case 'web':
       return `${window.location.hostname}:${window.location.port}`
     default:
-      return process.env.SERVER_HOST || `ws.${window.location.hostname}`
+      return process.env.SERVER_HOST || 'api.pinme.io'
   }
 }
 
