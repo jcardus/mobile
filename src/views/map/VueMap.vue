@@ -51,13 +51,17 @@ import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
 import { showStopDate } from '@/utils/partner'
+import { Capacitor } from '@capacitor/core'
 
 let socketReconnect = 0
 
 function getSocketUrl() {
   const hostName = getServerHost()
   Vue.$log.debug('websocket ', hostName)
-  return `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${hostName}/api/socket`
+  const protocol = Capacitor.getPlatform() === 'web' && window.location.protocol === 'http:'
+    ? 'ws'
+    : 'wss'
+  return `${protocol}://${hostName}/api/socket`
 }
 
 export default {
