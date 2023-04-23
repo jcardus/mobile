@@ -23,32 +23,21 @@
           </span>
           <geofence-table :filter-key="filterKey"></geofence-table>
         </el-tab-pane>
-        <el-tab-pane v-if="!isMobile" name="alerts">
-          <span slot="label">
-            <el-badge :value="unreadItems" :hidden="unreadItems === 0" :max="99">
-              <i class="fas fa-bell"></i>
-            </el-badge>
-          </span>
-          <alert-table ref="alertsTable" :filter-key="filterKey"></alert-table>
-        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
 </template>
 <script>
 
-import * as lnglat from '../../utils/lnglat'
-import AlertTable from './AlertTable'
 import GeofenceTable from './GeofenceTable'
 import DriverTable from './DriverTable'
 import VehicleTable from './VehicleTable'
-import * as partner from '../../utils/partner'
 import { mapGetters } from 'vuex'
 import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'DataContainer',
-  components: { VehicleTable, AlertTable, GeofenceTable, DriverTable },
+  components: { VehicleTable, GeofenceTable, DriverTable },
   data() {
     return {
       selectedTab: 'map',
@@ -61,30 +50,13 @@ export default {
       get() { return this.$store.getters.unreadItems },
       set(value) { this.$store.commit('setUnreadItems', value) }
     },
-    hasSVG() {
-      return partner.hasSVG()
-    },
-    isMobile() {
-      return lnglat.isMobile()
-    },
     colors() {
       return styles
-    },
-    logoImage() {
-      return partner.getLogo()
-    }
-  },
-  watch: {
-    'selectedTab': function(val) { // Monitor switch status-plan
-      if (val === 'alerts') {
-        this.$refs.alertsTable.loadAlerts()
-      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-
   .dd-body-inner {
     padding: 5px;
   }
@@ -94,7 +66,6 @@ export default {
   .input {
     color: #979797;
   }
-
   .mainContainer {
     background-color: #F8F9FE;
   }

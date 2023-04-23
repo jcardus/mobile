@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.30.2",
+  "version": "2.30.3",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -37,7 +37,7 @@
     "@capacitor-community/fcm": "^2.0.2",
     "@capacitor/android": "^4.5.0",
     "@capacitor/app": "^1.1.1",
-    "@capacitor/browser": "^1.0.7",
+    "@capacitor/browser": "^4.1.1",
     "@capacitor/core": "^3.5.1",
     "@capacitor/device": "^1.1.2",
     "@capacitor/push-notifications": "^1.0.4",
