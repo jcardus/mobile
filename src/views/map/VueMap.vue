@@ -519,7 +519,7 @@ export default {
       _vm.$mount('#style-switcher-div')
     },
     onMoveEnd() {
-      if (!this.isPlaying) {
+      if (!this.isPlaying && this.loadingCount > 1) {
         this.setCenter(this.$static.map.getCenter())
         this.setZoom(this.$static.map.getZoom())
         layerManager.refreshLayers()

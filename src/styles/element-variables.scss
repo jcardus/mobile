@@ -10,7 +10,6 @@ $--color-white: #F8F9FE;
 /* constants */
 $--vehicle-list-header-height: 140px;
 $--vehicle-list-header-height-history-mode: 80px;
-$--trip-list-header-height: 328px;
 $--el-switch-height: 45px;
 $--driver-list-header-height: 165px;
 $--alert-list-header-height: 255px;
@@ -39,7 +38,6 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   //noinspection CssUnknownProperty
   vehicleListHeaderHeight: $--vehicle-list-header-height;
   vehicleListHeaderHeightHistoryMode: $--vehicle-list-header-height-history-mode;
-  tripListHeaderHeight: $--trip-list-header-height;
   //noinspection CssUnknownProperty
   driverListHeaderHeight: $--driver-list-header-height;
   alertListHeaderHeight: $--alert-list-header-height;

@@ -14,6 +14,7 @@
 </template>
 <script>
 import { getGoogleLogin } from '@/amplify'
+import { Browser } from '@capacitor/browser'
 
 export default {
   name: 'GoogleButton',
@@ -25,7 +26,9 @@ export default {
   },
   methods: {
     async click() {
-      window.location.href = getGoogleLogin()
+      await Browser.open({
+        url: getGoogleLogin()
+      })
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mobileScroll">
+    <div>
       <el-table
         id="tripTable"
         :data="trips"
@@ -114,7 +114,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div v-if="trips.length > 0" :style="historyTotalHeight" class="historyTotal">
+    <div v-if="trips.length > 0" class="historyTotal" :style="`position: fixed; bottom: ${bottom}px; width: 100%`">
       <div style="margin-top: 5px">
         <span style="font-size: 12px">{{ $t('tripsTable.total') }}</span>
       </div>
@@ -132,7 +132,13 @@
         <div style="width: 33%; float:left"><span style="font-size: 12px"><i class="fas fa-bell" style="width: 15px; color: black"></i> {{ totalEvents }}</span></div>
       </div>
       <div>
-        <div v-if="trips[0].fuelInfo" style="float:left"><span style="font-size: 12px"><i class="fas fa-gas-pump" style="color: #13ce66"></i> {{ totalFuelConsumption }}L</span><span style="font-size: 10px"> ({{ avgFuelConsumption }}L\100)</span></div>
+        <div v-if="trips[0].fuelInfo" style="float:left">
+          <span style="font-size: 12px">
+            <i class="fas fa-gas-pump" style="color: #13ce66"></i>
+            {{ totalFuelConsumption }}L
+          </span>
+          <span style="font-size: 10px"> ({{ avgFuelConsumption }}L\100)</span>
+        </div>
       </div>
     </div>
   </div>
@@ -142,9 +148,9 @@
 import { serverBus, vm } from '@/main'
 import { mapGetters } from 'vuex'
 import * as event from '../../events'
-import styles from '../../styles/element-variables.scss'
 import * as utils from '../../utils/utils'
 
+const headerHeight = 342
 export default {
   name: 'TripTable',
   data() {
@@ -159,7 +165,7 @@ export default {
       set(value) { vm.$data.loadingRoutes = value }
     },
     height() {
-      return 'calc(100vh - ' + styles.tripListHeaderHeight + ')'
+      return window.innerHeight - headerHeight
     },
     pois() {
       return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
@@ -189,8 +195,8 @@ export default {
     totalEvents() {
       return this.trips.reduce((sum, t) => sum + this.tripEvents(t), 0)
     },
-    historyTotalHeight() {
-      return 'height:' + (this.trips[0].fuelInfo ? 95 : 75) + 'px;'
+    bottom() {
+      return this.trips[0] && this.trips[0].fuelInfo ? 40 : 20
     }
   },
   methods: {
@@ -207,9 +213,6 @@ export default {
       this.currentTrip = trip
       serverBus.$emit(event.tripChanged, this.trips.indexOf(trip))
     },
-    formatDate(date) {
-      return this.$moment(date, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD')
-    },
     formatTime(date) {
       return this.$moment(date, 'DD-MM-YYYY HH:mm:ss').format('HH:mm:ss')
     },
@@ -225,9 +228,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../styles/element-variables.scss';
-.mobileScroll {
-  -webkit-overflow-scrolling: touch;
-}
 .overlap{
   font-size: 10px;
   background-color: #FFFFFF;
@@ -259,8 +259,6 @@ export default {
   background-color: rgba($--color-primary, 0.1);
 }
 .historyTotal {
-  height: 75px;
-  background-color: rgba($--color-primary, 0.1);
   color: black;
   padding-left: 5px;
 }

@@ -146,7 +146,7 @@ module.exports = {
             secretAccessKey: `"${process.env.secretAccessKey}"`
           }}),
         new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] }),
-        ...(process.env.NODE_ENV === 'development' ? [] : [
+        ...(process.env.NODE_ENV === 'development' || process.env.DISABLE_SENTRY_PLUGIN ? [] : [
           new SentryPlugin({
             org: 'pinme-97',
             project: 'fleetmap',

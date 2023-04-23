@@ -1,6 +1,7 @@
 <template>
   <div class="mainContainer">
     <div v-if="!tableCollapsed" class="dd-body-inner">
+      <div style="height:30px"></div>
       <el-input v-model="filterKey" class="input" type="text" :placeholder="$t('vehicleList.search')" />
       <el-tabs v-model="selectedTab" stretch>
         <el-tab-pane name="map">
@@ -33,7 +34,6 @@ import GeofenceTable from './GeofenceTable'
 import DriverTable from './DriverTable'
 import VehicleTable from './VehicleTable'
 import { mapGetters } from 'vuex'
-import styles from '../../styles/element-variables.scss'
 
 export default {
   name: 'DataContainer',
@@ -45,14 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['tableCollapsed']),
-    unreadItems: {
-      get() { return this.$store.getters.unreadItems },
-      set(value) { this.$store.commit('setUnreadItems', value) }
-    },
-    colors() {
-      return styles
-    }
+    ...mapGetters(['tableCollapsed'])
   }
 }
 </script>
