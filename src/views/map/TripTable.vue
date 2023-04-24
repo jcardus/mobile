@@ -114,7 +114,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div v-if="trips.length > 0" class="historyTotal" :style="`position: fixed; bottom: ${bottom}px; width: 100%`">
+    <div v-if="trips.length" class="historyTotal" style="width: 100%">
       <div style="margin-top: 5px">
         <span style="font-size: 12px">{{ $t('tripsTable.total') }}</span>
       </div>
@@ -150,7 +150,7 @@ import { mapGetters } from 'vuex'
 import * as event from '../../events'
 import * as utils from '../../utils/utils'
 
-const headerHeight = 342
+const headerHeight = 350
 export default {
   name: 'TripTable',
   data() {
@@ -194,9 +194,6 @@ export default {
     },
     totalEvents() {
       return this.trips.reduce((sum, t) => sum + this.tripEvents(t), 0)
-    },
-    bottom() {
-      return this.trips[0] && this.trips[0].fuelInfo ? 40 : 20
     }
   },
   methods: {

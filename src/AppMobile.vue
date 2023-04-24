@@ -1,7 +1,7 @@
 <template>
   <f7-app :params="f7params">
-    <f7-panel left cover theme-dark style="min-width: 300px" @panel:closed="panelClosed">
-      <data-container></data-container>
+    <f7-panel left cover theme-dark style="min-width: 290px" @panel:closed="panelClosed">
+      <data-container />
     </f7-panel>
     <f7-views tabs class="safe-areas">
       <f7-toolbar :bottom="true" labels tabbar>
@@ -271,7 +271,6 @@ export default {
       }).open()
     },
     panelClosed() {
-      Vue.$log.debug('panelClosed')
       lnglat.updateDonuts()
     },
     updateAvailable() {
