@@ -115,6 +115,10 @@
                   <i :class="fuelLevelStatus(scope.row.position.fuelLevel)" style="width: 15px"></i>
                 </el-tooltip>{{ currentFuelLevel(scope.row) }}
               </span>
+              <doors-icons :current-position="scope.row.position" :device="scope.row" />
+              <sensor-icons sensor="sensor1" :current-position="scope.row.position" :device="scope.row" />
+              <sensor-icons sensor="sensor2" :current-position="scope.row.position" :device="scope.row" />
+              <sensor-icons sensor="sensor3" :current-position="scope.row.position" :device="scope.row" />
               <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt speedIcon"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
@@ -155,10 +159,12 @@ import * as utils from '../../utils/utils'
 import * as event from '../../events'
 import store from '../../store'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
+import DoorsIcons from '../../components/DoorsIcons'
+import SensorIcons from '../../components/SensorIcons'
 
 export default {
   name: 'VehicleTable',
-  components: { ImmobilizeButton, TripTable },
+  components: { ImmobilizeButton, TripTable, SensorIcons, DoorsIcons },
   filters: {
     formatTotalDistance(device) {
       const ignoreOdometer = device.attributes['report.ignoreOdometer']

@@ -2,6 +2,7 @@ import { vm, newServiceWorker, sharedData } from '@/main'
 import Vue from 'vue'
 import { Capacitor } from '@capacitor/core'
 import { checkUpdate, openAppStore, performImmediateUpdate } from '@/utils/updates'
+import { getFuelPercentage } from '@/utils/positions'
 
 export class SharedData {
   positions = null
@@ -147,22 +148,23 @@ export function getDeviceState(position) {
 }
 
 export function calculateFuelLevel(adc1CacheValues, position, lastPosition, device) {
-  if ('fuel_tank_capacity' in device.attributes &&
-    'fuel_low_threshold' in device.attributes &&
-    'fuel_high_threshold' in device.attributes &&
-    'fuel' in position.attributes) {
+  if ('fuel' in position.attributes) {
     // Calculate FuelLevel
-    if (position.attributes.ignition) {
-      if (adc1CacheValues.length === 5) {
-        adc1CacheValues.splice(0, 1)
-      }
+    if (position.protocol === 'teltonika') {
+      position.fuelLevel = getFuelPercentage(device, position)
+    } else if (device.attributes.xpert) {
+      // DEVICE WITH XPERT
+      position.fuelLevel = Math.round(position.attributes.fuel)
+    } else {
+      if ('fuel_low_threshold' in device.attributes &&
+        'fuel_high_threshold' in device.attributes) {
+        // DEVICE WITH FUEL SENSOR
+        if (adc1CacheValues.length === 5) {
+          adc1CacheValues.splice(0, 1)
+        }
 
-      adc1CacheValues.push(position.attributes.fuel)
+        adc1CacheValues.push(position.attributes.fuel)
 
-      if (device.attributes.xpert) {
-        position.fuelLevel = Math.round(position.attributes.fuel)
-        position.adc1CacheValues = adc1CacheValues
-      } else {
         const adc1CalculatedValue = (adc1CacheValues.reduce((total, value) => total + value, 0)) / adc1CacheValues.length
         const level = Math.round(((device.attributes.fuel_low_threshold - adc1CalculatedValue) / (device.attributes.fuel_low_threshold - device.attributes.fuel_high_threshold)) * 100)
 
@@ -173,6 +175,8 @@ export function calculateFuelLevel(adc1CacheValues, position, lastPosition, devi
           position.fuelLevel = lastPosition.fuelLevel
           position.adc1CacheValues = adc1CacheValues
         }
+      } else {
+        position.fuelLevel = position.attributes.fuel
       }
     }
   }

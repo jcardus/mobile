@@ -22,10 +22,10 @@
       <div class="content">
         {{ currentPosition && currentPosition.address && currentPosition.address.replace('&\#39;', '\'') }}
         <div style="padding-top: 5px;">
-          <div v-if="currentPosition.ignition || currentPosition.speed > 2" style="color:#32325D;">
-            <i class="fas fa-tachometer-alt speedIcon" style="padding-right:2px"></i>{{ Math.round(currentPosition.speed * 1.852) }} km/h
-            <span v-if="currentPosition.ignition && currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
-            <span v-if="currentPosition.ignition && currentPosition.attributes.rpm"><i class="fab fa-cloudscale rpmIcon" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span>
+          <div style="color:#32325D;">
+            <span v-if="currentPosition.attributes.ignition || currentPosition.speed > 2"><i class="fas fa-tachometer-alt speedIcon" style="padding-right:4px"></i>{{ Math.round(currentPosition.speed * 1.852) }} km/h</span>
+            <span v-if="currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
+            <span v-if="currentPosition.attributes.ignition && currentPosition.attributes.rpm" style="padding-left:8px;"><i class="fab fa-cloudscale rpmIcon"></i><span style="padding-left:14px;">{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span></span>
           </div>
           <span v-if="currentPosition.attributes.temp1 && currentPosition.attributes.temp1 !== 175">
             <i class="fas fa-thermometer-quarter rpmIcon" style="padding-right:2px; padding-left:2px"></i>  {{ currentPosition.attributes.temp1 }}ºC
@@ -43,6 +43,10 @@
               <i class="fak fa-windshield--2-" :style="`color:${currentPosition.attributes.rain === 'rain'?'#3D993D':'#219FD7'}; padding-right:2px; padding-left:2px`"></i>
             </el-tooltip>
           </span>
+          <doors-icons :current-position="currentPosition" :device="device" />
+          <sensor-icons sensor="sensor1" :current-position="currentPosition" :device="device" />
+          <sensor-icons sensor="sensor2" :current-position="currentPosition" :device="device" />
+          <sensor-icons sensor="sensor3" :current-position="currentPosition" :device="device" />
           <span v-if="!routePoint && getDeviceState(device)==='Stopped' && device.lastStop">{{ device.lastStop | formatLastUpdate }}</span>
           <span v-else-if="!routePoint">{{ device.lastUpdate | formatLastUpdate }}</span>
           <span v-if="routePoint">{{ currentPosition.fixTime | moment('LL') }} {{ currentPosition.fixTime | moment('LTS') }}</span>
@@ -54,12 +58,14 @@
           format="( ddd).d"
           :value="totalDistance"
         ></IOdometer>
-        <immobilize-button
-          v-if="!routePoint"
-          :selected-device="device"
-          style="float:left"
-        ></immobilize-button>
-
+        <div style="float:left; padding-top: 10px">{{ device.attributes.xpert && device.position.attributes.odometer ? '(can)' : '' }}</div>
+        <div style="display: flex">
+          <immobilize-button
+            v-if="!routePoint"
+            :selected-device="device"
+            style="float:left"
+          ></immobilize-button>
+        </div>
         <el-button
           v-if="!routePoint"
           icon="el-icon-video-play"
@@ -97,10 +103,12 @@ import IOdometer from 'vue-odometer'
 import { mapGetters } from 'vuex'
 import { isMobile } from '@/utils/lnglat'
 import * as utils from '@/utils/utils'
+import SensorIcons from '../../components/SensorIcons'
+import DoorsIcons from '../../components/DoorsIcons'
 
 export default {
   name: 'VehicleDetail',
-  components: { IOdometer, ImmobilizeButton },
+  components: { IOdometer, ImmobilizeButton, SensorIcons, DoorsIcons },
   filters: {
     formatLastUpdate(value) {
       return vm.$store.getters.showFullDate ? new Date(value).toLocaleString() : vm.$moment(value).fromNow()

@@ -50,3 +50,19 @@ export function findNearestPOI(position) {
     return a[0].id
   }
 }
+
+export function getFuelLiters(device) {
+  if (device.position.protocol === 'teltonika' && !device.position.attributes.io89) {
+    return device.position.attributes.fuel
+  } else if (device.attributes.fuel_tank_capacity) {
+    return Math.round(device.attributes.fuel_tank_capacity * (device.position.fuelLevel / 100))
+  }
+}
+
+export function getFuelPercentage(device, position) {
+  if (position.attributes.io89) {
+    return position.attributes.io89
+  } else if (device.attributes.fuel_tank_capacity) {
+    return Math.round(position.attributes.fuel * 100 / device.attributes.fuel_tank_capacity)
+  }
+}
