@@ -90,7 +90,7 @@ export default {
           ],
           glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
         }},
-        { title: 'putGoogle Hybrid', uri: {
+        { title: 'Google Satellite', uri: {
           version: 8,
           sources: {
             'raster-tiles': {
