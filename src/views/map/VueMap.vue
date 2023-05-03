@@ -52,6 +52,7 @@ import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
 import { showStopDate } from '@/utils/partner'
 import { Capacitor } from '@capacitor/core'
+import { getPartnerData } from 'fleetmap-partners'
 
 let socketReconnect = 0
 
@@ -189,6 +190,36 @@ export default {
   methods: {
     ...mapMutations('map', ['setCenter', 'setZoom']),
     ...mapActions('transient', ['setLoading']),
+    filterLayers(worldview) {
+      // The "admin-0-boundary-disputed" layer shows boundaries
+      // at this level that are known to be disputed.
+      const map = this.map
+      map.setFilter('admin-0-boundary-disputed', [
+        'all',
+        ['==', ['get', 'disputed'], 'true'],
+        ['==', ['get', 'admin_level'], 0],
+        ['==', ['get', 'maritime'], 'false'],
+        ['match', ['get', 'worldview'], ['all', worldview], true, false]
+      ])
+      // The "admin-0-boundary" layer shows all boundaries at
+      // this level that are not disputed.
+      map.setFilter('admin-0-boundary', [
+        'all',
+        ['==', ['get', 'admin_level'], 0],
+        ['==', ['get', 'disputed'], 'false'],
+        ['==', ['get', 'maritime'], 'false'],
+        ['match', ['get', 'worldview'], ['all', worldview], true, false]
+      ])
+      // The "admin-0-boundary-bg" layer helps features in both
+      // "admin-0-boundary" and "admin-0-boundary-disputed" stand
+      // out visually.
+      map.setFilter('admin-0-boundary-bg', [
+        'all',
+        ['==', ['get', 'admin_level'], 0],
+        ['==', ['get', 'maritime'], 'false'],
+        ['match', ['get', 'worldview'], ['all', worldview], true, false]
+      ])
+    },
     connectSocket() {
       delete window.socket
       const socket = new WebSocket(getSocketUrl())
@@ -624,6 +655,9 @@ export default {
         layerManager.addLayers(vm.$static.map)
         this.$log.debug('finishLoading')
         this.finishLoading()
+      }
+      if (getPartnerData() && getPartnerData().region) {
+        this.filterLayers(getPartnerData().region)
       }
     },
     onData(e) {
