@@ -6,7 +6,7 @@ const { sidebarLogo } = defaultSettings
 const state = {
   sidebarLogo: sidebarLogo,
   matchRoutes: false,
-  viewSpeedAlerts: true,
+  speedAlertsOnMap: false,
   maxSpeedType: 'vehicle',
   speedThreshold: '0',
   showLabels: false,

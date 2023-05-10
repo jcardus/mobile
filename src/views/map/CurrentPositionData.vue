@@ -306,7 +306,7 @@ export default {
             Vue.$log.debug('one trip with ', trip.positions.length, 'positions', 'start: ', trip.positions[0].deviceTime, 'end: ', trip.positions.slice(-1)[0].deviceTime, trip.positions.slice(-1)[0])
           })
           this.currentTrip = this.trips.length - 1
-          if (vm.$store.state.settings.viewSpeedAlerts) {
+          if (vm.$store.state.settings.speedAlertsOnMap) {
             this.getSpeedTrips(route)
           } else {
             this.drawTrip()
@@ -727,7 +727,9 @@ export default {
       })
       vm.$static.map.addLayer(routeLayers.speedLayer(this.routeSpeedSource))
       vm.$static.map.getSource(this.routeSpeedSource).setData(alertsGeoJSON)
-      this.drawSpeedMarkers()
+      if (vm.$store.state.settings.speedAlertsOnMap) {
+        this.drawSpeedMarkers()
+      }
       // vehicle should be on top of the route, so we remove and add the layer
       layerManager.removeRoutePlayLayer()
       layerManager.addRoutePlayLayer(vm.$static.currentFeature)

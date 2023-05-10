@@ -34,7 +34,7 @@ export default {
       showFullDate: this.$store.state.settings.showFullDate,
       matchRoutes: this.$store.state.settings.matchRoutes,
       icons3d: this.$store.getters.vehicles3dEnabled,
-      speedAlerts: this.$store.state.settings.viewSpeedAlerts,
+      speedAlerts: this.$store.state.settings.speedAlertsOnMap,
       useRoadLimit: this.$store.state.settings.maxSpeedType,
       speedThreshold: this.$store.state.settings.speedThreshold
     }
