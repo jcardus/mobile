@@ -74,28 +74,6 @@ export default {
             'raster-tiles': {
               'type': 'raster',
               'tiles': [
-                `https://mt0.google.com/vt/lyrs=s&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
-              ],
-              'tileSize': 256
-            }
-          },
-          layers: [
-            {
-              'id': 'simple-tiles',
-              'type': 'raster',
-              'source': 'raster-tiles',
-              'minzoom': 0,
-              'maxzoom': 22
-            }
-          ],
-          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
-        }},
-        { title: 'Google Satellite', uri: {
-          version: 8,
-          sources: {
-            'raster-tiles': {
-              'type': 'raster',
-              'tiles': [
                 `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
               ],
               'tileSize': 256

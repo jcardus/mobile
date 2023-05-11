@@ -138,10 +138,11 @@ export default {
         setTimeout(() => { this.historyPanelHeight = this.$refs.historyMode.offsetHeight }, 3000)
       }
     },
-    historyMode() {
+    historyMode(value) {
       if (!this.historyMode) {
         this.historyPanelHeight = 0
       }
+      if (value) { window.socket.close() } else { this.connectSocket() }
     },
     '$route'(to) {
       if (to.name === 'Map') {
@@ -221,6 +222,7 @@ export default {
       ])
     },
     connectSocket() {
+      if (this.$store.state.socket.isConnected) { return }
       delete window.socket
       const socket = new WebSocket(getSocketUrl())
       window.socket = socket
