@@ -1,7 +1,6 @@
 import 'normalize.css/normalize.css'
 import Vue from 'vue'
 import store from './store'
-import * as filters from './filters' // global filters
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import i18n, { getLanguage } from './lang'
@@ -146,10 +145,6 @@ const lang = getLanguage().slice(0, 2)
 Vue.$log.debug('setting moment locale to', lang)
 moment.locale(lang)
 Vue.use(require('vue-moment'), { moment })
-
-Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
 
 Vue.config.productionTip = false
 
