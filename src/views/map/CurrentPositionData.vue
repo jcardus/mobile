@@ -754,7 +754,7 @@ export default {
         const mapBounds = bboxPolygon(bbox(helpers.lineString(this.map.getBounds().toArray())))
         const tripLine = helpers.lineString(coordinates)
         if (!booleanContains(mapBounds, tripLine)) {
-          this.map.fitBounds(bbox(tripLine), { padding: 100 })
+          this.map.fitBounds(bbox(tripLine), { padding: 100, animate: false })
         }
       }
     },
@@ -875,7 +875,7 @@ export default {
         })
         const coords = positions.map(p => [p.longitude, p.latitude])
         const bounds = lnglat.getBounds(coords)
-        this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70 })
+        this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70, animate: false })
         const pointsData = lnglat.getGeoJSONFeaturesColletion(points)
         const lineData = lnglat.getGeoJSON({ type: 'LineString', coordinates: coords })
         this.createAllTripsLayer(lineData, pointsData)

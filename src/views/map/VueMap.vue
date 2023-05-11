@@ -476,7 +476,7 @@ export default {
     },
     flyToDevice(feature) {
       if (feature) {
-        this.$static.map.flyTo({
+        this.$static.map.jumpTo({
           center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
           zoom: consts.detailedZoom,
           maxDuration: 5000
@@ -489,17 +489,19 @@ export default {
     flyToFeature: function(feature) {
       if (feature) {
         if (feature.geometry.type === 'Point') {
-          this.$static.map.flyTo({
+          this.$static.map.jumpTo({
             center: { lng: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1] },
             zoom: 13
           })
         } else if (feature.geometry.type === 'LineString') {
           this.$static.map.fitBounds(lnglat.getBounds(feature.geometry.coordinates), {
-            padding: 50
+            padding: 50,
+            animate: false
           })
         } else {
           this.$static.map.fitBounds(lnglat.getBounds(feature.geometry.coordinates[0]), {
-            padding: 50
+            padding: 50,
+            animate: false
           })
         }
       }
