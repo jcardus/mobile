@@ -10,12 +10,12 @@ module.exports = {
   driverChatEnabled: false,
   fabricateIgnition: true,
   animateMarkers: true,
-  maxMarkersForAnimation: 500,
+  maxMarkersForAnimation: 50,
   showVehicleList: true,
   showSlider: true,
   experiment: true,
   debugRoutes: false,
   mapBoxRouteMatch: false,
-  maxDevicesForAlerts: 400,
+  maxDevicesForAlerts: 40,
   checkFuelThresholds: false
 }
