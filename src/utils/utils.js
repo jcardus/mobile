@@ -3,6 +3,7 @@ import Vue from 'vue'
 import { Capacitor } from '@capacitor/core'
 import { checkUpdate, openAppStore, performImmediateUpdate } from '@/utils/updates'
 import { getFuelPercentage } from '@/utils/positions'
+import { reducePositions } from '@/utils/index'
 
 export class SharedData {
   positions = null
@@ -88,6 +89,7 @@ export function calculateTimeHHMMSS(idleSeconds) {
 }
 
 export function filterPositions(positions) {
+  positions = reducePositions(positions)
   const firstPos = positions.findIndex(position => position.attributes.ignition || position.attributes.motion)
   if (firstPos > 0) {
     Vue.$log.debug('slicing positions at ', firstPos)
