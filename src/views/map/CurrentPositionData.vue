@@ -1072,62 +1072,42 @@ export default {
         Vue.$log.warn('CurrentPositionData ignoring, newPos out of array: ', newPos, positions.length)
         return
       }
-      const origin = this.oldPos
       this.updateDate()
-      if (this.isPlaying) {
-        if (newPos < this.oldPos) {
-          this.$log.info('ignoring animation, end of route ', newPos, this.oldPos)
-          this.oldPos = newPos
-          serverBus.$emit(event.routeMatchFinished)
-          return
-        }
-        if (JSON.stringify(sharedData.getPositions()[origin]) === JSON.stringify(sharedData.getPositions()[newPos])) {
-          this.$log.info('CurrentPositionData emit routeMatchFinished origin equals destination', origin, newPos)
-          serverBus.$emit(event.routeMatchFinished)
-        } else {
-          this.$log.info('animating from ', origin, ' to ', newPos + 1)
-          animation.animate(vm.$static.currentFeature,
-            sharedData.getPositions().slice(origin, newPos + 1).map(x => [x.longitude, x.latitude]),
-            sharedData.getPositions()[newPos + 1].course)
-        }
-        if (newPos === sharedData.getPositions().length - 1) {
-          this.$store.dispatch('transient/togglePlaying')
-        }
-      } else {
-        if (!this.trips[this.currentTrip]) {
-          Vue.$log.debug('no current trip...')
-          return
-        }
-        if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
-          this.$log.debug('panTo', positions[newPos])
-          vm.$static.map.panTo(
-            { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
-          )
-        }
-        const newDate = utils.getDate(positions[newPos].fixTime)
-        const oldTrip = this.currentTrip
-        while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].deviceTime).toDate()) {
-          this.currentTrip++
-        }
-        while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip].positions[0].deviceTime).toDate()) {
-          this.currentTrip--
-        }
-        if (oldTrip !== this.currentTrip) {
-          const t = this.currentTrip
-          this.currentTrip = oldTrip
-          this.removeLayers(true)
-          this.currentTrip = t
-          this.drawTrip()
-          this.drawEventsPoints(positions)
-          this.drawIdlePoints(positions)
-          this.drawSpeedTrip()
-        }
-        vm.$static.currentFeature.properties.speed = positions[newPos].speed
-        vm.$static.currentFeature.properties.course = positions[newPos].course
-        vm.$static.currentFeature.geometry.coordinates = [positions[newPos].longitude, positions[newPos].latitude]
-        vm.$static.currentFeature.properties.address = positions[newPos].address
-        animation.updateFeature()
+
+      if (!this.trips[this.currentTrip]) {
+        Vue.$log.debug('no current trip...')
+        return
       }
+      if (!lnglat.contains(vm.$static.map.getBounds(), positions[newPos])) {
+        this.$log.debug('panTo', positions[newPos])
+        vm.$static.map.panTo(
+          { lng: positions[newPos].longitude, lat: positions[newPos].latitude }
+        )
+      }
+      const newDate = utils.getDate(positions[newPos].fixTime)
+      const oldTrip = this.currentTrip
+      while (this.currentTrip < this.trips.length - 1 && newDate > this.$moment(this.trips[this.currentTrip].positions.slice(-1)[0].deviceTime).toDate()) {
+        this.currentTrip++
+      }
+      while (this.currentTrip > 0 && newDate < this.$moment(this.trips[this.currentTrip].positions[0].deviceTime).toDate()) {
+        this.currentTrip--
+      }
+      if (oldTrip !== this.currentTrip) {
+        const t = this.currentTrip
+        this.currentTrip = oldTrip
+        this.removeLayers(true)
+        this.currentTrip = t
+        this.drawTrip()
+        this.drawEventsPoints(positions)
+        this.drawIdlePoints(positions)
+        this.drawSpeedTrip()
+      }
+      vm.$static.currentFeature.properties.speed = positions[newPos].speed
+      vm.$static.currentFeature.properties.course = positions[newPos].course
+      vm.$static.currentFeature.geometry.coordinates = [positions[newPos].longitude, positions[newPos].latitude]
+      vm.$static.currentFeature.properties.address = positions[newPos].address
+      animation.updateFeature()
+
       if (newPos < positions.length - 1) {
         this.oldPos = newPos
       }

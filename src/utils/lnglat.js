@@ -42,7 +42,7 @@ export function addVehicleImage(imageName) {
 
 export function centerVehicle(feature) {
   vm.$static.map.flyTo({
-    essential: true,
+    essential: false,
     center: feature.geometry.coordinates,
     zoom: 16,
     bearing: feature.properties.course,
