@@ -22,11 +22,9 @@ export class SharedData {
   setChartLabels(labels) {
     this.chartLabels = labels
   }
-  setChartData(data, dataFuelSensor, dataRPM, dataEvents) {
+  setChartData(data, dataFuelSensor) {
     this.chartData = data
     this.chartDataFuelSensor = dataFuelSensor
-    this.chartDataRPM = dataRPM
-    this.chartDataEvents = dataEvents
   }
   getChartLabels() {
     return this.chartLabels

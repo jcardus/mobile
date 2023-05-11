@@ -139,14 +139,12 @@ export default {
     },
     fillGraphData() {
       const series = sharedData.getPositions().map(x => {
-        return { y: x.speed * 1.852, x: this.$moment(x.fixTime).toDate() }
+        return { y: x.speed * 1.852, x: new Date(x.fixTime) }
       })
       const seriesFuelSensor = sharedData.getPositions().filter(p => p.fuelLevel).map(x => {
-        return { y: x.fuelLevel, x: this.$moment(x.fixTime).toDate() }
+        return { y: x.fuelLevel, x: new Date(x.fixTime) }
       })
-      const seriesRPM = this.getRPMValues()
-      const seriesEvents = this.getEventsValues()
-      sharedData.setChartData(series, seriesFuelSensor, seriesRPM, seriesEvents)
+      sharedData.setChartData(series, seriesFuelSensor)
       this.updateChart = !this.updateChart
     },
     getRPMValues() {
