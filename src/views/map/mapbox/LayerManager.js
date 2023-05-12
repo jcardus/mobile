@@ -1,4 +1,4 @@
-import { serverBus, vm } from '@/main'
+import { vm } from '@/main'
 import Vue from 'vue'
 import store from '@/store'
 import vehicleLayer from '@/views/map/mapbox/VehiclesLayer'
@@ -11,6 +11,10 @@ import eventsLayer from './layers/EventsLayer'
 import * as utils from '@/utils/utils'
 import * as angles from 'angles'
 import { updateDonuts } from '@/utils/lnglat'
+import * as lnglat from '@/utils/lnglat'
+import mapboxgl from 'mapbox-gl'
+import VehicleDetail from '@/views/map/VehicleDetail.vue'
+import i18n from '@/lang'
 const buildings3d = '3d-buildings'
 
 const routePlayLayer = 'routePlayLayer'
@@ -193,12 +197,23 @@ export default {
     }
   },
   onClickTouchUnclustered(e) {
-    Vue.$log.debug(e)
     const feature = e.features[0]
     const device = store.getters.deviceById(feature.properties.deviceId)
     if (device) {
-      serverBus.$emit('deviceSelected', device)
-      serverBus.$emit('deviceSelectedOnMap', device)
+      lnglat.showPopup(feature, device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
+      if (this.lastPopup) {
+        this.lastPopup.$destroy()
+      }
+      const VD = Vue.extend(VehicleDetail)
+      this.lastPopup = new VD({
+        i18n: i18n,
+        data: {
+          device,
+          feature
+        },
+        store: store
+      })
+      this.lastPopup.$mount('#vue-vehicle-popup')
     }
   },
   getAnimationLayer(feature) {
