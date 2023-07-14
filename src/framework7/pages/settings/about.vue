@@ -11,11 +11,15 @@
       </f7-list-item>
       <f7-list-item :title="$t('session')" :after="$store.state.user.cognitoToken !== null ? 'cognito' : ''">
       </f7-list-item>
-      <f7-list-item title="url" :after="host">
+      <f7-list-item title="host" :after="host">
       </f7-list-item>
       <f7-list-item :title="$t('last update')" :after="$store.state.transient.lastUpdate.toLocaleString()">
       </f7-list-item>
       <f7-list-item :title="$t('time')" :after="$store.state.currentTime.toLocaleString()">
+      </f7-list-item>
+      <f7-list-item :title="$t('location')" :after="location">
+      </f7-list-item>
+      <f7-list-item :title="$t('cookie')" :after="cookie" @click="clickHost">
       </f7-list-item>
     </f7-list>
   </f7-page>
@@ -29,6 +33,12 @@ export default {
   name: 'About',
   computed: {
     ...mapGetters(['user']),
+    cookie() {
+      return document.cookie
+    },
+    location() {
+      return window.location.host
+    },
     host() {
       return hostname
     },
@@ -37,6 +47,9 @@ export default {
     }
   },
   methods: {
+    clickHost() {
+      alert(document.cookie)
+    },
     refreshApp() {
       this.$log.debug('refreshing...')
       location.reload()
