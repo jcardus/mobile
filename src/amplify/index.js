@@ -2,6 +2,8 @@ import Amplify from '@aws-amplify/core'
 import { Auth } from '@aws-amplify/auth'
 import { getPartnerData } from 'fleetmap-partners'
 import { Capacitor } from '@capacitor/core'
+import { Preferences } from '@capacitor/preferences'
+let dataMemory = {}
 
 const host = Capacitor.isNativePlatform() ? 'capacitor' : window.location.hostname
 
@@ -30,8 +32,44 @@ export const awsConfig = {
   federationTarget: 'COGNITO_USER_POOLS'
 }
 
+const setItem = (key, value) => {
+  Preferences.set({ key, value }).then()
+  dataMemory[key] = value
+}
+
+const getItem = (key) => {
+  return dataMemory[key]
+}
+const removeItem = (key) => {
+  Preferences.remove(key).then()
+  delete dataMemory[key]
+}
+
+const clear = () => { dataMemory = {} }
+async function sync() {
+  console.log('syncing storage...')
+  try {
+    const { keys } = await Preferences.keys()
+    for (const key of keys) {
+      const { value } = await Preferences.get({ key })
+      dataMemory[key] = value
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 Amplify.configure(awsConfig)
-console.log(Auth.configure(awsConfig))
+
+Auth.configure({
+  storage: {
+    setItem,
+    getItem,
+    removeItem,
+    clear,
+    sync
+  }}
+)
 
 function auth(action) {
   const redirect = awsConfig.oauth.redirectSignIn
@@ -41,23 +79,3 @@ function auth(action) {
 export function getGoogleLogin() {
   return auth('oauth2/authorize') + '&identity_provider=Google'
 }
-export function signUp() {
-  return auth('signup')
-}
-
-export function signIn() {
-  return auth('signin')
-}
-
-export function forgotPassword() {
-  return auth('forgotPassword')
-}
-
-export function signOut() {
-  return auth('logout')
-}
-
-export function changePassword() {
-  return auth('changePassword')
-}
-

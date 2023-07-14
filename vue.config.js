@@ -101,7 +101,7 @@ module.exports = {
   productionSourceMap: true,
   devServer: {
     disableHostCheck: true,
-    https: true,
+    https: false,
     port: port,
     open: true,
     overlay: {
@@ -146,7 +146,7 @@ module.exports = {
             secretAccessKey: `"${process.env.secretAccessKey}"`
           }}),
         new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] }),
-        ...(process.env.NODE_ENV === 'development' || process.env.DISABLE_SENTRY_PLUGIN ? [] : [
+        ...(process.env.NODE_ENV === 'development' || !process.env.SENTRY_AUTH_TOKEN ? [] : [
           new SentryPlugin({
             org: 'pinme-97',
             project: 'fleetmap',

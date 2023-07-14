@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.31.7",
+  "version": "2.31.8",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -39,6 +39,7 @@
     "@capacitor/browser": "latest",
     "@capacitor/core": "latest",
     "@capacitor/device": "latest",
+    "@capacitor/preferences": "^5.0.6",
     "@capacitor/push-notifications": "latest",
     "@mapbox/mapbox-gl-draw": "1.4.2",
     "@mapbox/mapbox-gl-geocoder": "5.0.1",
