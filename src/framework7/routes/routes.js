@@ -11,7 +11,6 @@ import DriversSettingsPage from '../pages/settings/drivers'
 import DriverDetailsPage from '../pages/settings/driverDetails'
 import AboutPage from '../pages/settings/about'
 import MapMobileContainer from '../pages/MapMobileContainer'
-import DashboardPage from '../pages/dashboard'
 import alerts from '../pages/alerts'
 import AlertDetail from '../pages/alerts/AlertDetail'
 import Messages from '../pages/messages'
@@ -80,10 +79,6 @@ const routes = [
   {
     path: '/settings/driverDetails/:driverId',
     component: DriverDetailsPage
-  },
-  {
-    path: '/dashboard',
-    component: DashboardPage
   }
 ]
 
