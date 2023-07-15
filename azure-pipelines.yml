@@ -3,7 +3,7 @@ trigger:
 - mobile-dev
 
 pool:
-  vmImage: 'macos-11'
+  vmImage: 'macos-latest'
 
 variables:
   - name: FASTLANE_PASSWORD
@@ -12,6 +12,10 @@ variables:
     value: $(FASTLANE_APP_SPECIFIC)
 
 steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: ios-dev.p12
