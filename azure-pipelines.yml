@@ -3,7 +3,7 @@ trigger:
 - mobile-dev
 
 pool:
-  vmImage: 'macos-latest'
+  vmImage: 'macos-12'
 
 variables:
   - name: FASTLANE_PASSWORD
@@ -76,7 +76,6 @@ steps:
     name: 'Install'
     targetType: 'inline'
     script: |
-      nvm use 16
       echo fs $(FASTLANE_SESSION)
       echo using profile $(provProfile.secureFilePath)
       npm install --legacy-peer-deps
@@ -86,7 +85,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      nvm use 16
       echo using profile $(provProfile.secureFilePath)
       export FASTLANE_PASSWORD=$(FASTLANE_PASS)
       export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD=$(FASTLANE_APP_SPECIFIC)
