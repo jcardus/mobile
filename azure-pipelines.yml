@@ -76,6 +76,7 @@ steps:
     name: 'Install'
     targetType: 'inline'
     script: |
+      nvm use 16
       echo fs $(FASTLANE_SESSION)
       echo using profile $(provProfile.secureFilePath)
       npm install --legacy-peer-deps
