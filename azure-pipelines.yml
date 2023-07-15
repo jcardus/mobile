@@ -3,7 +3,7 @@ trigger:
 - mobile-dev
 
 pool:
-  vmImage: 'macos-12'
+  vmImage: 'macos-11'
 
 variables:
   - name: FASTLANE_PASSWORD
