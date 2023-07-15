@@ -38,11 +38,6 @@ steps:
     provProfileSecureFile: 'manager.mobileprovision'
     removeProfile: true # Optional
 
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provisioningProfileLocation: 'secureFiles' # Options: secureFiles, sourceRepository
-    provProfileSecureFile: 'comfleetmapwuizy.mobileprovision'
-    removeProfile: true # Optional
 
 - task: DownloadSecureFile@1
   name: provProfileManager
@@ -55,12 +50,6 @@ steps:
   displayName: 'Download profile nogartel'
   inputs:
     secureFile: 'comfleetmapnogartel_AppStore_1650450346.mobileprovision'
-
-- task: DownloadSecureFile@1
-  name: provProfileWuizy
-  displayName: 'Download profile wuizy'
-  inputs:
-    secureFile: 'comfleetmapwuizy.mobileprovision'
 
 - task: DownloadSecureFile@1
   name: provProfile
