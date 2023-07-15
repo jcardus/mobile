@@ -7,7 +7,7 @@ cp mobile/Fastfile ios/App/fastlane
 cp mobile/"$APP_NAME"/*.plist ios/App/App
 cp mobile/*.rb ios/App
 cp mobile/*.entitlements ios/App/App
-#cp mobile/Gemfile* ios/App
+cp mobile/Gemfile* ios/App
 cp mobile/AppDelegate.swift ios/App/App
 
 cd ios/App || exit
