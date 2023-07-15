@@ -46,8 +46,9 @@ const removeItem = (key) => {
 }
 
 const clear = () => { dataMemory = {} }
-async function sync() {
-  console.log('syncing storage...')
+
+async function _sync() {
+  console.log('syncing storage...', dataMemory)
   try {
     const { keys } = await Preferences.keys()
     for (const key of keys) {
@@ -57,7 +58,10 @@ async function sync() {
   } catch (err) {
     console.error(err)
   }
+  console.log('done syncing storage...', dataMemory)
 }
+
+const sync = _sync()
 
 Amplify.configure(awsConfig)
 

@@ -163,13 +163,14 @@ export default {
     serverBus.$off(event.newEventReceived, this.showNotifications)
     serverBus.$off('updateAvailable', this.updateAvailable)
     serverBus.$off('message', this.message)
+    serverBus.$off('checkSession', this.checkSession)
     window.removeEventListener('orientationchange', this.orientationChange)
   },
   created() {
-    Vue.$log.info('AppMobile', this.offline)
     serverBus.$on(event.newEventReceived, this.showNotifications)
     serverBus.$on('updateAvailable', this.updateAvailable)
     serverBus.$on('message', this.message)
+    serverBus.$on('checkSession', this.checkSession)
     window.addEventListener('orientationchange', this.orientationChange)
   },
   async mounted() {
@@ -188,20 +189,21 @@ export default {
           }
         })
       }
-      await this.$store.dispatch('user/checkSession')
-      if (this.user.name !== '') {
-        this.$log.info('closing login screen...', this.user)
-        this.$f7.loginScreen.close('#loginScreen', false)
-      } else {
-        this.$log.debug('opening login screen...', this.$f7.loginScreen)
-        this.$f7.loginScreen.open('#loginScreen', false)
-        this.$f7.preloader.hide()
-      }
+      await this.checkSession()
     } catch (e) {
       Vue.$log.error('error in AppMobile mounted', e)
     }
   },
   methods: {
+    async checkSession() {
+      await this.$store.dispatch('user/checkSession')
+      if (this.user.name !== '') {
+        this.$f7.loginScreen.close('#loginScreen', false)
+      } else {
+        this.$f7.loginScreen.open('#loginScreen', false)
+      }
+      this.$f7.preloader.hide()
+    },
     orientationChange() {
       this.$store.dispatch('transient/setPortrait', window.orientation === 0).then(() => {
         this.$log.debug(this.portrait)

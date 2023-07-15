@@ -91,36 +91,7 @@ Framework7.use(Framework7Vue)
 export let newServiceWorker
 export let regServiceWorker
 
-if (!Capacitor.isNativePlatform()) {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-      if (registrations.length === 0) {
-        navigator.serviceWorker.register('/OneSignalSDKWorker.js').then(r => Vue.$log.debug('registered service worker for the first time', r))
-      }
-      for (const reg of registrations) {
-        reg.addEventListener('updatefound', () => {
-          Vue.$log.debug('A wild service worker has appeared in reg.installing!')
-          newServiceWorker = reg.installing
-          newServiceWorker.addEventListener('statechange', () => {
-            console.log('new state', newServiceWorker.state)
-            // Has network.state changed?
-            if (newServiceWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                serverBus.$emit('updateAvailable')
-              }
-            }
-          })
-        })
-      }
-    })
-
-    navigator.serviceWorker.addEventListener('controllerchange', (e) => {
-      Vue.$log.warn(navigator.serviceWorker, e)
-    })
-  } else {
-    Vue.$log.warn('no service Worker support, weird browser...')
-  }
-} else {
+if (Capacitor.isNativePlatform()) {
   App.addListener('appUrlOpen', async(data) => {
     if (Capacitor.getPlatform() === 'ios') {
       try { await Browser.close() } catch (e) { console.error(e) }
@@ -132,7 +103,7 @@ if (!Capacitor.isNativePlatform()) {
     if (url.searchParams.get('username')) {
       await store.dispatch('user/login', { username: url.searchParams.get('username'), password: url.searchParams.get('password') })
     }
-    window.location.href = '/'
+    serverBus.$emit('checkSession')
   })
   checkUpdate().then().catch(e => console.error(e))
 }
