@@ -3,12 +3,10 @@ import { Auth } from '@aws-amplify/auth'
 import { getPartnerData } from 'fleetmap-partners'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
+import { serverBus } from '@/main'
 let dataMemory = {}
 
 const host = Capacitor.isNativePlatform() ? 'capacitor' : window.location.hostname
-
-console.log('getting partner data for', host)
-
 const partnerData = getPartnerData(host)
 
 export const awsConfig = {
@@ -41,14 +39,13 @@ const getItem = (key) => {
   return dataMemory[key]
 }
 const removeItem = (key) => {
-  Preferences.remove(key).then()
+  Preferences.remove({ key }).then()
   delete dataMemory[key]
 }
 
 const clear = () => { dataMemory = {} }
 
 async function _sync() {
-  console.log('syncing storage...', dataMemory)
   try {
     const { keys } = await Preferences.keys()
     for (const key of keys) {
@@ -61,19 +58,19 @@ async function _sync() {
   console.log('done syncing storage...', dataMemory)
 }
 
-const sync = _sync()
-
-Amplify.configure(awsConfig)
-
-Auth.configure({
-  storage: {
-    setItem,
-    getItem,
-    removeItem,
-    clear,
-    sync
-  }}
-)
+const sync = _sync().then(() => {
+  Amplify.configure(awsConfig)
+  Auth.configure({
+    storage: {
+      setItem,
+      getItem,
+      removeItem,
+      clear,
+      sync
+    }}
+  )
+  serverBus.$emit('checkSession')
+})
 
 function auth(action) {
   const redirect = awsConfig.oauth.redirectSignIn

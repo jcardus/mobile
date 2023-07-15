@@ -16,13 +16,9 @@ import { Capacitor } from '@capacitor/core'
 import AppMobile from './AppMobile'
 import { Auth } from '@aws-amplify/auth'
 import { App } from '@capacitor/app'
-import { f7 } from 'framework7-vue'
+import Element from 'element-ui'
 
 console.log('app starting...', process.env)
-console.log('SERVER_HOST', process.env.SERVER_HOST)
-console.log('PACKAGE_VERSION', process.env.PACKAGE_VERSION)
-
-import Element from 'element-ui'
 
 Vue.use(Element)
 import * as Sentry from '@sentry/browser'
@@ -70,6 +66,7 @@ import locale from 'element-ui/lib/locale'
 import langEs from 'element-ui/lib/locale/lang/es'
 import langPt from 'element-ui/lib/locale/lang/pt'
 import langEn from 'element-ui/lib/locale/lang/en'
+import { f7 } from 'framework7-vue'
 switch (Vue.config.lang) {
   case 'ES':
     // eslint-disable-next-line no-undef
@@ -96,7 +93,7 @@ if (Capacitor.isNativePlatform()) {
     if (Capacitor.getPlatform() === 'ios') {
       try { await Browser.close() } catch (e) { console.error(e) }
     }
-    f7.dialog.preloader()
+    f7.preloader.show()
     // noinspection JSAccessibilityCheck
     await Auth._handleAuthResponse(data.url)
     const url = new URL(data.url)

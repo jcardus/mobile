@@ -131,9 +131,6 @@ export default {
     signUp() {
       return signUp()
     },
-    hostname() {
-      return window.location.hostname
-    },
     forgetPassword() {
       return forgotPassword()
     },
@@ -173,27 +170,6 @@ export default {
     serverBus.$on('checkSession', this.checkSession)
     window.addEventListener('orientationchange', this.orientationChange)
   },
-  async mounted() {
-    try {
-      this.$log.info('mounted AppMobile', this.user, this.version, process.env)
-      if (!Capacitor.isNativePlatform()) {
-        document.getElementById('favicon').href = partner.getFavIcon()
-        document.getElementById('title').innerHTML = partner.getTitle() + ' ' + this.version
-
-        this.toastNewVersion = this.$f7.toast.create({
-          text: this.$t('layout.newVersion'),
-          closeButton: true,
-          closeButtonColor: 'white',
-          on: {
-            close: reload
-          }
-        })
-      }
-      await this.checkSession()
-    } catch (e) {
-      Vue.$log.error('error in AppMobile mounted', e)
-    }
-  },
   methods: {
     async checkSession() {
       await this.$store.dispatch('user/checkSession')
@@ -214,9 +190,6 @@ export default {
         }
       })
     },
-    googleSignIn() {
-      this.$f7.preloader.show()
-    },
     async nativeSignIn() {
       await Browser.open({
         url: 'https://account.fleetmap.io/' + navigator.language.substring(0, 2) + '/?client_id=' + awsConfig.aws_user_pools_web_client_id + '&domain=' + awsConfig.oauth.domain,
@@ -229,7 +202,6 @@ export default {
       }
       const self = this
       this.$log.debug('dispatch user login ')
-      this.$f7.preloader.show()
       this.$store.dispatch('user/login', { username: this.username, password: this.password })
         .then(() => {
           self.$f7.preloader.hide()
