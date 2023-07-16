@@ -95,9 +95,6 @@ export default {
     },
     offline() {
       return appOffline()
-    },
-    connected() {
-      return this.offline ? this.$t('settings.disconnected') : this.$t('settings.connected')
     }
   },
   methods: {

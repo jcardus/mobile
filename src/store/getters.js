@@ -1,7 +1,7 @@
 const getters = {
   showFullDate: state => state.settings.showFullDate,
   totalDistance: state => state.transient.totalDistance,
-  curretTime: state => state.currentTime,
+  accessToken: state => state.user.accessToken,
   user: state => state.user.user,
   avatar: state => state.user.user.attributes && state.user.user.attributes.avatar,
   name: state => state.user.user && state.user.user.name,

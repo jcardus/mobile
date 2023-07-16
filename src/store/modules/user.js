@@ -18,6 +18,7 @@ const state = {
     attributes: {}
   },
   cognitoToken: null,
+  accessToken: null,
   alerts: [],
   devices: [],
   groups: [],
@@ -27,11 +28,11 @@ const state = {
 }
 
 const mutations = {
+  SET_ACCESS_TOKEN(state, token) {
+    state.accessToken = token
+  },
   SET_COGNITO_TOKEN(state, token) {
     state.cognitoToken = token
-  },
-  SET_ORDER_DEVICES_BY(state, orderDevicesBy) {
-    state.user.attributes = { ...state.user.attributes, orderDevicesBy }
   },
   SET_ALERT_SEARCH_PERIOD(state, alertsSearchPeriod) {
     state.user.attributes = { ...state.user.attributes, alertsSearchPeriod }
@@ -205,6 +206,7 @@ const actions = {
   async checkSession({ dispatch, commit }) {
     try {
       const session = await Auth.currentSession()
+      commit('SET_ACCESS_TOKEN', session.accessToken)
       const token = session.accessToken.getJwtToken()
       commit('SET_COGNITO_TOKEN', token)
       await api.getJSessionId(token)

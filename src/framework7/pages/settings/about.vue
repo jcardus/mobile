@@ -9,7 +9,7 @@
       </f7-list-item>
       <f7-list-item :title="$t('email')" :after="user.email">
       </f7-list-item>
-      <f7-list-item :title="$t('session')" :after="$store.state.user.cognitoToken !== null ? 'cognito' : ''">
+      <f7-list-item :title="$t('session')" :after="authTime">
       </f7-list-item>
       <f7-list-item title="host" :after="host">
       </f7-list-item>
@@ -32,7 +32,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'About',
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(['user', 'accessToken']),
     cookie() {
       return document.cookie
     },
@@ -44,6 +44,9 @@ export default {
     },
     version() {
       return process.env.PACKAGE_VERSION
+    },
+    authTime() {
+      return this.accessToken && this.accessToken.payload && new Date(this.accessToken.payload.auth_time * 1000).toLocaleString()
     }
   },
   methods: {
