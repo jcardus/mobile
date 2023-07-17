@@ -12,18 +12,14 @@ import { SharedData } from './utils/utils'
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
-import { Capacitor } from '@capacitor/core'
 import AppMobile from './AppMobile'
-import { Auth } from '@aws-amplify/auth'
-import { App } from '@capacitor/app'
 import Element from 'element-ui'
+import './capacitor'
+import * as Sentry from '@sentry/browser'
 
 console.log('app starting...', process.env)
 
 Vue.use(Element)
-import * as Sentry from '@sentry/browser'
-import { Browser } from '@capacitor/browser'
-import { checkUpdate } from '@/utils/updates'
 if (process.env.NODE_ENV !== 'development') {
   Sentry.init({
     Vue,
@@ -87,23 +83,6 @@ Framework7.use(Framework7Vue)
 
 export let newServiceWorker
 export let regServiceWorker
-
-if (Capacitor.isNativePlatform()) {
-  App.addListener('appUrlOpen', async(data) => {
-    if (Capacitor.getPlatform() === 'ios') {
-      try { await Browser.close() } catch (e) { console.error(e) }
-    }
-    f7.preloader.show()
-    // noinspection JSAccessibilityCheck
-    await Auth._handleAuthResponse(data.url)
-    const url = new URL(data.url)
-    if (url.searchParams.get('username')) {
-      await store.dispatch('user/login', { username: url.searchParams.get('username'), password: url.searchParams.get('password') })
-    }
-    serverBus.$emit('checkSession')
-  })
-  checkUpdate().then().catch(e => console.error(e))
-}
 
 const moment = require('moment')
 require('moment/locale/pt')
