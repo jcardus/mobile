@@ -8,6 +8,11 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     hostname: process.env.ENVIRONMENT === 'ios' ? 'api.pinme.io' : 'localhost'
+  },
+  plugins: {
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert']
+    }
   }
 }
 
