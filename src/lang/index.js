@@ -9,7 +9,6 @@ import ptBRLocale from './ptBR'
 import ptPTLocale from './ptPT'
 import esCLLocale from './esCL'
 import frFRLocale from './frFR'
-import itITLocale from './itIT'
 import store from '../store'
 import moment from 'moment'
 import _locale from 'element-ui/lib/locale'
@@ -39,10 +38,6 @@ const messages = {
   },
   esES: {
     ...esCLLocale,
-    ...elementEsLocale
-  },
-  itIT: {
-    ...itITLocale,
     ...elementEsLocale
   }
 }

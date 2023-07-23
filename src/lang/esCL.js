@@ -133,6 +133,7 @@ export default {
     user_type_operator: 'Operador'
   },
   settings: {
+    account: 'Cuenta',
     driver_add_title: 'Añadir Conductor',
     alert_alarm: 'Alarma',
     alert_maintenance: 'Mantenimiento',

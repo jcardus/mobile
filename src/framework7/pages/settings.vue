@@ -73,9 +73,9 @@
         </f7-col>
         <f7-col style="padding:1px">
           <div class="settingButton">
-            <a class="settingButton" @click="logout">
-              <div class="settingIcon"><i style="font-size: 40px" class="fas fa-sign-out-alt"></i></div>
-              <div class="settingText">{{ $t('settings.logout') }}</div>
+            <a class="settingButton" href="/settings/account">
+              <div class="settingIcon"><i style="font-size: 40px" class="fas fa-user"></i></div>
+              <div class="settingText">{{ $t('settings.account') }}</div>
             </a>
           </div>
         </f7-col>
@@ -101,11 +101,6 @@ export default {
     refreshApp() {
       this.$log.debug('refreshing...')
       this.$f7.preloader.show()
-      location.reload()
-    },
-    async logout() {
-      this.$f7.preloader.show()
-      this.$log.info('logout', await this.$store.dispatch('user/logout'))
       location.reload()
     }
   }

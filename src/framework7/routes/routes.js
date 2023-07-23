@@ -10,6 +10,7 @@ import AlertsSettingsPage from '../pages/settings/alerts'
 import DriversSettingsPage from '../pages/settings/drivers'
 import DriverDetailsPage from '../pages/settings/driverDetails'
 import AboutPage from '../pages/settings/about'
+import AccountPage from '../pages/settings/account'
 import MapMobileContainer from '../pages/MapMobileContainer'
 import alerts from '../pages/alerts'
 import AlertDetail from '../pages/alerts/AlertDetail'
@@ -71,6 +72,10 @@ const routes = [
   {
     path: '/settings/about',
     component: AboutPage
+  },
+  {
+    path: '/settings/account',
+    component: AccountPage
   },
   {
     path: '/settings/drivers',

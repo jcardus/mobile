@@ -109,6 +109,7 @@ export default {
     user_password_lengh: 'A Palavra-chave não pode ter menos de 6 dígitos'
   },
   settings: {
+    account: 'Conta',
     showLabels: 'Mostrar nome do veículo',
     search: 'Pesquisar...',
     empty_list: 'Sem resultados',
