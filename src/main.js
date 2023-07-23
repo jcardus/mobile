@@ -15,7 +15,7 @@ import elTableInfiniteScroll from 'el-table-infinite-scroll'
 import AppMobile from './AppMobile'
 import Element from 'element-ui'
 import './capacitor'
-import * as Sentry from '@sentry/browser'
+import * as Sentry from '@sentry/vue'
 
 console.log('app starting...', process.env)
 
