@@ -23,7 +23,7 @@ Vue.use(Element)
 if (process.env.NODE_ENV !== 'development') {
   Sentry.init({
     Vue,
-    dsn: 'https://d30b4aa5d7c1489ab1ae5dca7b542e85@o321784.ingest.sentry.io/1816749'
+    dsn: 'https://1c2f28c31de14ec1b4cbc632f97b465f@o4505579582193664.ingest.sentry.io/4505579585404928'
   })
 }
 
@@ -62,7 +62,6 @@ import locale from 'element-ui/lib/locale'
 import langEs from 'element-ui/lib/locale/lang/es'
 import langPt from 'element-ui/lib/locale/lang/pt'
 import langEn from 'element-ui/lib/locale/lang/en'
-import { f7 } from 'framework7-vue'
 switch (Vue.config.lang) {
   case 'ES':
     // eslint-disable-next-line no-undef

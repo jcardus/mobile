@@ -148,8 +148,8 @@ module.exports = {
         new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] }),
         ...(process.env.NODE_ENV === 'development' || !process.env.SENTRY_AUTH_TOKEN ? [] : [
           new SentryPlugin({
-            org: 'pinme-97',
-            project: 'fleetmap',
+            org: 'fleetmap-a5',
+            project: 'fleetmap-manager',
             release: version + '_' + (process.env.PACKAGE_NAME || 'mobile_web'),
             include: './dist'
           }),
