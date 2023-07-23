@@ -6,6 +6,7 @@ import { Auth } from '@aws-amplify/auth'
 import store from '@/store'
 import { checkUpdate } from '@/utils/updates'
 import { serverBus } from '@/main'
+import * as events from '../events'
 
 App.addListener('appUrlOpen', async(data) => {
   if (Capacitor.getPlatform() === 'ios') {
@@ -23,7 +24,9 @@ App.addListener('appUrlOpen', async(data) => {
 checkUpdate().then().catch(e => console.error(e))
 
 App.addListener('appStateChange', ({ isActive }) => {
-  console.error('App state changed. Is active?', isActive)
+  if (isActive) {
+    serverBus.$emit(events.connectSocket)
+  }
 })
 
 App.addListener('appRestoredResult', data => {

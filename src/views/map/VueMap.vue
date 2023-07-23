@@ -222,6 +222,7 @@ export default {
       ])
     },
     connectSocket() {
+      console.error('connectSocket')
       if (this.$store.state.socket.isConnected) { return }
       delete window.socket
       const socket = new WebSocket(getSocketUrl())
@@ -590,6 +591,7 @@ export default {
       serverBus.$on(event.eventSelected, this.eventSelected)
       serverBus.$on(event.eventsLoaded, this.eventsLoaded)
       serverBus.$on(event.directionsTo, this.directionsTo)
+      serverBus.$on(event.connectSocket, this.connectSocket)
 
       this.unsubscribe = this.$store.subscribe((mutation, state) => {
         switch (mutation.type) {
@@ -627,6 +629,7 @@ export default {
       this.$static.map.off('draw.update', this.drawUpdate)
       this.$static.map.off('draw.modechange', this.drawModeChange)
       this.$static.map.off('data', this.onData)
+      serverBus.$off(event.connectSocket, this.connectSocket)
       serverBus.$off(event.modelsLoaded, this.finishLoading)
       serverBus.$off(event.deviceChanged, this.deviceChanged)
       serverBus.$off(event.deviceSelected, this.deviceSelected)
