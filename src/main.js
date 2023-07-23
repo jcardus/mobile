@@ -23,7 +23,8 @@ Vue.use(Element)
 if (process.env.NODE_ENV !== 'development') {
   Sentry.init({
     Vue,
-    dsn: 'https://1c2f28c31de14ec1b4cbc632f97b465f@o4505579582193664.ingest.sentry.io/4505579585404928'
+    dsn: 'https://1c2f28c31de14ec1b4cbc632f97b465f@o4505579582193664.ingest.sentry.io/4505579585404928',
+    integrations: [new Sentry.BrowserTracing()]
   })
 }
 
