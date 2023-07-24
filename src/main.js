@@ -16,6 +16,7 @@ import AppMobile from './AppMobile'
 import Element from 'element-ui'
 import './capacitor'
 import * as Sentry from '@sentry/vue'
+import { CaptureConsole as CaptureConsoleIntegration } from '@sentry/integrations'
 
 console.log('app starting...', process.env)
 
@@ -24,7 +25,7 @@ if (process.env.NODE_ENV !== 'development') {
   Sentry.init({
     Vue,
     dsn: 'https://1c2f28c31de14ec1b4cbc632f97b465f@o4505579582193664.ingest.sentry.io/4505579585404928',
-    integrations: [new Sentry.BrowserTracing()]
+    integrations: [new Sentry.BrowserTracing(), new CaptureConsoleIntegration()]
   })
 }
 
@@ -49,7 +50,7 @@ Vue.use(elTableInfiniteScroll)
 const isProduction = process.env.NODE_ENV !== 'development'
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? 'info' : 'debug',
+  logLevel: isProduction ? 'warn' : 'debug',
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,
