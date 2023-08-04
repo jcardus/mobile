@@ -171,13 +171,23 @@ export default {
     Vue.$log.debug('VehicleDetail')
     serverBus.$off('deviceSelectedOnMap', this.deviceSelected)
     serverBus.$off('deviceSelected', this.deviceSelected)
+    serverBus.$off('animationEnd', this.devicePositionChanged)
   },
   created() {
     Vue.$log.debug('VehicleDetail')
+    serverBus.$on('animationEnd', this.devicePositionChanged)
     serverBus.$on('deviceSelected', this.deviceSelected)
     serverBus.$on('deviceSelectedOnMap', this.deviceSelected)
   },
   methods: {
+    devicePositionChanged(deviceId) {
+      if (this.device.id === deviceId) {
+        if (!lnglat.popUps[deviceId].closed) {
+          this.lastImageUpdate = new Date()
+          this.position = this.device.position
+        }
+      }
+    },
     navigateTo() {
       const start = this.$device.ios ? 'maps' : 'https'
       const ll = `${this.currentPosition.latitude},${this.currentPosition.longitude}`

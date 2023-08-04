@@ -6,7 +6,7 @@ import * as utils from '@/utils/utils'
 import { Capacitor } from '@capacitor/core'
 
 const serverHost = getServerHost()
-const baseUrl = `${Capacitor.getPlatform() === 'web' ? window.location.protocol : 'https:'}//${serverHost}/api/`
+const baseUrl = `${Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost' ? window.location.protocol : 'https:'}//${serverHost}/api/`
 const devices = baseUrl + 'devices'
 const route = baseUrl + 'reports/route'
 const events = baseUrl + 'reports/events'

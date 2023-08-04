@@ -59,7 +59,7 @@ let socketReconnect = 0
 function getSocketUrl() {
   const hostName = getServerHost()
   Vue.$log.debug('websocket ', hostName)
-  const protocol = Capacitor.getPlatform() === 'web' && window.location.protocol === 'http:'
+  const protocol = Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost' && window.location.protocol === 'http:'
     ? 'ws'
     : 'wss'
   return `${protocol}://${hostName}/api/socket`
