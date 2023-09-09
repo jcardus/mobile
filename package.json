@@ -1,7 +1,7 @@
 {
   "name": "pinme",
   "description": "fleet management mobile",
-  "version": "2.33.6",
+  "version": "2.33.7",
   "license": "proprietary",
   "scripts": {
     "build": "vue-cli-service build",
@@ -65,7 +65,7 @@
     "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "2.15.13",
     "fleetmap-partners": "1.0.126",
-    "fleetmap-reports": "1.0.768",
+    "fleetmap-reports": "1.0.816",
     "framework7": "^5.7.14",
     "framework7-vue": "^5.7.14",
     "mapbox-gl": "latest",
