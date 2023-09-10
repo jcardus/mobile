@@ -142,10 +142,9 @@ export default {
           this.$f7.dialog.alert(this.$t('report.no_data'))
         } else {
           const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
-          const { uuid } = await Device.getId()
-          const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${uuid}?raw=1`
-          console.log(pdf.output('datauristring'))
-          await axios.post(url, pdf.output('datauristring'))
+          const { identifier } = await Device.getId()
+          const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${identifier}?raw=1`
+          await axios.put(url, pdf.output('datauristring'))
           if (Capacitor.getPlatform() === 'ios') {
             await Browser.open({ url })
           } else {
