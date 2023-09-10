@@ -141,10 +141,9 @@ export default {
           // noinspection JSCheckFunctionSignatures
           this.$f7.dialog.alert(this.$t('report.no_data'))
         } else {
-          const pdf = await reports[this.reportType + 'ReportToPDF'](userData, reportData[0])
           const { identifier } = await Device.getId()
-          const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${identifier}?raw=1`
-          await axios.put(url, pdf.output('datauristring'))
+          const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${identifier}?reportType=${this.reportType}`
+          await axios.put(url, { reportData: reportData[0], userData })
           if (Capacitor.getPlatform() === 'ios') {
             await Browser.open({ url })
           } else {
