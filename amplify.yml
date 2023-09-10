@@ -10,7 +10,7 @@ frontend:
     build:
       commands:
         - echo $SERVER_HOST
-        - npm run build
+        - SENTRY_AUTH_TOKEN="" && npm run build
   artifacts:
     baseDirectory: dist
     files:
