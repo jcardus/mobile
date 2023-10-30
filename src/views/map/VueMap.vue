@@ -222,7 +222,6 @@ export default {
       ])
     },
     connectSocket() {
-      console.error('connectSocket')
       if (this.$store.state.socket.isConnected) { return }
       delete window.socket
       const socket = new WebSocket(getSocketUrl())

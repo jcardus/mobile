@@ -17,6 +17,8 @@
       </f7-list-item>
       <f7-list-item :title="$t('location')" :after="location">
       </f7-list-item>
+      <f7-list-item :title="$t('websocket')" :after="'' + $store.state.socket.isConnected">
+      </f7-list-item>
       <f7-list-item :title="$t('cookie')" :after="cookie" @click="clickHost">
       </f7-list-item>
     </f7-list>
