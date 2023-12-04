@@ -43,17 +43,20 @@ export default {
     buildingsVisible() { return vm.$store.state.map.show3dBuildings }
   },
   mounted() {
+    let tileRoads = `https://mt0.google.com/vt/lyrs=m&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
+    let tileSatellite = `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
     if (getPartnerData(window.location.hostname).googleMap) {
+      if (getPartnerData().partnerId === 5) {
+        tileRoads = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=roads`
+        tileSatellite = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=satellite`
+      }
       this.styles = this.styles.concat([
         { title: 'Google', uri: {
           version: 8,
           sources: {
             'raster-tiles': {
               'type': 'raster',
-              'tiles': [
-                `https://mt0.google.com/vt/lyrs=m&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
-                // 'https://mts1.google.com/vt/lyrs=s@186112443&hl=x-local&src=app&x={x}&y={y}&z={z}&s=Galile'
-              ],
+              'tiles': [tileRoads],
               'tileSize': 256
             }
           },
@@ -73,9 +76,7 @@ export default {
           sources: {
             'raster-tiles': {
               'type': 'raster',
-              'tiles': [
-                `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
-              ],
+              'tiles': [tileSatellite],
               'tileSize': 256
             }
           },
