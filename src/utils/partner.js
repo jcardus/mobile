@@ -1,6 +1,6 @@
-import styles from '../styles/element-variables.scss'
 import { getPartnerData, getPartnerId, getPartnerHost } from 'fleetmap-partners'
 import { Capacitor } from '@capacitor/core'
+import { partnerData } from 'fleetmap-partners/data'
 
 export const hostname = window.location.hostname.replace('dev.', '')
 
@@ -11,22 +11,6 @@ export function getFavIcon() {
 export function getLogo() {
   return '/img/logos/' + hostname + '.png'
 }
-
-export function getThemeColor() {
-  if (hostname === 'wuizy.co.ao') { return styles.success }
-  if (hostname === 'web.fleetrack.cl') { return styles.primary }
-  if (hostname === 'map.able-on.mobi') { return styles.primary }
-  return styles.success
-}
-
-export function getCSSName() {
-  if (hostname === 'wuizy.co.ao') { return 'wuizy' }
-  if (hostname === 'web.fleetrack.cl') { return 'fleetrack' }
-  if (hostname === 'www.fleetrackchile.com') { return 'fleetrack' }
-  if (hostname === 'map.able-on.mobi') { return 'able-on' }
-  return 'wuizy'
-}
-
 export function getTitle() {
   return getPartnerData(window.location.hostname).title || 'Fleetmap'
 }
@@ -37,28 +21,19 @@ export function showStopDate() {
 }
 
 function _getPartnerData() {
-  const hostname = Capacitor.isNativePlatform() ? getPartnerHost(getPartnerId(process.env.COGNITO_CLIENT_ID)) : window.location.hostname
+  const hostname = Capacitor.isNativePlatform()
+    ? getPartnerHost(getPartnerId(process.env.COGNITO_CLIENT_ID))
+    : window.location.hostname
   return getPartnerData(hostname)
 }
 
-export function getOneSignalAppId() {
-  return getPartnerData(window.location.hostname).appId
-}
-
-export function hasSVG() {
-  return hostname === 'wuizy.co.ao' ||
-    // hostname.includes('localhost') ||
-    hostname.includes('macp.pinme.io')
-}
-
-export function hasTolls() {
-  return hostname === 'web.fleetrack.cl' ||
-    hostname.includes('localhost')
-}
-
-export function getQuicksightHostName() {
-  if (hostname === 'mac.pinme.io') {
-    return 'quicksight.pinme.io'
+export function getPartnerByUser(user) {
+  console.log('go', user)
+  if (user.attributes && user.attributes.clientId) {
+    const partner = partnerData.find(p =>
+      p.cognitoClientId === user.attributes.clientId ||
+      (p.oldCognitoClientIds && p.oldCognitoClientIds.includes(user.attributes.clientId))
+    )
+    return partner || partnerData[1]
   }
-  return 'quicksight.' + hostname
 }

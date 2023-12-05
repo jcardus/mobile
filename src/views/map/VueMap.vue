@@ -50,9 +50,8 @@ import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
-import { showStopDate } from '@/utils/partner'
+import { getPartnerByUser, showStopDate } from '@/utils/partner'
 import { Capacitor } from '@capacitor/core'
-import { getPartnerData } from 'fleetmap-partners'
 
 let socketReconnect = 0
 
@@ -87,7 +86,7 @@ export default {
     ...mapGetters([
       'followVehicle', 'historyMode', 'dataLoaded', 'name', 'geofences', 'events', 'drivers',
       'showLabels', 'isPlaying', 'vehicles3dEnabled', 'deviceById', 'deviceByName',
-      'loading', 'zoom', 'center', 'mapType', 'mapStyle', 'devices'
+      'loading', 'zoom', 'center', 'mapType', 'mapStyle', 'devices', 'user'
     ]),
     loadingRoutes: {
       get() { return vm.$data.loadingRoutes },
@@ -192,34 +191,43 @@ export default {
     ...mapMutations('map', ['setCenter', 'setZoom']),
     ...mapActions('transient', ['setLoading']),
     filterLayers(worldview) {
-      // The "admin-0-boundary-disputed" layer shows boundaries
-      // at this level that are known to be disputed.
-      const map = this.map
-      map.setFilter('admin-0-boundary-disputed', [
-        'all',
-        ['==', ['get', 'disputed'], 'true'],
-        ['==', ['get', 'admin_level'], 0],
-        ['==', ['get', 'maritime'], 'false'],
-        ['match', ['get', 'worldview'], ['all', worldview], true, false]
-      ])
-      // The "admin-0-boundary" layer shows all boundaries at
-      // this level that are not disputed.
-      map.setFilter('admin-0-boundary', [
-        'all',
-        ['==', ['get', 'admin_level'], 0],
-        ['==', ['get', 'disputed'], 'false'],
-        ['==', ['get', 'maritime'], 'false'],
-        ['match', ['get', 'worldview'], ['all', worldview], true, false]
-      ])
-      // The "admin-0-boundary-bg" layer helps features in both
-      // "admin-0-boundary" and "admin-0-boundary-disputed" stand
-      // out visually.
-      map.setFilter('admin-0-boundary-bg', [
-        'all',
-        ['==', ['get', 'admin_level'], 0],
-        ['==', ['get', 'maritime'], 'false'],
-        ['match', ['get', 'worldview'], ['all', worldview], true, false]
-      ])
+      try {
+        // The "admin-0-boundary-disputed" layer shows boundaries
+        // at this level that are known to be disputed.
+        const map = this.map
+        map.setFilter('admin-0-boundary-disputed', [
+          'all',
+          ['==', ['get', 'disputed'], 'true'],
+          ['==', ['get', 'admin_level'], 0],
+          ['==', ['get', 'maritime'], 'false'],
+          ['match', ['get', 'worldview'], ['all', worldview], true, false]
+        ])
+        // The "admin-0-boundary" layer shows all boundaries at
+        // this level that are not disputed.
+        map.setFilter('admin-0-boundary', [
+          'all',
+          ['==', ['get', 'admin_level'], 0],
+          ['==', ['get', 'disputed'], 'false'],
+          ['==', ['get', 'maritime'], 'false'],
+          ['match', ['get', 'worldview'], ['all', worldview], true, false]
+        ])
+        // The "admin-0-boundary-bg" layer helps features in both
+        // "admin-0-boundary" and "admin-0-boundary-disputed" stand
+        // out visually.
+        map.setFilter('admin-0-boundary-bg', [
+          'all',
+          ['==', ['get', 'admin_level'], 0],
+          ['==', ['get', 'maritime'], 'false'],
+          ['match', ['get', 'worldview'], ['all', worldview], true, false]
+        ])
+
+        map.setFilter('country-label', [
+          'all',
+          ['match', ['get', 'worldview'], ['all', worldview], true, false]
+        ])
+      } catch (e) {
+        console.error(e)
+      }
     },
     connectSocket() {
       if (this.$store.state.socket.isConnected) { return }
@@ -662,9 +670,12 @@ export default {
         this.$log.debug('finishLoading')
         this.finishLoading()
       }
-      if (getPartnerData() && getPartnerData().region) {
-        this.filterLayers(getPartnerData().region)
-      }
+      setTimeout(() => {
+        const partner = getPartnerByUser(this.user)
+        if (partner.region) {
+          this.filterLayers(partner.region)
+        }
+      }, 2000)
     },
     onData(e) {
       // if (!e.isSourceLoaded) return

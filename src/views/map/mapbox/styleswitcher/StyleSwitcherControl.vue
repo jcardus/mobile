@@ -18,7 +18,7 @@
 
 import { vm } from '@/main'
 import { mapGetters } from 'vuex'
-import { getPartnerData } from 'fleetmap-partners'
+import { getPartnerByUser } from '@/utils/partner'
 
 export default {
   name: 'StyleSwitcherControl',
@@ -35,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['mapType']),
+    ...mapGetters(['mapType', 'user']),
     map() { return vm.$static.map },
     geofencesVisible() { return vm.$store.state.map.showGeofences },
     lineGeofencesVisible() { return vm.$store.state.map.showLineGeofences },
@@ -45,8 +45,9 @@ export default {
   mounted() {
     let tileRoads = `https://mt0.google.com/vt/lyrs=m&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
     let tileSatellite = `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
-    if (getPartnerData(window.location.hostname).googleMap) {
-      if (getPartnerData().partnerId === 5) {
+    const partner = getPartnerByUser(this.user)
+    if (partner.googleMap) {
+      if (partner.partnerId === 5) {
         tileRoads = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=roads`
         tileSatellite = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=satellite`
       }
