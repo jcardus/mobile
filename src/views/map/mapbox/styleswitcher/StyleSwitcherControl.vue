@@ -46,54 +46,52 @@ export default {
     let tileRoads = `https://mt0.google.com/vt/lyrs=m&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
     let tileSatellite = `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
     const partner = getPartnerByUser(this.user)
-    if (partner.googleMap) {
-      if (partner.partnerId === 5) {
-        tileRoads = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=roads`
-        tileSatellite = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=satellite`
-      }
-      this.styles = this.styles.concat([
-        { title: 'Google', uri: {
-          version: 8,
-          sources: {
-            'raster-tiles': {
-              'type': 'raster',
-              'tiles': [tileRoads],
-              'tileSize': 256
-            }
-          },
-          layers: [
-            {
-              'id': 'simple-tiles',
-              'type': 'raster',
-              'source': 'raster-tiles',
-              'minzoom': 0,
-              'maxzoom': 22
-            }
-          ],
-          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
-        }},
-        { title: 'Google Satellite', uri: {
-          version: 8,
-          sources: {
-            'raster-tiles': {
-              'type': 'raster',
-              'tiles': [tileSatellite],
-              'tileSize': 256
-            }
-          },
-          layers: [
-            {
-              'id': 'simple-tiles',
-              'type': 'raster',
-              'source': 'raster-tiles',
-              'minzoom': 0,
-              'maxzoom': 22
-            }
-          ],
-          glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
-        }}
-      ])
+    if (!partner || partner.partnerId === 5) {
+      tileRoads = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=roads`
+      tileSatellite = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=satellite`
     }
+    this.styles = this.styles.concat([
+      { title: 'Google', uri: {
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            'type': 'raster',
+            'tiles': [tileRoads],
+            'tileSize': 256
+          }
+        },
+        layers: [
+          {
+            'id': 'simple-tiles',
+            'type': 'raster',
+            'source': 'raster-tiles',
+            'minzoom': 0,
+            'maxzoom': 22
+          }
+        ],
+        glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
+      }},
+      { title: 'Google Satellite', uri: {
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            'type': 'raster',
+            'tiles': [tileSatellite],
+            'tileSize': 256
+          }
+        },
+        layers: [
+          {
+            'id': 'simple-tiles',
+            'type': 'raster',
+            'source': 'raster-tiles',
+            'minzoom': 0,
+            'maxzoom': 22
+          }
+        ],
+        glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
+      }}
+    ])
     document.addEventListener('click', event => {
       if (this.$refs.controlContainer.contains(event.target)) {
         this.btnVisible = true
