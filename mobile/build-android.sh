@@ -16,7 +16,7 @@ cp mobile/$APP_NAME/google-services.json android/app/google-services.json
 echo "copy google-secret"
 cp mobile/google-secret.json android
 echo "copy key store"
-#cp mobile/keystore /etc/keystore
+cp -v mobile/keystore android/app
 cp mobile/Gemfile* android
 echo sed "$PACKAGE_NAME"
 sed "s/PACKAGE_NAME/$PACKAGE_NAME/g" mobile/AndroidManifest.xml > android/app/src/main/AndroidManifest.xml

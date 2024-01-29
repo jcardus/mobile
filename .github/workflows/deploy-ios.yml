@@ -1,0 +1,60 @@
+name: deploy ios
+
+on:
+    push:
+      branches:
+        - main
+        
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: npm
+          node-version: '16'
+      - run: npm ci       
+      - run: |
+          npm run build
+          npx cap add android
+        working-directory: modern
+        env:
+          VITE_URL_NAME: ${{ vars.VITE_URL_NAME }}
+      - run: |
+          cp Gemfile android
+          cp -r fastlane ./android
+        working-directory: modern
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - run: fastlane android beta
+        working-directory: modern/android
+  build_ios:
+    needs: build_android
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: npm
+          cache-dependency-path: modern/package-lock.json
+      - run: npm ci
+        working-directory: modern
+      - run: |
+          npm run build
+          npx cap add ios
+        working-directory: modern
+        env:
+          VITE_URL_NAME: ${{ vars.VITE_URL_NAME }}
+      - run: |
+          cp Gemfile ./ios/App
+          cp -r fastlane ./ios/App
+          touch ./ios/App/gc_keys.json
+          echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' >> ./ios/App/gc_keys.json
+        working-directory: modern
+      - run: fastlane beta
+        working-directory: modern/ios/App
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APPSTORE_API_KEY }}
