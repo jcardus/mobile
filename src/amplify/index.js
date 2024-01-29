@@ -18,7 +18,7 @@ export const awsConfig = {
   oauth: {
     redirectSignIn: Capacitor.isNativePlatform() ? 'https://fleetmap.io/' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
-    domain: Capacitor.isNativePlatform() ? process.env.AUTH_DOMAIN : partnerData.oauth_domain,
+    domain: process.env.AUTH_DOMAIN,
     scope: [
       'email',
       'openid',
