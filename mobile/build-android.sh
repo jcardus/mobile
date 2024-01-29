@@ -36,10 +36,9 @@ echo "copy fastlane"
 cp ../mobile/Fastfile fastlane
 echo "fastlane dir"
 ls fastlane
-cat ../mobile/Fastfile
+#cat ../mobile/Fastfile
 echo "json_key_file(\"google-secret.json\")" >> fastlane/Appfile
 echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
-echo "Appfile"
 #cat fastlane/Appfile
 bundle exec fastlane beta
 
