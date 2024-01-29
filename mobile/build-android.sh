@@ -24,7 +24,7 @@ echo "android manifest:"
 cat android/app/src/main/AndroidManifest.xml
 cd android || exit
 
-gem install --user-install bundler:1.17.2
+gem install bundler:1.17.2
 bundle install --path vendor/bundle
 echo "fastlane add_plugin versioning_android"
 bundle exec fastlane add_plugin versioning_android
