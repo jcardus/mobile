@@ -21,7 +21,7 @@ cp mobile/Gemfile* android
 echo sed "$PACKAGE_NAME"
 sed "s/PACKAGE_NAME/$PACKAGE_NAME/g" mobile/AndroidManifest.xml > android/app/src/main/AndroidManifest.xml
 echo "android manifest:"
-cat android/app/src/main/AndroidManifest.xml
+#cat android/app/src/main/AndroidManifest.xml
 cd android || exit
 
 gem install bundler:1.17.2
@@ -40,8 +40,7 @@ cat ../mobile/Fastfile
 echo "json_key_file(\"google-secret.json\")" >> fastlane/Appfile
 echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
 echo "Appfile"
-cat fastlane/Appfile
+#cat fastlane/Appfile
 bundle exec fastlane beta
-bundle exec fastlane device_farm
 
 
