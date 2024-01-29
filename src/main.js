@@ -62,10 +62,18 @@ import locale from 'element-ui/lib/locale'
 import langEs from 'element-ui/lib/locale/lang/es'
 import langPt from 'element-ui/lib/locale/lang/pt'
 import langEn from 'element-ui/lib/locale/lang/en'
+import langFr from 'element-ui/lib/locale/lang/fr'
 switch (Vue.config.lang) {
+  case 'EN':
+    // eslint-disable-next-line no-undef
+    locale.use(langEn)
+    break
+  case 'FR':
+    // eslint-disable-next-line no-undef
+    locale.use(langFr)
+    break
   case 'ES':
     // eslint-disable-next-line no-undef
-    // configure language
     locale.use(langEs)
     break
   case 'PT':
@@ -86,6 +94,7 @@ export let regServiceWorker
 const moment = require('moment')
 require('moment/locale/pt')
 require('moment/locale/es')
+require('moment/locale/fr')
 require('moment/locale/en-gb')// 'fr'
 const lang = getLanguage().slice(0, 2)
 Vue.$log.debug('setting moment locale to', lang)

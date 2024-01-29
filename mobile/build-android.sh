@@ -13,9 +13,9 @@ npx cap copy
 cordova-res android --skip-config --copy
 mkdir android/fastlane
 cp mobile/$APP_NAME/google-services.json android/app/google-services.json
-echo "copy google-secret"
-cp mobile/google-secret.json android
-echo "copy key store"
+cp -v mobile/google-secret.json android
+echo "google-secret.json:"
+cat android/google-secret.json
 cp mobile/Gemfile* android
 echo sed "$PACKAGE_NAME"
 sed "s/PACKAGE_NAME/$PACKAGE_NAME/g" mobile/AndroidManifest.xml > android/app/src/main/AndroidManifest.xml
