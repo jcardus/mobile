@@ -18,7 +18,7 @@ jobs:
 
       - name: Build and sign APK
         run: |
-          npm install --legacy-peer-deps
+          npm install 
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > mobile/keystore
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" > mobile/google-secret.json
           npm run-script deploy:android:manager

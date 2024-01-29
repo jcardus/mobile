@@ -99,7 +99,6 @@ Vue.use(VueStatic, {
   namespaced: true
 })
 
-
 Vue.use(VueTimers)
 
 export const sharedData = new SharedData()
