@@ -1,4 +1,3 @@
-import 'normalize.css/normalize.css'
 import Vue from 'vue'
 import store from './store'
 import VueLogger from 'vuejs-logger'

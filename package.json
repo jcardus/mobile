@@ -69,7 +69,6 @@
     "mapbox-gl": "latest",
     "mapbox-gl-controls": "latest",
     "moment": "^2.29.4",
-    "normalize.css": "latest",
     "nprogress": "latest",
     "odometer": "latest",
     "vue": "^2.6.14",
