@@ -1,4 +1,4 @@
-import { AppUpdate, AppUpdateAvailability } from '@robingenz/capacitor-app-update'
+import { AppUpdate, AppUpdateAvailability } from '@capawesome/capacitor-app-update'
 import { serverBus } from '@/main'
 
 export const checkUpdate = async() => {

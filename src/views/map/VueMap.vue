@@ -12,12 +12,10 @@
 <script>
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-import '@mapbox/mapbox-gl-traffic/mapbox-gl-traffic.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import mapboxgl from 'mapbox-gl'
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import { serverBus, vm } from '@/main'
 import settings from '../../settings'
 import * as lnglat from '../../utils/lnglat'
@@ -555,7 +553,6 @@ export default {
           enableHighAccuracy: true
         },
         trackUserLocation: true }), 'bottom-left')
-      map.addControl(new MapboxTraffic(), 'bottom-left')
       map.addControl(new MapboxCustomControl('style-switcher-div'), 'bottom-left')
       const VD = Vue.extend(StyleSwitcherControl)
       const _vm = new VD({ i18n: i18n, store: store })
