@@ -134,6 +134,9 @@ module.exports = {
         new webpack.DefinePlugin({
           'process.mode': '"' + process.env.ENV + '"',
           'process.env': {
+            SENTRY_DSN: `"${process.env.SENTRY_DSN}"`,
+            SENTRY_ORG: `"${process.env.SENTRY_ORG}"`,
+            WEB_SOCKET_HOST: `"${process.env.WEB_SOCKET_HOST}"`,
             SERVER_HOST: `"${process.env.SERVER_HOST}"`,
             PACKAGE_NAME: `"${process.env.PACKAGE_NAME}"`,
             MAPBOX_TOKEN: `"${process.env.MAPBOX_TOKEN}"`,
