@@ -672,7 +672,7 @@ export default {
       }
       setTimeout(() => {
         const partner = getPartnerByUser(this.user)
-        if (partner.region) {
+        if (partner && partner.region) {
           this.filterLayers(partner.region)
         }
       }, 2000)
