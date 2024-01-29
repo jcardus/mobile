@@ -1,6 +1,6 @@
 # Xcode
 trigger:
-- mobile-dev
+- main
 
 pool:
   vmImage: 'macos-latest'
