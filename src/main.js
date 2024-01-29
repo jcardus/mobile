@@ -4,7 +4,6 @@ import store from './store'
 import VueLogger from 'vuejs-logger'
 import VueStatic from 'vue-static'
 import i18n, { getLanguage } from './lang'
-import VueI18nFilter from 'vue-i18n-filter'
 import * as event from './events'
 import './amplify'
 import VueTimers from 'vue-timers'
@@ -100,7 +99,6 @@ Vue.use(VueStatic, {
   namespaced: true
 })
 
-Vue.use(VueI18nFilter)
 
 Vue.use(VueTimers)
 

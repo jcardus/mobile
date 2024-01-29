@@ -28,7 +28,7 @@ platform :android do
       task: 'bundle',
       build_type: 'Release',
       properties: {
-                  "android.injected.signing.store.file" => "/etc/keystore",
+                  "android.injected.signing.store.file" => "/mobile/keystore",
                   "android.injected.signing.store.password" => "password",
                   "android.injected.signing.key.alias" => "key0",
                   "android.injected.signing.key.password" => "password",
