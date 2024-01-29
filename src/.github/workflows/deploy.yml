@@ -1,0 +1,26 @@
+name: Deploy to Google Play Store
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Build and sign APK
+        run: |
+          npm install --legacy-peer-deps
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > mobile/keystore
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" > mobile/google-secret.json
+          npm run-script deploy:android:manager
