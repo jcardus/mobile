@@ -21,7 +21,10 @@ App.addListener('appUrlOpen', async(data) => {
   }
   serverBus.$emit('checkSession')
 })
-checkUpdate().then().catch(e => console.error(e))
+
+if (Capacitor.isNativePlatform()) {
+  checkUpdate().then().catch(e => console.error(e))
+}
 
 App.addListener('appStateChange', ({ isActive }) => {
   if (isActive) {
