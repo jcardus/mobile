@@ -247,7 +247,7 @@ export default {
             setTimeout(() => {
               this.connectSocket()
               this.$store.commit('SOCKET_RECONNECT', socketReconnect++)
-            }, 6000)
+            }, 10000)
           }
         }
       })

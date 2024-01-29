@@ -91,11 +91,7 @@ const store = new Vuex.Store({
       state.socket.message = message
       state.lastUpdate = Date.now()
     },
-    SOCKET_RECONNECT(state, count) {
-      if (count === 10) {
-        Vue.$log.warn('count = 10, logging out')
-        serverBus.$emit('forceLogout')
-      }
+    SOCKET_RECONNECT(state, count) {      
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
     },
     SOCKET_RECONNECT_ERROR(state) {
