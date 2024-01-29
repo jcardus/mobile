@@ -22,7 +22,11 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3' # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically      
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '17'     
       - name: Build and sign APK
         run: |
           npm install --legacy-peer-deps
