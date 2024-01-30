@@ -15,6 +15,8 @@ import Element from 'element-ui'
 import './capacitor'
 import * as Sentry from '@sentry/vue'
 import { CaptureConsole as CaptureConsoleIntegration } from '@sentry/integrations'
+import '@fortawesome/fontawesome-pro/css/all.css' // Ensure you are using css-loader
+
 
 console.log('app starting...', process.env)
 

@@ -5,8 +5,10 @@ frontend:
   phases:
     preBuild:
       commands:
+        - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+        - npm config set "//npm.fontawesome.com/:_authToken" ${FONTAWESOME_NPM_AUTH_TOKEN}
         - npm install --legacy-peer-deps
-    # IMPORTANT - Please verify your build commands
+   # IMPORTANT - Please verify your build commands
     build:
       commands:
         - echo $SERVER_HOST
