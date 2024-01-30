@@ -9,9 +9,9 @@ export function getBackendHost() {
 
 export function getServerHost() {
   if (Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost') {
-    return `${window.location.hostname}:${window.location.port}`
+    return process.env.SERVER_HOST || `${window.location.hostname}:${window.location.port}`
   } else {
-    return process.env.SERVER_HOST || 'api.pinme.io'
+    return process.env.SERVER_HOST || 'api2.pinme.io'
   }
 }
 
