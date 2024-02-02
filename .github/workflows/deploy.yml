@@ -31,7 +31,7 @@ jobs:
           npm install --legacy-peer-deps
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" | base64 --decode > mobile/google-secret.json
-          #npm run-script deploy:android:manager
+          npm run-script deploy:android:manager
       - name: deploy ios
         run: |
           npm install --legacy-peer-deps
