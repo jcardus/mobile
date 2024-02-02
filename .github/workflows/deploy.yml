@@ -29,7 +29,8 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
       - name: deploy android
-        run: echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" | base64 --decode > mobile/google-secret.json
           npm run-script deploy:android:manager
       - name: deploy ios
