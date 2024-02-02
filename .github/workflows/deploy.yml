@@ -24,7 +24,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '17'
-      - name: deploy android
+      - name: deploy android with npm
         run: |
           npm config set "@fortawesome:registry" https://npm.fontawesome.com/
           npm config set "//npm.fontawesome.com/:_authToken" ${FONTAWESOME_NPM_AUTH_TOKEN}
