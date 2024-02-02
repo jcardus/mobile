@@ -27,7 +27,7 @@ jobs:
       - name: deploy android with npm
         run: |
           npm config set "@fortawesome:registry" https://npm.fontawesome.com/
-          npm config set "//npm.fontawesome.com/:_authToken" ${FONTAWESOME_NPM_AUTH_TOKEN}
+          npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
           npm install --legacy-peer-deps
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" | base64 --decode > mobile/google-secret.json
