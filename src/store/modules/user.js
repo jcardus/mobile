@@ -18,6 +18,7 @@ const state = {
     attributes: {}
   },
   cognitoToken: null,
+  cognitoUser: null,
   accessToken: null,
   alerts: [],
   devices: [],
@@ -33,6 +34,9 @@ const mutations = {
   },
   SET_COGNITO_TOKEN(state, token) {
     state.cognitoToken = token
+  },
+  SET_COGNITO_USER(state, token) {
+    state.cognitoUser = token
   },
   SET_ALERT_SEARCH_PERIOD(state, alertsSearchPeriod) {
     state.user.attributes = { ...state.user.attributes, alertsSearchPeriod }
@@ -243,10 +247,11 @@ const actions = {
     return Auth.signIn(username.trim().toLowerCase(), password)
       .then(async() => {
         const session = await Auth.currentSession()
-        console.log('session', session)
         const token = session.accessToken.getJwtToken()
         commit('SET_COGNITO_TOKEN', token)
-        api.getJSessionId(token).then(() => { window.location.href = Capacitor.isNativePlatform() ? '/' : '/mobile' })
+        commit('SET_COGNITO_USER', await Auth.currentAuthenticatedUser({ bypassCache: true }))
+        await api.getJSessionId(token)
+        serverBus.$emit('checkSession')
       })
       .catch(e => {
         const errorMessage = e.message || e

@@ -65,7 +65,7 @@
             </f7-list-input>
           </f7-list>
           <f7-list>
-            <f7-list-button :title="$t('login.login_button')" @click="signIn"></f7-list-button>
+            <f7-list-button v-loading="loading" :title="$t('login.login_button')" @click="signIn"></f7-list-button>
             <f7-list-item>
               <google-button v-if="socialSignIn || platform==='android'" style="width:220px;margin:auto;"></google-button>
             </f7-list-item>
@@ -112,6 +112,7 @@ export default {
   components: { AppleButton, GoogleButton, DataContainer },
   data() {
     return {
+      loading: false,
       showPassword: false,
       username: '',
       password: '',
@@ -201,7 +202,7 @@ export default {
         return this.nativeSignIn()
       }
       const self = this
-      this.$log.debug('dispatch user login ')
+      this.loading = true
       this.$store.dispatch('user/login', { username: this.username, password: this.password })
         .then(() => {
           self.$f7.preloader.hide()
@@ -216,6 +217,7 @@ export default {
             destroyOnClose: true
           }).open()
         })
+        .finally(() => { this.loading = false })
     },
     emitEvent(event) {
       this.$log.debug(event)

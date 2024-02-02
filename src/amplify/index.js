@@ -1,13 +1,9 @@
 import Amplify from '@aws-amplify/core'
 import { Auth } from '@aws-amplify/auth'
-import { getPartnerData } from 'fleetmap-partners'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
 import { serverBus } from '@/main'
 let dataMemory = {}
-
-const host = Capacitor.isNativePlatform() ? 'capacitor' : window.location.hostname
-const partnerData = getPartnerData(host)
 
 export const awsConfig = {
   aws_project_region: 'eu-west-3',

@@ -1,6 +1,5 @@
 import { getServerHost } from './index'
 import axios from 'axios'
-const url = `https://${getServerHost()}/backend`
 
 export default {
   axios: axios.create(),
@@ -8,6 +7,7 @@ export default {
     return this.get('/api?username=1', token)
   },
   async get(path, token) {
+    const url = `https://${getServerHost()}/backend`
     return this.axios.get(url + path, {
       withCredentials: true,
       headers: {

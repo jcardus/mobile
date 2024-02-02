@@ -1,5 +1,6 @@
 import { awsConfig } from '@/amplify'
 import { Capacitor } from '@capacitor/core'
+import store from '@/store'
 
 export function getBackendHost() {
   const backendProd = 'xmjth8acs5'
@@ -8,13 +9,16 @@ export function getBackendHost() {
 }
 
 export function getServerHost() {
-  if (Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost') {
-    return `${window.location.hostname}:${window.location.port}`
+  if (Capacitor.getPlatform() === 'web') {
+    return process.env.SERVER_HOST || `${window.location.hostname}:${window.location.port}`
   } else {
-    return process.env.SERVER_HOST || 'api.pinme.io'
+    return getUserHost() || process.env.SERVER_HOST || 'api.pinme.io'
   }
 }
 
+function getUserHost() {
+  return store && store.state.user.cognitoUser && store.state.user.cognitoUser.attributes['custom:SERVER_HOST']
+}
 function auth(action) {
   const redirect = awsConfig.oauth.redirectSignIn
   return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&redirect_uri=${redirect}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
