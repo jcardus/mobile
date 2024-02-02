@@ -15,7 +15,11 @@ jobs:
         with:
           node-version: '16'
           cache: 'npm'
-      - run: npm ci --legacy-peer-deps
+      - name: install with fontawesome
+        run: |
+          npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+          npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
+          npm install --legacy-peer-deps
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3' # Not needed with a .ruby-version file
@@ -24,11 +28,6 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '17'
-      - name: install
-        run: |
-          npm config set "@fortawesome:registry" https://npm.fontawesome.com/
-          npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
-          npm install --legacy-peer-deps        
       - name: deploy android
         run: echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" | base64 --decode > mobile/google-secret.json
