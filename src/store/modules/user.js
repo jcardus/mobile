@@ -213,6 +213,7 @@ const actions = {
       commit('SET_ACCESS_TOKEN', session.accessToken)
       const token = session.accessToken.getJwtToken()
       commit('SET_COGNITO_TOKEN', token)
+      commit('SET_COGNITO_USER', await Auth.currentAuthenticatedUser({ bypassCache: true }))
       await api.getJSessionId(token)
     } catch (e) {
       console.error('no cognito session', e.message, e)
@@ -249,7 +250,6 @@ const actions = {
         const session = await Auth.currentSession()
         const token = session.accessToken.getJwtToken()
         commit('SET_COGNITO_TOKEN', token)
-        commit('SET_COGNITO_USER', await Auth.currentAuthenticatedUser({ bypassCache: true }))
         await api.getJSessionId(token)
         serverBus.$emit('checkSession')
       })
