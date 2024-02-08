@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import { hostname } from '@/utils/partner'
 import { mapGetters } from 'vuex'
+import { getServerHost } from '@/api'
 
 export default {
   name: 'About',
@@ -40,7 +40,7 @@ export default {
       return window.location.host
     },
     host() {
-      return hostname
+      return getServerHost()
     },
     version() {
       return process.env.PACKAGE_VERSION
