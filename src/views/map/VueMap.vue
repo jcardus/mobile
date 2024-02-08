@@ -43,23 +43,18 @@ import store from '@/store'
 import { popUps } from '@/utils/lnglat'
 import { hexToRgb } from '@/utils/images'
 import { checkFuelThresholds } from '@/utils/device'
-import { getServerHost } from '@/api'
+import { getServerHost, getUserWebSocketHost } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
 import { getPartnerByUser, showStopDate } from '@/utils/partner'
-import { Capacitor } from '@capacitor/core'
 
 let socketReconnect = 0
 
 function getSocketUrl() {
-  const hostName = getServerHost()
-  Vue.$log.debug('websocket ', hostName)
-  const protocol = Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost' && window.location.protocol === 'http:'
-    ? 'ws'
-    : 'wss'
-  return `${protocol}://${hostName}/api/socket`
+  const hostName = getUserWebSocketHost() || getServerHost()
+  return `wss://${hostName}/api/socket`
 }
 
 export default {

@@ -19,6 +19,11 @@ export function getServerHost() {
 function getUserHost() {
   return store && store.state.user.cognitoUser && store.state.user.cognitoUser.attributes['custom:SERVER_HOST']
 }
+
+export function getUserWebSocketHost() {
+  return store && store.state.user.cognitoUser && store.state.user.cognitoUser.attributes['custom:WEB_SOCKET_HOST']
+}
+
 function auth(action) {
   const redirect = awsConfig.oauth.redirectSignIn
   return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&redirect_uri=${redirect}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`

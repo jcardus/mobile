@@ -17,7 +17,7 @@
       </f7-list-item>
       <f7-list-item :title="$t('location')" :after="location">
       </f7-list-item>
-      <f7-list-item :title="$t('websocket')" :after="'' + $store.state.socket.isConnected">
+      <f7-list-item :title="$t('websocket')" :after="'' + $store.state.socket.isConnected + ' ' + socketHost">
       </f7-list-item>
       <f7-list-item :title="$t('cookie')" :after="cookie" @click="clickHost">
       </f7-list-item>
@@ -27,7 +27,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getServerHost } from '@/api'
+import { getServerHost, getUserWebSocketHost } from '@/api'
 
 export default {
   name: 'About',
@@ -44,6 +44,9 @@ export default {
     },
     version() {
       return process.env.PACKAGE_VERSION
+    },
+    socketHost() {
+      return getUserWebSocketHost()
     }
   },
   methods: {
