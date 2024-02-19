@@ -21,6 +21,8 @@
       </f7-list-item>
       <f7-list-item :title="$t('cookie')" :after="cookie" @click="clickHost">
       </f7-list-item>
+      <f7-list-item :title="$t('token')" :after="token" @click="clickToken">
+      </f7-list-item>
     </f7-list>
   </f7-page>
 </template>
@@ -47,11 +49,16 @@ export default {
     },
     socketHost() {
       return getUserWebSocketHost()
+    },
+    token() {
+      return this.user && this.user.token
     }
   },
   methods: {
     clickHost() {
       alert(document.cookie)
+    },
+    clickToken() {
     },
     refreshApp() {
       this.$log.debug('refreshing...')
