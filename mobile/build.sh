@@ -1,7 +1,7 @@
 echo "COGNITO_CLIENT_ID $COGNITO_CLIENT_ID"
 export secretAccessKey=NYGe2oF5OlqJDwB8cCYzUlymhzc/vpfrgnH9h43n
 export accessKeyId=AKIA5EPZKGBG77TDPUCE
-export SERVER_HOST=api.pinme.io
+export SERVER_HOST=api2.pinme.io
 
 vue-cli-service build --mode capacitor --dest dist
 
