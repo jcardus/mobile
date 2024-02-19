@@ -9,6 +9,7 @@ import backend from '@/api/backend'
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
+import axios from 'axios'
 
 const state = {
   user: {
@@ -37,6 +38,9 @@ const mutations = {
   },
   SET_COGNITO_USER(state, token) {
     state.cognitoUser = token
+    if (token.attributes['custom:SERVER_HOST'] && Capacitor.getPlatform() !== 'web') {
+      axios.defaults.baseURL = `https://${token.attributes['custom:SERVER_HOST']}/api`
+    }
   },
   SET_ALERT_SEARCH_PERIOD(state, alertsSearchPeriod) {
     state.user.attributes = { ...state.user.attributes, alertsSearchPeriod }

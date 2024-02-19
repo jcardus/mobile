@@ -3,25 +3,22 @@ import { getServerHost } from './index'
 import store from '../store'
 import Vue from 'vue'
 import * as utils from '@/utils/utils'
-import { Capacitor } from '@capacitor/core'
 
-const serverHost = getServerHost()
-const baseUrl = `${Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost' ? window.location.protocol : 'https:'}//${serverHost}/api/`
-const devices = baseUrl + 'devices'
-const route = baseUrl + 'reports/route'
-const events = baseUrl + 'reports/events'
-const positions = baseUrl + 'positions'
-const trips = baseUrl + 'reports/trips'
-const stops = baseUrl + 'reports/stops'
-const geoFences = baseUrl + 'geofences'
-const alerts = baseUrl + 'notifications'
-const permissions = baseUrl + 'permissions'
-const groups = baseUrl + 'groups'
-const users = baseUrl + 'users'
-const server = baseUrl + 'server'
-const drivers = baseUrl + 'drivers'
-const session = baseUrl + 'session'
-const api_helper_lambda_url = 'https://' + serverHost + '/api_helper'
+const devices = 'devices'
+const route = 'reports/route'
+const events = 'reports/events'
+const positions = 'positions'
+const trips = 'reports/trips'
+const stops = 'reports/stops'
+const geoFences = 'geofences'
+const alerts = 'notifications'
+const permissions = 'permissions'
+const groups = 'groups'
+const users = 'users'
+const server = 'server'
+const drivers = 'drivers'
+const session = 'session'
+axios.defaults.baseURL = `https://${getServerHost()}/api`
 
 export function login(data) {
   const body = 'email=' + encodeURIComponent(data.username) + '&password=' + encodeURIComponent(data.password)
@@ -128,7 +125,7 @@ function get(url) {
 export const traccar = {
   api_helper: function(options, ok, nok) {
     axios.post(
-      api_helper_lambda_url,
+      'https://' + getServerHost() + '/api_helper',
       options,
       {
         headers: {
@@ -199,7 +196,7 @@ export const traccar = {
   },
   allInOne(deviceId, from, to) {
     return axios.get(
-      `${baseUrl}reports/allinone?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}&type=route&type=trips&type=stops&type=summary`,
+      `reports/allinone?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}&type=route&type=trips&type=stops&type=summary`,
       { withCredentials: true }
     ).then(r => r.data)
   },
@@ -377,10 +374,10 @@ export const traccar = {
     return get(server)
   },
   getUser() {
-    return get(baseUrl + 'session')
+    return get('session')
   },
   getSession() {
-    return invokeApi(baseUrl + 'session')
+    return get('session')
   },
   getInitData(user) {
     const requestDevices = axios.get(devices, { withCredentials: true })
