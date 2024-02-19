@@ -231,7 +231,7 @@ export default {
       events.forEach((eventType) => {
         socket[eventType] = (event) => {
           const mutation = 'SOCKET_ON' + event.type.toUpperCase()
-          this.$store.commit(mutation)
+          this.$store.commit(mutation, socket)
           if (event.type === 'close') {
             this.$log.warn('socket closed!')
             traccar.positions()

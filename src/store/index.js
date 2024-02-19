@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
-import { serverBus } from '@/main'
 import { VuexPersistence } from 'vuex-persist'
 
 const excludedMudations = ['TOGGLE_HISTORY_MODE', 'TOGGLE_CONNECTION_OK', 'SET_TIME']
@@ -74,10 +73,9 @@ const store = new Vuex.Store({
     SET_UNREAD_ITEMS(state, value) {
       state.unreadItemsvalue = value
     },
-    SOCKET_ONOPEN(state, event) {
+    SOCKET_ONOPEN(state, socket) {
       state.socket.isConnected = true
-      Vue.$log.debug(state)
-      Vue.$log.debug(event)
+      socket.send(state.user.user.token)
     },
     SOCKET_ONCLOSE(state) {
       state.socket.isConnected = false
@@ -91,7 +89,7 @@ const store = new Vuex.Store({
       state.socket.message = message
       state.lastUpdate = Date.now()
     },
-    SOCKET_RECONNECT(state, count) {      
+    SOCKET_RECONNECT(state, count) {
       Vue.$log.warn('SOCKET_RECONNECT', 'count: ', count, state)
     },
     SOCKET_RECONNECT_ERROR(state) {
