@@ -377,7 +377,7 @@ export const traccar = {
     return get('session')
   },
   getSession() {
-    return get('session')
+    return get('session').then(d => d.data)
   },
   getInitData(user) {
     const requestDevices = axios.get(devices, { withCredentials: true })

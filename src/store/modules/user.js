@@ -53,7 +53,9 @@ const mutations = {
   },
   SET_USER(state, token) {
     state.user = token
-    state.user.attributes.avatar = getAvatar(token.name)
+    if (token && token.attributes) {
+      state.user.attributes.avatar = getAvatar(token.name)
+    }
   },
   CLEAR_USER(state) {
     state.user = {
@@ -91,7 +93,11 @@ const mutations = {
   }
 }
 
-function getAvatar(name) {
+function
+getAvatar(name) {
+  if (!name) {
+    return ''
+  }
   const nameSplit = name.split(' ')
   return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
 }
