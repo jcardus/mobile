@@ -10,6 +10,7 @@ import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import axios from 'axios'
+import { getServerHost } from '@/api'
 
 const state = {
   user: {
@@ -38,8 +39,8 @@ const mutations = {
   },
   SET_COGNITO_USER(state, token) {
     state.cognitoUser = token
-    if (token.attributes['custom:SERVER_HOST'] && Capacitor.getPlatform() !== 'web') {
-      axios.defaults.baseURL = `https://${token.attributes['custom:SERVER_HOST']}/api`
+    if (token.attributes['custom:SERVER_HOST']) {
+      axios.defaults.baseURL = `https://${getServerHost()}/api`
     }
   },
   SET_ALERT_SEARCH_PERIOD(state, alertsSearchPeriod) {
@@ -226,7 +227,7 @@ const actions = {
       commit('SET_COGNITO_USER', await Auth.currentAuthenticatedUser({ bypassCache: true }))
       await api.getJSessionId(token)
     } catch (e) {
-      console.error('no cognito session', e.message, e)
+      console.error('no cognito session', e)
     }
     try {
       commit('SET_USER', await traccar.getSession())
