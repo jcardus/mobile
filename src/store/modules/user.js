@@ -55,6 +55,9 @@ const mutations = {
   SET_USER(state, token) {
     state.user = token
     if (token && token.attributes) {
+      if (state.user.attributes['SERVER_HOST']) {
+        axios.defaults.baseURL = `https://${getServerHost()}/api`
+      }
       state.user.attributes.avatar = getAvatar(token.name)
     }
   },
