@@ -17,7 +17,8 @@ export function getServerHost() {
 }
 
 function getUserHost() {
-  return store && store.state.user.cognitoUser && store.state.user.cognitoUser.attributes['custom:SERVER_HOST']
+  return store && store.state.user.cognitoUser && store.state.user.cognitoUser.attributes['custom:SERVER_HOST'] ||
+      store && store.state.user && store.state.user.user && store.state.user.user.attributes['SERVER_HOST']
 }
 
 export function getUserWebSocketHost() {
