@@ -4,7 +4,7 @@ export AUTH_DOMAIN=fleetmap.auth.eu-west-3.amazoncognito.com
 export APP_NAME=Manager
 export PACKAGE_NAME=com.fleetmap.manager
 export HOST_NAME=fleetmap.io
-export MAPBOX_TOKEN=pk.eyJ1IjoiZmxlZXRtYXAtaW8iLCJhIjoiY2xyemwxa3d3MDVoajJpcGpqYnBwNmFqOCJ9.LEcn8fWIvbvKqkyYJ3yX1w
-export SERVER_HOST=api.pinme.io
+export MAPBOX_TOKEN=pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
+export SERVER_HOST=api2.pinme.io
 
 mobile/build.sh "$1"
