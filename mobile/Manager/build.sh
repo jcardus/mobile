@@ -5,6 +5,6 @@ export APP_NAME=Manager
 export PACKAGE_NAME=com.fleetmap.manager
 export HOST_NAME=fleetmap.io
 export MAPBOX_TOKEN=pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
-export SERVER_HOST=api2.pinme.io
+export SERVER_HOST=api.pinme.io
 
 mobile/build.sh "$1"
