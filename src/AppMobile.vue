@@ -173,8 +173,12 @@ export default {
   },
   methods: {
     async checkSession() {
-      await this.$store.dispatch('user/checkSession')
-      if (this.user.name !== '') {
+      try {
+        await this.$store.dispatch('user/checkSession')
+      } catch (e) {
+        console.error(e)
+      }
+      if (this.user && this.user.name !== '') {
         this.$f7.loginScreen.close('#loginScreen', false)
       } else {
         this.$f7.loginScreen.open('#loginScreen', false)
