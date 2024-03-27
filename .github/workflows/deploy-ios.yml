@@ -24,12 +24,6 @@ jobs:
         with:
           ruby-version: '3.3' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'adopt'
-          java-version: '17'
-      - name: deploy android nogartel
+      - name: deploy ios
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
-          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" | base64 --decode > mobile/google-secret.json
-          npm run-script deploy:android:nogartel
+          npm run-script deploy:ios:manager
