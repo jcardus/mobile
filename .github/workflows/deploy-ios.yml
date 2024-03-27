@@ -26,4 +26,5 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: deploy ios
         run: |
-          npm run-script deploy:ios:manager
+          npm run-script build:ios:manager
+          mobile/deploy-ios.sh
