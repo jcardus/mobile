@@ -17,6 +17,10 @@ echo "apple_id(\"admin@fleetmap.io\")" >> fastlane/Appfile
 echo "itc_team_id(\"122303819\")" >> fastlane/Appfile
 echo "team_id(\"57X9MD32BX\")" >> fastlane/Appfile
 echo "Appfile"
+
+touch gc_keys.json
+echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' >> gc_keys.json
+
 export PACKAGE_VERSION=$PACKAGE_VERSION
 bundle exec fastlane ios add_domain_to_entitlement
 bundle exec fastlane ios add_ui_background_modes
