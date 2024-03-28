@@ -30,3 +30,5 @@ jobs:
           touch ./ios/App/gc_keys.json
           echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' >> ./ios/App/gc_keys.json
           mobile/deploy-ios.sh
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APPSTORE_API_KEY }}
