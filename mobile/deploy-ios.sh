@@ -13,6 +13,7 @@ bundle exec fastlane add_plugin versioning
 bundle exec fastlane install_plugins
 
 echo "app_identifier(\"$PACKAGE_NAME\")" >> fastlane/Matchfile
+echo "app_identifier(\"$PACKAGE_NAME\")" >> fastlane/Appfile
 echo "package_name(\"$PACKAGE_NAME\")" >> fastlane/Appfile
 echo "apple_id(\"admin@fleetmap.io\")" >> fastlane/Appfile
 echo "itc_team_id(\"122303819\")" >> fastlane/Appfile
