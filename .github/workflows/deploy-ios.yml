@@ -12,6 +12,9 @@ env:
   AUTH_DOMAIN: fleetmap.auth.eu-west-3.amazoncognito.com
   HOST_NAME: fleetmap.io
   SERVER_HOST: api.pinme.io
+  APP_NAME: Manager
+  PACKAGE_NAME: com.fleetmap.manager        
+  MAPBOX_TOKEN: pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
 
 jobs:
   deploy:
@@ -33,16 +36,11 @@ jobs:
           ruby-version: '3.3' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: build
-        run: npm run-script build:ios:manager 
+        run: mobile/build.sh ios
       - name: deploy ios manager
         run: |
-          echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json          
-          mobile/build.sh ios
+          echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json                    
           mobile/deploy-ios.sh          
-        env:
-          APP_NAME: Manager
-          PACKAGE_NAME: com.fleetmap.manager        
-          MAPBOX_TOKEN: pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
           
           
           
