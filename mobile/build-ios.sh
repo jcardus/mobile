@@ -11,7 +11,7 @@ cp -v mobile/*.rb ios/App
 cp -v mobile/*.entitlements ios/App/App
 cp -v mobile/Gemfile* ios/App
 cp -v mobile/AppDelegate.swift ios/App/App
-mv -v gc_keys.json ios/App
+cp -v gc_keys.json ios/App
 
 cd ios/App || exit
 gem install bundler
