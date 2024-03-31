@@ -39,10 +39,11 @@ jobs:
       - name: build 
         run: npm run-script build:ios
       - name: install fastlane
-        run: mobile/build-ios.sh
-      - name: deploy ios manager
         run: |
           echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json                    
+          mobile/build-ios.sh
+      - name: deploy ios manager
+        run: |
           mobile/deploy-ios.sh          
           
           
