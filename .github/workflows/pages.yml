@@ -20,6 +20,10 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  #adminfleet
+  MAPBOX_TOKEN: pk.eyJ1IjoiYWRtaW5mbGVldCIsImEiOiJjazhqenY4anEwYWtmM3FuYWloaWE1OGpmIn0.fvbvNQ_5sX7AP8QvNR7blQ
+
 jobs:
   # Build job
   build:
