@@ -15,6 +15,7 @@ env:
   APP_NAME: Manager
   PACKAGE_NAME: com.fleetmap.manager        
   MAPBOX_TOKEN: pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
+  ENVIRONMENT: ios
 
 jobs:
   deploy:
@@ -35,8 +36,10 @@ jobs:
         with:
           ruby-version: '3.3' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: build
+      - name: build 
         run: npm run-script build:ios
+      - name: install fastlane
+        run: mobile/build-ios.sh
       - name: deploy ios manager
         run: |
           echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json                    
