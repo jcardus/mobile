@@ -23,6 +23,7 @@ concurrency:
 env:
   #adminfleet
   MAPBOX_TOKEN: pk.eyJ1IjoiYWRtaW5mbGVldCIsImEiOiJjazhqenY4anEwYWtmM3FuYWloaWE1OGpmIn0.fvbvNQ_5sX7AP8QvNR7blQ
+  USER_POOL_ID: eu-west-3_3zjuFkIv8
 
 jobs:
   # Build job
