@@ -43,3 +43,4 @@ amplifyxc.config
 /mobile/Localizalia/resources/android/splash/
 android/
 resources/
+/gc_keys.json

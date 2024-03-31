@@ -54,12 +54,12 @@ platform :ios do
     match(type: 'appstore')
     update_code_signing_settings(
       code_sign_identity: "iPhone Distribution",
-      profile_name: "match AppStore com.fleetmap.moviflotte"
+      profile_name: ENV['PROFILE_NAME']
     )
     #get_certificates
     #get_provisioning_profile   # invokes sigh
 
-    update_project_provisioning(xcodeproj: "App.xcodeproj", build_configuration: "Release")
+    #update_project_provisioning(xcodeproj: "App.xcodeproj", build_configuration: "Release")
     update_project_team(path: "App.xcodeproj", teamid: "57X9MD32BX")
 
     increment_version_number_in_plist(version_number: ENV["PACKAGE_VERSION"])
