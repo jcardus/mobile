@@ -25,14 +25,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3      
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: "16"
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
+          node-version: '16'
+          cache: 'npm'
       - name: install with fontawesome
         run: |
           npm config set "@fortawesome:registry" https://npm.fontawesome.com/
@@ -40,6 +37,8 @@ jobs:
           npm install --legacy-peer-deps
       - name: build
         run: npm run-script build
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
