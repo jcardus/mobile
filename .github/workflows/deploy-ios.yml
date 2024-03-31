@@ -5,6 +5,14 @@ on:
     branches:
       - main
 
+env:
+  COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
+  APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APPSTORE_API_KEY }}
+  USER_POOL_ID: eu-west-3_3zjuFkIv8
+  AUTH_DOMAIN: fleetmap.auth.eu-west-3.amazoncognito.com
+  HOST_NAME: fleetmap.io
+  SERVER_HOST: api.pinme.io
+
 jobs:
   deploy:
     runs-on: macos-latest
@@ -24,9 +32,18 @@ jobs:
         with:
           ruby-version: '3.3' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: deploy ios
+      - name: build
+        run: npm run-script build:ios:manager 
+      - name: deploy ios manager
         run: |
-          echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json
-          npm run-script build:ios:manager && mobile/deploy-ios.sh
+          echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json          
+          mobile/build.sh ios
+          mobile/deploy-ios.sh          
         env:
-          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APPSTORE_API_KEY }}
+          APP_NAME: Manager
+          PACKAGE_NAME: com.fleetmap.manager        
+          MAPBOX_TOKEN: pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
+          
+          
+          
+          
