@@ -28,4 +28,5 @@ cat fastlane/Matchfile
 export PACKAGE_VERSION=$PACKAGE_VERSION
 bundle exec fastlane ios add_domain_to_entitlement
 bundle exec fastlane ios add_ui_background_modes
+echo "*** APP_STORE_CONNECT_API_KEY_KEY ***: $APP_STORE_CONNECT_API_KEY_KEY"
 bundle exec fastlane ios beta
