@@ -45,7 +45,8 @@ jobs:
           mobile/build-ios.sh
       - name: deploy ios manager
         run: |
-          echo "$APP_STORE_CONNECT_API_KEY_KEY"
+          echo "${{env.APP_STORE_CONNECT_API_KEY_KEY}}"
+          echo "${{env.APPSTORE_API_KEY}}"
           mobile/deploy-ios.sh
         env:
           APP_STORE_CONNECT_API_KEY_KEY: $APPSTORE_API_KEY
