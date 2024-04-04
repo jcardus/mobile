@@ -86,6 +86,18 @@ export function getLanguage() {
       return locale
     }
   }
+  if (language.toLowerCase().includes('fr')) {
+    return 'frFR'
+  }
+  if (language.toLowerCase().includes('en')) {
+    return 'enGB'
+  }
+  if (language.toLowerCase().includes('es')) {
+    return 'esCL'
+  }
+  if (language.toLowerCase().includes('pt')) {
+    return 'ptBR'
+  }
   return 'ptPT'
 }
 const i18n = new VueI18n({
