@@ -22,7 +22,8 @@ export const awsConfig = {
     ],
     responseType: 'code'
   },
-  federationTarget: 'COGNITO_USER_POOLS'
+  federationTarget: 'COGNITO_USER_POOLS',
+  authenticationFlowType: 'USER_PASSWORD_AUTH'
 }
 
 const setItem = (key, value) => {
