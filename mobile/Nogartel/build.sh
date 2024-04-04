@@ -7,6 +7,7 @@ export SOCIAL_SIGN_IN=true
 export COGNITO_CLIENT_ID=2ml2d0h1qk7q614qc3bclg2alj
 export AUTH_DOMAIN=fleetmap.auth.eu-west-3.amazoncognito.com
 export MAPBOX_TOKEN=pk.eyJ1Ijoibm9nYXJ0ZWwiLCJhIjoiY2x1N2I1NzlpMDRnbTJrbXAzeGNoaDFlbCJ9.MJCdAPkK8l2Kv81Rs2tORw
+export SERVER_HOST=nogartel.fleetmap.io
 
 mobile/build.sh "$1"
 

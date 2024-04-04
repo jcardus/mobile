@@ -236,7 +236,7 @@ const actions = {
       commit('SET_USER', await traccar.getSession())
       await dispatch('setUser')
     } catch (e) {
-      console.error('no traccar session, should go to login', e.message, e)
+      console.error('no traccar session, should go to login', e.message, e.config && e.config.url)
       await dispatch('clearUser')
     }
   },

@@ -7,7 +7,7 @@ export default {
     return this.get('/api?username=1', token)
   },
   async get(path, token) {
-    const url = `https://api2.pinme.io/backend`
+    const url = `https://${getServerHost()}/backend`
     return this.axios.get(url + path, {
       withCredentials: true,
       headers: {

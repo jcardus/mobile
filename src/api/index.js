@@ -12,7 +12,7 @@ export function getServerHost() {
   if (Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost') {
     return `${window.location.hostname}:${window.location.port}`
   } else {
-    return getUserHost() || process.env.SERVER_HOST || 'api.pinme.io'
+    return getUserHost() || process.env.SERVER_HOST || 'api2.pinme.io'
   }
 }
 
