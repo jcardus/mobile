@@ -10,7 +10,7 @@ export const awsConfig = {
   aws_cognito_identity_pool_id: process.env.IDENTITY_POOL || 'eu-west-3_3zjuFkIv8',
   aws_cognito_region: 'eu-west-3',
   aws_user_pools_id: process.env.USER_POOL_ID,
-  aws_user_pools_web_client_id: process.env.COGNITO_CLIENT_ID,
+  aws_user_pools_web_client_id: process.env.COGNITO_CLIENT_ID || '2ml2d0h1qk7q614qc3bclg2alj',
   oauth: {
     redirectSignIn: Capacitor.isNativePlatform() ? 'https://fleetmap.io/' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
