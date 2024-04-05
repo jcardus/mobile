@@ -43,7 +43,6 @@ import store from '@/store'
 import { popUps } from '@/utils/lnglat'
 import { hexToRgb } from '@/utils/images'
 import { checkFuelThresholds } from '@/utils/device'
-import { getServerHost, getUserWebSocketHost } from '@/api'
 import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
@@ -53,8 +52,7 @@ import { getPartnerByUser, showStopDate } from '@/utils/partner'
 let socketReconnect = 0
 
 function getSocketUrl() {
-  const hostName = getUserWebSocketHost() || getServerHost()
-  return `wss://${hostName}/api/socket`
+  return `wss://traccar-eu.fleetmap.pt/api/socket`
 }
 
 export default {
@@ -223,6 +221,10 @@ export default {
       }
     },
     connectSocket() {
+      if (!this.user.token) {
+        this.user.token = crypto.randomUUID()
+        traccar.updateUser(this.user.id, this.user)
+      }
       if (this.$store.state.socket.isConnected) { return }
       delete window.socket
       const socket = new WebSocket(getSocketUrl())
