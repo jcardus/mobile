@@ -7,7 +7,7 @@ let dataMemory = {}
 
 export const awsConfig = {
   aws_project_region: 'eu-west-3',
-  aws_cognito_identity_pool_id: process.env.IDENTITY_POOL || 'eu-west-3_3zjuFkIv8',
+  aws_cognito_identity_pool_id: 'eu-west-3:a9b51fc7-a3f9-4fec-b59e-027f766bc516',
   aws_cognito_region: 'eu-west-3',
   aws_user_pools_id: process.env.USER_POOL_ID,
   aws_user_pools_web_client_id: '2ml2d0h1qk7q614qc3bclg2alj',
