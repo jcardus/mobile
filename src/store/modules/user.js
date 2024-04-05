@@ -223,7 +223,6 @@ const actions = {
   },
   async checkSession({ dispatch, commit }) {
     try {
-      await new Promise(res => setTimeout(res, 5000))
       const session = await Auth.currentSession()
       commit('SET_ACCESS_TOKEN', session.accessToken)
       const token = session.accessToken.getJwtToken()
