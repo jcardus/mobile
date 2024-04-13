@@ -3,7 +3,7 @@ export USER_POOL_ID=eu-west-3_3zjuFkIv8
 export AUTH_DOMAIN=fleetmap.auth.eu-west-3.amazoncognito.com
 export APP_NAME=Manager
 export PACKAGE_NAME=com.fleetmap.manager
-export HOST_NAME=fleetmap.io
+export SERVER_HOST=fleetmap.io
 export MAPBOX_TOKEN=pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
 export SERVER_HOST=api2.pinme.io
 

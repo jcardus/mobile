@@ -9,13 +9,15 @@ env:
   COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
   USER_POOL_ID: eu-west-3_3zjuFkIv8
   AUTH_DOMAIN: fleetmap.auth.eu-west-3.amazoncognito.com
-  HOST_NAME: fleetmap.io
   SERVER_HOST: api.pinme.io
   APP_NAME: Manager
   PACKAGE_NAME: com.fleetmap.manager
   MAPBOX_TOKEN: pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
   ENVIRONMENT: ios
   PROFILE_NAME: match AppStore com.fleetmap.manager
+  APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APP_STORE_CONNECT_API_KEY_KEY}}"
+  APP_STORE_CONNECT_API_KEY_ISSUER_ID: "${{vars.APP_STORE_CONNECT_API_KEY_ISSUER_ID}}"
+  APP_STORE_CONNECT_API_KEY_KEY_ID: "${{vars.APP_STORE_CONNECT_API_KEY_KEY_ID}}"
 
 jobs:
   deploy:
@@ -43,14 +45,27 @@ jobs:
         run: |
           echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json
           mobile/build-ios.sh
-      - name: deploy ios manager
-        run: |
-          echo "$APP_STORE_CONNECT_API_KEY_KEY"
-          mobile/deploy-ios.sh
+      #- name: deploy manager
+      #  run: mobile/deploy-ios.sh
+      - name: deploy nogartel
+        run: mobile/deploy-ios.sh
         env:
-          APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APP_STORE_CONNECT_API_KEY_KEY}}"
-          APP_STORE_CONNECT_API_KEY_ISSUER_ID: "${{vars.APP_STORE_CONNECT_API_KEY_ISSUER_ID}}"
-          APP_STORE_CONNECT_API_KEY_KEY_ID: "${{vars.APP_STORE_CONNECT_API_KEY_KEY_ID}}"
+          SERVER_HOST: nogartel.fleetmap.io
+          SOCIAL_SIGN_IN: true
+          MAPBOX_TOKEN: pk.eyJ1Ijoibm9nYXJ0ZWwiLCJhIjoiY2x1N2I1NzlpMDRnbTJrbXAzeGNoaDFlbCJ9.MJCdAPkK8l2Kv81Rs2tORw
+          APP_NAME: Nogartel
+          PACKAGE_NAME: com.fleetmap.nogartel
+      - name: deploy localizalia
+        run: mobile/deploy-ios.sh
+        env:
+          SERVER_HOST: localizalia.net
+          SOCIAL_SIGN_IN: false
+          MAPBOX_TOKEN: pk.eyJ1IjoiZmxlZXRtYXAtbG9jYWxpemFsaWEiLCJhIjoiY2x1N2Jlc2IyMDNibTJxbjA0M3o4dGI3ZCJ9.-HkvoIwi14RY7IwvBeNWoQ
+          APP_NAME: Localizalia
+          PACKAGE_NAME: com.fleetmap.localizalia
+
+
+
 
 
 

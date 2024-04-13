@@ -2,7 +2,7 @@ echo "export nogartel"
 export USER_POOL_ID=eu-west-3_3zjuFkIv8
 export APP_NAME=Nogartel
 export PACKAGE_NAME=com.fleetmap.nogartel
-export HOST_NAME=nogartel.fleetmap.io
+export SERVER_HOST=nogartel.fleetmap.io
 export SOCIAL_SIGN_IN=true
 export COGNITO_CLIENT_ID=2ml2d0h1qk7q614qc3bclg2alj
 export AUTH_DOMAIN=fleetmap.auth.eu-west-3.amazoncognito.com

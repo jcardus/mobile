@@ -4,8 +4,8 @@ export accessKeyId=AKIA5EPZKGBG77TDPUCE
 
 vue-cli-service build --mode capacitor --dest dist
 
-cp dist/img/logos/$HOST_NAME.png dist/img/logos/api.pinme.io.png
-cp dist/img/logos/$HOST_NAME.png dist/img/logos/localhost.png
+cp dist/img/logos/$SERVER_HOST.png dist/img/logos/api.pinme.io.png
+cp dist/img/logos/$SERVER_HOST.png dist/img/logos/localhost.png
 
 rm -rf ./ios
 rm -rf ./android
