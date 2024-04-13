@@ -48,7 +48,9 @@ jobs:
           echo "$APP_STORE_CONNECT_API_KEY_KEY"
           mobile/deploy-ios.sh
         env:
-          APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APPSTORE_API_KEY}}"
+          APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APP_STORE_CONNECT_API_KEY_KEY}}"
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: "${{vars.APP_STORE_CONNECT_API_KEY_ISSUER_ID}}"
+          APP_STORE_CONNECT_API_KEY_KEY_ID: "${{vars.APP_STORE_CONNECT_API_KEY_KEY_ID}}"
 
 
 
