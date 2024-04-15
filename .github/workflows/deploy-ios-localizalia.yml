@@ -1,4 +1,4 @@
-name: Deploy to App Store
+name: Localizalia to App Store
 
 on:
   push:
@@ -19,6 +19,7 @@ env:
   MAPBOX_TOKEN: pk.eyJ1IjoiZmxlZXRtYXAtbG9jYWxpemFsaWEiLCJhIjoiY2x1N2Jlc2IyMDNibTJxbjA0M3o4dGI3ZCJ9.-HkvoIwi14RY7IwvBeNWoQ
   APP_NAME: Localizalia
   PACKAGE_NAME: com.fleetmap.localizalia
+  SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
 
 jobs:
   deploy:
@@ -42,9 +43,5 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: build
         run: npm run-script build:ios
-      - name: install fastlane
-        run: |
-          echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json
-          mobile/build-ios.sh
       - name: deploy
         run: mobile/deploy-ios.sh
