@@ -26,6 +26,7 @@ env:
   USER_POOL_ID: eu-west-3_3zjuFkIv8
   AUTH_DOMAIN: fleetmap.auth.eu-west-3.amazoncognito.com
   COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
+  SENTRY_DSN: https://d1d2bb4b0ffe344ee506b6403dcdd7de@o4507090621956096.ingest.de.sentry.io/4507090623594576
 
 
 jobs:
