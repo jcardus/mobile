@@ -42,6 +42,8 @@ jobs:
           ruby-version: '3.3' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: build
-        run: npm run-script build:ios
+        run: |
+          echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json
+          npm run-script build:ios
       - name: deploy
         run: mobile/deploy-ios.sh
