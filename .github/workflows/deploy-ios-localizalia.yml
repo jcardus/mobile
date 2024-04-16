@@ -3,7 +3,7 @@ name: Localizalia to App Store
 on:
   push:
     branches:
-      - localizalia
+      - localizalia2
 
 env:
   COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
