@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   appName: process.env.APP_NAME,
   webDir: 'dist',
   server: {
-    hostname: process.env.ENVIRONMENT === 'ios' ? 'api.pinme.io' : 'localhost'
+    hostname: process.env.ENVIRONMENT === 'ios' ? process.env.SERVER_HOST : 'localhost'
   },
   plugins: {
     PushNotifications: {
