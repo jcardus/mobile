@@ -39,7 +39,7 @@ const mutations = {
   },
   SET_COGNITO_USER(state, token) {
     state.cognitoUser = token
-    if (token.attributes['custom:SERVER_HOST']) {
+    if (token && token.attributes['custom:SERVER_HOST']) {
       axios.defaults.baseURL = `https://${getServerHost()}/api`
     }
   },
