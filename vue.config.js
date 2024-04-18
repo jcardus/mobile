@@ -153,8 +153,8 @@ module.exports = {
         new MomentLocalesPlugin({ localesToKeep: ['pt', 'es'] }),
         ...(process.env.NODE_ENV === 'development' || !process.env.SENTRY_AUTH_TOKEN ? [] : [
           new SentryPlugin({
-            org: 'fleetmap-a5',
-            project: 'fleetmap-manager',
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT || 'javascript-vue',
             release: version + '_' + (process.env.PACKAGE_NAME || 'mobile_web'),
             include: './dist'
           }),
