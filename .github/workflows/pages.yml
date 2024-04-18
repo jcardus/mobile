@@ -3,7 +3,7 @@ name: Deploy to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["web"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,6 +28,8 @@ env:
   COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
   SENTRY_DSN: https://d1d2bb4b0ffe344ee506b6403dcdd7de@o4507090621956096.ingest.de.sentry.io/4507090623594576
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+  SENTRY_ORG: mobile-dfq
+
 
 
 jobs:
