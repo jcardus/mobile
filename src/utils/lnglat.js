@@ -19,7 +19,7 @@ const green = ['==', ['get', 'color'], 'green']
 const yellow = ['==', ['get', 'color'], 'yellow']
 const red = ['==', ['get', 'color'], 'red']
 
-export const cdnUrl = 'https://d2alv66jwtleln.cloudfront.net'
+export const cdnUrl = 'https://d7eumezdkbwin.cloudfront.net'
 export const spriteUrl = cdnUrl + '/sprite/14/sprite'
 export const vehIconsUrl = cdnUrl + '/vehIcons'
 
