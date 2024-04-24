@@ -197,9 +197,7 @@ export default {
     },
     async nativeSignIn() {
       await Browser.open({
-        url: 'https://account.fleetmap.io/' +
-          navigator.language.substring(0, 2) +
-          '/?client_id=' + awsConfig.aws_user_pools_web_client_id +
+        url: 'https://account.fleetmap.io/?client_id=' + awsConfig.aws_user_pools_web_client_id +
           '&domain=' + awsConfig.oauth.domain +
           '&region=eu-west-3' +
           '&id_pool_id=' + process.env.ID_POOL_ID +
