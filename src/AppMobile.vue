@@ -40,7 +40,7 @@
               <img class="logo" :src="logo" alt="">
             </div>
           </f7-login-screen-title>
-          <f7-list v-if="showLogin" form>
+          <f7-list form>
             <f7-list-input
               name="username"
               :placeholder="$t('login.login_user')"
@@ -65,7 +65,8 @@
             </f7-list-input>
           </f7-list>
           <f7-list>
-            <f7-list-button v-loading="loading" :title="$t('login.login_button')" @click="signIn"></f7-list-button>
+            <f7-list-button v-loading="loading" :title="$t('login.login_button')" @click="() => signIn(false)"></f7-list-button>
+            <f7-list-button v-loading="loading" :title="$t('Google / Apple')" @click="() => signIn(true)"></f7-list-button>
             <f7-list-item>
               <google-button v-if="socialSignIn || platform==='android'" style="width:220px;margin:auto;"></google-button>
             </f7-list-item>
@@ -205,8 +206,8 @@ export default {
         presentationStyle: 'popover'
       })
     },
-    signIn() {
-      if (!this.showLogin) {
+    signIn(socialSignIn) {
+      if (socialSignIn) {
         return this.nativeSignIn()
       }
       const self = this
