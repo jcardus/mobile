@@ -20,6 +20,7 @@ env:
   APP_NAME: Localizalia
   PACKAGE_NAME: com.fleetmap.localizalia
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+  WEB_SOCKET_HOST: traccar-eu.fleetmap.pt
 
 jobs:
   deploy:
