@@ -7,6 +7,7 @@ export PACKAGE_NAME=com.fleetmap.localizalia
 export SERVER_HOST=localizalia.net
 export SOCIAL_SIGN_IN=false
 export MAPBOX_TOKEN=pk.eyJ1IjoiZmxlZXRtYXAtbG9jYWxpemFsaWEiLCJhIjoiY2x1N2Jlc2IyMDNibTJxbjA0M3o4dGI3ZCJ9.-HkvoIwi14RY7IwvBeNWoQ
+export WEB_SOCKET_HOST=traccar-eu.fleetmap.pt
 
 mobile/build.sh "$1"
 
