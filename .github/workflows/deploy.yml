@@ -1,4 +1,4 @@
-name: Deploy to Google Play Store
+name: Manager to Google Play Store
 
 on:
   push:
@@ -32,4 +32,4 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
           echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_PLAY_STORE }}" | base64 --decode > mobile/google-secret.json
-          npm run-script deploy:android:nogartel
+          npm run-script deploy:android:manager
