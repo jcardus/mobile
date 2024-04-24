@@ -12,13 +12,8 @@ export function getServerHost() {
   if (Capacitor.getPlatform() === 'web' && window.location.hostname !== 'localhost') {
     return `${window.location.hostname}:${window.location.port}`
   } else {
-    return getUserHost() || process.env.SERVER_HOST || 'api2.pinme.io'
+    return process.env.SERVER_HOST
   }
-}
-
-function getUserHost() {
-  return store && store.state.user.cognitoUser && store.state.user.cognitoUser.attributes['custom:SERVER_HOST'] ||
-      store && store.state.user && store.state.user.user && store.state.user.user.attributes['SERVER_HOST']
 }
 
 export function getUserWebSocketHost() {
