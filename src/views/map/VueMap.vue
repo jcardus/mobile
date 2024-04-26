@@ -249,9 +249,7 @@ export default {
             this.$log.warn('socket closed!')
             if (this.userLoggedIn) {
               traccar.positions()
-                .then(d => d.data)
-                .catch(e => console.warn('probably session timeoud out', e.message))
-                .then(positions => this.updateMarkers(positions.sort((a, b) => a.fixTime === b.fixTime ? 0 : a.fixTime < b.fixTime ? -1 : 1)))
+                .then(d => this.updateMarkers(d.data.sort((a, b) => a.fixTime === b.fixTime ? 0 : a.fixTime < b.fixTime ? -1 : 1)))
                 .catch(e => console.error(e))
               setTimeout(() => {
                 this.connectSocket()
