@@ -760,8 +760,8 @@ export default {
         if (showStopDate()) {
           return await pinmeapi.getAll()
         }
-      } catch (error) {
-        Vue.$log.error(error)
+      } catch (e) {
+        Vue.$log.error((e.response && e.reponse.data) || e)
       }
       return []
     },
