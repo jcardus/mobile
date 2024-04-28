@@ -2,7 +2,7 @@
   <div class="vehicleDetail">
     <img :key="imageUrl" style="width:100%; margin-top: 13px; margin-bottom: 0" :src="imageUrl" alt="" @load="loaded" />
     <div style="padding-left: 6px;padding-right: 6px;">
-      <div style="float: right">
+      <div v-if="currentPosition" style="float: right">
         <div slot="content">
           <f7-link href="#" style="padding-right: 10px" @click="navigateTo">Navegar</f7-link>
           <f7-link :href="urlStreet" target="_blank" @click="streetView">
@@ -140,7 +140,7 @@ export default {
   computed: {
     ...mapGetters(['historyMode', 'currentTime', 'followVehicle', 'followVehicleEnabled']),
     urlStreet() {
-      return `https://www.google.com/maps/@?api=1&map_action=pano&heading=${this.currentPosition.course}&viewpoint=${this.currentPosition.latitude},${this.currentPosition.longitude}`
+      return this.currentPosition && `https://www.google.com/maps/@?api=1&map_action=pano&heading=${this.currentPosition.course}&viewpoint=${this.currentPosition.latitude},${this.currentPosition.longitude}`
     },
     totalDistance() {
       const ignoreOdometer = this.device.attributes['report.ignoreOdometer']
