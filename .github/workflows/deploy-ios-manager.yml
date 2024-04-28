@@ -48,3 +48,12 @@ jobs:
           npm run-script build:ios
       - name: deploy
         run: mobile/deploy-ios.sh
+      - name: Make Artefact
+        if: always()
+        run: |
+          zip artifact.zip App.ipa App.app.dSYM.zip
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: artifact.zip
+          path: ./artifact.zip
