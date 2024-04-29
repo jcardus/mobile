@@ -21,12 +21,13 @@ const name = defaultSettings.title || '' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 const port = 8080
-console.log('process.env.NODE_ENV:', process.env.NODE_ENV)
-console.log('process.env.ENV:', process.env.ENV)
-console.log('process.env.COGNITO_CLIENT_ID:', process.env.COGNITO_CLIENT_ID)
-console.log('process.env.SERVER_HOST:', process.env.SERVER_HOST)
-console.log('process.env.SENTRY_AUTH_TOKEN:', process.env.SENTRY_AUTH_TOKEN)
-console.log('process.env.MAPBOX_TOKEN:', process.env.MAPBOX_TOKEN)
+console.log('NODE_ENV:', process.env.NODE_ENV)
+console.log('ENV:', process.env.ENV)
+console.log('COGNITO_CLIENT_ID:', process.env.COGNITO_CLIENT_ID)
+console.log('SERVER_HOST:', process.env.SERVER_HOST)
+console.log('SENTRY_AUTH_TOKEN:', process.env.SENTRY_AUTH_TOKEN)
+console.log('MAPBOX_TOKEN:', process.env.MAPBOX_TOKEN)
+console.log('APP_NAME:', process.env.APP_NAME)
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {

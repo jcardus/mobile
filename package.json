@@ -16,7 +16,7 @@
     "deploy:android:fleetmap": "bash mobile/Manager/build-android.sh",
     "build:ios:localizalia": "mobile/Localizalia/build.sh ios",
     "build:ios:nogartel": "mobile/Nogartel/build.sh ios",
-    "build:ios:manager": "mobile/Manager/build.sh ios",
+    "build:ios:manager": "export PACKAGE_NAME=com.fleetmap.manager && export APP_NAME=Manager && mobile/build.sh ios",
     "build:ios": "mobile/build.sh ios",
     "deploy:ios": "mobile/deploy-ios.sh",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
