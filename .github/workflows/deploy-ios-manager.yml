@@ -50,8 +50,8 @@ jobs:
         run: mobile/deploy-ios.sh
       - name: Make Artefact
         if: always()
-        run: |
-          zip artifact.zip App.ipa App.app.dSYM.zip
+        run: |        
+          zip artifact.zip mobile/ios/App/App.ipa mobile/ios/App/App.app.dSYM.zip
       - uses: actions/upload-artifact@v1
         if: always()
         with:
