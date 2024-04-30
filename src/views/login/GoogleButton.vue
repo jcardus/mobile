@@ -27,7 +27,7 @@ export default {
   methods: {
     async click() {
       await Browser.open({
-        url: getGoogleLogin()
+        url: await getGoogleLogin()
       })
     }
   }

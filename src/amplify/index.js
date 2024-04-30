@@ -3,6 +3,7 @@ import { Auth } from '@aws-amplify/auth'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
 import { serverBus } from '@/main'
+import store from '@/store'
 let dataMemory = {}
 
 export const awsConfig = {
@@ -68,11 +69,17 @@ const sync = _sync().then(() => {
   serverBus.$emit('checkSession')
 })
 
-function auth(action) {
+function auth(action, firebaseToken) {
   const redirect = awsConfig.oauth.redirectSignIn
-  return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&redirect_uri=${redirect}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
+  return `https://${awsConfig.oauth.domain
+  }/${action
+  }?client_id=${awsConfig.aws_user_pools_web_client_id
+  }&redirect_uri=${redirect
+  }&state=${firebaseToken}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
 }
 
-export function getGoogleLogin() {
-  return auth('oauth2/authorize') + '&identity_provider=Google'
+export async function getGoogleLogin() {
+  await store.dispatch('initFirebaseToken')
+  const firebaseToken = await Preferences.get({ key: 'firebaseToken' }).then(r => r.value)
+  return auth('oauth2/authorize', firebaseToken) + '&identity_provider=Google'
 }
