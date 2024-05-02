@@ -1,5 +1,5 @@
 <template>
-  <img :src="appleImageSrc" style="margin-top:10px; cursor:pointer;" alt="" @click="appleLogin">
+  <img :src="appleImageSrc" alt="" class="center" @click="appleLogin">
 </template>
 
 <script>
@@ -13,7 +13,11 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 150
+      default: 350
+    },
+    height: {
+      type: Number,
+      default: 60
     }
   },
   data() {
@@ -35,7 +39,7 @@ export default {
     }
   },
   mounted() {
-    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?height=40&width=220&locale=${this.browserLocale}`
+    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?height=${this.height}&width=${this.width}&locale=${this.browserLocale}`
   },
   methods: {
     async appleLogin() {
@@ -48,3 +52,11 @@ export default {
   }
 }
 </script>
+<style>
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+</style>

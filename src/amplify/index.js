@@ -13,7 +13,7 @@ export const awsConfig = {
   aws_user_pools_id: process.env.USER_POOL_ID,
   aws_user_pools_web_client_id: '2ml2d0h1qk7q614qc3bclg2alj',
   oauth: {
-    redirectSignIn: Capacitor.isNativePlatform() ? 'https://fleetmap.io/' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
+    redirectSignIn: Capacitor.isNativePlatform() ? 'https://account.fleetmap.io/wait' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
     domain: process.env.AUTH_DOMAIN,
     scope: [
@@ -79,7 +79,7 @@ function auth(action, firebaseToken) {
 }
 
 export async function getGoogleLogin() {
-  await store.dispatch('initFirebaseToken')
+  await store.dispatch('user/initFirebaseToken')
   const firebaseToken = await Preferences.get({ key: 'firebaseToken' }).then(r => r.value)
   return auth('oauth2/authorize', firebaseToken) + '&identity_provider=Google'
 }

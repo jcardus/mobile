@@ -16,6 +16,7 @@
     "deploy:android:fleetmap": "bash mobile/Manager/build-android.sh",
     "build:ios:localizalia": "mobile/Localizalia/build.sh ios",
     "build:ios:nogartel": "mobile/Nogartel/build.sh ios",
+    "build:manager": "export BUILD_ONLY=true && mobile/Manager/build.sh ios",
     "build:ios:manager": "mobile/Manager/build.sh ios",
     "build:ios": "mobile/build.sh ios",
     "deploy:ios": "mobile/deploy-ios.sh",
