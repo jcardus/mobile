@@ -5,6 +5,7 @@ import { Preferences } from '@capacitor/preferences'
 import { serverBus } from '@/main'
 import backend from '@/api/backend'
 import { parseUrl } from '@/capacitor'
+import { Browser } from '@capacitor/browser'
 let dataMemory = {}
 
 export const awsConfig = {
@@ -81,12 +82,18 @@ function auth(action, state) {
 let tempId
 export function getSocialLoginUrl(provider) {
   tempId = crypto.randomUUID()
+  browserOpened = true
   setTimeout(getCode, 3000)
   return auth('oauth2/authorize', tempId) + '&identity_provider=' + provider
 }
 
+let browserOpened = true
+Browser.addListener('browserFinished', () => {
+  browserOpened = false
+})
 async function getCode() {
   try {
+    if (!browserOpened) { return }
     const response = await backend.getAuthCode(tempId)
     if (response.code) {
       await parseUrl({ url: 'https://account.fleetmap.io/wait?code=' + response.code })
