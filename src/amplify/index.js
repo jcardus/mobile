@@ -3,7 +3,8 @@ import { Auth } from '@aws-amplify/auth'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
 import { serverBus } from '@/main'
-import store from '@/store'
+import backend from '@/api/backend'
+import { parseUrl } from '@/capacitor'
 let dataMemory = {}
 
 export const awsConfig = {
@@ -69,17 +70,30 @@ const sync = _sync().then(() => {
   serverBus.$emit('checkSession')
 })
 
-function auth(action, firebaseToken) {
+function auth(action, state) {
   const redirect = awsConfig.oauth.redirectSignIn
   return `https://${awsConfig.oauth.domain
   }/${action
   }?client_id=${awsConfig.aws_user_pools_web_client_id
   }&redirect_uri=${redirect
-  }&state=${firebaseToken}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
+  }&state=${state}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
+}
+let tempId
+export function getSocialLoginUrl(provider) {
+  tempId = crypto.randomUUID()
+  setTimeout(getCode, 3000)
+  return auth('oauth2/authorize', tempId) + '&identity_provider=' + provider
 }
 
-export async function getGoogleLogin() {
-  await store.dispatch('user/initFirebaseToken')
-  const firebaseToken = await Preferences.get({ key: 'firebaseToken' }).then(r => r.value)
-  return auth('oauth2/authorize', firebaseToken) + '&identity_provider=Google'
+async function getCode() {
+  try {
+    const response = await backend.getAuthCode(tempId)
+    if (response.code) {
+      await parseUrl({ url: 'https://account.fleetmap.io/wait?code=' + response.code })
+      return
+    }
+  } catch (e) {
+    console.error(e)
+  }
+  setTimeout(getCode, 2000)
 }

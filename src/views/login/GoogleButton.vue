@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button :style="`width:${width}`" class="gsi-material-button" @clicke="click">
+    <button :style="`width:${width}`" class="gsi-material-button" @click="click">
       <div class="gsi-material-button-state"></div>
       <div class="gsi-material-button-content-wrapper">
         <div class="gsi-material-button-icon">
@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { getGoogleLogin } from '@/amplify'
+import { getSocialLoginUrl } from '@/amplify'
 import { Browser } from '@capacitor/browser'
 
 export default {
@@ -30,14 +30,14 @@ export default {
       type: Boolean
     },
     width: {
-      default: '240px',
+      default: '260px',
       type: String
     }
   },
   methods: {
     async click() {
       await Browser.open({
-        url: await getGoogleLogin(),
+        url: getSocialLoginUrl('Google'),
         presentationStyle: 'popover'
       })
     }

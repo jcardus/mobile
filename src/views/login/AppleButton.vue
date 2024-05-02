@@ -4,7 +4,7 @@
 
 <script>
 import { Browser } from '@capacitor/browser'
-import { getGoogleLogin } from '@/amplify'
+import { getSocialLoginUrl } from '@/amplify'
 import { Capacitor } from '@capacitor/core'
 import { Auth } from '@aws-amplify/auth'
 
@@ -13,11 +13,7 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 350
-    },
-    height: {
-      type: Number,
-      default: 60
+      default: 240
     }
   },
   data() {
@@ -39,12 +35,12 @@ export default {
     }
   },
   mounted() {
-    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?height=${this.height}&width=${this.width}&locale=${this.browserLocale}`
+    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?width=260&color=white&scale=1&border=true&locale=${this.browserLocale}`
   },
   methods: {
     async appleLogin() {
       if (Capacitor.isNativePlatform()) {
-        await Browser.open({ url: getGoogleLogin() })
+        await Browser.open({ url: getSocialLoginUrl('SignInWithApple') })
       } else {
         await Auth.federatedSignIn({ provider: 'SignInWithApple' })
       }
@@ -57,6 +53,5 @@ export default {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
 }
 </style>
