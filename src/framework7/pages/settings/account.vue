@@ -36,7 +36,7 @@ export default {
   methods: {
     async logout() {
       this.$f7.preloader.show()
-      this.$store.dispatch('user/logout').then(() => location.reload())
+      await this.$store.dispatch('user/logout')
     },
     async deleteAccount() {
       this.$f7.dialog.confirm('Are you sure you want to delete your account?')
