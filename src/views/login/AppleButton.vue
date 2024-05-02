@@ -40,7 +40,10 @@ export default {
   methods: {
     async appleLogin() {
       if (Capacitor.isNativePlatform()) {
-        await Browser.open({ url: getSocialLoginUrl('SignInWithApple') })
+        await Browser.open({
+          url: getSocialLoginUrl('SignInWithApple'),
+          presentationStyle: 'popover'
+        })
       } else {
         await Auth.federatedSignIn({ provider: 'SignInWithApple' })
       }
