@@ -221,11 +221,11 @@ export default {
       }
     },
     connectSocket() {
-      if (!this.user.token) {
-        this.user.token = crypto.randomUUID()
-        traccar.updateUser(this.user.id, this.user)
-      }
       if (this.userLoggedIn) {
+        if (!this.user.token) {
+          this.user.token = crypto.randomUUID()
+          traccar.updateUser(this.user.id, this.user)
+        }
         traccar.positions()
           .then(d => d.data)
           .catch(e => console.warn('probably session timeoud out', e.message))

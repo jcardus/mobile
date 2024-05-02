@@ -1,10 +1,10 @@
 <template>
-  <img :src="appleImageSrc" style="margin-top:10px; cursor:pointer;" alt="" @click="appleLogin">
+  <img :src="appleImageSrc" alt="" class="center" @click="appleLogin">
 </template>
 
 <script>
 import { Browser } from '@capacitor/browser'
-import { getGoogleLogin } from '@/amplify'
+import { getSocialLoginUrl } from '@/amplify'
 import { Capacitor } from '@capacitor/core'
 import { Auth } from '@aws-amplify/auth'
 
@@ -13,7 +13,7 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 150
+      default: 240
     }
   },
   data() {
@@ -35,12 +35,12 @@ export default {
     }
   },
   mounted() {
-    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?height=40&width=220&locale=${this.browserLocale}`
+    this.appleImageSrc = `https://appleid.cdn-apple.com/appleid/button?width=260&color=white&scale=1&border=true&locale=${this.browserLocale}`
   },
   methods: {
     async appleLogin() {
       if (Capacitor.isNativePlatform()) {
-        await Browser.open({ url: getGoogleLogin() })
+        await Browser.open({ url: getSocialLoginUrl('SignInWithApple') })
       } else {
         await Auth.federatedSignIn({ provider: 'SignInWithApple' })
       }
@@ -48,3 +48,10 @@ export default {
   }
 }
 </script>
+<style>
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>

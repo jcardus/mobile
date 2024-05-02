@@ -15,6 +15,10 @@ export default {
       }
     })
   },
+  getAuthCode(state) {
+    return this.axios.get(`https://${getServerHost()}/pinmeapi/mobile/code/${state}`)
+      .then(r => r.data)
+  },
   setFirebaseToken(token) {
     return this.axios.post(`https://${getServerHost()}/pinmeapi/users/firebase`, token, {
       withCredentials: true

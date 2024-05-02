@@ -3,6 +3,11 @@ export secretAccessKey=NYGe2oF5OlqJDwB8cCYzUlymhzc/vpfrgnH9h43n
 export accessKeyId=AKIA5EPZKGBG77TDPUCE
 
 vue-cli-service build --mode capacitor --dest dist
+if [ $BUILD_ONLY ]
+then
+  npx cap copy
+  exit
+fi
 
 cp -v dist/img/logos/$SERVER_HOST.png dist/img/logos/api.pinme.io.png
 cp -v dist/img/logos/$SERVER_HOST.png dist/img/logos/localhost.png
