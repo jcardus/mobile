@@ -11,6 +11,7 @@ import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import axios from 'axios'
 import { getServerHost } from '@/api'
+import { Preferences } from '@capacitor/preferences'
 
 const state = {
   user: {
@@ -145,67 +146,66 @@ function initData(commit, state, dispatch) {
   })
 }
 
-async function setFirebaseToken(dispatch, state) {
-  FCM
-    .getToken()
-    .then((r) => {
-      if (Capacitor.getPlatform() === 'ios') {
-        if (state.user.attributes.firebaseToken !== r.token) {
-          dispatch('setFirebaseToken', r.token)
-        }
-      }
-    })
-    .catch((err) => console.log(err))
-  // Request permission to use push notifications
-  // iOS will prompt user and return if they granted permission or not
-  // Android will just grant without prompting
-  PushNotifications.requestPermissions().then(result => {
-    if (result) {
-      Vue.$log.info('PushNotifications permission granted')
-      PushNotifications.register().then(d => console.log('register result', d))
-    } else {
-      Vue.$log.error(result)
-    }
-  })
-
-  PushNotifications.addListener(
-    'registration',
-    (token) => {
-      if (Capacitor.getPlatform() === 'android') {
-        if (state.user.attributes.firebaseToken !== token.value) {
-          dispatch('setFirebaseToken', token.value)
-        }
-      }
-    }
-  )
-
-  PushNotifications.addListener('registrationError', (error) => {
-    Vue.$log.info('Error on registration: ' + JSON.stringify(error))
-  })
-
-  PushNotifications.addListener(
-    'pushNotificationReceived',
-    (notification) => {
-      Vue.$log.info('Push received: ' + JSON.stringify(notification))
-    }
-  )
-
-  PushNotifications.addListener(
-    'pushNotificationActionPerformed',
-    (notification) => {
-      Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
-    }
-  )
-}
-
 function isCapacitor() {
   return Capacitor.isNativePlatform()
 }
 
 const actions = {
+  async initFirebaseToken({ dispatch, state }) {
+    const r = await FCM.getToken()
+    if (Capacitor.getPlatform() === 'ios') {
+      await Preferences.set({ key: 'firebaseToken', value: r.token })
+    }
+    await PushNotifications.removeAllListeners()
+
+    // Request permission to use push notifications
+    // iOS will prompt user and return if they granted permission or not
+    // Android will just grant without prompting
+    PushNotifications.requestPermissions().then(result => {
+      if (result) {
+        Vue.$log.info('PushNotifications permission granted')
+        PushNotifications.register().then(d => console.log('register result', d))
+      } else {
+        Vue.$log.error(result)
+      }
+    })
+
+    PushNotifications.addListener(
+      'registration',
+      (token) => {
+        if (Capacitor.getPlatform() === 'android') {
+          dispatch('setFirebaseToken', token.value)
+        }
+      }
+    )
+
+    PushNotifications.addListener('registrationError', (error) => {
+      Vue.$log.info('Error on registration: ' + JSON.stringify(error))
+    })
+
+    PushNotifications.addListener(
+      'pushNotificationReceived',
+      (notification) => {
+        Vue.$log.info('Push received: ' + JSON.stringify(notification))
+      }
+    )
+
+    PushNotifications.addListener(
+      'pushNotificationActionPerformed',
+      (notification) => {
+        Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
+      }
+    )
+  },
+
   async setFirebaseToken({ state }, value) {
-    await traccar.updateUser(state.user.id, state.user)
-    return backend.setFirebaseToken({ token: value, user: state.user })
+    try {
+      await Preferences.set({ key: 'firebaseToken', value })
+      await traccar.updateUser(state.user.id, state.user)
+      return backend.setFirebaseToken({ token: value, user: state.user })
+    } catch (e) {
+      console.error(e.message, e)
+    }
   },
   refreshDevices({ commit, state }) {
     if (state.devices.length > 0) {
@@ -248,7 +248,7 @@ const actions = {
           setLanguage(state.user.attributes.lang)
           if (isCapacitor()) {
             try {
-              await setFirebaseToken(dispatch, state)
+              await dispatch('initFirebaseToken')
             } catch (e) {
               console.error(e)
             }

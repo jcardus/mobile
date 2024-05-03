@@ -1113,7 +1113,7 @@ export default {
       }
     },
     datesChanged() {
-      if (this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
+      if (this.device && this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
         this.loadingRoutes = true
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
       }

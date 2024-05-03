@@ -8,11 +8,11 @@ on:
 env:
   SERVER_HOST: nogartel.fleetmap.io
   SOCIAL_SIGN_IN: true
+  COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
   MAPBOX_TOKEN: pk.eyJ1Ijoibm9nYXJ0ZWwiLCJhIjoiY2x1N2I1NzlpMDRnbTJrbXAzeGNoaDFlbCJ9.MJCdAPkK8l2Kv81Rs2tORw
   APP_NAME: Nogartel
   PACKAGE_NAME: com.fleetmap.nogartel
   PROFILE_NAME: match AppStore com.fleetmap.nogartel
-  COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
   USER_POOL_ID: eu-west-3_3zjuFkIv8
   AUTH_DOMAIN: fleetmap.auth.eu-west-3.amazoncognito.com
   ENVIRONMENT: ios

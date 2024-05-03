@@ -1,4 +1,4 @@
-name: Deploy to App Store
+name: Manager to App Store
 
 on:
   push:
@@ -6,18 +6,20 @@ on:
       - manager
 
 env:
+  SERVER_HOST: api.fleetmap.pt
+  SOCIAL_SIGN_IN: true
   COGNITO_CLIENT_ID: 2ml2d0h1qk7q614qc3bclg2alj
-  USER_POOL_ID: eu-west-3_3zjuFkIv8
-  AUTH_DOMAIN: fleetmap.auth.eu-west-3.amazoncognito.com
-  SERVER_HOST: api.pinme.io
+  MAPBOX_TOKEN: pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
   APP_NAME: Manager
   PACKAGE_NAME: com.fleetmap.manager
-  MAPBOX_TOKEN: pk.eyJ1IjoibWFwYm94LWlvcy1tYW5hZ2VyIiwiYSI6ImNsc3hxcnJhbDA1MngyaW9ldzl3N3E1NnIifQ.DMs8qVULqGGb6JGILvjFcg
+  PROFILE_NAME: match AppStore com.fleetmap.manager
+  USER_POOL_ID: eu-west-3_3zjuFkIv8
+  AUTH_DOMAIN: fleetmap.auth.eu-west-3.amazoncognito.com
   ENVIRONMENT: ios
   APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APP_STORE_CONNECT_API_KEY_KEY}}"
   APP_STORE_CONNECT_API_KEY_ISSUER_ID: "${{vars.APP_STORE_CONNECT_API_KEY_ISSUER_ID}}"
   APP_STORE_CONNECT_API_KEY_KEY_ID: "${{vars.APP_STORE_CONNECT_API_KEY_KEY_ID}}"
-  PROFILE_NAME: match AppStore com.fleetmap.manager
+  WEB_SOCKET_HOST: traccar-eu.fleetmap.pt
 
 jobs:
   deploy:
@@ -41,10 +43,17 @@ jobs:
           ruby-version: '3.3' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: build
-        run: npm run-script build:ios
-      - name: install fastlane
         run: |
           echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json
-          mobile/build-ios.sh
-      - name: deploy manager
+          npm run-script build:ios
+      - name: deploy
         run: mobile/deploy-ios.sh
+      - name: Make Artefact
+        if: always()
+        run: |        
+          zip artifact.zip mobile/ios/App/App.ipa mobile/ios/App/App.app.dSYM.zip
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: artifact.zip
+          path: ./artifact.zip

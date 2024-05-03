@@ -8,18 +8,29 @@ import { checkUpdate } from '@/utils/updates'
 import { serverBus } from '@/main'
 import * as events from '../events'
 
-App.addListener('appUrlOpen', async(data) => {
+export async function parseUrl(data) {
   if (Capacitor.getPlatform() === 'ios') {
-    try { await Browser.close() } catch (e) { console.error(e) }
+    try {
+      await Browser.close()
+    } catch (e) {
+      console.error(e)
+    }
   }
   f7.preloader.show()
   // noinspection JSAccessibilityCheck
   await Auth._handleAuthResponse(data.url)
   const url = new URL(data.url)
   if (url.searchParams.get('username')) {
-    await store.dispatch('user/login', { username: url.searchParams.get('username'), password: url.searchParams.get('password') })
+    await store.dispatch('user/login', {
+      username: url.searchParams.get('username'),
+      password: url.searchParams.get('password')
+    })
   }
   serverBus.$emit('checkSession')
+}
+
+App.addListener('appUrlOpen', async(data) => {
+  await parseUrl(data)
 })
 
 if (Capacitor.isNativePlatform()) {
