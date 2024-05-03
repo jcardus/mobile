@@ -3,6 +3,9 @@ import { Auth } from '@aws-amplify/auth'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
 import { serverBus } from '@/main'
+import backend from '@/api/backend'
+import { parseUrl } from '@/capacitor'
+import { Browser } from '@capacitor/browser'
 let dataMemory = {}
 
 export const awsConfig = {
@@ -12,7 +15,7 @@ export const awsConfig = {
   aws_user_pools_id: process.env.USER_POOL_ID,
   aws_user_pools_web_client_id: '2ml2d0h1qk7q614qc3bclg2alj',
   oauth: {
-    redirectSignIn: Capacitor.isNativePlatform() ? 'https://fleetmap.io/' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
+    redirectSignIn: Capacitor.isNativePlatform() ? 'https://account.fleetmap.io/wait' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
     domain: process.env.AUTH_DOMAIN,
     scope: [
@@ -68,11 +71,36 @@ const sync = _sync().then(() => {
   serverBus.$emit('checkSession')
 })
 
-function auth(action) {
+function auth(action, state) {
   const redirect = awsConfig.oauth.redirectSignIn
-  return `https://${awsConfig.oauth.domain}/${action}?client_id=${awsConfig.aws_user_pools_web_client_id}&redirect_uri=${redirect}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
+  return `https://${awsConfig.oauth.domain
+  }/${action
+  }?client_id=${awsConfig.aws_user_pools_web_client_id
+  }&redirect_uri=${redirect
+  }&state=${state}&response_type=code&scope=${awsConfig.oauth.scope.join('+')}`
+}
+let tempId
+export function getSocialLoginUrl(provider) {
+  tempId = crypto.randomUUID()
+  browserOpened = true
+  setTimeout(getCode, 3000)
+  return auth('oauth2/authorize', tempId) + '&identity_provider=' + provider
 }
 
-export function getGoogleLogin() {
-  return auth('oauth2/authorize') + '&identity_provider=Google'
+let browserOpened = true
+Browser.addListener('browserFinished', () => {
+  browserOpened = false
+})
+async function getCode() {
+  try {
+    if (!browserOpened) { return }
+    const response = await backend.getAuthCode(tempId)
+    if (response.code) {
+      await parseUrl({ url: 'https://account.fleetmap.io/wait?code=' + response.code })
+      return
+    }
+  } catch (e) {
+    console.error(e)
+  }
+  setTimeout(getCode, 2000)
 }
