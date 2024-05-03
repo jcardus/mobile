@@ -11,6 +11,7 @@ import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import axios from 'axios'
 import { getServerHost } from '@/api'
+import * as Sentry from '@sentry/vue'
 import { Preferences } from '@capacitor/preferences'
 
 const state = {
@@ -241,6 +242,7 @@ const actions = {
     }
   },
   setUser({ commit, state, dispatch }) {
+    Sentry.setUser({ email: state.user.email })
     return new Promise((resolve) => {
       initData(commit, state, dispatch)
         .catch(e => console.error('initData', e))

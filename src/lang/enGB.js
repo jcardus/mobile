@@ -110,7 +110,7 @@ export default {
     network_error: 'Could not connect to the server.',
     register: 'Novo utilizador?',
     forgotPassword: 'Esqueceu a password?',
-    signInWithGoogle: 'Google sign in'
+    signInWithGoogle: 'Sign in with Google'
   },
   alerts: {
     title: 'Alerts',
