@@ -14,7 +14,7 @@ const config: CapacitorConfig = {
       presentationOptions: ['badge', 'sound', 'alert']
     },
     CapacitorHttp: {
-      enabled: true
+      enabled: process.env.ENVIRONMENT === 'ios'
     }
   }
 }
