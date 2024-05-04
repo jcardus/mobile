@@ -85,7 +85,9 @@ let tempId
 export function getSocialLoginUrl(provider) {
   tempId = crypto.randomUUID()
   browserOpened = true
-  setTimeout(getCode, 3000)
+  if (Capacitor.getPlatform() === 'ios') {
+    setTimeout(getCode, 3000)
+  }
   return auth('oauth2/authorize', tempId) + '&identity_provider=' + provider
 }
 
