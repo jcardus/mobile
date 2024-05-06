@@ -154,7 +154,8 @@ export default {
           }
         }
       } catch (e) {
-        this.$alert(e)
+        console.error(e)
+        this.$f7.dialog.alert(e.message)
       }
       this.$f7.preloader.hide()
     }
