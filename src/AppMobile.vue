@@ -90,7 +90,6 @@
 <script>
 import routes from './framework7/routes/routes'
 import DataContainer from './views/map/DataContainer'
-import Vue from 'vue'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
 import { serverBus } from './main'
