@@ -204,27 +204,25 @@ export default {
         presentationStyle: 'popover'
       })
     },
-    signIn(type) {
+    async signIn(type) {
       this[type] = true
       switch (type) {
         case 'native':
-          this.$store.dispatch('user/login', { username: this.username, password: this.password })
-            .then(() => {
-              self.$f7.preloader.hide()
-              self.$f7.loginScreen.close()
-            })
-            .catch(e => {
-              self.$f7.preloader.hide()
-              Vue.$log.error(e)
-              self.$f7.toast.create({
-                closeTimeout: 4000,
-                text: e.message,
-                destroyOnClose: true
-              }).open()
-            })
-            .finally(() => {
-              this.loading = false
-            })
+          try {
+            await this.$store.dispatch('user/login', { username: this.username, password: this.password })
+            this.$f7.preloader.hide()
+            this.$f7.loginScreen.close()
+          } catch (e) {
+            this.$f7.preloader.hide()
+            console.error(e)
+            this.$f7.toast.create({
+              closeTimeout: 4000,
+              text: e.message,
+              destroyOnClose: true
+            }).open()
+          } finally {
+            this.loading = false
+          }
           break
         case 'Google':
         case 'SignInWithApple':
