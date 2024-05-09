@@ -28,7 +28,7 @@ export async function parseUrl(data) {
         password: url.searchParams.get('password')
       })
     }
-    await store.dispatch('checkSession')
+    serverBus.$emit('checkSession')
   } catch (e) {
     f7.dialog.alert(e.message)
     console.error(e)
