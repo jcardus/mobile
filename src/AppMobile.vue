@@ -67,10 +67,10 @@
           <f7-list>
             <f7-list-button v-loading="native" :title="$t('login.login_button')" @click="() => signIn('native')"></f7-list-button>
             <f7-list>
-              <f7-button v-loading="Google" large style="width: 250px; margin: auto" fill icon-f7="logo_google" @click="() => signIn('Google')">{{ $t('login.signInWithGoogle') }}</f7-button>
+              <f7-button v-loading="Google" style="width: 250px; margin: auto" fill icon-f7="logo_google" @click="() => signIn('Google')">{{ $t('login.signInWithGoogle') }}</f7-button>
             </f7-list>
             <f7-list>
-              <f7-button v-loading="SignInWithApple" large style="width: 250px; margin: auto" fill icon-f7="logo_apple" @click="() => signIn('SignInWithApple')">{{ $t('Sign in with Apple') }}</f7-button>
+              <f7-button v-loading="SignInWithApple" style="width: 250px; margin: auto" fill icon-f7="logo_apple" @click="() => signIn('SignInWithApple')">{{ $t('Sign in with Apple') }}</f7-button>
             </f7-list>
           </f7-list>
           <f7-block></f7-block>
@@ -90,7 +90,6 @@
 <script>
 import routes from './framework7/routes/routes'
 import DataContainer from './views/map/DataContainer'
-import Vue from 'vue'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
 import { serverBus } from './main'
@@ -204,27 +203,25 @@ export default {
         presentationStyle: 'popover'
       })
     },
-    signIn(type) {
+    async signIn(type) {
       this[type] = true
       switch (type) {
         case 'native':
-          this.$store.dispatch('user/login', { username: this.username, password: this.password })
-            .then(() => {
-              self.$f7.preloader.hide()
-              self.$f7.loginScreen.close()
-            })
-            .catch(e => {
-              self.$f7.preloader.hide()
-              Vue.$log.error(e)
-              self.$f7.toast.create({
-                closeTimeout: 4000,
-                text: e.message,
-                destroyOnClose: true
-              }).open()
-            })
-            .finally(() => {
-              this.loading = false
-            })
+          try {
+            await this.$store.dispatch('user/login', { username: this.username, password: this.password })
+            this.$f7.preloader.hide()
+            this.$f7.loginScreen.close()
+          } catch (e) {
+            this.$f7.preloader.hide()
+            console.error(e)
+            this.$f7.toast.create({
+              closeTimeout: 4000,
+              text: e.message,
+              destroyOnClose: true
+            }).open()
+          } finally {
+            this.loading = false
+          }
           break
         case 'Google':
         case 'SignInWithApple':

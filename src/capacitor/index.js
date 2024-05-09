@@ -28,10 +28,9 @@ export async function parseUrl(data) {
         password: url.searchParams.get('password')
       })
     }
-    serverBus.$emit('checkSession')
+    await store.dispatch('checkSession')
   } catch (e) {
-    console.error('parseUrl')
-    console.error(e.message)
+    f7.dialog.alert(e.message)
     console.error(e)
   }
 }
