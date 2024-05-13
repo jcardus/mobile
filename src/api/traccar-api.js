@@ -115,6 +115,7 @@ function get(url) {
 }
 
 export const traccar = {
+  get: get,
   api_helper: function(options, ok, nok) {
     axios.post(
       'https://' + getServerHost() + '/api_helper',
