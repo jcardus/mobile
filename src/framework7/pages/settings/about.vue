@@ -1,6 +1,6 @@
 <template>
   <f7-page name="about">
-    <f7-navbar back-link :title="$t('route.settings')"></f7-navbar>
+    <f7-navbar back-link="true" :title="$t('route.settings')"></f7-navbar>
     <f7-block-title style="font-size: 20px"><i class="fas fa-info-circle"></i> {{ $t('settings.about') }}</f7-block-title>
     <f7-list>
       <f7-list-item :title="$t('settings.version')" :after="version">
@@ -17,7 +17,7 @@
       </f7-list-item>
       <f7-list-item :title="$t('location')" :after="location">
       </f7-list-item>
-      <f7-list-item :title="$t('websocket')" :after="'' + $store.state.socket.isConnected + ' ' + socketHost">
+      <f7-list-item :title="$t('websocket')" :after="`${readyState} ${socketHost}`">
       </f7-list-item>
       <f7-list-item :title="$t('cookie')" :after="cookie" @click="clickHost">
       </f7-list-item>
@@ -29,7 +29,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getServerHost, getUserWebSocketHost } from '@/api'
+import { getServerHost } from '@/api'
 
 export default {
   name: 'About',
@@ -47,8 +47,11 @@ export default {
     version() {
       return process.env.PACKAGE_VERSION
     },
+    readyState() {
+      return window.socket && window.socket.readyState
+    },
     socketHost() {
-      return getUserWebSocketHost()
+      return window.socket && window.socket.url
     },
     token() {
       return this.user && this.user.token

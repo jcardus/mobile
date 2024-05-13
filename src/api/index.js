@@ -1,6 +1,5 @@
 import { awsConfig } from '@/amplify'
 import { Capacitor } from '@capacitor/core'
-import store from '@/store'
 
 export function getBackendHost() {
   const backendProd = 'xmjth8acs5'
@@ -14,10 +13,6 @@ export function getServerHost() {
   } else {
     return process.env.SERVER_HOST
   }
-}
-
-export function getUserWebSocketHost() {
-  return store && store.state.user.cognitoUser && store.state.user.cognitoUser.attributes['custom:WEB_SOCKET_HOST']
 }
 
 function auth(action) {

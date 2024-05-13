@@ -65,15 +65,14 @@
             </f7-list-input>
           </f7-list>
           <f7-list>
-            <f7-list-button v-loading="loading" :title="$t('login.login_button')" @click="() => signIn(false)"></f7-list-button>
-            <f7-list-item>
-              <google-button style="width:220px;margin:auto;"></google-button>
-            </f7-list-item>
-            <f7-list-item>
-              <f7-link style="margin:auto;">
-                <apple-button :width="220"></apple-button>
-              </f7-link>
-            </f7-list-item>
+
+            <f7-list-button v-loading="native" :title="$t('login.login_button')" @click="() => signIn('native')"></f7-list-button>
+            <f7-list>
+              <f7-button v-loading="Google" :large="web" :large-ios="ios" :large-md="android" style="width: 250px; margin: auto" fill icon-f7="logo_google" @click="() => signIn('Google')">{{ $t('login.signInWithGoogle') }}</f7-button>
+            </f7-list>
+            <f7-list>
+              <f7-button v-loading="SignInWithApple" :large="web" :large-ios="ios" :large-md="android" style="width: 250px; margin: auto" fill icon-f7="logo_apple" @click="() => signIn('SignInWithApple')">{{ $t('Sign in with Apple') }}</f7-button>
+            </f7-list>
           </f7-list>
           <f7-block></f7-block>
           <f7-list>
@@ -92,27 +91,27 @@
 <script>
 import routes from './framework7/routes/routes'
 import DataContainer from './views/map/DataContainer'
-import Vue from 'vue'
 import * as lnglat from './utils/lnglat'
 import * as notifications from './utils/notifications'
 import { serverBus } from './main'
 import { reload } from './utils/utils'
 import * as partner from './utils/partner'
 import { mapGetters } from 'vuex'
-import GoogleButton from './views/login/GoogleButton'
 import { forgotPassword, signUp } from './api'
 import * as event from './events'
-import AppleButton from '@/views/login/AppleButton'
 import { Capacitor } from '@capacitor/core'
 import { Browser } from '@capacitor/browser'
-import { awsConfig } from '@/amplify'
+import { awsConfig, getSocialLoginUrl } from '@/amplify'
+import { Auth } from '@aws-amplify/auth'
 
 export default {
   name: 'AppMobile',
-  components: { AppleButton, GoogleButton, DataContainer },
+  components: { DataContainer },
   data() {
     return {
-      loading: false,
+      native: false,
+      SignInWithApple: false,
+      Google: false,
       showPassword: false,
       username: '',
       password: '',
@@ -154,7 +153,13 @@ export default {
       return partner.getLogo()
     },
     ios() {
-      return this.$device.ios
+      return Capacitor.getPlatform() === 'ios'
+    },
+    web() {
+      return Capacitor.getPlatform() === 'web'
+    },
+    android() {
+      return Capacitor.getPlatform() === 'android'
     }
   },
   beforeDestroy() {
@@ -205,27 +210,37 @@ export default {
         presentationStyle: 'popover'
       })
     },
-    signIn(socialSignIn) {
-      if (socialSignIn) {
-        return this.nativeSignIn()
+    async signIn(type) {
+      this[type] = true
+      switch (type) {
+        case 'native':
+          try {
+            await this.$store.dispatch('user/login', { username: this.username, password: this.password })
+            this.$f7.preloader.hide()
+            this.$f7.loginScreen.close()
+          } catch (e) {
+            this.$f7.preloader.hide()
+            console.error(e)
+            this.$f7.toast.create({
+              closeTimeout: 4000,
+              text: e.message,
+              destroyOnClose: true
+            }).open()
+          } finally {
+            this.loading = false
+          }
+          break
+        case 'Google':
+        case 'SignInWithApple':
+          if (Capacitor.isNativePlatform()) {
+            Browser.open({
+              url: getSocialLoginUrl(type),
+              presentationStyle: 'popover'
+            })
+          } else {
+            Auth.federatedSignIn({ provider: type })
+          }
       }
-      const self = this
-      this.loading = true
-      this.$store.dispatch('user/login', { username: this.username, password: this.password })
-        .then(() => {
-          self.$f7.preloader.hide()
-          self.$f7.loginScreen.close()
-        })
-        .catch(exception => {
-          self.$f7.preloader.hide()
-          Vue.$log.error(exception)
-          self.$f7.toast.create({
-            closeTimeout: 4000,
-            text: exception,
-            destroyOnClose: true
-          }).open()
-        })
-        .finally(() => { this.loading = false })
     },
     emitEvent(event) {
       this.$log.debug(event)

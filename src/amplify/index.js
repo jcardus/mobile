@@ -15,7 +15,9 @@ export const awsConfig = {
   aws_user_pools_id: process.env.USER_POOL_ID,
   aws_user_pools_web_client_id: '2ml2d0h1qk7q614qc3bclg2alj',
   oauth: {
-    redirectSignIn: Capacitor.isNativePlatform() ? 'https://account.fleetmap.io/wait' : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
+    redirectSignIn: Capacitor.isNativePlatform()
+      ? (Capacitor.getPlatform() === 'ios' ? 'https://account.fleetmap.io/wait' : 'https://fleetmap.io/')
+      : (location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/mobile/'),
     redirectSignOut: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
     domain: process.env.AUTH_DOMAIN,
     scope: [
@@ -83,7 +85,9 @@ let tempId
 export function getSocialLoginUrl(provider) {
   tempId = crypto.randomUUID()
   browserOpened = true
-  setTimeout(getCode, 3000)
+  if (Capacitor.getPlatform() === 'ios') {
+    setTimeout(getCode, 3000)
+  }
   return auth('oauth2/authorize', tempId) + '&identity_provider=' + provider
 }
 

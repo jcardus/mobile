@@ -1,4 +1,5 @@
 export default {
+  'Sign in with Apple': 'Entrar com a Apple',
   app: {
     connectionLost: 'Ligação perdida',
     reconnect: 'Deseja restabelecer a ligação ao servidor?'
