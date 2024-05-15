@@ -23,6 +23,8 @@
       </f7-list-item>
       <f7-list-item :title="$t('token')" :after="token" @click="clickToken">
       </f7-list-item>
+      <f7-list-item :title="$t('devices')" :after="$store.state.user.devices.length">
+      </f7-list-item>
     </f7-list>
   </f7-page>
 </template>
