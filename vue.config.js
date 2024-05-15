@@ -21,11 +21,13 @@ const name = defaultSettings.title || '' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 const port = 8080
+console.log('ENVIRONMENT:', process.env.ENVIRONMENT)
 console.log('NODE_ENV:', process.env.NODE_ENV)
 console.log('ENV:', process.env.ENV)
 console.log('COGNITO_CLIENT_ID:', process.env.COGNITO_CLIENT_ID)
 console.log('SERVER_HOST:', process.env.SERVER_HOST)
 console.log('SENTRY_AUTH_TOKEN:', process.env.SENTRY_AUTH_TOKEN)
+console.log('SENTRY_DSN:', process.env.SENTRY_DSN)
 console.log('MAPBOX_TOKEN:', process.env.MAPBOX_TOKEN)
 console.log('APP_NAME:', process.env.APP_NAME)
 

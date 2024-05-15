@@ -65,6 +65,7 @@
             </f7-list-input>
           </f7-list>
           <f7-list>
+
             <f7-list-button v-loading="native" :title="$t('login.login_button')" @click="() => signIn('native')"></f7-list-button>
             <f7-list>
               <f7-button v-loading="Google" :large="web" :large-ios="ios" :large-md="android" style="width: 250px; margin: auto" fill icon-f7="logo_google" @click="() => signIn('Google')">{{ $t('login.signInWithGoogle') }}</f7-button>
