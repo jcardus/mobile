@@ -36,7 +36,7 @@ export default {
   methods: {
     async logout() {
       this.$f7.preloader.show()
-      this.$log.info('logout', await this.$store.dispatch('user/logout'))
+      await this.$store.dispatch('user/logout')
       location.reload()
     },
     async deleteAccount() {

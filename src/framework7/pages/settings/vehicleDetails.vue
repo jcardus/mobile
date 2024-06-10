@@ -89,6 +89,7 @@ import { traccar } from '@/api/traccar-api'
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
 import axios from 'axios'
+import { getServerHost } from '@/api'
 
 export default {
   name: 'VehicleDetails',
@@ -161,7 +162,7 @@ export default {
           this.selectedVehicle.attributes.monitrip = !this.selectedVehicle.attributes.monitrip
           this.selectedVehicle.attributes.notes = this.vehicleNotes
           await traccar.updateDevice(this.selectedVehicle.id, this.selectedVehicle)
-          await axios.post('https://531ngeej5l.execute-api.us-east-1.amazonaws.com/Prod/', this.selectedVehicle)
+          await axios.post(`https://${getServerHost()}/pinmeapi/integration/moniitrip/startTrip`, this.selectedVehicle).catch(e => console.error(e))
           this.$f7.dialog.alert(`Viagem ${this.selectedVehicle.attributes.monitrip ? 'iniciada' : 'terminada'} com sucesso.`, 'Monitriip')
           this.$f7router.back()
         }

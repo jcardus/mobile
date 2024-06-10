@@ -8,18 +8,35 @@ import { checkUpdate } from '@/utils/updates'
 import { serverBus } from '@/main'
 import * as events from '../events'
 
+export async function parseUrl(data) {
+  try {
+    if (Capacitor.getPlatform() === 'ios') {
+      try {
+        await Browser.close()
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    f7.preloader.show()
+    console.log(data.url)
+    // noinspection JSAccessibilityCheck
+    await Auth._handleAuthResponse(data.url)
+    const url = new URL(data.url)
+    if (url.searchParams.get('username')) {
+      await store.dispatch('user/login', {
+        username: url.searchParams.get('username'),
+        password: url.searchParams.get('password')
+      })
+    }
+    serverBus.$emit('checkSession')
+  } catch (e) {
+    f7.dialog.alert(e.message)
+    console.error(e)
+  }
+}
+
 App.addListener('appUrlOpen', async(data) => {
-  if (Capacitor.getPlatform() === 'ios') {
-    try { await Browser.close() } catch (e) { console.error(e) }
-  }
-  f7.preloader.show()
-  // noinspection JSAccessibilityCheck
-  await Auth._handleAuthResponse(data.url)
-  const url = new URL(data.url)
-  if (url.searchParams.get('username')) {
-    await store.dispatch('user/login', { username: url.searchParams.get('username'), password: url.searchParams.get('password') })
-  }
-  serverBus.$emit('checkSession')
+  await parseUrl(data)
 })
 
 if (Capacitor.isNativePlatform()) {

@@ -377,6 +377,7 @@ export default {
       }
     },
     async getRoute(from, to) {
+      if (!this.device) { return }
       Vue.$log.debug('getting route from', from, 'to', to)
       try {
         const allInOne = await traccar.allInOne(this.device.id, from, to)
