@@ -367,8 +367,8 @@ export function updateDevice(position, feature, device) {
     position.attributes.out2 ||
     position.attributes.isImmobilizationOn ||
     position.attributes.blocked ||
-    (position.attributes.result && position.attributes.result.startsWith('   Cut off the fuel supply Success! Speed:')) ||
-    position.attributes.result === '   Already in the state of fuel supply cut off, the command is not running!'
+    (position.attributes.result && position.attributes.result.trim().startsWith('Cut off the fuel supply Success! Speed:')) ||
+    (position.attributes.result && position.attributes.result.trim() === 'Already in the state of fuel supply cut off, the command is not running!')
 
   if (position.attributes.output === '00') {
     immobilized = false
@@ -396,30 +396,6 @@ export function updateDevice(position, feature, device) {
     device.lastStop = position.fixTime
   }
   device.position = position
-}
-
-function findNearestPOI(position) {
-  const pois = store.getters.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
-  if (pois.length === 0) {
-    return null
-  }
-  const a = pois.map(p => {
-    if (p.area) {
-      const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
-      const coord = str.trim().split(' ')
-      return {
-        id: p.id,
-        distance: Math.round(coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude))
-      }
-    }
-    return {
-      id: p.id,
-      distance: Number.MAX_SAFE_INTEGER
-    }
-  }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
-  if (a.length > 0) {
-    return a[0].id
-  }
 }
 
 function findDriver(position, device) {
