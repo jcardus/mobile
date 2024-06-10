@@ -385,7 +385,7 @@ export function updateDevice(position, feature, device) {
   }
   if (device.attributes.deviceType === 7 &&
     !immobilized && position.attributes.blocked === undefined &&
-    position.attributes.result !== '   Restore fuel supply success!') {
+    (position.attributes.result && position.attributes.result.trim() !== 'Restore fuel supply success!')) {
     Vue.$log.info('ignoring immobilized value', position.attributes.result, device.name)
   } else if (position.attributes.result && position.attributes.result.startsWith('+ACK:GTFRI')) {
     Vue.$log.info('ignoring immobilized value', position.attributes.result, device.name)
