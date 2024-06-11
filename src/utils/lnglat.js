@@ -352,94 +352,68 @@ export function hideEventPopup() {
 }
 
 export function updateDevice(position, feature, device) {
-  // don't update "lastUpdated" if ignition is off but devices keeps sending data
-  if (position.attributes.ignition || feature.properties.ignition !== position.attributes.ignition) {
-    device.lastUpdate = position.fixTime
-  }
+  device.lastUpdate = position.fixTime
   const adc1CacheValues = device.position && device.position.adc1CacheValues ? device.position.adc1CacheValues : []
   utils.calculateFuelLevel(adc1CacheValues, position, device.position, device)
-  // moment is expensive so we cache this value
-  position.fixDays = Vue.moment().diff(Vue.moment(device.lastUpdate), 'days')
-  device.poi = findNearestPOI(position)
   const driver = findDriver(position, device)
   if (position.attributes.ignition) { device.driver = driver } else if (!device.driver && device.attributes.lastDriverUniqueId) {
-    device.driver = store.getters.drivers.find(d => d.uniqueId === device.attributes.lastDriverUniqueId)
+    device.driver = store.getters.drivers.find(d => (d.uniqueId).trim().localeCompare((device.attributes.lastDriverUniqueId).trim(), 'en', { sensitivity: 'base' }) === 0) ||
+      { name: device.attributes.lastDriverUniqueId }
   }
-  const immobilized = position.attributes.do1 ||
+  let immobilized =
+    position.attributes.output ||
+    position.attributes.do1 ||
     position.attributes.out1 ||
     position.attributes.out2 ||
     position.attributes.isImmobilizationOn ||
     position.attributes.blocked ||
-    (position.attributes.result && position.attributes.result.startsWith('   Cut off the fuel supply Success! Speed:')) ||
-    position.attributes.result === '   Already in the state of fuel supply cut off, the command is not running!'
+    (position.attributes.result && position.attributes.result.trim().startsWith('Cut off the fuel supply')) ||
+    (position.attributes.result && position.attributes.result.trim() === 'Already in the state of fuel supply cut off, the command is not running!')
+
+  if (position.attributes.output === '00') {
+    immobilized = false
+  }
+
+  if (position.attributes.result && position.attributes.result.startsWith('+ACK:GTOUT')) {
+    Vue.$log.info('changing immobilized', position.attributes.result, !device.attributes.immobilized)
+    immobilized = !device.attributes.immobilized
+    position.attributes.output = immobilized
+  }
 
   if (immobilized !== device.attributes.immobilized) {
     device.attributes.commandPending = false
   }
-  device.attributes.immobilized = immobilized
+  if (device.attributes.deviceType === 7 && position.attributes.result && position.attributes.result.trim().startsWith('Restore fuel supply')) {
+    immobilized = false
+  }
+  if (position.attributes.result && position.attributes.result.startsWith('+ACK:GTFRI')) {
+    Vue.$log.info('ignoring immobilized value', position.attributes.result, device.name)
+  } else {
+    device.attributes.immobilized = immobilized
+  }
   if (device.position && device.position.attributes.ignition && !position.attributes.ignition) {
     device.lastStop = position.fixTime
   }
   device.position = position
 }
 
-function findNearestPOI(position) {
-  const pois = store.getters.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
-  if (pois.length === 0) {
-    return null
-  }
-  const a = pois.map(p => {
-    if (p.area) {
-      const str = p.area.substring('CIRCLE ('.length, p.area.indexOf(','))
-      const coord = str.trim().split(' ')
-      return {
-        id: p.id,
-        distance: Math.round(coordsDistance(parseFloat(coord[1]), parseFloat(coord[0]), position.longitude, position.latitude))
-      }
-    }
-    return {
-      id: p.id,
-      distance: Number.MAX_SAFE_INTEGER
-    }
-  }).filter(a => a.distance < 100).sort((a, b) => (a.distance > b.distance) ? 1 : -1)
-  if (a.length > 0) {
-    return a[0].id
-  }
-}
-
 function findDriver(position, device) {
-  if (!position.attributes.driverUniqueId ||
-    position.attributes.driverUniqueId === 0) {
-    if (device.driver && device.driver.id) {
-      const driver = vm.$store.getters.drivers.find(d => d.id === device.driver.id)
-      vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
-      driver.vehicle = null
-      vm.$store.state.user.drivers.push(driver)
-    }
-    return { name: '' }
+  if (!position.attributes.driverUniqueId || position.attributes.driverUniqueId === '0') {
+    return undefined
   }
 
-  const driver = store.getters.drivers.find(d => d.uniqueId === position.attributes.driverUniqueId)
-
+  const driver = store.getters.drivers.find(d => (d.uniqueId).trim() === (position.attributes.driverUniqueId).trim())
   if (position.fixDays > 5 || position.outdated) {
-    if (driver) {
-      driver.vehicle = null
-    }
-    return { name: '' }
+    return undefined
   }
 
   if (driver) {
-    vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
-    driver.vehicle = { id: device.id, name: device.name }
-    vm.$store.state.user.drivers.push(driver)
-    return { id: driver.id, name: driver.name }
-  }
-
-  if (device.driver && device.driver.id) {
-    const driver = vm.$store.state.user.drivers.find(d => d.id === device.driver.id)
-    if (driver) {
-      driver.vehicle = null
+    if (!driver.attributes.deviceId || driver.attributes.deviceId !== device.id) {
+      vm.$store.state.user.drivers.splice(vm.$store.state.user.drivers.indexOf(driver), 1)
+      driver.attributes.deviceId = device.id
+      vm.$store.state.user.drivers.push(driver)
     }
+    return { id: driver.id, name: driver.name }
   }
 
   return { name: position.attributes.driverUniqueId }
