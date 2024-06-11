@@ -383,11 +383,10 @@ export function updateDevice(position, feature, device) {
   if (immobilized !== device.attributes.immobilized) {
     device.attributes.commandPending = false
   }
-  if (device.attributes.deviceType === 7 &&
-    !immobilized &&
-    (position.attributes.result && !position.attributes.result.trim().startsWith('Restore fuel supply'))) {
-    Vue.$log.info('ignoring immobilized value', position.attributes.result, device.name)
-  } else if (position.attributes.result && position.attributes.result.startsWith('+ACK:GTFRI')) {
+  if (device.attributes.deviceType === 7 && position.attributes.result && position.attributes.result.trim().startsWith('Restore fuel supply')) {
+    immobilized = false
+  }
+  if (position.attributes.result && position.attributes.result.startsWith('+ACK:GTFRI')) {
     Vue.$log.info('ignoring immobilized value', position.attributes.result, device.name)
   } else {
     device.attributes.immobilized = immobilized
