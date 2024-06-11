@@ -101,9 +101,9 @@
             >
               <span style="font-size: 12px;"><i class="fas fa-user driverIcon"></i>{{ scope.row.driver.name }}</span>
             </div>
-            <div style="line-height: normal">
+            <div style="line-height: normal;font-size: 12px">
               <span v-if="scope.row.position" style="font-size: 12px"><i class="fas fa-road roadIcon"></i>{{ scope.row | formatTotalDistance }} km</span>
-              <span v-if="scope.row.position && scope.row.position.fuelLevel" style="padding-left: 25px; font-size: 12px" @click="fuelLevelClick(scope.row)">
+              <span v-if="scope.row.position && scope.row.position.attributes.fuel" style="padding-left: 25px; font-size: 12px" @click="fuelLevelClick(scope.row)">
                 <el-tooltip id="coordsTooltip" class="item" effect="light" placement="bottom">
                   <div slot="content">
                     <span style="font-size: 10px">
@@ -115,11 +115,17 @@
                   <i :class="fuelLevelStatus(scope.row.position.fuelLevel)" style="width: 15px"></i>
                 </el-tooltip>{{ currentFuelLevel(scope.row) }}
               </span>
+              <temperature-icons :current-position="scope.row.position" :device="scope.row" />
               <doors-icons :current-position="scope.row.position" :device="scope.row" />
               <sensor-icons sensor="sensor1" :current-position="scope.row.position" :device="scope.row" />
               <sensor-icons sensor="sensor2" :current-position="scope.row.position" :device="scope.row" />
               <sensor-icons sensor="sensor3" :current-position="scope.row.position" :device="scope.row" />
               <span v-if="getDeviceState(scope.row)==='Moving'" style="float: right; font-size: 12px"><i class="fas fa-tachometer-alt speedIcon"></i> {{ scope.row.position.speed * 1.852 | formatNumber }} km/h </span>
+              <span v-if="getDeviceState(scope.row)!=='Moving' && scope.row.lastStop && !showStopDate" style="float: right; font-size: 12px">
+                <el-tooltip :content="scope.row.lastStop | formatDate">
+                  <i class="fas fa-octagon stopIcon"></i>
+                </el-tooltip> {{ scope.row.lastStop | formatLastStop }}
+              </span>
             </div>
             <div v-if="hasNearestPOI(scope.row)" style="line-height: normal">
               <span style="font-size: 12px"><i class="fas fa-map-marker-alt poiIcon"></i>{{ getPOIName(scope.row.poi) }}</span>
@@ -129,7 +135,7 @@
             </div>
             <div style="padding-bottom: 8px; line-height: normal; float:left">
               <span v-if="getDeviceState(scope.row)==='Stopped' && (scope.row.lastStop || scope.row.lastUpdate)" style="font-size: 12px">
-                <i :class="getClockClass(scope.row)" style="width: 20px"></i>{{ (scope.row.lastStop || scope.row.lastUpdate) | formatLastUpdate }}
+                <i :class="getClockClass(scope.row)" style="width: 20px"></i>{{ (showStopDate && scope.row.lastStop ? scope.row.lastStop : scope.row.lastUpdate) | formatLastUpdate }}
               </span>
               <span v-if="getDeviceState(scope.row)!=='Stopped' && scope.row.lastUpdate" style="font-size: 12px">
                 <i :class="getClockClass(scope.row)" style="width: 20px"></i>{{ scope.row.lastUpdate | formatLastUpdate }}
@@ -161,10 +167,12 @@ import store from '../../store'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
 import DoorsIcons from '../../components/DoorsIcons'
 import SensorIcons from '../../components/SensorIcons'
+import TemperatureIcons from '../../components/TemperatureIcons.vue'
+import { getFuelLiters } from '@/utils/positions'
 
 export default {
   name: 'VehicleTable',
-  components: { ImmobilizeButton, TripTable, SensorIcons, DoorsIcons },
+  components: { ImmobilizeButton, TripTable, SensorIcons, DoorsIcons, TemperatureIcons },
   filters: {
     formatTotalDistance(device) {
       const ignoreOdometer = device.attributes['report.ignoreOdometer']
@@ -182,6 +190,11 @@ export default {
       }
       return Math.round(value)
     },
+    formatDate: function(value) {
+      if (value) {
+        return new Date(value).toLocaleString()
+      }
+    },
     formatGroup: function(value) {
       const group = store.getters.groups.find(g => g.id === value)
       return group && group.name
@@ -198,6 +211,11 @@ export default {
         return 'vehicleList.column_' + value
       }
       return value
+    },
+    formatLastStop(value) {
+      if (value) {
+        return new Date(value).toLocaleTimeString()
+      }
     }
   },
   directives: {
@@ -225,7 +243,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loading', 'historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
+    ...mapGetters(['loading', 'showStopDate', 'historyMode', 'geofences', 'currentTime', 'devices', 'drivers', 'groups']),
     orderedBy: () => 'order_by_vehicle',
     buttonSize() {
       return 'large'
@@ -357,11 +375,25 @@ export default {
       return 'fas fa-gas-pump ' + fuelLevelStatus
     },
     currentFuelLevel(device) {
+      const fuelLiters = getFuelLiters(device)
+
       if (this.fuelMetric === 'percentage') {
-        return device.position.fuelLevel + '%'
-      } else {
-        return Math.round(device.attributes.fuel_tank_capacity * (device.position.fuelLevel / 100)) + 'L'
+        if (device.position.fuelLevel) {
+          return Math.round(device.position.fuelLevel) + '%'
+        } else if (fuelLiters) {
+          return fuelLiters + 'L'
+        }
       }
+
+      if (this.fuelMetric === 'liters') {
+        if (fuelLiters) {
+          return fuelLiters + 'L'
+        } else if (device.position.fuelLevel) {
+          return device.position.fuelLevel + '%'
+        }
+      }
+
+      return device.position.fuel
     },
     getBgColor: function(device) {
       if (this.getDeviceState(device) === 'Disconnected') {
@@ -505,6 +537,9 @@ export default {
     padding-left: 1px;
     width: 19px;
     color: $--color-primary
+  }
+  .stopIcon {
+    color: $--color-danger
   }
   .fuelLevelNormalIcon {
     color: $--color-success

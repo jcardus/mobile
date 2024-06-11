@@ -42,7 +42,8 @@ const getters = {
   orderDevicesBy: state => state.user.user.attributes.orderDevicesBy,
   alertsSearchPeriod: state => state.user.user.attributes.alertsSearchPeriod,
   mapType: state => state.map.mapType,
-  mapStyle: state => state.map.mapStyle
+  mapStyle: state => state.map.mapStyle,
+  showStopDate: state => state.settings.showStopDate
 }
 
 export default getters
