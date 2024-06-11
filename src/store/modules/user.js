@@ -11,6 +11,8 @@ import { PushNotifications } from '@capacitor/push-notifications'
 import { FCM } from '@capacitor-community/fcm'
 import axios from 'axios'
 import { getServerHost } from '@/api'
+import * as Sentry from '@sentry/vue'
+import { Preferences } from '@capacitor/preferences'
 
 const state = {
   user: {
@@ -51,6 +53,12 @@ const mutations = {
   },
   SET_DEVICES(state, devices) {
     state.devices = devices
+  },
+  SET_GROUPS(state, geofences) {
+    state.groups = geofences
+  },
+  SET_DRIVERS(state, devices) {
+    state.drivers = devices
   },
   SET_USER(state, token) {
     state.user = token
@@ -106,96 +114,20 @@ getAvatar(name) {
   return nameSplit[0].charAt(0).toUpperCase() + (nameSplit[1] ? nameSplit[1].charAt(0).toUpperCase() : nameSplit[0].charAt(1).toUpperCase())
 }
 
-function initData(commit, state, dispatch) {
-  return new Promise(async(resolve, reject) => {
-    const user = state.user
-    traccar.getInitData(user)
-      .then(responses => {
-        dispatch('setGeofences', responses[1].data).then(() => {
-          state.groups = responses[2].data
-          state.drivers = responses[3].data
-          if (!user.deviceReadonly && !user.readonly && user.userLimit) {
-            state.users = responses[4].data.filter(u => u.id !== user.id)
-          } else {
-            state.users = []
-          }
-          dispatch('setDevices', responses[0].data).then(() => {
-            dispatch('processDevices').then(() => {
-              dispatch('processGroups')
-                .then(() => {
-                  dispatch('fetchAlerts').then(() => {
-                    commit('SET_ALERT_SEARCH_PERIOD', 'last_one_hour')
-                  })
-                })
-                .finally(() => {
-                  dispatch('transient/setDataLoaded', null, { root: true })
-                  Vue.$log.info('emit dataLoaded')
-                  serverBus.$emit('dataLoaded')
-                  resolve()
-                })
-            })
-          })
-        })
-      })
-      .catch((e) => {
-        Vue.$log.error(e)
-        serverBus.$emit('dataLoaded')
-        reject(e)
-      })
-  })
-}
-
-async function setFirebaseToken(dispatch, state) {
-  FCM
-    .getToken()
-    .then((r) => {
-      if (Capacitor.getPlatform() === 'ios') {
-        if (state.user.attributes.firebaseToken !== r.token) {
-          dispatch('setFirebaseToken', r.token)
-        }
-      }
-    })
-    .catch((err) => console.log(err))
-  // Request permission to use push notifications
-  // iOS will prompt user and return if they granted permission or not
-  // Android will just grant without prompting
-  PushNotifications.requestPermissions().then(result => {
-    if (result) {
-      Vue.$log.info('PushNotifications permission granted')
-      PushNotifications.register().then(d => console.log('register result', d))
-    } else {
-      Vue.$log.error(result)
-    }
-  })
-
-  PushNotifications.addListener(
-    'registration',
-    (token) => {
-      if (Capacitor.getPlatform() === 'android') {
-        if (state.user.attributes.firebaseToken !== token.value) {
-          dispatch('setFirebaseToken', token.value)
-        }
-      }
-    }
-  )
-
-  PushNotifications.addListener('registrationError', (error) => {
-    Vue.$log.info('Error on registration: ' + JSON.stringify(error))
-  })
-
-  PushNotifications.addListener(
-    'pushNotificationReceived',
-    (notification) => {
-      Vue.$log.info('Push received: ' + JSON.stringify(notification))
-    }
-  )
-
-  PushNotifications.addListener(
-    'pushNotificationActionPerformed',
-    (notification) => {
-      Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
-    }
-  )
+async function initData(commit, state, dispatch) {
+  commit('SET_DEVICES', await traccar.get('devices')
+    .then(r => r.data))
+  commit('SET_GEOFENCES', await traccar.get('geofences')
+    .then(r => r.data))
+  commit('SET_GROUPS', await traccar.get('groups')
+    .then(r => r.data))
+  commit('SET_DRIVERS', await traccar.get('drivers')
+    .then(r => r.data))
+  await dispatch('processGroups')
+  await dispatch('fetchAlerts')
+  commit('SET_ALERT_SEARCH_PERIOD', 'last_one_hour')
+  dispatch('transient/setDataLoaded', null, { root: true })
+  serverBus.$emit('dataLoaded')
 }
 
 function isCapacitor() {
@@ -203,9 +135,63 @@ function isCapacitor() {
 }
 
 const actions = {
+  async initFirebaseToken({ dispatch, state }) {
+    const r = await FCM.getToken()
+    if (Capacitor.getPlatform() === 'ios') {
+      await Preferences.set({ key: 'firebaseToken', value: r.token })
+    }
+    await PushNotifications.removeAllListeners()
+
+    // Request permission to use push notifications
+    // iOS will prompt user and return if they granted permission or not
+    // Android will just grant without prompting
+    PushNotifications.requestPermissions().then(result => {
+      if (result) {
+        Vue.$log.info('PushNotifications permission granted')
+        PushNotifications.register().then(d => console.log('register result', d))
+      } else {
+        Vue.$log.error(result)
+      }
+    })
+
+    PushNotifications.addListener(
+      'registration',
+      (token) => {
+        if (Capacitor.getPlatform() === 'android') {
+          dispatch('setFirebaseToken', token.value)
+        }
+      }
+    )
+
+    PushNotifications.addListener('registrationError', (error) => {
+      Vue.$log.info('Error on registration: ' + JSON.stringify(error))
+    })
+
+    PushNotifications.addListener(
+      'pushNotificationReceived',
+      (notification) => {
+        Vue.$log.info('Push received: ' + JSON.stringify(notification))
+      }
+    )
+
+    PushNotifications.addListener(
+      'pushNotificationActionPerformed',
+      (notification) => {
+        Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
+      }
+    )
+  },
+  async setDeviceLastIgnOff({ commit, state }, { device, lastStop }) {
+    device.lastStop = lastStop
+  },
   async setFirebaseToken({ state }, value) {
-    await traccar.updateUser(state.user.id, state.user)
-    return backend.setFirebaseToken({ token: value, user: state.user })
+    try {
+      await Preferences.set({ key: 'firebaseToken', value })
+      await traccar.updateUser(state.user.id, state.user)
+      return backend.setFirebaseToken({ token: value, user: state.user })
+    } catch (e) {
+      console.error(e.message, e)
+    }
   },
   refreshDevices({ commit, state }) {
     if (state.devices.length > 0) {
@@ -234,28 +220,29 @@ const actions = {
     }
     try {
       commit('SET_USER', await traccar.getSession())
-      await dispatch('setUser')
     } catch (e) {
       console.error('no traccar session, should go to login', e.message, e.config && e.config.url)
       await dispatch('clearUser')
+      return
+    }
+    try {
+      await dispatch('setUser')
+    } catch (e) {
+      console.error(e)
+      alert(e.message)
     }
   },
-  setUser({ commit, state, dispatch }) {
-    return new Promise((resolve) => {
-      initData(commit, state, dispatch)
-        .catch(e => console.error('initData', e))
-        .finally(async() => {
-          setLanguage(state.user.attributes.lang)
-          if (isCapacitor()) {
-            try {
-              await setFirebaseToken(dispatch, state)
-            } catch (e) {
-              console.error(e)
-            }
-          }
-          resolve()
-        })
-    })
+  async setUser({ commit, state, dispatch }) {
+    Sentry.setUser({ email: state.user.email })
+    await initData(commit, state, dispatch)
+    setLanguage(state.user.attributes.lang)
+    if (isCapacitor()) {
+      try {
+        await dispatch('initFirebaseToken')
+      } catch (e) {
+        console.error(e)
+      }
+    }
   },
   login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo

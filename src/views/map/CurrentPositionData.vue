@@ -377,6 +377,7 @@ export default {
       }
     },
     async getRoute(from, to) {
+      if (!this.device) { return }
       Vue.$log.debug('getting route from', from, 'to', to)
       try {
         const allInOne = await traccar.allInOne(this.device.id, from, to)
@@ -1113,7 +1114,7 @@ export default {
       }
     },
     datesChanged() {
-      if (this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
+      if (this.device && this.device.id === vm.$data.currentDevice.id && this.showRoutes) {
         this.loadingRoutes = true
         this.getRoute(vm.$data.routeMinDate, vm.$data.routeMaxDate)
       }

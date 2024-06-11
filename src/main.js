@@ -7,6 +7,7 @@ import * as event from './events'
 import './amplify'
 import VueTimers from 'vue-timers'
 import { SharedData } from './utils/utils'
+// noinspection JSFileReferences
 import Framework7 from 'framework7/framework7-lite.esm.bundle.js'
 import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 import elTableInfiniteScroll from 'el-table-infinite-scroll'
@@ -14,9 +15,7 @@ import AppMobile from './AppMobile'
 import Element from 'element-ui'
 import './capacitor'
 import * as Sentry from '@sentry/vue'
-import { CaptureConsole as CaptureConsoleIntegration } from '@sentry/integrations'
 import '@fortawesome/fontawesome-pro/css/all.css' // Ensure you are using css-loader
-
 
 console.log('app starting...', process.env)
 
@@ -25,7 +24,9 @@ if (process.env.NODE_ENV !== 'development') {
   Sentry.init({
     Vue,
     dsn: process.env.SENTRY_DSN,
-    integrations: [new Sentry.BrowserTracing(), new CaptureConsoleIntegration({ levels: ['error'] })]
+    integrations: [Sentry.replayIntegration()],
+    replaysSessionSampleRate: 0.01,
+    replaysOnErrorSampleRate: 1.0
   })
 }
 

@@ -142,7 +142,7 @@ export default {
           this.$f7.dialog.alert(this.$t('report.no_data'))
         } else {
           const { identifier } = await Device.getId()
-          const url = `https://tqdeegmk8f.execute-api.us-east-1.amazonaws.com/Prod/${identifier}__${this.reportType}__${new Date().getTime()}?reportType=${this.reportType}`
+          const url = `https://api.fleetmap.pt/pinmeapi/mobile/report/${identifier}__${this.reportType}__${new Date().getTime()}?reportType=${this.reportType}`
           await axios.put(url, { reportData: reportData[0], userData })
           if (Capacitor.getPlatform() === 'ios') {
             await Browser.open({ url })
@@ -154,7 +154,8 @@ export default {
           }
         }
       } catch (e) {
-        this.$alert(e)
+        console.error(e)
+        this.$f7.dialog.alert(e.message)
       }
       this.$f7.preloader.hide()
     }

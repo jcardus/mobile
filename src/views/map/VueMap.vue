@@ -221,20 +221,11 @@ export default {
       }
     },
     connectSocket() {
-      if (!this.user.token) {
-        this.user.token = crypto.randomUUID()
-        traccar.updateUser(this.user.id, this.user)
-      }
       if (this.userLoggedIn) {
-        traccar.positions()
-          .then(d => d.data)
-          .catch(e => console.warn('probably session timeoud out', e.message))
-          .then(positions => this.updateMarkers(positions.sort((a, b) => a.fixTime === b.fixTime ? 0 : a.fixTime < b.fixTime ? -1 : 1)))
-          .catch(e => console.error(e))
-        setTimeout(() => {
-          this.connectSocket()
-          this.$store.commit('SOCKET_RECONNECT', socketReconnect++)
-        }, 10000)
+        if (!this.user.token) {
+          this.user.token = crypto.randomUUID()
+          traccar.updateUser(this.user.id, this.user)
+        }
       }
       if (this.$store.state.socket.isConnected) { return }
       delete window.socket
@@ -762,8 +753,8 @@ export default {
         if (showStopDate()) {
           return await pinmeapi.getAll()
         }
-      } catch (error) {
-        Vue.$log.error(error)
+      } catch (e) {
+        Vue.$log.error((e.response && e.reponse.data) || e)
       }
       return []
     },
@@ -782,7 +773,7 @@ export default {
           if (devicesIgnitionOffDate && devicesIgnitionOffDate.length) {
             const deviceIgnitionOff = devicesIgnitionOffDate.find(d => d.deviceId === device.id)
             if (!position.attributes.ignition && deviceIgnitionOff) {
-              device.lastStop = deviceIgnitionOff.ignitionOffDate
+              this.$store.dispatch('user/setDeviceLastIgnOff', { device, lastStop: deviceIgnitionOff.ignitionOffDate })
             }
           }
           feature = this.positionToFeature(position, device)

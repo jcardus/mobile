@@ -34,15 +34,7 @@ export function login(data) {
   })
 }
 export function logout() {
-  return axios({
-    withCredentials: true, // send cookies when cross-domain requests
-    timeout: 5000,
-    url: session,
-    method: 'delete',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  })
+  return fetch(axios.defaults.baseURL + '/session', { credentials: 'include', method: 'DELETE' })
 }
 export function getSession() {
   return axios.get(session, { withCredentials: true })
@@ -123,6 +115,7 @@ function get(url) {
 }
 
 export const traccar = {
+  get: get,
   api_helper: function(options, ok, nok) {
     axios.post(
       'https://' + getServerHost() + '/api_helper',
