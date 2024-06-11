@@ -367,7 +367,7 @@ export function updateDevice(position, feature, device) {
     position.attributes.out2 ||
     position.attributes.isImmobilizationOn ||
     position.attributes.blocked ||
-    (position.attributes.result && position.attributes.result.trim().startsWith('Cut off the fuel supply Success! Speed:')) ||
+    (position.attributes.result && position.attributes.result.trim().startsWith('Cut off the fuel supply')) ||
     (position.attributes.result && position.attributes.result.trim() === 'Already in the state of fuel supply cut off, the command is not running!')
 
   if (position.attributes.output === '00') {
@@ -385,7 +385,7 @@ export function updateDevice(position, feature, device) {
   }
   if (device.attributes.deviceType === 7 &&
     !immobilized && position.attributes.blocked === undefined &&
-    (position.attributes.result && position.attributes.result.trim() !== 'Restore fuel supply success!')) {
+    (position.attributes.result && !position.attributes.result.trim().startsWith('Restore fuel supply'))) {
     Vue.$log.info('ignoring immobilized value', position.attributes.result, device.name)
   } else if (position.attributes.result && position.attributes.result.startsWith('+ACK:GTFRI')) {
     Vue.$log.info('ignoring immobilized value', position.attributes.result, device.name)
