@@ -773,7 +773,7 @@ export default {
           if (devicesIgnitionOffDate && devicesIgnitionOffDate.length) {
             const deviceIgnitionOff = devicesIgnitionOffDate.find(d => d.deviceId === device.id)
             if (!position.attributes.ignition && deviceIgnitionOff) {
-              device.lastStop = deviceIgnitionOff.ignitionOffDate
+              this.$store.dispatch('user/setDeviceLastIgnOff', { device, lastStop: deviceIgnitionOff.ignitionOffDate })
             }
           }
           feature = this.positionToFeature(position, device)

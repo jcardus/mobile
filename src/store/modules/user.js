@@ -181,7 +181,9 @@ const actions = {
       }
     )
   },
-
+  async setDeviceLastIgnOff({ commit, state }, { device, lastStop }) {
+    device.lastStop = lastStop
+  },
   async setFirebaseToken({ state }, value) {
     try {
       await Preferences.set({ key: 'firebaseToken', value })
