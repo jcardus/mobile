@@ -47,7 +47,7 @@ import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
-import { getPartnerByUser, showStopDate } from '@/utils/partner'
+import { getPartnerByUser } from '@/utils/partner'
 
 let socketReconnect = 0
 
@@ -750,11 +750,9 @@ export default {
     },
     async getDevicesIgnitionOffDate() {
       try {
-        if (showStopDate()) {
-          return await pinmeapi.getAll()
-        }
-      } catch (e) {
-        Vue.$log.error((e.response && e.reponse.data) || e)
+        return await pinmeapi.getAll()
+      } catch (error) {
+        Vue.$log.warn(error)
       }
       return []
     },
