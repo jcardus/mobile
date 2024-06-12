@@ -23,7 +23,14 @@
         {{ currentPosition && currentPosition.address && currentPosition.address.replace('&\#39;', '\'') }}
         <div style="padding-top: 5px;">
           <div style="color:#32325D;">
-            <span v-if="currentPosition.attributes.ignition || currentPosition.speed > 2"><i class="fas fa-tachometer-alt speedIcon" style="padding-right:4px"></i>{{ Math.round(currentPosition.speed * 1.852) }} km/h</span>
+            <span v-if="currentPosition.attributes.ignition || currentPosition.speed > 2">
+              <i class="fas fa-tachometer-alt speedIcon" style="padding-right:4px"></i>{{ Math.round(currentPosition.speed * 1.852) }} km/h
+            </span>
+            <span v-else-if="!showStopDate">
+              <el-tooltip :content="device.lastStop | formatDate">
+                <i class="fas fa-octagon stopIcon"></i>
+              </el-tooltip> {{ device.lastStop | formatLastStop }}
+            </span>
             <span v-if="currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
             <span v-if="currentPosition.attributes.ignition && currentPosition.attributes.rpm" style="padding-left:8px;"><i class="fab fa-cloudscale rpmIcon"></i><span style="padding-left:14px;">{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span></span>
           </div>
@@ -43,11 +50,12 @@
               <i class="fak fa-windshield--2-" :style="`color:${currentPosition.attributes.rain === 'rain'?'#3D993D':'#219FD7'}; padding-right:2px; padding-left:2px`"></i>
             </el-tooltip>
           </span>
+          <temperature-icons :current-position="currentPosition" :device="device" />
           <doors-icons :current-position="currentPosition" :device="device" />
           <sensor-icons sensor="sensor1" :current-position="currentPosition" :device="device" />
           <sensor-icons sensor="sensor2" :current-position="currentPosition" :device="device" />
           <sensor-icons sensor="sensor3" :current-position="currentPosition" :device="device" />
-          <span v-if="!routePoint && getDeviceState(device)==='Stopped' && device.lastStop">{{ device.lastStop | formatLastUpdate }}</span>
+          <span v-if="!routePoint && showStopDate && getDeviceState(device)==='Stopped' && device.lastStop">{{ device.lastStop | formatLastUpdate }}</span>
           <span v-else-if="!routePoint">{{ device.lastUpdate | formatLastUpdate }}</span>
           <span v-if="routePoint">{{ currentPosition.fixTime | moment('LL') }} {{ currentPosition.fixTime | moment('LTS') }}</span>
         </div>
@@ -105,13 +113,24 @@ import { isMobile } from '@/utils/lnglat'
 import * as utils from '@/utils/utils'
 import SensorIcons from '../../components/SensorIcons'
 import DoorsIcons from '../../components/DoorsIcons'
+import TemperatureIcons from '@/components/TemperatureIcons.vue'
 
 export default {
   name: 'VehicleDetail',
-  components: { IOdometer, ImmobilizeButton, SensorIcons, DoorsIcons },
+  components: { TemperatureIcons, IOdometer, ImmobilizeButton, SensorIcons, DoorsIcons },
   filters: {
     formatLastUpdate(value) {
       return vm.$store.getters.showFullDate ? new Date(value).toLocaleString() : vm.$moment(value).fromNow()
+    },
+    formatLastStop: function(value) {
+      if (value) {
+        return new Date(value).toLocaleTimeString()
+      }
+    },
+    formatDate: function(value) {
+      if (value) {
+        return new Date(value).toLocaleString()
+      }
     }
   },
   static() {
@@ -138,7 +157,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['historyMode', 'currentTime', 'followVehicle', 'followVehicleEnabled']),
+    ...mapGetters(['historyMode', 'showStopDate', 'currentTime', 'followVehicle', 'followVehicleEnabled']),
     urlStreet() {
       return this.currentPosition && `https://www.google.com/maps/@?api=1&map_action=pano&heading=${this.currentPosition.course}&viewpoint=${this.currentPosition.latitude},${this.currentPosition.longitude}`
     },
