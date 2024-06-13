@@ -11,15 +11,9 @@ export default {
         'line-cap': 'round'
       },
       paint: {
-        'line-opacity': 0.5,
+        'line-opacity': 0.7,
         'line-color': styles.primary,
-        'line-width': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          12, 6,
-          22, 12
-        ]
+        'line-width': 12
       }
     }
   },
@@ -36,7 +30,7 @@ export default {
       }
     }
   },
-  tripsLayer(id) {
+  tripsLayer(id, color) {
     return {
       id: id,
       type: 'line',
@@ -46,9 +40,24 @@ export default {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': 'darkslategrey',
-        'line-width': 2,
-        'line-opacity': 0.8
+        'line-color': color,
+        'line-width': 4
+      }
+    }
+  },
+  tripsLayerCasing(id, color, opacity) {
+    return {
+      id: id + 'casing',
+      type: 'line',
+      source: id,
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': color,
+        'line-width': 8,
+        'line-opacity': opacity
       }
     }
   },
@@ -100,14 +109,8 @@ export default {
       source: id,
       layout: {
         'text-rotate': ['-', ['get', 'course'], 90],
-        'text-field': '➤',
-        'text-size': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          6, 13,
-          11, 19
-        ],
+        'text-field': ['case', ['<', ['get', 'speed'], 2], '●', '➤'],
+        'text-size': 17,
         'symbol-spacing': [
           'interpolate',
           ['linear'],
@@ -118,16 +121,17 @@ export default {
         'text-keep-upright': false
       },
       paint: {
-        'text-color': ['case', ['==', ['get', 'ignition'], false], styles.danger, ['<', ['get', 'speed'], 2], styles.warning, 'darkslategrey'],
+        'text-color': [
+          'case',
+          ['get', 'lowSignal'], styles.alerts,
+          ['==', ['get', 'ignition'], false], styles.danger,
+          ['<', ['get', 'speed'], 2], styles.warning,
+          'darkslategrey'],
         'text-halo-color': 'hsl(55, 11%, 96%)',
         'text-halo-width': 1,
-        'text-opacity': [
-          'case',
-          ['boolean', ['feature-state', 'hover'], false],
-          1,
-          0.8
-        ]
-      }
+        'text-opacity': 1
+      },
+      minzoom: 5
     }
   }
 }

@@ -17,7 +17,7 @@ import VehicleDetail from '@/views/map/VehicleDetail.vue'
 import i18n from '@/lang'
 const buildings3d = '3d-buildings'
 
-const routePlayLayer = 'routePlayLayer'
+export const routePlayLayer = 'routePlayLayer'
 const routePlayVehicleLayer = { ...vehicleLayer }
 const animPrefix = 'anim'
 const labelPrefix = 'label'
