@@ -233,6 +233,7 @@ export default {
         case 'Google':
         case 'SignInWithApple':
           if (Capacitor.isNativePlatform()) {
+            Browser.addListener('browserFinished', () => { this[type] = false })
             Browser.open({
               url: getSocialLoginUrl(type),
               presentationStyle: 'popover'
