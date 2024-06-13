@@ -207,6 +207,7 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on(event.posChanged, this.onPosChanged)
     serverBus.$on(event.routePlay, this.routePlay)
+    vm.$static.map.on('click', this.allTripsArrowsSource, this.mouseEnterArrow)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
@@ -214,6 +215,7 @@ export default {
     serverBus.$off(event.posChanged, this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
     serverBus.$off(event.toogleEventChart, this.onToogleEventChart)
+    vm.$static.map.off('click', this.allTripsArrowsSource, this.mouseEnterArrow)
     const lastPos = vm.$data.currentDevice.position
     // put the vehicle back where it was...
     if (lastPos) {
@@ -370,6 +372,7 @@ export default {
       if (!keepMain) {
         if (this.map.getLayer(this.allTripsSource)) {
           this.map.removeLayer(this.allTripsSource)
+          this.map.removeLayer(this.allTripsSource + 'casing')
           this.map.removeLayer(this.allTripsArrowsSource)
           this.map.removeSource(this.allTripsSource)
           this.map.removeSource(this.allTripsArrowsSource)
@@ -961,24 +964,11 @@ export default {
       lnglat.hideEventPopup()
     },
     createAllTripsLayer(routeGeoJSON, points) {
-      if (vm.$static.map.getLayer(this.allTripsSource)) {
-        this.map.removeLayer(this.allTripsSource)
-        this.map.removeLayer(this.allTripsArrowsSource)
-        this.map.removeSource(this.allTripsSource)
-        this.map.removeSource(this.allTripsArrowsSource)
-      }
-      Vue.$log.debug('adding source ', this.allTripsSource)
-      vm.$static.map.addSource(this.allTripsSource, {
-        type: 'geojson',
-        data: routeGeoJSON
-      })
-      vm.$static.map.addSource(this.allTripsArrowsSource, {
-        type: 'geojson',
-        data: points
-      })
-      vm.$static.map.addLayer(routeLayers.tripsLayer(this.allTripsSource))
-      vm.$static.map.addLayer(routeLayers.tripsArrowsLayer(this.allTripsArrowsSource))
-      vm.$static.map.on('touchstart', this.allTripsArrowsSource, this.mouseEnterArrow)
+      this.$store.commit('map/createAllTripsLayer', {
+        routeGeoJSON,
+        points,
+        routeColor: this.device.attributes.routeColor }
+      )
     },
     mouseEnterArrow(e) {
       const feature = e.features[0]

@@ -1,4 +1,6 @@
 import { vm } from '@/main'
+import Vue from 'vue'
+import routeLayers from '@/views/map/mapbox/layers/RouteLayers'
 
 const state = {
   showGeofences: false,
@@ -12,10 +14,33 @@ const state = {
   center: null,
   zoom: 0,
   mapType: 'streets',
-  mapStyle: 'mapbox://styles/mapbox/streets-v11'
+  mapStyle: 'mapbox://styles/mapbox/streets-v11',
+  allTripsSource: 'allTrips',
+  allTripsArrowsSource: 'allTrips-arrows'
 }
 
 const mutations = {
+  createAllTripsLayer(state, { routeGeoJSON, points, routeColor }) {
+    if (vm.$static.map.getLayer(state.allTripsSource)) {
+      vm.$static.map.removeLayer(state.allTripsSource)
+      vm.$static.map.removeLayer(state.allTripsSource + 'casing')
+      vm.$static.map.removeLayer(state.allTripsArrowsSource)
+      vm.$static.map.removeSource(state.allTripsSource)
+      vm.$static.map.removeSource(state.allTripsArrowsSource)
+    }
+    Vue.$log.debug('adding source ', state.allTripsSource)
+    vm.$static.map.addSource(state.allTripsSource, {
+      type: 'geojson',
+      data: routeGeoJSON
+    })
+    vm.$static.map.addSource(state.allTripsArrowsSource, {
+      type: 'geojson',
+      data: points
+    })
+    vm.$static.map.addLayer(routeLayers.tripsLayerCasing(state.allTripsSource, routeColor || '#2d5f99', routeColor ? 0.7 : 1))
+    vm.$static.map.addLayer(routeLayers.tripsLayer(state.allTripsSource, routeColor || '#4882c5'))
+    vm.$static.map.addLayer(routeLayers.tripsArrowsLayer(state.allTripsArrowsSource))
+  },
   SET_TYPE(state, value) {
     state.mapType = value
   },
