@@ -64,6 +64,45 @@ import { removeAdd3dLayer } from '@/views/map/mapbox/LayerManager'
 import { calculateIdlePositions, findNearestPOI } from '@/utils/positions'
 import { getCurrentTrip } from '@/utils/trips'
 
+function getColor(speed, max) {
+  return interpolateColor('#FFFF00', '#FF0000', speed / max)
+}
+function interpolateColor(color1, color2, value) {
+  if (value < 0) value = 0
+  if (value > 1) value = 1
+
+  function hexToRgb(hex) {
+    hex = hex.replace(/^#/, '')
+    const bigint = parseInt(hex, 16)
+    const r = (bigint >> 16) & 255
+    const g = (bigint >> 8) & 255
+    const b = bigint & 255
+    return [r, g, b]
+  }
+
+  function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map((x) => {
+      const hex = x.toString(16)
+      return hex.length === 1 ? '0' + hex : hex
+    }).join('')
+  }
+
+  const [r1, g1, b1] = hexToRgb(color1)
+  const [r2, g2, b2] = hexToRgb(color2)
+
+  const r = Math.round(r1 + (r2 - r1) * value)
+  const g = Math.round(g1 + (g2 - g1) * value)
+  const b = Math.round(b1 + (b2 - b1) * value)
+
+  return rgbToHex(r, g, b)
+}
+
+// Example usage:
+const color1 = '#ff0000'
+const color2 = '#0000ff'
+const value = 0.5
+
+console.log(interpolateColor(color1, color2, value)) // Output: #800080 (Purple)
 export default {
   name: 'CurrentPositionData',
   data() {
@@ -881,9 +920,20 @@ export default {
         const bounds = lnglat.getBounds(coords)
         this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70, animate: false })
         const pointsData = lnglat.getGeoJSONFeaturesColletion(points)
-        const lineData = lnglat.getGeoJSON({ type: 'LineString', coordinates: coords })
-        this.createAllTripsLayer(lineData, pointsData)
+        this.createAllTripsLayer(this.getSegments(positions), pointsData)
       }
+    },
+    getSegments(positions) {
+      const result = []
+      const maxSpeed = positions.map(p => p.speed).reduce((a, b) => Math.max(a, b), -Infinity)
+      positions.forEach((p1, i) => {
+        if (i < positions.length - 1) {
+          const p2 = positions[i + 1]
+          result.push(helpers.lineString([[p1.longitude, p1.latitude], [p2.longitude, p2.latitude]],
+            { speedA: getColor(p1.speed, maxSpeed), speedB: getColor(p2.speed, maxSpeed) }))
+        }
+      })
+      return helpers.featureCollection(result)
     },
     iterate() {
       const positions = this.trips[this.currentTrip].positions

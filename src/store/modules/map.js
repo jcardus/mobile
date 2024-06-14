@@ -38,7 +38,7 @@ const mutations = {
       data: points
     })
     vm.$static.map.addLayer(routeLayers.tripsLayerCasing(state.allTripsSource, routeColor || '#2d5f99', routeColor ? 0.7 : 1))
-    vm.$static.map.addLayer(routeLayers.tripsLayer(state.allTripsSource, routeColor || '#4882c5'))
+    vm.$static.map.addLayer(routeLayers.tripsLayer(state.allTripsSource, routeColor))
     vm.$static.map.addLayer(routeLayers.tripsArrowsLayer(state.allTripsArrowsSource))
   },
   SET_TYPE(state, value) {
