@@ -12,7 +12,21 @@ export default {
       },
       paint: {
         'line-opacity': 0.7,
-        'line-color': styles.primary,
+        'line-color': [
+          'interpolate',
+          ['linear'],
+          ['get', 'speed'],
+          0,
+          styles.warning,
+          20,
+          styles.alerts,
+          40,
+          '#800080',
+          60,
+          styles.primary,
+          80,
+          styles.danger
+        ],
         'line-width': 12
       }
     }

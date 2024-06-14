@@ -754,7 +754,8 @@ export default {
         this.iterate()
       } else {
         const coordinates = this.trips[this.currentTrip].positions.map(p => [p.longitude, p.latitude])
-        this.drawRoute(coordinates)
+        const speeds = this.trips[this.currentTrip].positions.map(p => p.speed)
+        this.drawRoute(coordinates, undefined, speeds)
         const mapBounds = bboxPolygon(bbox(helpers.lineString(this.map.getBounds().toArray())))
         const tripLine = helpers.lineString(coordinates)
         if (!booleanContains(mapBounds, tripLine)) {
@@ -895,15 +896,61 @@ export default {
           positions.slice(this.i, j).map(p => Vue.moment(p.fixTime).unix()))
       }
     },
-    drawRoute(positions, timestamps) {
-      const lineString = { type: 'LineString', coordinates: positions }
+    drawRoute(positions, timestamps, speeds) {
+      const lineStringSegments = this.getSpeedSegments(positions, speeds)
+      console.log('lineStringSegments', lineStringSegments)
       if (!settings.mapBoxRouteMatch) {
-        const routeGeoJSON = this.getGeoJSON(lineString)
+        const routeGeoJSON = this.getGeoJSONFeatures(lineStringSegments.map(l => l.lineString))
+        routeGeoJSON.features.forEach((f, index) => { f.properties = { speed: lineStringSegments[index].speed } })
         Vue.$log.debug('Positions Route ', routeGeoJSON)
         this.createLayers(routeGeoJSON)
       } else {
         lnglat.matchRoute(positions, positions.map(() => [25]), timestamps, this.onRouteMatch)
       }
+    },
+    getSpeedSegments(positions, speeds) {
+      const lineStringSegments = []
+      const currentSegment = []
+      let currentSpeed
+      positions.forEach((p, index) => {
+        const speed = speeds[index]
+        if (speed < 5) {
+          if (currentSpeed !== 0 && currentSpeed !== undefined) {
+            lineStringSegments.push({ speed: 0, lineString: { type: 'LineString', coordinates: [...currentSegment, p] }})
+            currentSegment.length = 0
+          }
+          currentSpeed = 0
+        } else if (speed < 25) {
+          if (currentSpeed !== 20 && currentSpeed !== undefined) {
+            lineStringSegments.push({ speed: 20, lineString: { type: 'LineString', coordinates: [...currentSegment, p] }})
+            currentSegment.length = 0
+          }
+          currentSpeed = 20
+        } else if (speed < 35) {
+          if (currentSpeed !== 40 && currentSpeed !== undefined) {
+            lineStringSegments.push({ speed: 40, lineString: { type: 'LineString', coordinates: [...currentSegment, p] }})
+            currentSegment.length = 0
+          }
+          currentSpeed = 40
+        } else if (speed < 45) {
+          if (currentSpeed !== 60 && currentSpeed !== undefined) {
+            lineStringSegments.push({ speed: 60, lineString: { type: 'LineString', coordinates: [...currentSegment, p] }})
+            currentSegment.length = 0
+          }
+          currentSpeed = 60
+        } else {
+          if (currentSpeed !== 80 && currentSpeed !== undefined) {
+            lineStringSegments.push({ speed: 80, lineString: { type: 'LineString', coordinates: [...currentSegment, p] }})
+            currentSegment.length = 0
+          }
+          currentSpeed = 80
+        }
+        currentSegment.push(p)
+      })
+      return lineStringSegments
+    },
+    getGeoJSONFeatures(coordsArray) {
+      return lnglat.getGeoJSONFeatures(coordsArray)
     },
     getGeoJSON(coords) {
       return lnglat.getGeoJSON(coords)
