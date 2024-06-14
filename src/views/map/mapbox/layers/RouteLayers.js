@@ -56,7 +56,7 @@ export default {
       },
       paint: {
         'line-color': color,
-        'line-width': 14,
+        'line-width': 16,
         'line-opacity': opacity
       }
     }
