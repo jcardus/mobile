@@ -40,8 +40,8 @@ export default {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': color,
-        'line-width': 4
+        'line-color': color || ['get', 'speedA'],
+        'line-width': 10
       }
     }
   },
@@ -56,7 +56,7 @@ export default {
       },
       paint: {
         'line-color': color,
-        'line-width': 8,
+        'line-width': 14,
         'line-opacity': opacity
       }
     }
