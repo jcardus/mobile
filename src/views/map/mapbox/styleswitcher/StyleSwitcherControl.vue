@@ -19,6 +19,7 @@
 import { vm } from '@/main'
 import { mapGetters } from 'vuex'
 import { getPartnerByUser } from '@/utils/partner'
+import layerManager, { routePlayLayer } from '@/views/map/mapbox/LayerManager'
 
 export default {
   name: 'StyleSwitcherControl',
@@ -27,10 +28,10 @@ export default {
       btnVisible: true,
       containerVisible: false,
       styles: [
-        { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v10' },
+        { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v11' },
         { title: 'Light', uri: 'mapbox://styles/mapbox/light-v11' },
-        { title: 'Satellite', uri: 'mapbox://styles/mapbox/satellite-streets-v11' },
-        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v11' }
+        { title: 'Satellite', uri: 'mapbox://styles/mapbox/satellite-streets-v12' },
+        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v12' }
       ]
     }
   },
@@ -122,7 +123,18 @@ export default {
       this.$store.dispatch('map/setStyle', style)
       this.containerVisible = false
       this.btnVisible = true
-      vm.$static.map.setStyle(style)
+      if (this.historyMode) {
+        const routeGeoJSON = vm.$static.map.getSource(this.allTripsSource)._data
+        const points = vm.$static.map.getSource(this.allTripsArrowsSource)._data
+        const routePlaySource = vm.$static.map.getSource(routePlayLayer)._data.features[0]
+        vm.$static.map.setStyle(style)
+        vm.$static.map.once('styledata', () => {
+          this.$store.commit('map/createAllTripsLayer', { routeGeoJSON, points })
+          layerManager.removeRoutePlayLayer()
+          layerManager.addRoutePlayLayer()
+          layerManager.updateRoutePlayLayerSource(routePlaySource)
+        })
+      } else { vm.$static.map.setStyle(style) }
     }
   }
 }

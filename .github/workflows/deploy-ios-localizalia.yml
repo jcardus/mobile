@@ -22,6 +22,10 @@ env:
   SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
   WEB_SOCKET_HOST: traccar-eu.fleetmap.pt
 
+  # sentry account: ios.localizalia@fleetmap.io
+  SENTRY_DSN: https://04373d5844104d2c4e217cfbd028ce41@o4507418817855488.ingest.de.sentry.io/4507418823032912
+
+
 jobs:
   deploy:
     runs-on: macos-latest

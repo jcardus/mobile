@@ -227,18 +227,23 @@ export default {
               destroyOnClose: true
             }).open()
           } finally {
-            this.loading = false
+            this.native = false
           }
           break
         case 'Google':
         case 'SignInWithApple':
           if (Capacitor.isNativePlatform()) {
-            Browser.open({
+            Browser.addListener('browserFinished', () => {
+              this.Google = false
+              this.SignInWithApple = false
+              this.native = false
+            })
+            await Browser.open({
               url: getSocialLoginUrl(type),
               presentationStyle: 'popover'
             })
           } else {
-            Auth.federatedSignIn({ provider: type })
+            await Auth.federatedSignIn({ provider: type })
           }
       }
     },
