@@ -28,10 +28,10 @@ export default {
       btnVisible: true,
       containerVisible: false,
       styles: [
-        { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v10' },
+        { title: 'Dark', uri: 'mapbox://styles/mapbox/dark-v11' },
         { title: 'Light', uri: 'mapbox://styles/mapbox/light-v11' },
-        { title: 'Satellite', uri: 'mapbox://styles/mapbox/satellite-streets-v11' },
-        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v11' }
+        { title: 'Satellite', uri: 'mapbox://styles/mapbox/satellite-streets-v12' },
+        { title: 'Streets', uri: 'mapbox://styles/mapbox/streets-v12' }
       ]
     }
   },
