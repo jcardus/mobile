@@ -216,17 +216,16 @@ export default {
         case 'native':
           try {
             await this.$store.dispatch('user/login', { username: this.username, password: this.password })
-            this.$f7.preloader.hide()
             this.$f7.loginScreen.close()
           } catch (e) {
-            this.$f7.preloader.hide()
             console.error(e)
             this.$f7.toast.create({
-              closeTimeout: 4000,
-              text: e.message,
+              closeTimeout: 5000,
+              text: `${this.$t('login.login_user_password_invalid')} (${e.message})`,
               destroyOnClose: true
             }).open()
           } finally {
+            this.$f7.preloader.hide()
             this.native = false
           }
           break

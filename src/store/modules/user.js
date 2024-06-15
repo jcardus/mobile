@@ -135,7 +135,7 @@ function isCapacitor() {
 }
 
 const actions = {
-  async initFirebaseToken({ dispatch, state }) {
+  async initFirebaseToken({ dispatch }) {
     const r = await FCM.getToken()
     if (Capacitor.getPlatform() === 'ios') {
       await Preferences.set({ key: 'firebaseToken', value: r.token })
@@ -305,14 +305,7 @@ const actions = {
               .then(({ data }) => {
                 data.forEach(a => {
                   const alert = state.alerts.find(a_data => a_data.notification.id === a.id)
-                  if (a.type === 'geofenceExit' || a.type === 'geofenceEnter') {
-                    traccar.geofencesByDevice(d.id, function(geofences) {
-                      d.geofences = geofences
-                      alert.devices.push(d)
-                    })
-                  } else {
-                    alert.devices.push(d)
-                  }
+                  alert.devices.push(d)
                 })
               })
               .catch(e => Vue.$log.error(e, d, 'moving on...'))
