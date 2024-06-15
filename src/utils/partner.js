@@ -2,14 +2,12 @@ import { getPartnerData, getPartnerId, getPartnerHost } from 'fleetmap-partners'
 import { Capacitor } from '@capacitor/core'
 import { partnerData } from 'fleetmap-partners/data'
 
-export const hostname = window.location.hostname.replace('dev.', '')
-
 export function getFavIcon() {
-  return '/img/favicon/' + hostname + '.png'
+  return `https://${process.env.SERVER_HOST}/img/favicon/${process.env.SERVER_HOST}.png`
 }
 
 export function getLogo() {
-  return '/img/logos/' + hostname + '.png'
+  return `https://${process.env.SERVER_HOST}/img/logos/${process.env.SERVER_HOST}.png`
 }
 export function getTitle() {
   return getPartnerData(window.location.hostname).title || 'Fleetmap'
