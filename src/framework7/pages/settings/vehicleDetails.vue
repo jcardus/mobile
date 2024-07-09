@@ -155,16 +155,19 @@ export default {
         `Deseja ${this.selectedVehicle.attributes.monitrip ? 'terminar' : 'iniciar'} a viagem?`,
         'Monitriip',
         async() => {
-          if (!this.vehicleNotes) {
-            this.$f7.dialog.alert('Por favor introduza a licença de viagem.')
-            return
+          try {
+            if (!this.vehicleNotes) {
+              this.$f7.dialog.alert('Por favor introduza a licença de viagem.')
+              return
+            }
+            this.selectedVehicle.attributes.monitrip = !this.selectedVehicle.attributes.monitrip
+            this.selectedVehicle.attributes.notes = this.vehicleNotes
+            await axios.post(`https://${getServerHost()}/pinmeapi/integration/moniitrip/startTrip`, this.selectedVehicle)
+            this.$f7.dialog.alert(`Viagem ${this.selectedVehicle.attributes.monitrip ? 'iniciada' : 'terminada'} com sucesso.`, 'Monitriip')
+            this.$f7router.back()
+          } catch (e) {
+            this.$f7.dialog.alert(e.message)
           }
-          this.selectedVehicle.attributes.monitrip = !this.selectedVehicle.attributes.monitrip
-          this.selectedVehicle.attributes.notes = this.vehicleNotes
-          await traccar.updateDevice(this.selectedVehicle.id, this.selectedVehicle)
-          await axios.post(`https://${getServerHost()}/pinmeapi/integration/moniitrip/startTrip`, this.selectedVehicle).catch(e => console.error(e))
-          this.$f7.dialog.alert(`Viagem ${this.selectedVehicle.attributes.monitrip ? 'iniciada' : 'terminada'} com sucesso.`, 'Monitriip')
-          this.$f7router.back()
         }
       )
     },
