@@ -47,7 +47,7 @@ import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
-import { getPartnerByUser, showStopDate } from '@/utils/partner'
+import { getPartnerByUser } from '@/utils/partner'
 
 let socketReconnect = 0
 
@@ -750,11 +750,9 @@ export default {
     },
     async getDevicesIgnitionOffDate() {
       try {
-        if (showStopDate()) {
-          return await pinmeapi.getAll()
-        }
-      } catch (e) {
-        Vue.$log.error((e.response && e.reponse.data) || e)
+        return await pinmeapi.getAll()
+      } catch (error) {
+        Vue.$log.warn(error)
       }
       return []
     },
@@ -773,7 +771,7 @@ export default {
           if (devicesIgnitionOffDate && devicesIgnitionOffDate.length) {
             const deviceIgnitionOff = devicesIgnitionOffDate.find(d => d.deviceId === device.id)
             if (!position.attributes.ignition && deviceIgnitionOff) {
-              device.lastStop = deviceIgnitionOff.ignitionOffDate
+              this.$store.dispatch('user/setDeviceLastIgnOff', { device, lastStop: deviceIgnitionOff.ignitionOffDate })
             }
           }
           feature = this.positionToFeature(position, device)

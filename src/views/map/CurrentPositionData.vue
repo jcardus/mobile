@@ -64,6 +64,45 @@ import { removeAdd3dLayer } from '@/views/map/mapbox/LayerManager'
 import { calculateIdlePositions, findNearestPOI } from '@/utils/positions'
 import { getCurrentTrip } from '@/utils/trips'
 
+function getColor(speed, max) {
+  return interpolateColor('#FFFF00', '#FF0000', speed / max)
+}
+function interpolateColor(color1, color2, value) {
+  if (value < 0) value = 0
+  if (value > 1) value = 1
+
+  function hexToRgb(hex) {
+    hex = hex.replace(/^#/, '')
+    const bigint = parseInt(hex, 16)
+    const r = (bigint >> 16) & 255
+    const g = (bigint >> 8) & 255
+    const b = bigint & 255
+    return [r, g, b]
+  }
+
+  function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map((x) => {
+      const hex = x.toString(16)
+      return hex.length === 1 ? '0' + hex : hex
+    }).join('')
+  }
+
+  const [r1, g1, b1] = hexToRgb(color1)
+  const [r2, g2, b2] = hexToRgb(color2)
+
+  const r = Math.round(r1 + (r2 - r1) * value)
+  const g = Math.round(g1 + (g2 - g1) * value)
+  const b = Math.round(b1 + (b2 - b1) * value)
+
+  return rgbToHex(r, g, b)
+}
+
+// Example usage:
+const color1 = '#ff0000'
+const color2 = '#0000ff'
+const value = 0.5
+
+console.log(interpolateColor(color1, color2, value)) // Output: #800080 (Purple)
 export default {
   name: 'CurrentPositionData',
   data() {
@@ -207,6 +246,7 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on(event.posChanged, this.onPosChanged)
     serverBus.$on(event.routePlay, this.routePlay)
+    vm.$static.map.on('click', this.allTripsArrowsSource, this.mouseEnterArrow)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
@@ -214,6 +254,7 @@ export default {
     serverBus.$off(event.posChanged, this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
     serverBus.$off(event.toogleEventChart, this.onToogleEventChart)
+    vm.$static.map.off('click', this.allTripsArrowsSource, this.mouseEnterArrow)
     const lastPos = vm.$data.currentDevice.position
     // put the vehicle back where it was...
     if (lastPos) {
@@ -370,6 +411,7 @@ export default {
       if (!keepMain) {
         if (this.map.getLayer(this.allTripsSource)) {
           this.map.removeLayer(this.allTripsSource)
+          this.map.removeLayer(this.allTripsSource + 'casing')
           this.map.removeLayer(this.allTripsArrowsSource)
           this.map.removeSource(this.allTripsSource)
           this.map.removeSource(this.allTripsArrowsSource)
@@ -377,6 +419,7 @@ export default {
       }
     },
     async getRoute(from, to) {
+      if (!this.device) { return }
       Vue.$log.debug('getting route from', from, 'to', to)
       try {
         const allInOne = await traccar.allInOne(this.device.id, from, to)
@@ -877,9 +920,20 @@ export default {
         const bounds = lnglat.getBounds(coords)
         this.map.fitBounds(bounds, { maxZoom: vm.$static.map.getZoom(), padding: 70, animate: false })
         const pointsData = lnglat.getGeoJSONFeaturesColletion(points)
-        const lineData = lnglat.getGeoJSON({ type: 'LineString', coordinates: coords })
-        this.createAllTripsLayer(lineData, pointsData)
+        this.createAllTripsLayer(this.getSegments(positions), pointsData)
       }
+    },
+    getSegments(positions) {
+      const result = []
+      const maxSpeed = positions.map(p => p.speed).reduce((a, b) => Math.max(a, b), -Infinity)
+      positions.forEach((p1, i) => {
+        if (i < positions.length - 1) {
+          const p2 = positions[i + 1]
+          result.push(helpers.lineString([[p1.longitude, p1.latitude], [p2.longitude, p2.latitude]],
+            { speedA: getColor(p1.speed, maxSpeed), speedB: getColor(p2.speed, maxSpeed) }))
+        }
+      })
+      return helpers.featureCollection(result)
     },
     iterate() {
       const positions = this.trips[this.currentTrip].positions
@@ -960,24 +1014,11 @@ export default {
       lnglat.hideEventPopup()
     },
     createAllTripsLayer(routeGeoJSON, points) {
-      if (vm.$static.map.getLayer(this.allTripsSource)) {
-        this.map.removeLayer(this.allTripsSource)
-        this.map.removeLayer(this.allTripsArrowsSource)
-        this.map.removeSource(this.allTripsSource)
-        this.map.removeSource(this.allTripsArrowsSource)
-      }
-      Vue.$log.debug('adding source ', this.allTripsSource)
-      vm.$static.map.addSource(this.allTripsSource, {
-        type: 'geojson',
-        data: routeGeoJSON
-      })
-      vm.$static.map.addSource(this.allTripsArrowsSource, {
-        type: 'geojson',
-        data: points
-      })
-      vm.$static.map.addLayer(routeLayers.tripsLayer(this.allTripsSource))
-      vm.$static.map.addLayer(routeLayers.tripsArrowsLayer(this.allTripsArrowsSource))
-      vm.$static.map.on('touchstart', this.allTripsArrowsSource, this.mouseEnterArrow)
+      this.$store.commit('map/createAllTripsLayer', {
+        routeGeoJSON,
+        points,
+        routeColor: this.device.attributes.routeColor }
+      )
     },
     mouseEnterArrow(e) {
       const feature = e.features[0]
