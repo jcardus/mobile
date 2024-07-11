@@ -18,7 +18,6 @@
 
 import { vm } from '@/main'
 import { mapGetters } from 'vuex'
-import { getPartnerByUser } from '@/utils/partner'
 import layerManager, { routePlayLayer } from '@/views/map/mapbox/LayerManager'
 
 export default {
@@ -46,8 +45,7 @@ export default {
   mounted() {
     let tileRoads = `https://mt0.google.com/vt/lyrs=m&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
     let tileSatellite = `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
-    const partner = getPartnerByUser(this.user)
-    if (!partner || partner.partnerId === 5) {
+    if (process.env.SERVER_HOST === 'fleetmap.io') {
       tileRoads = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=roads`
       tileSatellite = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=satellite`
     }

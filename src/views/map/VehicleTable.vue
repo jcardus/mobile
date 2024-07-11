@@ -77,6 +77,7 @@
         stripe
         @row-click="vehicleSelected"
       >
+        <div slot="empty"><i class="fas fa-spinner fa-spin"></i></div>
         <el-table-column
           prop="positions"
           label=""
