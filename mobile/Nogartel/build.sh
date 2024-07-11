@@ -10,6 +10,7 @@ export MAPBOX_TOKEN=pk.eyJ1Ijoibm9nYXJ0ZWwiLCJhIjoiY2x1N2I1NzlpMDRnbTJrbXAzeGNoa
 export SERVER_HOST=nogartel.fleetmap.io
 export SENTRY_DSN=https://10b31d190f032b075651408c7b189985@o4507568831856640.ingest.de.sentry.io/4507568834543696
 export SENTRY_AUTH_TOKEN=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
+export SENTRY_ORG=nogartel-nt
 
 mobile/build.sh "$1"
 
