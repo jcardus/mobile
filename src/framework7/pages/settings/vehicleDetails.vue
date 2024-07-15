@@ -54,7 +54,7 @@
     <f7-block>
       <f7-row v-if="selectedVehicle && selectedVehicle.attributes.integration === 'monitrip'">
         <f7-col>
-          <f7-button raised outline @click="clickMonitrip">
+          <f7-button raised outline @click="clickMonitrip" v-loading="loading">
             {{ `Monitriip ${selectedVehicle.attributes.monitrip ? 'Terminar' : 'Iniciar'} Viagem` }}
           </f7-button>
         </f7-col>
@@ -107,7 +107,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['devices']),
+    ...mapGetters(['devices', 'loading']),
     notesLabel() {
       if (this.selectedVehicle && this.selectedVehicle.attributes.integration === 'monitrip') {
         return 'Licença de Viagem'
@@ -160,14 +160,16 @@ export default {
               this.$f7.dialog.alert('Por favor introduza a licença de viagem.')
               return
             }
+            this.$store.commit('transient/SET_LOADING', true)
             this.selectedVehicle.attributes.monitrip = !this.selectedVehicle.attributes.monitrip
             this.selectedVehicle.attributes.notes = this.vehicleNotes
-            await axios.post(`https://${getServerHost()}/pinmeapi/integration/moniitrip/startTrip`, this.selectedVehicle)
-            this.$f7.dialog.alert(`Viagem ${this.selectedVehicle.attributes.monitrip ? 'iniciada' : 'terminada'} com sucesso.`, 'Monitriip')
+            const result = await axios.post(`https://${getServerHost()}/pinmeapi/integration/moniitrip/startTrip`, this.selectedVehicle).then(r => r.data)
+            this.$f7.dialog.alert(JSON.stringify(result), 'Monitriip')
             this.$f7router.back()
           } catch (e) {
-            this.$f7.dialog.alert(e.message)
+            this.$f7.dialog.alert((e.response && e.response.data && JSON.stringify(e.response.data)) || e.message)
           }
+          this.$store.commit('transient/SET_LOADING', false)
         }
       )
     },
