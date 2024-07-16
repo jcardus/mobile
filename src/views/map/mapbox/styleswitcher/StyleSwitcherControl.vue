@@ -45,7 +45,7 @@ export default {
   mounted() {
     let tileRoads = `https://mt0.google.com/vt/lyrs=m&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
     let tileSatellite = `https://mt0.google.com/vt/lyrs=y&hl=${navigator.language}&x={x}&y={y}&z={z}&s=Ga`
-    if (process.env.SERVER_HOST === 'fleetmap.io') {
+    if (process.env.SERVER_HOST === 'fleetmap.io' || window.location.host === 'moviflotte.com') {
       tileRoads = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=roads`
       tileSatellite = `https://d831cxdfrpk69.cloudfront.net/?x={x}&y={y}&z={z}&type=satellite`
     }
