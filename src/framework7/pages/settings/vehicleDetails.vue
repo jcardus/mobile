@@ -167,6 +167,7 @@ export default {
             this.$f7.dialog.alert(JSON.stringify(result), 'Monitriip')
             this.$f7router.back()
           } catch (e) {
+            this.selectedVehicle.attributes.monitrip = !this.selectedVehicle.attributes.monitrip
             this.$f7.dialog.alert((e.response && e.response.data && JSON.stringify(e.response.data)) || e.message)
           }
           this.$store.commit('transient/SET_LOADING', false)
