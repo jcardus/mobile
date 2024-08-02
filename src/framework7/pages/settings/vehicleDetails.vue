@@ -1,5 +1,5 @@
 <template>
-  <f7-page name="VehicleDetails">
+  <f7-page v-loading="loading" name="VehicleDetails" @pageAfterIn="pageAfterIn">
     <f7-navbar back-link :title="$t('settings.vehicle_edit')"></f7-navbar>
     <f7-list no-hairlines-md>
       <f7-list-input
@@ -50,11 +50,10 @@
       >
       </f7-list-input>
     </f7-list>
-
     <f7-block>
       <f7-row v-if="selectedVehicle && selectedVehicle.attributes.integration === 'monitrip'">
         <f7-col>
-          <f7-button raised outline @click="clickMonitrip" v-loading="loading">
+          <f7-button raised outline @click="clickMonitrip">
             {{ `Monitriip ${selectedVehicle.attributes.monitrip ? 'Terminar' : 'Iniciar'} Viagem` }}
           </f7-button>
         </f7-col>
@@ -136,20 +135,30 @@ export default {
       ]
     }
   },
-  mounted() {
-    const selectedId = parseInt(this.$f7route.params.deviceId)
-    const p = this.findFeatureByDeviceId(selectedId)
-    this.vehicleTotalKms = p && (p.properties.totalDistance / 1000).toFixed(2)
-    this.selectedVehicle = this.devices.find((d) => d.id === selectedId)
-    this.$log.debug('vehicleDetails mounted', this.selectedVehicle.name)
-    this.vehicleName = this.selectedVehicle.name
-    this.vehicleModel = this.selectedVehicle.model
-    this.vehicleSpeedLimit = Math.round(this.selectedVehicle.attributes.speedLimit * 1.85200)
-    this.selectedCategory = this.selectedVehicle.category
-    this.selectedGroup = this.selectedVehicle.groupId
-    this.vehicleNotes = this.selectedVehicle.attributes.notes
-  },
   methods: {
+    bind() {
+      const selectedId = parseInt(this.$f7route.params.deviceId)
+      const p = this.findFeatureByDeviceId(selectedId)
+      this.vehicleTotalKms = p && (p.properties.totalDistance / 1000).toFixed(2)
+      this.$log.debug('vehicleDetails mounted', this.selectedVehicle.name)
+      this.vehicleName = this.selectedVehicle.name
+      this.vehicleModel = this.selectedVehicle.model
+      this.vehicleSpeedLimit = Math.round(this.selectedVehicle.attributes.speedLimit * 1.85200)
+      this.selectedCategory = this.selectedVehicle.category
+      this.selectedGroup = this.selectedVehicle.groupId
+      this.vehicleNotes = this.selectedVehicle.attributes.notes
+    },
+    async pageAfterIn() {
+      try {
+        this.$store.commit('transient/SET_LOADING', true)
+        this.selectedVehicle = await traccar.get('devices/' + this.$f7route.params.deviceId).then(r => r.data)
+        this.bind()
+      } catch (e) {
+        this.$f7.dialog.alert(e.message)
+        console.error(e)
+      }
+      this.$store.commit('transient/SET_LOADING', false)
+    },
     clickMonitrip() {
       this.$f7.dialog.confirm(
         `Deseja ${this.selectedVehicle.attributes.monitrip ? 'terminar' : 'iniciar'} a viagem?`,
@@ -178,6 +187,7 @@ export default {
       return lnglat.findFeatureByDeviceId(deviceId)
     },
     async handleSubmitVehicleForm() {
+      this.$store.commit('transient/SET_LOADING', true)
       const vehicle = this.selectedVehicle
       vehicle.name = this.vehicleName
       vehicle.groupId = this.selectedGroup
@@ -209,6 +219,7 @@ export default {
           await this.$alert(reason)
         }
       }
+      this.$store.commit('transient/SET_LOADING', false)
     },
     vehicleUpdated: function(device) {
       this.$f7.dialog.alert(this.$t('settings.vehicle_updated'), this.$t('settings.vehicle_edit'))
