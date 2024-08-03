@@ -13,7 +13,7 @@ const state = {
   showStopDate: window.location.hostname === 'localizalia.net' || process.env.SERVER_HOST === 'localizalia.net',
   vehicles3d: false,
   followVehicle: false,
-  showFullDate: false
+  showFullDate: true
 }
 
 const mutations = {
