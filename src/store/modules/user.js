@@ -138,7 +138,7 @@ const actions = {
   async initFirebaseToken({ dispatch }) {
     const r = await FCM.getToken()
     if (Capacitor.getPlatform() === 'ios') {
-      await Preferences.set({ key: 'firebaseToken', value: r.token })
+      await dispatch('setFirebaseToken', r.token)
     }
     await PushNotifications.removeAllListeners()
 
