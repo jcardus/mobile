@@ -1,6 +1,5 @@
 import defaultSettings from '../../settings'
 import Vue from 'vue'
-import { getPartnerData } from 'fleetmap-partners'
 
 const { sidebarLogo } = defaultSettings
 
@@ -11,10 +10,10 @@ const state = {
   maxSpeedType: 'vehicle',
   speedThreshold: '0',
   showLabels: false,
-  showStopDate: getPartnerData().showStopDate,
+  showStopDate: window.location.hostname === 'localizalia.net' || process.env.SERVER_HOST === 'localizalia.net',
   vehicles3d: false,
   followVehicle: false,
-  showFullDate: false
+  showFullDate: true
 }
 
 const mutations = {

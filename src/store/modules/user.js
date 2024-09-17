@@ -138,7 +138,7 @@ const actions = {
   async initFirebaseToken({ dispatch }) {
     const r = await FCM.getToken()
     if (Capacitor.getPlatform() === 'ios') {
-      await Preferences.set({ key: 'firebaseToken', value: r.token })
+      await dispatch('setFirebaseToken', r.token)
     }
     await PushNotifications.removeAllListeners()
 
@@ -204,8 +204,9 @@ const actions = {
   setGeofences({ commit }, geofences) {
     commit('SET_GEOFENCES', geofences)
   },
-  setDevices({ commit }, devices) {
-    commit('SET_DEVICES', devices)
+  async setDevices({ commit }) {
+    commit('SET_DEVICES', await traccar.get('devices')
+      .then(r => r.data))
   },
   async checkSession({ dispatch, commit }) {
     try {

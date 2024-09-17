@@ -59,7 +59,7 @@
               @input="password = $event.target.value"
             >
               <f7-icon slot="media" icon="fas fa-unlock-alt" style="font-size:20px"></f7-icon>
-              <div slot="content-end" style="padding: 5px" @click="showPassword=!showPassword">
+              <div slot="content-end" style="padding: 15px" @click="showPassword=!showPassword">
                 <f7-icon :icon="`fas fa-eye${showPassword?'-slash':''}`" style="font-size:20px"></f7-icon>
               </div>
             </f7-list-input>

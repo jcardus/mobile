@@ -1,5 +1,5 @@
 <template>
-  <f7-page name="Vehicles">
+  <f7-page name="Vehicles" @pageAfterIn="pageAfterIn">
     <f7-navbar back-link>
       <i class="fas fa-car-alt" style="padding-right: 10px"></i>{{ $t('settings.vehicles') }}
       <f7-nav-right>
@@ -53,6 +53,9 @@ export default {
       } else {
         return ''
       }
+    },
+    pageAfterIn() {
+      this.$store.dispatch('user/setDevices')
     }
   }
 }
