@@ -112,7 +112,8 @@ export default {
   computed: {
     ...mapGetters(['devices', 'loading']),
     notesLabel() {
-      if (this.selectedVehicle && this.selectedVehicle.attributes.integration === 'monitrip') {
+      if (this.selectedVehicle && this.selectedVehicle.attributes.integration &&
+          this.selectedVehicle.attributes.integration.includes('monitrip')) {
         return 'Licença de Viagem'
       }
       return this.$t('settings.vehicle_notes')
