@@ -51,7 +51,11 @@
       </f7-list-input>
     </f7-list>
     <f7-block>
-      <f7-row v-if="selectedVehicle && selectedVehicle.attributes.integration === 'monitrip'">
+      <f7-row
+        v-if="selectedVehicle
+          && selectedVehicle.attributes.integration
+          && selectedVehicle.attributes.integration.includes('monitrip')"
+      >
         <f7-col>
           <f7-button raised outline @click="clickMonitrip">
             {{ `Monitriip ${selectedVehicle.attributes.monitrip ? 'Terminar' : 'Iniciar'} Viagem` }}
@@ -108,7 +112,8 @@ export default {
   computed: {
     ...mapGetters(['devices', 'loading']),
     notesLabel() {
-      if (this.selectedVehicle && this.selectedVehicle.attributes.integration === 'monitrip') {
+      if (this.selectedVehicle && this.selectedVehicle.attributes.integration &&
+          this.selectedVehicle.attributes.integration.includes('monitrip')) {
         return 'Licença de Viagem'
       }
       return this.$t('settings.vehicle_notes')
