@@ -656,6 +656,12 @@ export default {
       this.map.getCanvas().style.cursor = ''
     },
     onStyleLoad(e) {
+      setTimeout(() => {
+        const partner = getPartnerByUser(this.user)
+        if (partner && partner.region) {
+          this.filterLayers(partner.region)
+        }
+      }, 2000)
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
       if (style.sprite !== consts.spriteUrl) {
@@ -668,12 +674,6 @@ export default {
         this.$log.debug('finishLoading')
         this.finishLoading()
       }
-      setTimeout(() => {
-        const partner = getPartnerByUser(this.user)
-        if (partner && partner.region) {
-          this.filterLayers(partner.region)
-        }
-      }, 2000)
     },
     onData(e) {
       // if (!e.isSourceLoaded) return
