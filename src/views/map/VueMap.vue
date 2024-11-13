@@ -182,7 +182,6 @@ export default {
     ...mapActions('transient', ['setLoading']),
     filterLayers(worldview) {
       try {
-        console.log('filter layers')
         // The "admin-0-boundary-disputed" layer shows boundaries
         // at this level that are known to be disputed.
         const map = this.map
@@ -656,7 +655,6 @@ export default {
       this.map.getCanvas().style.cursor = ''
     },
     onStyleLoad(e) {
-      console.log('filter onStyleLoad')
       setTimeout(() => {
         this.filterLayers('MA')
       }, 1000)
