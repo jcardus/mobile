@@ -661,7 +661,7 @@ export default {
         if (partner && partner.region) {
           this.filterLayers(partner.region)
         }
-      }, 2000)
+      }, 3000)
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
       if (style.sprite !== consts.spriteUrl) {
