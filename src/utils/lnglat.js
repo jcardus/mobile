@@ -454,7 +454,9 @@ export function processGeofences(geofences) {
     const item = geofences[i1]
     if (item) {
       const geoJson = geofencesLayer.getFeatureGeojson(item)
-      result.push(geoJson)
+      if (geoJson) {
+        result.push(geoJson)
+      }
     }
   }
   return result

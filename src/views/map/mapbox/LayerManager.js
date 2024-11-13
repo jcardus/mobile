@@ -1,4 +1,4 @@
-import { vm } from '@/main'
+import { serverBus, vm } from '@/main'
 import Vue from 'vue'
 import store from '@/store'
 import vehicleLayer from '@/views/map/mapbox/VehiclesLayer'
@@ -15,6 +15,7 @@ import * as lnglat from '@/utils/lnglat'
 import mapboxgl from 'mapbox-gl'
 import VehicleDetail from '@/views/map/VehicleDetail.vue'
 import i18n from '@/lang'
+import * as event from '@/events'
 const buildings3d = '3d-buildings'
 
 export const routePlayLayer = 'routePlayLayer'
@@ -200,6 +201,7 @@ export default {
     const feature = e.features[0]
     const device = store.getters.deviceById(feature.properties.deviceId)
     if (device) {
+      serverBus.$emit(event.deviceSelected, device)
       lnglat.showPopup(feature, device, new mapboxgl.Popup({ class: 'card2', offset: 25 }))
       if (this.lastPopup) {
         this.lastPopup.$destroy()

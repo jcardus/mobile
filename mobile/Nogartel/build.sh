@@ -8,6 +8,9 @@ export COGNITO_CLIENT_ID=2ml2d0h1qk7q614qc3bclg2alj
 export AUTH_DOMAIN=fleetmap.auth.eu-west-3.amazoncognito.com
 export MAPBOX_TOKEN=pk.eyJ1Ijoibm9nYXJ0ZWwiLCJhIjoiY2x1N2I1NzlpMDRnbTJrbXAzeGNoaDFlbCJ9.MJCdAPkK8l2Kv81Rs2tORw
 export SERVER_HOST=nogartel.fleetmap.io
+export SENTRY_DSN=https://10b31d190f032b075651408c7b189985@o4507568831856640.ingest.de.sentry.io/4507568834543696
+export SENTRY_AUTH_TOKEN=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
+export SENTRY_ORG=nogartel-nt
 
 mobile/build.sh "$1"
 

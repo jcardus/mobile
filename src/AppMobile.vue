@@ -59,7 +59,7 @@
               @input="password = $event.target.value"
             >
               <f7-icon slot="media" icon="fas fa-unlock-alt" style="font-size:20px"></f7-icon>
-              <div slot="content-end" style="padding: 5px" @click="showPassword=!showPassword">
+              <div slot="content-end" style="padding: 15px" @click="showPassword=!showPassword">
                 <f7-icon :icon="`fas fa-eye${showPassword?'-slash':''}`" style="font-size:20px"></f7-icon>
               </div>
             </f7-list-input>
@@ -216,17 +216,16 @@ export default {
         case 'native':
           try {
             await this.$store.dispatch('user/login', { username: this.username, password: this.password })
-            this.$f7.preloader.hide()
             this.$f7.loginScreen.close()
           } catch (e) {
-            this.$f7.preloader.hide()
             console.error(e)
             this.$f7.toast.create({
-              closeTimeout: 4000,
-              text: e.message,
+              closeTimeout: 5000,
+              text: `${this.$t('login.login_user_password_invalid')} (${e.message})`,
               destroyOnClose: true
             }).open()
           } finally {
+            this.$f7.preloader.hide()
             this.native = false
           }
           break

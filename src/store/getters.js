@@ -1,5 +1,7 @@
+import { getPartnerData } from 'fleetmap-partners'
+
 const getters = {
-  showFullDate: state => state.settings.showFullDate,
+  showFullDate: state => getPartnerData().showFullDate || state.settings.showFullDate,
   totalDistance: state => state.transient.totalDistance,
   accessToken: state => state.user.accessToken,
   user: state => state.user.user,
@@ -43,7 +45,7 @@ const getters = {
   alertsSearchPeriod: state => state.user.user.attributes.alertsSearchPeriod,
   mapType: state => state.map.mapType,
   mapStyle: state => state.map.mapStyle,
-  showStopDate: state => state.settings.showStopDate
+  showStopDate: () => window.location.hostname === 'localizalia.net' || process.env.SERVER_HOST === 'localizalia.net'
 }
 
 export default getters
