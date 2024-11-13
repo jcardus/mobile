@@ -47,7 +47,6 @@ import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
-import { getPartnerByUser } from '@/utils/partner'
 
 let socketReconnect = 0
 
@@ -183,6 +182,7 @@ export default {
     ...mapActions('transient', ['setLoading']),
     filterLayers(worldview) {
       try {
+        console.log('filter layers')
         // The "admin-0-boundary-disputed" layer shows boundaries
         // at this level that are known to be disputed.
         const map = this.map
@@ -656,12 +656,10 @@ export default {
       this.map.getCanvas().style.cursor = ''
     },
     onStyleLoad(e) {
+      console.log('filter onStyleLoad')
       setTimeout(() => {
-        const partner = getPartnerByUser(this.user)
-        if (partner && partner.region) {
-          this.filterLayers(partner.region)
-        }
-      }, 3000)
+        this.filterLayers('MA')
+      }, 1000)
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
       if (style.sprite !== consts.spriteUrl) {
