@@ -47,7 +47,6 @@ import * as notifications from '@/utils/notifications'
 import * as alertType from '@/alerts/alertType'
 import { newEventReceived } from '@/events'
 import { pinmeapi } from '@/api/pinme'
-import { getPartnerByUser } from '@/utils/partner'
 
 let socketReconnect = 0
 
@@ -657,11 +656,8 @@ export default {
     },
     onStyleLoad(e) {
       setTimeout(() => {
-        const partner = getPartnerByUser(this.user)
-        if (partner && partner.region) {
-          this.filterLayers(partner.region)
-        }
-      }, 2000)
+        this.filterLayers('MA')
+      }, 1000)
       this.$log.debug('onStyleLoad ', e)
       const style = this.map.getStyle()
       if (style.sprite !== consts.spriteUrl) {
