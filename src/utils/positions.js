@@ -53,7 +53,7 @@ export function findNearestPOI(position) {
 
 export function getFuelLiters(device) {
   if (device.position.protocol === 'teltonika' && !device.position.attributes.io89) {
-    return device.position.attributes.fuel
+    return device.position.attributes.fuel && device.position.attributes.fuel.toFixed(1)
   } else if (device.attributes.fuel_tank_capacity) {
     return Math.round(device.attributes.fuel_tank_capacity * (device.position.fuelLevel / 100))
   }
