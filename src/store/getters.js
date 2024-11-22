@@ -1,5 +1,7 @@
+import { getPartnerData } from 'fleetmap-partners'
+
 const getters = {
-  showFullDate: state => state.settings.showFullDate,
+  showFullDate: state => getPartnerData().showFullDate || state.settings.showFullDate,
   totalDistance: state => state.transient.totalDistance,
   accessToken: state => state.user.accessToken,
   user: state => state.user.user,

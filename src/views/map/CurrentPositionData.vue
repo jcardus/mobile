@@ -246,7 +246,7 @@ export default {
     window.addEventListener('resize', this.resizeDiv)
     serverBus.$on(event.posChanged, this.onPosChanged)
     serverBus.$on(event.routePlay, this.routePlay)
-    vm.$static.map.on('click', this.allTripsArrowsSource, this.mouseEnterArrow)
+    vm.$static.map.on('touchstart', this.allTripsArrowsSource, this.mouseEnterArrow)
   },
   beforeDestroy() {
     Vue.$log.info('CurrentPositionData')
@@ -254,7 +254,7 @@ export default {
     serverBus.$off(event.posChanged, this.onPosChanged)
     serverBus.$off(event.tripChanged, this.onTripChanged)
     serverBus.$off(event.toogleEventChart, this.onToogleEventChart)
-    vm.$static.map.off('click', this.allTripsArrowsSource, this.mouseEnterArrow)
+    vm.$static.map.off('touchstart', this.allTripsArrowsSource, this.mouseEnterArrow)
     const lastPos = vm.$data.currentDevice.position
     // put the vehicle back where it was...
     if (lastPos) {
