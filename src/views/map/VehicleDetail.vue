@@ -34,12 +34,6 @@
             <span v-if="currentPosition.fuelLevel"><i :class="fuelLevelStatus(currentPosition.fuelLevel)" style="padding-right:2px; padding-left:8px"></i>{{ currentPosition.fuelLevel ? currentPosition.fuelLevel : '' }}%</span>
             <span v-if="currentPosition.attributes.ignition && currentPosition.attributes.rpm" style="padding-left:8px;"><i class="fab fa-cloudscale rpmIcon"></i><span style="padding-left:14px;">{{ currentPosition.attributes.rpm ? currentPosition.attributes.rpm : '' }} rpm</span></span>
           </div>
-          <span v-if="currentPosition.attributes.temp1 && currentPosition.attributes.temp1 !== 175">
-            <i class="fas fa-thermometer-quarter rpmIcon" style="padding-right:2px; padding-left:2px"></i>  {{ currentPosition.attributes.temp1 }}ºC
-          </span>
-          <span v-if="currentPosition.attributes.temp2 && currentPosition.attributes.temp2 !== 175">
-            <i class="fas fa-thermometer-quarter rpmIcon" style="padding-right:2px; padding-left:2px"></i>  {{ currentPosition.attributes.temp2 }}ºC
-          </span>
           <span v-if="currentPosition.attributes.doors">
             <el-tooltip :content="$t('vehicleDetail.'+currentPosition.attributes.doors)">
               <i :class="`fas fa-${currentPosition.attributes.doors === 'closed'?'':'un'}lock`" :style="`color:${currentPosition.attributes.doors === 'closed' ? '#ff0022':'#3D993D'}; padding-right:2px; padding-left:2px`"></i>
