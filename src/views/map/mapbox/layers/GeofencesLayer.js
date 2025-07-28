@@ -88,6 +88,7 @@ export default {
   },
   getFeatureGeojson(item) {
     const wkt = item.area
+    if (!item.area) { return undefined }
     let geojson
     if (item.area.startsWith('POLYGON')) {
       geojson = {
