@@ -227,7 +227,7 @@ export default {
       return vm.$data.routeMaxDate
     },
     pois() {
-      return this.geofences.filter(g => g && g.area.startsWith('CIRCLE'))
+      return this.geofences.filter(g => g && g.area && g.area.startsWith('CIRCLE'))
     }
   },
   watch: {
@@ -425,7 +425,7 @@ export default {
         const allInOne = await traccar.allInOne(this.device.id, from, to)
         await this.onPositions(allInOne)
       } catch (e) {
-        console.error('trying route', e)
+        console.error('trying route', e.message, e)
         const route = await traccar.route(this.device.id, from, to)
         const trips = await traccar.trips(this.device.id, from, to)
         const stops = await traccar.stops(this.device.id, from, to)
