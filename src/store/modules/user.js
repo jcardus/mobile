@@ -136,50 +136,57 @@ function isCapacitor() {
 
 const actions = {
   async initFirebaseToken({ dispatch }) {
-    const r = await FCM.getToken()
-    if (Capacitor.getPlatform() === 'ios') {
-      await dispatch('setFirebaseToken', r.token)
-    }
     await PushNotifications.removeAllListeners()
 
     // Request permission to use push notifications
     // iOS will prompt user and return if they granted permission or not
     // Android will just grant without prompting
-    PushNotifications.requestPermissions().then(result => {
-      if (result) {
-        Vue.$log.info('PushNotifications permission granted')
-        PushNotifications.register().then(d => console.log('register result', d))
-      } else {
-        Vue.$log.error(result)
-      }
-    })
+    const result = await PushNotifications.requestPermissions()
 
-    PushNotifications.addListener(
-      'registration',
-      (token) => {
-        if (Capacitor.getPlatform() === 'android') {
-          dispatch('setFirebaseToken', token.value)
+    if (result.receive === 'granted') {
+      Vue.$log.info('PushNotifications permission granted')
+
+      // Register for push notifications first
+      await PushNotifications.register()
+
+      // Set up listeners
+      PushNotifications.addListener('registration', async(token) => {
+        Vue.$log.info('APNS registration successful:', token.value)
+
+        // Now get FCM token after APNS is ready
+        try {
+          const fcmResult = await FCM.getToken()
+
+          if (Capacitor.getPlatform() === 'ios') {
+            await dispatch('setFirebaseToken', fcmResult.token)
+          } else if (Capacitor.getPlatform() === 'android') {
+            await dispatch('setFirebaseToken', token.value)
+          }
+        } catch (error) {
+          Vue.$log.error('Failed to get FCM token:', error)
         }
-      }
-    )
+      })
 
-    PushNotifications.addListener('registrationError', (error) => {
-      Vue.$log.info('Error on registration: ' + JSON.stringify(error))
-    })
+      PushNotifications.addListener('registrationError', (error) => {
+        Vue.$log.error('Error on registration: ' + JSON.stringify(error))
+      })
 
-    PushNotifications.addListener(
-      'pushNotificationReceived',
-      (notification) => {
-        Vue.$log.info('Push received: ' + JSON.stringify(notification))
-      }
-    )
+      PushNotifications.addListener(
+        'pushNotificationReceived',
+        (notification) => {
+          Vue.$log.info('Push received: ' + JSON.stringify(notification))
+        }
+      )
 
-    PushNotifications.addListener(
-      'pushNotificationActionPerformed',
-      (notification) => {
-        Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
-      }
-    )
+      PushNotifications.addListener(
+        'pushNotificationActionPerformed',
+        (notification) => {
+          Vue.$log.info('Push action performed: ' + JSON.stringify(notification))
+        }
+      )
+    } else {
+      Vue.$log.error('Push notification permissions not granted:', result)
+    }
   },
   async setDeviceLastIgnOff({ commit, state }, { device, lastStop }) {
     device.lastStop = lastStop
